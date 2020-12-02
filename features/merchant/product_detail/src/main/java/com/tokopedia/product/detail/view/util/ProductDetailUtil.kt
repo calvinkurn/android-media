@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.getTypeface

@@ -21,6 +21,8 @@ query GetTopadsDashboardGroups($queryInput: GetTopadsDashboardGroupsInputType!) 
       group_price_daily_bar
       group_name
       group_type
+      group_end_date
+
     }
   }
 }

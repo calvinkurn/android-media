@@ -10,10 +10,12 @@
 
     <color name="flight_booking_route_gradiend_end">#e5f5ff</color>
 
-    <color name="flight_search_reverse_background">#f3f4f5</color>
+    <color name="flight_search_reverse_background">@color/Unify_N50</color>
     <color name="flight_dashed_line">#1e000000</color>
     <color name="flight_search_list_background">#e5e7e9</color>
     <color name="flight_departure_trip_label_background">#f9f9f9</color>
     <color name="flight_search_form_field_title">#ae31353b</color>
+
+    <color name="flight_ticket_dash_color">#DCDCDC</color>
 
 </resources>

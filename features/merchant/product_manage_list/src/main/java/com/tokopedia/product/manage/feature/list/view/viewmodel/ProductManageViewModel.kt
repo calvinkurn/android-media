@@ -8,20 +8,26 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
+import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
-import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -29,11 +35,6 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
@@ -308,11 +309,11 @@ class ProductManageViewModel @Inject constructor(
                     _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
                 }
                 else -> {
-                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
                 }
             }
         }) {
-            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -332,11 +333,11 @@ class ProductManageViewModel @Inject constructor(
                     _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
                 }
                 else -> {
-                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
                 }
             }
         }) {
-            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -437,11 +438,11 @@ class ProductManageViewModel @Inject constructor(
                     _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
                 }
                 else -> {
-                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
                 }
             }
         }) {
-            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }

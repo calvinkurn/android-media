@@ -104,6 +104,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
@@ -306,6 +307,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
+            add(DFP({ it.startsWith(MERCHANT_PRODUCT_DRAFT)}, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(SELLER_MENU) }, DF_MERCHANT_SELLER, R.string.title_seller_menu))
             add(DFP({
                 it.startsWithPattern(SHOP_PAGE_BASE) ||
@@ -441,6 +443,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_loginphone))
+            add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
@@ -542,6 +545,9 @@ object DeeplinkDFMapper : CoroutineScope {
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE_SELLER_APP, R.string.title_create_review))
+
+            // User
+            add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
         }
     }
 

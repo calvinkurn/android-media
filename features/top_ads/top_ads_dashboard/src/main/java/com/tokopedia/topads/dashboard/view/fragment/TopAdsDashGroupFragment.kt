@@ -26,6 +26,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
@@ -82,9 +83,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
-        context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
-        }
+        TopadsGroupFilterSheet.newInstance(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -159,7 +158,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
         topAdsDashboardPresenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,
+                startDate, endDate,GROUP_TYPE_PRODUCT,
                 this::onSuccessGroupResult)
     }
 
@@ -260,7 +259,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
         topAdsDashboardPresenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,
+                startDate, endDate,1,
                 this::onSuccessGroupResult)
     }
 

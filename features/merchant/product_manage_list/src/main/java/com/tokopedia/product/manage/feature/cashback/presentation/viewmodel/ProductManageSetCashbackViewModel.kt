@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE

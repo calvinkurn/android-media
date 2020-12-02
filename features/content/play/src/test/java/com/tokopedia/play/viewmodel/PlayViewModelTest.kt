@@ -1,6 +1,7 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -61,8 +62,8 @@ class PlayViewModelTest {
     private val mockSocketCredential = modelBuilder.buildSocketCredential()
 //    private val mockNewChat = modelBuilder.buildNewChat()
 
-    private val mockTotalLikeContentData = modelBuilder.buildTotalLike()
-    private val mockTotalLike = TotalLike(mockTotalLikeContentData.like.value, mockTotalLikeContentData.like.fmt)
+    private val mockTotalLikeContentData = modelBuilder.buildTotalLike().totalLikeContent.data.firstOrNull()
+    private val mockTotalLike = TotalLike(mockTotalLikeContentData?.channel?.metrics?.value.toIntOrZero(), mockTotalLikeContentData?.channel?.metrics?.fmt.orEmpty())
 
     private val mockIsLikeContentData = modelBuilder.buildIsLike()
     private val mockIsLike = mockIsLikeContentData.isLike
@@ -124,7 +125,8 @@ class PlayViewModelTest {
                 ),
                 showCart = mockChannel.configuration.showCart,
                 showPinnedProduct = mockChannel.configuration.showPinnedProduct,
-                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
+                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet,
+                shareInfo = modelBuilder.buildShareInfoUiModel(mockChannel)
         )
         val expectedResult = NetworkResult.Success(expectedModel)
 

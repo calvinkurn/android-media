@@ -6,7 +6,7 @@ import com.tokopedia.shop.search.domain.interactor.GetSearchShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ class ShopSearchProductViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val coroutineDispatcherProvider =TestCoroutineDispatcherProviderImpl
+    private val coroutineDispatcherProvider =CoroutineTestDispatchersProvider
 
     private val viewModel by lazy {
         ShopSearchProductViewModel(userSessionInterface, getSearchShopProductUseCase, coroutineDispatcherProvider)
