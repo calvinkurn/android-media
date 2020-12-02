@@ -2,39 +2,35 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
+import io.mockk.just
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterHelpTicketTest {
+class ShipmentPresenterEnhancedEcommerceTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -84,13 +80,13 @@ class ShipmentPresenterHelpTicketTest {
     @MockK
     private lateinit var codAnalytics: CodAnalytics
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
     @MockK
     private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -104,9 +100,9 @@ class ShipmentPresenterHelpTicketTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-    private val gson = Gson()
-
     private lateinit var presenter: ShipmentPresenter
+
+    private var gson = Gson()
 
     @Before
     fun before() {
@@ -125,93 +121,22 @@ class ShipmentPresenterHelpTicketTest {
     }
 
     @Test
-    fun show_error_reporter_dialog() {
+    fun `WHEN generate enhanced ecommerce data THEN enhanced ecommerce data should not be null`() {
         // Given
-        val data = CheckoutData().apply {
-            isError = true
-            errorReporter = ErrorReporter(eligible = true)
-        }
-        every { checkoutUseCase.createObservable(any()) } returns Observable.just(data)
-        presenter.shipmentCartItemModelList = emptyList()
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
-
-        // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
-
-        // Then
-        verify(exactly = 1) {
-            view.renderCheckoutCartErrorReporter(data)
-        }
-    }
-
-    @Test
-    fun submitHelpTicketSuccess() {
-        // Given
-        val result = SubmitTicketResult(status = true)
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.just(result)
-
-        // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
         })
+        val checkoutRequest = presenter.generateCheckoutRequest(null, true, 0, "")
 
-        // Then
-        verify(exactly = 1) {
-            view.renderSubmitHelpTicketSuccess(result)
-        }
-    }
-
-    @Test
-    fun submitHelpTicketError() {
-        // Given
-        val responseErrorMessage = "something wrong"
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.just(SubmitTicketResult(status = false, message = responseErrorMessage))
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
 
         // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
-        })
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
 
         // Then
-        verify(exactly = 1) {
-            view.showToastError(responseErrorMessage)
-        }
+        assert(enhancedEcommerceData != null)
     }
 
-    @Test
-    fun submitHelpTicketFailed() {
-        // Given
-        every {
-            submitHelpTicketUseCase.createObservable(match {
-                val request = it.getObject(SubmitHelpTicketUseCase.PARAM) as SubmitHelpTicketRequest
-                request.page == SubmitHelpTicketUseCase.PAGE_CHECKOUT && request.requestUrl == CommonPurchaseApiUrl.PATH_CHECKOUT
-            })
-        } returns Observable.error(Exception())
-
-        // When
-        presenter.processSubmitHelpTicket(CheckoutData().apply {
-            jsonResponse = ""
-            errorMessage = ""
-            errorReporter = ErrorReporter()
-        })
-
-        // Then
-        verify(exactly = 1) {
-            view.showToastError(any())
-        }
-    }
 }
