@@ -16,6 +16,7 @@ import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
 import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment.Companion.FORCE_NOT_SHOWING_HOME_TAB
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
@@ -24,7 +25,6 @@ class PltShopPagePowerMerchantPerformanceTest {
 
     companion object {
         private const val SAMPLE_SHOP_ID = "1154916"
-        private const val PATH_PRODUCT = "/product"
     }
 
     private val TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
@@ -46,7 +46,7 @@ class PltShopPagePowerMerchantPerformanceTest {
             )
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
-            intent.data = Uri.parse(PATH_PRODUCT)
+            intent.putExtra(FORCE_NOT_SHOWING_HOME_TAB, true)
             activityRule.launchActivity(intent)
         }
     }

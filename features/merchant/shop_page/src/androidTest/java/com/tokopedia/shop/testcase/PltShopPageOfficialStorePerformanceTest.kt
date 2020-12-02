@@ -23,7 +23,6 @@ class PltShopPageOfficialStorePerformanceTest {
 
     companion object {
         private const val SAMPLE_SHOP_ID = "3418893"
-        private const val PATH_HOME = "/home"
     }
 
     private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
@@ -45,7 +44,6 @@ class PltShopPageOfficialStorePerformanceTest {
             )
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
-            intent.data = Uri.parse(PATH_HOME)
             activityRule.launchActivity(intent)
         }
     }
