@@ -1267,6 +1267,7 @@ class AddEditProductPreviewFragment:
 
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
                 loadingLayout?.hide()
+                loadingLayout?.progress = 0.0f
             }
         })
     }
