@@ -9,6 +9,7 @@ public class ConstantKey {
         public static final String REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH = "android_user_duration_auto_transition_search";
         public static final String AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2";
         public static final String AB_TEST_AUTO_TRANSITION_KEY = "auto_transition";
+        public static final String HOME_SHOW_ONBOARDING_NAVIGATION = "android_customer_home_show_nav_onboarding";
     }
 
     public class TkpdCache {

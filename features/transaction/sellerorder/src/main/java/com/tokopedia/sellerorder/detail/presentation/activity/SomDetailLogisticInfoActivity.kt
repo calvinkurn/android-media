@@ -14,4 +14,8 @@ class SomDetailLogisticInfoActivity: BaseSimpleActivity() {
     override fun getLayoutRes(): Int {
         return R.layout.activity_som_detail_logistic_info
     }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view_logistic_info
+    }
 }

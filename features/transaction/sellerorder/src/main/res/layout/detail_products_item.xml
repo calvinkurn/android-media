@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         tools:text="@string/detail_product"
         android:text="@string/detail_product"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 

@@ -38,8 +38,7 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
-import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.talk.R
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -200,7 +199,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     private fun goToReply(questionId: String) {
         val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
-                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.INBOX_SOURCE)
                 .appendQueryParameter(TalkConstants.PARAM_TYPE, inboxType)
                 .build().toString()
         )

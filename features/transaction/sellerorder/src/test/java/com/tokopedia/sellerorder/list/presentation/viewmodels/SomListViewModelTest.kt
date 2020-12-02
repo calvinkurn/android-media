@@ -17,15 +17,10 @@ import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.Ordering
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -594,17 +589,42 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun getUserRoles_shouldSkippedWhenAlreadyRunning() = runBlocking {
-        viewModel::class.java.superclass!!.getDeclaredField("getUserRolesJob").apply {
-            isAccessible = true
-        }.set(viewModel, launch { delay(10000) })
+    fun loadUserRoles_shouldNeverSendRequestWhenAnotherLoadUserRolesRequestIsOnProgress() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
 
+        every {
+            getUserRolesJob.isCompleted
+        } returns false
+
+        viewModel.setUserRolesJob(getUserRolesJob)
         viewModel.getUserRoles()
 
-        coVerify(inverse = true) { getUserRoleUseCase.execute() }
+        coVerify(inverse = true) {
+            getUserRoleUseCase.execute()
+        }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        return@runBlocking
+        assert(viewModel.userRoleResult.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun loadUserRoles_shouldSuccessWhenAnotherLoadUserRolesRequestIsCompleted() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
+        coEvery {
+            getUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns true
+
+        viewModel.setUserRolesJob(getUserRolesJob)
+        viewModel.getUserRoles()
+
+        coVerify {
+            getUserRoleUseCase.execute()
+        }
+
+        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -617,7 +637,14 @@ class SomListViewModelTest {
 
     @Test
     fun isTopAdsActive_shouldReturnFalseWhenSuccess() {
-        doGetTopAdsCategory_shouldSuccess(0)
+        doGetTopAdsCategory_shouldSuccess()
+
+        assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalse() {
+        doGetTopAdsCategory_shouldSuccess(2)
 
         assert(!viewModel.isTopAdsActive())
     }
@@ -630,10 +657,22 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnTrue() {
-        getTopAdsCategory_shouldSuccess()
-
+    fun isTopAdsActive_shouldReturnFalseWhenValueIsNull() {
         assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingManualAds() {
+        doGetTopAdsCategory_shouldSuccess(3)
+
+        assert(viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingAutoAds() {
+        doGetTopAdsCategory_shouldSuccess(4)
+
+        assert(viewModel.isTopAdsActive())
     }
 
     @Test

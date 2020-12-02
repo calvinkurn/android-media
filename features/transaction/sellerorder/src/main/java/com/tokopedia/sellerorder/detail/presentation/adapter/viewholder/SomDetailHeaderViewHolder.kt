@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -113,7 +112,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+            itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
         }
     }
 
@@ -151,7 +150,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannedMessage.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)),
+                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
                     message.length + 2,
                     message.length + messageLink.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

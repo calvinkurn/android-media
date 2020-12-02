@@ -2,11 +2,11 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.ActivatePowerMerchantUseCase
-import com.tokopedia.power_merchant.subscribe.common.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.power_merchant.subscribe.domain.interactor.ValidatePowerMerchantUseCase
 import com.tokopedia.power_merchant.subscribe.domain.model.GoldValidateShopBeforePMResponse
 import com.tokopedia.power_merchant.subscribe.domain.model.ValidatePowerMerchantResponse
-import com.tokopedia.power_merchant.subscribe.verification.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.usecase.RequestParams
 import io.mockk.coEvery
@@ -32,7 +32,7 @@ open class PmTermsViewModelTestFixture {
         val validationResponse = ValidatePowerMerchantResponse(data = "valid")
         onValidatePm_thenReturn(validationResponse)
 
-        viewModel = PmTermsViewModel(activatePmUseCase, validatePmUseCase, TestCoroutineDispatchers)
+        viewModel = PmTermsViewModel(activatePmUseCase, validatePmUseCase, CoroutineTestDispatchersProvider)
     }
 
     protected fun onValidatePm_thenReturn(response: ValidatePowerMerchantResponse) {

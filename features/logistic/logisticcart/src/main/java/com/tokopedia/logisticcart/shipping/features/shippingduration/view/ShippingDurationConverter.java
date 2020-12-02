@@ -1,7 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
-import android.text.TextUtils;
-
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -15,6 +13,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Promo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class ShippingDurationConverter {
 
             // Check if has error
             if (ratesData.getRatesDetailData().getError() != null &&
-                    !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
+                    !UtilsKt.isNullOrEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
                 shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
                 shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
             }
@@ -70,7 +69,7 @@ public class ShippingDurationConverter {
         String blackboxInfo = "";
         if (ratesDetailData.getInfo() != null &&
                 ratesDetailData.getInfo().getBlackboxInfo() != null &&
-                !TextUtils.isEmpty(ratesDetailData.getInfo().getBlackboxInfo().getTextInfo())) {
+                !UtilsKt.isNullOrEmpty(ratesDetailData.getInfo().getBlackboxInfo().getTextInfo())) {
             blackboxInfo = ratesDetailData.getInfo().getBlackboxInfo().getTextInfo();
         }
 
@@ -87,7 +86,7 @@ public class ShippingDurationConverter {
             if (shippingCourierUiModels.size() > 0) {
                 shippingDurationUiModels.add(shippingDurationUiModel);
             }
-            if (serviceData.getError() != null && !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
+            if (serviceData.getError() != null && !UtilsKt.isNullOrEmpty(serviceData.getError().getErrorMessage())) {
                 if (serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     serviceData.getTexts().setTextRangePrice(serviceData.getError().getErrorMessage());
                 } else {
