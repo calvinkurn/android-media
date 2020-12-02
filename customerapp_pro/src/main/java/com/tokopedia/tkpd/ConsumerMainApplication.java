@@ -85,7 +85,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         setVersionName();
 
         GlobalConfig.APPLICATION_TYPE = 3;
-        GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
+        GlobalConfig.PACKAGE_APPLICATION = new String(new char[]{
+                99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
+                100, 105, 97, 46, 105, 110, 116, 108
+        });
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;

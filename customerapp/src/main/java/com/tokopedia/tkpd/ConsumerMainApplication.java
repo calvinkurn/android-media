@@ -27,8 +27,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void initConfigValues() {
-        GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
-
+        GlobalConfig.PACKAGE_APPLICATION = new String(new char[]{
+                99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
+                100, 105, 97, 46, 116, 107, 112, 100
+        });
         setVersionCode();
         setVersionName();
 
