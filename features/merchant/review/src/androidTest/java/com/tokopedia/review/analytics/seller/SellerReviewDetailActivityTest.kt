@@ -65,6 +65,11 @@ class SellerReviewDetailActivityTest {
             super.beforeActivityLaunched()
             userLogin()
         }
+
+        override fun afterActivityLaunched() {
+            super.afterActivityLaunched()
+            waitForData()
+        }
     }
 
     @Before
@@ -82,7 +87,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickEditProduct() {
         actionTest {
-            waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
                 clickAction(R.id.text_next)
@@ -102,7 +106,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickFilterTime() {
         actionTest {
-            waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
                 clickAction(R.id.text_next)
@@ -119,7 +122,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickFilterStar() {
         actionTest {
-            waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
                 clickAction(R.id.text_next)
@@ -136,7 +138,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickReport() {
         actionTest {
-            waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
                 clickAction(R.id.text_next)
@@ -153,13 +154,12 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickSortFilter() {
         actionTest {
-            waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
                 clickAction(R.id.text_next)
             }
             clickSortFilter()
-            clickAction(R.id.bottom_sheet_close)
+            clickAction(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)
         } assertTest {
             waitForTrackerSent()
             performClose(activityRule)

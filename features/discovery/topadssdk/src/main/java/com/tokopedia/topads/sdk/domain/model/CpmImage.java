@@ -25,6 +25,9 @@ public class CpmImage extends ImpressHolder implements Parcelable {
     @SerializedName(KEY_ILUSTRATION_URL)
     private String ilustrationUrl;
 
+    public CpmImage(){
+    }
+
     public CpmImage(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_FULL_URL)){
             setFullUrl(object.getString(KEY_FULL_URL));
