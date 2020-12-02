@@ -227,9 +227,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
         app:layout_constraintTop_toBottomOf="@+id/tf_note"
         app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="Proteksi di luar cakupan garansi" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -238,21 +240,23 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingEnd="@dimen/dp_16"
         android:paddingStart="0dp"
+        android:paddingEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/tv_protection_unit"
         app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_title"
         app:typographyType="small"
+        app:typographyWeight="reguler"
         tools:text="12 bulan proteksi dari pencurian/kerusakan" />
 
     <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btn_protection_info"
         android:layout_width="wrap_content"
-        android:scaleY="0.5"
-        android:scaleX="0.5"
-        android:translationX="-8dp"
         android:layout_height="wrap_content"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:translationX="-8dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_protection_title"
         app:layout_constraintStart_toEndOf="@+id/tv_protection_title"
         app:layout_constraintTop_toTopOf="@+id/tv_protection_title"
@@ -266,6 +270,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tf_note"
         app:typographyType="body_3"
@@ -277,9 +282,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_price"
         app:typographyType="small"
+        app:typographyWeight="reguler"
         tools:text="Per Barang" />
 
     <Space
