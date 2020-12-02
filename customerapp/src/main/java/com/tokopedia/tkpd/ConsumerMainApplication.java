@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 
 import com.tokopedia.config.GlobalConfig;
@@ -19,6 +22,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+
+import android.content.pm.ResolveInfo;
+import android.content.ContentResolver;
+import java.util.List;
+
+import androidx.slice.SliceManager;
+import android.service.voice.VoiceInteractionService;
 
 import timber.log.Timber;
 
