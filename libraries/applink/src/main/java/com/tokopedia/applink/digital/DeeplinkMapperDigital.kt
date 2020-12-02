@@ -20,7 +20,11 @@ object DeeplinkMapperDigital {
     fun getRegisteredNavigationFromHttpDigital(deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
         val applink = DeeplinkConstDigital.MAP[path] ?: ""
-        return getRegisteredNavigationDigital(applink)
+        val internalApplink = getRegisteredNavigationDigital(applink)
+        val stringBuilder = StringBuilder(internalApplink)
+        stringBuilder.append("?")
+        stringBuilder.append(Uri.parse(applink).query)
+        return stringBuilder.toString()
     }
 
     fun getRegisteredNavigationDigital(deeplink: String): String {
