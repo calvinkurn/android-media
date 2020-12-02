@@ -160,6 +160,8 @@ class SomListSortFilterTab(
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
     fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
 
+    fun getSelectedFilterKeys() = somFilterUiModelList.filter { it.nameFilter != SomConsts.FILTER_STATUS_ORDER }
+            .map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
 
     fun getSomFilterUi() = somFilterUiModelList
 
