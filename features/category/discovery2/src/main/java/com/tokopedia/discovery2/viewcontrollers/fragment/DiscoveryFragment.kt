@@ -1,7 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,10 +12,12 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -44,6 +48,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerVie
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -52,9 +57,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -74,7 +77,9 @@ private const val EXP_NAME = "Navigation Revamp"
 private const val VARIANT_OLD = "Existing Navigation"
 private const val VARIANT_REVAMP = "Navigation Revamp"
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener,
+        View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener,
+        TabLayout.OnTabSelectedListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -85,6 +90,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
+    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
         DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
@@ -164,6 +170,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             oldToolbar.visibility = View.GONE
             navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
+
+        bottomNav = view.findViewById(R.id.bottomNav)
+        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
 
     private fun initView(view: View) {
@@ -274,6 +283,44 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+
+        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    setBottomNavigationComp(it)
+                }
+                is Fail -> {
+                    bottomNav?.hide()
+                }
+            }
+        })
+    }
+
+    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
+        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
+            bottomNav?.let { bottomTabHolder ->
+                bottomTabHolder.tabLayout.apply {
+                    tabMode = TabLayout.MODE_FIXED
+                    removeAllTabs()
+                    setBackgroundResource(0)
+                }
+                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
+                it.data.data!!.forEach { item ->
+                    if (item.image.isNotEmpty()) {
+                        val tab = bottomTabHolder.tabLayout.newTab()
+                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
+                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
+                            findViewById<Typography>(R.id.tab_text).apply {
+                                text = item.name
+                                setTextColor(getTabTextColor(this.context, item.fontColor))
+                            }
+                        }
+                        bottomTabHolder.tabLayout.addTab(tab, false)
+                    }
+                }
+                bottomTabHolder.show()
+            }
+        }
     }
 
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
@@ -339,8 +386,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
                 IconBuilder()
-                        .addIcon(iconId =  IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId =  IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
     }
 
@@ -585,5 +632,31 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onLihatSemuaClick(data: DataItem) {
         getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    private fun tabItemRedirection(tab: TabLayout.Tab?) {
+        tab?.let {
+            RouteManager.route(this.context, discoveryViewModel.getTabApplink(it.position))
+        }
+    }
+
+    private fun getTabTextColor(context: Context, textColor: String?): Int {
+        return try {
+            Color.parseColor(textColor)
+        } catch (exception: Exception) {
+            ContextCompat.getColor(context, R.color.Green_G500)
+        }
     }
 }

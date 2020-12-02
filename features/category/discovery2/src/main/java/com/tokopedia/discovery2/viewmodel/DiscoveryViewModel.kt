@@ -48,10 +48,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
+    private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
+    var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -74,6 +76,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     data.let {
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
+                            findBottomTabNavDataComponentsIfAny(it.components)
                         }
                         setPageInfo(it)
                     }
@@ -108,6 +111,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
+    fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
@@ -181,5 +185,27 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 CATEGORY_ID to bundle?.getString(CATEGORY_ID, ""),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
+    }
+
+    private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
+        bottomTabNavDataComponent = components?.find {
+            it.name == ComponentNames.BottomNavigation.componentName && it.renderByDefault
+        }
+        if (bottomTabNavDataComponent != null) {
+            discoveryBottomNavLiveData.postValue(Success(bottomTabNavDataComponent!!))
+        } else {
+            discoveryBottomNavLiveData.postValue(Fail(Throwable()))
+        }
+    }
+
+    fun getTabApplink(position: Int): String {
+        bottomTabNavDataComponent?.let {
+            it.data?.let { tabData ->
+                if (tabData.size > position) {
+                    return tabData[position].applinks ?: ""
+                }
+            }
+        }
+        return ""
     }
 }
