@@ -165,30 +165,30 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapPurchaseProtectionPlanData(purchaseProtectionPlanDataResponse: com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
         return PurchaseProtectionPlanData(
-//                isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,
-//                protectionTypeId = purchaseProtectionPlanDataResponse.protectionTypeId,
-//                protectionPricePerProduct = purchaseProtectionPlanDataResponse.protectionPricePerProduct,
-//                protectionPrice = purchaseProtectionPlanDataResponse.protectionPrice,
-//                protectionTitle = purchaseProtectionPlanDataResponse.protectionTitle,
-//                protectionSubtitle = purchaseProtectionPlanDataResponse.protectionSubtitle,
-//                protectionLinkText = purchaseProtectionPlanDataResponse.protectionLinkText,
-//                protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
-//                isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
-//                isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled
-//                unit = purchaseProtectionPlanDataResponse.unit
+                isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,
+                protectionTypeId = purchaseProtectionPlanDataResponse.protectionTypeId,
+                protectionPricePerProduct = purchaseProtectionPlanDataResponse.protectionPricePerProduct,
+                protectionPrice = purchaseProtectionPlanDataResponse.protectionPrice,
+                protectionTitle = purchaseProtectionPlanDataResponse.protectionTitle,
+                protectionSubtitle = purchaseProtectionPlanDataResponse.protectionSubtitle,
+                protectionLinkText = purchaseProtectionPlanDataResponse.protectionLinkText,
+                protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
+                isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
+                isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled,
+                unit = purchaseProtectionPlanDataResponse.unit
 
                 // Dummy
-                isProtectionAvailable = true,
-                protectionTypeId = 1364,
-                protectionPricePerProduct = 51750,
-                protectionPrice = 51750,
-                protectionTitle = "Proteksi Gadget",
-                protectionSubtitle = "Lindungi gadget dari layar retak, terkena cairan, perampokan hanya Rp51.750",
-                protectionLinkText = "Pelajari",
-                protectionLinkUrl = "https://www.tokopedia.com/asuransi/proteksi/gadget/",
-                isProtectionOptIn = true,
-                isProtectionCheckboxDisabled = false,
-                unit = "per barang"
+//                isProtectionAvailable = true,
+//                protectionTypeId = 1364,
+//                protectionPricePerProduct = 51750,
+//                protectionPrice = 51750,
+//                protectionTitle = "Proteksi Gadget",
+//                protectionSubtitle = "Lindungi gadget dari layar retak, terkena cairan, perampokan hanya Rp51.750",
+//                protectionLinkText = "Pelajari",
+//                protectionLinkUrl = "https://www.tokopedia.com/asuransi/proteksi/gadget/",
+//                isProtectionOptIn = true,
+//                isProtectionCheckboxDisabled = false,
+//                unit = "per barang"
         )
     }
 
