@@ -765,4 +765,19 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName - $unifyTabValue")
         getTracker().sendGeneralEvent(map)
     }
+
+    fun trackBottomNavBarClick(buttonName : String, userID : String?) {
+        val eventCategory = "$BOTTOM_NAV - $VALUE_DISCOVERY_PAGE"
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to CLICK_NAV_DRAWER,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "click $buttonName nav",
+                KEY_EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                USER_ID to (userID ?: ""),
+                BUSINESS_UNIT to HOME_BROWSE,
+                PAGE_TYPE to pageType,
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier))
+        getTracker().sendGeneralEvent(map)
+    }
 }

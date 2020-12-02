@@ -648,7 +648,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun tabItemRedirection(tab: TabLayout.Tab?) {
         tab?.let {
-            RouteManager.route(this.context, discoveryViewModel.getTabApplink(it.position))
+            discoveryViewModel.getTabItem(it.position)?.let { dataItem ->
+                getDiscoveryAnalytics().trackBottomNavBarClick(dataItem.name ?: "", getUserID())
+                RouteManager.route(this.context, dataItem.applinks)
+            }
         }
     }
 

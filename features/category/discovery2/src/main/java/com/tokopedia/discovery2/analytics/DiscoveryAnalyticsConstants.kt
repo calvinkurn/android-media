@@ -134,4 +134,5 @@ const val USER_ID = "userId"
 const val HOME_BROWSE = "home & browse"
 const val PAGE_TYPE = "pageType"
 const val PAGE_PATH = "pagePath"
+const val BOTTOM_NAV  = "bottom nav"
 

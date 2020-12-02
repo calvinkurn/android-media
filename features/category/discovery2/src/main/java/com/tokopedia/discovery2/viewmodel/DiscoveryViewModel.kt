@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
@@ -198,14 +199,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    fun getTabApplink(position: Int): String {
+    fun getTabItem(position: Int): DataItem? {
         bottomTabNavDataComponent?.let {
             it.data?.let { tabData ->
                 if (tabData.size > position) {
-                    return tabData[position].applinks ?: ""
+                    return tabData[position]
                 }
             }
         }
-        return ""
+        return null
     }
 }
