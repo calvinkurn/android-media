@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
 import kotlin.random.Random
 
 /**
@@ -148,7 +149,12 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = 38
                 ),
-                countDown = 5
+                countDown = 5,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = Date(),
+                        maximum = Date(),
+                        default = Date()
+                )
         )
     }
 
@@ -165,6 +171,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
         return emptyList()
+    }
+
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return BroadcastScheduleUiModel.NoSchedule
     }
 
     override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {

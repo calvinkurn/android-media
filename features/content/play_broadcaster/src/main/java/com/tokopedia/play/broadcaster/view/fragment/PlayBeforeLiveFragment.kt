@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
-import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -77,7 +76,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private val broadcastScheduleView by viewComponent {
         BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule, object : BroadcastScheduleViewComponent.Listener {
-            override fun onEditIconClicked() {
+            override fun onAddEditBroadcastScheduleClicked(view: BroadcastScheduleViewComponent) {
                 openSetupBroadcastSchedulePage()
             }
         })
@@ -127,6 +126,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeProductList()
         observeCover()
         observeLiveInfo()
+        observeBroadcastSchedule()
     }
 
     override fun onStart() {
@@ -141,6 +141,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             is ProductEditFragment -> childFragment.setListener(setupResultListener)
             is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
+            is SetupBroadcastScheduleBottomSheet -> childFragment.setListener(setupResultListener)
         }
     }
 
@@ -186,8 +187,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()
         }
-
-        broadcastScheduleView.setSchedule(BroadcastScheduleUiModel.NoSchedule)
     }
 
     private fun setupInsets(view: View) {
@@ -245,6 +244,12 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun observeLiveInfo() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
+    }
+
+    private fun observeBroadcastSchedule() {
+        parentViewModel.observableBroadcastSchedule.observe(viewLifecycleOwner, Observer {
+            broadcastScheduleView.setSchedule(it)
+        })
     }
     //endregion
 

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.data.config
 
+import com.tokopedia.play.broadcaster.util.extension.dayLater
 import java.util.*
 import javax.inject.Inject
 
@@ -16,31 +17,30 @@ class BroadcastScheduleConfigStoreImpl @Inject constructor(): BroadcastScheduleC
      * [Docs](https://tokopedia.atlassian.net/wiki/spaces/CN/pages/951092702/Save+as+draft+on+preparation+page)
      */
     private var minimumDate: Date = Date()
-    private var maximumDate: Date = Date()
-    private var defaultDate: Date = Date(System.currentTimeMillis() + (30*60000))
+    private var maximumDate: Date = Date().dayLater(7)
+    private var defaultDate: Date = Date(System.currentTimeMillis() + (30 * (60 * 1000)))
 
-    override fun setMinimum(date: Date) {
+    override fun setMinScheduleDate(date: Date) {
         minimumDate = date
     }
 
-    override fun setMaximum(date: Date) {
+    override fun setMaxScheduleDate(date: Date) {
         maximumDate = date
     }
 
-    override fun setDefault(date: Date) {
+    override fun setDefaultScheduleDate(date: Date) {
         defaultDate = date
     }
 
-    override fun getMinimum(): Date {
+    override fun getMinScheduleDate(): Date {
         return minimumDate
     }
 
-    override fun getMaximum(): Date {
+    override fun getMaxScheduleDate(): Date {
         return maximumDate
     }
 
-    override fun getDefault(): Date {
+    override fun getDefaultScheduleDate(): Date {
         return defaultDate
     }
-
 }

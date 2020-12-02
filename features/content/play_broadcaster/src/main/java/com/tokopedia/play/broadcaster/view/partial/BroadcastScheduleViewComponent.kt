@@ -30,11 +30,11 @@ class BroadcastScheduleViewComponent(
 
     init {
         iconDescEdit.setOnClickListener {
-            listener.onEditIconClicked()
+            listener.onAddEditBroadcastScheduleClicked(this@BroadcastScheduleViewComponent)
         }
 
         iconHeaderEdit.setOnClickListener {
-            listener.onEditIconClicked()
+            listener.onAddEditBroadcastScheduleClicked(this@BroadcastScheduleViewComponent)
         }
     }
 
@@ -49,7 +49,6 @@ class BroadcastScheduleViewComponent(
         iconHeaderEdit.visibility = View.VISIBLE
         tvHeader.text = getString(R.string.play_broadcast_add_schedule_info)
 
-        clScheduleHeader.visibility = View.VISIBLE
         clScheduleDesc.visibility = View.GONE
     }
 
@@ -57,14 +56,13 @@ class BroadcastScheduleViewComponent(
         iconHeaderEdit.visibility = View.GONE
         tvHeader.text = getString(R.string.play_broadcast_schedule_set_info)
 
-        clScheduleHeader.visibility = View.GONE
         clScheduleDesc.visibility = View.VISIBLE
         tvDescSchedule.text = model.formattedTime
     }
 
     interface Listener {
 
-        fun onEditIconClicked()
+        fun onAddEditBroadcastScheduleClicked(view: BroadcastScheduleViewComponent)
 
     }
 }

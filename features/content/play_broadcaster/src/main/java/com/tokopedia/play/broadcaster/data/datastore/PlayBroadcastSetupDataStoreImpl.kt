@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.data.datastore
 import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.type.OverwriteMode
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         private val productDataStore: ProductDataStore,
-        private val coverDataStore: CoverDataStore
+        private val coverDataStore: CoverDataStore,
+        private val scheduleDataStore: BroadcastScheduleDataStore
 ) : PlayBroadcastSetupDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
@@ -21,6 +23,8 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
         if (!modeExclusion.contains(OverwriteMode.Cover))
             overwriteCoverDataStore(dataStore)
+
+        overwriteBroadcastScheduleDataStore(dataStore)
     }
 
     override fun getProductDataStore(): ProductDataStore {
@@ -31,12 +35,20 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         return coverDataStore
     }
 
+    override fun getBroadcastScheduleDataStore(): BroadcastScheduleDataStore {
+        return scheduleDataStore
+    }
+
     private fun overwriteProductDataStore(dataStore: ProductDataStore) {
         setSelectedProducts(dataStore.getSelectedProducts())
     }
 
     private fun overwriteCoverDataStore(dataStore: CoverDataStore) {
         dataStore.getSelectedCover()?.let(::setFullCover)
+    }
+
+    private fun overwriteBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStore) {
+        dataStore.getSelectedDate()?.let(::setBroadcastSchedule)
     }
 
     /**
@@ -118,5 +130,24 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
             if (selectedProducts.none { it.id == productId })
                 updateCoverState(CoverSetupState.Blank)
         }
+    }
+
+    /**
+     * Broadcast Schedule
+     */
+    override fun getObservableSelectedDate(): LiveData<BroadcastScheduleUiModel> {
+        return scheduleDataStore.getObservableSelectedDate()
+    }
+
+    override fun getSelectedDate(): BroadcastScheduleUiModel? {
+        return scheduleDataStore.getSelectedDate()
+    }
+
+    override fun setBroadcastSchedule(scheduleDate: BroadcastScheduleUiModel) {
+        scheduleDataStore.setBroadcastSchedule(scheduleDate)
+    }
+
+    override suspend fun setBroadcastSchedule(channelId: String): NetworkResult<Unit> {
+        return scheduleDataStore.setBroadcastSchedule(channelId)
     }
 }

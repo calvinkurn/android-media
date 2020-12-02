@@ -47,6 +47,8 @@ interface PlayBroadcastMapper {
 
     fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData>
 
+    fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel
+
     fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel

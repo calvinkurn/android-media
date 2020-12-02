@@ -92,6 +92,22 @@ class UpdateChannelUseCase @Inject constructor(
             return QueryParams(query, params)
         }
 
+        fun createUpdateBroadcastScheduleRequest(
+                channelId: String,
+                status: PlayChannelStatus,
+                date: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.Status.fieldName to status.value.toInt(),
+                    FieldsToUpdate.Schedule.fieldName to date,
+            )
+
+            val query = buildQueryString(listOf(FieldsToUpdate.Status, FieldsToUpdate.Schedule))
+
+            return QueryParams(query, params)
+        }
+
         private fun buildQueryString(fields: List<FieldsToUpdate>): String {
             return buildString {
                 append("mutation UpdateChannel(${'$'}channelId: String!")
@@ -102,10 +118,10 @@ class UpdateChannelUseCase @Inject constructor(
                     append(field.gqlType)
                 }
                 append("){")
-                appendln()
-                appendln("broadcasterUpdateChannel(")
-                appendln(buildRequestString(fields))
-                appendln("""
+                appendLine()
+                appendLine("broadcasterUpdateChannel(")
+                appendLine(buildRequestString(fields))
+                appendLine("""
                         ) {
                     channelID
                   }
@@ -116,23 +132,23 @@ class UpdateChannelUseCase @Inject constructor(
 
         private fun buildRequestString(fields: List<FieldsToUpdate>): String {
             return buildString {
-                appendln("req : {")
+                appendLine("req : {")
 
-                appendln("channelID: ${'$'}channelId,")
+                appendLine("channelID: ${'$'}channelId,")
 
                 append("fieldsToUpdate: [")
                 append(fields.joinToString { "\"${it.fieldName}\"" })
-                appendln("],")
+                appendLine("],")
 
                 fields.forEach { field ->
                     append(field.fieldName)
                     append(": ")
                     append("${'$'}")
                     append(field.fieldName)
-                    appendln(",")
+                    appendLine(",")
                 }
 
-                appendln("}")
+                appendLine("}")
             }
         }
     }
@@ -142,6 +158,7 @@ class UpdateChannelUseCase @Inject constructor(
         Status("status", "Int!"),
         AuthorID("authorID", "String"),
         Title("title", "String"),
-        Cover("coverURL", "String")
+        Cover("coverURL", "String"),
+        Schedule("publishedAt", "String")
     }
 }

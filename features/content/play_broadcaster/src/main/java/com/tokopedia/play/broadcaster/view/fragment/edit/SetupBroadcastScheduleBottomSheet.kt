@@ -2,20 +2,30 @@ package com.tokopedia.play.broadcaster.view.fragment.edit
 
 import android.os.Bundle
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
+import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.toCalendar
+import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.SetupBroadcastScheduleViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -26,6 +36,10 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
+    private lateinit var container: CoordinatorLayout
     private lateinit var dateTimePicker: DateTimePicker
 
     private var btnSet: UnifyButton? = null
@@ -33,6 +47,15 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var viewModel: SetupBroadcastScheduleViewModel
+
+    private var mListener: SetupResultListener? = null
+
+    private val job = SupervisorJob()
+
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = dispatcher.main + job
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -49,6 +72,21 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+
+        observeSetBroadcastSchedule()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
+    }
+
+    fun setListener(listener: SetupResultListener) {
+        mListener = listener
     }
 
     private fun inject() {
@@ -69,20 +107,31 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     private fun initView(view: View) {
         with(view) {
+            container = findViewById(R.id.container)
             dateTimePicker = findViewById(R.id.date_time_picker)
             safeInitButton()
         }
     }
 
     private fun setupView(view: View) {
+        setOnDismissListener { mListener?.onSetupCanceled() }
+        dataStoreViewModel.setDataStore(parentViewModel.getCurrentSetupDataStore())
+
+        dateTimePicker.init(
+                defaultDate = viewModel.defaultScheduleDate.toCalendar(),
+                minDate = viewModel.minScheduleDate.toCalendar(),
+                maxDate = viewModel.maxScheduleDate.toCalendar(),
+                onDateChangedListener = null
+        )
+
         btnSet?.text = getString(R.string.play_broadcast_set_schedule)
         btnSet?.setOnClickListener {
-
+            viewModel.setBroadcastSchedule(dateTimePicker.selectedDate)
         }
     }
 
     /**
-     * todo: required a safe init button before unify created an open function to set the button title
+     * todo: required a safe init button until unify created an open function to set the button title
      *  and set a listener for it.
      */
     private fun safeInitButton() {
@@ -93,8 +142,39 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+    private fun onUpdateSuccess() {
+        scope.launch {
+            val error = mListener?.onSetupCompletedWithData(this@SetupBroadcastScheduleBottomSheet, dataStoreViewModel.getDataStore())
+            if (error != null) {
+                yield()
+                onUpdateFail(error)
+            } else {
+                dismiss()
+            }
+        }
+    }
+
+    private fun onUpdateFail(error: Throwable) {
+        btnSet?.isLoading = false
+        container.showToaster(
+                message = error.localizedMessage,
+                type = Toaster.TYPE_ERROR
+        )
+    }
+
+    /**
+     * Observe
+     */
+    private fun observeSetBroadcastSchedule() {
+        viewModel.observableSetBroadcastSchedule.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is NetworkResult.Success -> onUpdateSuccess()
+                is NetworkResult.Fail -> onUpdateFail(it.error)
+                NetworkResult.Loading -> {
+                    btnSet?.isLoading = true
+                }
+            }
+        })
     }
 
     companion object {

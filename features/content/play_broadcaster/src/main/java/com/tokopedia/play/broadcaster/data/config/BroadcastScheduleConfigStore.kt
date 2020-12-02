@@ -8,15 +8,15 @@ import java.util.*
  */
 interface BroadcastScheduleConfigStore {
 
-    fun setMinimum(date: Date)
+    fun setMinScheduleDate(date: Date)
 
-    fun setMaximum(date: Date)
+    fun setMaxScheduleDate(date: Date)
 
-    fun setDefault(date: Date)
+    fun setDefaultScheduleDate(date: Date)
 
-    fun getMinimum(): Date
+    fun getMinScheduleDate(): Date
 
-    fun getMaximum(): Date
+    fun getMaxScheduleDate(): Date
 
-    fun getDefault(): Date
+    fun getDefaultScheduleDate(): Date
 }
