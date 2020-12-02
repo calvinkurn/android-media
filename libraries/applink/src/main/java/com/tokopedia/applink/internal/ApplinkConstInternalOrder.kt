@@ -102,6 +102,9 @@ object ApplinkConstInternalOrder {
     val CANCELLED = "$INTERNAL_SELLER/cancelled"
 
     @JvmField
+    val CANCELLATION_REQUEST = "$INTERNAL_SELLER/cancellationrequest"
+
+    @JvmField
     val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
 
     @JvmField

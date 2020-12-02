@@ -55,4 +55,5 @@ dependencies {
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.attachproduct)
 }

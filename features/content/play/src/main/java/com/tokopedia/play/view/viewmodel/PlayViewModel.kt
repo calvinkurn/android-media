@@ -444,6 +444,7 @@ class PlayViewModel @Inject constructor(
                 _observableCompleteInfo.value = completeInfoUiModel
 
                 _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
+                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
@@ -463,7 +464,6 @@ class PlayViewModel @Inject constructor(
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
-                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
                     getFollowStatus(completeInfoUiModel.channelInfo)
                 }

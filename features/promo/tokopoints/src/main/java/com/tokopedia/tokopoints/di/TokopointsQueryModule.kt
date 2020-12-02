@@ -38,6 +38,14 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_CATALOG_LIST)
+    fun getCatalogList(context: Context): String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_catalog_listing)
+    }
+
+    @Provides
+    @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_DETAIL)
     fun getGQLCouponDetail(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),

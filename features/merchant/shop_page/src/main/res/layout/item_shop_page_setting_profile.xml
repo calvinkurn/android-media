@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_profile"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/iv_shop"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_change_profile"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_shop_profile" />
@@ -54,7 +54,7 @@
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_change_note"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_change_profile" />
@@ -69,7 +69,7 @@
         android:focusable="true"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_manage_opening_time"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_change_note" />

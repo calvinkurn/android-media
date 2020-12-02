@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,14 +23,11 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         return listProducts.size
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
         holder.itemView.iv_product.loadImage(listProducts[position].thumbnail)
         holder.itemView.tv_product_name.text = listProducts[position].name
-        holder.itemView.tv_product_desc.text = "${listProducts[position].quantity} barang (${listProducts[position].weightText})"
-        holder.itemView.tv_product_price.text = "@ ${listProducts[position].priceText}"
+        holder.itemView.tv_product_desc.text = StringBuilder("${listProducts[position].quantity} x ${listProducts[position].priceText}")
         if (listProducts[position].note.isNotEmpty()) {
             holder.itemView.divider_product.visibility = View.VISIBLE
             holder.itemView.tv_product_notes.visibility = View.VISIBLE

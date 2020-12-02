@@ -54,6 +54,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subTitle
                 titlePDP
                 subTitlePDP
+                iconURL
+                partnerText
+                partnerLogo
+                linkURL
+                isAppLink
               }
             }
             productView
@@ -297,6 +302,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   show_recommendation
                 }
                 unavailable_buttons
+                hide_floating_button
               }
             }
             upcomingCampaigns {

@@ -33,10 +33,10 @@ import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.dropoff.util.getDescription
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.util.bitmapDescriptorFromVector
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
