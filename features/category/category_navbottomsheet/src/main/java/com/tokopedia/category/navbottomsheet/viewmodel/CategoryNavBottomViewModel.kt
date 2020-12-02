@@ -1,4 +1,4 @@
-package com.tokopedia.category.navbottomsheet
+package com.tokopedia.category.navbottomsheet.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

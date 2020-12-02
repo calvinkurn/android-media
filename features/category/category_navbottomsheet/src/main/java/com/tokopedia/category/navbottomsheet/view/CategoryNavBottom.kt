@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.category.navbottomsheet.CategoryNavBottomViewModel
+import com.tokopedia.category.navbottomsheet.viewmodel.CategoryNavBottomViewModel
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.di.DaggerCategoryNavigationBottomSheetComponent
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem

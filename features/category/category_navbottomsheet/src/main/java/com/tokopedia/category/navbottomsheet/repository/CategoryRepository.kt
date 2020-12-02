@@ -16,13 +16,6 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor() : BaseRepository() {
 
-    suspend fun getCategoryListItems(): CategoryAllList? {
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`() * 2).setSessionIncluded(true).build()
-
-        return getGQLData(GQL_CATEGORY_LIST, CategoryAllListResponse::class.java, getListParams().parameters, cacheStrategy).categoryAllList
-    }
-
     suspend fun getCategoryListWithCategoryDetail(categoryID: String): GraphqlResponse? {
         val type: MutableList<Type> = ArrayList()
         type.add(CategoryAllListResponse::class.java)
@@ -47,8 +40,7 @@ class CategoryRepository @Inject constructor() : BaseRepository() {
 
     private fun getListParams(): RequestParams {
         return RequestParams().apply {
-//            putInt("categoryId", 0)
-            putBoolean("catnav",false)
+            putBoolean("catnav", false)
         }
     }
 
