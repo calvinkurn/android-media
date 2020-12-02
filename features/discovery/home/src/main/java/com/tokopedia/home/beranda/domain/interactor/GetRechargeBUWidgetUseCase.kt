@@ -34,7 +34,7 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
         val widgetSource = "\$widgetSource"
 
         """
-            query rechargeRecommendation($widgetSource: WidgetSource!) {
+            query getBUWidget($widgetSource: WidgetSource!) {
                 getBUWidget(widgetSource: $widgetSource) {
                   title
                   media_url

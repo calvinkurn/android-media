@@ -91,7 +91,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             }
         } else {
             itemView.recharge_bu_content_shimmering.show()
-            listener.getRechargeBUWidget(WidgetSource.findSourceByString(element.channel.widgetParam))
+            val source = element.channel.widgetParam.removePrefix("?section=")
+            listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
         }
     }
 
