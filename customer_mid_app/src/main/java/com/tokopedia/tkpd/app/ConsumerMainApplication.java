@@ -51,6 +51,7 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -474,6 +475,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (gratificationSubscriber != null) {
             if (context instanceof Activity) {
                 gratificationSubscriber.onNewIntent((Activity) context, intent);
+                if (CMInAppManager.getInstance() != null) {
+                    CMInAppManager.getInstance().activityLifecycleHandler.onNewIntent((Activity) context, intent);
+                }
             }
         }
     }
