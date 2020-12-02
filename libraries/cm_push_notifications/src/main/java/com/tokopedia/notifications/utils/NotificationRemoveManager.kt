@@ -16,7 +16,7 @@ open class NotificationRemoveManager(
     private val jobs = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + jobs
+        get() = Dispatchers.Main + jobs
 
     fun clearNotification(context: Context) {
         clearNotificationByCampaignId { elements ->
@@ -26,18 +26,16 @@ open class NotificationRemoveManager(
         }
     }
 
-    fun cancel() {
-        jobs.cancelChildren()
-    }
-
     private fun clearNotificationByCampaignId(invoke: (List<BaseNotificationModel>) -> Unit) {
-        launch {
-            val notifications = pushRepository(context)
-                    .getNotification()
-                    .intersect(excludeListByCampaignId) { notification, excludedItem ->
-                        notification.campaignId == excludedItem.toLong()
-                    }
-            withContext(Dispatchers.Main) { invoke(notifications) }
+        launch(Dispatchers.IO) {
+            val notifications = pushRepository(context).getNotification()
+            withContext(Dispatchers.Main) {
+                val result = notifications
+                        .intersect(excludeListByCampaignId) { notification, excludedItem ->
+                            notification.campaignId == excludedItem.toLong()
+                        }
+                invoke(result)
+            }
         }
     }
 
@@ -52,10 +50,15 @@ open class NotificationRemoveManager(
                 .cancel(notificationId)
     }
 
+    fun cancel() {
+        jobs.cancelChildren()
+    }
+
     companion object {
         private val excludeListByCampaignId = listOf(
                 "otp",
-                "otp_push_notification"
+                "otp_push_notification",
+                "0"
         )
     }
 
