@@ -192,6 +192,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                             if (getVisiblePercent(quickActionButton) == 0) {
                                 quickActionButton.post {
                                     createCoachMarkItems(quickActionButton).run {
+                                        if (activity?.isFinishing != false) return@post
                                         if ((GlobalConfig.isSellerApp() && size == 4) || (!GlobalConfig.isSellerApp() && size == 3)) {
                                             currentNewOrderWithCoachMark = it
                                             coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
@@ -1632,6 +1633,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                                     it.post {
                                         if (getVisiblePercent(it) == 0) {
                                             createCoachMarkItems(it).run {
+                                                if (activity?.isFinishing != false) return@post
                                                 if ((GlobalConfig.isSellerApp() && size == 4) || (!GlobalConfig.isSellerApp() && size == 3)) {
                                                     currentNewOrderWithCoachMark = firstNewOrderViewPositionInAdapter
                                                     addOnScrollListener(recyclerViewScrollListener)
@@ -1660,6 +1662,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark &&
                 coachMarkIndexToShow == 1 && sortFilterSomList?.isVisible == true && rvSomList != null) {
             createCoachMarkItems(rvSomList).run {
+                if (activity?.isFinishing != false) return
                 if ((GlobalConfig.isSellerApp() && this.size == 4) || (!GlobalConfig.isSellerApp() && this.size == 3)) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
@@ -1677,6 +1680,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
                 coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
             createCoachMarkItems(rvSomList).run {
+                if (activity?.isFinishing != false) return
                 if ((GlobalConfig.isSellerApp() && this.size == 4) || (!GlobalConfig.isSellerApp() && this.size == 3)) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
@@ -1693,6 +1697,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
                 coachMarkIndexToShow == 3 && tvSomListBulk?.isVisible == true) {
             createCoachMarkItems(rvSomList).run {
+                if (activity?.isFinishing != false) return
                 if (this.size == 4 && GlobalConfig.isSellerApp()) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
