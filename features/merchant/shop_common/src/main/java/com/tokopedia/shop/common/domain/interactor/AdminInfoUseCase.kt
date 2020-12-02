@@ -15,10 +15,10 @@ class AdminInfoUseCase @Inject constructor(
         gqlRepository: GraphqlRepository): GraphqlUseCase<AdminInfoResponse>(gqlRepository) {
 
     companion object {
-        private const val SOURCE = "akw-testing"
+        const val SOURCE = "akw-testing"
 
-        private const val SOURCE_KEY = "source"
-        private const val SHOP_ID_KEY = "shopId"
+        const val SOURCE_KEY = "source"
+        const val SHOP_ID_KEY = "shopId"
 
         private const val ERROR_MESSAGE = "Failed getting admin info response"
 

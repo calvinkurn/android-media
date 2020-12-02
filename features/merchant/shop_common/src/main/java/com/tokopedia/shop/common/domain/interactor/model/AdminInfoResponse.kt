@@ -18,7 +18,7 @@ data class AdminInfo(
 data class AdminInfoData(
         @SerializedName("permission_list")
         @Expose
-        val permissionList: List<AdminInfoPermission>? = listOf(),
+        val permissionList: List<AdminPermission>? = listOf(),
         @SerializedName("detail_information")
         @Expose
         val detailInfo: AdminInfoDetailInformation? = AdminInfoDetailInformation(),
@@ -31,12 +31,6 @@ sealed class AdminInfoResult {
         class Success(val data: AdminInfoData): AdminInfoResult()
         class Fail(val throwable: Exception): AdminInfoResult()
 }
-
-data class AdminInfoPermissionList(
-        @SerializedName("permission_list")
-        @Expose
-        val permissionList: List<AdminInfoPermission>? = listOf()
-)
 
 data class AdminInfoDetailInformation(
         @SerializedName("admin_role_type")
@@ -56,13 +50,10 @@ data class AdminRoleType(
         val isShopOwner: Boolean? = false
 )
 
-data class AdminInfoPermission(
+data class AdminPermission(
         @SerializedName("permission_id")
         @Expose
-        val id: String? = "",
-        @SerializedName("permission_name")
-        @Expose
-        val name: String? = ""
+        val id: String? = ""
 )
 
 data class AdminInfoResponseDetail(
