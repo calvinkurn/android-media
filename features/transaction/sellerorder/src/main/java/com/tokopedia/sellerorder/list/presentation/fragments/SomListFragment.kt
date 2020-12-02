@@ -618,7 +618,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onFinishBindNewOrder(view: View, itemIndex: Int) {
         context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK)) {
+            if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK) &&
+                    Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 rvSomList.addOnScrollListener(recyclerViewScrollListener)
                 setCoachMarkStepListener()
                 coachMark?.onFinishListener = { rvSomList.removeOnScrollListener(recyclerViewScrollListener) }
