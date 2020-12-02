@@ -6,6 +6,10 @@
     <string name="title_talk_discuss">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+    <string name="title_smart_reply_settings_page">Smart Reply</string>
+    <string name="title_smart_reply_detail_page">Stok Produk</string>
+    <string name="title_template_page">Pengaturan Diskusi</string>
 
     <!-- REPORT TALK -->
     <string name="report_talk_question">Bantu Kami Memahami Apa yang Terjadi. Mengapa Anda melaporkan hal ini?</string>
@@ -99,17 +103,21 @@
     <string name="inbox_empty_seller_unread_title">Yay, semua diskusi sudah dibaca</string>
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
 
+    <string name="settings_toolbar">Pengaturan Diskusi</string>
+    <string name="settings_template_item">Template Balasan</string>
+    <string name="settings_smart_reply_item">Smart Reply</string>
     <string name="smart_reply_header">Balas otomatis pertanyaan pembeli khusus stok produk dengan fitur Smart Reply.</string>
     <string name="smart_reply_learn">Pelajari Smart Reply</string>
     <string name="smart_reply_performance_title">Performa Smart Reply</string>
     <string name="smart_reply_performance_subtitle">Performa dalam 30 hari</string>
-    <string name="smart_reply_total_discussions_replied_label">Total diskusi yang dibalas Smart Reply</string>
+    <string name="smart_reply_total_discussions_replied_label">Diskusi dibalas Smart Reply</string>
     <string name="smart_reply_speed_label">Kecepatan menjawab Smart Reply</string>
     <string name="smart_reply_percentage_replied_label">Persentase dibalas Smart Reply</string>
     <string name="smart_reply_settings_title">Pengaturan Smart Reply</string>
-    <string name="smart_reply_total_discussions_format">%d+</string>
-    <string name="smart_reply_speed_format">%ds</string>
-    <string name="smart_reply_percentage_replied_format">%d&#37;</string>
+    <string name="smart_reply_stock_settings_subtitle">Stok Produk</string>
+    <string name="smart_reply_settings_description">Smart Reply hanya akan menjawab diskusi untuk produk tanpa varian.</string>
+    <string name="smart_reply_active_label">Aktif</string>
+    <string name="smart_reply_inactive_label">Tidak Aktif</string>
     <string name="smart_reply_tnc">Dengan mengaktifkan Smart Reply, kamu menyetujui\nsyarat dan ketentuan Tokopedia.</string>
 
 </resources>

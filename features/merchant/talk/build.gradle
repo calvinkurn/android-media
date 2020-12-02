@@ -64,6 +64,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxKotlin
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewPager2
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -80,3 +82,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply plugin: "androidx.navigation.safeargs"

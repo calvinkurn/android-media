@@ -1,9 +1,9 @@
-package com.tokopedia.talk.feature.smartreply.domain.usecase
+package com.tokopedia.talk.feature.sellersettings.smartreply.settings.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.talk.feature.smartreply.data.DiscussionGetSmartReplyResponseWrapper
+import com.tokopedia.talk.feature.sellersettings.smartreply.settings.data.DiscussionGetSmartReplyResponseWrapper
 import javax.inject.Inject
 
 class DiscussionGetSmartReplyUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionGetSmartReplyResponseWrapper>(graphqlRepository) {

@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.smartreply.data
+package com.tokopedia.talk.feature.sellersettings.smartreply.settings.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -9,13 +9,13 @@ data class DiscussionGetSmartReply(
         val isSmartReplyOn: Boolean = false,
         @SerializedName("totalQuestion")
         @Expose
-        val totalQuestion: Int = 0,
+        val totalQuestion: String = "",
         @SerializedName("totalAnsweredBySmartReply")
         @Expose
-        val totalAnsweredBySmartReply: Int = 3,
+        val totalAnsweredBySmartReply: String = "",
         @SerializedName("replySpeed")
         @Expose
-        val replySpeed: Int = 0,
+        val replySpeed: String = "",
         @SerializedName("messageReady")
         @Expose
         val messageReady: String = "",

@@ -1,8 +1,9 @@
-package com.tokopedia.talk.feature.smartreply.presentation.widget
+package com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_smart_reply_statistics.view.*
@@ -28,14 +29,14 @@ class TalkSmartReplyStatisticsWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_smart_reply_statistics, this)
     }
 
-    fun setData(totalQuestion: Int, totalAnsweredBySmartReply: Int, replySpeed: Int) {
-        if(totalQuestion > TOTAL_QUESTION_THRESHOLD) {
-            talkSmartReplyTotalDiscussionCount.text = context.getString(R.string.smart_reply_total_discussions_format, totalQuestion)
+    fun setData(totalQuestion: String, totalAnsweredBySmartReply: String, replySpeed: String) {
+        if(totalQuestion.toIntOrZero() > TOTAL_QUESTION_THRESHOLD) {
+            talkSmartReplyTotalDiscussionCount.text = "$totalQuestion+"
         } else {
-            talkSmartReplyTotalDiscussionCount.text = totalQuestion.toString()
+            talkSmartReplyTotalDiscussionCount.text = totalQuestion
         }
-        talkSmartReplyAverageTime.text = context.getString(R.string.smart_reply_speed_format, replySpeed)
-        talkSmartReplyPercentageReplied.text = context.getString(R.string.smart_reply_percentage_replied_format, totalAnsweredBySmartReply)
+        talkSmartReplyAverageTime.text = "${replySpeed}s"
+        talkSmartReplyPercentageReplied.text = "${totalAnsweredBySmartReply}%"
     }
 
 }

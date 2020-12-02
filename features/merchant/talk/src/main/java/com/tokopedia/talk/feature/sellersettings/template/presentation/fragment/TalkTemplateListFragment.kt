@@ -1,9 +1,8 @@
-package com.tokopedia.talk.feature.smartreply.presentation.fragment
+package com.tokopedia.talk.feature.sellersettings.template.presentation.fragment
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
-class TalkSmartReplySettingsFragment : BaseDaggerFragment(){
-
+class TalkTemplateListFragment : BaseDaggerFragment() {
     override fun getScreenName(): String {
         TODO("Not yet implemented")
     }
@@ -11,5 +10,4 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(){
     override fun initInjector() {
         TODO("Not yet implemented")
     }
-
 }

@@ -29,6 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:text="@string/smart_reply_total_discussions_replied_label"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/talk_smart_reply_total_discussion_icon"
             app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_total_discussion_icon"
             app:layout_constraintStart_toEndOf="@id/talk_smart_reply_total_discussion_icon"/>
@@ -70,6 +73,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:text="@string/smart_reply_speed_label"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/talk_smart_reply_average_time_icon"
             app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_average_time_icon"
             app:layout_constraintStart_toEndOf="@id/talk_smart_reply_average_time_icon"/>
@@ -111,6 +117,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:text="@string/smart_reply_percentage_replied_label"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/talk_smart_reply_percentage_replied_icon"
             app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_percentage_replied_icon"
             app:layout_constraintStart_toEndOf="@id/talk_smart_reply_percentage_replied_icon"/>

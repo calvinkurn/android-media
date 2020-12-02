@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.smartreply.data
+package com.tokopedia.talk.feature.sellersettings.smartreply.settings.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -46,11 +46,12 @@
             app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_subtitle" />
 
         <com.tokopedia.unifycomponents.ContainerUnify
+            android:id="@+id/talk_smart_reply_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:container_color="BLUE"
             android:paddingBottom="@dimen/layout_lvl2"
+            app:container_color="BLUE"
             app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_header_divider">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,8 +62,8 @@
                     android:id="@+id/talk_smart_reply_performance_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/smart_reply_performance_title"
                     android:layout_marginStart="@dimen/layout_lvl2"
+                    android:text="@string/smart_reply_performance_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="heading_4"
@@ -80,16 +81,92 @@
                     app:typographyType="body_3"
                     app:typographyWeight="reguler" />
 
-                <com.tokopedia.talk.feature.smartreply.presentation.widget.TalkSmartReplyStatisticsWidget
-                    android:layout_height="wrap_content"
+                <com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.widget.TalkSmartReplyStatisticsWidget
+                    android:id="@+id/talkSmartReplyStatisticsWidget"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_performance_subtitle"/>
+                    app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_performance_subtitle" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.tokopedia.unifycomponents.ContainerUnify>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_stock_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_reply_settings_title"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            app:typographyWeight="bold"
+            app:typographyType="heading_4"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_container" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_stock_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_reply_stock_settings_subtitle"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            app:typographyWeight="bold"
+            app:typographyType="body_2"
+            app:layout_constraintStart_toStartOf="@id/talk_smart_reply_stock_title"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_stock_title" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/talkIsSmartReplyOnLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toTopOf="@id/talk_smart_reply_stock_subtitle"
+            app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_stock_subtitle"
+            app:layout_constraintStart_toEndOf="@id/talk_smart_reply_stock_subtitle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talk_smart_reply_settings_description"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_reply_settings_description"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl7"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintStart_toStartOf="@id/talk_smart_reply_stock_subtitle"
+            app:layout_constraintEnd_toStartOf="@id/talkStockSubtitleChevron"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_stock_subtitle"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/talkStockSubtitleChevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            android:layout_marginEnd="@dimen/layout_lvl3"
+            app:layout_constraintTop_toTopOf="@id/talk_smart_reply_settings_description"
+            app:layout_constraintBottom_toBottomOf="@id/talk_smart_reply_settings_description"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/talk_smart_reply_settings_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_settings_description"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/talkSmartReplyTnc"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/dp_36"
+            android:layout_marginEnd="@dimen/dp_36"
+            app:layout_constraintTop_toBottomOf="@id/talk_smart_reply_settings_divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

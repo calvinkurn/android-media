@@ -176,6 +176,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
         clearAllData()
         setInboxType()
+        initSortFilter()
     }
 
     override fun onPageClickedAgain() {
@@ -418,7 +419,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 readFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
+        if(isSellerView()) {
+            val settingsChip = SortFilterItem("Settings")
+            settingsChip.listener = {
+                gotoSellerSettings()
+            }
+            return arrayListOf(unreadFilter, readFilter, settingsChip)
+        }
         return arrayListOf(unreadFilter, readFilter)
+    }
+
+    private fun gotoSellerSettings() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS)
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
