@@ -27,7 +27,7 @@ object OSMixLeftTracking: BaseTrackerConst() {
                             eventLabel = channel.id,
                             promotions = listOf(createMixLeftEcommerceDataLayer(
                                     channelId = channel.id,
-                                    categoryName = categoryName,
+                                    categoryName = categoryName.toLowerCase(),
                                     headerName = channel.channelHeader.name,
                                     bannerPosition = bannerPosition,
                                     creative = channel.name,
@@ -44,7 +44,7 @@ object OSMixLeftTracking: BaseTrackerConst() {
                             eventLabel = channel.id,
                             promotions = listOf(createMixLeftEcommerceDataLayer(
                                     channelId = channel.id,
-                                    categoryName = categoryName,
+                                    categoryName = categoryName.toLowerCase(),
                                     headerName = channel.channelHeader.name,
                                     bannerPosition = bannerPosition,
                                     creative = channel.name,
