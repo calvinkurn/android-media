@@ -11,10 +11,13 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.hotel.data.HotelData
 import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
+import com.tokopedia.travel_slice.ui.provider.TravelSliceActivity
 import kotlin.math.max
 
 /**
@@ -31,7 +34,7 @@ object HotelSliceProviderUtil {
                 title = context.getString(R.string.slice_get_hotel_result_title, cityName)
                 primaryAction = SliceAction.create(
                         buildIntentFromHotelDashboard(context),
-                        IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
             gridRow {
@@ -50,7 +53,7 @@ object HotelSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
@@ -60,17 +63,23 @@ object HotelSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice? {
+    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
                 subtitle = context.getString(R.string.slice_not_login_desc)
+                primaryAction = PendingIntent.getActivity(
+                        context, 0, RouteManager.getIntent(context, ApplinkConst.LOGIN), 0
+                ).let {
+                    SliceAction.create(it, IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE, "")
+                }
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
@@ -83,22 +92,22 @@ object HotelSliceProviderUtil {
 
     private fun buildIntentFromHotelDetail(context: Context, hotelId: Long, checkIn: String): PendingIntent {
         return PendingIntent.getActivity(context, 0,
-               RouteManager.getIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
-                0)
+                TravelSliceActivity.createHotelDetailIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
+                PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun buildIntentFromHotelDashboard(context: Context): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                RouteManager.getIntent(context, context.getString(R.string.hotel_dashboard_applink)),
-                0)
+                TravelSliceActivity.createHotelDashboardIntent(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL),
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
-    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
+    private fun buildIntentFromHotelOrderApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                 RouteManager.getIntent(context, applink) ,
-                0)
+                 TravelSliceActivity.createHotelOrderDetailIntent(context, applink),
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice? {
+    fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_order_title)
@@ -110,8 +119,8 @@ object HotelSliceProviderUtil {
                     subtitle = it.statusStr
                     setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_hotel), SMALL_IMAGE)
 
-                    primaryAction = SliceAction.create(buildIntentFromApplink(context, it.applink),
-                            IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                    primaryAction = SliceAction.create(buildIntentFromHotelOrderApplink(context, it.applink),
+                            IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                             ListBuilder.ICON_IMAGE, "")
                 }
             }

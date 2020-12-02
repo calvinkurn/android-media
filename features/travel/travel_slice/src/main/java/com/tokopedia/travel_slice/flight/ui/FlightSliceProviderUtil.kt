@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
+import com.tokopedia.travel_slice.ui.provider.TravelSliceActivity
 
 /**
  * @author by jessica on 25/11/20
@@ -23,7 +24,7 @@ import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
 object FlightSliceProviderUtil {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
@@ -33,17 +34,23 @@ object FlightSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice? {
+    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
                 subtitle = context.getString(R.string.slice_not_login_desc)
+                primaryAction = PendingIntent.getActivity(
+                        context, 0, RouteManager.getIntent(context, ApplinkConst.LOGIN), 0
+                ).let {
+                    SliceAction.create(it, IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE, "")
+                }
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
@@ -53,7 +60,7 @@ object FlightSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFlightOrderSlices(context: Context, sliceUri: Uri, orderList: List<FlightOrderListEntity>): Slice? =
+    fun getFlightOrderSlices(context: Context, sliceUri: Uri, orderList: List<FlightOrderListEntity>): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = context.getString(R.string.slice_flight_title)
@@ -90,7 +97,7 @@ object FlightSliceProviderUtil {
                         }
 
                         primaryAction = SliceAction.create(buildIntentFromApplink(context, String.format("%s/%s", ApplinkConst.FLIGHT_ORDER, it.id)),
-                                IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                                IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                                 ListBuilder.ICON_IMAGE, "")
                     }
                 }
@@ -98,17 +105,21 @@ object FlightSliceProviderUtil {
                 row {
                     title = context.getString(R.string.slice_flight_see_more)
 
-                    primaryAction = SliceAction.create(buildIntentFromApplink(context, ApplinkConst.FLIGHT_ORDER),
-                            IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                    primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
+                            IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                             ListBuilder.ICON_IMAGE, "")
                 }
             }
 
     private fun String.getBitmap(context: Context): Bitmap? = Glide.with(context).asBitmap().load(this).submit().get()
 
+    private fun buildIntentFromOrderListApplink(context: Context): PendingIntent =
+            PendingIntent.getActivity(context, 0,
+            TravelSliceActivity.createFlightOrderListIntent(context, ApplinkConst.FLIGHT_ORDER),
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+
     private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                 RouteManager.getIntent(context, applink),
-                0)
-
+                TravelSliceActivity.createFlightOrderDetailIntent(context, applink),
+                PendingIntent.FLAG_UPDATE_CURRENT)
 }
