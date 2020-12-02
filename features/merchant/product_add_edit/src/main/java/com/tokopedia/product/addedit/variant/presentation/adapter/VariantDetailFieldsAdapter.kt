@@ -6,7 +6,8 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.Varian
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 
-class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInputTypeFactoryImpl) :
+class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInputTypeFactoryImpl,
+                                 private var shouldDisableEditStock: Boolean) :
         BaseAdapter<VariantDetailInputTypeFactoryImpl>(variantDetailTypeFactoryImpl) {
 
     fun addUnitValueHeader(unitValueHeader: String): Int {
@@ -18,7 +19,7 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
 
     fun addVariantDetailField(variantDetailInputLayoutModel: VariantDetailInputLayoutModel): Int {
         variantDetailInputLayoutModel.visitablePosition = lastIndex + 1
-        visitables.add(VariantDetailFieldsUiModel(variantDetailInputLayoutModel))
+        visitables.add(VariantDetailFieldsUiModel(variantDetailInputLayoutModel, shouldDisableEditStock))
         notifyItemInserted(this.lastIndex)
         return this.lastIndex
     }
@@ -34,20 +35,20 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
     fun expandDetailFields(visitablePosition: Int, inputLayoutModels: List<VariantDetailInputLayoutModel>) {
         val targetPosition = visitablePosition + 1
         val viewModels = mutableListOf<VariantDetailFieldsUiModel>()
-        inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsUiModel(it)) }
+        inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsUiModel(it, shouldDisableEditStock)) }
         visitables.addAll(targetPosition, viewModels)
         notifyItemRangeInserted(targetPosition, viewModels.size)
     }
 
     fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
-        val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
+        val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel, shouldDisableEditStock)
         notifyElement(adapterPosition, variantDetailFieldsViewModel)
     }
 
     fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
             variantDetailInputModel.isSkuFieldVisible = isVisible
-            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
+            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel, shouldDisableEditStock)
             notifyElement(adapterPosition, variantDetailFieldsViewModel)
         }
     }
@@ -55,7 +56,7 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
     fun updatePriceEditingStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isEnabled: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
             variantDetailInputModel.priceEditEnabled = isEnabled
-            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel)
+            val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(variantDetailInputModel, shouldDisableEditStock)
             notifyElement(adapterPosition, variantDetailFieldsViewModel)
         }
     }

@@ -124,12 +124,13 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
+        val shouldDisableEditStock = !userSession.isShopOwner && userSession.isShopAdmin && !userSession.isManageStockAdmin && userSession.isManageProductAdmin
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
                 this,
                 this,
                 this,
                 this,
-                this))
+                this), shouldDisableEditStock)
         recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
 

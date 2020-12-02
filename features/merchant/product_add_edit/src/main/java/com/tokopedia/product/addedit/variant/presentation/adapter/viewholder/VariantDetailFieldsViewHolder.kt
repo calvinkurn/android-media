@@ -175,9 +175,18 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             priceField?.textFieldInput?.setText(variantDetailInputLayoutModel.price)
             priceField?.setError(variantDetailInputLayoutModel.isPriceError)
             priceField?.setMessage(variantDetailInputLayoutModel.priceFieldErrorMessage)
-            stockField?.textFieldInput?.setText(variantDetailInputLayoutModel.stock)
-            stockField?.setError(variantDetailInputLayoutModel.isStockError)
-            stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
+            stockField?.run {
+                textFieldInput.setText(variantDetailInputLayoutModel.stock)
+                // make text field not editable according to admin info
+                isClickable = if (isStockEditable) {
+                    setError(variantDetailInputLayoutModel.isStockError)
+                    setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
+                    true
+                } else {
+                    textFieldWrapper.editText?.setBackgroundResource(android.R.color.transparent)
+                    false
+                }
+            }
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
             // show / hide sku field
             if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
