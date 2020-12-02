@@ -8,4 +8,4 @@ fun <T> ArrayList<T>.onlyOne(): Boolean {
 fun <T, U> List<T>.intersect(
         uList: List<U>,
         filterPredicate : (T, U) -> Boolean
-) = filter { m -> uList.any { filterPredicate(m, it)} }
+) = filterNot { m -> uList.any { filterPredicate(m, it)} }
