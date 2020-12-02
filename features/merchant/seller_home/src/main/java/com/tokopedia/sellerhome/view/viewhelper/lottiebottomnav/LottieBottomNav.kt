@@ -164,7 +164,10 @@ class LottieBottomNav : LinearLayout {
         containerList.clear()
 
         val llLayoutParam = LayoutParams(itemWidth, LayoutParams.MATCH_PARENT)
-        val imgLayoutParam = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val imgLayoutParam = LayoutParams(
+                resources.getDimensionPixelOffset(R.dimen.dp_24),
+                resources.getDimensionPixelOffset(R.dimen.dp_24)
+        )
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
