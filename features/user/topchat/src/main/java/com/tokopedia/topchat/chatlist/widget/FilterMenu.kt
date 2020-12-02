@@ -9,6 +9,7 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.FilterMenuAdapter
@@ -40,7 +41,7 @@ class FilterMenu : BottomSheetUnify() {
 
     private fun changeCloseButtonColour() {
         context?.let { ctx ->
-            val color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Neutral_N400)
+            val color = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N400)
             bottomSheetClose.drawable?.apply {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)

@@ -39,28 +39,28 @@ class AttachedInvoiceViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
     )
 

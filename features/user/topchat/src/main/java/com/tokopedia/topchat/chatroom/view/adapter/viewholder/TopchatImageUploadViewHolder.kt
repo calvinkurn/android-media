@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
@@ -24,30 +24,30 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
     )
 
@@ -70,7 +70,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     }
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
-        changeHourColor(Color.WHITE)
+        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)

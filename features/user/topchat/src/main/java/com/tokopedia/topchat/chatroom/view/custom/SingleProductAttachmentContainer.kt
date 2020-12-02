@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -70,12 +69,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                R.color.topchat_message_shadow,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER
@@ -203,16 +202,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
-            val strokeColor = if (useStrokeSender) R.color.bg_topchat_right_message else null
+            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                    R.color.topchat_message_shadow,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                     R.dimen.dp_topchat_2,
                     R.dimen.dp_topchat_1,
                     Gravity.CENTER,
@@ -581,7 +580,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun applyStrokeTo(backgroundDrawable: Drawable) {
         if (backgroundDrawable is GradientDrawable) {
             val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(context, com.tokopedia.chat_common.R.color.grey_300))
+            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
         }
     }
 

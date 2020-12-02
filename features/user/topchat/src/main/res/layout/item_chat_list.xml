@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/red_400" />
+        tools:src="@color/Unify_Y500" />
 
     <ImageView
         android:id="@+id/ivPin"
@@ -39,7 +39,7 @@
         android:includeFontPadding="false"
         android:lines="2"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/time"
@@ -61,7 +61,7 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0"
@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +112,7 @@
         android:background="@drawable/bg_red_dot_unread"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"
@@ -131,7 +131,7 @@
         android:background="@drawable/circle_blue_notification"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

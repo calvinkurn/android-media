@@ -17,7 +17,7 @@
         android:layout_height="@dimen/dp_topchat_52"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/red_400" />
+        tools:src="@color/Unify_Y500" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -31,7 +31,7 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
         app:layout_constraintEnd_toStartOf="@+id/time"
@@ -67,7 +67,7 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"

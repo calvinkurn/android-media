@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:includeFontPadding="false"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="3" />
@@ -31,7 +31,7 @@
         android:layout_gravity="center_vertical"
         android:includeFontPadding="false"
         android:text=" pesan baru"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_6"
         app:typographyWeight="bold" />
 </LinearLayout>
