@@ -395,7 +395,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun initSortFilter() {
-        talkInboxSortFilter.apply {
+        talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
             addItem(getFilterList())

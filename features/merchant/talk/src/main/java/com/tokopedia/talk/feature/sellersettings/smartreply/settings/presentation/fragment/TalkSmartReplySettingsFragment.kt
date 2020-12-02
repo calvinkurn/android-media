@@ -1,10 +1,12 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.fragment
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -14,6 +16,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTa
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -51,6 +54,9 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         observeSmartReplyData()
+        setDescriptionText()
+        setTncText()
+        setToolbarTitle()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,6 +99,19 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
             setLabel(getString(R.string.smart_reply_inactive_label))
             setLabelType(Label.GENERAL_LIGHT_GREY)
         }
+    }
+
+    private fun setDescriptionText() {
+        talkSmartReplySettingsDescription.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_settings_description)).spannedString }
+    }
+
+    private fun setTncText() {
+        talkSmartReplyTnc.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_tnc)).spannedString }
+    }
+
+    private fun setToolbarTitle() {
+        val toolbar = activity?.findViewById<Toolbar>(R.id.talk_seller_settings_toolbar)
+        toolbar?.setTitle(R.string.title_smart_reply_settings_page)
     }
 
     private fun showError() {
