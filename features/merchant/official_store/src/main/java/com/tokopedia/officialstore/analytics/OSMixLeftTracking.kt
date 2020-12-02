@@ -23,7 +23,7 @@ object OSMixLeftTracking: BaseTrackerConst() {
                     .constructBasicPromotionView(
                             event = Event.PROMO_VIEW,
                             eventAction = IMPRESSION_BANNER_MIX_LEFT,
-                            eventCategory = "${OS_MICROSITE}$categoryName",
+                            eventCategory = "${OS_MICROSITE}${categoryName.toLowerCase()}",
                             eventLabel = channel.id,
                             promotions = listOf(createMixLeftEcommerceDataLayer(
                                     channelId = channel.id,
@@ -40,7 +40,7 @@ object OSMixLeftTracking: BaseTrackerConst() {
                     .constructBasicPromotionClick(
                             event = Event.PROMO_CLICK,
                             eventAction = CLICK_BANNER_MIX_LEFT,
-                            eventCategory = "${OS_MICROSITE}$categoryName",
+                            eventCategory = "${OS_MICROSITE}${categoryName.toLowerCase()}",
                             eventLabel = channel.id,
                             promotions = listOf(createMixLeftEcommerceDataLayer(
                                     channelId = channel.id,
