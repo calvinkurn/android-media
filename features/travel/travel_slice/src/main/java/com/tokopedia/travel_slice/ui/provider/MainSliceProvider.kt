@@ -74,12 +74,14 @@ class MainSliceProvider : SliceProvider() {
             return it
         }
 
-        val type = sliceUri.getQueryParameter(ARG_TYPE) ?: TYPE_HOTEL
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
         return when (sliceUri.lastPathSegment) {
             BOOK_HOTEL -> createGetBookHotelSlice(sliceUri)
-            MY_BOOKING -> if (type.toLowerCase() == TYPE_FLIGHT) createGetFlightOrderSlice(sliceUri) else createGetHotelOrderSlice(sliceUri)
+            MY_BOOKING -> {
+                val type = sliceUri.getQueryParameter(ARG_TYPE) ?: TYPE_HOTEL
+                if (type.equals(TYPE_FLIGHT, true)) createGetFlightOrderSlice(sliceUri)
+                else createGetHotelOrderSlice(sliceUri)
+            }
             else -> null
         }
     }
@@ -236,7 +238,7 @@ class MainSliceProvider : SliceProvider() {
     }
 
     companion object {
-        const val ARG_TYPE = "type"
+        const val ARG_TYPE = "traveltype"
         const val ARG_CITY = "city"
         const val ARG_CHECKIN = "checkIn"
         const val DEFAULT_CITY_VALUE = "Jakarta"
