@@ -36,8 +36,8 @@ class InspirationCarouselOptionGridViewHolder(
                 formattedPrice = priceStr,
                 ratingCount = rating,
                 reviewCount = countReview,
-                slashedPrice = originalPrice,
-                discountPercentage = discountPercentage.toString()
+                slashedPrice = if (discountPercentage > 0) originalPrice else "",
+                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else ""
         )
     }
 
