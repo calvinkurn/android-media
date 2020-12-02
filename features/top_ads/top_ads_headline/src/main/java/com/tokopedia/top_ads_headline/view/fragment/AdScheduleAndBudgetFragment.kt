@@ -280,13 +280,15 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
-                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(),
+                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
                         getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onStartDateChanged)
             }
             endDate.textFieldInput.setOnClickListener {
-                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)?.let { it1 ->
-                    openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
-                            it1, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
+                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
+                    getSpecifiedDateFromStartDate(it1, month = 1)?.let { it2 ->
+                        openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
+                                it1, it2, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
+                    }
                 }
             }
         }
@@ -328,6 +330,11 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
         startDate.textFieldInput.setText(startDateString)
         selectedStartDate = calendar
+        val endDateCalendar = getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
+        endDateCalendar?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)?.let {
+            endDate.textFieldInput.setText(it)
+        }
+        selectedEndDate = endDateCalendar
         setAdAppearanceMessage()
     }
 
@@ -338,9 +345,10 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         setAdAppearanceMessage()
     }
 
-    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
+    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
+                                           maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
         context?.run {
-            val startDateTimePicker = DateTimePickerUnify(this, minDate, getToday(), maxDate, null,
+            val startDateTimePicker = DateTimePickerUnify(this, minDate, defaultDate, maxDate, null,
                     DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                 setTitle(header)
                 if (info.isNotEmpty()) {
