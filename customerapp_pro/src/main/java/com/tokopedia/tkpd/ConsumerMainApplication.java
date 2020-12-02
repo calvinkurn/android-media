@@ -85,10 +85,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         setVersionName();
 
         GlobalConfig.APPLICATION_TYPE = 3;
-        GlobalConfig.PACKAGE_APPLICATION = new String(new char[]{
-                99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
-                100, 105, 97, 46, 105, 110, 116, 108
-        });
+        GlobalConfig.PACKAGE_APPLICATION = getPackageApp();
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
@@ -107,6 +104,15 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
         generateConsumerAppNetworkKeys();
+    }
+
+    public String getPackageApp(){
+        return new String(new char[]{
+                99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
+                100, 105, 97, 46
+        }) + new String(new char[]{
+                105, 110, 116, 108
+        });
     }
 
     protected void setVersionCode() {
