@@ -636,6 +636,7 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
+            pipViewOnStateChanged(bottomInsets = map)
         })
     }
 
