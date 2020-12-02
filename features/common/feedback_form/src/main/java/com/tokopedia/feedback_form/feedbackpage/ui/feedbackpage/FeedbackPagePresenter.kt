@@ -77,6 +77,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                                 view.hideLoadingDialog()
                                 if (e != null) {
                                     view.showError(e)
+                                    view.setSubmitButton()
                                 }
                             }
 
@@ -105,6 +106,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                         view.hideLoadingDialog()
                         if (e != null) {
                             view.showError(e)
+                            view.setSubmitButton()
                         }
                     }
 
@@ -131,6 +133,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                         view.hideLoadingDialog()
                         if (e != null) {
                             view.showError(e)
+                            view.setSubmitButton()
                         }
                     }
 

@@ -18,6 +18,7 @@ interface FeedbackPageContract {
         fun goToTicketCreatedActivity(issueUrl: String?)
         fun showError(throwable: Throwable)
         fun setFeedbackData(model: FeedbackModel)
+        fun setSubmitButton()
     }
 
     interface Presenter{

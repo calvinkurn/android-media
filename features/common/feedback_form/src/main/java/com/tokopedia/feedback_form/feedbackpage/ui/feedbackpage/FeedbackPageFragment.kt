@@ -246,6 +246,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         pagesAdapter.renderData(model.labels)
     }
 
+    override fun setSubmitButton() {
+        submitButton.isEnabled = true
+    }
+
     override fun onSelect(selection: Int, pageName: String) {
         bottomSheetPage?.dismiss()
         page.setText(pageName)
@@ -412,6 +416,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 if (emailText.contains("@tokopedia.com")) emailText = emailText.substringBefore("@tokopedia.com", "")
                 emailTokopedia = "$emailText@tokopedia.com"
                 feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
+                submitButton.isEnabled = false
 
                 if (reportType == 1) {
                     FeedbackPageAnalytics.eventClickSubmitButtonBug()
