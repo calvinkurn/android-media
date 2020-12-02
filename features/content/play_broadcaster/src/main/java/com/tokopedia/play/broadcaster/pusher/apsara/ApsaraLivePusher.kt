@@ -44,10 +44,9 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
         // the custom mode in which the stream ingest SDK sets the bitrate based on the custom bitrate settings
-        qualityMode = AlivcQualityModeEnum.QM_CUSTOM
-        setTargetVideoBitrate(1200) // Set the target bitrate to 1200 Kbit/s.
-        setMinVideoBitrate(400) // Set the minimum bitrate to 400 Kbit/s.
-        setInitialVideoBitrate(900) // Set the initial bitrate to 900 Kbit/s.
+        qualityMode = AlivcQualityModeEnum.QM_FLUENCY_FIRST
+        isEnableBitrateControl = true
+        isEnableAutoResolution = true
     }
 
     var mApsaraLivePusherInfoListener: ApsaraLivePusherInfoListener? = null
