@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/itemCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_view_topads"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvCategoryNameParent"
+            style="@style/TextView.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/ivCategoryParent"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_weight="0"
+            app:srcCompat="@drawable/product_add_edit_ic_chevron_down" />
+
+        <ProgressBar
+            android:id="@+id/pbCategoryParent"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_weight="0"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="8dp"
+        android:id="@+id/rvLevelCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+</LinearLayout>
