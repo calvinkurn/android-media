@@ -74,6 +74,7 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
         viewModel.filteredCountryList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    isLoadingInitialData = true
                     renderList(it.data)
                 }
                 is Fail -> {
