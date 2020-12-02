@@ -269,17 +269,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_UOH_WAITING_CONFIRMATION -> {
                         status = STATUS_MENUNGGU_KONFIRMASI
                         statusLabel = MENUNGGU_KONFIRMASI
-                        paramUohOrder.verticalCategory = ""
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_UOH_SENT -> {
                         status = STATUS_DIKIRIM
                         statusLabel = DIKIRIM
-                        paramUohOrder.verticalCategory = ""
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_UOH_DELIVERED -> {
                         status = STATUS_TIBA_DI_TUJUAN
                         statusLabel = TIBA_DI_TUJUAN
-                        paramUohOrder.verticalCategory = ""
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_DIGITAL -> {
                         status = ""
@@ -745,8 +745,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
             filter3?.title = ALL_PRODUCTS
 
-        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+                        || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_SENT, true)
+                        || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
             filter3?.title = orderList.categories.first().label
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
@@ -854,7 +857,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
         if ((filterStatus.equals(PARAM_MARKETPLACE, true)
-                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+                        || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_SENT, true)
+                        || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                         && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
 
