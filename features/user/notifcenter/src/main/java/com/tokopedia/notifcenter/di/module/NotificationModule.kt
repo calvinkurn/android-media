@@ -65,14 +65,14 @@ class NotificationModule {
 
     @NotificationScope
     @Provides
-    internal fun provideTopchatCacheManager(
+    internal fun provideNotificationCacheManager(
             @NotificationContext context: Context
     ): NotifcenterCacheManager {
-        val topchatCachePref = context.getSharedPreferences(
+        val notifCachePref = context.getSharedPreferences(
                 "prefs_notifcenter",
                 Context.MODE_PRIVATE
         )
-        return NotifcenterCacheManagerImpl(topchatCachePref)
+        return NotifcenterCacheManagerImpl(notifCachePref)
     }
 
 }

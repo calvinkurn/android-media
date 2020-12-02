@@ -17,6 +17,8 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
+import com.tokopedia.inbox.domain.cache.InboxCacheManager
+import com.tokopedia.inbox.domain.cache.InboxCacheState
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
@@ -48,6 +50,9 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     @Inject
     lateinit var navHeader: NavigationHeader
 
+    @Inject
+    lateinit var cacheManager: InboxCacheManager
+
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
     private var bottomNav: InboxBottomNavigationView? = null
@@ -66,17 +71,36 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupInjector()
+        InboxCacheState.init(cacheManager)
+        setupLastPreviousState()
         setContentView(R.layout.activity_inbox)
         setupView()
         setupConfig()
         setupNavigator()
         setupBackground()
         setupNotificationBar()
-        setupBottomNav()
         setupObserver()
-        setupInitialPage()
         setupToolbar()
+        setupInitialPage()
+        setupInitialToolbar()
+        setupBottomNav()
         setupSwitcher()
+    }
+
+    private fun setupInjector() {
+        DaggerInboxComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
+    private fun setupLastPreviousState() {
+        InboxCacheState.role?.let {
+            InboxConfig.setRole(it)
+        }
+        InboxCacheState.initialPage?.let {
+            InboxConfig.initialPage = it
+        }
     }
 
     override fun clearNotificationCounter() {
@@ -88,7 +112,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
-        updateToolbarIcon()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
         ).also {
@@ -110,13 +133,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         toolbar?.setIcon(icon)
     }
 
-    private fun setupInjector() {
-        DaggerInboxComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
-
     private fun setupView() {
         bottomNav = findViewById(R.id.inbox_bottom_nav)
         container = findViewById(R.id.coor_container)
@@ -126,12 +142,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onDestroy() {
         super.onDestroy()
+        InboxCacheState.saveAllCache(cacheManager)
         InboxConfig.removeListener(this)
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
+        InboxCacheState.updateRole(role)
         showNotificationRoleChanged(role)
         updateBadgeCounter()
     }
@@ -209,14 +227,17 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             setOnNavigationItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.NOTIFICATION)
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                         updateToolbarIcon()
                     }
                     R.id.menu_inbox_chat -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.CHAT)
                         onBottomNavSelected(InboxFragmentType.CHAT)
                         updateToolbarIcon(true)
                     }
                     R.id.menu_inbox_discussion -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.DISCUSSION)
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
                         updateToolbarIcon()
                     }
@@ -227,9 +248,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupInitialPage() {
-        navigator?.start(InboxFragmentType.NOTIFICATION)
-        bottomNav?.setSelectedPage(InboxFragmentType.NOTIFICATION)
+        navigator?.start(InboxConfig.initialPage)
+        bottomNav?.setSelectedPage(InboxConfig.initialPage)
         viewModel.getNotifications()
+    }
+
+    private fun setupInitialToolbar() {
+        val isChatPage = InboxConfig.initialPage == InboxFragmentType.CHAT
+        updateToolbarIcon(isChatPage)
     }
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {

@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.common.config
 
+import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inboxcommon.RoleType
 
@@ -8,6 +9,9 @@ object InboxConfig {
     @RoleType
     var role: Int = RoleType.BUYER
         private set
+
+    @InboxFragmentType
+    var initialPage = InboxFragmentType.NOTIFICATION
     var inboxCounter: InboxCounter = InboxCounter()
 
     interface ConfigListener {
