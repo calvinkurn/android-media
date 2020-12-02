@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.order.view
+package com.tokopedia.oneclickcheckout.tracking.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
@@ -19,6 +19,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_P
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -26,7 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class OrderSummaryPageActivityRevampTest {
+class OrderSummaryPageActivityRevampTrackingTest {
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_revamp.json"
