@@ -202,6 +202,6 @@
     </string-array>
 
     <string-array name="TravelOrderListCustomQuery">
-        <item>(view)? (check)? my $travelType reservation(s)?</item>
+        <item>(view)? (check)? my $traveltype reservation(s)?</item>
     </string-array>
 </resources>
