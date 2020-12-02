@@ -706,6 +706,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         // category
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+                filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true) ||
+                filterStatus.equals(PARAM_UOH_SENT, true) ||
+                filterStatus.equals(PARAM_UOH_DELIVERED, true) ||
                 filterStatus.equals(PARAM_DIGITAL, true) ||
                 filterStatus.equals(PARAM_EVENTS, true) ||
                 filterStatus.equals(PARAM_DEALS, true) ||
