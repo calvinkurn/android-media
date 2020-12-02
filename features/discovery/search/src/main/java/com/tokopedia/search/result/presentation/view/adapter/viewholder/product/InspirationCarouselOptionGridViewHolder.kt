@@ -12,22 +12,21 @@ import kotlinx.android.synthetic.main.search_inspiration_carousel_option_grid.vi
 class InspirationCarouselOptionGridViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
+) : AbstractViewHolder<InspirationCarouselViewModel.Option.Product>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_grid
     }
 
-    override fun bind(item: InspirationCarouselViewModel.Option) {
-        val productOption = item.product.getOrNull(0) ?: return
+    override fun bind(item: InspirationCarouselViewModel.Option.Product) {
 
-        itemView.optionGridCardView?.setProductModel(productOption.toProductCardModel())
+        itemView.optionGridCardView?.setProductModel(item.toProductCardModel())
 
         itemView.optionGridCardView?.setOnClickListener {
-            inspirationCarouselListener.onInspirationCarouselGridProductClicked(productOption)
+            inspirationCarouselListener.onInspirationCarouselGridProductClicked(item)
         }
 
-        itemView.optionGridCardView?.setImageProductViewHintListener(productOption, createViewHintListener(productOption))
+        itemView.optionGridCardView?.setImageProductViewHintListener(item, createViewHintListener(item))
     }
 
     private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {

@@ -257,6 +257,9 @@ class SearchProductFirstPageGqlUseCase(
                             title
                             url
                             applink
+                            banner_image_url
+                            banner_link_url
+                            banner_applink_url
                             product {
                                 id
                                 name
@@ -268,6 +271,10 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
+                              	original_price
+                              	discount_percentage
+                                discount_start
+                                discount_expired
                             }
                         }
                     }

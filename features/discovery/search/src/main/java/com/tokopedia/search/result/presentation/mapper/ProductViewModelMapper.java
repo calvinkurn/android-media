@@ -356,7 +356,7 @@ public class ProductViewModelMapper {
                     opt.getBannerImageUrl(),
                     opt.getBannerLinkUrl(),
                     opt.getBannerApplinkUrl(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType, layout),
                     inspirationCarouselType,
                     layout
             ));
@@ -365,7 +365,12 @@ public class ProductViewModelMapper {
         return options;
     }
 
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position, String inspirationCarouselType) {
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(
+            List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct,
+            int position,
+            String inspirationCarouselType,
+            String layout
+    ) {
         List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
@@ -385,7 +390,8 @@ public class ProductViewModelMapper {
                     product.getDiscountStart(),
                     product.getDiscountPercentage(),
                     position,
-                    inspirationCarouselType
+                    inspirationCarouselType,
+                    layout
             ));
         }
 

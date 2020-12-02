@@ -50,8 +50,14 @@ class InspirationCarouselViewModel(
             val discountStart: String = "",
             val discountPercentage: Int = 0,
             val optionPosition: Int = 0,
-            val inspirationCarouselType: String = ""
-        ): ImpressHolder() {
+            val inspirationCarouselType: String = "",
+            val layout: String = ""
+        ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
+
+            override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
+                return typeFactory.type(layout)
+            }
+
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
                         "name", name,

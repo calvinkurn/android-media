@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
@@ -42,7 +43,11 @@ class InspirationCarouselViewHolder(
     private fun bindContent(element: InspirationCarouselViewModel) {
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
             it.layoutManager = createLayoutManager()
-            it.adapter = createAdapter(element.options.shouldAddGridBanner())
+            if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
+                it.adapter = createAdapter(createGridProduct(element.options))
+            } else {
+                it.adapter = createAdapter(element.options)
+            }
 
             if (it.itemDecorationCount == 0) {
                 it.addItemDecoration(createItemDecoration())
@@ -50,14 +55,13 @@ class InspirationCarouselViewHolder(
         }
     }
 
-    private fun List<InspirationCarouselViewModel.Option>.shouldAddGridBanner(): List<InspirationCarouselViewModel.Option> {
-        val option = getOrNull(0) ?: return this
-        if (option.layout != LAYOUT_INSPIRATION_CAROUSEL_GRID) return this
+    private fun createGridProduct(options: List<InspirationCarouselViewModel.Option>): List<Visitable<*>> {
+        val list = mutableListOf<Visitable<*>>()
+        val option = options.getOrNull(0) ?: return listOf()
 
-        val data: MutableList<InspirationCarouselViewModel.Option> = mutableListOf()
-        data.add(createBannerOption(option))
-        data.addAll(this)
-        return data
+        list.add(createBannerOption(option))
+        list.addAll(option.product)
+        return list
     }
 
     private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
@@ -75,12 +79,12 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createAdapter(
-            inspirationCarouselOptionList: List<InspirationCarouselViewModel.Option>
+            list: List<Visitable<*>>
     ): RecyclerView.Adapter<AbstractViewHolder<*>> {
         val typeFactory = InspirationCarouselOptionAdapterTypeFactory(inspirationCarouselListener)
         val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
         inspirationCarouselProductAdapter.clearData()
-        inspirationCarouselProductAdapter.addAll(inspirationCarouselOptionList)
+        inspirationCarouselProductAdapter.addAll(list)
 
         return inspirationCarouselProductAdapter
     }
