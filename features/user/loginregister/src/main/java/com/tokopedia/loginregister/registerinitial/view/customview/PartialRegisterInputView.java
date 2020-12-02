@@ -44,7 +44,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     AutoCompleteTextView etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
-    ButtonCompat btnAction;
+    UnifyButton btnAction;
     EmailExtension emailExtension;
 
     TextFieldUnify wrapperPassword;
@@ -273,11 +273,11 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void onValidValue(){
         hideError();
-        btnAction.setButtonCompatType(ButtonCompat.PRIMARY);
+        btnAction.setEnabled(true);
     }
 
     private void onInvalidValue(){
-        btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
+        btnAction.setEnabled(false);
     }
 
     public String getTextValue() {
@@ -358,7 +358,8 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
-        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn));
+        btnAction.setText(btnAction.getContext().getString(R.string.login));
+        btnAction.setContentDescription(btnAction.getContext().getString(R.string.content_desc_register_btn));
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
     }
