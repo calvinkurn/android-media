@@ -767,18 +767,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            return it.data[1].applink
-        }
-        return ""
+        return pdpUiUpdater?.productProtectionMap?.let {
+            return it.data.getOrNull(1)?.applink ?: ""
+        } ?: ""
     }
 
     private fun getPPTitleName(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            if (it.title.isNotEmpty()) return it.title
-            else return ""
-        }
-        return ""
+        return pdpUiUpdater?.productProtectionMap?.title ?: ""
     }
 
     /**
