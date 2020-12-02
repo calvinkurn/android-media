@@ -75,7 +75,7 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val willShowVariant = productCardModel.willShowVariant()
 
-    if (willShowVariant) textViewProductName?.isSingleLine = true
+    textViewProductName?.isSingleLine = willShowVariant
 
     labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
         labelVariantContainer.removeAllViews()
