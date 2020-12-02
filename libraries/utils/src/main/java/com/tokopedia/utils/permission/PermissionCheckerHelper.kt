@@ -235,7 +235,7 @@ class PermissionCheckerHelper {
                                    REQUEST_PERMISSION_CODE: Int) {
 
         try {
-            activity.requestPermissions(permissions,
+            ActivityCompat.requestPermissions(activity, permissions,
                     REQUEST_PERMISSION_CODE)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
