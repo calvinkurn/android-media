@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.feedback_form.drawonpicture.di.DrawOnPictureComponent
 import com.tokopedia.feedback_form.R
+import com.tokopedia.feedback_form.drawonpicture.di.DaggerDrawOnPictureComponent
 import com.tokopedia.feedback_form.drawonpicture.presentation.fragment.DrawOnPictureFragment
 import kotlinx.android.synthetic.main.activity_draw_on_picture.*
 

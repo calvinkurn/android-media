@@ -15,6 +15,7 @@ import com.tokopedia.feedback_form.feedbackpage.domain.response.FeedbackFormResp
 import com.tokopedia.feedback_form.feedbackpage.domain.response.ImageResponse
 import com.tokopedia.feedback_form.feedbackpage.domain.service.ApiClient
 import com.tokopedia.feedback_form.feedbackpage.domain.service.FeedbackApiInterface
+import com.tokopedia.feedback_form.feedbackpage.ui.feedbackpage.FeedbackPageContract
 import com.tokopedia.screenshot_observer.ScreenshotData
 import okhttp3.MultipartBody
 import rx.Subscriber

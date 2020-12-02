@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
+package com.tokopedia.feedback_form.feedbackpage.ui.feedbackpage
 
 import android.net.Uri
 import com.tokopedia.abstraction.base.view.listener.CustomerView
