@@ -194,10 +194,10 @@ class PlayFragment @Inject constructor(
         return isIntercepted || !videoOrientation.isHorizontal
     }
 
-    override fun onEnterPiPMode() {
+    override fun onEnterPiPMode(pipMode: PiPMode) {
         childFragmentManager.fragments
                 .forEach {
-                    if (it is PlayFragmentContract) it.onEnterPiPMode()
+                    if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
                 }
     }
 
@@ -448,7 +448,7 @@ class PlayFragment @Inject constructor(
     private fun observePiPEvent() {
         playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
             if (it != PiPMode.StopPip) {
-                onEnterPiPMode()
+                onEnterPiPMode(it)
             }
         })
     }

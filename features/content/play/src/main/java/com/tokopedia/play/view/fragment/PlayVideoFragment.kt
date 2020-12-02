@@ -84,21 +84,25 @@ class PlayVideoFragment @Inject constructor(
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
         override fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
-            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                    .apply {
-                        setTitle(getString(R.string.play_pip_permission_rationale_title))
-                        setDescription(getString(R.string.play_pip_permission_rationale_desc))
-                        setPrimaryCTAText(getString(R.string.play_pip_activate))
-                        setPrimaryCTAClickListener {
-                            requestPermissionFlow.requestPermission()
-                            dismiss()
-                        }
-                        setSecondaryCTAText(getString(R.string.play_pip_cancel))
-                        setSecondaryCTAClickListener {
-                            requestPermissionFlow.cancel()
-                            dismiss()
-                        }
-                    }.show()
+            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                        .apply {
+                            setTitle(getString(R.string.play_pip_permission_rationale_title))
+                            setDescription(getString(R.string.play_pip_permission_rationale_desc))
+                            setPrimaryCTAText(getString(R.string.play_pip_activate))
+                            setPrimaryCTAClickListener {
+                                requestPermissionFlow.requestPermission()
+                                dismiss()
+                            }
+                            setSecondaryCTAText(getString(R.string.play_pip_cancel))
+                            setSecondaryCTAClickListener {
+                                requestPermissionFlow.cancel()
+                                dismiss()
+                            }
+                        }.show()
+            } else {
+                requestPermissionFlow.cancel()
+            }
         }
 
         override fun onFailedEnterPiPMode(error: FloatingWindowException) {
@@ -189,7 +193,7 @@ class PlayVideoFragment @Inject constructor(
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onEnterPiPMode() {
+    override fun onEnterPiPMode(pipMode: PiPMode) {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         if (videoMeta.videoPlayer !is General) return
 
