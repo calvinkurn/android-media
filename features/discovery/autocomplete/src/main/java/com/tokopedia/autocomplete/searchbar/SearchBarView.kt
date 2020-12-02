@@ -68,8 +68,16 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var lastQuery: String? = null
     private var hint: String? = null
     private var isTyping = false
-    private val isABTestNavigationRevamp =
+    private val isABTestNavigationRevamp = isABTestNavigationRevamp()
+
+    private fun isABTestNavigationRevamp(): Boolean {
+        return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP, ABTestRemoteConfigKey.AB_TEST_OLD_NAV) == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 
     private val mOnClickListener = OnClickListener { v ->
         if (v === actionUpBtn || v === actionCancelButton) {
