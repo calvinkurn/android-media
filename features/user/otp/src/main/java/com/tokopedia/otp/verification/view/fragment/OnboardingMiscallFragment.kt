@@ -1,5 +1,6 @@
 package com.tokopedia.otp.verification.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -28,7 +29,7 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
 
     override val viewBound = OnboardingMisscallViewBinding()
 
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private val permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_COTP_MISSCALL
 
@@ -80,12 +81,10 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     private fun checkPermissionGetPhoneNumber(){
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
-
-        activity?.let {
-            permissionCheckerHelper.request(it, getPermissions()) { }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.request(it, getPermissions()) { }
+            }
         }
     }
 
