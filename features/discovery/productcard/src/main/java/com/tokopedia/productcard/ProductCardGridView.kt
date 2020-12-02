@@ -35,6 +35,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
 
+        renderLabelBestSeller(labelBestSeller, productCardModel)
+
         renderOutOfStockView(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())

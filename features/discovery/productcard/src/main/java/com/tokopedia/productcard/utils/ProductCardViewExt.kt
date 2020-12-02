@@ -3,7 +3,10 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -271,7 +274,7 @@ private fun String?.toUnifyTextColor(context: Context): Int {
     }
 }
 
-private fun safeParseColor(color: String): Int {
+internal fun safeParseColor(color: String): Int {
     return try {
         Color.parseColor(color)
     }
@@ -314,5 +317,23 @@ internal fun renderLabelCampaign(
     else {
         labelCampaignBackground?.hide()
         textViewLabelCampaign?.hide()
+    }
+}
+
+internal fun renderLabelBestSeller(
+        labelBestSeller: Typography?,
+        productCardModel: ProductCardModel
+) {
+    labelBestSeller ?: return
+
+    labelBestSeller.background?.overrideColor("#E1AA1D")
+    labelBestSeller.text = "#1"
+}
+
+internal fun Drawable.overrideColor(hexColor: String) {
+    when (this) {
+        is GradientDrawable -> setColor(safeParseColor(hexColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor)
+        is ColorDrawable -> color = safeParseColor(hexColor)
     }
 }
