@@ -76,7 +76,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_FINI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.MENUNGGU_KONFIRMASI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.NOTES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_ID
