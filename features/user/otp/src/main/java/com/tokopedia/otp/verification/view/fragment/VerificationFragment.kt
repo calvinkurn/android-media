@@ -141,7 +141,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     override fun onPause() {
         super.onPause()
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            if (::phoneCallBroadcastReceiver.isInitialized) activity?.unregisterReceiver(phoneCallBroadcastReceiver)
+            if (::phoneCallBroadcastReceiver.isInitialized) activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
         } else {
             if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
         }
