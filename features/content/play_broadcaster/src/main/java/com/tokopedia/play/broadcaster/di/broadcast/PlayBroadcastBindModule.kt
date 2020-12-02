@@ -48,6 +48,10 @@ abstract class PlayBroadcastBindModule {
 
     @Binds
     @PlayBroadcastScope
+    abstract fun bindBroadcastScheduleConfigStore(configStore: BroadcastScheduleConfigStoreImpl): BroadcastScheduleConfigStore
+
+    @Binds
+    @PlayBroadcastScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
 
     /**

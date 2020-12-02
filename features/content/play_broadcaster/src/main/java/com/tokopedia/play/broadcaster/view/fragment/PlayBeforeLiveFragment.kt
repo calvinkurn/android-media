@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -29,6 +30,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.SetupBroadcastScheduleBottomSheet
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -73,7 +75,13 @@ class PlayBeforeLiveFragment @Inject constructor(
         })
     }
 
-    private val broadcastScheduleView by viewComponent { BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule) }
+    private val broadcastScheduleView by viewComponent {
+        BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule, object : BroadcastScheduleViewComponent.Listener {
+            override fun onEditIconClicked() {
+                openSetupBroadcastSchedulePage()
+            }
+        })
+    }
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -178,6 +186,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()
         }
+
+        broadcastScheduleView.setSchedule(BroadcastScheduleUiModel.NoSchedule)
     }
 
     private fun setupInsets(view: View) {
@@ -289,6 +299,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         getEditTitleBottomSheet().show(childFragmentManager)
     }
 
+    private fun openSetupBroadcastSchedulePage() {
+        getSetupBroadcastScheduleBottomSheet().show(childFragmentManager)
+    }
+
     private fun doCopyShareLink() {
         PlayShareWrapper.copyToClipboard(requireContext(), parentViewModel.shareContents) {
             showToaster(
@@ -324,6 +338,12 @@ class PlayBeforeLiveFragment @Inject constructor(
         val editTitleBottomSheet = EditCoverTitleBottomSheet()
         editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         return editTitleBottomSheet
+    }
+
+    private fun getSetupBroadcastScheduleBottomSheet(): SetupBroadcastScheduleBottomSheet {
+        val bottomSheet = SetupBroadcastScheduleBottomSheet()
+        bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        return bottomSheet
     }
 
     companion object {

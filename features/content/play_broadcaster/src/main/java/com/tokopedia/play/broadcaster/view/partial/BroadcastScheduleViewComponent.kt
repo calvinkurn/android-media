@@ -15,7 +15,8 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class BroadcastScheduleViewComponent(
         container: ViewGroup,
-        @IdRes idRes: Int
+        @IdRes idRes: Int,
+        listener: Listener
 ) : ViewComponent(container, idRes) {
 
     private val clScheduleHeader = findViewById<ConstraintLayout>(R.id.cl_schedule_header)
@@ -25,6 +26,17 @@ class BroadcastScheduleViewComponent(
     private val iconHeaderEdit = findViewById<IconUnify>(R.id.icon_header_edit)
 
     private val tvDescSchedule = findViewById<TextView>(R.id.tv_desc_schedule)
+    private val iconDescEdit = findViewById<IconUnify>(R.id.icon_desc_edit)
+
+    init {
+        iconDescEdit.setOnClickListener {
+            listener.onEditIconClicked()
+        }
+
+        iconHeaderEdit.setOnClickListener {
+            listener.onEditIconClicked()
+        }
+    }
 
     fun setSchedule(scheduleModel: BroadcastScheduleUiModel) {
         when (scheduleModel) {
@@ -37,6 +49,7 @@ class BroadcastScheduleViewComponent(
         iconHeaderEdit.visibility = View.VISIBLE
         tvHeader.text = getString(R.string.play_broadcast_add_schedule_info)
 
+        clScheduleHeader.visibility = View.VISIBLE
         clScheduleDesc.visibility = View.GONE
     }
 
@@ -44,7 +57,14 @@ class BroadcastScheduleViewComponent(
         iconHeaderEdit.visibility = View.GONE
         tvHeader.text = getString(R.string.play_broadcast_schedule_set_info)
 
+        clScheduleHeader.visibility = View.GONE
         clScheduleDesc.visibility = View.VISIBLE
         tvDescSchedule.text = model.formattedTime
+    }
+
+    interface Listener {
+
+        fun onEditIconClicked()
+
     }
 }

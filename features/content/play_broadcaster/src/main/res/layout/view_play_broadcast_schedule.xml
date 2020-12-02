@@ -82,8 +82,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_desc_edit"
-            android:layout_width="@dimen/play_broadcast_schedule_icon_size"
-            android:layout_height="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:icon_color_light_enable="@color/Unify_N0"
             app:icon_name="EDIT"

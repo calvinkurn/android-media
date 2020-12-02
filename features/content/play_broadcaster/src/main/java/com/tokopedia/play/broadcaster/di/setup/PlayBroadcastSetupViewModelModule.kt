@@ -50,4 +50,9 @@ abstract class PlayBroadcastSetupViewModelModule {
     @ViewModelKey(DataStoreViewModel::class)
     abstract fun getDataStoreViewModel(viewModel: DataStoreViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(SetupBroadcastScheduleViewModel::class)
+    abstract fun getSetupBroadcastScheduleViewModel(viewModel: SetupBroadcastScheduleViewModel): ViewModel
+
 }

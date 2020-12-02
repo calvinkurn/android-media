@@ -150,4 +150,5 @@
     <!--Schedule-->
     <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
     <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
+    <string name="play_broadcast_set_schedule">Simpan Jadwal</string>
 </resources>
