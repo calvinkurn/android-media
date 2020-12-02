@@ -1,12 +1,11 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
@@ -28,12 +27,7 @@ class TableColumnHtmlViewHolder(itemView: View?,
         with(itemView) {
             tvTableColumnHtml?.setClickableUrlHtml(element.valueStr) { url ->
                 listener.onHyperlinkClicked(url)
-                try {
-                    val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context?.startActivity(myIntent)
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                }
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
             }
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START

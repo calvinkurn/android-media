@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
 
@@ -90,6 +91,14 @@ object RouteManagerKt{
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)
+            }
+            DeepLinkChecker.PRODUCT -> {
+                getLinkSegment(url).getOrNull(0)?.let { shopDomain ->
+                    getLinkSegment(url).getOrNull(1)?.let { productKey ->
+                        return RouteManager.route(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN, shopDomain, productKey)
+                    }
+                }
+                return false
             }
         }
         return false
