@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
@@ -18,6 +19,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -150,7 +152,21 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
-            discoveryViewModel.updateWishlist(productCardOptionsModel)
+            if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+                if (productCardOptionsModel.wishlistResult.isSuccess) {
+                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_add_wishlist))
+                    discoveryViewModel.updateWishlist(productCardOptionsModel)
+                } else {
+                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_add_wishlist))
+                }
+            } else {
+                if (productCardOptionsModel.wishlistResult.isSuccess) {
+                    discoveryViewModel.updateWishlist(productCardOptionsModel)
+                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_remove_wishlist))
+                } else {
+                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_remove_wishlist))
+                }
+            }
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
         }
