@@ -305,9 +305,9 @@ internal fun renderLabelCampaign(
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel
 ) {
-    val labelCampaign = productCardModel.getLabelCampaign()
+    if (productCardModel.isShowLabelCampaign()) {
+        val labelCampaign = productCardModel.getLabelCampaign() ?: return
 
-    if (labelCampaign?.isShowLabelCampaign() == true) {
         labelCampaignBackground?.show()
         labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
 
@@ -326,8 +326,24 @@ internal fun renderLabelBestSeller(
 ) {
     labelBestSeller ?: return
 
-    labelBestSeller.background?.overrideColor("#E1AA1D")
-    labelBestSeller.text = "#1"
+    if (productCardModel.isShowLabelBestSeller()) {
+        labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
+    }
+    else {
+        labelBestSeller.initLabelBestSeller(null)
+    }
+}
+
+private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
+    if (labelBestSellerModel == null) hide()
+    else showLabelBestSeller(labelBestSellerModel)
+}
+
+private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
+    show()
+
+    background.overrideColor(labelBestSellerModel.type)
+    text = labelBestSellerModel.title
 }
 
 internal fun Drawable.overrideColor(hexColor: String) {

@@ -17,7 +17,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
         forEach { productCardModel ->
             val imageHeight = productImageWidth
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
-            val hasLabelCampaign = productCardModel.getLabelCampaign()?.isShowLabelCampaign() == true
+            val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
             val contentMarginTop = getGridViewContentMarginTop(context, hasLabelCampaign)
             val contentHeight = productCardModel.getContentHeight(context)
@@ -52,7 +52,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
         forEach { productCardModel ->
             val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
-            val hasLabelCampaign = productCardModel.getLabelCampaign()?.isShowLabelCampaign() == true
+            val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
             val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaign)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
