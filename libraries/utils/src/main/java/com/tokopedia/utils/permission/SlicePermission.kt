@@ -13,6 +13,7 @@ object SlicePermission {
 
     const val RECHARGE_SLICE_PERMISSION = "com.tokopedia.tkpd.recharge_slice"
 
+    @JvmStatic
     fun initPermission(context: Context){
         grantAssistantPermissions(context)
     }
@@ -39,6 +40,4 @@ object SlicePermission {
         )
         return resolveInfoList?.firstOrNull()?.serviceInfo?.packageName
     }
-
-
 }
