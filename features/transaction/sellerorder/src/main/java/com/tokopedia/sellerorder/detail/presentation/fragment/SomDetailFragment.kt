@@ -949,7 +949,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusCode}", detailResponse.statusText)
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
                     val orderRejectRequest = SomRejectRequestParam(
                             orderId = detailResponse?.orderId?.toString().orEmpty(),
                             rCode = "0",
@@ -959,7 +959,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
 
                 override fun onRejectCancelRequest() {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusCode}", detailResponse.statusText)
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
                     rejectCancelOrder()
                 }
             })
