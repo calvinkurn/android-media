@@ -59,6 +59,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -530,8 +531,10 @@ public class MainParentActivity extends BaseActivity implements
             Fragment frag = manager.getFragments().get(i);
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
             } else {
                 ft.hide(frag); // hide all fragment
+                FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
             }
         }
     }
@@ -601,7 +604,10 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
-        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+        if (currentFragment != null) {
+            configureStatusBarBasedOnFragment(currentFragment);
+            FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
+        }
     }
 
     private void clearNotification() {
@@ -1134,7 +1140,15 @@ public class MainParentActivity extends BaseActivity implements
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             if (isRollanceTestingUsingNavigationRevamp()) {
-                globalNavAnalytics.get().eventBottomNavigationDrawer(menu.get(index).getTitle(), userSession.get().getUserId());
+                String pageName = "";
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
+                    pageName = "/";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
+                    pageName = "OS Homepage";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                    pageName = "Feed";
+                }
+                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }

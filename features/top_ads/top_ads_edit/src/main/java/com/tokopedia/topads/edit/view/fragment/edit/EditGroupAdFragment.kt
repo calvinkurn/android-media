@@ -13,12 +13,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
@@ -27,6 +27,7 @@ import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
+import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLY_CONST
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
@@ -161,7 +162,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid
@@ -246,17 +247,26 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         daily_budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                if (number < MULTIPLIER * currentBudget) {
-                    daily_budget?.setError(true)
-                    daily_budget?.setMessage(String.format(getString(R.string.min_bid_error), MULTIPLIER * currentBudget))
-                    validation3 = false
-                    actionEnable()
+                when {
+                    number < MULTIPLIER * currentBudget -> {
+                        daily_budget?.setError(true)
+                        daily_budget?.setMessage(String.format(getString(R.string.min_bid_error), MULTIPLIER * currentBudget))
+                        validation3 = false
+                        actionEnable()
 
-                } else {
-                    validation3 = true
-                    daily_budget?.setError(false)
-                    daily_budget?.setMessage("")
-                    actionEnable()
+                    }
+                    number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
+                        daily_budget?.setError(true)
+                        daily_budget?.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
+                        validation3 = false
+                        actionEnable()
+                    }
+                    else -> {
+                        validation3 = true
+                        daily_budget?.setError(false)
+                        daily_budget?.setMessage("")
+                        actionEnable()
+                    }
                 }
             }
         })

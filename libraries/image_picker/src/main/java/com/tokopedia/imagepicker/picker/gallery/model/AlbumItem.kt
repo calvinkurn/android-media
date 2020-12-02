@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.gallery.model
 
 import android.content.Context
 import android.database.Cursor
+import android.database.CursorIndexOutOfBoundsException
 import android.net.Uri
 import android.os.Parcelable
 import com.tokopedia.imagepicker.R
@@ -49,12 +50,16 @@ class AlbumItem(private val mId: String, val coverPath: Uri?, val displayName: S
 
         @JvmStatic
         fun valueOf(cursor: Cursor): AlbumItem {
-            val clumn = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI))
-            return AlbumItem(
-                    cursor.getString(cursor.getColumnIndex("bucket_id")),
-                    Uri.parse(clumn ?: ""),
-                    cursor.getString(cursor.getColumnIndex("bucket_display_name")),
-                    cursor.getLong(cursor.getColumnIndex(AlbumLoader.COLUMN_COUNT)))
+            return try {
+                val clumn = cursor.getString(cursor.getColumnIndex(AlbumLoader.COLUMN_URI))
+                AlbumItem(
+                        cursor.getString(cursor.getColumnIndex("bucket_id")),
+                        Uri.parse(clumn ?: ""),
+                        cursor.getString(cursor.getColumnIndex("bucket_display_name")),
+                        cursor.getLong(cursor.getColumnIndex(AlbumLoader.COLUMN_COUNT)))
+            } catch (exception: CursorIndexOutOfBoundsException) {
+                AlbumItem(ALBUM_ID_ALL, null, null, 0)
+            }
         }
     }
 

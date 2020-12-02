@@ -21,6 +21,7 @@ class SomListSortFilterTab(
     private var somListFilterUiModel: SomListFilterUiModel? = null
     private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
     private var selectedCount: Int = 0
+    var isStatusFilterAppliedFromAdvancedFilter: Boolean = false
 
     init {
         sortFilter.chipItems = arrayListOf()
@@ -81,6 +82,7 @@ class SomListSortFilterTab(
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
+        updateStatusFilterAppliedFromAdvancedFilter(status)
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
             sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
@@ -130,6 +132,14 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
+    private fun updateStatusFilterAppliedFromAdvancedFilter(status: SomListFilterUiModel.Status?) {
+        selectedTab?.key?.let {
+            if (status?.key != it) {
+                isStatusFilterAppliedFromAdvancedFilter = false
+            }
+        }
+    }
+
     private fun updateSelectedTab(status: SomListFilterUiModel.Status?) {
         selectedTab = status
     }
@@ -168,12 +178,21 @@ class SomListSortFilterTab(
     fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
         this.somFilterUiModelList.clear()
         this.somFilterUiModelList.addAll(somFilterUiModelList)
+        this.isStatusFilterAppliedFromAdvancedFilter = isStatusFilterSelected()
     }
 
     fun isSortByAppliedManually(): Boolean {
         return this.somFilterUiModelList.any {
             it.nameFilter == SomConsts.FILTER_SORT && it.somFilterData.any {
                 it.isSelected
+            }
+        }
+    }
+
+    private fun isStatusFilterSelected(): Boolean {
+        return this.somFilterUiModelList.any {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER && it.somFilterData.any { chips ->
+                chips.isSelected
             }
         }
     }

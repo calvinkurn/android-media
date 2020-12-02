@@ -94,7 +94,6 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP;
@@ -998,7 +997,7 @@ final class ProductListPresenter
 
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(SearchApiConst.NAVSOURCE, VALUE_OF_NAVSOURCE_CAMPAIGN);
+        requestParams.putString(SearchApiConst.NAVSOURCE, navSource);
         requestParams.putString(SearchApiConst.SRP_PAGE_TITLE, pageTitle);
         requestParams.putString(SearchApiConst.SRP_PAGE_ID, pageId);
         requestParams.putString(SearchApiConst.START, String.valueOf(getStartFrom()));
