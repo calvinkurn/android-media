@@ -37,7 +37,7 @@ import com.tokopedia.talk.feature.write.presentation.decorator.SpacingItemDecora
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
