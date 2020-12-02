@@ -39,6 +39,12 @@ object FlightSliceProviderUtil {
             header {
                 title = context.getString(R.string.slice_flight_title)
                 subtitle = context.getString(R.string.slice_not_login_desc)
+                primaryAction = PendingIntent.getActivity(
+                        context, 0, RouteManager.getIntent(context, ApplinkConst.LOGIN), 0
+                ).let {
+                    SliceAction.create(it, IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE, "")
+                }
             }
         }
     }
@@ -91,7 +97,7 @@ object FlightSliceProviderUtil {
                         }
 
                         primaryAction = SliceAction.create(buildIntentFromApplink(context, String.format("%s/%s", ApplinkConst.FLIGHT_ORDER, it.id)),
-                                IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                                IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                                 ListBuilder.ICON_IMAGE, "")
                     }
                 }
@@ -100,7 +106,7 @@ object FlightSliceProviderUtil {
                     title = context.getString(R.string.slice_flight_see_more)
 
                     primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
-                            IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                            IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                             ListBuilder.ICON_IMAGE, "")
                 }
             }

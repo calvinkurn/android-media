@@ -11,6 +11,7 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.travel_slice.R
@@ -33,7 +34,7 @@ object HotelSliceProviderUtil {
                 title = context.getString(R.string.slice_get_hotel_result_title, cityName)
                 primaryAction = SliceAction.create(
                         buildIntentFromHotelDashboard(context),
-                        IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
             gridRow {
@@ -67,6 +68,12 @@ object HotelSliceProviderUtil {
             header {
                 title = context.getString(R.string.slice_hotel_title)
                 subtitle = context.getString(R.string.slice_not_login_desc)
+                primaryAction = PendingIntent.getActivity(
+                        context, 0, RouteManager.getIntent(context, ApplinkConst.LOGIN), 0
+                ).let {
+                    SliceAction.create(it, IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE, "")
+                }
             }
         }
     }
@@ -113,7 +120,7 @@ object HotelSliceProviderUtil {
                     setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_hotel), SMALL_IMAGE)
 
                     primaryAction = SliceAction.create(buildIntentFromHotelOrderApplink(context, it.applink),
-                            IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                            IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
                             ListBuilder.ICON_IMAGE, "")
                 }
             }
