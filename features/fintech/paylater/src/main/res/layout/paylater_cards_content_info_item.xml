@@ -23,7 +23,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="12dp"
-        android:lineSpacingExtra="@dimen/dp_3"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:paddingBottom="6dp"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/unify_font_12"

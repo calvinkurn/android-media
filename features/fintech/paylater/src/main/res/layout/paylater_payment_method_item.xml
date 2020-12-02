@@ -5,11 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivPaylaterPartner"
-        android:layout_width="72dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="@string/kredivo" />
+        android:text="@string/kredivo" />
 
     <com.tokopedia.unifycomponents.Label
         android:layout_width="wrap_content"
@@ -41,25 +41,28 @@
         app:layout_constraintStart_toEndOf="@+id/tvTitlePaylaterPartner"
         app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
         app:typographyType="small"
-        tools:text="Aktif" />
+        android:text="Aktif" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSignUpNow"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
+        android:text="Daftar sekarang"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="@+id/tvTitlePaylaterPartner"
         app:layout_constraintTop_toBottomOf="@+id/tvTitlePaylaterPartner"
-        app:typographyType="body_3"
-        tools:text="Daftar sekarang" />
+        app:typographyType="body_3" />
 
     <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

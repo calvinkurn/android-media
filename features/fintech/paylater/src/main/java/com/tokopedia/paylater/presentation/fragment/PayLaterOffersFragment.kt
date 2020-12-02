@@ -50,9 +50,9 @@ class PayLaterOffersFragment  : Fragment() {
     private fun populateDummyData(): ArrayList<OfferListResponse> {
         val data = ArrayList<OfferListResponse>()
         val descList = ArrayList<OfferDescriptionItem>()
-        for(i in 1..3)
+        for(i in 1..2)
             descList.add(OfferDescriptionItem("Bunga 0% untuk bayar dalam 30 hari", true))
-        for (i in 4..8)
+        for (i in 4..6)
             descList.add(OfferDescriptionItem("Daftar 5 menit, waktu persetujuan maksimal 1 x 24 jam.", false))
         for (i in 1..4)
         data.add(OfferListResponse("Kredivo", descList))

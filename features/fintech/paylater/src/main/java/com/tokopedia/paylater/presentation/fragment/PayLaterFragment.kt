@@ -5,14 +5,36 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
+import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import kotlinx.android.synthetic.main.fragment_paylater.*
+import javax.inject.Inject
 
 
 class PayLaterFragment : BaseDaggerFragment() {
+
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        viewModelProvider.get(PayLaterViewModel::class.java)
+    }
+
+    override fun getScreenName(): String {
+        return "PayLater & Cicilan"
+    }
+
+    override fun initInjector() {
+        getComponent(PayLaterComponent::class.java).inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -23,14 +45,7 @@ class PayLaterFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
-    }
-
-    override fun getScreenName(): String {
-        return "PayLater & Cicilan"
-    }
-
-    override fun initInjector() {
-
+        payLaterViewModel.getPayLaterData()
     }
 
     private fun renderTabAndViewPager() {
@@ -42,7 +57,6 @@ class PayLaterFragment : BaseDaggerFragment() {
         val list = mutableListOf<Fragment>()
         list.add(SimulasiFragment.newInstance())
         list.add(PayLaterOffersFragment.newInstance())
-        //list.add(PromoFragment.newInstance())
         val pagerAdapter =  PayLaterPagerAdapter(context!!, childFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter

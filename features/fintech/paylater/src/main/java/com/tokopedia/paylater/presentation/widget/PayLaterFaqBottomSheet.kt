@@ -8,15 +8,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentMethodAdapter
-import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentRegisterAdapter
+import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.paylater_register_card_bottomsheet_widget.*
-import kotlinx.android.synthetic.main.paylater_register_card_bottomsheet_widget.rvPayLaterRegisterSteps
-import kotlinx.android.synthetic.main.paylater_signup_bottomsheet_widget.*
+import kotlinx.android.synthetic.main.paylater_card_faq_bottomsheet_widget.*
 
-class PayLaterSignupBottomSheet: BottomSheetUnify() {
+class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
     init {
         setShowListener {
@@ -33,7 +30,7 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private val childLayoutRes = R.layout.paylater_signup_bottomsheet_widget
+    private val childLayoutRes = R.layout.paylater_card_faq_bottomsheet_widget
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +42,12 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
         initAdapter()
     }
 
-
     private fun initBottomSheet() {
         val childView = LayoutInflater.from(context).inflate(childLayoutRes,
                 null, false)
         setChild(childView)
     }
 
-    private fun initAdapter() {
-        rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter()
-        rvPayLaterPaymentMethods.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
 
     private fun setDefaultParams() {
         isDragable = true
@@ -65,15 +57,21 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
         //customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
+
+    private fun initAdapter() {
+        rvPaylaterFaq.adapter = PayLaterPaymentFaqAdapter()
+        rvPaylaterFaq.layoutManager =  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
     companion object {
-        private val DIALOG_TITLE = R.string.paylater_signup_title
+
 
         private const val TAG = "FT_TAG"
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
-            val payLaterSignupBottomSheet =  PayLaterSignupBottomSheet().apply {
+            val payLaterFaqBottomSheet = PayLaterFaqBottomSheet().apply {
                 arguments = bundle
             }
-            payLaterSignupBottomSheet.show(childFragmentManager, TAG)
+            payLaterFaqBottomSheet.show(childFragmentManager, TAG)
         }
     }
 }

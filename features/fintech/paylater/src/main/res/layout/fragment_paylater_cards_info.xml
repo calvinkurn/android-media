@@ -68,13 +68,42 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="2dp"
-            android:paddingBottom="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/borderGrey"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             tools:listitem="@layout/paylater_cards_content_info_item" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnHowToUse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sp_how_to_use"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSeeMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/sp_see_more"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

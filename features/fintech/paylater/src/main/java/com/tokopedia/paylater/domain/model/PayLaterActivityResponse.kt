@@ -1,0 +1,89 @@
+package com.tokopedia.paylater.domain.model
+
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
+
+data class PayLaterActivityResponse(
+        @SerializedName("paylater_getActiveProduct")
+        val productData: ArrayList<PayLaterProductData>
+)
+
+@Parcelize
+data class PayLaterProductData(
+        @SerializedName("id")
+        val productId: Long,
+        @SerializedName("name")
+        val partnerName: String,
+        @SerializedName("subheader")
+        val subHeader: String,
+        @SerializedName("img_light_url")
+        val partnerImgLightUrl: String,
+        @SerializedName("img_dark_url")
+        val partnerImgDarkUrl: String,
+        @SerializedName("benefit")
+        val partnerBenefitList: ArrayList<PayLaterPartnerBenefit>,
+        @SerializedName("detail")
+        val partnerDetailList: ArrayList<PayLaterPartnerDetails>,
+        @SerializedName("faq")
+        val partnerFaqList: ArrayList<PayLaterPartnerFaq>,
+        @SerializedName("faq_url")
+        val partnerFaqUrl: String,
+        @SerializedName("how_to_use")
+        val partnerUsageDetails: ArrayList<PayLaterPartnerUsageDetails>,
+        @SerializedName("how_to_apply")
+        val partnerApplyDetails: ArrayList<PayLaterPartnerApplyDetails>,
+        @SerializedName("is_able_apply")
+        val isAbleToApply: Boolean,
+        @SerializedName("apply_url")
+        val applyWebUrl: String,
+        @SerializedName("tnc")
+        val payLaterTnc: ArrayList<String>
+
+): Parcelable
+
+@Parcelize
+data class PayLaterPartnerBenefit(
+        @SerializedName("content")
+        val partnerBenefitContent: String,
+        @SerializedName("is_highlight")
+        val isHighlighted: Boolean
+): Parcelable
+
+@Parcelize
+data class PayLaterPartnerDetails(
+        @SerializedName("title")
+        val partnerTitle: String,
+        @SerializedName("content")
+        val partnerDetailContentList: ArrayList<String>
+): Parcelable
+
+@Parcelize
+data class PayLaterPartnerFaq(
+     @SerializedName("question")
+     val faqQuestion: String,
+     @SerializedName("answer")
+     val faqAnswer: String
+): Parcelable
+
+@Parcelize
+data class PayLaterPartnerUsageDetails(
+        @SerializedName("notes")
+        val partnerNotes: ArrayList<String>,
+        @SerializedName("steps")
+        val partnerSteps: ArrayList<String>
+): Parcelable
+
+@Parcelize
+data class PayLaterPartnerApplyDetails(
+        @SerializedName("notes")
+        val partnerNotes: ArrayList<String>,
+        @SerializedName("steps")
+        val partnerSteps: ArrayList<String>
+): Parcelable
+
+
+
+
+
+

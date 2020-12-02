@@ -12,6 +12,10 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.OfferListResponse
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
+import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter.Companion.VIEW_HOW_TO_REGISTER_BUTTON
+import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter.Companion.VIEW_SEE_MORE_BUTTON
+import com.tokopedia.paylater.presentation.widget.PayLaterFaqBottomSheet
+import com.tokopedia.paylater.presentation.widget.PayLaterRegisterBottomSheet
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PaymentOptionsFragment: Fragment() {
@@ -29,10 +33,21 @@ class PaymentOptionsFragment: Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = PayLaterOfferDescriptionAdapter(responseData.offerItemList)
         }
+        initListener()
         ImageHandler.loadImage(context,
                 ivPaylaterPartner,
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                 R.drawable.ic_loading_image)
+    }
+
+    private fun initListener() {
+        btnHowToUse.setOnClickListener {
+            PayLaterRegisterBottomSheet.show(Bundle(), childFragmentManager)
+        }
+
+        btnSeeMore.setOnClickListener {
+            PayLaterFaqBottomSheet.show(Bundle(), childFragmentManager)
+        }
     }
 
     companion object {
