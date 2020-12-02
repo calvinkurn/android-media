@@ -19,7 +19,7 @@ open class NotificationRemoveManager(
         get() = Dispatchers.IO + jobs
 
     fun clearNotification(context: Context) {
-        notificationIdToClear { elements ->
+        clearNotificationByCampaignId { elements ->
             elements.forEach {
                 clearNotificationManager(context, it.notificationId)
             }
@@ -30,7 +30,7 @@ open class NotificationRemoveManager(
         jobs.cancelChildren()
     }
 
-    private fun notificationIdToClear(invoke: (List<BaseNotificationModel>) -> Unit) {
+    private fun clearNotificationByCampaignId(invoke: (List<BaseNotificationModel>) -> Unit) {
         launch {
             val notifications = pushRepository(context)
                     .getNotification()
