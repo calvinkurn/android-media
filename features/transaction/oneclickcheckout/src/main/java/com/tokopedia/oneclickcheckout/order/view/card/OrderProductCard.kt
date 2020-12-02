@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Space
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -44,14 +43,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
-    private val dividerTop by lazy { view.findViewById<View>(R.id.divider_top) }
     private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
     private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
     private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
     private val btnProtectionInfo by lazy { view.findViewById<UnifyImageButton>(R.id.btn_protection_info) }
     private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
     private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
-    private val spacePurchaseProtection by lazy { view.findViewById<Space>(R.id.space_purchase_protection) }
     private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
 
     private var quantityTextWatcher: TextWatcher? = null
