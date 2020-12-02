@@ -104,6 +104,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val DELAY_SEARCH = 500L
         private const val DELAY_COACHMARK = 500L
         private const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        private const val COACHMARK_INDEX_ITEM_NEW_ORDER = 0
+        private const val COACHMARK_INDEX_ITEM_FILTER = 1
+        private const val COACHMARK_INDEX_ITEM_WAITING_PAYMENT = 2
+        private const val COACHMARK_INDEX_ITEM_BULK_ACCEPT = 3
+        private const val COACHMARK_ITEM_COUNT_SELLERAPP = 4
+        private const val COACHMARK_ITEM_COUNT_MAINAPP = 3
 
         private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
 
@@ -151,7 +157,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             // to handle new order card coachmark (coachmark need to scroll along with the recyclerview and gone when new order card gone off screen)
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (coachMark?.currentIndex == 0) {
+                if (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_NEW_ORDER) {
                     if (coachMark?.isDismissed == true && abs(dy) <= 100) {
                         reshowNewOrderCoachMark(dy < 0)
                     } else if (coachMark?.isDismissed == false) {
@@ -193,7 +199,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                                 quickActionButton.post {
                                     createCoachMarkItems(quickActionButton).run {
                                         if (activity?.isFinishing != false) return@post
-                                        if ((GlobalConfig.isSellerApp() && size == 4) || (!GlobalConfig.isSellerApp() && size == 3)) {
+                                        if ((GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_SELLERAPP) || (!GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_MAINAPP)) {
                                             currentNewOrderWithCoachMark = it
                                             coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
                                             coachMark?.isDismissed = false
@@ -1271,7 +1277,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         rvSomList.smoothScrollToPosition(0)
                     }
                 }
-                if (coachMark?.currentIndex == 0 || (coachMark?.currentIndex == 3 && !multiEditViews.isVisible)) {
+                if (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_NEW_ORDER || (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && !multiEditViews.isVisible)) {
                     dismissCoachMark(true)
                 }
             } else {
@@ -1529,10 +1535,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 when (currentIndex) {
-                    0 -> {
+                    COACHMARK_INDEX_ITEM_NEW_ORDER -> {
                         shouldShowCoachMark = true
                         coachMark?.isDismissed = true
-                        coachMarkIndexToShow = 0
+                        coachMarkIndexToShow = COACHMARK_INDEX_ITEM_NEW_ORDER
                         if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                             viewModel.resetGetOrderListParam()
                             somListSortFilterTab?.clear()
@@ -1545,9 +1551,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                             }
                         }
                     }
-                    2, 3 -> {
-                        if (currentIndex == 3 && tabActive == SomConsts.STATUS_NEW_ORDER) return
-                        if (currentIndex == 2 && tabActive == SomConsts.STATUS_ALL_ORDER) return
+                    COACHMARK_INDEX_ITEM_WAITING_PAYMENT, COACHMARK_INDEX_ITEM_BULK_ACCEPT -> {
+                        if (currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && tabActive == SomConsts.STATUS_NEW_ORDER) return
+                        if (currentIndex == COACHMARK_INDEX_ITEM_WAITING_PAYMENT && tabActive == SomConsts.STATUS_ALL_ORDER) return
                         viewModel.resetGetOrderListParam()
                         somListSortFilterTab?.clear()
                         skipSearch = true
@@ -1555,7 +1561,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         coachMarkIndexToShow = currentIndex
                         // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
                         // auto deselect new order to show all order
-                        val targetStatusFilter = if (currentIndex == 3 && tabActive != SomConsts.STATUS_NEW_ORDER) {
+                        val targetStatusFilter = if (currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && tabActive != SomConsts.STATUS_NEW_ORDER) {
                             SomConsts.STATUS_NEW_ORDER
                         } else ""
                         if (targetStatusFilter.isNotBlank()) {
@@ -1611,7 +1617,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     // 3. and there is any new order (we can tell by check get filter result, and we need to scroll through until new order card is showed)
     // only call this method after rendering order list
     private fun reshowNewOrderCoachMark(newOrders: List<SomListOrderUiModel>) {
-        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
+        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && coachMarkIndexToShow == COACHMARK_INDEX_ITEM_NEW_ORDER &&
                 (tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER) &&
                 somListSortFilterTab?.isFilterApplied() != true && searchBarSomList?.searchText.isNullOrBlank()) {
             // check whether the user has any new order
@@ -1634,7 +1640,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                                         if (getVisiblePercent(it) == 0) {
                                             createCoachMarkItems(it).run {
                                                 if (activity?.isFinishing != false) return@post
-                                                if ((GlobalConfig.isSellerApp() && size == 4) || (!GlobalConfig.isSellerApp() && size == 3)) {
+                                                if ((GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_SELLERAPP) || (!GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_MAINAPP)) {
                                                     currentNewOrderWithCoachMark = firstNewOrderViewPositionInAdapter
                                                     addOnScrollListener(recyclerViewScrollListener)
                                                     coachMark?.isDismissed = false
@@ -1660,10 +1666,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun reshowStatusFilterCoachMark() {
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark &&
-                coachMarkIndexToShow == 1 && sortFilterSomList?.isVisible == true && rvSomList != null) {
+                coachMarkIndexToShow == COACHMARK_INDEX_ITEM_FILTER && sortFilterSomList?.isVisible == true && rvSomList != null) {
             createCoachMarkItems(rvSomList).run {
                 if (activity?.isFinishing != false) return
-                if ((GlobalConfig.isSellerApp() && this.size == 4) || (!GlobalConfig.isSellerApp() && this.size == 3)) {
+                if ((GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_SELLERAPP) || (!GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_MAINAPP)) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
                     coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
@@ -1678,10 +1684,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun reshowWaitingPaymentOrderListCoachMark() {
         val waitingPaymentOrderListCountResult = viewModel.waitingPaymentCounterResult.value
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
-                coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
+                coachMarkIndexToShow == COACHMARK_INDEX_ITEM_WAITING_PAYMENT && waitingPaymentOrderListCountResult is Success) {
             createCoachMarkItems(rvSomList).run {
                 if (activity?.isFinishing != false) return
-                if ((GlobalConfig.isSellerApp() && this.size == 4) || (!GlobalConfig.isSellerApp() && this.size == 3)) {
+                if ((GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_SELLERAPP) || (!GlobalConfig.isSellerApp() && size == COACHMARK_ITEM_COUNT_MAINAPP)) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
                     coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
@@ -1695,10 +1701,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun reshowBulkAcceptOrderCoachMark() {
         if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
-                coachMarkIndexToShow == 3 && tvSomListBulk?.isVisible == true) {
+                coachMarkIndexToShow == COACHMARK_INDEX_ITEM_BULK_ACCEPT && tvSomListBulk?.isVisible == true) {
             createCoachMarkItems(rvSomList).run {
                 if (activity?.isFinishing != false) return
-                if (this.size == 4 && GlobalConfig.isSellerApp()) {
+                if (size == COACHMARK_ITEM_COUNT_SELLERAPP && GlobalConfig.isSellerApp()) {
                     currentNewOrderWithCoachMark = -1
                     coachMark?.isDismissed = false
                     coachMark?.showCoachMark(this, index = coachMarkIndexToShow)
