@@ -429,11 +429,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
-            SomAnalytics.eventClickStatusFilter(status.key, status.status)
             status.key
         } else {
             viewModel.setStatusOrderFilter(emptyList())
-            SomAnalytics.eventClickStatusFilter(SomConsts.STATUS_ALL_ORDER, SomConsts.STATUS_NAME_ALL_ORDER)
             ""
         }
         setDefaultSortByValue()
@@ -475,6 +473,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     somFilterBottomSheet?.show(childFragmentManager)
                 }
             }
+        }
+        somListSortFilterTab?.getSelectedFilterStatus().let {
+            val selectedFilterKeys = arrayListOf<String>()
+            selectedFilterKeys.addAll(somListSortFilterTab?.getSelectedFilterKeys().orEmpty())
+            if (it.isNullOrBlank()) {
+                selectedFilterKeys.add(0, SomConsts.STATUS_ALL_ORDER)
+            } else {
+                selectedFilterKeys.add(0, it)
+            }
+            SomAnalytics.eventClickStatusFilter(selectedFilterKeys)
         }
     }
 
@@ -582,6 +590,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
                     val orderRejectRequest = SomRejectRequestParam(
                             orderId = selectedOrderId,
                             rCode = "0",
@@ -591,6 +600,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
 
                 override fun onRejectCancelRequest() {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${order.orderStatusId}", order.status)
                     rejectCancelOrder(selectedOrderId)
                 }
             })
@@ -891,8 +901,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         }
                     }
                     SomAnalytics.eventBulkAcceptOrder(
-                            somListSortFilterTab?.getSelectedFilterStatus().orEmpty(),
-                            somListSortFilterTab?.getSelectedFilterStatusName().orEmpty(),
+                            getSelectedOrderStatusCodes().joinToString(","),
+                            getSelectedOrderStatusNames().joinToString(","),
                             successCount,
                             userSession.userId,
                             userSession.shopId)
@@ -960,6 +970,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             }
             setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed)) { dismiss() }
         }
+    }
+
+    private fun getSelectedOrderStatusCodes(): List<Int> {
+        return adapter.data.filterIsInstance<SomListOrderUiModel>()
+                .filter { it.isChecked }
+                .map { it.orderStatusId }
+                .distinct()
+    }
+
+    private fun getSelectedOrderStatusNames(): List<String> {
+        return adapter.data.filterIsInstance<SomListOrderUiModel>()
+                .filter { it.isChecked }
+                .map { it.status }
+                .distinct()
     }
 
     private fun getSelectedOrderIds(): List<String> {
