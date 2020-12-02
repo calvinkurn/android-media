@@ -26,6 +26,7 @@ class TravelSliceActivity : Activity() {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_DASHBOARD)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                action = System.currentTimeMillis().toString()
             }
         }
 
@@ -33,6 +34,7 @@ class TravelSliceActivity : Activity() {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_DETAIL)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                action = System.currentTimeMillis().toString()
             }
         }
 
@@ -40,6 +42,7 @@ class TravelSliceActivity : Activity() {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_ORDER)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                action = System.currentTimeMillis().toString()
             }
         }
 
@@ -47,6 +50,7 @@ class TravelSliceActivity : Activity() {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.FLIGHT_ORDER)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                action = System.currentTimeMillis().toString()
             }
         }
 
@@ -54,6 +58,7 @@ class TravelSliceActivity : Activity() {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.FLIGHT_ORDERLIST)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                action = System.currentTimeMillis().toString()
             }
         }
     }
@@ -96,5 +101,4 @@ class TravelSliceActivity : Activity() {
         }
         finish()
     }
-
 }

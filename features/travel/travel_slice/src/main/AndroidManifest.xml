@@ -16,8 +16,7 @@
             </intent-filter>
         </provider>
 
-        <activity android:name=".ui.provider.TravelSliceActivity"
-            android:launchMode="singleTask">
+        <activity android:name=".ui.provider.TravelSliceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

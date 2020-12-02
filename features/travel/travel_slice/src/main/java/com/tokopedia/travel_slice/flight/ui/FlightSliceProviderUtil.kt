@@ -110,11 +110,10 @@ object FlightSliceProviderUtil {
     private fun buildIntentFromOrderListApplink(context: Context): PendingIntent =
             PendingIntent.getActivity(context, 0,
             TravelSliceActivity.createFlightOrderListIntent(context, ApplinkConst.FLIGHT_ORDER),
-            0)
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
     private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
                 TravelSliceActivity.createFlightOrderDetailIntent(context, applink),
-                0)
-
+                PendingIntent.FLAG_UPDATE_CURRENT)
 }

@@ -86,18 +86,18 @@ object HotelSliceProviderUtil {
     private fun buildIntentFromHotelDetail(context: Context, hotelId: Long, checkIn: String): PendingIntent {
         return PendingIntent.getActivity(context, 0,
                 TravelSliceActivity.createHotelDetailIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
-                0)
+                PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun buildIntentFromHotelDashboard(context: Context): PendingIntent =
         PendingIntent.getActivity(context, 0,
                 TravelSliceActivity.createHotelDashboardIntent(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL),
-                0)
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
     private fun buildIntentFromHotelOrderApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
                  TravelSliceActivity.createHotelOrderDetailIntent(context, applink),
-                0)
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice {
