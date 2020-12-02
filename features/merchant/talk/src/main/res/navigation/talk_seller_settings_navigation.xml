@@ -31,7 +31,14 @@
     <fragment
         android:id="@+id/talkSmartReplyDetailFragment"
         android:name="com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.fragment.TalkSmartReplyDetailFragment"
-        tools:layout="@layout/fragment_talk_smart_reply_detail" />
+        tools:layout="@layout/fragment_talk_smart_reply_detail">
+
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+
+    </fragment>
 
     <fragment
         android:id="@+id/talkTemplateListFragment"

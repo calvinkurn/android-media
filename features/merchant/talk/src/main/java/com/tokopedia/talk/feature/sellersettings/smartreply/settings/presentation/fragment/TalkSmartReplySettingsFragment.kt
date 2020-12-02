@@ -11,7 +11,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
@@ -90,7 +92,12 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                 setLabelType(Label.GENERAL_LIGHT_GREEN)
             }
             talkStockSubtitleChevron.setOnClickListener {
+                val cacheManagerId = putDataIntoCacheManager()
+                if(cacheManagerId.isNullOrEmpty()) {
+                    return@setOnClickListener
+                }
                 val destination = TalkSmartReplySettingsFragmentDirections.actionTalkSmartReplySettingsFragmentToTalkSmartReplyDetailFragment()
+                destination.cacheManagerId = cacheManagerId
                 NavigationController.navigate(this, destination)
             }
             return
@@ -112,6 +119,19 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     private fun setToolbarTitle() {
         val toolbar = activity?.findViewById<Toolbar>(R.id.talk_seller_settings_toolbar)
         toolbar?.setTitle(R.string.title_smart_reply_settings_page)
+    }
+
+    private fun putDataIntoCacheManager(): String {
+        (viewModel.smartReplyData.value as? Success)?.data?.let {
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            cacheManager?.apply {
+                put(TalkSmartReplyConstants.IS_SMART_REPLY_ON, it.isSmartReplyOn)
+                put(TalkSmartReplyConstants.MESSAGE_READY, it.messageReady)
+                put(TalkSmartReplyConstants.MESSAGE_NOT_READY, it.messageNotReady)
+            }
+            return cacheManager?.id ?: ""
+        }
+        return ""
     }
 
     private fun showError() {
