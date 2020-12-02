@@ -912,7 +912,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun reloadShipping() {
-            viewModel.updateProduct(null, shouldReloadRates = true)
+            viewModel.reloadRates()
         }
 
         override fun chooseAddress(currentAddressId: String) {

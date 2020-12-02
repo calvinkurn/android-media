@@ -26,6 +26,37 @@ import rx.Observable
 class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
+    fun `Reload Rates`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(exactly = 2) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `Reload Rates On Invalid Button State`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
+
+        // When
+        orderSummaryPageViewModel.reloadRates()
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
     fun `Get Rates Failed`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)

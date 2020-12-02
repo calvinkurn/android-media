@@ -820,4 +820,36 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
     }
+
+    @Test
+    fun `Get Enabled Revamp Data`() {
+        // Given
+        val revampData = OccRevampData(isEnable = true, 1, "")
+        val response = helper.orderData.copy(revampData = revampData)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(revampData, orderSummaryPageViewModel.revampData)
+        assertEquals(true, orderSummaryPageViewModel.isNewFlow)
+    }
+
+    @Test
+    fun `Get Disabled Revamp Data`() {
+        // Given
+        val revampData = OccRevampData(isEnable = false, 1, "")
+        val response = helper.orderData.copy(revampData = revampData)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(revampData, orderSummaryPageViewModel.revampData)
+        assertEquals(false, orderSummaryPageViewModel.isNewFlow)
+    }
 }
