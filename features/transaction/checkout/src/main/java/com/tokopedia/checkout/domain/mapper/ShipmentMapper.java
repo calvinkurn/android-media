@@ -1,28 +1,5 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.ShipProd;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MvcShippingBenefit;
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
@@ -41,25 +18,27 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductShipmentMapping;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MessageInfo;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MvcShippingBenefit;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
@@ -71,6 +50,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
@@ -639,10 +622,9 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
 
                                     if (!isDisablePPP) {
-                                        if (product.getPurchaseProtectionPlanData() != null) {
+                                        if (product.getPurchaseProtectionPlanDataResponse() != null) {
                                             PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
-                                            com.tokopedia.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
-                                                    product.getPurchaseProtectionPlanData();
+                                            PurchaseProtectionPlanDataResponse pppDataMapping = product.getPurchaseProtectionPlanDataResponse();
 
                                             purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
                                             purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());

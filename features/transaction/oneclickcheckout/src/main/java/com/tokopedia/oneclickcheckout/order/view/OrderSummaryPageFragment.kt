@@ -1201,6 +1201,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.updateProduct(product, shouldReloadRates)
     }
 
+    override fun onPurchaseProtectionInfoClicked(url: String) {
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+    }
+
+    override fun onPurchaseProtectionCheckedChange() {
+        viewModel.calculateTotal()
+    }
+
     private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {

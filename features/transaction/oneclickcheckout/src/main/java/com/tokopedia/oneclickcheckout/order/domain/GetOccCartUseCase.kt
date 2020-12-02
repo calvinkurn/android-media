@@ -196,6 +196,19 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         }
         cart_string
         payment_profile
+        purchase_protection_plan_data {
+          protection_available
+          protection_type_id
+          protection_price_per_product
+          protection_price
+          protection_title
+          protection_subtitle
+          protection_link_text
+          protection_link_url
+          protection_opt_in
+          protection_checkbox_disabled
+          unit
+        }
         shop {
           shop_id
           user_id
