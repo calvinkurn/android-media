@@ -385,6 +385,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         if (message.isNotBlank()) {
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
+                        source = SOURCE_OTHERS
                         refresh(false, isFullRefresh = it.isFullRefresh)
                     }
                 }
@@ -429,6 +430,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
                         priceValidationDialog.setPrimaryCTAClickListener {
                             priceValidationDialog.dismiss()
+                            source = SOURCE_OTHERS
                             refresh()
                         }
                         priceValidationDialog.show()
@@ -1007,6 +1009,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             } else {
                                 Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
+                            source = SOURCE_OTHERS
                             refresh()
                         }
                     }
@@ -1105,6 +1108,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             } else {
                                 Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
+                            source = SOURCE_OTHERS
                             refresh()
                         }
                     }
@@ -1379,6 +1383,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             OccPromptButton.ACTION_RELOAD -> {
                 dialog.dismiss()
+                source = SOURCE_OTHERS
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
@@ -1418,6 +1423,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             OccPromptButton.ACTION_RELOAD -> {
                 bottomSheet.dismiss()
+                source = SOURCE_OTHERS
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
