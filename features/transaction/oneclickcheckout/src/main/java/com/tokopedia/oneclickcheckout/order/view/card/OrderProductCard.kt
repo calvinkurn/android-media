@@ -6,8 +6,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Space
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,7 +31,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
 
-    private val ospMainContent by lazy { view.findViewById<ConstraintLayout>(R.id.osp_main_content) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
     private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
@@ -174,11 +171,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun renderPurchaseProtection() {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(ospMainContent)
-        constraintSet.connect(dividerTop.id, ConstraintSet.START, ospMainContent.id, ConstraintSet.START, 0)
-        constraintSet.connect(dividerTop.id, ConstraintSet.END, ospMainContent.id, ConstraintSet.END, 0)
-
         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
             tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
             tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
@@ -198,12 +190,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
             tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
 
-            constraintSet.connect(dividerTop.id, ConstraintSet.TOP, spacePurchaseProtection.id, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(ospMainContent)
             groupPurchaseProtection.show()
         } else {
-            constraintSet.connect(dividerTop.id, ConstraintSet.TOP, tfNote.id, ConstraintSet.BOTTOM, 0)
-            constraintSet.applyTo(ospMainContent)
             groupPurchaseProtection.gone()
         }
     }

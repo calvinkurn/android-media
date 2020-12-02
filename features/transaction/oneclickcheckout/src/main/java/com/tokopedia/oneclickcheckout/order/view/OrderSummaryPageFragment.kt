@@ -106,7 +106,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
-    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.osp_main_content) }
+    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
 
     private val tickerOsp by lazy { view?.findViewById<Ticker>(R.id.ticker_osp) }
 

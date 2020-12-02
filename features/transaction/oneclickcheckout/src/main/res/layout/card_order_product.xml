@@ -198,7 +198,6 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_product_qty"
@@ -212,6 +211,13 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tv_quantity_stock_available,qty_editor_product" />
+
+    <Space
+        android:id="@+id/space_purchase_protection"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_note" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_purchase_protection"
@@ -228,7 +234,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
-        app:layout_constraintTop_toBottomOf="@+id/tf_note"
+        app:layout_constraintTop_toBottomOf="@+id/space_purchase_protection"
         app:typographyType="body_3"
         tools:text="Proteksi di luar cakupan garansi" />
 
@@ -267,7 +273,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tf_note"
+        app:layout_constraintTop_toBottomOf="@+id/space_purchase_protection"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Rp80.000" />
@@ -282,18 +288,18 @@
         app:typographyType="small"
         tools:text="Per Barang" />
 
-    <Space
-        android:id="@+id/space_purchase_protection"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_purchase_protection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="cb_purchase_protection,tv_protection_title,tv_protection_description,btn_protection_info,tv_protection_price,tv_protection_unit,space_purchase_protection" />
+
+    <Space
+        android:id="@+id/space_note"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
 
 </merge>

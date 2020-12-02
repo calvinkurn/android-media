@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/osp_main_content"
+                android:id="@+id/main_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -70,7 +70,7 @@
                     android:background="@color/Neutral_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tf_note" />
+                    app:layout_constraintTop_toBottomOf="@+id/space_note" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_2"
