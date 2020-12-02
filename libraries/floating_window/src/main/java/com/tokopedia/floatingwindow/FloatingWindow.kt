@@ -65,11 +65,13 @@ internal class FloatingWindow private constructor(context: Context) {
         FloatingWindowHelper.startService(appContext)
     }
 
-    fun removeByKey(key: String) {
+    fun removeByKey(key: String) = synchronized(this) {
         val prop = viewMap[key] ?: return
 
         if (prop.status == Status.Attached) mWindowManager.removeView(prop.floatingView.view)
         viewMap.remove(key)
+
+        if (viewMap.isEmpty()) FloatingWindowHelper.stopService(appContext)
     }
 
     fun attachView() {
@@ -84,7 +86,7 @@ internal class FloatingWindow private constructor(context: Context) {
 
     private fun removeAllViews() {
         viewMap
-                .onEach { mWindowManager.removeView(it.value.floatingView.view) }
+                .onEach { removeByKey(it.key) }
                 .clear()
     }
 

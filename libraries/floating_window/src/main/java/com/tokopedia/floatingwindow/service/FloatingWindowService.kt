@@ -39,16 +39,8 @@ internal class FloatingWindowService : Service() {
             putExtra(INTENT_COMMAND, INTENT_COMMAND_EXIT)
         }
 
-        val pipIntent = Intent(this, FloatingWindowService::class.java).apply {
-            putExtra(INTENT_COMMAND, INTENT_COMMAND_PIP)
-        }
-
         val exitPendingIntent = PendingIntent.getService(
                 this, CODE_EXIT_INTENT, exitIntent, 0
-        )
-
-        val pipPendingIntent = PendingIntent.getService(
-                this, CODE_PIP_INTENT, pipIntent, 0
         )
 
         // From Android O, it's necessary to create a notification channel first.
@@ -109,9 +101,6 @@ internal class FloatingWindowService : Service() {
             INTENT_COMMAND_START -> {
                 FloatingWindow.getInstance(applicationContext).attachView()
             }
-            INTENT_COMMAND_PIP -> {
-
-            }
             INTENT_COMMAND_EXIT -> {
                 stopService()
                 return START_NOT_STICKY
@@ -132,11 +121,9 @@ internal class FloatingWindowService : Service() {
         const val INTENT_COMMAND = "com.tokopedia.floatingwindow.COMMAND"
         const val INTENT_COMMAND_START = "START"
         const val INTENT_COMMAND_EXIT = "EXIT"
-        const val INTENT_COMMAND_PIP = "PIP"
 
         private const val NOTIFICATION_CHANNEL_GENERAL = "floating_window_general"
         private const val CODE_FOREGROUND_SERVICE = 1
         private const val CODE_EXIT_INTENT = 2
-        private const val CODE_PIP_INTENT = 3
     }
 }
