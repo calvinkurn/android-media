@@ -41,9 +41,6 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
         var bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality)
                 ?: getBitmap(baseNotificationModel.media?.mediumQuality)
         if (null != bitmap) {
-            /*val ratio = getRatio(bitmap)
-            bitmap = getBitmap(baseNotificationModel.media?.mediumQuality, ratio.first, ratio.second)
-*/
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
                     .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
