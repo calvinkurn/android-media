@@ -77,6 +77,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
@@ -108,6 +109,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onCreate() {
         super.onCreate();
+        Hansel.init(this);
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();

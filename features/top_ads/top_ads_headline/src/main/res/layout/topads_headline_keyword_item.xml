@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toEndOf="@id/checkBox"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Kemeja Lengan Pendek " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:layout_constraintStart_toStartOf="@id/keywordName"
+            app:layout_constraintTop_toBottomOf="@id/keywordName"
+            tools:text="33.231 orang mencari ini /bulan" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:focusable="false"
+            android:clickable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/keywordBid"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            app:layout_constraintEnd_toStartOf="@id/klik"
+            app:layout_constraintStart_toStartOf="@id/keywordDesc"
+            app:layout_constraintTop_toBottomOf="@id/keywordDesc"
+            app:text_field_input_type="number"
+            app:text_field_label_static="false"
+            app:text_field_prepend_text="Rp"
+            tools:layout_height="@dimen/dp_50"
+            tools:layout_width="@dimen/dp_50" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/klik"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_common_headline_klik"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@id/keywordBid"
+            app:layout_constraintBottom_toBottomOf="@id/keywordBid"
+            app:layout_constraintStart_toEndOf="@id/keywordBid"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

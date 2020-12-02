@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
@@ -22,11 +23,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductReviewDetailViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val userSession: UserSessionInterface,
-        private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
-        private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
+    private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
+) : BaseViewModel(dispatcherProvider.main) {
 
     var filterPeriod: String = ""
     var sortBy: String = ""
@@ -209,7 +210,7 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     fun getFeedbackDetailListNext(productID: Int, sortBy: String, page: Int) {
         launchCatchError(block = {
-            val feedbackDetailList = withContext(dispatcherProvider.io()) {
+            val feedbackDetailList = withContext(dispatcherProvider.io) {
                 getProductFeedbackDetailListUseCase.params = GetProductFeedbackDetailListUseCase.createParams(
                         productID,
                         sortBy,

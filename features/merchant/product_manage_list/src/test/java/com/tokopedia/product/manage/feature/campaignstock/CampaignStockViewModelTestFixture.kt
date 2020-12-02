@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.campaignstock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
@@ -45,7 +45,7 @@ open class CampaignStockViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = CampaignStockViewModel(campaignStockAllocationUseCase, otherCampaignStockDataUseCase, getProductVariantUseCase, editStockUseCase, editProductVariantUseCase, TestCoroutineDispatchers).also {
+        viewModel = CampaignStockViewModel(campaignStockAllocationUseCase, otherCampaignStockDataUseCase, getProductVariantUseCase, editStockUseCase, editProductVariantUseCase, CoroutineTestDispatchersProvider).also {
             it.getStockAllocationData.observeForever(getStockAllocationLiveDataObserver)
         }
     }

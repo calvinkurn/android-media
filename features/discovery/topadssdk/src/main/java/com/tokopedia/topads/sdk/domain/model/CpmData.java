@@ -34,6 +34,9 @@ public class CpmData implements Parcelable {
     @SerializedName(KEY_APPLINKS)
     private String applinks;
 
+    public CpmData() {
+    }
+
     public CpmData(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
             setId(object.getString(KEY_ID));

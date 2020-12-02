@@ -65,6 +65,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -285,7 +286,9 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let{
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
@@ -667,7 +670,7 @@ class ShopPageFragment :
             setIcon(iconBuilder)
             if(shopViewModel.isUserSessionActive)
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
-            setToolbarPageName("$SHOPPAGE - $shopId")
+            setToolbarPageName(SHOP_PAGE)
         }
     }
 

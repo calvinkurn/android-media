@@ -64,7 +64,7 @@ class PinCompleteActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
             setHomeAsUpIndicator(R.drawable.ic_close_toolbar_profile_completion)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinCompleteActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinCompleteActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
         }
     }
 
@@ -80,7 +80,7 @@ class PinCompleteActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

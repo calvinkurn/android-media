@@ -230,8 +230,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromCreditCardPicker(resultCode: Int, data: Intent?) {
         val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
-        if (metadata != null) {
-            viewModel.updateCreditCard(metadata)
+        val gatewayCode = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_GATEWAY_CODE)
+        if (gatewayCode != null && metadata != null) {
+            viewModel.updateCreditCard(gatewayCode, metadata)
         }
     }
 

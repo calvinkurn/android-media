@@ -8,11 +8,10 @@ import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +32,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
     private lateinit var viewModel: ShopHomeNplCampaignTncBottomSheetViewModel
 

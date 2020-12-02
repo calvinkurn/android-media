@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
 import com.tokopedia.vouchercreation.common.domain.usecase.UpdateVoucherUseCase
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam

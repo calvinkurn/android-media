@@ -82,6 +82,10 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
     }
 
+    override fun getUserId(): String {
+        return userSessionInterface.userId
+    }
+
     private fun initRecyclerView(view: View) {
         view.recycler_view?.adapter = adapter
     }
@@ -97,6 +101,17 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        arguments?.getString(TITLE_ARGS, "")?.let {
+            if(!it.contains(OTHER)){
+                CategoryTracking.onClickCloseCategory(userSessionInterface.userId)
+            } else {
+                CategoryTracking.onClickCloseLainnya(userSessionInterface.userId)
+            }
+        }
+        super.onDestroy()
     }
 
     companion object {
