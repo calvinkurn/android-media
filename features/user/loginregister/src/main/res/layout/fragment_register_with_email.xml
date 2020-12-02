@@ -99,6 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
+        android:contentDescription="@string/content_desc_register_button_register"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/title_register_wo_u"

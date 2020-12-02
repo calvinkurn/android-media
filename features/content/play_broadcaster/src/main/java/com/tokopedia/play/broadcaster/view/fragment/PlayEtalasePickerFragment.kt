@@ -252,14 +252,14 @@ class PlayEtalasePickerFragment @Inject constructor(
         destFragment.arguments = extras
         onFragment(destFragment)
         fragmentTransaction
-//                .apply {
-//                    sharedElements.forEach {
-//                        val transitionName = it.compatTransitionName
-//                        if (transitionName != null) addSharedElement(it, transitionName)
-//                    }
-//
-//                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-//                }
+                .apply {
+                    sharedElements.forEach {
+                        val transitionName = it.compatTransitionName
+                        if (transitionName != null) addSharedElement(it, transitionName)
+                    }
+
+                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
+                }
                 .replace(R.id.fl_etalase_flow, destFragment, fragmentClass.name)
                 .addToBackStack(fragmentClass.name)
                 .commit()

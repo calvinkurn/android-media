@@ -48,7 +48,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         item.isSelected = true
         notifyItemChanged(position)
         if (item.isSelected) {
-            this.idList = ArrayList(idList)
+            this.idList = ArrayList(item.idList)
         }
     }
 
