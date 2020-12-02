@@ -167,10 +167,6 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun clearProductViewIds() {
-        viewedProductsSet.clear()
-    }
-
     override fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
         if (!componentsItems.data.isNullOrEmpty()) {
             var productCardItemList = ""
