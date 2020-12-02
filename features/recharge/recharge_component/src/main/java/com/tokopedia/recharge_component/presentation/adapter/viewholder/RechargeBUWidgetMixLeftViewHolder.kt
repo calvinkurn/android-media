@@ -13,8 +13,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ImageHandler
@@ -45,7 +47,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
     : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
-    private var data: RechargePerso = RechargePerso()
+    lateinit var dataModel: RechargeBUWidgetDataModel
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -72,19 +74,19 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
-        data = element.data
-        if (data.items.isNotEmpty()) {
+        dataModel = element
+        if (element.data.items.isNotEmpty()) {
             itemView.recharge_bu_content_shimmering.hide()
             isCacheData = element.isDataCache
             initVar()
-            setupBackground(data.mediaUrl, data.option2)
-            setupList(data)
+            setupBackground(element)
+            setupList(element)
             setSnapEffect()
             setHeaderComponent(element)
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
-                    listener.onRechargeBUWidgetImpression(data, element.channel)
+                    listener.onRechargeBUWidgetImpression(element)
                 }
             }
         } else {
@@ -98,19 +100,19 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if (!isCacheData) listener.onRechargeBUWidgetImpression(data, channelModel)
+//        if (!isCacheData) listener.onRechargeBUWidgetImpression(dataModel)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        listener.onRechargeBUWidgetItemClick(data, position, channelModel)
+        listener.onRechargeBUWidgetItemClick(dataModel, position)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        listener.onRechargeBUWidgetClickSeeAllCard(data, channel)
+        listener.onRechargeBUWidgetClickSeeAllCard(dataModel)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        listener.onRechargeBUWidgetClickBanner(data, channel)
+        listener.onRechargeBUWidgetClickBanner(dataModel)
     }
 
     private fun initVar() {
@@ -120,12 +122,14 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         parallaxView = itemView.findViewById(R.id.recharge_bu_parallax_view)
     }
 
-    private fun setupBackground(imageUrl: String, gradientColor: String) {
+    private fun setupBackground(element: RechargeBUWidgetDataModel) {
+        val imageUrl = element.data.mediaUrl
         if (imageUrl.isNotEmpty()) {
-//            image.addOnImpressionListener(channel) {
-//                if (!isCacheData)
-//                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
-//            }
+            val gradientColor = element.data.option2
+            image.addOnImpressionListener(element.channel) {
+                if (!isCacheData)
+                    listener.onRechargeBUWidgetBannerImpression(dataModel)
+            }
             image.loadImage(imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad() {
                     if (gradientColor.isNotEmpty()) {
@@ -139,21 +143,24 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     }
                 }
             })
-        } else {
         }
     }
 
-    private fun setupList(data: RechargePerso) {
-        val defaultChannelModel = ChannelModel(data.title, data.title)
+    private fun setupList(element: RechargeBUWidgetDataModel) {
+        val rechargePerso = element.data
+        val channel = element.channel.copy(rechargePerso.title, rechargePerso.title)
         image.alpha = 1f
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(defaultChannelModel)
+        val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(defaultChannelModel, adapterPosition, this))
-        val productDataList = convertDataToProductData(data)
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.bannerApplink))
+        val productDataList = convertDataToProductData(rechargePerso)
         listData.addAll(productDataList)
+        if (rechargePerso.textlink.isNotEmpty()) {
+            listData.add(CarouselSeeMorePdpDataModel(rechargePerso.applink, listener = this))
+        }
 
 //        launch {
 //            try {
@@ -241,9 +248,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
-        headerView.setChannel(element.channel, object : HeaderListener {
+        val channel = element.channel.copy(
+                channelHeader = ChannelHeader(name = element.data.title, applink = element.data.applink)
+        )
+        headerView.setChannel(channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                listener.onRechargeBUWidgetClickSeeAllButton(element.data, element.channel)
+                listener.onRechargeBUWidgetClickSeeAllButton(element)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

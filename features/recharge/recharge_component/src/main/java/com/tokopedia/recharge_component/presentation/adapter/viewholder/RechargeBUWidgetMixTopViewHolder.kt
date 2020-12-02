@@ -13,6 +13,7 @@ import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecor
 import com.tokopedia.home_component.model.ChannelCtaData
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
@@ -65,15 +66,15 @@ class RechargeBUWidgetMixTopViewHolder(
         const val BU_WIDGET_TYPE_TOP = "mix-top"
     }
 
-    private var data: RechargePerso = RechargePerso()
+    lateinit var dataModel: RechargeBUWidgetDataModel
 
     private val masterJob = SupervisorJob()
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: RechargeBUWidgetDataModel) {
-        data = element.data
-        if (data.items.isNotEmpty()) {
+        dataModel = element
+        if (dataModel.data.items.isNotEmpty()) {
             itemView.recharge_bu_content_shimmering.hide()
             isCacheData = element.isDataCache
             mappingView(element)
@@ -81,7 +82,7 @@ class RechargeBUWidgetMixTopViewHolder(
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
-                    listener.onRechargeBUWidgetImpression(data, element.channel)
+                    listener.onRechargeBUWidgetImpression(dataModel)
                 }
             }
         } else {
@@ -95,19 +96,19 @@ class RechargeBUWidgetMixTopViewHolder(
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if (!isCacheData) listener.onRechargeBUWidgetImpression(data, channelModel)
+//        if (!isCacheData) listener.onRechargeBUWidgetImpression(dataModel)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        listener.onRechargeBUWidgetItemClick(data, position, channelModel)
+        listener.onRechargeBUWidgetItemClick(dataModel, position)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-
+        listener.onRechargeBUWidgetClickSeeAllCard(dataModel)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-
+        listener.onRechargeBUWidgetClickBanner(dataModel)
     }
 
     private fun mappingView(element: RechargeBUWidgetDataModel) {
@@ -132,19 +133,19 @@ class RechargeBUWidgetMixTopViewHolder(
 
     private fun mappingHeader(element: RechargeBUWidgetDataModel){
         with (element.data) {
-            bannerTitle.text = data.title
-            bannerTitle.visibility = if (data.title.isEmpty()) View.GONE else View.VISIBLE
-            bannerDescription.text = data.option3
-            bannerDescription.visibility = if (data.option3.isEmpty()) View.GONE else View.VISIBLE
+            bannerTitle.text = title
+            bannerTitle.visibility = if (title.isEmpty()) View.GONE else View.VISIBLE
+            bannerDescription.text = option3
+            bannerDescription.visibility = if (option3.isEmpty()) View.GONE else View.VISIBLE
 
-            background.setGradientBackground(arrayListOf(data.option2))
+            background.setGradientBackground(arrayListOf(option2))
             background.addOnImpressionListener(element.channel) {
                 if (!isCacheData)
-                    listener.onRechargeBUWidgetBannerImpression(element.data, element.channel)
+                    listener.onRechargeBUWidgetBannerImpression(element)
             }
 
             bannerUnifyButton.setOnClickListener {
-                listener.onRechargeBUWidgetClickSeeAllButton(data, element.channel)
+                listener.onRechargeBUWidgetClickSeeAllButton(element)
             }
         }
     }
@@ -210,6 +211,9 @@ class RechargeBUWidgetMixTopViewHolder(
         val channelProductData = convertDataToProductData(data)
 //        setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
+        if (data.textlink.isNotEmpty()) {
+            visitables.add(CarouselSeeMorePdpDataModel(data.applink, listener = this))
+        }
         return visitables
     }
 
@@ -252,7 +256,7 @@ class RechargeBUWidgetMixTopViewHolder(
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
         headerView.setChannel(element.channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                listener.onRechargeBUWidgetClickSeeAllButton(element.data, element.channel)
+//                listener.onRechargeBUWidgetClickSeeAllButton(element)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
