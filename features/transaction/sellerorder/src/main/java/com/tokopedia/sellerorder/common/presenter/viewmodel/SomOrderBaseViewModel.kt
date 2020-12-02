@@ -44,7 +44,7 @@ abstract class SomOrderBaseViewModel constructor(
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
         get() = _rejectCancelOrderResult
 
-    protected var getUserRolesJob: Job? = null
+    private var userRolesJob: Job? = null
 
     fun acceptOrder(orderId: String) {
         launchCatchError(block = {
@@ -79,17 +79,23 @@ abstract class SomOrderBaseViewModel constructor(
     }
 
     fun getUserRoles() {
-        if (getUserRolesJob?.isCompleted != false) {
-            getUserRolesJob = launchCatchError(block = {
+        if (getUserRolesJob()?.isCompleted != false) {
+            setUserRolesJob(launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
                 _userRoleResult.postValue(getUserRoleUseCase.execute())
             }, onError = {
                 _userRoleResult.postValue(Fail(it))
-            })
+            }))
         }
     }
 
     fun setUserRoles(userRoles: SomGetUserRoleUiModel) {
         _userRoleResult.postValue(Success(userRoles))
+    }
+
+    fun getUserRolesJob() = userRolesJob
+
+    fun setUserRolesJob(job: Job) {
+        userRolesJob = job
     }
 }

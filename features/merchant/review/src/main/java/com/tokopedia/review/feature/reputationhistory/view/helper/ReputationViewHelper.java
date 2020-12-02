@@ -22,12 +22,12 @@ public class ReputationViewHelper {
     }
 
     public void renderData(ShopModel shopModel) {
-        ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
-        reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-        reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-        reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
-        reputationViewModel.stats = shopModel.stats;
+        ReputationView.ReputationUiModel reputationUiModel = new ReputationView.ReputationUiModel();
+        reputationUiModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
+        reputationUiModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
+        reputationUiModel.reputationPoints = shopModel.stats.shopReputationScore;
+        reputationUiModel.stats = shopModel.stats;
 
-        sellerReputationHeaderView.init(reputationViewModel);
+        sellerReputationHeaderView.init(reputationUiModel);
     }
 }
