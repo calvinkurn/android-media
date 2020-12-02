@@ -116,18 +116,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
         viewModel.loadNotificationFilter(containerListener?.role)
-        initToolbar()
-//        setHasOptionsMenu(true)
-    }
-
-    private fun initToolbar() {
-//        navToolbarObject.setIcon(
-//                IconBuilder()
-//                        .addIcon(IconList.ID_MESSAGE) {}
-//                        .addIcon(IconList.ID_NOTIFICATION) {}
-//                        .addIcon(IconList.ID_CART) {}
-//                        .addIcon(IconList.ID_NAV_GLOBAL) {}
-//        )
     }
 
     private fun initRecommendationComponent() {
