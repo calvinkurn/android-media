@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * @author by nisie on 8/24/17.
  */
-class ImageAttachmentViewModel : Parcelable {
+class ImageAttachmentUiModel : Parcelable {
     var attachmentId: Int
         private set
     var description: String?
@@ -43,12 +43,12 @@ class ImageAttachmentViewModel : Parcelable {
     }
 
     companion object {
-        @JvmField val CREATOR: Parcelable.Creator<ImageAttachmentViewModel?> = object : Parcelable.Creator<ImageAttachmentViewModel?> {
-            override fun createFromParcel(`in`: Parcel): ImageAttachmentViewModel? {
-                return ImageAttachmentViewModel(`in`)
+        @JvmField val CREATOR: Parcelable.Creator<ImageAttachmentUiModel?> = object : Parcelable.Creator<ImageAttachmentUiModel?> {
+            override fun createFromParcel(`in`: Parcel): ImageAttachmentUiModel? {
+                return ImageAttachmentUiModel(`in`)
             }
 
-            override fun newArray(size: Int): Array<ImageAttachmentViewModel?> {
+            override fun newArray(size: Int): Array<ImageAttachmentUiModel?> {
                 return arrayOfNulls(size)
             }
         }
