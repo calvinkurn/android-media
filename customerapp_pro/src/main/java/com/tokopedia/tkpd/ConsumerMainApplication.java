@@ -1,17 +1,22 @@
 package com.tokopedia.tkpd;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -59,6 +64,16 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         return BuildConfig.VERSION_NAME;
     }
 
+    @Override
+    public void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+            @Override
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
+            }
+        }));
+    }
+
     public void initConfigValues() {
         setVersionCode();
         setVersionName();
@@ -81,6 +96,9 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        }
+        if (BuildConfig.DEBUG_TRACE_NAME != null) {
+            com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
         generateConsumerAppNetworkKeys();
     }
@@ -209,5 +227,15 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             }
         }
         return md5StrBuff.toString();
+    }
+
+
+    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("EXTRA_URI_IMAGE", uri);
+        intent.putExtra("EXTRA_IS_CLASS_NAME", className);
+        intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
+        getApplicationContext().startActivity(intent);
     }
 }

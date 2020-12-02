@@ -46,6 +46,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.PiPMode
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -330,7 +331,6 @@ class PlayFragment @Inject constructor(
         ivClose.setOnClickListener { hideKeyboard() }
         fragmentVideoView.safeInit()
         fragmentUserInteractionView.safeInit()
-        fragmentBottomSheetView.safeInit()
 
         invalidateVideoTopBounds()
         hideAllInsets()
@@ -355,6 +355,7 @@ class PlayFragment @Inject constructor(
         observeEventUserInfo()
         observeVideoMeta()
         observeBottomInsetsState()
+        observePinned()
         observePiPEvent()
     }
 
@@ -438,6 +439,12 @@ class PlayFragment @Inject constructor(
         })
     }
 
+    private fun observePinned() {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
+            if (it is PinnedProductUiModel) fragmentBottomSheetView.safeInit()
+        })
+    }
+
     private fun observePiPEvent() {
         playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
             if (it != PiPMode.StopPip) {
@@ -445,6 +452,7 @@ class PlayFragment @Inject constructor(
             }
         })
     }
+    //endregion
 
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {

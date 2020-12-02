@@ -33,6 +33,7 @@ import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -60,6 +61,7 @@ import rx.schedulers.Schedulers;
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final int PER_SECOND = 1000;
+    private static final int LIVE_TRACKING_VIEW_REQ = 1;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
     private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
@@ -389,8 +391,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
-            RouteManager.route(getActivity(), applink);
+            if (getContext() != null) {
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), mTrackingUrl), LIVE_TRACKING_VIEW_REQ);
+            }
         };
     }
 

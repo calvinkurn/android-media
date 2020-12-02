@@ -4,14 +4,12 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.KeywordSearch
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
-import com.tokopedia.topads.edit.usecase.SuggestionKeywordUseCase
-import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 
