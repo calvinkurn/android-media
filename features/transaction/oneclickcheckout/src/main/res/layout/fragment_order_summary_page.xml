@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/main_content"
+                android:id="@+id/osp_main_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
