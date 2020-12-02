@@ -2,7 +2,7 @@ package com.tokopedia.shop.review.product.view.adapter
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentViewModel
+import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 
 /**
  * Created by zulfikarrahman on 1/16/18.
@@ -14,7 +14,7 @@ open class ReviewProductModelContent : ReviewProductModel, Parcelable {
     var reviewStar = 0f
     var reviewMessage: String? = null
     var reviewTime: String? = null
-    var reviewAttachment: List<ImageAttachmentViewModel?>? = null
+    var reviewAttachment: List<ImageAttachmentUiModel?>? = null
     var sellerName: String? = null
     var shopId: String? = null
     var reviewId: String? = null
@@ -71,7 +71,7 @@ open class ReviewProductModelContent : ReviewProductModel, Parcelable {
         reviewStar = `in`.readFloat()
         reviewMessage = `in`.readString()
         reviewTime = `in`.readString()
-        reviewAttachment = `in`.createTypedArrayList(ImageAttachmentViewModel.Companion.CREATOR)
+        reviewAttachment = `in`.createTypedArrayList(ImageAttachmentUiModel.Companion.CREATOR)
         sellerName = `in`.readString()
         shopId = `in`.readString()
         reviewId = `in`.readString()
