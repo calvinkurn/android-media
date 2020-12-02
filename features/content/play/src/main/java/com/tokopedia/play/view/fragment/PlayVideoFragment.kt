@@ -29,6 +29,7 @@ import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.General
+import com.tokopedia.play.view.uimodel.PiPMode
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
@@ -109,7 +110,8 @@ class PlayVideoFragment @Inject constructor(
 
             val videoPlayer = playViewModel.videoPlayer as? General ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
-            playPiPCoordinator.onEnterPiPMode()
+
+            if (playViewModel.pipMode == PiPMode.WatchInPip) playPiPCoordinator.onEnterPiPMode()
         }
     }
 
@@ -145,7 +147,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        if (!isEnterPiPAfterPermission) removePiP()
+        if (!isEnterPiPAfterPermission) playViewModel.stopPiP()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -220,6 +222,7 @@ class PlayVideoFragment @Inject constructor(
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observePiPEvent()
     }
 
     private fun showVideoThumbnail() {
@@ -296,6 +299,12 @@ class PlayVideoFragment @Inject constructor(
             }
 
             videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+        })
+    }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPMode.StopPip) removePiP()
         })
     }
     //endregion

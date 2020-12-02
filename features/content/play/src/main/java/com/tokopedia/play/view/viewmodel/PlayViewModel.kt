@@ -98,7 +98,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val observableEventPiP: LiveData<Event<Unit>>
+    val observableEventPiP: LiveData<Event<PiPMode>>
         get() = _observableEventPiP
 
     val videoOrientation: VideoOrientation
@@ -141,8 +141,15 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+
+    val pipMode: PiPMode
+        get() = _observableEventPiP.value?.peekContent() ?: PiPMode.StopPip
+
     val isInPiPMode: Boolean
-        get() = _observableEventPiP.value != null
+        get() {
+            val pipValue = _observableEventPiP.value
+            return pipValue != null && pipValue.peekContent() != PiPMode.StopPip
+        }
 
     val userId: String
         get() = userSession.userId
@@ -174,7 +181,7 @@ class PlayViewModel @Inject constructor(
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
-    private val _observableEventPiP = MutableLiveData<Event<Unit>>()
+    private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
@@ -404,8 +411,16 @@ class PlayViewModel @Inject constructor(
         return playVideoManager.getVideoDuration()
     }
 
-    fun goPiP() {
-        _observableEventPiP.value = Event(Unit)
+    fun watchInPiP() {
+        _observableEventPiP.value = Event(PiPMode.WatchInPip)
+    }
+
+    fun openPiPBrowsingPage() {
+        _observableEventPiP.value = Event(PiPMode.BrowsingOtherPage)
+    }
+
+    fun stopPiP() {
+        _observableEventPiP.value = Event(PiPMode.StopPip)
     }
 
     private fun initiateVideo(video: Video) {

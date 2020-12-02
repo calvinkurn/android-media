@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,11 +32,9 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -49,6 +46,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.PiPMode
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -442,7 +440,9 @@ class PlayFragment @Inject constructor(
 
     private fun observePiPEvent() {
         playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
-            onEnterPiPMode()
+            if (it != PiPMode.StopPip) {
+                onEnterPiPMode()
+            }
         })
     }
 

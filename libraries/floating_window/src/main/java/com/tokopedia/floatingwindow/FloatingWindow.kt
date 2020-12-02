@@ -43,10 +43,6 @@ internal class FloatingWindow private constructor(context: Context) {
         return viewMap[key]?.floatingView
     }
 
-    fun onCleared() {
-        removeAllViews()
-    }
-
     fun getWindowManager() = mWindowManager
 
     fun addView(key: String, floatingView: FloatingWindowView, overwrite: Boolean) {
@@ -84,7 +80,7 @@ internal class FloatingWindow private constructor(context: Context) {
         }
     }
 
-    private fun removeAllViews() {
+    fun removeAllViews() {
         viewMap
                 .onEach { removeByKey(it.key) }
                 .clear()
@@ -105,6 +101,10 @@ internal class FloatingWindow private constructor(context: Context) {
         } catch (e: Exception) {
             //ignored
         }
+    }
+
+    private fun onCleared() {
+        removeAllViews()
     }
 
     data class Property(

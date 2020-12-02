@@ -6,6 +6,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.floatingwindow.FloatingWindow
 import com.tokopedia.floatingwindow.R
@@ -14,6 +18,14 @@ import com.tokopedia.floatingwindow.R
  * Created by jegul on 26/11/20
  */
 internal class FloatingWindowService : Service() {
+
+    private val processLifecycleObserver = object : LifecycleObserver {
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        fun onApplicationPaused() {
+            FloatingWindow.getInstance(applicationContext).removeAllViews()
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -115,6 +127,14 @@ internal class FloatingWindowService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stopService()
+        ProcessLifecycleOwner.get()
+                .lifecycle.removeObserver(processLifecycleObserver)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        ProcessLifecycleOwner.get()
+                .lifecycle.addObserver(processLifecycleObserver)
     }
 
     companion object {

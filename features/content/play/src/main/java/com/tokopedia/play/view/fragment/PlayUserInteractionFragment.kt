@@ -370,7 +370,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
-        goPiP()
+        playViewModel.watchInPiP()
     }
     //endregion
 
@@ -789,7 +789,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openShopPage(partnerId: Long) {
         PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
-        playViewModel.goPiP()
+
+        playViewModel.openPiPBrowsingPage()
     }
 
     private fun openProfilePage(partnerId: Long) {
@@ -1136,10 +1137,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView.hide()
     }
     //endregion
-
-    private fun goPiP() {
-        playViewModel.goPiP()
-    }
 
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
