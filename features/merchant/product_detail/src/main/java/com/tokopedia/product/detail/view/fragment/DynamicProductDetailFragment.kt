@@ -987,7 +987,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
-                        toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_fab)
+                        toasterWishlistText = if(isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.msg_success_add_wishlist)
                         addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -2474,8 +2474,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
-                addWishList()
                 toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_button)
+                addWishList()
                 return@let
             }
 
@@ -2797,6 +2797,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             val localCacheHandler = LocalCacheHandler(context, "CART")
             val cartCount = localCacheHandler.getInt("CACHE_TOTAL_CART", 0)
+
+            if (cartImageView.tag as? Int == null) {
+                return@run
+            }
 
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
