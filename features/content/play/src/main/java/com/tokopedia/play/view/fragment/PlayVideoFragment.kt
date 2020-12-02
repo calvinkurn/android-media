@@ -1,7 +1,7 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
-import com.tokopedia.floatingwindow.view.FloatingWindowView
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.floatingwindow.exception.FloatingWindowException
+import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
@@ -27,9 +25,9 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
@@ -77,6 +75,44 @@ class PlayVideoFragment @Inject constructor(
             creator = { FloatingWindowAdapter(this@PlayVideoFragment) }
     )
 
+    private val playPiPCoordinator: PlayPiPCoordinator
+        get() = requireActivity() as PlayPiPCoordinator
+
+    private var isEnterPiPAfterPermission: Boolean = false
+
+    private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
+
+        override fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                    .apply {
+                        setTitle(getString(R.string.play_pip_permission_rationale_title))
+                        setDescription(getString(R.string.play_pip_permission_rationale_desc))
+                        setPrimaryCTAText(getString(R.string.play_pip_activate))
+                        setPrimaryCTAClickListener {
+                            requestPermissionFlow.requestPermission()
+                            dismiss()
+                        }
+                        setSecondaryCTAText(getString(R.string.play_pip_cancel))
+                        setSecondaryCTAClickListener {
+                            requestPermissionFlow.cancel()
+                            dismiss()
+                        }
+                    }.show()
+        }
+
+        override fun onFailedEnterPiPMode(error: FloatingWindowException) {
+
+        }
+
+        override fun onSucceededEnterPiPMode(view: PlayViewerPiPView) {
+            isEnterPiPAfterPermission = true
+
+            val videoPlayer = playViewModel.videoPlayer as? General ?: return
+            PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
+            playPiPCoordinator.onEnterPiPMode()
+        }
+    }
+
     private val cornerRadius = 16f.dpToPx()
 
     private lateinit var playViewModel: PlayViewModel
@@ -109,7 +145,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        removePiP()
+        if (!isEnterPiPAfterPermission) removePiP()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,6 +163,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
+        isEnterPiPAfterPermission = false
         if (!isYouTube) videoAnalyticHelper.onPause()
     }
 
@@ -145,17 +182,21 @@ class PlayVideoFragment @Inject constructor(
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        pipAdapter.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onEnterPiPMode() {
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
-        val videoPlayer: General = videoMeta.videoPlayer as? General ?: return
+        if (videoMeta.videoPlayer !is General) return
 
         PlayViewerPiPCoordinator(
                 context = requireContext(),
-                playerView = videoView.getPlayerView(),
-                videoPlayer = videoPlayer,
                 videoOrientation = playViewModel.videoOrientation,
                 channelId = channelId,
-                pipAdapter = pipAdapter
+                pipAdapter = pipAdapter,
+                listener = playViewerPiPCoordinatorListener
         ).startPip()
     }
 

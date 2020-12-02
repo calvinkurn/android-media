@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.fragment.app.Fragment
+import com.tokopedia.floatingwindow.exception.FloatingWindowPermissionDeniedException
 import com.tokopedia.floatingwindow.util.isDrawOverOtherAppsEnabled
 
 /**
@@ -38,7 +39,8 @@ class FloatingWindowPermissionManager private constructor(
 
     fun doPermissionFlow(
             onGranted: () -> Unit,
-            onNotGranted: () -> Unit
+            onNotGranted: (FloatingWindowPermissionDeniedException) -> Unit,
+            onShouldRequestPermission: (RequestPermissionFlow) -> Unit
     ) {
         if (!isDrawOverOtherAppsEnabled() &&
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -50,7 +52,9 @@ class FloatingWindowPermissionManager private constructor(
 
             permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE] = PermissionFlowHandler(onGranted, onNotGranted)
 
-            startActivityForResultHandler(intent, FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
+            val requestPermissionFlow = RequestPermissionFlow(intent)
+            onShouldRequestPermission(requestPermissionFlow)
+
         } else onGranted()
     }
 
@@ -59,7 +63,7 @@ class FloatingWindowPermissionManager private constructor(
             if (isDrawOverOtherAppsEnabled()) {
                 permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE]?.onGranted?.invoke()
             } else {
-                permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE]?.onNotGranted?.invoke()
+                permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE]?.onNotGranted?.invoke(FloatingWindowPermissionDeniedException())
             }
             permissionActionMap.remove(FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
         }
@@ -71,6 +75,17 @@ class FloatingWindowPermissionManager private constructor(
 
     data class PermissionFlowHandler(
             val onGranted: () -> Unit,
-            val onNotGranted: () -> Unit,
+            val onNotGranted: (FloatingWindowPermissionDeniedException) -> Unit,
     )
+
+    inner class RequestPermissionFlow(private val intent: Intent) {
+
+        fun requestPermission() {
+            startActivityForResultHandler(intent, FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
+        }
+
+        fun cancel() {
+            permissionActionMap.remove(FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
+        }
+    }
 }

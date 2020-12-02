@@ -2,26 +2,25 @@ package com.tokopedia.play.util
 
 import android.content.Context
 import android.graphics.Point
-import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.floatingwindow.exception.FloatingWindowException
+import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.floatingwindow.view.FloatingWindowView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.General
 
 /**
  * Created by jegul on 01/12/20
  */
 class PlayViewerPiPCoordinator(
         context: Context,
-        playerView: PlayerView,
-        videoPlayer: General,
         videoOrientation: VideoOrientation,
         channelId: String,
-        private val pipAdapter: FloatingWindowAdapter
+        private val pipAdapter: FloatingWindowAdapter,
+        private val listener: Listener
 ) {
 
     private val floatingView: FloatingWindowView
@@ -40,7 +39,6 @@ class PlayViewerPiPCoordinator(
         }
 
         val view = PlayViewerPiPView(context.applicationContext).also {
-            PlayerView.switchTargetView(videoPlayer.exoPlayer, playerView, it.getPlayerView())
             it.setChannelId(channelId)
         }
 
@@ -82,7 +80,17 @@ class PlayViewerPiPCoordinator(
     fun startPip() {
         pipAdapter.addView(
                 floatingView = floatingView,
-                overwrite = true
+                overwrite = true,
+                onSuccess = { listener.onSucceededEnterPiPMode(floatingView.view as PlayViewerPiPView) },
+                onFailure = listener::onFailedEnterPiPMode,
+                onShouldRequestPermission = listener::onShouldRequestPermission
         )
+    }
+
+    interface Listener {
+
+        fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow)
+        fun onFailedEnterPiPMode(error: FloatingWindowException)
+        fun onSucceededEnterPiPMode(view: PlayViewerPiPView)
     }
 }

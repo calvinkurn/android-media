@@ -108,9 +108,6 @@ class PlayFragment @Inject constructor(
             requireActivity().requestedOrientation = value
         }
 
-    private val playPiPCoordinator: PlayPiPCoordinator
-        get() = requireActivity() as PlayPiPCoordinator
-
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
@@ -203,8 +200,6 @@ class PlayFragment @Inject constructor(
                 .forEach {
                     if (it is PlayFragmentContract) it.onEnterPiPMode()
                 }
-
-        playPiPCoordinator.onEnterPiPMode()
     }
 
     /**

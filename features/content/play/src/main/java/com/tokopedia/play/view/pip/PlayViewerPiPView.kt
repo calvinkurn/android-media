@@ -66,6 +66,13 @@ class PlayViewerPiPView : ConstraintLayout {
         setupView()
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        playVideoManager.resumeOrPlayPreviousVideo(true)
+        playVideoManager.mute(false)
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         playVideoManager.removeListener(videoListener)

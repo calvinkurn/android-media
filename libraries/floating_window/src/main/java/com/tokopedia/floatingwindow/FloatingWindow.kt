@@ -68,7 +68,7 @@ internal class FloatingWindow private constructor(context: Context) {
     fun removeByKey(key: String) {
         val prop = viewMap[key] ?: return
 
-        mWindowManager.removeView(prop.floatingView.view)
+        if (prop.status == Status.Attached) mWindowManager.removeView(prop.floatingView.view)
         viewMap.remove(key)
     }
 

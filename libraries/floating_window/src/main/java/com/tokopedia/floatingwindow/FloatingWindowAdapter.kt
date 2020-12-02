@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
+import com.tokopedia.floatingwindow.exception.FloatingWindowException
 import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.floatingwindow.view.FloatingWindowView
 
@@ -36,7 +37,9 @@ class FloatingWindowAdapter private constructor(
 
     fun addView(
             floatingView: FloatingWindowView,
-            onFailure: () -> Unit = {},
+            onSuccess: () -> Unit = {},
+            onShouldRequestPermission: (FloatingWindowPermissionManager.RequestPermissionFlow) -> Unit = { it.requestPermission() },
+            onFailure: (FloatingWindowException) -> Unit = {},
             overwrite: Boolean = false
     ) {
         permissionManager.doPermissionFlow(
@@ -46,8 +49,10 @@ class FloatingWindowAdapter private constructor(
                             floatingView = floatingView,
                             overwrite = overwrite
                     )
+                    onSuccess()
                 },
-                onNotGranted = onFailure
+                onNotGranted = onFailure,
+                onShouldRequestPermission = onShouldRequestPermission
         )
     }
 
