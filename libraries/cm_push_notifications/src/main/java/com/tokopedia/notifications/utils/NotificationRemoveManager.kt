@@ -35,7 +35,7 @@ open class NotificationRemoveManager(
             val notifications = pushRepository(context)
                     .getNotification()
                     .intersect(excludeListByCampaignId) { notification, excludedItem ->
-                        notification.campaignId != excludedItem
+                        notification.campaignId != excludedItem.toLong()
                     }
             withContext(Dispatchers.Main) { invoke(notifications) }
         }
@@ -53,7 +53,10 @@ open class NotificationRemoveManager(
     }
 
     companion object {
-        private val excludeListByCampaignId = listOf(0L)
+        private val excludeListByCampaignId = listOf(
+                "otp",
+                "otp_push_notification"
+        )
     }
 
 }
