@@ -1,12 +1,10 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
