@@ -96,6 +96,15 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
         )
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
+    }
+
     companion object {
 
         const val ANIMATION_SPEED = 1F

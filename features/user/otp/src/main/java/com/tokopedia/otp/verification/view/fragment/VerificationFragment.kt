@@ -163,6 +163,15 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         return true
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
+    }
+
     private fun sendOtp() {
         if (isCountdownFinished()) {
             viewModel.sendOtp(
