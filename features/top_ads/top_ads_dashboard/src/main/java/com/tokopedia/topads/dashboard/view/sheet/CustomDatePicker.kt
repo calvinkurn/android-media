@@ -50,7 +50,6 @@ class CustomDatePicker : BottomSheetUnify() {
         selectedDate = selectDateDef.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
         selectedStartDate = selectedDate
         selectedDateOriginal = selectedDate
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +70,7 @@ class CustomDatePicker : BottomSheetUnify() {
                 if (dateStart.textFieldInput.text.isNullOrEmpty()) {
                     return@setOnFocusChangeListener
                 }
-                selectedDate = selectedDateOriginal
+                selectedDate = minDate
                 dateFlag = 1
                 renderSinglePickCalendar(arrayListOf())
             }
@@ -86,8 +85,11 @@ class CustomDatePicker : BottomSheetUnify() {
     }
 
     private fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
+        if (minDate > maxDate) {
+            maxDate = minDate
+        }
         if (minDate > selectedDate || maxDate < selectedDate) {
-            minDate = selectedDate
+            selectedDate = minDate
         }
         val calendar = calendarUnify.calendarPickerView
         calendar?.init(minDate, maxDate, holidayArrayList)
