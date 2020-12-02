@@ -21,6 +21,7 @@ class InspirationCarouselOptionGridViewHolder(
     override fun bind(item: InspirationCarouselViewModel.Option.Product) {
 
         itemView.optionGridCardView?.setProductModel(item.toProductCardModel())
+        itemView.optionGridCardView?.applyCarousel()
 
         itemView.optionGridCardView?.setOnClickListener {
             inspirationCarouselListener.onInspirationCarouselGridProductClicked(item)
