@@ -25,6 +25,7 @@ class DataStoreViewModelTest {
 
     private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: CoverDataStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var viewModel: DataStoreViewModel
@@ -33,7 +34,8 @@ class DataStoreViewModelTest {
     fun setUp() {
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
         viewModel = DataStoreViewModel(mockSetupDataStore)
     }
 

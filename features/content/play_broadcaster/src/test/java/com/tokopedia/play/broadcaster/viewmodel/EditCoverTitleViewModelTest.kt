@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.play.broadcaster.data.config.*
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStore
+import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
@@ -34,6 +36,7 @@ class EditCoverTitleViewModelTest {
 
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var coverConfigStore: CoverConfigStore
+    private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var viewModel: EditCoverTitleViewModel
@@ -47,13 +50,15 @@ class EditCoverTitleViewModelTest {
 
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = MockCoverDataStore(dispatcherProvider, uploadCoverTitleException)
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore)
+        broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
 
         viewModel = EditCoverTitleViewModel(
                 hydraConfigStore = HydraConfigStoreImpl(
                         channelConfigStore,
                         ProductConfigStoreImpl(),
-                        coverConfigStore
+                        coverConfigStore,
+                        BroadcastScheduleConfigStoreImpl()
                 ),
                 dispatcher = dispatcherProvider,
                 setupDataStore = mockSetupDataStore
