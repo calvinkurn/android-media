@@ -13,14 +13,15 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class VideoPictureAdapter(private val productExoPlayer: ProductVideoCoordinator?) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
+class VideoPictureAdapter(private val productVideoCoordinator: ProductVideoCoordinator?,
+                          private val onVideoFullScreenClicked: ((String) -> Unit)? = null) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     var mediaData: List<MediaDataModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<MediaDataModel> {
         return if (viewType == MEDIA_VIDEO_VIEW_TYPE) {
             ProductVideoViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(ProductVideoViewHolder.LAYOUT, parent, false), productExoPlayer)
+                    .inflate(ProductVideoViewHolder.LAYOUT, parent, false), productVideoCoordinator, onVideoFullScreenClicked)
         } else {
             ProductPictureViewHolder(LayoutInflater.from(parent.context)
                     .inflate(ProductPictureViewHolder.LAYOUT, parent, false))

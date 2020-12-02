@@ -19,6 +19,11 @@ interface DynamicProductDetailListener {
     fun isNavOld(): Boolean
 
     /**
+     * ProductMediaViewHolder
+     */
+    fun onVideoFullScreenClicked(videoId:String)
+
+    /**
      * ProductSnapshotViewHolder
      */
     fun onImageClicked(position: Int)

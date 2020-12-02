@@ -9,7 +9,6 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -35,7 +34,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     fun setup(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator,
-              listener: DynamicProductDetailListener, componentTrackDataModel: ComponentTrackDataModel) {
+              listener: DynamicProductDetailListener?, componentTrackDataModel: ComponentTrackDataModel?) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
@@ -61,21 +60,21 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         resetViewPagerToFirstPosition()
-        productVideoCoordinator?.onScrollChangedListener(pdp_view_pager, 0)
-        productVideoCoordinator?.onStop()
+
+        productVideoCoordinator?.onStopAndSaveLastPosition()
     }
 
     private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
         val mediaList = processMedia(media)
-        videoPictureAdapter = VideoPictureAdapter(productVideoCoordinator)
+        videoPictureAdapter = if (mListener == null) {
+            VideoPictureAdapter(productVideoCoordinator)
+        } else {
+            VideoPictureAdapter(productVideoCoordinator, mListener!!::onVideoFullScreenClicked)
+        }
+
         pdp_view_pager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pdp_view_pager?.adapter = videoPictureAdapter
         videoPictureAdapter?.mediaData = mediaList
-
-        (pdp_view_pager?.getChildAt(0) as RecyclerView).addOneTimeGlobalLayoutListener {
-            productVideoCoordinator.onScrollChangedListener(pdp_view_pager, 0)
-        }
-
         pdp_view_pager.setPageTransformer { _, _ ->
             //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }

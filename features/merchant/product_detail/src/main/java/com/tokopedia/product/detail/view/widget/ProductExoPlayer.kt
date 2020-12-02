@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.video.VideoListener
 
 
 /**
@@ -63,6 +64,10 @@ class ProductExoPlayer(val context: Context) {
         })
     }
 
+    fun setVideoResizeListener(listener: VideoListener) {
+        exoPlayer.addVideoListener(listener)
+    }
+
     fun setVideoStateListener(videoStateListener: VideoStateListener?) {
         this.videoStateListener = videoStateListener
     }
@@ -87,6 +92,13 @@ class ProductExoPlayer(val context: Context) {
 
     fun pause() {
         exoPlayer.playWhenReady = false
+    }
+
+    fun resumeAndSeekTo(lastVideoPosition: Long) {
+        if (lastVideoPosition != 0L) {
+            exoPlayer.seekTo(lastVideoPosition)
+        }
+        exoPlayer.playWhenReady = true
     }
 
     fun destroy() {

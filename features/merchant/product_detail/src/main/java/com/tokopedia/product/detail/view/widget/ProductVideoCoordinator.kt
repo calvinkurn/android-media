@@ -16,7 +16,7 @@ import kotlinx.coroutines.*
  */
 class ProductVideoCoordinator(
         lifecycleOwner: LifecycleOwner? = null,
-        val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate) : LifecycleObserver {
+        private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate) : LifecycleObserver {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
     private var productVideoJob: Job? = null
@@ -24,6 +24,7 @@ class ProductVideoCoordinator(
     private var videoPlayer: ProductExoPlayer? = null
     private var lastReceiverProduct: ProductVideoReceiver? = null
     private var productVideoDataModel: MutableList<ProductVideoDataModel> = mutableListOf()
+    private var currentVideoId: String = ""
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
@@ -40,7 +41,9 @@ class ProductVideoCoordinator(
                 if (currentReceiver.getPlayer() == null) {
                     currentReceiver.setPlayer(videoPlayer)
                     val videoData = getVideoDataById(currentReceiver.getVideoId())
-                    videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition ?: 0L, videoData?.isMute ?: true)
+                    videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition
+                            ?: 0L, videoData?.isMute ?: true)
+                    currentVideoId = currentReceiver.getVideoId()
                 }
 
                 lastReceiverProduct = currentReceiver
@@ -49,7 +52,6 @@ class ProductVideoCoordinator(
             }
         }
     }
-
 
     fun configureVideoCoordinator(context: Context, videoId: String, videoUrl: String) {
         if (videoPlayer == null) {
@@ -67,6 +69,37 @@ class ProductVideoCoordinator(
         getVideoDataById(videoId)?.isMute = isMute
     }
 
+    fun saveLastVideoPosition(videoId: String) {
+        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = videoPlayer?.getExoPlayer()?.currentPosition
+                ?: 0L
+    }
+
+    fun updateAndResume(newData: List<ProductVideoDataModel>) {
+        val updatedCurrentVideoPosition = newData.firstOrNull { it.videoId == currentVideoId }?.seekPosition ?: 0
+        val currentVideoPosition = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }?.seekPosition ?: 0
+
+        newData.forEachIndexed { index, i ->
+            productVideoDataModel[index].isMute = i.isMute
+            productVideoDataModel[index].seekPosition = i.seekPosition
+        }
+
+        //If they not resume video in video detail, just ignore it
+        if (currentVideoPosition != updatedCurrentVideoPosition) {
+            resumeAndSeekTo(updatedCurrentVideoPosition)
+        }
+    }
+
+    /**
+     * Use this function when you want to fill the data when first/initial load
+     */
+    fun fillInitialData(data: List<ProductVideoDataModel>) {
+        this.productVideoDataModel = data.toMutableList()
+    }
+
+    fun getVideoDataModel(): List<ProductVideoDataModel> {
+        return productVideoDataModel
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         productVideoJob?.cancel()
@@ -79,8 +112,13 @@ class ProductVideoCoordinator(
         videoPlayer?.destroy()
     }
 
-    fun onStop() {
+    fun onStopAndSaveLastPosition() {
         videoPlayer?.stop()
+        saveLastVideoPosition(currentVideoId)
+    }
+
+    fun resumeAndSeekTo(lastSeenVideoPosition:Long) {
+        videoPlayer?.resumeAndSeekTo(lastSeenVideoPosition)
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
@@ -96,8 +134,7 @@ class ProductVideoCoordinator(
     private fun clearPlayerEntry(receiverProduct: ProductVideoReceiver?) {
         receiverProduct?.let {
             videoPlayer?.setVideoStateListener(null)
-            videoPlayer?.stop()
-            saveLastVideoPosition(it.getVideoId() ?: "")
+            onStopAndSaveLastPosition()
             it.setPlayer(null)
         }
     }
@@ -111,17 +148,8 @@ class ProductVideoCoordinator(
         }
     }
 
-    private fun saveLastVideoPosition(videoId: String) {
-        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = videoPlayer?.getExoPlayer()?.currentPosition
-                ?: 0L
-    }
-
     private fun getVideoDataById(videoId: String): ProductVideoDataModel? {
         return productVideoDataModel.firstOrNull { it.videoId == videoId }
-    }
-
-    companion object {
-        const val VIDEO_SWIPE_DELAY = 100L
     }
 }
 
@@ -129,5 +157,5 @@ data class ProductVideoDataModel(
         val videoId: String = "",
         val videoUrl: String = "",
         var seekPosition: Long = 0,
-        var isMute: Boolean = true //Mute
+        var isMute: Boolean = true
 )
