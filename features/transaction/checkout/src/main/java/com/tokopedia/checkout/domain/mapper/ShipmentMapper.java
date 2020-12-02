@@ -52,7 +52,7 @@ import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
@@ -110,7 +110,7 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
             dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
             dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
-            dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
+            dataResult.setBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
             dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
             dataResult.setError(!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));

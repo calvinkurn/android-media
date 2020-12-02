@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.getTypeface
@@ -275,7 +275,7 @@ fun View?.showToasterSuccess(message: String,
     this?.let {
         val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
         Toaster.toasterCustomBottomHeight = toasterOffset
-        Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
     }
 }
 
@@ -292,13 +292,13 @@ fun View?.showToasterError(message: String,
 
         Toaster.toasterCustomBottomHeight = toasterOffset
         if (ctaText.isNotEmpty()) {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
                 ctaListener?.invoke()
-            })
+            }).show()
         } else {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 ctaListener?.invoke()
-            })
+            }).show()
         }
     }
 }

@@ -4,9 +4,9 @@ import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCa
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaResponse
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase.Companion.HIDE_NO_COUNT
@@ -32,6 +32,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
         const val DEFAULT_HIDE_NO_COUNT = false
         const val DEFAULT_HIDE_SHOWCASE_GROUP = true
         private const val DEFAULT_CATEGORIES_FILTER = "seller"
+        private const val RELOAD_ETALASE = true
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {
             return RequestParams.create().apply {
@@ -69,6 +70,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
                         params.getBoolean(HIDE_SHOWCASE_GROUP, DEFAULT_HIDE_SHOWCASE_GROUP),
                         params.getBoolean(IS_OWNER, false))
                 getShopEtalaseByShopUseCase.run {
+                    isFromCacheFirst = !RELOAD_ETALASE
                     createObservable(params).toBlocking().first()
                 }
             }

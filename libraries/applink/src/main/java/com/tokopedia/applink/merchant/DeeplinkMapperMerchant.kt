@@ -229,11 +229,13 @@ object DeeplinkMapperMerchant {
 
     fun isShopPageFeedDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) && uri.lastPathSegment == FEED_SEGMENT
+        return (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) ||
+                deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)) &&
+                uri.lastPathSegment == FEED_SEGMENT
     }
 
     fun getRegisteredNavigationShopFeed(deeplink: String): String {
-        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) || deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)) {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
             return if (segments.size == SHOP_FEED_SEGMENT_SIZE) {

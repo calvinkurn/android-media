@@ -15,14 +15,15 @@ import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
     it.add(testOneLineProductName())
-    it.add(testSlashPrice())
+    it.add(testLabelDiscountAndSlashPrice())
     it.add(testSlashPriceWithoutLabelDiscount())
+    it.add(testLabelDiscountWithoutSlashPrice())
+    it.add(testLabelPriceAndSlashPrice())
     it.add(testTwoLinesProductName())
     it.add(testMaximumInfoAndLabel())
     it.add(testLabelGimmickNumberOfStock())
     it.add(testLabelSoldOut())
     it.add(testLabelNewProduct())
-    it.add(testLabelPriceAndSlashPrice())
     it.add(testLabelIntegrity())
     it.add(testLabelShippingInfo())
     it.add(testNoShopBadge())
@@ -69,7 +70,7 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             hasThreeDots = true
@@ -81,8 +82,12 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -261,9 +266,9 @@ private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatche
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testSlashPrice(): ProductCardModelMatcher {
+private fun testLabelDiscountAndSlashPrice(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Slash Price",
+            productName = "Label Discount and Slash Price",
             productImageUrl = productImageUrl,
             discountPercentage = "20%",
             slashedPrice = "Rp8.499.000",
@@ -272,7 +277,7 @@ private fun testSlashPrice(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             hasThreeDots = true
@@ -286,8 +291,12 @@ private fun testSlashPrice(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -298,7 +307,7 @@ private fun testSlashPrice(): ProductCardModelMatcher {
 
 private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Slash Price",
+            productName = "Slash Price without label discount",
             productImageUrl = productImageUrl,
             slashedPrice = "Rp8.499.000",
             formattedPrice = "Rp7.999.000",
@@ -306,7 +315,7 @@ private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             hasThreeDots = true
@@ -319,9 +328,85 @@ private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Label Discount without slash price",
+            productImageUrl = productImageUrl,
+            discountPercentage = "20%",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            hasThreeDots = true
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+
+    val productCardModel = ProductCardModel(
+            productName = "Slash Price prioritized over Label Price",
+            productImageUrl = productImageUrl,
+            discountPercentage = "20%",
+            slashedPrice = "Rp8.499.000",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelPrice)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
@@ -338,7 +423,7 @@ private fun testTwoLinesProductName(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             hasThreeDots = true
@@ -350,8 +435,12 @@ private fun testTwoLinesProductName(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -373,7 +462,7 @@ private fun testMaximumInfoAndLabel(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -395,8 +484,12 @@ private fun testMaximumInfoAndLabel(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -417,7 +510,7 @@ private fun testLabelGimmickNumberOfStock(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
@@ -434,8 +527,12 @@ private fun testLabelGimmickNumberOfStock(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageThreeDots] = isDisplayed()
     }
@@ -455,7 +552,7 @@ private fun testLabelSoldOut(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasThreeDots = true,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
@@ -473,8 +570,12 @@ private fun testLabelSoldOut(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -508,41 +609,6 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-
-    val productCardModel = ProductCardModel(
-            productName = "Slash Price and Label Price",
-            productImageUrl = productImageUrl,
-            discountPercentage = "20%",
-            slashedPrice = "Rp8.499.000",
-            formattedPrice = "Rp7.999.000",
-            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-            },
-            shopLocation = "DKI Jakarta",
-            hasThreeDots = true,
-            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
-                labelGroups.add(labelPrice)
-            }
-    )
-
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
@@ -600,7 +666,7 @@ private fun testLabelShippingInfo(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
@@ -616,8 +682,12 @@ private fun testLabelShippingInfo(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.textViewShipping] = isDisplayedWithText(labelShipping.title)
         it[R.id.imageThreeDots] = isDisplayed()
@@ -680,7 +750,6 @@ private fun testHasRatingButNoReviewCount(): ProductCardModelMatcher {
             formattedPrice = "Rp7.999.000",
             shopLocation = "DKI Jakarta",
             ratingCount = 4,
-            ratingString = "4.5",
             reviewCount = 0
     )
 
@@ -850,7 +919,7 @@ private fun testAddToCartButton(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -872,8 +941,12 @@ private fun testAddToCartButton(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddToCart] = isDisplayed()
@@ -913,7 +986,7 @@ private fun testHasBadgeNoLocation(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -933,8 +1006,12 @@ private fun testHasBadgeNoLocation(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -957,7 +1034,7 @@ private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -980,8 +1057,12 @@ private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -994,9 +1075,13 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
     val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
 
     val productCardModel = ProductCardModel(
-            productName = "Product with rating sales",
+            productName = "Product with rating sales and label integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
             isTopAds = true,
             hasThreeDots = true,
@@ -1011,8 +1096,12 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.salesRatingFloat] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.salesRatingFloatLine] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
@@ -1025,6 +1114,10 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
             productName = "Product with count sold rating but no label integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
             isTopAds = true,
             hasThreeDots = true,
@@ -1036,9 +1129,12 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -1046,22 +1142,31 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
 
 private fun testPriorityRatingAverage(): ProductCardModelMatcher {
     val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
     val productCardModel = ProductCardModel(
-            productName = "Product prio ratingAverage",
+            productName = "Product prio count sold rating",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
-            reviewCount = 4,
-            ratingCount = 30,
+            ratingCount = 4,
+            reviewCount = 30,
             labelGroupList = listOf(labelIntegrity)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.salesRatingFloatLine] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -1082,7 +1187,7 @@ private fun testHasFreeOngkirAndLabelShipping(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -1106,8 +1211,12 @@ private fun testHasFreeOngkirAndLabelShipping(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
@@ -1131,7 +1240,7 @@ private fun testShopRatingBlue(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             shopRating = "<b>14.5</b> Rating Toko",
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
@@ -1156,8 +1265,12 @@ private fun testShopRatingBlue(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
         it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())
@@ -1375,7 +1488,7 @@ private fun testShopRatingYellow(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             shopRating = "<b>14.5</b> Rating Toko",
             isShopRatingYellow = true,
@@ -1401,8 +1514,12 @@ private fun testShopRatingYellow(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())

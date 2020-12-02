@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginTop="@dimen/spacing_lvl3"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:textColor="@color/black_70"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Harga Tiket" />

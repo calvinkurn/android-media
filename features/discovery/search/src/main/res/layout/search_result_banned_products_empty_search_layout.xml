@@ -38,18 +38,4 @@
         app:typographyType="body_3"
         tools:text="Android app membatasi pencarian barang bernikotin/tembakau" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/searchResultBannedProductsEmptySearchGoToBrowserButton"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:text="@string/banned_products_empty_search_go_to_browser_button"
-        android:layout_marginTop="@dimen/dp_12"
-        android:visibility="gone"
-        android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchResultBannedProductsEmptySearchImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unifyButtonSize="small"
-        tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

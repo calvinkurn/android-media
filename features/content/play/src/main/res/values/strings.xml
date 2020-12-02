@@ -26,6 +26,7 @@
     <string name="play_product_empty_desc">Wah, barang &amp; promo pilihan sudah habis, Yuk\n cek barang menarik lainnya dari toko ini!</string>
     <string name="play_product_empty_action">Ke Halaman Toko</string>
     <string name="play_product_updated">Produk telah diupdate</string>
+    <string name="play_link_copied">Link berhasil disalin</string>
 
     <!--mock-->
     <string name="play_mock_cart">99+</string>

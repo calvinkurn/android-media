@@ -11,20 +11,25 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
+import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -39,6 +44,7 @@ import javax.inject.Inject
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
+    abstract fun getFeatureListingContainer(): GyroView?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -50,6 +56,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var gyroRecommendationAnalytics: dagger.Lazy<GyroRecommendationAnalytics>
 
     private var iRecommendationView: IRecommendationView? = null
 
@@ -85,6 +94,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     }
 
+
     override fun onPause() {
         super.onPause()
         digitalRecomTrackingQueue?.sendAll()
@@ -93,13 +103,26 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFeatureListingContainer()?.gone()
         if (!::thanksPageData.isInitialized)
             activity?.finish()
         else {
             bindThanksPageDataToUI(thanksPageData)
             observeViewModel()
+            getFeatureRecommendationData()
             addRecommendation()
         }
+    }
+
+    private fun getFeatureRecommendationData() {
+        val configFlag: ConfigFlag? = thanksPageData.configFlag?.let {
+            Gson().fromJson(it, ConfigFlag::class.java)
+        }
+        configFlag?.apply {
+            if (isThanksWidgetEnabled)
+                thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+        }
+
     }
 
     private fun addRecommendation() {
@@ -153,12 +176,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onThankYouPageDataReLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
         })
+        thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+            addDataToGyroRecommendationView(it)
+        })
+    }
+
+    private fun addDataToGyroRecommendationView(gyroRecommendation: GyroRecommendation) {
+        if (::thanksPageData.isInitialized) {
+            if(!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
+                getFeatureListingContainer()?.visible()
+                getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
+                        gyroRecommendationAnalytics.get())
+            }else{
+                getFeatureListingContainer()?.gone()
+            }
+        }
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
@@ -220,6 +258,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
                 thanksPageData.paymentID.toString())
+
+        if(activity is ThankYouPageActivity){
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
     }
 
     override fun gotoHomePage() {
@@ -278,7 +320,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList(applink: String) {
         try {
-            if(applink.isNullOrBlank()){
+            if (applink.isNullOrBlank()) {
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
