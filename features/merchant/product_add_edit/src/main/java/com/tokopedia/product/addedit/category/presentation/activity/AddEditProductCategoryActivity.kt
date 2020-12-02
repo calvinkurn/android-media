@@ -2,20 +2,16 @@ package com.tokopedia.product.addedit.category.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.category.common.Constant.CATEGORY_ID_INIT_SELECTED
+import com.tokopedia.product.addedit.category.common.Constant.INIT_UNSELECTED
 import com.tokopedia.product.addedit.category.di.AddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.di.AddEditProductCategoryModule
 import com.tokopedia.product.addedit.category.di.DaggerAddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment
-import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment.Companion.CATEGORY_ID_INIT_SELECTED
-import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment.Companion.INIT_UNSELECTED
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
-import com.tokopedia.product.addedit.common.di.AddEditProductComponent
-import com.tokopedia.product.addedit.common.di.AddEditProductModule
-import com.tokopedia.product.addedit.common.di.DaggerAddEditProductComponent
 
 class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEditProductCategoryComponent>{
 
@@ -32,7 +28,7 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
-    override fun getNewFragment(): Fragment? = addEditProductCategoryFragment
+    override fun getNewFragment(): Fragment = addEditProductCategoryFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

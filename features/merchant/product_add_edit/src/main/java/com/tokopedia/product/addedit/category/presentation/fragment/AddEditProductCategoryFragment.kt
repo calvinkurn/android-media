@@ -5,14 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.category.common.Constant.INIT_SELECTED
 import com.tokopedia.product.addedit.category.di.AddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
-import com.tokopedia.product.addedit.category.presentation.model.Mapper
+import com.tokopedia.product.addedit.category.common.CategoryMapper
+import com.tokopedia.product.addedit.category.common.Constant.INCREMENT_CATEGORY_LEVEL
 import com.tokopedia.product.addedit.category.presentation.viewholder.AddEditProductCategoryViewHolder
 import com.tokopedia.product.addedit.category.presentation.viewmodel.AddEditProductCategoryViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,10 +26,6 @@ import javax.inject.Inject
 class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCategoryViewHolder.CategoryItemViewHolderListener {
 
     companion object {
-        const val CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED"
-        const val INIT_UNSELECTED = 0
-        const val INIT_SELECTED = "INIT_SELECTED"
-
         @JvmStatic
         fun newInstance(selectedCategory: Long) =
                 AddEditProductCategoryFragment().apply {
@@ -73,7 +72,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
             when (it) {
                 is Success -> {
                     it.data.categories.categories
-                    adapter?.updateCategories(Mapper.mapCategoryToCategoryUiModel(it.data.categories.categories))
+                    adapter?.updateCategories(CategoryMapper.mapCategoryToCategoryUiModel(it.data.categories.categories, 0))
                     adapter?.putIntoTempCategories()
                 }
                 is Fail -> {
@@ -83,8 +82,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         }
     }
 
-
-    override fun selectItemCategory(category: CategoryUiModel, isHasChild: Boolean, adapter: AddEditProductCategoryAdapter) {
+    override fun selectCategoryItem(category: CategoryUiModel, isHasChild: Boolean, adapter: AddEditProductCategoryAdapter) {
         if (category.isSelected) {
             adapter.setCategories(category, isHasChild)
         } else {
@@ -92,4 +90,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         }
     }
 
+    override fun selectCategoryItem(categoryId: String) {
+        Toast.makeText(context, "Hello $categoryId", Toast.LENGTH_LONG).show()
+    }
 }
