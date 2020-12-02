@@ -309,6 +309,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel._orderPreference)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

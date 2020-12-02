@@ -662,6 +662,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val onboarding = _orderPreference.onboarding
         if (onboarding.isForceShowCoachMark) {
             _orderPreference = _orderPreference.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            globalEvent.value = OccGlobalEvent.Normal
         }
     }
 
