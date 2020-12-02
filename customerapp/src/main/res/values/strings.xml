@@ -195,7 +195,6 @@
 
     <!-- Travel slice custom query -->
     <string-array name="HotelSliceCustomQuery">
-        <item>find hotel(s)?</item>
         <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
         <item>Book (a)? hotel(s)? in $city1</item>
         <item>Search for cheap hotels in $city1</item>
