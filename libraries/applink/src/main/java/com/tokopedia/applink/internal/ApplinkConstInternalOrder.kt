@@ -21,6 +21,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_EVENTS = "events"
     const val PARAM_DEALS = "deals"
     const val PARAM_PESAWAT = "pesawat"
+    const val PARAM_TRAIN = "kereta"
     const val PARAM_BELANJA = "belanja"
     const val PARAM_GIFTCARDS = "giftcards"
     const val PARAM_INSURANCE = "insurance"
@@ -148,6 +149,9 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_PESAWAT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_PESAWAT"
+
+    @JvmField
+    val UNIFY_ORDER_TRAIN = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAIN"
 
     @JvmField
     val UNIFY_ORDER_GIFTCARDS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_GIFTCARDS"

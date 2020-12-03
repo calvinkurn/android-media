@@ -63,6 +63,10 @@ object DeeplinkMapperUohOrder {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PESAWAT
             else getInternalDeeplink(context, deeplink)
 
+        } else if (deeplink.equals(TRAIN_ORDER, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAIN
+            else getInternalDeeplink(context, deeplink)
+
         } else if (deeplink.equals(GIFT_CARDS_ORDER, true)) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_GIFTCARDS
             else getInternalDeeplink(context, deeplink)

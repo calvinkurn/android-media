@@ -147,6 +147,7 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String TRAIN_ORDER = "tokopedia://kereta/order";
     String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
