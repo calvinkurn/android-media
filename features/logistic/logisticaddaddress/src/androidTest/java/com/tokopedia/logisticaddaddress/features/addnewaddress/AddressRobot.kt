@@ -28,11 +28,12 @@ class AddressRobot {
     }
 
     fun searchWithKeyword(keyword: String) {
+        waitForData()
         onView(withId(R.id.et_search))
                 .check(matches(isDisplayed()))
                 .perform (typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        Thread.sleep(800L)
+        waitForData()
     }
 
     fun selectFirstItem() {
@@ -54,7 +55,7 @@ class AddressRobot {
         onView(withId(R.id.et_search_district_recommendation))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
-        Thread.sleep(800L)
+        waitForData()
     }
 
     fun selectFirstCityItem() {
@@ -72,17 +73,22 @@ class AddressRobot {
     }
 
     fun address(address: String) {
-        onView(withId(R.id.et_alamat_mismatch))
-                .perform(typeText(address), closeSoftKeyboard())
+        onView(withId(R.id.et_alamat_mismatch)).
+                perform(click(), typeText(address), closeSoftKeyboard())
     }
 
     fun receiver(receiver: String) {
         onView(withId(R.id.et_receiver_name))
-                .perform(typeText(receiver), closeSoftKeyboard())
+                .perform(click(), typeText(receiver), closeSoftKeyboard())
     }
 
     fun phoneNumber(phone: String) {
-        onView(withId(R.id.et_phone)).perform(typeText(phone), closeSoftKeyboard())
+        onView(withId(R.id.et_phone)).
+                perform(click(), typeText(phone), closeSoftKeyboard())
+    }
+
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
