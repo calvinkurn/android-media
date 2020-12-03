@@ -48,6 +48,7 @@ import com.google.gson.JsonObject;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -88,6 +89,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -95,10 +97,13 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -158,6 +163,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final int TEXT_SIZE_LARGE = 14;
     @Inject
     OrderListDetailPresenter presenter;
+    @Inject
+    UserSessionInterface userSessionInterface;
     private LinearLayout mainView;
     private LinearLayout viewRecomendItems;
     private TextView statusLabel;
@@ -916,7 +923,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             actionStatus = ACTION_FINISH_ORDER;
                                         }
 
-                                        presenter.finishOrderGql(getArguments().getString(KEY_ORDER_ID), actionStatus);
+                                        presenter.finishOrderGql(
+                                                GraphqlHelper.loadRawString(getView().getResources(), R.raw.uoh_finish_order),
+                                                getArguments().getString(KEY_ORDER_ID),
+                                                actionStatus,
+                                                userSessionInterface.getUserId());
                                         dialogUnify.dismiss();
                                     } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
                                         Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));

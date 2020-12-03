@@ -123,8 +123,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String category;
 
     @Inject
-    public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
+    public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase,
+                                    FinishOrderGqlUseCase finishOrderGqlUseCase) {
         this.orderDetailsUseCase = orderDetailsUseCase;
+        this.finishOrderGqlUseCase = finishOrderGqlUseCase;
     }
 
     @Override
@@ -470,16 +472,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
     }
 
-    public void finishOrderGql(String orderId, String actionStatus) {
-        if (getView() != null && getView().getActivity() != null) {
+    public void finishOrderGql(String query, String orderId, String actionStatus, String userId) {
+        if (getView() != null) {
             UohFinishOrderParam uohFinishOrderParam = new UohFinishOrderParam();
             uohFinishOrderParam.setOrderId(orderId);
             uohFinishOrderParam.setAction(actionStatus);
-            uohFinishOrderParam.setUserId(userSessionInterface.getUserId());
+            uohFinishOrderParam.setUserId(userId);
 
             Map<String, Object> variables = new HashMap<>();
             variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
-            finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
+            finishOrderGqlUseCase.setup(query, variables);
             finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
                 @Override
                 public void onCompleted() {
