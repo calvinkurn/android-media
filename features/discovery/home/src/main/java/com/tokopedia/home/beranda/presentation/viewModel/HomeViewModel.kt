@@ -1133,10 +1133,21 @@ open class HomeViewModel @Inject constructor(
                             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newTopAdsModel, visitable.index, this@HomeViewModel))
                         }
                     }
+                } else {
+                    removeAllTopAdsData()
                 }
             }){
                 it.printStackTrace()
             }
+        }
+    }
+
+    private fun removeAllTopAdsData() {
+        val topadsData = homeVisitableListData.withIndex().filter {
+            it.value is HomeTopAdsBannerDataModel
+        }
+        topadsData.map {
+            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this@HomeViewModel))
         }
     }
 
