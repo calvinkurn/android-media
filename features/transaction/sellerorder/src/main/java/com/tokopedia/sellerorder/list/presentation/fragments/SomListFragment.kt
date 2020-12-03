@@ -1233,6 +1233,21 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         errorToaster?.dismiss()
     }
 
+    private fun showAdminPermissionError() {
+        dismissCoachMark()
+        somListLoading.gone()
+        rvSomList.gone()
+        multiEditViews.gone()
+        containerBtnBulkAction.gone()
+        getSwipeRefreshLayout(view)?.apply {
+            isRefreshing = false
+            isEnabled = false
+        }
+        sortFilterSomList.invisible()
+        scrollViewErrorState.show()
+        errorToaster?.dismiss()
+    }
+
     private fun renderTickers(data: List<TickerData>) {
         val activeTickers = data.filter { (it.itemData as? SomListTickerUiModel)?.isActive == true }
                 .onEach { it.type = Ticker.TYPE_ANNOUNCEMENT }

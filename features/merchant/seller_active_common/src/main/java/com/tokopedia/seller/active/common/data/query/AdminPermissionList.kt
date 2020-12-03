@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.data.source.cloud.query
+package com.tokopedia.seller.active.common.data.query
 
 object AdminPermissionList {
 

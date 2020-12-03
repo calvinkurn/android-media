@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.domain.interactor.model
+package com.tokopedia.seller.active.common.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 data class AdminInfoResponse(
         @SerializedName("getAdminInfo")
         @Expose
-        val adminInfo: AdminInfo? = AdminInfo()
+        val adminInfo: GetAdminInfo? = GetAdminInfo()
 )
 
-data class AdminInfo(
+data class GetAdminInfo(
         @SerializedName("admin_data")
         @Expose
         val adminData: AdminInfoData? = AdminInfoData()
