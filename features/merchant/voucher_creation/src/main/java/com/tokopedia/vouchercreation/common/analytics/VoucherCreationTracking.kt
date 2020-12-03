@@ -245,6 +245,20 @@ object VoucherCreationTracking {
         )
     }
 
+    fun sendVoucherRecommendationStatus(label: String, shopId: String, userId: String) {
+        val map = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_MERCHANT_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.CREATE,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to VoucherCreationAnalyticConstant.EventAction.Click.CREATE_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId,
+                VoucherCreationAnalyticConstant.Key.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     private fun sendGeneralTracking(event: String,
                                     category: String,
                                     action: String,

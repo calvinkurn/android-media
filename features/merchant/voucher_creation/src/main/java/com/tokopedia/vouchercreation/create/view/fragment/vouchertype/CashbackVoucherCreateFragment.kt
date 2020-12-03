@@ -20,11 +20,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
+import com.tokopedia.vouchercreation.create.domain.model.VoucherRecommendationData
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -35,18 +37,21 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.Promoti
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.*
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.RecommendationTickerViewHolder
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>(), RecommendationTickerViewHolder.OnClickableSpanClickedListener {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
+                           setRecommendationStatus: (Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context,
                            getVoucherReviewUiModel: () -> VoucherReviewUiModel?) = CashbackVoucherCreateFragment().apply {
             this.onNextStep = onNextStep
+            this.setRecommendationStatus = setRecommendationStatus
             this.onShouldChangeBannerValue = onShouldChangeBannerValue
             viewContext = context
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
@@ -54,7 +59,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             getVoucherReviewUiModel()?.run {
                 voucherImageType = voucherType
                 activeCashbackType =
-                        when(voucherType) {
+                        when (voucherType) {
                             is VoucherImageType.Rupiah -> CashbackType.Rupiah
                             is VoucherImageType.Percentage -> CashbackType.Percentage
                             else -> CashbackType.Rupiah
@@ -67,7 +72,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         private const val TICKER_INDEX_POSITION = 0
     }
 
-    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
+    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _, _, _ -> }
+    private var setRecommendationStatus: (Int) -> Unit = { _ -> }
     private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = { _ -> }
     private var viewContext = context
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel? = { null }
@@ -95,8 +101,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 //        PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_cashback_ticker, ::onDismissTicker)
 //    }
 
-    private val unavailableTickerUiModel by lazy {
-        UnavailableTickerUiModel(::onCloseTicker)
+    private val recommendationTickerUiModel by lazy {
+        RecommendationTickerUiModel(true)
     }
 
     private val cashbackTypePickerModel by lazy {
@@ -124,7 +130,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                             userId = userSession.userId
                     )
                 }
-            }}
+            }
+        }
     }
 
     private val rupiahMaximumDiscountTextFieldModel by lazy {
@@ -211,7 +218,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     private val topSectionUiModelList by lazy {
         listOf(
                 voucherTitleUiModel,
-                unavailableTickerUiModel,
+                recommendationTickerUiModel,
                 cashbackTypePickerModel
         )
     }
@@ -267,7 +274,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private var cashbackPercentageInfoUiModel =
-            CashbackPercentageInfoUiModel(0,0,0)
+            CashbackPercentageInfoUiModel(0, 0, 0)
 
     private var activeCashbackType: CashbackType = CashbackType.Rupiah
 
@@ -278,7 +285,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private var textFieldIndex = 0
 
-    override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
+    override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory(this)
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
@@ -316,6 +323,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        viewModel.getVoucherRecommendationFromApi()
     }
 
     private fun setupView() {
@@ -368,7 +376,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             observe(viewModel.rupiahValidationLiveData) { result ->
                 if (isRupiahWaitingForValidation) {
                     viewModel.refreshValue()
-                    when(result) {
+                    when (result) {
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
@@ -376,6 +384,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
                                 onNextStep(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
+                                setRecommendationStatus(viewModel.voucherRecommendationStatus.value
+                                        ?: VoucherRecommendationStatus.WITH_RECOMMENDATION)
                             } else {
                                 validation.run {
                                     benefitMaxError.setRupiahTextFieldError(rupiahMaximumDiscountTextFieldModel)
@@ -408,7 +418,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             observe(viewModel.percentageValidationLiveData) { result ->
                 if (isPercentageWaitingForValidation) {
                     viewModel.refreshValue()
-                    when(result) {
+                    when (result) {
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
@@ -416,6 +426,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
                                 onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
+                                setRecommendationStatus(viewModel.voucherRecommendationStatus.value
+                                        ?: VoucherRecommendationStatus.WITH_RECOMMENDATION)
                             } else {
                                 validation.run {
                                     benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
@@ -446,10 +458,46 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                     isPercentageWaitingForValidation = false
                 }
             }
+            observe(viewModel.idrVoucherRecommendationResult) { result ->
+                when (result) {
+                    is Success -> {
+                        val recommendationData = result.data
+                        viewModel.updateVoucherRecommendation(CashbackType.Rupiah, recommendationData)
+                        if (activeCashbackType == CashbackType.Rupiah) {
+                            updateTextFieldValues(CashbackType.Rupiah, recommendationData)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                    is Fail -> {
+                        viewModel.updateVoucherRecommendation(CashbackType.Rupiah, viewModel.getStaticRecommendationData())
+                    }
+                }
+            }
+            observe(viewModel.percentageVoucherRecommendationResult) { result ->
+                when (result) {
+                    is Success -> {
+                        val recommendationData = result.data
+                        viewModel.updateVoucherRecommendation(CashbackType.Percentage, recommendationData)
+                        if (activeCashbackType == CashbackType.Percentage) {
+                            updateTextFieldValues(CashbackType.Percentage, recommendationData)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                    is Fail -> {
+                        viewModel.updateVoucherRecommendation(CashbackType.Percentage, viewModel.getStaticRecommendationData())
+                    }
+                }
+            }
+            observe(viewModel.voucherRecommendationStatus) { status ->
+                recommendationTickerUiModel.isRecommendationApplied = status == VoucherRecommendationStatus.WITH_RECOMMENDATION
+                with(topSectionUiModelList) {
+                    adapter.notifyItemChanged(indexOf(recommendationTickerUiModel))
+                }
+            }
         }
     }
 
-    private fun getCashbackTypeUiList() : List<Visitable<*>> {
+    private fun getCashbackTypeUiList(): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             addAll(topSectionUiModelList)
             if (activeCashbackType is CashbackType.Rupiah) {
@@ -459,11 +507,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             }
             addAll(bottomSectionUiModelList)
         }
-    }
-
-    private fun onDismissTicker() {
-        adapter.data.remove(unavailableTickerUiModel)
-        adapter.notifyItemRemoved(TICKER_INDEX_POSITION)
     }
 
     private fun onNext() {
@@ -496,7 +539,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         val cashbackTypeEventAction: String
         textFieldIndex = adapter.data.size - extraSize
         adapter.data.removeAt(textFieldIndex)
-        when(cashbackType) {
+        when (cashbackType) {
             CashbackType.Rupiah -> {
                 adapter.data.add(textFieldIndex, rupiahCashbackAdapterUiModel)
                 cashbackTypeEventAction = VoucherCreationAnalyticConstant.EventAction.Click.CASHBACK_TYPE_RUPIAH
@@ -513,13 +556,14 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                 userId = userSession.userId
         )
         viewModel.changeCashbackType(cashbackType)
-
+        viewModel.updateRecommendationStatus(cashbackType)
         adapter.notifyItemChanged(textFieldIndex)
     }
 
     private fun onTextFieldValueChanged(value: Int?, type: PromotionType) {
         (type as? PromotionType.Cashback)?.let {
             viewModel.addTextFieldValueToCalculation(value, it)
+            viewModel.updateRecommendationStatus(activeCashbackType)
         }
     }
 
@@ -549,6 +593,41 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         )
     }
 
+    override fun onClickableSpanClicked() {
+        val voucherRecommendation = viewModel.getVoucherRecommendationData(activeCashbackType)
+        updateTextFieldValues(activeCashbackType, voucherRecommendation)
+        when(activeCashbackType) {
+            CashbackType.Rupiah -> {
+                rupiahCashbackTextFieldList.forEach { uiModel ->
+                    viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                }
+            }
+            CashbackType.Percentage -> {
+                percentageCashbackTextFieldList.forEach { uiModel ->
+                    viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                }
+            }
+        }
+        adapter.notifyDataSetChanged()
+        viewModel.updateRecommendationStatus(activeCashbackType)
+    }
+
+    private fun updateTextFieldValues(cashbackType: CashbackType, voucherRecommendationData: VoucherRecommendationData) {
+        when (cashbackType) {
+            CashbackType.Rupiah -> {
+                setRupiahTextFieldValue(rupiahMaximumDiscountTextFieldModel, voucherRecommendationData.voucherDiscountAmtMax)
+                setRupiahTextFieldValue(rupiahMinimumPurchaseTextFieldModel, voucherRecommendationData.voucherMinimumAmt)
+                setRupiahTextFieldValue(rupiahVoucherQuotaTextFieldModel, voucherRecommendationData.voucherQuota)
+            }
+            CashbackType.Percentage -> {
+                setPercentageTextFieldValue(discountAmountTextFieldModel, voucherRecommendationData.voucherDiscountAmt)
+                setPercentageTextFieldValue(percentageMaximumDiscountTextFieldModel, voucherRecommendationData.voucherDiscountAmtMax)
+                setPercentageTextFieldValue(percentageMinimumPurchaseTextFieldModel, voucherRecommendationData.voucherMinimumAmt)
+                setPercentageTextFieldValue(percentageVoucherQuotaTextFieldModel, voucherRecommendationData.voucherQuota)
+            }
+        }
+    }
+
     private fun getCashbackInfo(): CashbackPercentageInfoUiModel = cashbackPercentageInfoUiModel
 
     private fun checkIfValuesAreCorrect(minimumDiscount: Int, maximumDiscount: Int): Boolean =
@@ -564,11 +643,23 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         viewModel.validateCashbackPercentageValues()
     }
 
+    private fun setRupiahTextFieldValue(voucherTextFieldUiModel: VoucherTextFieldUiModel, newValue: Int) {
+        rupiahCashbackTextFieldList.run {
+            get(indexOf(voucherTextFieldUiModel)).currentValue = newValue
+        }
+    }
+
     private fun String.setRupiahTextFieldError(voucherTextFieldUiModel: VoucherTextFieldUiModel) {
         if (isNotBlank()) {
             rupiahCashbackTextFieldList.run {
                 get(indexOf(voucherTextFieldUiModel)).currentErrorPair = Pair(true, this@setRupiahTextFieldError)
             }
+        }
+    }
+
+    private fun setPercentageTextFieldValue(voucherTextFieldUiModel: VoucherTextFieldUiModel, newValue: Int) {
+        percentageCashbackTextFieldList.run {
+            get(indexOf(voucherTextFieldUiModel)).currentValue = newValue
         }
     }
 
@@ -589,6 +680,5 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             with(percentageCashbackTextFieldList) {
                 get(indexOf(voucherTextFieldUiModel)).currentValue.toZeroIfNull()
             }
-
 }
 

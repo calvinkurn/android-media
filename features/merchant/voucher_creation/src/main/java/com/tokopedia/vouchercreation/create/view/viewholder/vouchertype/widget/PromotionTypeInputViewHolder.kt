@@ -35,13 +35,13 @@ class PromotionTypeInputViewHolder(itemView: View,
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        CashbackVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context, getVoucherReviewData)
+//        CashbackVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context, getVoucherReviewData)
     }
 
     private val promotionTypeFragmentHashMap by lazy {
         LinkedHashMap<Int, BaseListFragment<*,*>>().apply {
             put(FREE_DELIVERY_TYPE_FRAGMENT_KEY, freeDeliveryVoucherCreateFragment)
-            put(CASHBACK_TYPE_FRAGMENT_KEY, cashbackVoucherCreateFragment)
+//            put(CASHBACK_TYPE_FRAGMENT_KEY, cashbackVoucherCreateFragment)
         }
     }
 
