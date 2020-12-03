@@ -184,7 +184,6 @@ object DeeplinkConstDigital {
             "angsuran/bfi-finance" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=526&template=general",
             "angsuran/suzuki-finance" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=628&template=general",
             "angsuran/olympindo" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=636&template=general",
-            "angsuran/taralite" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=655&template=general",
             "angsuran/kredivo" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=662&template=general",
             "angsuran/btn" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=661&template=general",
             "angsuran/home-credit" to "tokopedia://digital/form?category_id=7&menu_id=123&operator_id=653&template=general",
