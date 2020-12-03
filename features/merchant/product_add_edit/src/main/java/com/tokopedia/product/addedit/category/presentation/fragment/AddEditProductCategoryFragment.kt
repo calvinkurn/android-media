@@ -30,7 +30,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_edit_product_category.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_category.loaderUnify
-import kotlinx.android.synthetic.main.item_category.*
 import java.util.*
 import javax.inject.Inject
 
