@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/containerSawOrderItem"
+    android:id="@+id/containerSawChatItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/unify_space_12"
@@ -17,7 +17,7 @@
         android:layout_toStartOf="@+id/tvSawChatItemTime"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/unify_font_12"
         android:textStyle="bold"
         tools:text="Ilham Suaib" />
@@ -32,10 +32,9 @@
         android:layout_toStartOf="@+id/tvSawChatItemTime"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/unify_font_10"
-        android:visibility="gone"
-        tools:text="Batas response 1 hari"
+        tools:text="Ready gk kak?"
         tools:visibility="visible" />
 
     <TextView
@@ -44,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/saw_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_44"
@@ -51,7 +51,7 @@
         tools:text="Kemarin" />
 
     <RelativeLayout
-        android:id="@+id/horLineSawOrderItem"
+        android:id="@+id/horLineSawChatItem"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/tvSawChatItemMessage"

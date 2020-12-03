@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+//apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
@@ -12,6 +12,15 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 buildscript {
@@ -21,9 +30,9 @@ buildscript {
         jcenter()
         google()
     }
-    dependencies {
+    /*dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-    }
+    }*/
 }
 
 dependencies {

@@ -12,8 +12,21 @@
                 android:resource="@xml/saw_widget_info_order" />
         </receiver>
 
+        <receiver android:name="com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/saw_widget_info_chat" />
+        </receiver>
+
         <service
             android:name=".view.remoteview.OrderWidgetRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".view.remoteview.ChatWidgetRemoteViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <service

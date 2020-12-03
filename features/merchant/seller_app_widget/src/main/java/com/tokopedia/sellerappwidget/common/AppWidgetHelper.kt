@@ -29,28 +29,8 @@ object AppWidgetHelper {
         return RemoteViews(context.packageName, R.layout.saw_app_widget_order)
     }
 
-    fun getOrderWidgetLastUpdatedFmt(context: Context): String {
-        val sharedPref: SellerAppWidgetPreferences = SellerAppWidgetPreferencesImpl(context)
-        val lastUpdatedMillis = sharedPref.getLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
-        val now = Date()
-        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val dateSdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        val diff = lastUpdatedMillis - now.time
-        val oneDayMillis = TimeUnit.DAYS.toMillis(1)
-
-        val lastUpdatedHour = sdf.format(Date(lastUpdatedMillis))
-
-        return when {
-            diff <= oneDayMillis -> { //same day
-                lastUpdatedHour
-            }
-            diff > oneDayMillis.times(2) -> { //more than 2 days
-                dateSdf.format(lastUpdatedMillis) + " $lastUpdatedHour"
-            }
-            else -> { //yesterday
-                context.getString(R.string.saw_yesterday) + " $lastUpdatedHour"
-            }
-        }
+    fun getChatWidgetRemoteView(context: Context): RemoteViews {
+        return RemoteViews(context.packageName, R.layout.saw_app_widget_chat)
     }
 
     @WidgetSize

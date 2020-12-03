@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 abstract class BaseAppWidgetVM<T>(
-        private val dispatcherProvider: AppWidgetDispatcherProvider
+        protected val dispatcherProvider: AppWidgetDispatcherProvider
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext

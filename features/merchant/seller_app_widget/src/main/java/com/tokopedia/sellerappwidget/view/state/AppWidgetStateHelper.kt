@@ -11,7 +11,12 @@ import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 01/12/20
@@ -70,6 +75,30 @@ abstract class AppWidgetStateHelper {
             }
             val reloadPendingIntent = PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             setOnClickPendingIntent(viewId, reloadPendingIntent)
+        }
+    }
+
+    protected fun getWidgetLastUpdatedFmt(context: Context, prefKey: String): String {
+        val sharedPref: SellerAppWidgetPreferences = SellerAppWidgetPreferencesImpl(context)
+        val lastUpdatedMillis = sharedPref.getLong(prefKey, System.currentTimeMillis())
+        val now = Date()
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val dateSdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val diff = lastUpdatedMillis - now.time
+        val oneDayMillis = TimeUnit.DAYS.toMillis(1)
+
+        val lastUpdatedHour = sdf.format(Date(lastUpdatedMillis))
+
+        return when {
+            diff <= oneDayMillis -> { //same day
+                lastUpdatedHour
+            }
+            diff > oneDayMillis.times(2) -> { //more than 2 days
+                dateSdf.format(lastUpdatedMillis) + " $lastUpdatedHour"
+            }
+            else -> { //yesterday
+                context.getString(R.string.saw_yesterday) + " $lastUpdatedHour"
+            }
         }
     }
 }

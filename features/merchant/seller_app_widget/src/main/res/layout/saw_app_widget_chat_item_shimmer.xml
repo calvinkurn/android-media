@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/saw_dimen_12dp"
         android:layout_marginEnd="@dimen/saw_dimen_50dp"
         android:background="@drawable/saw_shape_shimmer_radius_6dp" />
 
@@ -25,6 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:background="@color/Neutral_N75" />
+        android:layout_marginTop="@dimen/saw_dimen_12dp"
+        android:background="@color/Unify_N75" />
 </LinearLayout>

@@ -21,5 +21,9 @@
     <string name="saw_login_tokopedia_seller_large">Masuk ke Tokopedia Seller</string>
     <string name="saw_no_login_check_order_small">Cek pesanan yang kamu terima di sini.</string>
     <string name="saw_no_login_check_order_normal">Cek pesanan biar nggak ada \npesanan yang terlewat, ya.</string>
+    <string name="saw_no_login_check_chat_description">Cek chat biar nggak ada \npertanyaan yang terlewat, ya.</string>
+    <string name="saw_chat_empty_state_title">Belum ada Chat</string>
+    <string name="saw_chat_empty_state_description">Biar nggak sepi, promosikan produkmu pake Broadcast Chat!</string>
     <string name="saw_login_now">Masuk Sekarang</string>
+    <string name="saw_new_chat">Chat Baru</string>
 </resources>

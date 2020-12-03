@@ -2,6 +2,7 @@ package com.tokopedia.sellerappwidget.view.remoteview
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.tokopedia.sellerappwidget.R
@@ -45,7 +46,17 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
         override fun getViewAt(position: Int): RemoteViews {
             val chat = chats.getOrNull(position) ?: ChatUiModel()
             return RemoteViews(context.packageName, R.layout.saw_app_widget_chat_item).apply {
+                setTextViewText(R.id.tvSawChatItemUserName, chat.userDisplayName)
+                setTextViewText(R.id.tvSawChatItemMessage, chat.lastMessage)
+                setTextViewText(R.id.tvSawChatItemTime, chat.lastReplyTime)
 
+                //handle on item click
+                val fillIntent = Intent().apply {
+                    putExtra(Const.Extra.BUNDLE, Bundle().apply {
+                        putParcelable(Const.Extra.CHAT_ITEM, chat)
+                    })
+                }
+                setOnClickFillInIntent(R.id.containerSawChatItem, fillIntent)
             }
         }
 

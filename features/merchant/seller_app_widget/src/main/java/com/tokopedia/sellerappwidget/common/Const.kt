@@ -16,7 +16,7 @@ object Const {
         const val ORDER_ITEM = "order"
         const val ORDER_ITEMS = "orders"
         const val ORDER_STATUS_ID = "order_status_id"
-        const val CHAT = "chat"
+        const val CHAT_ITEM = "orders"
         const val CHAT_ITEMS = "chats"
     }
 
@@ -38,5 +38,6 @@ object Const {
 
     object SharedPrefKey {
         const val ORDER_LAST_UPDATED = "order_last_updated"
+        const val CHAT_LAST_UPDATED = "chat_last_updated"
     }
 }
