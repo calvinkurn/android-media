@@ -108,6 +108,7 @@ const val PRODUCT_CARD_REVAMP  = "product_card_revamp"
 const val PRODUCT_CARD_CAROUSEL  = "product_card_carousel"
 const val PRODUCT_CARD_REVAMP_ITEM  = "product_card_revamp_item"
 const val PRODUCT_CARD_CAROUSEL_ITEM  = "product_card_carousel_item"
+const val MASTER_PRODUCT_CARD_ITEM_LIST  = "master_product_card_item_list"
 const val CATEGORY_LEVEL_1  = 1
 const val CATEGORY_LEVEL_2  = 2
 const val CURRENT_SITE  = "currentSite"
