@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.category.presentation.viewholder
 
-import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -12,21 +11,23 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
-import kotlinx.android.synthetic.main.item_category_parent.view.*
+import kotlinx.android.synthetic.main.item_category.view.*
 
 class AddEditProductCategoryViewHolder(
         itemView: View,
         private val listener: CategoryItemViewHolderListener,
         private val categories: List<CategoryUiModel>?,
         private val categoryAdapter: AddEditProductCategoryAdapter,
+        private val resultCategories: MutableList<CategoryUiModel>
 ): RecyclerView.ViewHolder(itemView) {
+
+    private var categoryChildAdapter: AddEditProductCategoryAdapter? = null
 
     fun bindData(category: CategoryUiModel?) {
         itemView.run {
             category?.let { category ->
-
-                tvCategoryNameParent.text = category.categoryName
                 val hasChild = isParent(category)
+                tvCategoryNameParent.text = category.categoryName
 
                 checkParent(hasChild)
                 setRecyclerView(category)
@@ -35,18 +36,18 @@ class AddEditProductCategoryViewHolder(
                 itemCategory.setOnClickListener {
                     if (hasChild) {
                         category.isSelected = !category.isSelected
-                        categories?.let {
-                            listener.selectCategoryItem(category, hasChild, categoryAdapter)
-                        }
-                        checkCategorySelected(category.isSelected)
+                        listener.selectCategoryItem(category, hasChild, categoryAdapter, adapterPosition)
+                        checkCategorySelected(category)
                     } else {
-                        listener.selectCategoryItem(category.categoryId)
                         rbCategory.isChecked = !rbCategory.isChecked
+                        resultCategories.add(category)
+                        listener.selectCategoryItem(category.categoryId, resultCategories)
                     }
                 }
 
                 rbCategory.setOnClickListener {
-                    listener.selectCategoryItem(category.categoryId)
+                    resultCategories.add(category)
+                    listener.selectCategoryItem(category.categoryId, resultCategories)
                 }
             }
         }
@@ -62,27 +63,34 @@ class AddEditProductCategoryViewHolder(
 
     private fun setRecyclerView(category: CategoryUiModel) {
         itemView.run {
-            val adapter = AddEditProductCategoryAdapter(listener)
-            rvLevelCategory.adapter = adapter
+            categoryChildAdapter = AddEditProductCategoryAdapter(listener, resultCategories)
+            rvLevelCategory.adapter = categoryChildAdapter
             rvLevelCategory.layoutManager = LinearLayoutManager(itemView.context)
-            val categoryLevel = getCategoryById(category.categoryId)
-            categoryLevel?.child?.let {
-                adapter.updateCategories(it)
-                adapter.putIntoTempCategories()
+
+            getCategoryById(category.categoryId)?.child?.let {
+                categoryChildAdapter?.updateCategories(it)
+                categoryChildAdapter?.putIntoTempCategories()
             }
         }
     }
 
-    private fun checkCategorySelected(isSelected: Boolean) {
+    private fun checkCategorySelected(category: CategoryUiModel) {
         itemView.run {
-            if (!isSelected) {
+            if (!category.isSelected) {
                 tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 rvLevelCategory.hide()
                 ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_down)
+                val resultSize = resultCategories.size - 1
+                for (level in resultSize downTo category.categoryLevel) {
+                    resultCategories.removeAt(level)
+                }
+                categoryChildAdapter?.resetCategories()
+                categoryChildAdapter?.notifyDataSetChanged()
             } else {
                 tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 rvLevelCategory.show()
                 ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_up)
+                resultCategories.add(category)
             }
         }
     }
@@ -113,7 +121,7 @@ class AddEditProductCategoryViewHolder(
     }
 
     interface CategoryItemViewHolderListener {
-        fun selectCategoryItem(category: CategoryUiModel, isHasChild: Boolean, adapter: AddEditProductCategoryAdapter)
-        fun selectCategoryItem(categoryId: String)
+        fun selectCategoryItem(category: CategoryUiModel, isHasChild: Boolean, adapter: AddEditProductCategoryAdapter, position: Int)
+        fun selectCategoryItem(categoryId: String, categories: List<CategoryUiModel>?)
     }
 }

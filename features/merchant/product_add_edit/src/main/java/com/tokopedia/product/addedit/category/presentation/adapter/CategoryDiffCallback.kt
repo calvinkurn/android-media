@@ -17,12 +17,14 @@ class CategoryDiffCallback(
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldCategories[oldItemPosition].categoryId === newCategories[newItemPosition].categoryId
+        val oldCategory = oldCategories[oldItemPosition]
+        val newCategory = newCategories[newItemPosition]
+        return oldCategory.categoryId == newCategory.categoryId
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldEmployee = oldCategories[oldItemPosition]
-        val newEmployee = newCategories[newItemPosition]
-        return oldEmployee == newEmployee
+        val oldCategory = oldCategories[oldItemPosition]
+        val newCategory = newCategories[newItemPosition]
+        return oldCategory == newCategory
     }
 }

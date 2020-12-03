@@ -5,13 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.category.common.Constant.INCREMENT_CATEGORY_LEVEL
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
 import com.tokopedia.product.addedit.category.presentation.viewholder.AddEditProductCategoryViewHolder
-import kotlinx.android.synthetic.main.item_category_parent.view.*
 
 class AddEditProductCategoryAdapter(
         private val listener: AddEditProductCategoryViewHolder.CategoryItemViewHolderListener,
+        private val resultCategories: MutableList<CategoryUiModel>
 ) : RecyclerView.Adapter<AddEditProductCategoryViewHolder>()  {
 
     private val categories  =  mutableListOf<CategoryUiModel>()
@@ -19,8 +18,8 @@ class AddEditProductCategoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddEditProductCategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_category_parent, parent, false)
-        return AddEditProductCategoryViewHolder(itemView, listener, categories, this)
+        val itemView = inflater.inflate(R.layout.item_category, parent, false)
+        return AddEditProductCategoryViewHolder(itemView, listener, categories, this, resultCategories)
     }
 
     override fun getItemCount(): Int {

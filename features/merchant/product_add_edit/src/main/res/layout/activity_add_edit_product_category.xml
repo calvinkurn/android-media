@@ -8,7 +8,7 @@
     tools:context=".category.presentation.activity.AddEditProductCategoryActivity">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/toolbar_draft"
+        android:id="@+id/huCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:unify_header_is_show_shadow="false"

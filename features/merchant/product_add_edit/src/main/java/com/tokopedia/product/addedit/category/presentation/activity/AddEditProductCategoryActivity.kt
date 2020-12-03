@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.category.di.AddEditProductCategoryModule
 import com.tokopedia.product.addedit.category.di.DaggerAddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import kotlinx.android.synthetic.main.activity_add_edit_product_category.*
 
 class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEditProductCategoryComponent>{
 
@@ -33,6 +34,8 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product_category)
+        huCategory.title = getString(R.string.label_title_category_picker)
+        setSupportActionBar(huCategory)
     }
 
     override fun getComponent(): AddEditProductCategoryComponent {
@@ -40,6 +43,13 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
                 .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
                 .addEditProductCategoryModule(AddEditProductCategoryModule())
                 .build()
+    }
+
+    override fun onBackPressed() {
+        if (fragment is AddEditProductCategoryFragment) {
+            val f = fragment as AddEditProductCategoryFragment
+            //
+        }
     }
 
 }
