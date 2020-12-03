@@ -53,7 +53,8 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
-                it.initRecyclerViewForGrid(option)
+                val productList = option.product.map{ product -> product.toProductCardModel() }
+                it.initRecyclerViewForGrid(option, productList)
             } else {
                 it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
@@ -81,12 +82,12 @@ class InspirationCarouselViewHolder(
         )
     }
 
-    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option) {
+    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
         launch {
             try {
                 layoutManager = createLayoutManager()
                 adapter = createAdapter(createGridProductList(option))
-                setHeightBasedOnProductCardMaxHeight(option.product)
+                setHeightBasedOnProductCardMaxHeight(productList)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -95,10 +96,9 @@ class InspirationCarouselViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            list: List<InspirationCarouselViewModel.Option.Product>
+            list: List<ProductCardModel>
     ) {
-        val productList = list.map{ product -> product.toProductCardModel() }
-        val productCardHeight = getProductCardMaxHeight(productList)
+        val productCardHeight = getProductCardMaxHeight(list)
         val carouselLayoutParams = layoutParams
         carouselLayoutParams?.height = productCardHeight
         layoutParams = carouselLayoutParams
