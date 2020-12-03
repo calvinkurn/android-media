@@ -140,7 +140,7 @@ object DynamicProductDetailMapper {
         val variants = networkData.variants.map { it ->
             val newOption = it.options.map { data ->
                 Option(id = data.id.toIntOrZero(), vuv = data.vuv.toIntOrZero(), value = data.value, hex = data.hex, picture = Picture(original = data.picture?.original
-                        ?: "", thumbnail = data.picture?.thumbnail ?: ""))
+                        ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
             }
 
             Variant(pv = it.pv.toIntOrZero(),
