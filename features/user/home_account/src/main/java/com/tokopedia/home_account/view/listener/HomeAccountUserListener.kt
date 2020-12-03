@@ -15,7 +15,7 @@ interface HomeAccountUserListener {
     fun onSettingItemClicked(item: CommonDataView)
     fun onMemberItemClicked(applink: String)
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify)
-    fun onItemViewBinded(position: Int, itemView: View)
+    fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)
