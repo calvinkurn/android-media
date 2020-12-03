@@ -51,12 +51,11 @@ class InspirationCarouselViewHolder(
 
     private fun bindContent(element: InspirationCarouselViewModel) {
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
-            it.layoutManager = createLayoutManager()
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
-                it.adapter = createAdapter(createGridProductList(option))
-                it.setHeight(option.product)
+                it.initRecyclerViewForGrid(option)
             } else {
+                it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
             }
 
@@ -82,10 +81,12 @@ class InspirationCarouselViewHolder(
         )
     }
 
-    private fun RecyclerView.setHeight(products: List<InspirationCarouselViewModel.Option.Product>) {
+    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option) {
         launch {
             try {
-                setHeightBasedOnProductCardMaxHeight(products)
+                layoutManager = createLayoutManager()
+                adapter = createAdapter(createGridProductList(option))
+                setHeightBasedOnProductCardMaxHeight(option.product)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
