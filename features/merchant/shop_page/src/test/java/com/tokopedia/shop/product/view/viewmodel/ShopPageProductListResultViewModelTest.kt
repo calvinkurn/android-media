@@ -28,8 +28,6 @@ import rx.Subscriber
 @ExperimentalCoroutinesApi
 class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestFixture() {
 
-    private var shopProductTotalData = -1
-
     @Test
     fun `check userSession isLoggedIn return same value with mock value`() {
         every { userSessionInterface.isLoggedIn } returns true
@@ -153,9 +151,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
             assertNotNull(shopPageProductListResultViewModel.productData.value)
-            shopProductTotalData = (
-                    shopPageProductListResultViewModel.productData.value as Success<GetShopProductUiModel>
-                    ).data.listShopProductUiModel.size
         }
     }
 
