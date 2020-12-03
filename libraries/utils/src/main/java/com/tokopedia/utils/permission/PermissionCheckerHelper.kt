@@ -62,7 +62,6 @@ class PermissionCheckerHelper {
         const val PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         const val PERMISSION_READ_EXTERNAL_STORAGE = Manifest.permission.READ_EXTERNAL_STORAGE
         const val PERMISSION_NFC = Manifest.permission.NFC
-        const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
         const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
         const val PERMISSION_READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
         const val PERMISSION_READ_CALL_LOG = Manifest.permission.READ_CALL_LOG
@@ -187,7 +186,7 @@ class PermissionCheckerHelper {
 
         } else if (!permissions.isEmpty()
                 && shouldShowRequestPermissionRationale(activity, permissions[0])) {
-            onShowRationale(activity, permissions, permissions[0], listener, rationaleText)
+            onShowRationale(activity, permissions, getPermissionName(activity, permissions[0]), listener, rationaleText)
         } else if (!permissions.isEmpty()) {
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         }
