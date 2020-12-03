@@ -3,9 +3,11 @@ package com.tokopedia.notifications.inApp.viewEngine;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 
 import java.util.HashMap;
@@ -31,14 +33,15 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        if (activity != null && activityCount == 0) {
-            trackIrisEventForAppOpen(activity);
-        }
-        activityCount++;
         try {
+            if (activity != null && activityCount == 0) {
+                trackIrisEventForAppOpen(activity);
+            }
+            activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
         } catch (Exception e) {
-            Timber.e(e);
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
     }
 
@@ -78,6 +81,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
     }
 
 

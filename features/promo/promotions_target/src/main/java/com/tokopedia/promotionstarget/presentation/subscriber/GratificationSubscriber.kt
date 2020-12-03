@@ -24,6 +24,7 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDia
 import com.tokopedia.user.session.UserSession
 import dagger.Lazy
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -145,45 +146,50 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?, intent: Intent?): GratificationData? {
-        var showGratificationDialog = false
-        var gratificationData: GratificationData? = null
-        if (activity != null && intent != null) {
+        try {
+            var showGratificationDialog = false
+            var gratificationData: GratificationData? = null
+            if (activity != null && intent != null) {
 
-            val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
+                val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
 
-            var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
-            var page = bundle?.getString(CouponGratificationParams.PAGE)
+                var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
+                var page = bundle?.getString(CouponGratificationParams.PAGE)
 
-            if (page.isNullOrEmpty()) {
-                page = intent.getStringExtra(CouponGratificationParams.PAGE)
-            }
+                if (page.isNullOrEmpty()) {
+                    page = intent.getStringExtra(CouponGratificationParams.PAGE)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
-            }
+                if (popSlug.isNullOrEmpty()) {
+                    popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                val uri = intent.data
-                if (uri != null) {
-                    popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
-                    page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                if (popSlug.isNullOrEmpty()) {
+                    val uri = intent.data
+                    if (uri != null) {
+                        popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
+                        page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                    }
+                }
+
+                if (page.isNullOrEmpty()) {
+                    page = ""
+                    val activityName = activity?.javaClass?.canonicalName
+                    if (!TextUtils.isEmpty(activityName)) {
+                        page = activityName
+                    }
+                }
+
+                showGratificationDialog = (!TextUtils.isEmpty(popSlug))
+                if (showGratificationDialog) {
+                    gratificationData = GratificationData(popSlug!!, page!!)
                 }
             }
-
-            if (page.isNullOrEmpty()) {
-                page = ""
-                val activityName = activity?.javaClass?.canonicalName
-                if (!TextUtils.isEmpty(activityName)) {
-                    page = activityName
-                }
-            }
-
-            showGratificationDialog = (!TextUtils.isEmpty(popSlug))
-            if (showGratificationDialog) {
-                gratificationData = GratificationData(popSlug!!, page!!)
-            }
+            return gratificationData
+        } catch (ex: Exception) {
+            Timber.e(ex)
+            return null
         }
-        return gratificationData
     }
 
     private fun showGratificationDialog(activity: Activity, gratificationData: GratificationData, intent: Intent) {
