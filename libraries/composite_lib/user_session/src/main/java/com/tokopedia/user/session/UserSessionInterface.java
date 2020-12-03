@@ -186,14 +186,6 @@ public interface UserSessionInterface {
 
     void setIsLocationAdmin(boolean isLocationAdmin);
 
-    boolean isManageProductAdmin();
-
-    void setIsManageProductAdmin(boolean isManageProductAdmin);
-
-    boolean isManageStockAdmin();
-
-    void setIsManageStockAdmin(boolean isManageStockAdmin);
-
     boolean isMultiLocationShop();
 
     void setIsMultiLocationShop(boolean isMultiLocationShop);
