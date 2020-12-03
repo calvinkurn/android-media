@@ -15,7 +15,7 @@
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_weight="1"
         android:text="@string/oke"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
     <ImageView

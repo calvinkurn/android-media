@@ -113,12 +113,6 @@ internal fun createEmptyStateListener(): EmptyStateListener {
     }
 }
 
-internal fun createBannedProductsEmptySearch(): BannedProductsRedirectToBrowserListener {
-    return object: BannedProductsRedirectToBrowserListener {
-        override fun onGoToBrowserClicked(isEmptySearch: Boolean, liteUrl: String) {}
-    }
-}
-
 internal fun createRecommendationListener(): RecommendationListener {
     return object: RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}

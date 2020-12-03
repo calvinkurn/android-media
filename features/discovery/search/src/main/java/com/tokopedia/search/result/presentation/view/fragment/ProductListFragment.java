@@ -72,7 +72,6 @@ import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -137,7 +136,6 @@ public class ProductListFragment
         EmptyStateListener,
         RecommendationListener,
         InspirationCarouselListener,
-        BannedProductsRedirectToBrowserListener,
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
@@ -316,7 +314,7 @@ public class ProductListFragment
         ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this, this,
                 this, this, this,
-                this, this, this,
+                this, this,
                 this, this, this, this, this,
                 topAdsConfig);
 
@@ -1320,31 +1318,6 @@ public class ProductListFragment
     private void onFreeOngkirOnBoardingShown() {
         if (presenter != null) {
             presenter.onFreeOngkirOnBoardingShown();
-        }
-    }
-
-    @Override
-    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String liteUrl) {
-        trackEventClickGoToBrowserBannedProducts(isEmptySearch);
-
-        if (presenter != null) {
-            presenter.onBannedProductsGoToBrowserClick(liteUrl);
-        }
-    }
-
-    @Override
-    public void redirectToBrowser(String url) {
-        if (TextUtils.isEmpty(url)) return;
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
-    }
-
-    private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
-        if (isEmptySearch) {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
-        } else {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
     }
 

@@ -20,7 +20,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedPr
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREEN
 import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY

@@ -107,10 +107,10 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // ChangeInactiveFormRequestActivity
-    // tokopedia-android-internal://global/change-inactive-phone-form
+    // InactivePhoneOnboardingActivity
+    // tokopedia-android-internal://global/change-inactive-phone
     @JvmField
-    val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
+    val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
 
     // TkpdPaySettingActivity
     // tokopedia-android-internal://global/payment-setting

@@ -10,6 +10,12 @@ data class EventCheckoutResponse(
         val checkout: Checkout = Checkout()
 )
 
+data class EventCheckoutInstantResponse(
+        @SerializedName("checkout_general_v2_instant")
+        @Expose
+        val checkout: Checkout = Checkout()
+)
+
 data class Checkout(
         @SerializedName("data")
         @Expose

@@ -35,7 +35,7 @@ class OrderListMapper @Inject constructor() {
         return orderProduct.map {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
-                    productName = it.productName,
+                    productName = it.productName.capitalize(),
                     picture = it.picture
             )
         }

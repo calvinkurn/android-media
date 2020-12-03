@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.common.constant
 object AddEditProductConstants {
     const val EXTRA_CACHE_MANAGER_ID = "CACHE_MANAGER_ID"
     const val EXTRA_IS_EDIT_MODE = "EXTRA_IS_EDIT_MODE"
+    const val BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT"
 
     const val HTTP_PREFIX = "http"
     const val KEY_YOUTUBE_VIDEO_ID = "v"

@@ -2,12 +2,14 @@ package com.tokopedia.flight.orderlist.di
 
 import android.content.Context
 import android.content.res.Resources
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
@@ -17,6 +19,9 @@ import com.tokopedia.flight.orderlist.domain.*
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper
 import com.tokopedia.flight.orderlist.network.FlightOrderAuthInterceptor
 import com.tokopedia.flight.orderlist.network.model.FlightOrderErrorResponse
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.url.TokopediaUrl
@@ -37,11 +42,6 @@ import java.util.concurrent.TimeUnit
  */
 @Module
 class FlightOrderModule {
-    private val NET_READ_TIMEOUT = 30
-    private val NET_WRITE_TIMEOUT = 30
-    private val NET_CONNECT_TIMEOUT = 30
-    private val NET_RETRY = 1
-    private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
 
     @FlightOrderScope
     @Provides
@@ -148,6 +148,28 @@ class FlightOrderModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
+    }
+
+    @FlightOrderScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository =
+            getInstance().graphqlRepository
+
+    @FlightOrderScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
+            MultiRequestGraphqlUseCase(graphqlRepository)
+
+    @FlightOrderScope
+    @Provides
+    fun provideDispatcherProvider(): TravelDispatcherProvider = TravelProductionDispatcherProvider()
+
+    companion object {
+        private const val NET_READ_TIMEOUT = 30
+        private const val NET_WRITE_TIMEOUT = 30
+        private const val NET_CONNECT_TIMEOUT = 30
+        private const val NET_RETRY = 1
+        private const val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     }
 
 }

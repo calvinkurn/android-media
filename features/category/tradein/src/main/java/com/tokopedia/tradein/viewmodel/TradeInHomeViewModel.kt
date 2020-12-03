@@ -177,7 +177,7 @@ class TradeInHomeViewModel @Inject constructor(
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            if(maxPrice > tradeInParams.newPrice){
+            if(maxPrice > tradeInParams.newPrice && tradeInType != TRADEIN_MONEYIN){
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
             } else {
                 result.displayMessage = String.format("%1\$s",
