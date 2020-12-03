@@ -143,7 +143,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()
