@@ -48,7 +48,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.main) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
-            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked) quantity.orderQuantity * orderCart.product.purchaseProtectionPlanData.protectionPrice else 0
+            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked) quantity.orderQuantity * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)

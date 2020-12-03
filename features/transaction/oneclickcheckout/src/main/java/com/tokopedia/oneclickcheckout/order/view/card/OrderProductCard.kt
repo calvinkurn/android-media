@@ -174,7 +174,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
             tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
             tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
-            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPrice, false).removeDecimalSuffix()
+            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPricePerProduct, false).removeDecimalSuffix()
             btnProtectionInfo.setOnClickListener {
                 val url = product.purchaseProtectionPlanData.protectionLinkUrl
                 if (url.isNotBlank()) {
