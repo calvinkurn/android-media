@@ -7,9 +7,8 @@ import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
-import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
+import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
-import com.tokopedia.sellerappwidget.view.state.AppWidgetStateHelper
 
 /**
  * Created By @ilhamsuaib on 26/11/20
@@ -34,7 +33,7 @@ object ChatWidgetErrorState {
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
                 imgUrl = Const.Images.ORDER_ON_EMPTY
         )
-        ChatWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteViews, data)
+        ChatWidgetStateHelper.setupNormalCommonWidget<ChatAppWidget>(context, remoteViews, data)
     }
 
     private fun showLargeWidgetErrorState(context: Context, remoteViews: RemoteViews, widgetId: Int) {
@@ -44,6 +43,6 @@ object ChatWidgetErrorState {
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
                 imgUrl = Const.Images.ORDER_ON_EMPTY
         )
-        ChatWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteViews, data)
+        ChatWidgetStateHelper.setupLargeCommonWidget<ChatAppWidget>(context, remoteViews, data)
     }
 }
