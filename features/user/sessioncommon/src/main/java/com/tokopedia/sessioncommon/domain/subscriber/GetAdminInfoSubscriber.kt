@@ -27,8 +27,17 @@ class GetAdminInfoSubscriber(
     private fun onGetAdminInfoSuccess(response: GraphqlResponse) {
         response.getData<AdminInfoResponse>(AdminInfoResponse::class.java).let { adminInfo ->
             val data = adminInfo.response.data.firstOrNull()
+            val isShopOwner = data?.detail?.roleType?.isShopOwner == true
             val isLocationAdmin = data?.detail?.roleType?.isLocationAdmin == true
-            userSession.setIsLocationAdmin(isLocationAdmin)
+            val isShopAdmin = data?.detail?.roleType?.isShopAdmin == true
+            val isMultiLocationShop = data?.locations.orEmpty().count() > 1
+
+            userSession.apply {
+                setIsShopOwner(isShopOwner)
+                setIsLocationAdmin(isLocationAdmin)
+                setIsShopAdmin(isShopAdmin)
+                setIsMultiLocationShop(isMultiLocationShop)
+            }
 
             if (isLocationAdmin) {
                 showLocationAdminPopUp?.invoke()
