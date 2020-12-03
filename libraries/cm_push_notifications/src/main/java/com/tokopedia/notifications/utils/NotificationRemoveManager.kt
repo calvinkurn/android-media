@@ -40,14 +40,8 @@ open class NotificationRemoveManager(
     }
 
     private fun clearNotificationManager(context: Context, notificationId: Int) {
-        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)
-                ?.let {
-                    it.cancel(notificationId)
-                }
-
-        NotificationManagerCompat
-                .from(context)
-                .cancel(notificationId)
+        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.let { it.cancel(notificationId) }
+        NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     fun cancel() {
@@ -56,9 +50,9 @@ open class NotificationRemoveManager(
 
     companion object {
         private val excludeListByCampaignId = listOf(
-                "otp",
-                "otp_push_notification",
-                "0"
+                "-334",
+                "321",
+                "456"
         )
     }
 
