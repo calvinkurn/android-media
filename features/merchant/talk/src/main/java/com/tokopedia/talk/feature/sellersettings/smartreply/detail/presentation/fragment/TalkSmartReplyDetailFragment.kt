@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -56,6 +58,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         initTextArea()
         setDescriptionText()
         setToolbarTitle()
+        setupOnBackPressed()
     }
 
     override fun getScreenName(): String {
@@ -86,5 +89,13 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun initTextArea() {
         talkSmartReplyDetailAvailableStockTextArea.textAreaInput.setText(viewModel.getMessageReady())
         talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.setText(viewModel.getMessageNotReady())
+    }
+
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
     }
 }
