@@ -125,7 +125,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
-        createAndCallPostSeqAbTesting();
+        initializeAbTestVariant();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
@@ -181,18 +181,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
-    }
-
-    private void createAndCallPostSeqAbTesting() {
-        //don't convert to lambda does not work in kit kat
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                return executePostCreateSequenceAbTesting();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
     }
 
     private void createAndCallFontLoad() {
@@ -270,12 +258,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
-        return true;
-    }
-
-    @NotNull
-    private Boolean executePostCreateSequenceAbTesting() {
-        initializeAbTestVariant();
         return true;
     }
 
