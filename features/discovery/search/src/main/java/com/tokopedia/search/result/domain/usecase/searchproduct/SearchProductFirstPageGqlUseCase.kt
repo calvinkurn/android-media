@@ -271,8 +271,8 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
-                              	original_price
-                              	discount_percentage
+                                original_price
+                                discount_percentage
                                 discount_start
                                 discount_expired
                             }
