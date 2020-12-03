@@ -201,21 +201,21 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             when {
                 offset == 0 -> {
                     if (mCurrentState != State.EXPANDED) {
-                        onStateChanged(State.EXPANDED);
+                        onStateChanged(State.EXPANDED)
                     }
-                    mCurrentState = State.EXPANDED;
+                    mCurrentState = State.EXPANDED
                 }
                 abs(offset) >= appBarLayout.totalScrollRange -> {
                     if (mCurrentState != State.COLLAPSED) {
-                        onStateChanged(State.COLLAPSED);
+                        onStateChanged(State.COLLAPSED)
                     }
-                    mCurrentState = State.COLLAPSED;
+                    mCurrentState = State.COLLAPSED
                 }
                 else -> {
                     if (mCurrentState != State.IDLE) {
-                        onStateChanged(State.IDLE);
+                        onStateChanged(State.IDLE)
                     }
-                    mCurrentState = State.IDLE;
+                    mCurrentState = State.IDLE
                 }
             }
         })
@@ -294,15 +294,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
         sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }

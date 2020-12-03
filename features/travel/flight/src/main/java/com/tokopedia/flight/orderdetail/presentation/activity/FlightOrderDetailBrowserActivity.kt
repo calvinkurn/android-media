@@ -47,6 +47,7 @@ class FlightOrderDetailBrowserActivity : BaseSimpleActivity(), HasComponent<Flig
         super.onCreate(savedInstanceState)
 
         toolbar.title = title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -68,6 +69,10 @@ class FlightOrderDetailBrowserActivity : BaseSimpleActivity(), HasComponent<Flig
             R.id.menu_flight_download -> {
                 if (::orderDetailFragment.isInitialized)
                     orderDetailFragment.printETicket()
+                return true
+            }
+            android.R.id.home -> {
+                finish()
                 return true
             }
         }

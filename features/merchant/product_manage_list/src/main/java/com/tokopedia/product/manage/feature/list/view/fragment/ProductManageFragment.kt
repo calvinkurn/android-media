@@ -76,6 +76,7 @@ import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerA
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
@@ -485,7 +486,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val filterOptionsWrapper = FilterOptionWrapper(
                     sortOption = null,
                     filterOptions = defaultFilterOptions,
-                    filterShownState = listOf(true, true, false, true)
+                    filterShownState = listOf(true, true, false, true),
+                    selectedFilterCount = ProductManageFilterMapper.countSelectedFilter(defaultFilterOptions)
             )
             viewModel.setFilterOptionWrapper(filterOptionsWrapper)
 

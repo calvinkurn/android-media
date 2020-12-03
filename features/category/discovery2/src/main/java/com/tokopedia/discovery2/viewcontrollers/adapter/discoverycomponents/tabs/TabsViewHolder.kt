@@ -46,10 +46,17 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            tabsHolder.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-            tabsHolder.tabLayout.removeAllTabs()
-            tabsHolder.tabLayout.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
+            tabsHolder.tabLayout.apply {
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                tabMode = TabLayout.MODE_SCROLLABLE
+                removeAllTabs()
+                setBackgroundResource(0)
+            }
+            tabsHolder.apply {
+                whiteShadeLeft.setBackgroundResource(0)
+                whiteShadeRight.setBackgroundResource(0)
+                getUnifyTabLayout().setSelectedTabIndicator(null)
+            }
             it.forEach {
                 val tab = tabsHolder.tabLayout.newTab()
                 ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)

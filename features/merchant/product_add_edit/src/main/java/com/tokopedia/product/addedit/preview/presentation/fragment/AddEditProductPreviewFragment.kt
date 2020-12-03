@@ -113,6 +113,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -134,6 +135,9 @@ class AddEditProductPreviewFragment:
 
     // action button
     private var doneButton: AppCompatTextView? = null
+
+    // notification
+    private var tickerAddEditProductNotification: Ticker? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -264,6 +268,9 @@ class AddEditProductPreviewFragment:
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
+
+        // action button
+        tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -777,6 +784,8 @@ class AddEditProductPreviewFragment:
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
+        tickerAddEditProductNotification?.show()
+
         enablePhotoEdit()
         enableDetailEdit()
         enableDescriptionEdit()

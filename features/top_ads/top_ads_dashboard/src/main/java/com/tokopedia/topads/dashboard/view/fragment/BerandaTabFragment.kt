@@ -34,7 +34,6 @@ import com.tokopedia.topads.dashboard.data.model.DepositAmount
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
@@ -247,15 +246,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
         sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }

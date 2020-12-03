@@ -125,7 +125,8 @@ public class SearchActivity extends BaseActivity
 
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
-    private final boolean isABTestNavigationRevamp = RemoteConfigInstance.getInstance().getABTestPlatform().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP);
+    private boolean isABTestNavigationRevamp = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +134,8 @@ public class SearchActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
+
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
 
         setStatusBarColor();
         getExtrasFromIntent(getIntent());
@@ -156,6 +159,18 @@ public class SearchActivity extends BaseActivity
 
         pageLoadTimePerformanceMonitoring.startMonitoring(SEARCH_RESULT_TRACE);
         pageLoadTimePerformanceMonitoring.startPreparePagePerformanceMonitoring();
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return RemoteConfigInstance.getInstance().getABTestPlatform()
+                    .getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV)
+                    .equals(AB_TEST_NAV_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void setStatusBarColor() {
@@ -497,7 +512,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureSearchNavigationSearchBar(){
-        String query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ");
+        String query = searchParameter.getSearchQuery();
 
         List<HintData> hintData = new ArrayList();
         hintData.add(new HintData(query, query));
