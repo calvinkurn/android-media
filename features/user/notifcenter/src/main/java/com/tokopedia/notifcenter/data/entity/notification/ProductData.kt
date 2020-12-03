@@ -57,6 +57,10 @@ data class ProductData(
 ) {
     var loadingReminderState: Boolean = false
 
+    fun isBuyButton() = typeButton == BUTTON_TYPE_BUY
+    fun isReminderButton() = typeButton == BUTTON_TYPE_REMINDER
+    fun isEmptyButton() = typeButton == BUTTON_TYPE_EMPTY_STOCK
+
     fun hasEmptyStock(): Boolean {
         return isShow
     }
@@ -71,5 +75,11 @@ data class ProductData(
         hasReminder?.let {
             this.hasReminder = it
         }
+    }
+
+    companion object {
+        const val BUTTON_TYPE_BUY = 0
+        const val BUTTON_TYPE_REMINDER = 1
+        const val BUTTON_TYPE_EMPTY_STOCK = 2
     }
 }

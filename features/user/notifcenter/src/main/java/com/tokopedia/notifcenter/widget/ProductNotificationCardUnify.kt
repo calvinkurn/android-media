@@ -110,7 +110,7 @@ class ProductNotificationCardUnify(
     private fun bindReminder(product: ProductData) {
         val notification = notification
         val adapterPosition = adapterPosition
-        if (product.hasEmptyStock() && !product.hasReminder &&
+        if (product.isReminderButton() && !product.hasReminder &&
                 notification != null && adapterPosition != null) {
             btnReminder?.show()
             bindBumpReminderState(product)
@@ -129,7 +129,7 @@ class ProductNotificationCardUnify(
     private fun bindDeleteReminder(product: ProductData) {
         val notification = notification
         val adapterPosition = adapterPosition
-        if (product.hasEmptyStock() && product.hasReminder &&
+        if (product.isReminderButton() && product.hasReminder &&
                 notification != null && adapterPosition != null) {
             btnDeleteReminder?.show()
             bindDeleteReminderState(product)
@@ -202,7 +202,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindBuyClick(product: ProductData) {
-        if (product.hasEmptyStock()) {
+        if (!product.isBuyButton()) {
             btnCheckout?.hide()
         } else {
             btnCheckout?.show()
@@ -213,7 +213,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindAtcClick(product: ProductData) {
-        if (product.hasEmptyStock()) {
+        if (!product.isBuyButton()) {
             btnAtc?.hide()
         } else {
             btnAtc?.show()
