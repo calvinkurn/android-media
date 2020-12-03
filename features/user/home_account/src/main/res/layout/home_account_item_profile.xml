@@ -11,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginTop="@dimen/home_account_dp_46"
+        android:layout_marginTop="@dimen/home_account_dp_54"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="@dimen/home_account_dp_64"
         android:layout_height="@dimen/home_account_dp_64"
