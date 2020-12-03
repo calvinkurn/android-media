@@ -35,6 +35,7 @@ class ProductNotificationCardUnify(
     private var btnAtc: UnifyButton? = null
     private var btnReminder: UnifyButton? = null
     private var btnDeleteReminder: UnifyButton? = null
+    private var btnEmptyStock: UnifyButton? = null
 
     private var listener: NotificationItemListener? = null
     private var notification: NotificationUiModel? = null
@@ -62,6 +63,7 @@ class ProductNotificationCardUnify(
         btnAtc = view.findViewById(R.id.btn_atc)
         btnReminder = view.findViewById(R.id.tv_reminder)
         btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
+        btnEmptyStock = view.findViewById(R.id.btn_empty_stock)
     }
 
     fun bindProductData(
@@ -84,6 +86,7 @@ class ProductNotificationCardUnify(
             bindAtcClick(product)
             bindReminder(product)
             bindDeleteReminder(product)
+            bindEmptyStock(product)
         } else {
             hide()
         }
@@ -105,6 +108,14 @@ class ProductNotificationCardUnify(
         product ?: return
         bindReminder(product)
         bindDeleteReminder(product)
+    }
+
+    private fun bindEmptyStock(product: ProductData) {
+        if (product.isEmptyButton()) {
+            btnEmptyStock?.show()
+        } else {
+            btnEmptyStock?.hide()
+        }
     }
 
     private fun bindReminder(product: ProductData) {
