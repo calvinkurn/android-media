@@ -63,6 +63,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getIngestUrl()
     val title: String
         get() = hydraConfigStore.getTitle()
+    val schedule: BroadcastScheduleUiModel
+        get() = observableBroadcastSchedule.value ?: BroadcastScheduleUiModel.NoSchedule
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.gson.GsonSingleton
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -36,12 +39,14 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -81,6 +86,10 @@ class PlayBeforeLiveFragment @Inject constructor(
             }
         })
     }
+
+    private val earlyLiveStreamDialog by lifecycleBound(
+            creator = { getEarlyLiveStreamDialog(it.requireContext()) }
+    )
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -167,7 +176,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
             startStreaming()
-            analytic.clickStartStreamingOnFinalSetupPage()
         }
         llSelectedProduct.setOnClickListener {
             openEditProductPage()
@@ -317,7 +325,35 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
+        val schedule = parentViewModel.schedule
+        if (schedule is BroadcastScheduleUiModel.Scheduled) {
+            val currentTime = Date()
+            if (currentTime.before(schedule.time)) {
+                earlyLiveStreamDialog.show()
+                return
+            }
+        }
+
+        createLiveStream()
+    }
+
+    private fun getEarlyLiveStreamDialog(context: Context): DialogUnify {
+        return DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
+            setPrimaryCTAClickListener {
+                createLiveStream()
+                dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
+            setSecondaryCTAClickListener { dismiss() }
+            setTitle(getString(R.string.play_broadcast_early_streaming_dialog_title))
+            setDescription(getString(R.string.play_broadcast_early_streaming_dialog_desc))
+        }
+    }
+
+    private fun createLiveStream() {
         prepareViewModel.createLiveStream()
+        analytic.clickStartStreamingOnFinalSetupPage()
     }
 
     private fun showToaster(
