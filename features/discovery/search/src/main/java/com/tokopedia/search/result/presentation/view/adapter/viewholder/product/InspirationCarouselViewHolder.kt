@@ -12,26 +12,33 @@ import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarous
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.utils.getHorizontalShadowOffset
-import com.tokopedia.search.utils.getMaxHeight
 import com.tokopedia.search.utils.getVerticalShadowOffset
 import kotlinx.android.synthetic.main.search_inspiration_carousel.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class InspirationCarouselViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel>(itemView) {
+) : AbstractViewHolder<InspirationCarouselViewModel>(itemView), CoroutineScope {
 
     companion object {
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_inspiration_carousel
     }
+
+    private val masterJob = SupervisorJob()
+    override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: InspirationCarouselViewModel) {
         bindTitle(element)
@@ -48,7 +55,7 @@ class InspirationCarouselViewHolder(
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
                 it.adapter = createAdapter(createGridProductList(option))
-                it.setHeightBasedOnProductCardMaxHeight(option.product)
+                it.setHeight(option.product)
             } else {
                 it.adapter = createAdapter(element.options)
             }
@@ -58,19 +65,6 @@ class InspirationCarouselViewHolder(
             }
         }
     }
-
-    private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
-        return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                ratingCount = rating,
-                reviewCount = countReview,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else ""
-        )
-    }
-
     private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
         list.add(createBannerOption(option))
@@ -88,20 +82,43 @@ class InspirationCarouselViewHolder(
         )
     }
 
-    private fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+    private fun RecyclerView.setHeight(products: List<InspirationCarouselViewModel.Option.Product>) {
+        launch {
+            try {
+                setHeightBasedOnProductCardMaxHeight(products)
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
             list: List<InspirationCarouselViewModel.Option.Product>
     ) {
         val productList = list.map{ product -> product.toProductCardModel() }
         val productCardHeight = getProductCardMaxHeight(productList)
-
-        val carouselLayoutParams = this.layoutParams
+        val carouselLayoutParams = layoutParams
         carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
+        layoutParams = carouselLayoutParams
     }
 
-    private fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
+    private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
+        return ProductCardModel(
+                productImageUrl = imgUrl,
+                productName = name,
+                formattedPrice = priceStr,
+                ratingCount = rating,
+                reviewCount = countReview,
+                slashedPrice = if (discountPercentage > 0) originalPrice else "",
+                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else ""
+        )
+    }
+
+
+    private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.inspiration_carousel_grid_product_card_grid_width)
-        return list.getMaxHeight(itemView.context, productCardWidth)
+        return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
