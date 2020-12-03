@@ -50,6 +50,7 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -149,6 +150,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new AppAuthActivityLifecycleCallbacks());
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
         }

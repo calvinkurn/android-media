@@ -66,7 +66,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 buildVersionIncremental = Build.VERSION.INCREMENTAL,
                 appVersion = Build.VERSION.RELEASE,
                 isFromPlayStore = isFromPlayStore(),
-                uuid = UUID.randomUUID().toString(),
+                uuid = DeviceInfo.getUUID(context),
                 userId = userSession.userId.toInt(),
                 deviceModel = Build.MODEL,
                 deviceManufacturer = Build.MANUFACTURER,

@@ -5,9 +5,6 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 /**
  * Created by Herdi_WORK on 20.06.17.
  */
@@ -89,6 +86,9 @@ public class FingerPrint {
     @SerializedName("pid")
     @Expose
     private String pid;
+    @SerializedName("uuid")
+    @Expose
+    private String uuid;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -120,6 +120,7 @@ public class FingerPrint {
         } else {
             pid = fingerPrintBuilder.imei;
         }
+        uuid = fingerPrintBuilder.uuid;
     }
 
     public static class FingerPrintBuilder {
@@ -148,6 +149,7 @@ public class FingerPrint {
         private boolean isx86;
         private String packageName;
         private String imei;
+        private String uuid;
 
         public FingerPrintBuilder() {
 
@@ -275,6 +277,11 @@ public class FingerPrint {
 
         public FingerPrintBuilder imei(String imei) {
             this.imei = imei;
+            return this;
+        }
+
+        public FingerPrintBuilder uuid(String uuid) {
+            this.uuid = uuid;
             return this;
         }
 

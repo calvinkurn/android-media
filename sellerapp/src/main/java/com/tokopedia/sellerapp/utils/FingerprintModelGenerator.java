@@ -118,6 +118,7 @@ public class FingerprintModelGenerator {
         String imei = DeviceInfo.getImei(context);
         boolean isx86 = DeviceInfo.isx86();
         String packageName = DeviceInfo.getPackageName(context);
+        String uuid = DeviceInfo.getUUID(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .deviceName(deviceName)
@@ -140,6 +141,7 @@ public class FingerprintModelGenerator {
                 .isx86(isx86)
                 .packageName(packageName)
                 .imei(imei)
+                .uuid(uuid)
                 .build();
 
         return new Gson().toJson(fp);
