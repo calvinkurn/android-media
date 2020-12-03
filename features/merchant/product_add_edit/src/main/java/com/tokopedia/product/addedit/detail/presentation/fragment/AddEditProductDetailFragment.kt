@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -303,12 +302,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
+
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
-                intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
-                startActivityForResult(intent, REQUEST_CODE_CATEGORY)
+                if (viewModel.isEditing) {
+                    showChangeCategoryDialog {
+                        startCategoryActivity(REQUEST_CODE_CATEGORY)
+                    }
+                } else {
+                    startCategoryActivity(REQUEST_CODE_CATEGORY)
+                }
             }
         }
 
@@ -641,8 +645,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
 
-        showChangeCategoryDialog()
+    private fun startCategoryActivity(requestCodeCategory: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+        intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
+        startActivityForResult(intent, requestCodeCategory)
     }
 
     private fun enableProductNameField() {
@@ -1376,7 +1384,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         dialog.show()
     }
 
-    private fun showChangeCategoryDialog() {
+    private fun showChangeCategoryDialog(onAccepted: () -> Unit) {
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.message_change_category_title))
@@ -1384,6 +1392,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setPrimaryCTAText(getString(R.string.action_change_category_positive))
             setPrimaryCTAClickListener {
                 dialog.dismiss()
+                onAccepted()
             }
             setSecondaryCTAText(getString(R.string.action_change_category_negative))
             setSecondaryCTAClickListener {
