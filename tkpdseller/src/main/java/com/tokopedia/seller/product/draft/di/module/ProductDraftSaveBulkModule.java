@@ -2,12 +2,12 @@ package com.tokopedia.seller.product.draft.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao;
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb;
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
-import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao;
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb;
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository;
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
+import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource;
 import com.tokopedia.seller.manageitem.di.module.ProductAddModule;
 import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
@@ -25,6 +25,17 @@ import dagger.Provides;
 @ProductAddScope
 @Module
 public class ProductDraftSaveBulkModule extends ProductAddModule {
+
+    public ProductDraftSaveBulkModule(Context context) {
+        super(context);
+    }
+
+    @ProductAddScope
+    @ApplicationContext
+    @Provides
+    Context provideApplicationContext() {
+        return context;
+    }
 
     @ProductAddScope
     @Provides

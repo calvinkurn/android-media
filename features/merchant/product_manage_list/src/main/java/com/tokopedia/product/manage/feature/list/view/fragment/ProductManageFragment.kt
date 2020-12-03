@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.accounts.NetworkErrorException
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -49,6 +50,18 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATED_STATUS
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATED_STOCK
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -63,21 +76,16 @@ import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerA
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STATUS
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STOCK
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
@@ -92,11 +100,14 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
@@ -111,11 +122,7 @@ import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMes
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
@@ -373,9 +380,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
-        if(modifiedProduct.stock != null && modifiedProduct.title != null && modifiedProduct.status != null) {
-            viewModel.editStock(modifiedProduct.id, modifiedProduct.stock, modifiedProduct.title, modifiedProduct.status)
+        with(modifiedProduct) {
+            viewModel.editStock(id, stock ?: return, title ?: return, status ?: return)
         }
+    }
+
+    override fun onFinishEditStock(productId: String, productName: String, productStatus: ProductStatus, stock: Int) {
+        viewModel.editStock(productId, stock, productName, productStatus)
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
@@ -474,7 +485,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val filterOptionsWrapper = FilterOptionWrapper(
                     sortOption = null,
                     filterOptions = defaultFilterOptions,
-                    filterShownState = listOf(true, true, false, true)
+                    filterShownState = listOf(true, true, false, true),
+                    selectedFilterCount = ProductManageFilterMapper.countSelectedFilter(defaultFilterOptions)
             )
             viewModel.setFilterOptionWrapper(filterOptionsWrapper)
 
@@ -765,7 +777,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             editPriceResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
             }
@@ -774,12 +786,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
         val message = if(editStockResult.error is NetworkErrorException) {
-            getString(editStockResult.error.message.toIntOrZero())
+            getString(editStockResult.error?.message.toIntOrZero())
         } else {
             editStockResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
             }
@@ -795,7 +807,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         Toaster.make(coordinatorLayout, getString(
-                R.string.product_manage_quick_edit_stock_success, productName),
+                com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
 
@@ -851,7 +863,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             deleteProductResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
             }
@@ -881,7 +893,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun showErrorToast(
-        message: String = getString(R.string.product_manage_snack_bar_fail),
+        message: String = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
         actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
         listener: () -> Unit = {}
     ) {
@@ -902,7 +914,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
             Toaster.make(
                     it,
-                    getString(R.string.product_manage_snack_bar_fail),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.retry_label),
@@ -941,6 +953,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    @SuppressLint("DialogUnifyUsage")
     private fun initPopUpDialog(productId: String): Dialog {
         context?.let { context ->
             activity?.let { activity ->
@@ -997,7 +1010,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showMultiEditToast(result: MultiEditResult) {
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
-                val retryLabel = getString(R.string.product_manage_snack_bar_retry)
+                val retryLabel = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
                 val retryMessage = getRetryMessage(context, result)
 
                 showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
@@ -1559,7 +1572,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
                             getFiltersTab(withDelay = true)
 
-                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            val successMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_success_toast, productName)
                             Toaster.build(
                                     coordinatorLayout,
                                     successMessage,
@@ -1568,7 +1581,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                                     .show()
                         }
                         Activity.RESULT_CANCELED -> {
-                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
+                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_error_toast)
                             Toaster.build(
                                     coordinatorLayout,
                                     errorMessage,
@@ -1578,6 +1591,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         }
                         else -> {}
                     }
+                REQUEST_CODE_DRAFT_PRODUCT -> if (resultCode == Activity.RESULT_OK) {
+                    activity?.runOnUiThread {
+                        getFiltersTab(withDelay = true)
+                        getProductList(withDelay = true, isRefresh = true)
+                    }
+                }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
@@ -1907,8 +1926,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when (it) {
                 is Success -> {
                     val message = context?.getString(
-                        R.string.product_manage_quick_edit_stock_success,
-                        it.data.productName
+                            com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success,
+                            it.data.productName
                     ).orEmpty()
                     updateVariantStock(it.data)
                     showMessageToast(message)

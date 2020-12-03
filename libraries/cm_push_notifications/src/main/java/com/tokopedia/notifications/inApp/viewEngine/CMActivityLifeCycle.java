@@ -3,13 +3,17 @@ package com.tokopedia.notifications.inApp.viewEngine;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * @author lalit.singh
@@ -20,28 +24,33 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private int activityCount;
+    private CmActivityLifecycleHandler lifecycleHandler;
 
 
-    private CMInAppManager cmInAppManager;
-
-
-    public CMActivityLifeCycle(CMInAppManager cmInAppManager) {
-        this.cmInAppManager = cmInAppManager;
+    public CMActivityLifeCycle(CmActivityLifecycleHandler lifecycleHandler) {
+        this.lifecycleHandler = lifecycleHandler;
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        if (activity!= null && activityCount == 0) {
-            trackIrisEventForAppOpen(activity);
+        try {
+            if (activity != null && activityCount == 0) {
+                trackIrisEventForAppOpen(activity);
+            }
+            activityCount++;
+            lifecycleHandler.onActivityCreatedInternalForPush(activity);
+        } catch (Exception e) {
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
-        activityCount++;
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
         try {
-            cmInAppManager.onActivityStartedInternal(activity);
+            lifecycleHandler.onActivityStartedInternal(activity);
         } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
@@ -64,19 +73,27 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityStopped(Activity activity) {
         try {
-            cmInAppManager.onActivityStopInternal(activity);
+            lifecycleHandler.onActivityStopInternal(activity);
         } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
     }
 
 
     @Override
     public void onActivityDestroyed(Activity activity) {
         activityCount--;
+        try {
+            lifecycleHandler.onActivityDestroyedInternal(activity);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+
     }
 
 
