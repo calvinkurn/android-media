@@ -5,10 +5,10 @@
     android:viewportHeight="24">
   <path
       android:pathData="M14,6c0,0.711 0.148,1.388 0.416,2L8,8c-0.55,0 -1,0.45 -1,1s0.45,1 1,1h8l0.08,0.06c0.821,0.591 1.83,0.94 2.92,0.94 1.097,0 2.11,-0.353 2.935,-0.951 0.043,0.31 0.065,0.628 0.065,0.951 0,3.85 -3.15,7 -7,7L9.967,18l-2.553,2.553c-0.777,0.778 -1.414,0.514 -1.414,-0.586v-2.655C3.643,16.182 2,13.776 2,11c0,-3.85 3.15,-7 7,-7l5.417,-0.002A4.985,4.985 0,0 0,14 6zM11,12L8,12c-0.55,0 -1,0.45 -1,1s0.45,1 1,1h3c0.55,0 1,-0.45 1,-1s-0.45,-1 -1,-1z"
-      android:fillColor="#6C727C"
+      android:fillColor="@color/Unify_N400"
       android:fillType="nonZero"/>
   <path
       android:pathData="M16,6a3,3 0,1 0,6 0,3 3,0 0,0 -6,0z"
-      android:fillColor="#6C727C"
+      android:fillColor="@color/Unify_N400"
       android:fillType="evenOdd"/>
 </vector>

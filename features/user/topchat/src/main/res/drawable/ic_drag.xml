@@ -1,7 +1,7 @@
 <vector android:height="18dp" android:viewportHeight="25.0"
     android:viewportWidth="25.0" android:width="18dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#00000000" android:fillType="evenOdd"
+    <path android:fillColor="@color/topchat_transparent" android:fillType="evenOdd"
         android:pathData="M23.076,12.788h-8.838m4.998,3.84l3.84,-3.84 -3.84,-3.84M0,12.788h8.838m-4.998,3.84L0,12.788l3.84,-3.84m7.698,-7.698v8.839m3.84,-4.999l-3.84,-3.84 -3.84,3.84m3.84,19.236v-8.838m3.84,4.998l-3.84,3.84 -3.84,-3.84"
-        android:strokeColor="#666" android:strokeLineCap="round"
+        android:strokeColor="@color/Unify_N400" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="1"/>
 </vector>
