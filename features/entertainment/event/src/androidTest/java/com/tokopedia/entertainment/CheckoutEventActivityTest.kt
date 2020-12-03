@@ -85,6 +85,8 @@ class CheckoutEventActivityTest {
         Thread.sleep(3000)
         onView(withId(R.id.simpanBtn)).perform(click())
         Thread.sleep(3000)
+        onView(withId(android.R.id.content)).perform(ViewActions.swipeUp())
+        Thread.sleep(3000)
         onView(withId(R.id.item_checkout_event_data_tambahan_package)).perform(click())
         Thread.sleep(7000)
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<EventPDPTextFieldViewHolder>(0, typeText("085327499272")))

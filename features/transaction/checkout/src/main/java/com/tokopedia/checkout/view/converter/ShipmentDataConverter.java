@@ -166,7 +166,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
             shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
