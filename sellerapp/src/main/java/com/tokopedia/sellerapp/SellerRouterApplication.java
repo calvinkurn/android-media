@@ -56,9 +56,9 @@ import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.utils.constants.Constants;
-import com.tokopedia.sellerappwidget.common.Const;
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget;
 import com.tokopedia.sellerappwidget.view.service.GetOrderService;
+import com.tokopedia.sellerappwidget.view.work.GetChatListWorkerExecutor;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -469,5 +469,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void fetchSellerAppWidgetData() {
         GetOrderService.startService(this, OrderAppWidget.DEFAULT_ORDER_STATUS_ID);
+        GetChatListWorkerExecutor.runPeriodicWork(context);
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.sellerappwidget.view.remoteview
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.tokopedia.sellerappwidget.R
@@ -49,6 +50,13 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
                 setTextViewText(R.id.tvSawChatItemUserName, chat.userDisplayName)
                 setTextViewText(R.id.tvSawChatItemMessage, chat.lastMessage)
                 setTextViewText(R.id.tvSawChatItemTime, chat.lastReplyTime)
+
+                val horLineVisibility = if (position != chats.size.minus(1)) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+                setInt(R.id.horLineSawChatListItem, Const.Method.SET_VISIBILITY, horLineVisibility)
 
                 //handle on item click
                 val fillIntent = Intent().apply {

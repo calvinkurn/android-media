@@ -10,7 +10,7 @@ import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.state.chat.*
-import com.tokopedia.sellerappwidget.view.work.GetChatListWorker
+import com.tokopedia.sellerappwidget.view.work.GetChatListWorkerExecutor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -26,7 +26,7 @@ class ChatAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
-                GetChatListWorker.runOneTimeWork(context)
+                GetChatListWorkerExecutor.runPeriodicWork(context)
             } else {
                 ChatWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -60,21 +60,16 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     private fun refreshWidget(context: Context) {
-        val awm = AppWidgetManager.getInstance(context)
-        val appWidgetIds = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
-        val remoteViews = AppWidgetHelper.getChatWidgetRemoteView(context)
         initUserSession(context)
         userSession?.let {
             if (!it.isLoggedIn) {
+                val awm = AppWidgetManager.getInstance(context)
+                val appWidgetIds = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
                 ChatWidgetNoLoginState.setupNoLoginState(context, awm, appWidgetIds)
                 return
             }
         }
-        appWidgetIds.forEach {
-            ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
-            ChatWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
-            awm.updateAppWidget(it, remoteViews)
-        }
+        GetChatListWorkerExecutor.runPeriodicWork(context)
     }
 
     private fun initUserSession(context: Context) {

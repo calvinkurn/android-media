@@ -2,11 +2,9 @@ package com.tokopedia.sellerappwidget.view.work
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import android.widget.RemoteViews
 import androidx.work.*
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
@@ -31,31 +29,6 @@ class GetChatListWorker(
         private val context: Context,
         workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), AppWidgetView<List<ChatUiModel>> {
-
-    companion object {
-        private const val TAG_WORKER = "get_chat_worker"
-        private const val REPEAT_INTERVAL = 15L
-        private var workRequest: PeriodicWorkRequest? = null
-
-        fun runOneTimeWork(context: Context) {
-            if (workRequest == null) {
-                val constraints = Constraints.Builder()
-                        .setRequiresDeviceIdle(false)
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-
-                workRequest = PeriodicWorkRequestBuilder<GetChatListWorker>(REPEAT_INTERVAL, TimeUnit.MINUTES)
-                        .setConstraints(constraints)
-                        .setInitialDelay(0, TimeUnit.MINUTES)
-                        .build()
-            }
-
-            workRequest?.let {
-                WorkManager.getInstance(context)
-                        .enqueueUniquePeriodicWork(TAG_WORKER, ExistingPeriodicWorkPolicy.REPLACE, it)
-            }
-        }
-    }
 
     private val getChatUseCase by lazy {
         val gqlRepository = GraphqlInteractor.getInstance()
@@ -86,13 +59,40 @@ class GetChatListWorker(
     }
 
     private fun showLoadingState() {
-        val remoteViews = RemoteViews(applicationContext.packageName, R.layout.saw_app_widget_order)
+        val remoteViews = AppWidgetHelper.getChatWidgetRemoteView(context)
         val awm = AppWidgetManager.getInstance(applicationContext)
         val ids = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
         ids.forEach {
             ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
             ChatWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
+        }
+    }
+}
+
+object GetChatListWorkerExecutor {
+
+    private const val TAG_WORKER = "get_chat_worker"
+    private const val REPEAT_INTERVAL = 15L
+    private var workRequest: PeriodicWorkRequest? = null
+
+    @JvmStatic
+    fun runPeriodicWork(context: Context) {
+        if (workRequest == null) {
+            val constraints = Constraints.Builder()
+                    .setRequiresDeviceIdle(false)
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+
+            workRequest = PeriodicWorkRequestBuilder<GetChatListWorker>(REPEAT_INTERVAL, TimeUnit.MINUTES)
+                    .setConstraints(constraints)
+                    .setInitialDelay(0, TimeUnit.MINUTES)
+                    .build()
+        }
+
+        workRequest?.let {
+            WorkManager.getInstance(context)
+                    .enqueueUniquePeriodicWork(TAG_WORKER, ExistingPeriodicWorkPolicy.REPLACE, it)
         }
     }
 }
