@@ -9,7 +9,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
@@ -21,7 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
 import rx.Subscriber
 
@@ -99,6 +98,29 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
     @Test
     fun `check getShopRestrictionInfo is Success`() {
+        runBlocking {
+
+            coEvery {
+                restrictionEngineNplUseCase.executeOnBackground()
+            } returns RestrictValidateRestriction(
+                    dataResponse = listOf(RestrictionEngineDataResponse(
+                            actions = listOf(Actions())
+                    ))
+            )
+
+            shopPageProductListResultViewModel.getShopRestrictionInfo(
+                    input = RestrictionEngineRequestParams()
+            )
+
+            verifyGetShopRestrictionInfoUseCaseCalled()
+            assertNotNull(shopPageProductListResultViewModel.restrictionEngineData.value)
+            assertTrue(shopPageProductListResultViewModel.restrictionEngineData.value is Success)
+
+        }
+    }
+
+    @Test
+    fun `check getShopRestrictionInfo is Fail`() {
         runBlocking {
 
             coEvery {

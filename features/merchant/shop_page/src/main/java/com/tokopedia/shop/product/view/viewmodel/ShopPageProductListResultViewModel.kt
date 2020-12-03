@@ -161,7 +161,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             isForceRefresh: Boolean = true
     ) {
         launchCatchError(block = {
-            val getProductResp = withContext(dispatcherProvider.io()) {
+            val getProductResp = withContext(dispatcherProvider.io) {
                 val productFilter = ShopProductFilterInput(page, perPage, search, etalase, sortId)
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)

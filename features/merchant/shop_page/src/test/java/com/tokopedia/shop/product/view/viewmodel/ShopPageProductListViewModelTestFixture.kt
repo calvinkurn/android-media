@@ -19,8 +19,6 @@ import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -49,14 +47,10 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-    @RelaxedMockK
     lateinit var getShopProductUseCase: GqlGetShopProductUseCase
     @RelaxedMockK
     @ShopProductGetHighlightProductQualifier
     lateinit var getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>
-    @RelaxedMockK
-    lateinit var removeWishlistUseCase: RemoveWishListUseCase
     @RelaxedMockK
     lateinit var deleteShopInfoUseCase: DeleteShopInfoCacheUseCase
     @RelaxedMockK
@@ -100,10 +94,8 @@ abstract class ShopPageProductListViewModelTestFixture {
                 userSessionInterface,
                 getShopFeaturedProductUseCase,
                 getShopEtalaseByShopUseCase,
-                addWishListUseCase,
                 getShopProductUseCase,
                 getShopHighlightProductUseCase,
-                removeWishlistUseCase,
                 deleteShopInfoUseCase,
                 testCoroutineDispatcherProvider,
                 getShopFilterBottomSheetDataUseCase,
