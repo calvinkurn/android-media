@@ -4,6 +4,7 @@
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
+    <string name="label_title_draft_product">Draft Produk</string>
     <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- add edit preview -->
@@ -321,6 +322,8 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
