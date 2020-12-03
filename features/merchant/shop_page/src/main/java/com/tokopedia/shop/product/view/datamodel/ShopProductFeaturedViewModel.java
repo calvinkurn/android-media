@@ -11,14 +11,14 @@ import java.util.List;
 
 public class ShopProductFeaturedViewModel implements BaseShopProductViewModel {
 
-    private List<ShopProductViewModel> shopProductViewModelList;
+    private List<ShopProductUiModel> shopProductUiModelList;
 
     public ShopProductFeaturedViewModel(){
-        shopProductViewModelList = new ArrayList<>();
+        shopProductUiModelList = new ArrayList<>();
     }
 
-    public ShopProductFeaturedViewModel(List<ShopProductViewModel> shopProductViewModelList) {
-        setShopProductFeaturedViewModelList(shopProductViewModelList);
+    public ShopProductFeaturedViewModel(List<ShopProductUiModel> shopProductUiModelList) {
+        setShopProductFeaturedViewModelList(shopProductUiModelList);
     }
 
     @Override
@@ -26,23 +26,23 @@ public class ShopProductFeaturedViewModel implements BaseShopProductViewModel {
         return typeFactory.type(this);
     }
 
-    public void setShopProductFeaturedViewModelList(List<ShopProductViewModel> shopProductViewModelList) {
-        if (shopProductViewModelList == null) {
-            this.shopProductViewModelList = new ArrayList<>();
+    public void setShopProductFeaturedViewModelList(List<ShopProductUiModel> shopProductUiModelList) {
+        if (shopProductUiModelList == null) {
+            this.shopProductUiModelList = new ArrayList<>();
         } else {
-            this.shopProductViewModelList = shopProductViewModelList;
+            this.shopProductUiModelList = shopProductUiModelList;
         }
     }
 
-    public List<ShopProductViewModel> getShopProductFeaturedViewModelList() {
-        return shopProductViewModelList;
+    public List<ShopProductUiModel> getShopProductFeaturedViewModelList() {
+        return shopProductUiModelList;
     }
 
     public boolean updateWishListStatus(String productId, boolean wishList) {
-        for (int i = 0, sizei = shopProductViewModelList.size(); i < sizei; i++) {
-            ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
-            if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
-                shopProductViewModel.setWishList(wishList);
+        for (int i = 0, sizei = shopProductUiModelList.size(); i < sizei; i++) {
+            ShopProductUiModel shopProductUiModel = shopProductUiModelList.get(i);
+            if (shopProductUiModel.getId().equalsIgnoreCase(productId)) {
+                shopProductUiModel.setWishList(wishList);
                 return true;
             }
         }

@@ -10,7 +10,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
  * Created by nathan on 2/6/18.
  */
 
-class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
+class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
 
     var id: String? = null
     var name: String? = null

@@ -14,25 +14,25 @@ import java.util.List;
 
 public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterTypeFactory>{
 
-    private List<ShopProductViewModel> shopProductViewModelList;
+    private List<ShopProductUiModel> shopProductUiModelList;
     private ShopEtalaseItemDataModel shopEtalaseViewModel;
 
-    public EtalaseHighlightCarouselViewModel(List<ShopProductViewModel> shopProductViewModelList,
+    public EtalaseHighlightCarouselViewModel(List<ShopProductUiModel> shopProductUiModelList,
                                              ShopEtalaseItemDataModel shopEtalaseViewModel) {
-        setShopProductEtalaseHighLightViewModel(shopProductViewModelList);
+        setShopProductEtalaseHighLightViewModel(shopProductUiModelList);
         setEtalaseViewModel(shopEtalaseViewModel);
     }
 
-    private void setShopProductEtalaseHighLightViewModel(List<ShopProductViewModel> shopProductViewModelList) {
-        if (shopProductViewModelList == null) {
-            this.shopProductViewModelList = new ArrayList<>();
+    private void setShopProductEtalaseHighLightViewModel(List<ShopProductUiModel> shopProductUiModelList) {
+        if (shopProductUiModelList == null) {
+            this.shopProductUiModelList = new ArrayList<>();
         } else {
-            this.shopProductViewModelList = shopProductViewModelList;
+            this.shopProductUiModelList = shopProductUiModelList;
         }
     }
 
-    public List<ShopProductViewModel> getShopProductViewModelList() {
-        return shopProductViewModelList;
+    public List<ShopProductUiModel> getShopProductUiModelList() {
+        return shopProductUiModelList;
     }
 
     public ShopEtalaseItemDataModel getShopEtalaseViewModel() {

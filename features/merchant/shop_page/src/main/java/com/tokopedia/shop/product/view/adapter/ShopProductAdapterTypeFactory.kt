@@ -76,7 +76,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopMerchantVoucherViewHolder.LAYOUT
     }
 
-    fun type(shopProductViewModel: ShopProductViewModel): Int {
+    fun type(shopProductUiModel: ShopProductUiModel): Int {
         return when(productCardType) {
             ShopProductViewGridType.SMALL_GRID -> {
                 ShopProductViewHolder.GRID_LAYOUT

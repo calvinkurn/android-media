@@ -42,11 +42,11 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
         if (etalaseHighlightCarouselViewModelList != null) {
             for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
                 EtalaseHighlightCarouselViewModel etalaseHighlightCarouselViewModel = etalaseHighlightCarouselViewModelList.get(i);
-                List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModel.getShopProductViewModelList();
-                for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
-                    ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
-                    if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
-                        shopProductViewModel.setWishList(wishList);
+                List<ShopProductUiModel> shopProductUiModelList = etalaseHighlightCarouselViewModel.getShopProductUiModelList();
+                for (int j = 0, sizej = shopProductUiModelList.size(); j < sizej; j++) {
+                    ShopProductUiModel shopProductUiModel = shopProductUiModelList.get(j);
+                    if (shopProductUiModel.getId().equalsIgnoreCase(productId)) {
+                        shopProductUiModel.setWishList(wishList);
                         return true;
                     }
                 }
