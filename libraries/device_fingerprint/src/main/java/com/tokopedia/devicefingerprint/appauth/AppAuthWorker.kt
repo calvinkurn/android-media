@@ -9,6 +9,7 @@ import com.tokopedia.devicefingerprint.appauth.usecase.AppAuthUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.encryption.security.md5
+import com.tokopedia.encryption.security.sha256
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -39,8 +40,8 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                 val adsId = DeviceInfo.getAdsId(appContext)
                 val uuid = DeviceInfo.getUUID(appContext)
                 val content = (adsId + androidId + uuid + encd + appContext.packageName + GlobalConfig.VERSION_CODE)
-                val contentMd5 = content.md5()
-                appAuthUseCase.setParams(contentMd5)
+                val contentSha = content.sha256()
+                appAuthUseCase.setParams(contentSha)
                 appAuthUseCase.execute({
                     // success
                     if (it.mutationSignDvc.isSuccess) {

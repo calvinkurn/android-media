@@ -1,7 +1,7 @@
-package com.tokopedia.devicefingerprint.utils
+package com.tokopedia.devicefingerprint.submitdevice.utils
 
 import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.payload.InsertDeviceInfoPayload
+import com.tokopedia.devicefingerprint.submitdevice.payload.InsertDeviceInfoPayload
 import com.tokopedia.encryption.security.md5
 import javax.inject.Inject
 

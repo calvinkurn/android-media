@@ -5,7 +5,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.devicefingerprint.utils.DeviceInfoPayloadCreator
+import com.tokopedia.devicefingerprint.submitdevice.utils.DeviceInfoPayloadCreator
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

@@ -1,8 +1,8 @@
-package com.tokopedia.devicefingerprint.usecase
+package com.tokopedia.devicefingerprint.submitdevice.usecase
 
-import com.tokopedia.devicefingerprint.payload.InsertDeviceInfoPayload
-import com.tokopedia.devicefingerprint.response.SubmitDeviceInfoResponse
-import com.tokopedia.devicefingerprint.utils.InsertDeviceInfoPayloadCreator
+import com.tokopedia.devicefingerprint.submitdevice.payload.InsertDeviceInfoPayload
+import com.tokopedia.devicefingerprint.submitdevice.response.SubmitDeviceInfoResponse
+import com.tokopedia.devicefingerprint.submitdevice.utils.InsertDeviceInfoPayloadCreator
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject

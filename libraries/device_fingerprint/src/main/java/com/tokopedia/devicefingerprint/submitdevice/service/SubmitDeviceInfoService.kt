@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.service
+package com.tokopedia.devicefingerprint.submitdevice.service
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,7 @@ import androidx.core.app.JobIntentService
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
-import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
+import com.tokopedia.devicefingerprint.submitdevice.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
