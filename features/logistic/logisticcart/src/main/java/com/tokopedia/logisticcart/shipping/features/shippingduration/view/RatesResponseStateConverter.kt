@@ -1,10 +1,10 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.text.TextUtils
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.purchase_platform.common.utils.Utils
 import javax.inject.Inject
 
 
@@ -21,8 +21,7 @@ class RatesResponseStateConverter @Inject constructor() {
                         duration.isSelected = true;
                     }
                 } else if (selectedServiceId != 0 && !isPromoApplied) {
-                    if (!(duration.serviceData.error != null &&
-                                    !TextUtils.isEmpty(duration.serviceData.error.errorId)) &&
+                    if (!(duration.serviceData.error != null && !(duration.serviceData.error.errorId).isNullOrBlank()) &&
                             selectedServiceId == duration.serviceData.serviceId) {
                         duration.isSelected = true;
                     }

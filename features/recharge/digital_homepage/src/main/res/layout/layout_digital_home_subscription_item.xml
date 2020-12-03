@@ -7,22 +7,22 @@
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/dp_210"
+        android:layout_width="@dimen/subscription_item_width"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_2"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_2">
+        android:layout_margin="@dimen/spacing_lvl1"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardElevation="@dimen/spacing_lvl1">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.design.image.SquareImageView
+            <ImageView
                 android:id="@+id/subscription_image"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_margin="@dimen/dp_12"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
+                android:layout_margin="@dimen/unify_space_12"
                 app:srcCompat="@drawable/ic_home_my_bills" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -30,12 +30,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:maxLines="2"
-                android:paddingStart="@dimen/dp_2"
-                android:paddingLeft="@dimen/dp_2"
-                android:paddingEnd="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_2"
+                android:paddingStart="@dimen/spacing_lvl1"
+                android:paddingLeft="@dimen/spacing_lvl1"
+                android:paddingEnd="@dimen/spacing_lvl1"
+                android:paddingRight="@dimen/spacing_lvl1"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="2 Langganan Anda lewat jatuh tempo. Cek disini" />

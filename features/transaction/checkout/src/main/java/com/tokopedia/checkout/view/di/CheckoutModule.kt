@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
@@ -27,8 +26,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -132,7 +131,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
-                                 gson: Gson): ShipmentContract.Presenter {
+                                 gson: Gson,
+                                 executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -141,7 +141,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
+                executorSchedulers)
     }
 
     @Provides

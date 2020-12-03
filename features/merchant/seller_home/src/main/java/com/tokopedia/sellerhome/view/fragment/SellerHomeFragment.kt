@@ -68,7 +68,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_sah.*
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
@@ -478,6 +477,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }
 
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
+        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
@@ -561,7 +564,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
 
-        swipeRefreshLayout.isRefreshing = true
+        view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
         startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
@@ -586,32 +589,42 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.sahGlobalError?.gone()
         recyclerView.visible()
 
-        // somehow the recyclerview won't show the items if we use diffutil when the adapter is still empty
-        if (adapter.data.isEmpty()) {
-            super.renderList(widgets)
-            swipeRefreshLayout.isRefreshing = true
-        } else {
-            val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
-            val newWidgets = mostWidgetData.mapIndexed { i, widget ->
-                val newWidget = widgets.getOrNull(i)
+        adapter.hideLoading()
+        hideSnackBarRetry()
+        updateScrollListenerState(false)
+
+        val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
+        val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+        mostWidgetData.forEachIndexed { i, widget ->
+            widgets.getOrNull(i)?.let { newWidget ->
                 // "if" is true only on the first load, "else" is always true when we reload
-                if (newWidget != null && isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
+                if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
                     widget.apply { isFromCache = false }
+                    newWidgets.add(widget)
                 } else {
-                    newWidget
+                    newWidgets.add(newWidget)
                 }
             }
-
-            val diffUtilCallback = SellerHomeDiffUtilCallback(
-                    adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                    newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
-            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-            diffUtilResult.dispatchUpdatesTo(adapter)
-            adapter.data.clear()
-            adapter.data.addAll(newWidgets)
         }
 
-        requestVisibleWidgetsData()
+        val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+        diffUtilResult.dispatchUpdatesTo(adapter)
+        adapter.data.clear()
+        adapter.data.addAll(newWidgets)
+
+        val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
+        if (!isAnyWidgetFromCache) {
+            view?.swipeRefreshLayout?.isEnabled = true
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
+
+        recyclerView.post {
+            requestVisibleWidgetsData()
+        }
+
         setProgressBarVisibility(false)
     }
 
@@ -803,9 +816,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading }
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
-            swipeRefreshLayout.isRefreshing = false
+            view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
     }

@@ -42,11 +42,14 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val KEY_REMIND_ME = "remind_me"
+    const val KEY_CHECK_WISHLIST = "check_wishlist"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
     const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
+    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
@@ -88,12 +91,11 @@ object ProductDetailConstant {
     const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
 
     //Mapper
-    const val SOCIAL_PROOF = "social_proof"
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val SHOP_INFO = "shop_info"
     const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
-    const val DISCUSSION = "discussion"
+    const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val REVIEW = "review"
@@ -124,6 +126,7 @@ object ProductDetailConstant {
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
+    const val REPORT = "report"
 
 
     //Arguments
@@ -161,6 +164,8 @@ object ProductDetailConstant {
     const val LEASING_BUTTON = 5
     const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
+    const val REMIND_ME_BUTTON = 8
+    const val CHECK_WISHLIST_BUTTON = 9
 
     const val REQUEST_CODE_CHECKOUT = 12382
 
@@ -176,5 +181,10 @@ object ProductDetailConstant {
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
+    const val EXP_TOP_NAV = "Navigation Revamp"
+    const val VARIANT_OLD = "Existing Navigation"
+    const val VARIANT_REVAMP = "Navigation Revamp"
+
     const val HIDE_NPL_BS = false
+    const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
 }

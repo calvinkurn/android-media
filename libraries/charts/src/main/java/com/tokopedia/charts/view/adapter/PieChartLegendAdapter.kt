@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.charts.R
 import com.tokopedia.charts.model.PieChartEntry
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import kotlinx.android.synthetic.main.item_pie_chart_legend.view.*
 
 /**
@@ -47,7 +46,7 @@ class PieChartLegendAdapter : RecyclerView.Adapter<PieChartLegendAdapter.ViewHol
         }
 
         private fun getShapeDrawable(hexColor: String): Drawable {
-            val dp8: Float = itemView.context.resources.getDimension(R.dimen.layout_lvl1)
+            val dp8: Float = itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
             val radius: FloatArray = floatArrayOf(dp8, dp8, dp8, dp8, dp8, dp8, dp8, dp8)
             val shape = ShapeDrawable(RoundRectShape(radius, null, null))
             shape.paint.color = Color.parseColor(hexColor)

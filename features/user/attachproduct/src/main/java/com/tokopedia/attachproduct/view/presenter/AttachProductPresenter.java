@@ -1,7 +1,7 @@
 package com.tokopedia.attachproduct.view.presenter;
 
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase;
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachcommon.data.ResultProduct;
 import com.tokopedia.attachproduct.view.subscriber.AttachProductGetProductListSubscriber;
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
@@ -62,7 +62,13 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     public void completeSelection() {
         ArrayList<ResultProduct> resultProducts = new ArrayList<>();
         for(AttachProductItemUiModel product:checkedList){
-            resultProducts.add(new ResultProduct(product));
+            resultProducts.add(new ResultProduct(
+                    product.getProductId(),
+                    product.getProductUrl(),
+                    product.getProductImage(),
+                    product.getProductPrice(),
+                    product.getProductName()
+            ));
         }
         activityContract.finishActivityWithResult(resultProducts);
     }

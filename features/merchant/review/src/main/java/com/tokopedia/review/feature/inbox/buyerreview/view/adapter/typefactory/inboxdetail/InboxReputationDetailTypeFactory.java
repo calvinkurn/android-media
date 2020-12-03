@@ -3,8 +3,8 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
 
 /**
  * @author by nisie on 8/19/17.
@@ -12,9 +12,9 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail
 
 public interface InboxReputationDetailTypeFactory {
 
-    int type(InboxReputationDetailHeaderViewModel model);
+    int type(InboxReputationDetailHeaderUiModel model);
 
-    int type(InboxReputationDetailItemViewModel model);
+    int type(InboxReputationDetailItemUiModel model);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }
