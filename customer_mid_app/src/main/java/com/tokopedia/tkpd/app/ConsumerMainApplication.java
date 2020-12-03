@@ -155,14 +155,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private boolean checkPackageName(){
-        boolean packageNameValid = this.getPackageName().equals(getPackageApp());
+        boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
             Timber.w("P1#APP_SIGNATURE_FAILED#'packageName=%s'" , this.getPackageName());
         }
         return packageNameValid;
     }
 
-    protected abstract String getPackageApp();
+    protected abstract String getOriginalPackageApp();
 
     private boolean checkAppSignature() {
         try {

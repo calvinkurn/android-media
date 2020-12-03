@@ -27,7 +27,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void initConfigValues() {
-        GlobalConfig.PACKAGE_APPLICATION = getPackageApp();
+        GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
         setVersionCode();
         setVersionName();
 
@@ -53,7 +53,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         generateConsumerAppNetworkKeys();
     }
 
-    public String getPackageApp(){
+    public String getOriginalPackageApp(){
         return new String(new char[]{
                 99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
                 100, 105, 97, 46
