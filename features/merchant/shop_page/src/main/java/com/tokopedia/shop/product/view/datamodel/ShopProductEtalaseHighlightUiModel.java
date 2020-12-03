@@ -9,15 +9,15 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ShopProductEtalaseHighlightViewModel implements BaseShopProductViewModel {
+public class ShopProductEtalaseHighlightUiModel implements BaseShopProductViewModel {
 
     private List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList;
 
-    public ShopProductEtalaseHighlightViewModel() {
+    public ShopProductEtalaseHighlightUiModel() {
         etalaseHighlightCarouselViewModelList = new ArrayList<>();
     }
 
-    public ShopProductEtalaseHighlightViewModel(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
+    public ShopProductEtalaseHighlightUiModel(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
         setEtalaseHighlightCarouselViewModelList(etalaseHighlightCarouselViewModelList);
     }
 

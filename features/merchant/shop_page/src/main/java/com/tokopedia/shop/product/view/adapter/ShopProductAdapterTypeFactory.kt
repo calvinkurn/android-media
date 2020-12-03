@@ -56,7 +56,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductsEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel): Int {
+    fun type(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel): Int {
         return ShopProductEtalaseHighlightViewHolder.LAYOUT
     }
 

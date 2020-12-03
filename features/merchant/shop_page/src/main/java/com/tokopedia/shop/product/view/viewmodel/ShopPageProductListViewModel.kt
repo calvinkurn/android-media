@@ -71,7 +71,7 @@ class ShopPageProductListViewModel @Inject constructor(
     val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedViewModel>>()
-    val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightViewModel>>()
+    val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightUiModel>>()
     val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleViewModel>>()
     val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
     val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
@@ -172,7 +172,7 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getShopProductEtalaseHighlightData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>
-    ): ShopProductEtalaseHighlightViewModel? {
+    ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
                     .filter { it.highlighted }
@@ -200,7 +200,7 @@ class ShopPageProductListViewModel @Inject constructor(
                     ))
                 }
             }
-            return ShopProductEtalaseHighlightViewModel(
+            return ShopProductEtalaseHighlightUiModel(
                     listEtalaseHighlightCarouselViewModel
             )
         } catch (error: Exception) {
