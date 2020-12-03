@@ -25,7 +25,7 @@ class ProductDraftListViewHolder(itemView: View, private val listener: ProductDr
                 tvProductName.setTypeface(tvProductName.typeface, Typeface.BOLD)
             }
 
-            tvCompletionPercentage.text = String.format(resources.getString(R.string.label_draft_item_percent_complete), draft.completionPercent)
+            tvCompletionPercentage.text = itemView.context.getString(R.string.label_draft_item_percent_complete, draft.completionPercent)
             pbCompletion.progress = draft.completionPercent.toFloat()
 
             setOnClickListener {
