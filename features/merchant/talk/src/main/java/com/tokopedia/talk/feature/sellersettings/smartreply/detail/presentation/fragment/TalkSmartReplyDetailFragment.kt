@@ -41,9 +41,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             val saveInstanceCacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
 
             saveInstanceCacheManager?.run {
-                viewModel.setIsSmartReplyOn(get(TalkSmartReplyConstants.IS_SMART_REPLY_ON, Boolean::class.java) ?: false)
-                viewModel.setMessageReady(get(TalkSmartReplyConstants.MESSAGE_READY, String::class.java) ?: "")
-                viewModel.setMessageNotReady(get(TalkSmartReplyConstants.MESSAGE_NOT_READY, String::class.java) ?: "")
+                viewModel.isSmartReplyOn = get(TalkSmartReplyConstants.IS_SMART_REPLY_ON, Boolean::class.java) ?: false
+                viewModel.messageReady = get(TalkSmartReplyConstants.MESSAGE_READY, String::class.java) ?: ""
+                viewModel.messageNotReady = get(TalkSmartReplyConstants.MESSAGE_NOT_READY, String::class.java) ?: ""
             }
         }
     }
@@ -79,16 +79,16 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun initSwitchState() {
-        talkSmartReplySwitch.isChecked = viewModel.getIsSmartReplyOn()
+        talkSmartReplySwitch.isChecked = viewModel.isSmartReplyOn
         talkSmartReplySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.setIsSmartReplyOn(isChecked)
+            viewModel.isSmartReplyOn = (isChecked)
             viewModel.setSmartReply()
         }
     }
 
     private fun initTextArea() {
-        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.setText(viewModel.getMessageReady())
-        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.setText(viewModel.getMessageNotReady())
+        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.setText(viewModel.messageReady)
+        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.setText(viewModel.messageNotReady)
     }
 
     private fun setupOnBackPressed() {
