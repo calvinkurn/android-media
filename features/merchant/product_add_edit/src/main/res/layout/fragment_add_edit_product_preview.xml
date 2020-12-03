@@ -129,21 +129,35 @@
 
     </ScrollView>
 
-    <FrameLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/loading_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
         android:visibility="gone"
-        tools:visibility="visible">
+        app:layoutDescription="@xml/fragment_add_edit_product_preview_xml_loading_layout_scene">
+
+        <View
+            android:id="@+id/loader_mask"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/product_add_edit_circle"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_loading_indeterminate" />
 
-    </FrameLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

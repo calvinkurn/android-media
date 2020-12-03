@@ -28,10 +28,9 @@ class UploadVoucherUseCase @Inject constructor(
         private const val TEXT_PLAIN = "text/plain"
         private const val IMAGES_PATH = "images_path"
 
-        fun createRequestParams(bannerImagePath: String,
-                                squareImagePath: String): RequestParams =
+        fun createRequestParams(vararg urls: String): RequestParams =
             RequestParams.create().apply {
-                putObject(IMAGES_PATH, listOf(bannerImagePath, squareImagePath))
+                putObject(IMAGES_PATH, urls.toList())
             }
     }
 

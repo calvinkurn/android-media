@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceProduct
 import com.tokopedia.product.detail.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
-import com.tokopedia.product.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,7 +27,7 @@ class RatesEstimationDetailViewModelTest : BaseProductViewModelTest() {
     lateinit var graphqlRepository: GraphqlRepository
 
     private val viewModel by lazy {
-        RatesEstimationDetailViewModel(graphqlRepository, "", TestDispatcherProvider())
+        RatesEstimationDetailViewModel(graphqlRepository, "", CoroutineTestDispatchersProvider)
     }
 
     @Test

@@ -23,10 +23,7 @@ import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -94,65 +91,78 @@ class AccountHeaderViewHolder(itemView: View,
         val usrBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_badge)
         val usrOvoBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
+        val btnTryAgain: UnifyButton = layoutLogin.findViewById(R.id.btn_try_again)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
 
-        val cdnUrl = remoteConfig.getString(MainNavConst.ImageUrl.KEY_IMAGE_HOST, MainNavConst.ImageUrl.CDN_URL)
-        val saldoImageUrl = cdnUrl + MainNavConst.ImageUrl.SALDO_IMG
-        val ovoImageUrl = cdnUrl + MainNavConst.ImageUrl.OVO_IMG
-
         userImage.loadImageCircle(element.userImage)
-
+        userImage.isClickable = false
+        tvName.isClickable = false
         if (element.isGetUserNameError) {
-            tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT)
-            tvName.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
+            tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_PROFILE)
+            btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
-            tvName.setOnClickListener(null)
+        }
+        if (element.isGetUserMembershipError) {
+            usrBadge.gone()
         }
 
+        tvOvo.isClickable = false
         if (element.isGetOvoError && element.isGetSaldoError) {
-            tvOvo.text = AccountHeaderViewModel.ERROR_TEXT
-            tvOvo.setOnClickListener{
+            tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
+            btnTryAgain.setOnClickListener{
                 mainNavListener.onErrorProfileOVOClicked(element)
             }
-            usrOvoBadge.loadImage(ovoImageUrl)
+            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
         } else if (element.isGetOvoError && !element.isGetSaldoError) {
             tvOvo.text = element.saldo
-            tvOvo.setOnClickListener(null)
-            usrOvoBadge.loadImage(saldoImageUrl)
+            usrOvoBadge.setImageResource(R.drawable.ic_saldo)
         } else {
             tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
-            tvOvo.setOnClickListener(null)
             if (element.ovoSaldo.isNotEmpty()) {
-                usrOvoBadge.loadImage(ovoImageUrl)
+                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.saldo.isNotEmpty()) {
-                usrOvoBadge.loadImage(saldoImageUrl)
+                usrOvoBadge.setImageResource(R.drawable.ic_saldo)
             }
         }
-
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
+            var subtext = ""
+            var fulltext = ""
             if (element.isGetShopError) {
-                tvShopInfo.text = AccountHeaderViewModel.ERROR_TEXT
+                subtext = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_SHOP_TRY).toString()
+                fulltext = String.format(AccountHeaderViewModel.ERROR_TEXT_SHOP, subtext)
                 tvShopInfo.setOnClickListener{mainNavListener.onErrorProfileShopClicked(element)}
             } else {
-                val subtext = MethodChecker.fromHtml(element.shopName).toString()
-                val fulltext = String.format(TEXT_TOKO_SAYA, subtext)
-                tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
-                val str = tvShopInfo.text as Spannable
-                val i = fulltext.indexOf(subtext)
-                str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                subtext = MethodChecker.fromHtml(element.shopName).toString()
+                fulltext = String.format(TEXT_TOKO_SAYA, subtext)
                 tvShopInfo.setOnClickListener { onShopClicked(element.shopId) }
             }
+
+            tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
+            val str = tvShopInfo.text as Spannable
+            val i = fulltext.indexOf(subtext)
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         layoutLogin.setOnClickListener {
             TrackingProfileSection.onClickProfileSection(userSession.userId)
             mainNavListener.onProfileSectionClicked()
+        }
+
+        btnSettings.visible()
+        btnTryAgain.gone()
+        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError)) {
+            btnSettings.gone()
+            btnTryAgain.visible()
+            if (element.isGetUserNameError && (element.isGetOvoError && element.isGetSaldoError)) {
+                //all error, reload section
+                btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
+            }
         }
     }
 

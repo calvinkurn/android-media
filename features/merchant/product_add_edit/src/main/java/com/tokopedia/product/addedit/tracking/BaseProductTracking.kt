@@ -206,6 +206,57 @@ object ProductVariantTracking {
     }
 }
 
+object ProductDraftTracking {
+    private const val PAGE_SOURCE = "pageSource"
+    private const val CLICK_DRAFT_PRODUCT = "clickDraftProduct"
+    private const val CLICK = "Click"
+    private const val EVENT_CLICK_ADD_PRODUCT = "clickAddProduct"
+    private const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
+    private const val KEY_SHOP_ID = "shopId"
+    private const val DRAFT_PRODUCT = "Draft Product"
+    const val CLICK_ADD_PRODUCT_WITHOUT_DRAFT = "click add product without draft"
+    const val CLICK_ADD_PRODUCT = "click add product"
+    const val EDIT_DRAFT = "Edit Draft"
+    const val ADD_PRODUCT = "Add Product"
+    const val DELETE_DRAFT = "Delete Draft"
+
+    fun getTracker(): ContextAnalytics {
+        if (ProductVariantTracking.gtmTracker == null) {
+            ProductVariantTracking.gtmTracker = TrackApp.getInstance().getGTM()
+        }
+        return ProductVariantTracking.gtmTracker!!
+    }
+
+    fun sendProductDraftClick(label: String) {
+        getTracker().sendGeneralEvent(
+                CLICK_DRAFT_PRODUCT,
+                DRAFT_PRODUCT,
+                CLICK,
+                label
+        )
+    }
+
+    fun sendScreenProductDraft(screenName: String, pageSource: String) {
+        val customDimensions = mapOf(
+                PAGE_SOURCE to pageSource
+        )
+        getTracker().sendScreenAuthenticated(
+                screenName,
+                customDimensions
+        )
+    }
+
+    fun sendAddProductClick(shopId: String, action: String) {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_ADD_PRODUCT,
+                CAT_DRAFT_PRODUCT_PAGE,
+                action,
+                "",
+                mapOf(KEY_SHOP_ID to shopId)
+        )
+    }
+}
+
 fun ContextAnalytics.sendGeneralEventCustom(event: String, category: String,
                                             action: String, label: String,
                                             customDimension: Map<String, String>) {

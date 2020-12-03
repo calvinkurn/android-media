@@ -56,11 +56,11 @@ public class GlobalNavAnalytics {
         ));
     }
 
-    public void eventBottomNavigationDrawer(String name, String userId) {
+    public void eventBottomNavigationDrawer(String pageName, String buttonName, String userId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, CLICK_NAVIGATION_DRAWER);
-        map.put(EVENT_CATEGORY,String.format("%s %s - %s",BOTTOM, NAV, name.toLowerCase()));
-        map.put(EVENT_ACTION, String.format("%s %s %s", CLICK, name.toLowerCase(), NAV));
+        map.put(EVENT_CATEGORY,String.format("%s %s - %s",BOTTOM, NAV, pageName));
+        map.put(EVENT_ACTION, String.format("%s %s %s", CLICK, buttonName.toLowerCase(), NAV));
         map.put(EVENT_LABEL, "");
         map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
         map.put(EVENT_BUSINESSUNIT, EVENT_BUSINESSUNIT_VALUE);

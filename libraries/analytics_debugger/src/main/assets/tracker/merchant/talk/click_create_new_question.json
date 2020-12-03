@@ -1,0 +1,18 @@
+{
+  "readme": "Talk - click create new question",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickPDP",
+      "eventCategory" : "product talk",
+      "eventAction" : "click - create new question",
+      "eventLabel" : "{{variant selected:.*;variant available:.*;}}",
+      "screenName" : "/product-talk",
+      "currentSite" : "tokopediamarketplace",
+      "userId" : "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "businessUnit" : "physical goods",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

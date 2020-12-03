@@ -21,13 +21,14 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -67,7 +68,7 @@ class ShopPageViewModelTest {
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
 
     private lateinit var shopPageViewModel : ShopPageViewModel
@@ -113,7 +114,11 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+                productList = ShopProduct.GetShopProduct(
+                        data = listOf(ShopProduct(),ShopProduct())
+                )
+        )
         shopPageViewModel.getShopPageTabData(
                 SAMPLE_SHOP_ID.toIntOrZero(),
                 "shop domain",
@@ -122,11 +127,12 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
 
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.listShopProductUiModel.size == 2)
     }
 
     @Test
@@ -159,6 +165,22 @@ class ShopPageViewModelTest {
                 true
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value == null)
+    }
+
+    @Test
+    fun `check whether shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        shopPageViewModel.getShopPageTabData(
+                0,
+                "domain",
+                1,
+                10,
+                ShopProductFilterParameter(),
+                "",
+                "",
+                true
+        )
+        assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }
 
     @Test
@@ -257,7 +279,7 @@ class ShopPageViewModelTest {
         coEvery { getBroadcasterShopConfigUseCase.get().executeOnBackground() } returns Broadcaster.Config()
         shopPageViewModel.getShopPageHeaderContentData(
                 SAMPLE_SHOP_ID,
-                "",
+                "domain",
                 true
         )
         coVerify { gqlGetShopInfoForHeaderUseCase.get().executeOnBackground() }
@@ -266,6 +288,32 @@ class ShopPageViewModelTest {
         coVerify { gqlGetShopFavoriteStatusUseCase.get().executeOnBackground() }
         coVerify { getBroadcasterShopConfigUseCase.get().executeOnBackground() }
         assert(shopPageViewModel.shopPageHeaderContentData.value is Success)
+
+        shopPageViewModel.getShopPageHeaderContentData(
+                "",
+                "domain",
+                true
+        )
+        assert(shopPageViewModel.shopPageHeaderContentData.value is Success)
+
+        coEvery { gqlGetShopFavoriteStatusUseCase.get().executeOnBackground() } throws Exception()
+        coEvery { getBroadcasterShopConfigUseCase.get().executeOnBackground() } throws Exception()
+        shopPageViewModel.getShopPageHeaderContentData(
+                SAMPLE_SHOP_ID,
+                "",
+                false
+        )
+        assert(shopPageViewModel.shopPageHeaderContentData.value is Success)
+    }
+
+    @Test
+    fun `check whether getShopPageHeaderContentData value is null when shopId and shopDomain is empty`() {
+        shopPageViewModel.getShopPageHeaderContentData(
+                "",
+                "",
+                true
+        )
+        assert(shopPageViewModel.shopPageHeaderContentData.value == null)
     }
 
     @Test
@@ -300,6 +348,17 @@ class ShopPageViewModelTest {
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())
     }
+
+    @Test
+    fun `check whether userShopId should return same value as mocked userSessionInterface shopId`() {
+        val mockUserShopId = "123"
+        every {
+            userSessionInterface.shopId
+        } returns mockUserShopId
+        assert(shopPageViewModel.userShopId == mockUserShopId)
+    }
+
+
 
 
 }

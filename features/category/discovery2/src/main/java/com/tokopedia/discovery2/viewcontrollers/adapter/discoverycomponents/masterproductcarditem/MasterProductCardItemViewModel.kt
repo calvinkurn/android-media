@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
@@ -116,6 +117,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 .inject(this)
     }
 
+    fun getTemplateType() = components.properties?.template ?: GRID
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
     fun showNotifyToastMessage(): LiveData<Pair<Boolean, String?>> = showNotifyToast

@@ -7,12 +7,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -20,7 +22,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
-    private var masterProductCard: ProductCardGridView = itemView.findViewById(R.id.master_product_card)
+    private var masterProductCardGridView: ProductCardGridView? = null
+    private var masterProductCardListView: ProductCardListView? = null
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
     private var productCardName = ""
     private var dataItem: DataItem? = null
@@ -33,10 +36,20 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun initView() {
-        buttonNotify = masterProductCard.getNotifyMeButton()
-        masterProductCard.setNotifyMeOnClickListener {
-            masterProductCardItemViewModel.subscribeUser()
+        if (masterProductCardItemViewModel.getTemplateType() == LIST) {
+            masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
+            buttonNotify = masterProductCardListView?.getNotifyMeButton()
+            masterProductCardListView?.setNotifyMeOnClickListener {
+                masterProductCardItemViewModel.subscribeUser()
+            }
+        } else {
+            masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
+            buttonNotify = masterProductCardGridView?.getNotifyMeButton()
+            masterProductCardGridView?.setNotifyMeOnClickListener {
+                masterProductCardItemViewModel.subscribeUser()
+            }
         }
+
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
@@ -45,31 +58,31 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = masterProductCardItemViewModel.getComponentName()
-        lifecycleOwner?.let {
-            masterProductCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer { data ->
+        lifecycleOwner?.let {lifecycle ->
+            masterProductCardItemViewModel.getDataItemValue().observe(lifecycle, Observer { data ->
                 dataItem = data
             })
-            masterProductCardItemViewModel.getProductModelValue().observe(lifecycleOwner, Observer { data ->
+            masterProductCardItemViewModel.getProductModelValue().observe(lifecycle, Observer { data ->
                 populateData(data)
             })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer { position ->
+            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer { position ->
                 componentPosition = position
             })
-            masterProductCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer {
+            masterProductCardItemViewModel.getShowLoginData().observe(lifecycle, Observer {
                 if (it == true) {
                     componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
-            masterProductCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer {
+            masterProductCardItemViewModel.notifyMeCurrentStatus().observe(lifecycle, Observer {
                 updateNotifyMeState(it)
             })
-            masterProductCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer {
+            masterProductCardItemViewModel.showNotifyToastMessage().observe(lifecycle, Observer {
                 showNotifyResultToast(it)
             })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
+            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer {
                 componentPosition = it
             })
-            masterProductCardItemViewModel.getSyncPageLiveData().observe(lifecycleOwner, Observer {
+            masterProductCardItemViewModel.getSyncPageLiveData().observe(lifecycle, Observer {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
         }
@@ -90,16 +103,19 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun populateData(productCardModel: ProductCardModel) {
-        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
+                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
             productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-            masterProductCard.applyCarousel()
-            masterProductCard.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            masterProductCard.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            masterProductCardGridView?.let {
+                it.applyCarousel()
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
         } else {
-            masterProductCard.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            masterProductCard.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            setProductViewDimens()
         }
-        masterProductCard.setProductModel(productCardModel)
+        masterProductCardGridView?.setProductModel(productCardModel)
+        masterProductCardListView?.setProductModel(productCardModel)
         updateNotifyMeState(dataItem?.notifyMe)
     }
 
@@ -125,6 +141,17 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         }
     }
 
+    private fun setProductViewDimens() {
+        masterProductCardGridView?.let {
+            it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+        masterProductCardListView?.let {
+            it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+    }
+
     private fun handleUIClick(view: View) {
         when (view) {
             productCardView -> {
@@ -136,13 +163,17 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun sendClickEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .trackProductCardClick(masterProductCardItemViewModel.components,
+                        masterProductCardItemViewModel.isUserLoggedIn())
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         masterProductCardItemViewModel.sendTopAdsView()
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().viewProductsList(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .viewProductsList(masterProductCardItemViewModel.components,
+                        masterProductCardItemViewModel.isUserLoggedIn())
     }
 
     private fun showNotifyResultToast(toastData: Pair<Boolean, String?>) {

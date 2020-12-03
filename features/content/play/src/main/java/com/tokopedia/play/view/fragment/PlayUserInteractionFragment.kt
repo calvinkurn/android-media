@@ -266,6 +266,12 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
         copyToClipboard(content)
         showLinkCopiedToaster()
+
+        PlayAnalytics.clickCopyLink(
+                channelId = channelId,
+                channelType = playViewModel.channelType,
+                userId = playViewModel.userId
+        )
     }
 
     /**
