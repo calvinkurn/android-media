@@ -178,19 +178,6 @@ class GetOccCartMapper @Inject constructor() {
                 isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
                 isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled,
                 unit = purchaseProtectionPlanDataResponse.unit
-
-                // Dummy
-//                isProtectionAvailable = true,
-//                protectionTypeId = 1364,
-//                protectionPricePerProduct = 51750,
-//                protectionPrice = 51750,
-//                protectionTitle = "Proteksi Gadget",
-//                protectionSubtitle = "Lindungi gadget dari layar retak, terkena cairan, perampokan hanya Rp51.750",
-//                protectionLinkText = "Pelajari",
-//                protectionLinkUrl = "https://www.tokopedia.com/asuransi/proteksi/gadget/",
-//                isProtectionOptIn = true,
-//                isProtectionCheckboxDisabled = false,
-//                unit = "per barang"
         )
     }
 
