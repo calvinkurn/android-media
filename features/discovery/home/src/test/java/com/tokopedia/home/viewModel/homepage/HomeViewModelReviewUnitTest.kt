@@ -305,9 +305,6 @@ class HomeViewModelReviewUnitTest {
                 observerHome.onChanged(match { homeDataModel ->
                     homeDataModel.list.find { it is ReviewDataModel } != null
                 })
-                observerHome.onChanged(match { homeDataModel ->
-                    homeDataModel.list.find { it is ReviewDataModel } == null
-                })
             }
             confirmVerified(observerHome)
             channel.close()

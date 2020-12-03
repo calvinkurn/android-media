@@ -271,8 +271,8 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getRecommendationWidget(){
-        val data = _homeLiveData.value?.list?.toMutableList()
-        data?.withIndex()?.filter { it.value is BestSellerDataModel }?.forEach {
+        val data = homeVisitableListData
+        data.withIndex().filter { it.value is BestSellerDataModel }.forEach {
             val bestSellerDataModel = it.value as BestSellerDataModel
             launchCatchError(coroutineContext, block = {
                 val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
@@ -863,6 +863,9 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateAvailableComponent(homeData)
                     homeData?.let {
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeViewModel))
+
+                        //initialize master list data here
+                        homeVisitableListData = it.list.toMutableList()
                     }
                     getPlayWidget()
                     getHeaderData()
