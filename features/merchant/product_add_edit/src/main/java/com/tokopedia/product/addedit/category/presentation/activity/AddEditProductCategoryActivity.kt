@@ -12,6 +12,9 @@ import com.tokopedia.product.addedit.category.di.AddEditProductCategoryModule
 import com.tokopedia.product.addedit.category.di.DaggerAddEditProductCategoryComponent
 import com.tokopedia.product.addedit.category.presentation.fragment.AddEditProductCategoryFragment
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_IS_EDIT_MODE
+import com.tokopedia.product.addedit.tracking.ProductCategoryTracking
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_add_edit_product_category.*
 
 class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEditProductCategoryComponent>{
@@ -46,9 +49,9 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     }
 
     override fun onBackPressed() {
-        if (fragment is AddEditProductCategoryFragment) {
-            val f = fragment as AddEditProductCategoryFragment
-            //
+        if (intent.getBooleanExtra(EXTRA_IS_EDIT_MODE, false)) {
+            ProductCategoryTracking.clickBackOtherCategory(UserSession(this).shopId)
+            finish()
         }
     }
 

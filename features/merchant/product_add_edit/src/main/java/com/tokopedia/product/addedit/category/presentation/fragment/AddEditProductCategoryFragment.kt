@@ -3,12 +3,13 @@ package com.tokopedia.product.addedit.category.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import com.tokopedia.globalerror.GlobalError
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.core.common.category.view.model.CategoryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -28,6 +29,8 @@ import com.tokopedia.product.addedit.category.presentation.viewmodel.AddEditProd
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_edit_product_category.*
+import kotlinx.android.synthetic.main.fragment_add_edit_product_category.loaderUnify
+import kotlinx.android.synthetic.main.item_category.*
 import java.util.*
 import javax.inject.Inject
 
@@ -121,18 +124,17 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
             dismissLoader()
             when (it) {
                 is Success -> {
-                    it.data.categories.categories
-                    adapter?.updateCategories(CategoryMapper.mapCategoryToCategoryUiModel(it.data.categories.categories, 0))
-                    adapter?.putIntoTempCategories()
+                    onSuccessGetCategory(it.data)
                 }
                 is Fail -> {
-                    Log.d("Category Fail", it.toString())
+                    onFailGetCategory()
                 }
             }
         }
     }
 
     private fun displayLoader() {
+        geCategory.hide()
         loaderUnify.show()
         rvCategory.hide()
     }
@@ -140,5 +142,22 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
     private fun dismissLoader() {
         loaderUnify.hide()
         rvCategory.show()
+    }
+
+    private fun onSuccessGetCategory(data: CategoriesResponse) {
+        val categories = data.categories.categories
+        adapter?.updateCategories(CategoryMapper.mapCategoryToCategoryUiModel(categories, 0))
+        adapter?.putIntoTempCategories()
+    }
+
+    private fun onFailGetCategory() {
+        geCategory.apply {
+            setType(GlobalError.SERVER_ERROR)
+            setActionClickListener {
+                viewModel.getCategoryLiteTree()
+                displayLoader()
+            }
+        }.show()
+        rvCategory.hide()
     }
 }
