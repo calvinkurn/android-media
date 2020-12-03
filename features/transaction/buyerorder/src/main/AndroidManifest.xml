@@ -36,7 +36,7 @@
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" >
+            android:theme="@style/Theme.White" >
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -191,7 +191,7 @@
             android:label="@string/title_uoh_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/Theme.White">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -11,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.buyerorder.R;
@@ -119,7 +121,7 @@ public class RedeemVoucherView extends LinearLayout {
         if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
             redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
         } else {
-            redeemVoucher.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            redeemVoucher.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
 
         shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));

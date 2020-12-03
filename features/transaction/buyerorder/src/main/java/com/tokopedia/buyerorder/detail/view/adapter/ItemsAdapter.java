@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -577,7 +578,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
             tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -594,7 +595,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!actionButton.getActionColor().getTextColor().equals("")) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 
@@ -829,7 +830,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
             tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -846,7 +847,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 
