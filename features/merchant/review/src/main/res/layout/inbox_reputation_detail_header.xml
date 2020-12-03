@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="8sp"
+                android:textColor="@color/Unify_N700_96"
                 style="@style/TextView.Small.Bold"
                 android:maxLines="1"
                 tools:text="Pretty Sugar Shop"
@@ -214,6 +215,7 @@
             style="@style/TextView.Small"
             tools:text="Bagaimana pen"
             android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/Unify_N700_96"
             />
 
         <TextView

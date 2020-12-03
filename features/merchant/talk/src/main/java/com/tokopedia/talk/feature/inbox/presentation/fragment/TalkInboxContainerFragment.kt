@@ -170,5 +170,4 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
             }
         }
     }
-
 }

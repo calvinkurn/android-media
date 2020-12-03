@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
@@ -26,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author by nisie on 8/10/17.
@@ -72,7 +73,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private ViewPager viewPager;
     private TabsUnify indicator;
     private PagerAdapter sectionAdapter;
-    private Toolbar toolbar;
+    private HeaderUnify toolbar;
 
     private UserSessionInterface userSession;
 
@@ -90,7 +91,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
-        String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
+        String tab = Objects.requireNonNull(getIntent().getData()).getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
@@ -109,9 +110,9 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private void initView() {
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
+        toolbar = findViewById(R.id.headerInboxReputation);
         indicator.getUnifyTabLayout().clearOnTabSelectedListeners();
-        toolbar = findViewById(R.id.toolbar);
-
+        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifycomponents.R.color.Unify_N0));
         setupToolbar();
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
@@ -171,7 +172,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
-        if(goToBuyerReview) {
+        if (goToBuyerReview) {
             viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
@@ -283,18 +284,18 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(this.getTitle());
-        }
+        toolbar.setTitle(getString(R.string.title_activity_reputation_review));
     }
 
     private void setupStatusBar() {
+       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 

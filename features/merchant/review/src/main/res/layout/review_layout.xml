@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
+                android:textColor="@color/Unify_N700_96"
                 android:maxLines="1"
                 style="@style/TextView.Small.Bold"
                 tools:text="Sarah Elizabeth"
@@ -91,6 +92,7 @@
         android:textIsSelectable="true"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
+        android:textColor="@color/Unify_N700"
         style="@style/TextView.Small"
         tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya"
         />

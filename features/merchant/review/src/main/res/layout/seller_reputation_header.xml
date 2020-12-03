@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
+        android:textColor="@color/Unify_N700_96"
         tools:text="wewe" />
 
     <com.tokopedia.review.feature.reputationhistory.view.helper.ReputationView
