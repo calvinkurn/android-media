@@ -58,9 +58,10 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
                     account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop)
                 }
                 Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+                else -> {}
             }
 
-            listener.onItemViewBinded(adapterPosition, itemView)
+            listener.onItemViewBinded(adapterPosition, itemView, profile)
         }
     }
 
@@ -73,7 +74,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
         val adapter = HomeAccountFinancialAdapter(listener)
         adapter.list = profile.financial.items
         itemView.home_account_financial_layout_rv?.adapter = adapter
-        itemView.home_account_financial_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
+        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {

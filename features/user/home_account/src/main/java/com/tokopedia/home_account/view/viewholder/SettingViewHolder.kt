@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.home_account_expandable_layout.view.*
 
 class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
 
-    var rotationAngle = 0F
+    private var rotationAngle = 0F
 
     fun bind(setting: SettingDataView) {
         with(itemView) {
@@ -37,6 +37,7 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             }
             setupItemAdapter(itemView, setting)
         }
+        listener.onItemViewBinded(adapterPosition, itemView, setting)
     }
 
     private fun setupItemAdapter(itemView: View, setting: SettingDataView) {
