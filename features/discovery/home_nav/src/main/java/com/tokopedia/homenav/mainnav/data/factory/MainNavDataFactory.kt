@@ -12,12 +12,6 @@ interface MainNavDataFactory {
 
     fun buildVisitableList(): MainNavDataFactory
 
-    fun addProfileSection(userPojo: UserPojo?,
-                          walletBalanceModel: WalletBalanceModel?,
-                          saldoPojo: SaldoPojo?,
-                          membershipPojo: MembershipPojo?,
-                          shopInfoPojo: ShopInfoPojo?): MainNavDataFactory
-
     fun addSeparatorSection(): MainNavDataFactory
     fun addBUListSection(categoryData: List<DynamicHomeIconEntity.Category>?): MainNavDataFactory
 

@@ -1,20 +1,20 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
  * Created by Lukas on 21/10/20.
  */
 class GetCategoryGroupUseCase (
+        private val buListMapper: BuListMapper,
         private val graphqlUseCase: GraphqlUseCase<DynamicHomeIconEntity>
-): UseCase<Result<List<DynamicHomeIconEntity.Category>>>(){
+): UseCase<List<Visitable<*>>>(){
 
     private var params : Map<String, Any> = mapOf()
 
@@ -50,13 +50,13 @@ class GetCategoryGroupUseCase (
         }
     }
 
-    override suspend fun executeOnBackground(): Result<List<DynamicHomeIconEntity.Category>> {
+    override suspend fun executeOnBackground(): List<Visitable<*>> {
         return try {
             graphqlUseCase.setRequestParams(params)
             val data = graphqlUseCase.executeOnBackground()
-            Success(data.dynamicHomeIcon.categoryGroup)
+            buListMapper.mapToBuListModel(data.dynamicHomeIcon.categoryGroup)
         } catch (e: Throwable){
-            Fail(e)
+            listOf<Visitable<*>>()
         }
     }
 

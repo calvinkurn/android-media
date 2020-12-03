@@ -223,6 +223,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.reloadShopData(getUserSession().shopId.toInt(), element)
     }
 
+    override fun onErrorBuListClicked(position: Int) {
+        viewModel.
+    }
+
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
         view?.let {
             if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {

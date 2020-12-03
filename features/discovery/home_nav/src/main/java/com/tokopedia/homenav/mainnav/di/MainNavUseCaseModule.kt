@@ -4,13 +4,15 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
-import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
+import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
+import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
+import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -96,24 +98,25 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideMainNaveUseCase(mainNavMapper: MainNavMapper,
-                               userInfoUseCase: GetUserInfoUseCase,
-                               getCategoryGroupUseCase: GetCategoryGroupUseCase,
-                               getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
-                               getSaldoUseCase: GetSaldoUseCase,
-                               getUserMembershipUseCase: GetUserMembershipUseCase,
-                               getShopInfoUseCase: GetShopInfoUseCase,
-                               userSession: UserSessionInterface,
-                               @ApplicationContext context: Context
-    ) =
-            GetMainNavDataUseCase(
-                    mainNavMapper = mainNavMapper,
-                    getUserInfoUseCase = userInfoUseCase,
-                    getOvoUseCase = getWalletBalanceUseCase,
-                    getSaldoUseCase = getSaldoUseCase,
-                    getUserMembershipUseCase = getUserMembershipUseCase,
-                    getShopInfoUseCase = getShopInfoUseCase,
-                    getCategoryGroupUseCase = getCategoryGroupUseCase,
-                    userSession = userSession,
-                    context = context)
+    fun provideGetAccountHeaderUseCase(
+            accountHeaderMapper: AccountHeaderMapper,
+            userInfoUseCase: GetUserInfoUseCase,
+            getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
+            getSaldoUseCase: GetSaldoUseCase,
+            getUserMembershipUseCase: GetUserMembershipUseCase,
+            getShopInfoUseCase: GetShopInfoUseCase,
+            userSession: UserSessionInterface,
+            @ApplicationContext context: Context
+    ): GetProfileDataUseCase {
+        return GetProfileDataUseCase(
+                accountHeaderMapper = accountHeaderMapper,
+                getUserInfoUseCase = userInfoUseCase,
+                getOvoUseCase = getWalletBalanceUseCase,
+                getSaldoUseCase = getSaldoUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase,
+                getShopInfoUseCase = getShopInfoUseCase,
+                userSession = userSession,
+                context = context
+        )
+    }
 }
