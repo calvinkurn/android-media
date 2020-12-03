@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
@@ -112,6 +113,7 @@ class FlightHomepageActivityTest {
 
     private fun departureAirport() {
         Thread.sleep(1000)
+        onView(withId(R.id.flightHomepageScrollView)).perform(swipeDown())
 
         // click on flight departure airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightOriginAirport)).perform(click())
