@@ -22,6 +22,7 @@ query getProductVariant($productID:String!, $option: pdpGetProductVariantReqOpti
         picture {
           url
           url200
+          url100
         }
       }
     }

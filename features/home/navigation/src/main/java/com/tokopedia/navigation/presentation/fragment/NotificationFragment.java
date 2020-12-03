@@ -82,7 +82,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
 
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);

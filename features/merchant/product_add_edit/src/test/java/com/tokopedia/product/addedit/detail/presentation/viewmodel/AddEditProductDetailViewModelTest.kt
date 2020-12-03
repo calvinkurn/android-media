@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetShopShowCasesUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -21,11 +20,15 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -50,7 +53,7 @@ class AddEditProductDetailViewModelTest {
     lateinit var validateProductUseCase: ValidateProductUseCase
 
     @RelaxedMockK
-    lateinit var getShopShowCasesUseCase: GetShopShowCasesUseCase
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -103,7 +106,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopShowCasesUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase)
     }
 
     @Test
@@ -881,6 +884,25 @@ class AddEditProductDetailViewModelTest {
         // negative case
         viewModel.productInputModel.itemSold = 0
         Assert.assertFalse(viewModel.hasTransaction)
+    }
+
+    @Test
+    fun `get showcase list should get the list`() {
+        runBlocking {
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
+            } returns listOf()
+
+            viewModel.getShopShowCasesUseCase()
+
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
+
+            val expectedResponse = Success(listOf<ShopEtalaseModel>())
+            val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
+            assertEquals(expectedResponse, actualResponse)
+        }
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

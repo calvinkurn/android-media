@@ -68,6 +68,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var urlPDP = ""
     private var startDate = ""
     private var endDate = ""
+    private var gatewayCode = ""
     private var selectedDate = ""
     private var PACKAGES_ID = ""
     private var AMOUNT_TICKET = 0
@@ -128,6 +129,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         endDate = arguments?.getString(END_DATE, "") ?: ""
         super.onCreate(savedInstanceState)
 
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
@@ -261,7 +263,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_LOGIN -> context?.let {
-                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive))
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
                 }
             }
         }
@@ -297,8 +299,9 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
             metaDataResponse = it.eventVerify.metadata
+            gatewayCode = it.eventVerify.gatewayCode
             if (userSession.isLoggedIn) {
-                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive))
+                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
@@ -338,7 +341,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun getLocalCache(): Boolean {
-        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
     override fun showCoachMark(view: View, height: Int) {
@@ -352,7 +355,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 getCoachMarkItems(view)
         )
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
+            putBoolean(SHOW_COACH_MARK_KEY, true)
             applyEditor()
         }
     }
@@ -406,9 +409,10 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         const val DATE_MULTIPLICATION = 1000
         const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"
+        const val GMT = "GMT+7"
 
-        private const val PREFERENCES_NAME = "event_ticket_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
+        const val PREFERENCES_NAME = "event_ticket_preferences"
+        const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
         private const val COACH_MARK_START_DELAY = 1000L
     }
 

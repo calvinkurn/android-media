@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.RequestBodyCheckout;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCheckoutData;
+import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData;
 import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
-import com.tokopedia.digital.newcart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.newcart.domain.ICheckoutRepository;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 
@@ -36,9 +37,9 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
         return digitalRestApi.checkout(requestBody)
-                .map(new Func1<Response<DataResponse<com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData>>, CheckoutDigitalData>() {
+                .map(new Func1<Response<DataResponse<ResponseCheckoutData>>, CheckoutDigitalData>() {
                     @Override
-                    public CheckoutDigitalData call(Response<DataResponse<com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData>> dataResponseResponse) {
+                    public CheckoutDigitalData call(Response<DataResponse<ResponseCheckoutData>> dataResponseResponse) {
                         return cartMapperData.transformCheckoutData(dataResponseResponse.body().getData());
                     }
                 });

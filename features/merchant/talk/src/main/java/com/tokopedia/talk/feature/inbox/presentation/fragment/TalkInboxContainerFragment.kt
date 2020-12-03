@@ -17,7 +17,7 @@ import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxContainerComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxContainerAdapter
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.setCustomText

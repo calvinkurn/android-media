@@ -57,4 +57,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideCsatOptionList(model: CsatOptionsViewModel)
 
+    fun hideActionBubbleOnSenderMsg()
+
 }

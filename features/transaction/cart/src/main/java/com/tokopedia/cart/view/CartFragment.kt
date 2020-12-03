@@ -39,6 +39,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -116,7 +117,12 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -138,6 +144,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         TickerAnnouncementActionListener, SellerCashbackListener {
 
     lateinit var toolbar: CartToolbar
+    lateinit var basicToolbar: Toolbar
+    lateinit var navToolbar: NavToolbar
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: UnifyButton
@@ -216,6 +224,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var accordionCollapseState = true
     private var refreshCartAfterBackFromPdp = true
     private var hasCalledOnSaveInstanceState = false
+    private var toolbarType = ""
 
     companion object {
 
@@ -238,6 +247,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
+        const val TOOLBAR_VARIANT_BASIC = "Existing Navigation"
+        const val TOOLBAR_VARIANT_NAVIGATION = "Navigation Revamp"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -491,10 +502,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initRemoteConfig() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
+
+        val EXP_NAME = "Navigation Revamp"
+        toolbarType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                EXP_NAME, TOOLBAR_VARIANT_BASIC
+        )
     }
 
     override fun initView(view: View) {
-        initToolbar(view)
+        basicToolbar = view.findViewById(R.id.toolbar)
+        navToolbar = view.findViewById(R.id.nav_toolbar)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
@@ -510,6 +527,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
         textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
         tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
+
+        initToolbar(view)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -615,7 +634,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+            cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
+        } else {
+            cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        }
+
         if (isAtcExternalFlow()) {
             routeToHome()
         }
@@ -667,8 +691,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showBottomSheetSummaryTransaction() {
-        if (!hasCalledOnSaveInstanceState && cartListData != null && fragmentManager != null && context != null) {
-            showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
+        if (!hasCalledOnSaveInstanceState) {
+            context?.let { context ->
+                fragmentManager?.let { fragmentManager ->
+                    cartListData?.let { cartListData ->
+                        showSummaryTransactionBottomsheet(cartListData, fragmentManager, context)
+                    }
+                }
+            }
         }
     }
 
@@ -777,6 +807,80 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initToolbar(view: View) {
+        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+            initNavigationToolbar(view)
+            basicToolbar.gone()
+            navToolbar.show()
+        } else {
+            initBasicToolbar(view)
+            navToolbar.gone()
+            basicToolbar.show()
+        }
+    }
+
+    private fun initNavigationToolbar(view: View) {
+        activity?.let {
+            val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
+
+            val args = arguments?.getString(CartFragment::class.java.simpleName)
+            if (args?.isNotEmpty() == true) {
+                isToolbarWithBackButton = false
+            }
+
+            if (isToolbarWithBackButton) {
+                statusBarBackground.hide()
+            } else {
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                        statusBarBackground.visibility = View.INVISIBLE
+                    }
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                        statusBarBackground.show()
+                    }
+                    else -> {
+                        statusBarBackground.hide()
+                    }
+                }
+            }
+
+            navToolbar.apply {
+                setOnBackButtonClickListener(
+                        disableDefaultGtmTracker = true,
+                        backButtonClickListener = ::onBackPressed
+                )
+                setIcon(
+                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_LOTTIE_WISHLIST,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarWishlistClicked
+                                )
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_GLOBAL,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarNavGlobalClicked
+                                )
+                )
+
+                if (isToolbarWithBackButton) {
+                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                } else {
+                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                }
+            }
+        }
+    }
+
+    private fun onNavigationToolbarWishlistClicked() {
+        cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
+        routeToWishlist()
+    }
+
+    private fun onNavigationToolbarNavGlobalClicked() {
+        cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
+    }
+
+    private fun initBasicToolbar(view: View) {
         activity?.let {
             val args = arguments?.getString(CartFragment::class.java.simpleName)
             if (args?.isNotEmpty() == true) {
@@ -792,12 +896,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 statusBarBackground.hide()
             } else {
                 toolbar = toolbarRemoveView() as CartToolbar
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    statusBarBackground.visibility = View.INVISIBLE
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    statusBarBackground.show()
-                } else {
-                    statusBarBackground.hide()
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                        statusBarBackground.visibility = View.INVISIBLE
+                    }
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                        statusBarBackground.show()
+                    }
+                    else -> {
+                        statusBarBackground.hide()
+                    }
                 }
             }
             toolbar.let {
@@ -1383,6 +1491,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onSimilarProductUrlClicked(similarProductUrl: String) {
         routeToApplink(similarProductUrl)
         cartPageAnalytics.eventClickMoreLikeThis()
+    }
+
+    override fun onFollowShopClicked(shopId: String, errorType: String) {
+        cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
+        dPresenter.followShop(shopId)
     }
 
     override fun onSeeErrorProductsClicked() {
@@ -2380,8 +2493,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
         cartPageAnalytics.eventViewErrorWhenCheckout(message)
 
-        if (!hasCalledOnSaveInstanceState && fragmentManager != null && context != null) {
-            showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
+        if (!hasCalledOnSaveInstanceState) {
+            context?.let { context ->
+                fragmentManager?.let { fragmentManager ->
+                    showGlobalErrorBottomsheet(fragmentManager, context, ::retryGoToShipment)
+                }
+            }
         }
     }
 
@@ -2506,6 +2623,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showToastMessageRed(throwable: Throwable, ctaText: String, ctaClickListener: View.OnClickListener?) {
+        var errorMessage = throwable.message ?: ""
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        showToastMessageRed(errorMessage, ctaText, ctaClickListener)
+    }
+
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
         if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
@@ -2528,12 +2654,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener) {
+    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener?) {
         val toasterInfo = Toaster
         view?.let { v ->
             if (action.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+
                 toasterInfo.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
-                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, onClickListener)
+                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, tmpCtaClickListener)
             } else {
                 toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
             }
@@ -2603,9 +2735,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animateProductImage(message: String) {
+        var target: Pair<Int, Int>? = null
+
+        if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
+            target = toolbar.getWishlistIconPosition()
+        } else {
+            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+            target = Pair(targetX, 0)
+        }
+
         tmpAnimatedImage.show()
 
-        val target = toolbar.getWishlistIconPosition()
         val targetX = target.first
         val targetY = target.second
 
@@ -2626,7 +2766,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationStart(animation: Animator) {}
                 override fun onAnimationEnd(animation: Animator) {
                     tmpAnimatedImage.gone()
-                    toolbar.animateWishlistIcon()
+
+                    if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
+                        toolbar.animateWishlistIcon()
+                    } else {
+                        navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
+                    }
+
                     showToastMessageGreen(message, false)
                     dPresenter.processGetWishlistData()
                 }

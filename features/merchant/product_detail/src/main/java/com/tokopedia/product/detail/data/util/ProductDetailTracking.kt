@@ -12,20 +12,6 @@ import javax.inject.Inject
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
 
-    fun eventReportLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.EVENT_LABEL)
-    }
-
-    fun eventReportNoLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
-    }
-
     fun eventAtcClickLihat(productId: String?) {
         if (productId.isNullOrEmpty()) {
             return
@@ -40,12 +26,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+    fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
         val actionValuePostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else
@@ -74,12 +60,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
+    fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String, trackingQueue: TrackingQueue) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
         val valueActionPostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else ""
@@ -181,17 +167,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION,
-                ""
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    fun eventClickSpecificationTabOnProductDescription(productId: String) {
-        val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION,
                 ""
         )
         mapEvent[KEY_PRODUCT_ID] = productId

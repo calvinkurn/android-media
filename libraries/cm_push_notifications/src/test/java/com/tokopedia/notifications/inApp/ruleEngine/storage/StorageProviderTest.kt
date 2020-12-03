@@ -64,7 +64,7 @@ class StorageProviderTest {
 
         every { inAppDataDao.getDataForScreen(any()) } returns mockk<List<CMInApp>>()
 
-        storageProvider.getDataFromStore(key)
+        storageProvider.getDataFromStore(key, true)
 
         verify { inAppDataDao.getDataForScreen(any()) }
     }

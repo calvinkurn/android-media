@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -17,9 +16,8 @@ import com.tokopedia.review.R;
  * @author normansyahputa on 3/20/17.
  */
 
-public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
+public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationUiModel> {
 
-    private final String defaultLayout;
     LinearLayout reputationBadgeListener;
     TextView reputationPoints;
     @LayoutRes
@@ -27,19 +25,7 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
 
     public ReputationView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReputationView);
-        try {
-            defaultLayout = styledAttributes.getString(R.styleable.ReputationView_default_layout);
-            if (defaultLayout != null) {
-                defaultLayoutId = getLayoutByName(separate(defaultLayout));
-            } else {
-                defaultLayoutId = R.layout.reputation_item_view;
-            }
-        } finally {
-            styledAttributes.recycle();
-        }
-
+        defaultLayoutId = R.layout.reputation_item_view_reputation;
         LayoutInflater.from(context).inflate(defaultLayoutId, this);
 
         reputationBadgeListener = (LinearLayout) findViewById(R.id.reputation_badge_listener);
@@ -57,14 +43,14 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
     }
 
     @Override
-    public void init(ReputationViewModel data) {
+    public void init(ReputationUiModel data) {
 
         ReputationLevelUtils.setReputationMedalsWithoutDialog(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
 
         reputationPoints.setText(String.format("%s %s", data.stats.shopReputationScore, getContext().getString(R.string.point)));
     }
 
-    public static class ReputationViewModel {
+    public static class ReputationUiModel {
         public int typeMedal;
         public int levelMedal;
         public String reputationPoints;

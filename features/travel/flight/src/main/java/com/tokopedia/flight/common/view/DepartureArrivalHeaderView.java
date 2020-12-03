@@ -7,8 +7,7 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
-
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 /**
  * Created by User on 11/16/2017.

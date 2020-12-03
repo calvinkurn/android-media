@@ -9,20 +9,17 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-
-@ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
     @Test
@@ -287,18 +284,15 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When get status stock variant Expect status stock variant`() {
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 0 }
+    fun `When productInputModel data changed Expect `() {
+        viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(1, viewModel.getStatusStockViewVariant())
 
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 4 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(2, viewModel.getStatusStockViewVariant())
+        viewModel.setIsDataChanged(true)
+        assertTrue(viewModel.getIsDataChanged())
 
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.status = 0 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(3, viewModel.getStatusStockViewVariant())
+        viewModel.setIsDataChanged(false)
+        assertFalse(viewModel.getIsDataChanged())
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {

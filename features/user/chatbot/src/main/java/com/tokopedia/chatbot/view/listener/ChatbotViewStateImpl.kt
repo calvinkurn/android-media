@@ -264,6 +264,20 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+    override fun hideActionBubbleOnSenderMsg() {
+        var item: ChatActionSelectionBubbleViewModel? = null
+        for (it in adapter.list) {
+            if (it is ChatActionSelectionBubbleViewModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
+        }
+    }
+
     override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {

@@ -108,7 +108,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
-            flightHomepageViewModel.fetchVideoBannerData()
         }
     }
 
@@ -116,6 +115,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
 
         flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
+            flightHomepageViewModel.fetchVideoBannerData()
             when (it) {
                 is Success -> {
                     renderBannerTitle(it.data.meta.label)
@@ -344,7 +344,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             } else {
                 resources.getDimensionPixelSize(R.dimen.banner_height)
             }
-            flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
+            flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
             flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
             flightHomepageBanner.setOnPromoScrolledListener { position ->
                 flightHomepageViewModel.sendTrackingPromoScrolled(position)

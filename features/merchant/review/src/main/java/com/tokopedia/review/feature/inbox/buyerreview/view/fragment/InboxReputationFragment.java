@@ -42,10 +42,10 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationPresenter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationDataViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
 import com.tokopedia.user.session.UserSession;
@@ -184,10 +184,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void setQueryHint() {
-        if (getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            searchView.setSearchHint(getString(R.string.query_hint_review_seller));
-        } else {
-            searchView.setSearchHint(getString(R.string.query_hint_review_buyer));
+        if(getContext() != null) {
+            if (getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
+                searchView.setSearchHint(getString(R.string.query_hint_review_seller));
+            } else {
+                searchView.setSearchHint(getString(R.string.query_hint_review_buyer));
+            }
         }
     }
 
@@ -250,15 +252,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetFirstTimeInboxReputation(InboxReputationUiModel inboxReputationUiModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
         if (!GlobalConfig.isSellerApp() && getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            adapter.setList(inboxReputationViewModel.getList(), sellerMigrationReviewModel);
+            adapter.setList(inboxReputationUiModel.getList(), sellerMigrationReviewModel);
         } else {
-            adapter.setList(inboxReputationViewModel.getList(), null);
+            adapter.setList(inboxReputationUiModel.getList(), null);
         }
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
@@ -276,10 +278,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetNextPage(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeLoading();
-        adapter.addList(inboxReputationViewModel.getList());
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        adapter.addList(inboxReputationUiModel.getList());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
@@ -289,14 +291,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessRefresh(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeEmpty();
         if (!GlobalConfig.isSellerApp() && getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            adapter.setList(inboxReputationViewModel.getList(), sellerMigrationReviewModel);
+            adapter.setList(inboxReputationUiModel.getList(), sellerMigrationReviewModel);
         } else {
-            adapter.setList(inboxReputationViewModel.getList());
+            adapter.setList(inboxReputationUiModel.getList());
         }
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
@@ -314,12 +316,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onGoToDetail(String reputationId, String invoice, String createTime,
                              String revieweeName, String revieweeImage,
-                             ReputationDataViewModel reputationDataViewModel, String textDeadline,
+                             ReputationDataUiModel reputationDataUiModel, String textDeadline,
                              int adapterPosition, int role) {
 
         savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
                 revieweeImage, revieweeName, textDeadline,
-                reputationDataViewModel, role));
+                reputationDataUiModel, role));
 
         startActivityForResult(
                 InboxReputationDetailActivity.getCallingIntent(
@@ -356,10 +358,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
             String revieweeImage,
             String revieweeName,
             String textDeadline,
-            ReputationDataViewModel reputationDataViewModel,
+            ReputationDataUiModel reputationDataUiModel,
             int role) {
         return new InboxReputationDetailPassModel(reputationId, revieweeName, revieweeImage,
-                textDeadline, invoice, createTime, reputationDataViewModel, role);
+                textDeadline, invoice, createTime, reputationDataUiModel, role);
 
     }
 
@@ -369,10 +371,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetFilteredInboxReputation(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeEmpty();
-        adapter.setList(inboxReputationViewModel.getList());
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        adapter.setList(inboxReputationUiModel.getList());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
