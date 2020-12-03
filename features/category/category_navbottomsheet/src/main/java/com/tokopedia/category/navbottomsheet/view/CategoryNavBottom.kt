@@ -158,7 +158,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
 
     private fun initView() {
         context?.let {
-            setTitle(it.resources.getString(R.string.kategori_title))
+            setTitle(it.resources.getString(R.string.nbs_kategori_title))
             master_list.layoutManager = LinearLayoutManager(it)
         }
         if (shouldHideL1) {

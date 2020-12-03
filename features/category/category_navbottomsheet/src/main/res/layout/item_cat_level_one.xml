@@ -11,7 +11,7 @@
         android:id="@+id/category_imageview"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
-        android:contentDescription="@string/content_desc_category_imageview"
+        android:contentDescription="@string/nbs_content_desc_imageview"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/category_name"
         app:layout_constraintEnd_toEndOf="parent"
