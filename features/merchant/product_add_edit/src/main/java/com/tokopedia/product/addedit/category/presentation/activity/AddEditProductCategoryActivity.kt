@@ -37,8 +37,7 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product_category)
-        huCategory.title = getString(R.string.label_title_category_picker)
-        setSupportActionBar(huCategory)
+        setupUi()
     }
 
     override fun getComponent(): AddEditProductCategoryComponent {
@@ -53,6 +52,12 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
             ProductCategoryTracking.clickBackOtherCategory(UserSession(this).shopId)
             finish()
         }
+    }
+
+    private fun setupUi() {
+        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        huCategory.title = getString(R.string.label_title_category_picker)
+        setSupportActionBar(huCategory)
     }
 
 }

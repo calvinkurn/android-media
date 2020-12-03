@@ -6,11 +6,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
+import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.item_category.view.*
 
 class AddEditProductCategoryViewHolder(
@@ -78,8 +78,8 @@ class AddEditProductCategoryViewHolder(
         itemView.run {
             if (!category.isSelected) {
                 tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                rvLevelCategory.hide()
-                ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_down)
+                hideChildCategories()
+                ivCategoryParent.setImage(R.drawable.product_add_edit_ic_chevron_down, 0F)
                 val resultSize = resultCategories.size - 1
                 for (level in resultSize downTo category.categoryLevel) {
                     resultCategories.removeAt(level)
@@ -88,10 +88,24 @@ class AddEditProductCategoryViewHolder(
                 categoryChildAdapter?.notifyDataSetChanged()
             } else {
                 tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                rvLevelCategory.show()
-                ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_up)
+                showChildCategories()
+                ivCategoryParent.setImage(R.drawable.product_add_edit_ic_chevron_down, 0F)
                 resultCategories.add(category)
             }
+        }
+    }
+
+    private fun hideChildCategories() {
+        itemView.run {
+            rvLevelCategory.hide()
+            divider.hide()
+        }
+    }
+
+    private fun showChildCategories() {
+        itemView.run {
+            rvLevelCategory.show()
+            divider.show()
         }
     }
 
