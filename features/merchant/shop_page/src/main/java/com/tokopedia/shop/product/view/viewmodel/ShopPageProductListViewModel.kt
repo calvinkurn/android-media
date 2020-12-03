@@ -46,11 +46,9 @@ class ShopPageProductListViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         @ShopProductGetHighlightProductQualifier
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
         private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
@@ -360,14 +358,6 @@ class ShopPageProductListViewModel @Inject constructor(
         }) {
             productListData.postValue(Fail(it))
         }
-    }
-
-    fun removeWishList(productId: String, listener: WishListActionListener) {
-        removeWishlistUseCase.createObservable(productId, userId, listener)
-    }
-
-    fun addWishList(productId: String, listener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, listener)
     }
 
     fun getNewMembershipData(shopId: String) {
