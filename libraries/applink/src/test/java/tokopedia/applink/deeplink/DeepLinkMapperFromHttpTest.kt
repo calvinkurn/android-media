@@ -11,307 +11,241 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of pulsa then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.PULSA_LINK_URL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa axis then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=1&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=1&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AXIS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa IM3 then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=1&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=1&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AXIS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa bolt then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=3&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=3&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BOLT, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa tri then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=4&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=4&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TRI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa xl then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=5&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=5&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa smartfren then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=7&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=7&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.SMARTFREN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa simpati then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=12&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=12&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.SIMPATI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa as then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=15&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=15&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.AS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa mentari then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=17&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=17&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.MENTARI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA, expectedDeepLink)
     }
 
     @Test
     fun `check link url of token listrik then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=3&operator_id=6"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=3&operator_id=6&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOKEN_LISTRIK, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pulsa im3 then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=2&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=1&operator_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.IM3, expectedDeepLink)
     }
 
     @Test
     fun `check link url of streaming then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13menu_id=81&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.STREAMING, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pajak then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://webview?url=https://www.tokopedia.com/pajak"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&menu_id=127&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAJAK, expectedDeepLink)
     }
 
     @Test
     fun `check link url of PBB then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&menu_id=127&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB, expectedDeepLink)
     }
 
     @Test
     fun `check link url of retribusi then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=25"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=25&menu_id=125&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.RETRIBUSI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of PDAM then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=5"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=5&menu_id=120&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PDAM, expectedDeepLink)
     }
 
     @Test
     fun `check link url of angsuran then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pasca bayar then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=9&menu_id=3"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=9&menu_id=3&template=telcopost"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PASCA_BAYAR, expectedDeepLink)
     }
 
     @Test
     fun `check link url of telepon then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=10"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=10&menu_id=121&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TELEPON, expectedDeepLink)
     }
 
     @Test
     fun `check link url of PGN then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=14"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=14&menu_id=124&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PGN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of indovision then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=120"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=120&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.INDOVISION, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of indiehome then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=125"
+    fun `check link url of indihome then should be equal to the actual`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=125&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.INDIHOME, expectedDeepLink)
     }
 
     @Test
     fun `check link url of transvision then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=121"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=121&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TRANSIVISION, expectedDeepLink)
     }
 
     @Test
     fun `check link url of big tv then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=100"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=100&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BIG_TV, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of orange tv prabayar then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=158"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ORANGE_TV_PRABAYAR, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of orange tv pascabayar then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=157"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ORANGE_TV_PASCABAYAR, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of kvision then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=173"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=173&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.K_VISION, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of top tv then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=144"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOP_TV, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of first media then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=243"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&menu_id=154&operator_id=243&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.FIRST_MEDIA, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of nex media then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=159"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.NEX_MEDIA, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of okevision then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=8&operator_id=143"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.OKEVISION, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of viu then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=155"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=155&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VIU, expectedDeepLink)
     }
 
     @Test
     fun `check link url of joox then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=154"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=154&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.JOOX, expectedDeepLink)
     }
 
     @Test
     fun `check link url of catch play then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=153"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=153&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.CATCH_PLAY, expectedDeepLink)
     }
 
     @Test
     fun `check link url of iflix then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=160"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=160&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.IFLIX, expectedDeepLink)
     }
 
     @Test
     fun `check link url of genflix then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=161"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=161&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.GENFLIX, expectedDeepLink)
     }
 
     @Test
     fun `check link url of wifi id then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=202"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=202&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.WIFI_ID, expectedDeepLink)
     }
 
     @Test
     fun `check link url of hooq then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=229"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=229&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.HOOQ, expectedDeepLink)
     }
 
     @Test
     fun `check link url of tagihan listrik then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=3&operator_id=18"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=3&menu_id=113&operator_id=18&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TAGIHAN_LISTRIK, expectedDeepLink)
     }
 
     @Test
     fun `check link url of donasi then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=12"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=12&menu_id=83&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.DONASI, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of kfc voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=244"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_KFC, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of  lotteria voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=248"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_LOTTERIA, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of hop hop voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=247"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_HOP_HOP, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of tour les jours voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=246"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_TOUS_LES_JOURS, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of breadlife voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=245"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_BREADLIFE, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of tagihan pdam then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=5"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=5&menu_id=120&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TAGIHAN_PDAM, expectedDeepLink)
     }
 
     @Test
     fun `check link url of angsuran mobil then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=168"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=168&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_MOBIL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of angsuran motor then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=255"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=255&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_MOTOR, expectedDeepLink)
     }
 
@@ -461,156 +395,85 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of top up mtix then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOP_UP_MTIX, "")
-    }
-
-    @Test
-    fun `check link url of tori ichi voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=257"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_TORI_ICHI, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of excelso voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=295"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_EXCELSO, expectedDeepLink)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=31&menu_id=128&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOP_UP_MTIX, expectedDeepLink)
     }
 
     @Test
     fun `check link url of bpjs kesehatan then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=4&operator_id=13"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=4&menu_id=126&operator_id=13&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BPJS_KESEHATAN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of bpjs ketenagakerjaan then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=4&operator_id=14"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=4&menu_id=126&operator_id=14&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BJPS_KETENAGAKERJAAN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data telkomsel then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=12&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=12&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_TELKOMSEL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data indosat then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=2&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_INDOSAT, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data xl then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=5&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data axis then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=1&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_AXIS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data im3 then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=2&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_IM3, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data mentari then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=17&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_MENTARI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data tri then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=4&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_TRI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data bolt then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&operator_id=3&menu_id=2"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_BOLT, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of shaburi voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=354"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_SHABURI, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of kintan buffet voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=355"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_KINTAN_BUFFET, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of bakerzin voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=351"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_BAKERZIN, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of boga group voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=360"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_BOGA_GROUP, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of carls jr voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=370"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_CARLS_JR, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of shihlin voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=518"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_SHIHLIN, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of gaya gelato voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=519"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_GAYA_GELATO, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of gokana voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=521"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_GOKANA, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of platinum resto voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=522"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_PLATINUM_RESTO, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of fish n co voucher then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=24&operator_id=523"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.VOUCHER_FISH_N_CO, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of bfi finance then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=526"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&&menu_id=123&operator_id=526&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_BFI_FINANCE, expectedDeepLink)
     }
 
     @Test
     fun `check link url of suzuki finance then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=628"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=628&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_SUZUKI_FINANCE, expectedDeepLink)
     }
 
     @Test
     fun `check link url of olympindo then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=636"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=636&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_OLYMPINDO, expectedDeepLink)
     }
 
@@ -621,170 +484,140 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check link url of taralite then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=655"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGURAN_TARALITE, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of kredivo then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=662"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=662&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_KREDIVO, expectedDeepLink)
     }
 
     @Test
     fun `check link url of btn then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=661"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=661&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_BTN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of home credit then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&operator_id=653"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=7&menu_id=123&operator_id=653&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_HOME_CREDIT, expectedDeepLink)
     }
 
     @Test
     fun `check link url of top up ovo then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=48&operator_id=685"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=48&menu_id=162&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOP_UP_OVO, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of squaline then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=540"
+    fun `check link url of squline then should be equal to the actual`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=540&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_SQUALINE, expectedDeepLink)
     }
 
     @Test
     fun `check link url of ruang guru then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=702"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=702&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_RUANG_GURU, expectedDeepLink)
     }
 
     @Test
     fun `check link url of quipper then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=704"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=704&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_QUIPPER, expectedDeepLink)
     }
 
     @Test
     fun `check link url of zenius then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=705"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=705&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_ZENIUS, expectedDeepLink)
     }
 
     @Test
     fun `check link url of ilp then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=706"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=706&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_ILP, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of algoritma then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=707"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_ALGORITMA, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of purwadhika then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&operator_id=708"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&operator_id=708&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_PURWADHIKA, expectedDeepLink)
     }
 
     @Test
     fun `check link url of belajar then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=111&menu_id=84&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pajak samsat then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=49"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=49&menu_id=155&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAJAK_SAMSAT, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of pdam bekasi then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=5&operator_id=813"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PDAM_BEKASI, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of bein sports then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=688"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=688&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.STREAMING_BEIN_SPORTS, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of bea cukai then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=114"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BEA_CUKAI, expectedDeepLink)
-    }
-
-    @Test
     fun `check link url of spotify then should be equal to the actual`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&operator_id=775"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=13&menu_id=81&operator_id=775&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.STREAMING_SPOTIFY, expectedDeepLink)
     }
 
     @Test
-    fun `check link url of pbb bekasi then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_BEKASI, "")
-    }
-
-    @Test
     fun `check link url of pbb bandung then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_BANDUNG, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1034&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_BANDUNG, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb cirebon then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_CIREBON, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1035&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_CIREBON, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb kota serang then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KOTA_SERANG, "")
-    }
-
-    @Test
-    fun `check link url of pbb kab serang then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KAB_SERANG, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1032&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KOTA_SERANG, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb sukabumi then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_SUKABUMI, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1031&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_SUKABUMI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb tangerang then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_TANGERANG, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1030&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_TANGERANG, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb tangerang selatan then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_TANGERANG_SELATAN, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1029&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_TANGERANG_SELATAN, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb lebak then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KAB_LEBAK, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1024&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KAB_LEBAK, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb kab bekasi then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KAB_BEKASI, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1028&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_KAB_BEKASI, expectedDeepLink)
     }
 
     @Test
     fun `check link url of pbb subang then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_SUBANG, "")
-    }
-
-    @Test
-    fun `check link url of samsat jawa tengah then should be equal to the actual`() {
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.SAMSAT_JAWA_TENGAH, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://digital/form?category_id=22&operator_id=1027&menu_id=127&template=general"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PBB_SUBANG, expectedDeepLink)
     }
 }
