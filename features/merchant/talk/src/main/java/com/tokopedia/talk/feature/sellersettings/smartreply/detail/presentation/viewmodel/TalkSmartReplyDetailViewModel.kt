@@ -64,6 +64,7 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
             _setSmartReplyResult.postValue(Fail(it))
         }
     }
+
     fun setSmartReplyTemplate() {
         launchCatchError(block = {
             discussionSetSmartReplyTemplateUseCase.setParams(messageReady, messageNotReady)
