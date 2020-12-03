@@ -13,8 +13,6 @@ object TalkIdlingResource {
     }
 
     fun decrement() {
-        if (!idlingResource.isIdleNow) {
-            idlingResource.decrement()
-        }
+        idlingResource.decrement()
     }
 }
