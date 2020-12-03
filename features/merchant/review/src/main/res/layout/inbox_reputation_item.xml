@@ -64,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:textColor="@color/Unify_N700_96"
                 style="@style/TextView.Micro"
                 tools:text="INV/20170116/XVII/65862137"
                 />
@@ -116,6 +117,7 @@
                 android:layout_toRightOf="@id/avatar"
                 style="@style/TextView.Small.Bold"
                 tools:text="Pretty Sugar Shop"
+                android:textColor="@color/Unify_N700_96"
                 android:layout_toEndOf="@id/avatar"
                 android:layout_alignTop="@+id/avatar"/>
 
