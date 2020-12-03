@@ -208,10 +208,10 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonNotify"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/product_card_button_add_to_cart_height"
+            android:layout_height="@dimen/product_card_button_notify_me_height"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
+            android:layout_marginTop="@dimen/product_card_button_notify_me_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:clickable="true"
