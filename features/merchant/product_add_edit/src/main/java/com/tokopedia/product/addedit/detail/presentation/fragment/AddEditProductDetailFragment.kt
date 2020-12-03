@@ -647,16 +647,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         stopPerformanceMonitoring()
     }
 
-    private fun startCategoryActivity(requestCodeCategory: Int) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
-        intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
-        startActivityForResult(intent, requestCodeCategory)
-    }
-
-    private fun enableProductNameField() {
-        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         removeObservers()
@@ -1683,6 +1673,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setNavigationResult(bundle, requestKey)
             findNavController().navigateUp()
         }
+    }
+
+    private fun startCategoryActivity(requestCodeCategory: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+        intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
+        startActivityForResult(intent, requestCodeCategory)
+    }
+
+    private fun enableProductNameField() {
+        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {
