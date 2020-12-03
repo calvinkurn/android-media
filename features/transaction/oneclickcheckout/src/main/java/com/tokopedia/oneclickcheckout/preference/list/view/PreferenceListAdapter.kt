@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel.Companion.MAIN_PROFILE_STATUS
 
 class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -52,7 +53,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
         if (!isNewLayout) {
             return PreferenceListViewHolder.LAYOUT
         }
-        val mainProfile = list[position].status == 2
+        val mainProfile = list[position].status == MAIN_PROFILE_STATUS
         return if (mainProfile) NewMainPreferenceListViewHolder.LAYOUT else NewPreferenceListViewHolder.LAYOUT
     }
 

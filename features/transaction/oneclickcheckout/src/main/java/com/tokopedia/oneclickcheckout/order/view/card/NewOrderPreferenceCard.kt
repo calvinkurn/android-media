@@ -28,6 +28,7 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel.Companion.MAIN_PROFILE_STATUS
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.AddressListBottomSheet
@@ -117,7 +118,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private fun showHeader(revampData: OccRevampData) {
         tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        if (preference.preference.status == 2) {
+        if (preference.preference.status == MAIN_PROFILE_STATUS) {
             lblDefaultPreference?.visible()
         } else {
             lblDefaultPreference?.gone()
