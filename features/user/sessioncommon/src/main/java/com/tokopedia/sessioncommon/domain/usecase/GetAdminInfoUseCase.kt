@@ -16,10 +16,15 @@ class GetAdminInfoUseCase @Inject constructor(private val graphqlUseCase: Graphq
         private val QUERY = """
             query getAdminInfo(${'$'}$shopID: Int!){
               getAdminInfo(source: "akw-testing", shop_id: ${'$'}$shopID) {
-                admin_data {                        
+                admin_data {
+                  location_list {
+                    location_id
+                  }
                   detail_information {
                     admin_role_type {
-                      is_location_admin             
+                      is_shop_admin
+                      is_location_admin
+                      is_shop_owner            
                     }
                   }
                 }
