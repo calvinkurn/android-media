@@ -73,6 +73,8 @@ class ProductVideoDetailFragment : Fragment() {
                     oldData.copy()
                 }
 
+                videoDetailPager?.isUserInputEnabled = newInstanceData.size != 1
+
                 videoDetailAdapter?.mediaData = newInstanceData
                 videoDetailAdapter?.notifyDataSetChanged()
 
