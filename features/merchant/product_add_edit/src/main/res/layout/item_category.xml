@@ -14,35 +14,28 @@
         android:background="@drawable/background_view_topads"
         android:padding="@dimen/dp_16">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/tvCategoryNameParent"
+            style="@style/TextView.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            app:typographyType="body_1"
-            app:typographyWeight="reguler"
             android:layout_weight="1" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/ivCategoryParent"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_weight="0"
-            app:unify_image_placeholder="@drawable/product_add_edit_ic_chevron_down" />
+            app:srcCompat="@drawable/product_add_edit_ic_chevron_down" />
 
-        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        <RadioButton
             android:id="@+id/rbCategory"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_weight="0"
             android:button="@drawable/bg_radio_button" />
     </LinearLayout>
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:focusable="false"
