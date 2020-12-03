@@ -304,6 +304,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         TalkReplyTracking.eventImpressCard(inboxType, viewModel.userId, productName, productId, position)
     }
 
+    override fun onKebabClicked() {
+        // Open bottom sheet to edit product
+    }
+
     private fun goToReportActivity(commentId: String) {
         val intent = if(commentId.isNotBlank()) {
             context?.let { ReportTalkActivity.createIntentReportComment(it, questionId, commentId, shopId, productId) }

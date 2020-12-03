@@ -29,6 +29,13 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             }
             setImage(thumbnail)
             setProductName(productName)
+            setKebabClickListener()
+        }
+    }
+
+    private fun setKebabClickListener() {
+        itemView.replyProductHeaderKebab.setOnClickListener {
+            talkReplyProductHeaderListener.onKebabClicked()
         }
     }
 
