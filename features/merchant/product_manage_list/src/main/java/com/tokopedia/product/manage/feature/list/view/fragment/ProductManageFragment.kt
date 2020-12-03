@@ -193,6 +193,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
                 is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
+                is SellerFeatureUiModel.BroadcastChatProductManageUiModel -> goToCreateBroadCastChat(item.data as ProductViewModel)
             }
         }
     }
@@ -405,6 +406,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         productManageAddEditMenuBottomSheet.dismiss()
+    }
+
+    private fun goToCreateBroadCastChat(product: ProductViewModel) {
+
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
@@ -1273,6 +1278,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             is RemoveFeaturedProduct -> {
                 onRemoveFeaturedProductClicked(product)
                 ProductManageTracking.eventSettingsFeatured(productId)
+            }
+            is CreateBroadcastChat -> {
+                goToCreateBroadCastChat(product)
+
             }
         }
 

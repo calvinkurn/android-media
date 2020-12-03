@@ -36,6 +36,19 @@ object ProductManageTracking {
         return this.plus(allocationType)
     }
 
+    fun eventClickBroadcastChat(action: String,
+                                label: String,
+                                userId: String,
+                                currentSite: String,
+                                businessUnit: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
+                ProductManageDataLayer.EVENT_NAME,
+                ProductManageDataLayer.EVENT_CATEGORY,
+                action,
+                label
+        ).dataTracking.customDimension(userId, currentSite, businessUnit))
+    }
+
     fun eventDraftClick(label: String) {
         eventProductManage(CLICK, label)
     }
@@ -95,6 +108,10 @@ object ProductManageTracking {
 
     fun eventSettingsFeatured(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_FEATURED, label)
+    }
+
+    fun eventClickBroadcastChatFromCarousel(userId: String) {
+        eventProductManage()
     }
 
     fun eventToggleReminder(state: String) {
@@ -239,7 +256,7 @@ object ProductManageTracking {
 
     fun eventClickStatusToggleVariant(status: ProductStatus) {
         with(ProductManageDataLayer) {
-            val label = if(status == ProductStatus.ACTIVE) {
+            val label = if (status == ProductStatus.ACTIVE) {
                 STATUS_TOGGLE_ON
             } else {
                 STATUS_TOGGLE_OFF

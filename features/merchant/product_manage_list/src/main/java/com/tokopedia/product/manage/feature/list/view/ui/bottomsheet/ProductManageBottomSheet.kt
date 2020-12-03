@@ -83,7 +83,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product)
+                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.BroadcastChatProductManageUiModel(product)
                 ))
             }
 
