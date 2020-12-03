@@ -73,8 +73,8 @@ class AddressRobot {
     }
 
     fun address(address: String) {
-        onView(withId(R.id.et_alamat_mismatch)).
-                perform(click(), typeText(address), closeSoftKeyboard())
+        onView(withId(R.id.et_alamat_mismatch))
+                .perform(click(), typeText(address), closeSoftKeyboard())
     }
 
     fun receiver(receiver: String) {
@@ -83,8 +83,8 @@ class AddressRobot {
     }
 
     fun phoneNumber(phone: String) {
-        onView(withId(R.id.et_phone)).
-                perform(scrollTo(), click(), typeText(phone), closeSoftKeyboard())
+        onView(withId(R.id.et_phone))
+                .perform(scrollTo(), click(), typeText(phone), closeSoftKeyboard())
     }
 
     private fun waitForData() {
