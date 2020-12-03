@@ -65,7 +65,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase?,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase?,
-                                            private val getRecentViewUseCase: GetRecentViewUseCase?,
+                                            private val getRecentViewUseCase: GetRecommendationUseCase?,
                                             private val getWishlistUseCase: GetWishlistUseCase?,
                                             private val getRecommendationUseCase: GetRecommendationUseCase?,
                                             private val addToCartUseCase: AddToCartUseCase?,
@@ -1154,7 +1154,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showItemLoading()
         val requestParam = getRecommendationUseCase?.getRecomParams(
                 1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
-        getRecommendationUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
+        getRecentViewUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
                 ?.subscribeOn(schedulers.io)
                 ?.observeOn(schedulers.main)
                 ?.subscribe(GetRecentViewSubscriber(view))

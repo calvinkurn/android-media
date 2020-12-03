@@ -1368,6 +1368,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position)
                     )
                 } else {
+                    if (recentView.isTopAds) {
+                        TopAdsUrlHitter(context).hitClickUrl(
+                                this::class.java.simpleName,
+                                recentView.clickUrl,
+                                recentView.id,
+                                recentView.name,
+                                recentView.imageUrl
+                        )
+                    }
                     cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(
                             position.toString(),
                             dPresenter.generateRecentViewProductClickDataLayer(recentView, position)
@@ -1384,18 +1393,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
             )
         }
-    }
-
-    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
-        val productId = recommendationItem.productId.toString()
-        val topAds = recommendationItem.isTopAds
-        val url = recommendationItem.trackerImageUrl
-        val productName = recommendationItem.name
-        val imageUrl = recommendationItem.imageUrl
-
-        when {
-            topAds -> {
-                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
+        recentViewList?.forEach {
+            if (it.isTopAds) {
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        this::class.java.simpleName,
+                        it.clickUrl,
+                        it.id,
+                        it.name,
+                        it.imageUrl
+                )
             }
         }
     }
@@ -1430,6 +1436,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
         onProductClicked(productId)
+    }
+
+    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
+        when {
+            topAds -> {
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
+            }
+        }
     }
 
     override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {

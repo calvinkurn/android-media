@@ -85,7 +85,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
@@ -98,7 +97,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
@@ -169,7 +167,7 @@ class CartModule {
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
                                   clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                  getRecentViewUseCase: GetRecentViewUseCase,
+                                  getRecentViewUseCase: GetRecommendationUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
                                   addToCartUseCase: AddToCartUseCase,
