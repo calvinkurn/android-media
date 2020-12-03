@@ -234,6 +234,7 @@ open class HomeViewModel @Inject constructor(
     private var declineSalamWidgetJob : Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
+    private var getTabRecommendationJob: Job? = null
 
 // ============================================================================================
 // ===================================== LOCAL VARIABLE =======================================
@@ -248,7 +249,7 @@ open class HomeViewModel @Inject constructor(
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
-    private var homeToken = ""
+    private var onRefreshState = true
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -812,8 +813,13 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun evaluateRecommendationSection(homeDataModel: HomeDataModel?): HomeDataModel? {
-        val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
+        //check if still contains recom loading, then don't do anything
+        if(homeVisitableListData.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
+            return homeDataModel
+
         homeDataModel?.let {
+            //reuse the recommendation viewmodel
+            val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
             return if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
                 currentList.add(detectHomeRecom)
@@ -835,8 +841,6 @@ open class HomeViewModel @Inject constructor(
                         list = visitableMutableList)
             }
         }
-        if (detectHomeRecom == null) getFeedTabData()
-
         return homeDataModel
     }
 
@@ -852,9 +856,9 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
+                    onRefreshState = false
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
-                    var homeData: HomeDataModel? = homeDataWithoutExternalComponentPair.first
+                    var homeData: HomeDataModel? = homeDataModel
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     homeData?.let {
@@ -867,9 +871,9 @@ open class HomeViewModel @Inject constructor(
                     getPopularKeyword()
                     getDisplayTopAdsHeader()
                     getRecommendationWidget()
-                    getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
+                    getTopAdsBannerData()
                     _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>() ?: listOf()))
-                } else {
+                } else if (onRefreshState) {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                     }
@@ -884,22 +888,8 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun evaluateInitialTopAdsBannerComponent(homeDataModel: HomeDataModel): Pair<HomeDataModel, Map<Int, HomeTopAdsBannerDataModel>> {
-        val topadsMap = mutableMapOf<Int, HomeTopAdsBannerDataModel>()
-        homeDataModel.list.mapIndexed { index, visitable ->
-            if (visitable is HomeTopAdsBannerDataModel) {
-                topadsMap[index] = visitable
-            }
-        }
-        val data: List<HomeTopAdsBannerDataModel> = ArrayList(topadsMap.values)
-        val mutableNewList = homeDataModel.list.toMutableList()
-        mutableNewList.removeAll(data)
-        val newHomeData = homeDataModel.copy(list = mutableNewList.toList())
-
-        return Pair(newHomeData, topadsMap)
-    }
-
     fun refreshHomeData() {
+        onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
             homeUseCase.get().updateHomeData().collect {
@@ -1061,7 +1051,8 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getFeedTabData() {
-        launchCatchError(coroutineContext, block={
+        if (getTabRecommendationJob != null) return
+        getTabRecommendationJob = launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeVisitableListData.withIndex()?.find {
                 data -> data.value is HomeRetryModel
@@ -1116,33 +1107,27 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTopAdsBannerData(topadsMap: Map<Int, HomeTopAdsBannerDataModel>) {
-        if(topadsMap.isNotEmpty()) {
-            if(getTopAdsBannerDataJob?.isActive == true) return
-                getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
+    private fun getTopAdsBannerData() {
+        if(getTopAdsBannerDataJob?.isActive == true) return
+        homeVisitableListData.withIndex().find {
+            it.value is HomeTopAdsBannerDataModel
+        }?.let {visitable ->
+            getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
                 val results = topAdsImageViewUseCase.get().getImageData(
                         topAdsImageViewUseCase.get().getQueryMap(
                                 "",
                                 "1",
                                 "",
-                                topadsMap.size,
+                                1,
                                 3,
                                 ""
                         )
                 )
                 if (results.isNotEmpty()) {
-                    val stack: Stack<TopAdsImageViewModel> = Stack<TopAdsImageViewModel>()
-                    stack.addAll(results.toMutableList())
-                    stack.reverse()
-                    val newList = homeVisitableListData
-                    if (newList.isNotEmpty()) {
-                        topadsMap.entries.forEach {
-                            val topAdsImageViewModel = stack.pop()
-                            launch(coroutineContext){
-                                val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
-                                homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(newTopAdsModel, it.key, this@HomeViewModel))
-                            }
-                            currentTopAdsBannerToken = topAdsImageViewModel.nextPageToken?:""
+                    (visitable.value as? HomeTopAdsBannerDataModel)?.let { topAdsModel ->
+                        launch(coroutineContext){
+                            val newTopAdsModel = topAdsModel.copy(topAdsImageViewModel = results[0])
+                            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newTopAdsModel, visitable.index, this@HomeViewModel))
                         }
                     }
                 }
@@ -1415,10 +1400,8 @@ open class HomeViewModel @Inject constructor(
 
     override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-        var newHomeDataModel = evaluateGeolocationComponent(homeDataModel)
-        newHomeDataModel = evaluateAvailableComponent(newHomeDataModel)
-        homeVisitableListData = newHomeDataModel?.list?.toMutableList()?:mutableListOf()
-        _homeLiveData.postValue(newHomeDataModel)
+        homeVisitableListData = homeDataModel?.list?.toMutableList()?:mutableListOf()
+        _homeLiveData.postValue(homeDataModel)
     }
 
     private fun getVisitableId(visitable: Visitable<*>): Any?{

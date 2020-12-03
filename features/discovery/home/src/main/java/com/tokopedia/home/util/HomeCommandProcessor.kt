@@ -48,9 +48,6 @@ class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val posi
 }
 
 class HomeCommandProcessor (val dispatchers: CoroutineDispatcher): CoroutineScope{
-    companion object{
-        private const val CAPACITY_QUEUE = 15
-    }
     private val masterJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = dispatchers + masterJob
 
