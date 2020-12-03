@@ -1389,13 +1389,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         dialog.apply {
             setTitle(getString(R.string.message_change_category_title))
             setDescription(getString(R.string.message_change_category))
-            setPrimaryCTAText(getString(R.string.action_change_category_positive))
-            setPrimaryCTAClickListener {
+            setSecondaryCTAText(getString(R.string.action_change_category_positive))
+            setSecondaryCTAClickListener {
                 dialog.dismiss()
                 onAccepted()
             }
-            setSecondaryCTAText(getString(R.string.action_change_category_negative))
-            setSecondaryCTAClickListener {
+            setPrimaryCTAText(getString(R.string.action_change_category_negative))
+            setPrimaryCTAClickListener {
                 dialog.dismiss()
             }
         }
