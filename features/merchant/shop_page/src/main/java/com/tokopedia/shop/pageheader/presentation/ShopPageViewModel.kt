@@ -35,6 +35,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import com.tokopedia.shop.common.util.ShopUtil.isHasNextPage
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.*
@@ -194,8 +195,8 @@ class ShopPageViewModel @Inject constructor(
         return gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
     }
 
-    private suspend fun getShopFavoriteStatus(shopId: String? = null, shopDomain: String? = null): ShopInfo.FavoriteData {
-        val id = shopId?.toIntOrNull() ?: 0
+    private suspend fun getShopFavoriteStatus(shopId: String, shopDomain: String): ShopInfo.FavoriteData {
+        val id = shopId.toIntOrZero()
         var favoritInfo = ShopInfo.FavoriteData()
         try {
             gqlGetShopFavoriteStatusUseCase.get().params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
@@ -205,10 +206,10 @@ class ShopPageViewModel @Inject constructor(
         return favoritInfo
     }
 
-    private suspend fun getShopBroadcasterConfig(shopId: String? = null): Broadcaster.Config {
+    private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
         var broadcasterConfig = Broadcaster.Config()
         try {
-            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")
+            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
             broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } catch (t: Throwable) {
         }
