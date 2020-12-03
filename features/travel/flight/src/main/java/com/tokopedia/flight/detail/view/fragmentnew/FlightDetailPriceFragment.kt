@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
@@ -33,21 +32,21 @@ class FlightDetailPriceFragment : Fragment() {
         if (::listener.isInitialized) {
             val flightDetailModel = listener.getDetailModel()
             val adultPriceTotal = flightDetailModel.adultNumericPrice * flightDetailModel.countAdult
-            flightDetailPriceAdult.text = getString(R.string.flight_label_currency, CurrencyFormatUtil
-                    .getThousandSeparatorString(adultPriceTotal.toDouble(), false, 0).formattedString)
+            flightDetailPriceAdult.text = getString(R.string.flight_label_currency, FlightCurrencyFormatUtil
+                    .getThousandSeparatorString(adultPriceTotal.toDouble(), false, 0)?.formattedString)
             flightDetailPriceAdultLabel.text = getString(R.string.flight_label_adult, flightDetailModel.countAdult)
             if (flightDetailModel.countChild > 0) {
                 val childPriceTotal = flightDetailModel.childNumericPrice * flightDetailModel.countChild
-                flightDetailPriceChild.text = getString(R.string.flight_label_currency, CurrencyFormatUtil
-                        .getThousandSeparatorString(childPriceTotal.toDouble(), false, 0).formattedString)
+                flightDetailPriceChild.text = getString(R.string.flight_label_currency, FlightCurrencyFormatUtil
+                        .getThousandSeparatorString(childPriceTotal.toDouble(), false, 0)?.formattedString)
                 flightDetailPriceChildLabel.text = getString(R.string.flight_label_child, flightDetailModel.countChild)
                 flightDetailPriceChild.visibility = View.VISIBLE
                 flightDetailPriceChildLabel.visibility = View.VISIBLE
             }
             if (flightDetailModel.countInfant > 0) {
                 val infantPriceTotal = flightDetailModel.infantNumericPrice * flightDetailModel.countInfant
-                flightDetailPriceInfant.text = getString(R.string.flight_label_currency, CurrencyFormatUtil
-                        .getThousandSeparatorString(infantPriceTotal.toDouble(), false, 0).formattedString)
+                flightDetailPriceInfant.text = getString(R.string.flight_label_currency, FlightCurrencyFormatUtil
+                        .getThousandSeparatorString(infantPriceTotal.toDouble(), false, 0)?.formattedString)
                 flightDetailPriceInfantLabel.text = getString(R.string.flight_label_infant, flightDetailModel.countInfant)
                 flightDetailPriceInfant.visibility = View.VISIBLE
                 flightDetailPriceInfantLabel.visibility = View.VISIBLE

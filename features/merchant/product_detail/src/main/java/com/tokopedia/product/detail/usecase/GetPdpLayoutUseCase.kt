@@ -185,6 +185,15 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         applink
                       }
                     }
+                    ... on pdpDataProductDetail {
+                      content {
+                        title
+                        subtitle
+                        applink
+                        showAtFront
+                        isAnnotation
+                      }
+                    }
                     ... on pdpDataSocialProof {
                       row
                       content {
@@ -231,7 +240,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           hex
                           picture{
                             url
-                            url200
+                            url100
                           }
                         }
                       }

@@ -6,6 +6,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.unifycomponents.SearchBarUnify
 import org.json.JSONArray
 import org.json.JSONException
@@ -104,9 +106,33 @@ object Utils {
     fun convertToCurrencyString(value: Long): String {
         return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
     }
+
     fun convertToCurrency(value: Long): String {
         return (NumberFormat.getNumberInstance(locale).format(value))
     }
 
-    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp","").trim()
+    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp", "").trim()
+
+    fun validateKeyword(context: Context?, text: CharSequence?): CharSequence? {
+        return if (!text.isNullOrBlank() && text.split(" ").size > Constants.KEYWORD_WORD_COUNT) {
+            context?.getString(R.string.error_max_length_keyword)
+        } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX.toRegex())) {
+            context?.getString(R.string.error_keyword)
+        } else if (text?.length ?: 0 > 70) {
+            context?.getString(R.string.error_max_length)
+        } else {
+            null
+        }
+    }
+
+    fun validateKeywordCountAndChars(context: Context?, text: CharSequence?): CharSequence? {
+        return if (text?.length ?: 0 > Constants.KEYWORD_CHARACTER_COUNT) {
+            context?.getString(R.string.error_max_length)
+        } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX_WITH_SPECIAL_CHARS.toRegex())) {
+            context?.getString(R.string.error_keyword)
+        } else {
+            null
+        }
+    }
+
 }

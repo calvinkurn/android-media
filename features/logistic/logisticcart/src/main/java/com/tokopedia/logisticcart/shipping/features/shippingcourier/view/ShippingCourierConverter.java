@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
-
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel;

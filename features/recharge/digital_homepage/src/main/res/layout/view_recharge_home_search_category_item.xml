@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
-    <com.tokopedia.design.image.SquareImageView
+    <ImageView
         android:id="@+id/digital_homepage_search_category_image"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_gravity="center"
-        android:layout_marginRight="@dimen/dp_16" />
+        android:layout_marginRight="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/digital_homepage_search_category_name"

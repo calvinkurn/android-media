@@ -302,7 +302,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     companion object {
-        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
+        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
 
         val initialImpressionTrackingConst = mapOf(
                 DYNAMIC_ICON_IMPRESSION to true,
