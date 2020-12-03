@@ -24,12 +24,13 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
-import com.tokopedia.buyerorder.common.util.Utils;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
+import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
@@ -73,6 +74,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     OrderListDetailPresenter presenter;
     public static String categoryDeals = "deal";
     public static String categoryEvents = "event";
+    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     SetEventDetails setEventDetails;
     private int position;
     private String orderId;
@@ -178,7 +180,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri, Boolean isDownloadable, String downloadFileName) {
-        if (Utils.isUridownloadable(uri, isDownloadable)) {
+        if (BuyerUtils.isUridownloadable(uri, isDownloadable)) {
             setEventDetails.askPermission(uri, isDownloadable, downloadFileName);
         } else {
             if (context != null) {
@@ -346,7 +348,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.insurance_detail_label));
                     productQuantity.setText(metaDataInfo.getProductQuantity());
                     productPrice.setText(metaDataInfo.getProductPrice());
-                    String productCategory = presenter.getProductCategory();
+
+                    String productCategory = "";
+                    if (orderDetails.title() != null) {
+                        for (Title title : orderDetails.title()) {
+                            if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT)) {
+                                productCategory = title.value();
+                            }
+                        }
+                    }
+
                     Map<String, String> map = new LinkedHashMap<>();
                     map.put(context.getResources().getString(R.string.product_category), productCategory);
                     map.put(context.getResources().getString(R.string.insurance_type), metaDataInfo.getInsuranceType());
@@ -466,7 +477,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         ActionButton actionButton = item.getTapActions().get(i);
                         if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             RedeemVoucherView redeemVoucherView;
-                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails);
                             tapActionLayoutDeals.addView(redeemVoucherView);
                         } else {
                             String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
@@ -492,7 +503,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         ActionButton actionButton = item.getActionButtons().get(i);
                         TextView tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails);
                             tapActionLayoutEvents.addView(redeemVoucherView);
                         } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
                             if (!actionButton.getBody().getBody().isEmpty()) {
@@ -652,6 +663,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void askPermission(String uri, Boolean isDownloadable, String downloadFileName);
 
         void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType, OrderDetails orderDetails);
+
+        void showRetryButtonToaster(String msg);
 
     }
 

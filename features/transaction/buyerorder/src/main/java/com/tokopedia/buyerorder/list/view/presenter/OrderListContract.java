@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
+import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.list.data.bomorderfilter.CustomDate;
 import com.tokopedia.buyerorder.list.data.bomorderfilter.DefaultDate;
@@ -65,9 +67,7 @@ public class OrderListContract {
 
         void finishOrderDetail();
 
-        void startSellerAndAddInvoice();
-
-        void requestCancelOrder(Status status);
+        void requestCancelOrder(Status status, RequestCancelInfo requestCancelInfo);
 
         void showSuccessMessageWithAction(String message);
 

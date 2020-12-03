@@ -40,23 +40,6 @@ class OrderListUiModel(var order: Order) : Visitable<OrderListTypeFactory> {
         }
     }
 
-    fun setActionButtonData() {
-        if (order.actionButtons().size == TWO_BUTTON_VIEW) {
-            val leftActionButton = order.actionButtons()[0]
-            val rightActionButton = order.actionButtons()[1]
-            orderListLiveData.value = SetActionButtonData(leftActionButton, rightActionButton, View.VISIBLE, View.VISIBLE)
-        } else if (order.actionButtons().size == SINGLE_BUTTON_VIEW) {
-            val actionButton = order.actionButtons()[0]
-            if (actionButton.buttonType() == "primary") {
-                orderListLiveData.value = SetActionButtonData(actionButton, null, View.VISIBLE, View.GONE)
-            } else {
-                orderListLiveData.value = SetActionButtonData(null, actionButton, View.GONE, View.VISIBLE)
-            }
-        } else {
-            orderListLiveData.value = SetActionButtonData(null, null, View.GONE, View.GONE)
-        }
-    }
-
     fun setViewData() {
         orderListLiveData.value = SetStatus(order.statusStr())
         orderListLiveData.value = SetFailStatusBgColor(order.statusColor())

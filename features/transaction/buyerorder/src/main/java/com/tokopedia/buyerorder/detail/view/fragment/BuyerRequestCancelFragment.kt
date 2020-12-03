@@ -35,7 +35,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTAN
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
-import com.tokopedia.buyerorder.common.util.Utils
+import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
@@ -718,7 +718,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun renderTicker(tickerInfo: TickerInfo) {
         buyer_ticker_info?.apply {
             visible()
-            tickerType = Utils.getTickerType(tickerInfo.type)
+            tickerType = BuyerUtils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_LOOSE
             setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)

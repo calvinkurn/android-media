@@ -56,7 +56,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
-import com.tokopedia.buyerorder.common.util.Utils;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -87,9 +87,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -101,7 +99,6 @@ import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -115,7 +112,7 @@ import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTA
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
-import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
+import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -482,7 +479,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (clipboard != null) { clipboard.setPrimaryClip(clip); }
                 Toaster.build(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
             });
-            if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+            if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
             }
             lihat.setOnClickListener(view -> {
@@ -605,7 +602,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             mTickerCancellationInfo.setVisibility(View.VISIBLE);
             mTickerCancellationInfo.setTextDescription(tickerInfo.getText());
             mTickerCancellationInfo.setTickerShape(Ticker.SHAPE_LOOSE);
-            mTickerCancellationInfo.setTickerType(Utils.getTickerType(tickerInfo.getType()));
+            mTickerCancellationInfo.setTickerType(BuyerUtils.getTickerType(tickerInfo.getType()));
         }
     }
 
@@ -740,7 +737,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
             Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+                    getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
         }
     }
 
@@ -963,7 +960,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+
+                    String firstProductId = "";
+                    if (orderDetails != null && orderDetails.getItems() != null && !orderDetails.getItems().isEmpty()) {
+                        firstProductId = String.valueOf(orderDetails.getItems().get(0).getId());
+                    }
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, firstProductId);
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
                     orderListAnalytics.sendTulisReviewEventData(status.status());
@@ -1038,33 +1040,20 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String shopId = String.valueOf(this.shopInfo.getShopId());
             String applink = "tokopedia://topchat/askseller/" + shopId;
             Intent intent = RouteManager.getIntent(getContext(), applink);
-            setIntentInvoiceData(intent);
+            if (orderDetails != null) {
+                intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderDetails.getInvoiceId());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, orderDetails.getInvoiceCode());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, orderDetails.getProductName());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, orderDetails.getBoughtDate());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, orderDetails.getProductImageUrl());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_URL, orderDetails.getInvoiceUrl());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, orderDetails.getStatusId());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, orderDetails.getStatusInfo());
+                intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, orderDetails.getTotalPriceAmount());
+            }
             intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
             startActivity(intent);
         }
-    }
-
-    private void setIntentInvoiceData(Intent intentInvoiceData) {
-        if (orderDetails == null) return;
-        String id = orderDetails.getInvoiceId();
-        String invoiceCode = orderDetails.getInvoiceCode();
-        String productName = orderDetails.getProductName();
-        String date = orderDetails.getBoughtDate();
-        String imageUrl = orderDetails.getProductImageUrl();
-        String invoiceUrl = orderDetails.getInvoiceUrl();
-        String statusId = orderDetails.getStatusId();
-        String status = orderDetails.getStatusInfo();
-        String totalPriceAmount = orderDetails.getTotalPriceAmount();
-
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
-        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 
     private RemoteConfig getABTestRemoteConfig() {

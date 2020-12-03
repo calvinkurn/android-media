@@ -31,7 +31,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
-import com.tokopedia.buyerorder.common.util.Utils;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -64,11 +64,10 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.view.DoubleTextView;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
+import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 
 /**
  * Created by baghira on 09/05/18.
@@ -301,7 +300,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+        if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
@@ -324,8 +323,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 @Override
                 public void onCopyValue() {
                     if (getContext() != null) {
-                        Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
-                        Utils.vibrate(getContext());
+                        BuyerUtils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                        BuyerUtils.vibrate(getContext());
                         Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
                     }
                 }
@@ -454,7 +453,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.build(getView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        }
     }
 
     @Override

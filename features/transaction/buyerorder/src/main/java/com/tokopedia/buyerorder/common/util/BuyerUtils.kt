@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 
 
-object Utils {
+object BuyerUtils {
     val VIBRATE_DURATION = 150
 
     @JvmStatic
@@ -78,5 +78,12 @@ object Utils {
         val pattern = Pattern.compile("^.+\\.([pP][dD][fF])$")
         val matcher = pattern.matcher(uri)
         return matcher.find() || isDownloadable
+    }
+
+    @JvmStatic
+    fun isValidUrl(invoiceUrl: String?): Boolean {
+        val pattern = Pattern.compile("^(https|HTTPS):\\/\\/")
+        val matcher = pattern.matcher(invoiceUrl)
+        return matcher.find()
     }
 }

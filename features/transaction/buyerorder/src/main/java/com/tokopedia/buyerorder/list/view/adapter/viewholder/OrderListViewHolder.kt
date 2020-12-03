@@ -23,7 +23,6 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.Color
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.common.OrderListContants
-import com.tokopedia.buyerorder.list.data.ActionButton
 import com.tokopedia.buyerorder.list.data.MetaData
 import com.tokopedia.buyerorder.list.data.Order
 import com.tokopedia.buyerorder.list.data.OrderCategory
@@ -35,7 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.DoubleTextView
 
 class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,
-                          var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListUiModel>(itemView) {
+                          var menuListener: OnMenuItemListener?) : AbstractViewHolder<OrderListUiModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -85,7 +84,6 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
         parentMetadataLayout?.removeAllViews()
         element.setViewData()
-        element.setActionButtonData()
         element.setDotMenuVisibility()
         if (element.order.items().size > 0) {
             ImageHandler.loadImageThumbs(itemView.context, imgShopAvatar, element.order.items()[0].imageUrl())
@@ -100,10 +98,6 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             when (it) {
                 is DotMenuVisibility -> {
                     orderListBtnOverflow?.visibility = it.visibility
-                }
-                is SetActionButtonData -> {
-                    setButtonData(element.order, leftButton, it.leftVisibility, it.leftActionButton)
-                    setButtonData(element.order, rightButton, it.rightVisibility, it.rightActionButton)
                 }
                 is SetCategoryAndTitle -> {
                     setCategoryAndTitle(it.title, it.categoryName)
@@ -304,30 +298,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
     }
 
-    private fun setButtonData(order: Order, button: TextView?, visibility: Int, actionButton: ActionButton?) {
-        button?.visibility = visibility
-        if (!TextUtils.isEmpty(actionButton?.label())) {
-            button?.text = actionButton?.label()
-            if (actionButton?.color() != null) {
-                if (!TextUtils.isEmpty(actionButton.color().background())) {
-                    button?.setBackgroundColor(android.graphics.Color.parseColor(actionButton.color().background()))
-                }
-                if (!TextUtils.isEmpty(actionButton.color().textColor())) {
-                    button?.setTextColor(android.graphics.Color.parseColor(actionButton.color().textColor()))
-                }
-            }
-            button?.setOnClickListener {
-                buttonListener?.handleActionButtonClick(order, actionButton)
-            }
-        }
-    }
-
-
     interface OnMenuItemListener {
         fun startUri(uri: String)
-    }
-
-    interface OnActionButtonListener {
-        fun handleActionButtonClick(order: Order, actionButton: ActionButton?)
     }
 }

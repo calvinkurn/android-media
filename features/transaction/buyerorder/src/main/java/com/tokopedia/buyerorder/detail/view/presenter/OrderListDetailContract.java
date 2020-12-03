@@ -30,6 +30,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.util.List;
 

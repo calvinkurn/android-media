@@ -86,7 +86,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     private static final String TAB_ID = "tabId";
-    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
@@ -168,7 +167,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             orderDetailsUseCase.addRequest(graphqlRequest);
 
-            GraphqlRequest requestRecomm = makegraphqlRequestForRecommendation();
+            GraphqlRequest requestRecomm = null;
+            Map<String, Object> variablesWidget = new HashMap<>();
+            variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+            if (getView() != null && getView().getActivity() != null) {
+                requestRecomm = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                        R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+            }
+
             if (requestRecomm != null) {
                 orderDetailsUseCase.addRequest(requestRecomm);
                 orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -184,7 +191,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             getView().hideProgressBar();
                         }
                     }
-
+    
             @Override
             public void onNext(GraphqlResponse response) {
                 if (response != null) {
@@ -229,7 +236,18 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public void getRecommendation() {
-        GraphqlRequest graphqlRequest = makegraphqlRequestForMPRecommendation();
+        if (TextUtils.isEmpty(category)) category = "";
+        GraphqlRequest graphqlRequest = null;
+        Map<String, Object> variable = new HashMap<>();
+        variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
+        variable.put(CATEGORY_IDS, category);
+        variable.put(MP_CATEGORY_IDS, categoryList);
+        if (getView() != null && getView().getActivity() != null) {
+            graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        }
+
         if (graphqlRequest != null) {
             orderDetailsUseCase = new GraphqlUseCase();
             orderDetailsUseCase.clearRequest();
@@ -509,71 +527,5 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
-    }
-
-    public String getCancelTime() {
-        return requestCancelInfo.getRequestCancelNote();
-    }
-
-    public boolean shouldShowTimeForCancellation() {
-        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
-                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
-    }
-
-
-    private GraphqlRequest makegraphqlRequestForRecommendation() {
-        GraphqlRequest graphqlRequestForRecommendation = null;
-        Map<String, Object> variablesWidget = new HashMap<>();
-        variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
-        if (getView() != null && getView().getActivity() != null) {
-            graphqlRequestForRecommendation = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                    R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
-        }
-        return graphqlRequestForRecommendation;
-    }
-
-    private GraphqlRequest makegraphqlRequestForMPRecommendation() {
-        if (TextUtils.isEmpty(category)) category = "";
-        GraphqlRequest graphqlRequestForMPRecommendation = null;
-        Map<String, Object> variable = new HashMap<>();
-        variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
-        variable.put(CATEGORY_IDS, category);
-        variable.put(MP_CATEGORY_IDS, categoryList);
-        if (getView() != null && getView().getActivity() != null) {
-            graphqlRequestForMPRecommendation = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                    R.raw.recommendation_mp), RecommendationResponse.class, variable);
-        }
-        return graphqlRequestForMPRecommendation;
-    }
-
-    public boolean isValidUrl(String invoiceUrl) {
-        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
-        Matcher matcher = pattern.matcher(invoiceUrl);
-        return matcher.find();
-    }
-
-    public String getProductCategory() {
-        if (details.title() != null) {
-            for (Title title : details.title()) {
-                if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT))
-                    return title.value();
-            }
-        }
-        return null;
-    }
-
-    public String getFirstProductId() {
-        if (details != null && details.getItems() != null && !details.getItems().isEmpty()) {
-            return String.valueOf(details.getItems().get(0).getId());
-        }
-        return "";
-    }
-
-    public void showRetryButtonToaster(String message) {
-        if (getView() != null) {
-            getView().showSuccessMessageWithAction(message);
-        }
     }
 }

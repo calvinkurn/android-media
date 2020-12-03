@@ -44,6 +44,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -75,14 +76,12 @@ import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
-import com.tokopedia.imagepicker.picker.instagram.data.model.User;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -97,17 +96,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import io.hansel.core.react.HanselLogsRn;
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 
-import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
+import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 
 /**
  * Created by baghira on 09/05/18.
@@ -392,7 +388,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+        if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(new View.OnClickListener() {
@@ -729,6 +725,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             } else {
                 orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), (String) getArguments().get(KEY_ORDER_ID), categoryType, paymentMethod, paymentStatus);
             }
+        }
+    }
+
+    @Override
+    public void showRetryButtonToaster(String msg) {
+        if (getView() != null) {
+            Toaster.build(getView(), msg, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
         }
     }
 
