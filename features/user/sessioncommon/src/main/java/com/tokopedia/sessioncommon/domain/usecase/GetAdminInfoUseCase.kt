@@ -8,7 +8,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 
-class GetLocationAdminUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
+class GetAdminInfoUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
 
     companion object {
         private const val shopID = "shop_id"

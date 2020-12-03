@@ -14,7 +14,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetLocationAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -45,7 +45,7 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var getProfileUseCase: GetProfileUseCase
     @RelaxedMockK
-    lateinit var getLocationAdminUseCase: GetLocationAdminUseCase
+    lateinit var getAdminInfoUseCase: GetAdminInfoUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
@@ -79,7 +79,7 @@ class ChooseAccountViewModelTest {
                 userSession,
                 loginTokenUseCase,
                 getProfileUseCase,
-                getLocationAdminUseCase,
+                getAdminInfoUseCase,
                 rawQueries,
                 testDispatcher
         )
@@ -315,6 +315,7 @@ class ChooseAccountViewModelTest {
         viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
+            firstArg<GetProfileSubscriber>().getAdminInfoUseCase?.let { getAdminInfoUseCase = it }
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
 

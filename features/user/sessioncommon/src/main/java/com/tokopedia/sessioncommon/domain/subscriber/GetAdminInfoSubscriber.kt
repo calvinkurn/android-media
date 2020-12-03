@@ -7,7 +7,7 @@ import com.tokopedia.sessioncommon.data.admin.AdminInfoResponse
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
-class GetLocationAdminSubscriber(
+class GetAdminInfoSubscriber(
     private val userSession: UserSessionInterface,
     private val onSuccessGetUserProfile: () -> Unit,
     private val showLocationAdminPopUp: (() -> Unit)?,
@@ -18,13 +18,13 @@ class GetLocationAdminSubscriber(
         val error = response.getError(AdminInfoResponse::class.java)
 
         when {
-            error.isNullOrEmpty() -> onGetLocationAdminSuccess(response)
-            error.isNotEmpty() -> onGetLocationAdminError(error)
+            error.isNullOrEmpty() -> onGetAdminInfoSuccess(response)
+            error.isNotEmpty() -> onGetAdminInfoError(error)
             else -> showLocationAdminError?.invoke(Throwable())
         }
     }
 
-    private fun onGetLocationAdminSuccess(response: GraphqlResponse) {
+    private fun onGetAdminInfoSuccess(response: GraphqlResponse) {
         response.getData<AdminInfoResponse>(AdminInfoResponse::class.java).let { adminInfo ->
             val data = adminInfo.response.data.firstOrNull()
             val isLocationAdmin = data?.detail?.roleType?.isLocationAdmin == true
@@ -38,7 +38,7 @@ class GetLocationAdminSubscriber(
         }
     }
 
-    private fun onGetLocationAdminError(error: MutableList<GraphqlError>) {
+    private fun onGetAdminInfoError(error: MutableList<GraphqlError>) {
         val message = error.firstOrNull()?.message.orEmpty()
         showLocationAdminError?.invoke(MessageErrorException(message))
     }
