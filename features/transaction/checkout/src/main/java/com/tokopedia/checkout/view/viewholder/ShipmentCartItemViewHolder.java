@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,7 +47,6 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlPurchaseProtection;
     private TextView mTvPPPLinkText;
     private TextView mTvPPPPrice;
-    private TextView mTvPPPMore;
     private CheckBox mCbPPP;
     private CheckBox mCbPPPDisabled;
     private LinearLayout mLlShippingWarningContainer;
@@ -56,6 +56,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private Ticker productTicker;
     private Typography mTextVariant;
     private FlexboxLayout mLayoutProductInfo;
+    private AppCompatImageView mIconTooltip;
+    private Typography mPricePerProduct;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -68,8 +70,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         mRlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         mTvPPPLinkText = itemView.findViewById(R.id.text_link_text);
-        mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
-        mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        mTvPPPPrice = itemView.findViewById(R.id.text_protection_desc);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
         mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
@@ -79,6 +80,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         productTicker = itemView.findViewById(R.id.product_ticker);
         mTextVariant = itemView.findViewById(R.id.text_variant);
         mLayoutProductInfo = itemView.findViewById(R.id.layout_product_info);
+        mIconTooltip = itemView.findViewById(R.id.icon_tooltip);
+        mPricePerProduct = itemView.findViewById(R.id.text_item_per_product);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -156,8 +159,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void renderPurchaseProtection(CartItemModel cartItem) {
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItem.isProtectionAvailable()) {
-            mTvPPPMore.setText(cartItem.getProtectionLinkText());
-            mTvPPPMore.setOnClickListener(new View.OnClickListener() {
+            mIconTooltip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
@@ -165,7 +167,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-
+            mPricePerProduct.setText(String.valueOf(cartItem.getProtectionPricePerProduct()));
 
             if (cartItem.isProtectionCheckboxDisabled()) {
                 mCbPPP.setVisibility(View.GONE);

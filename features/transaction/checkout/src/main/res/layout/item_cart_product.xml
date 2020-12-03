@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_3">
+    android:paddingBottom="@dimen/dp_8">
 
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
@@ -230,46 +230,85 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_9"
             android:layout_marginLeft="@dimen/dp_9"
-            android:layout_toStartOf="@+id/text_ppp_more"
-            android:layout_toLeftOf="@+id/text_ppp_more"
+            android:layout_toStartOf="@+id/container_ppp_more"
+            android:layout_toLeftOf="@+id/container_ppp_more"
             android:layout_toEndOf="@+id/checkbox_rl"
             android:layout_toRightOf="@+id/checkbox_rl"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_link_text"
-                style="@style/TextMidMedium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@color/black_39"
-                tools:text="Proteksi Produk" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text_price_per_product"
-                style="@style/TextVerySmall"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_link_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/black_39"
+                    app:layout_constraintEnd_toStartOf="@id/icon_tooltip"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="Proteksi Produk" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/icon_tooltip"
+                    android:layout_width="@dimen/dp_10"
+                    android:layout_height="@dimen/dp_10"
+                    android:layout_marginLeft="@dimen/dp_6"
+                    app:layout_constraintBottom_toBottomOf="@id/text_link_text"
+                    app:layout_constraintStart_toEndOf="@id/text_link_text"
+                    app:layout_constraintTop_toTopOf="@id/text_link_text"
+                    app:srcCompat="@drawable/checkout_module_ic_tooltip" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_protection_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/grey_500"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
                 tools:text="Rp 50.000 / barang" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_ppp_more"
-            style="@style/TextSmallMedium"
+        <LinearLayout
+            android:id="@+id/container_ppp_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:foreground="?selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_16"
-            android:text="@string/ppp_more"
-            android:textColor="@color/medium_green" />
+            android:orientation="vertical"
+            android:layout_alignParentRight="true">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_item_per_product"
+                style="@style/TextSmallMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"
+                android:layout_gravity="end"
+                android:text="@string/ppp_more"
+                android:textColor="@color/Unify_N700_96" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_ppp_per_insurance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="small"
+                android:text="@string/label_per_insurance_price"
+                android:layout_gravity="end"
+                android:textColor="@color/Unify_N700_68" />
+
+
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

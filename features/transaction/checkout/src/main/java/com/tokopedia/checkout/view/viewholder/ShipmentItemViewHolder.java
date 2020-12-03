@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -110,7 +111,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private RelativeLayout rlPurchaseProtection;
     private TextView tvPPPLinkText;
     private TextView tvPPPPrice;
-    private TextView tvPPPMore;
     private CheckBox cbPPP;
     private CheckBox cbPPPDisabled;
     private RecyclerView rvCartItem;
@@ -206,6 +206,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelFreeShippingOriginalEtaPrice;
     private Typography labelFreeShippingDiscountedEtaPrice;
     private ImageView imageMerchantVoucher;
+    private AppCompatImageView mIconTooltip;
+    private Typography mPricePerProduct;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -232,9 +234,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProductOriginalPrice = itemView.findViewById(R.id.tv_product_original_price);
         rlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         tvPPPLinkText = itemView.findViewById(R.id.text_link_text);
-        tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
-        tvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        tvPPPPrice = itemView.findViewById(R.id.text_protection_desc);
         cbPPP = itemView.findViewById(R.id.checkbox_ppp);
+        mIconTooltip = itemView.findViewById(R.id.icon_tooltip);
+        mPricePerProduct = itemView.findViewById(R.id.text_item_per_product);
         cbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         tvItemCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
@@ -581,10 +584,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderPurchaseProtection(CartItemModel cartItemModel) {
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable()) {
-            tvPPPMore.setText(cartItemModel.getProtectionLinkText());
-            tvPPPMore.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
+            mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
+            mPricePerProduct.setText(String.valueOf(cartItemModel.getProtectionPricePerProduct()));
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
                 cbPPP.setVisibility(View.GONE);
@@ -1469,7 +1472,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(false);
             cbDropshipper.setEnabled(false);
             llDropshipper.setClickable(false);
-            tvPPPMore.setClickable(false);
+            mIconTooltip.setClickable(false);
             etShipperName.setClickable(false);
             etShipperName.setFocusable(false);
             etShipperName.setFocusableInTouchMode(false);
@@ -1486,7 +1489,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(true);
             cbDropshipper.setEnabled(true);
             llDropshipper.setClickable(true);
-            tvPPPMore.setClickable(true);
+            mIconTooltip.setClickable(true);
             etShipperName.setClickable(true);
             etShipperName.setFocusable(true);
             etShipperName.setFocusableInTouchMode(true);
