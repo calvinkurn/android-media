@@ -263,8 +263,7 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
             Boolean rollence = remoteConfigRollenceValue.equalsIgnoreCase(UOH_AB_TEST_VALUE);
 
             Boolean remoteConfigFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH);
-            // return (rollence && remoteConfigFirebase);
-            return true;
+            return (rollence && remoteConfigFirebase);
 
         } catch (Exception e) {
             return false;

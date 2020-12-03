@@ -119,8 +119,7 @@ object DeeplinkMapperUohOrder {
 
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-            // return (rollence && remoteConfigFirebase)
-            return true
+            return (rollence && remoteConfigFirebase)
 
         } catch (e: Exception) {
             false
