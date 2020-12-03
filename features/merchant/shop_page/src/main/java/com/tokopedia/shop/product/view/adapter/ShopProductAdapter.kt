@@ -44,8 +44,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
     private var mapOfDataModel = mutableMapOf<String, Visitable<*>>()
-    private val shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel?
-        get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightViewModel
+    private val shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel?
+        get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightUiModel
     private val membershipStampViewModel: MembershipStampProgressViewModel?
         get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressViewModel
     private val shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel?
@@ -201,7 +201,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun getEtalaseNameHighLight(shopProductUiModel: ShopProductUiModel): String {
-        shopProductEtalaseHighlightViewModel?.let {
+        shopProductEtalaseHighlightUiModel?.let {
             val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselViewModelList
             var i = 0
             val sizei = etalaseHighlightCarouselViewModelList.size
@@ -223,7 +223,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun getEtalaseNameHighLightType(shopProductUiModel: ShopProductUiModel): Int? {
-        return shopProductEtalaseHighlightViewModel?.let {
+        return shopProductEtalaseHighlightUiModel?.let {
             val matchEtalaseHighlight = it.etalaseHighlightCarouselViewModelList.firstOrNull {
                 it.shopProductUiModelList.firstOrNull { it.id == shopProductUiModel.id } != null
             }
@@ -311,7 +311,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             }
         }
 
-        shopProductEtalaseHighlightViewModel?.let {
+        shopProductEtalaseHighlightUiModel?.let {
             val isEtalaseChanged = it.updateWishListStatus(productId, wishList)
             if (isEtalaseChanged) {
                 notifyChangedItem(visitables.indexOf(it))
@@ -374,7 +374,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductEtalaseHighlightDataModel(data: ShopProductEtalaseHighlightViewModel) {
+    fun setShopProductEtalaseHighlightDataModel(data: ShopProductEtalaseHighlightUiModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_HIGHLIGHT_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -475,7 +475,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductFeaturedViewModel -> {
                     mutableMapDataModelPosition[KEY_FEATURED_PRODUCT_DATA_MODEL] = data
                 }
-                is ShopProductEtalaseHighlightViewModel -> {
+                is ShopProductEtalaseHighlightUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] = data
                 }
                 is ShopProductEtalaseTitleViewModel -> {

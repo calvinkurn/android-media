@@ -12,7 +12,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapter
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory
 import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselViewModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseHighlightViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseHighlightUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
@@ -22,7 +22,7 @@ import java.util.ArrayList
 class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
                                             shopProductClickedListener: ShopProductClickedListener?,
                                             shopProductImpressionListener: ShopProductImpressionListener?,
-                                            shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<ShopProductEtalaseHighlightViewModel>(itemView) {
+                                            shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<ShopProductEtalaseHighlightUiModel>(itemView) {
 
     private var recyclerView: RecyclerView? = null
     private val etalaseHighlightAdapter: EtalaseHighlightAdapter
@@ -36,8 +36,8 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
         findViews(itemView)
     }
 
-    override fun bind(shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel) {
-        var etalaseHighlightCarouselViewModelList: List<EtalaseHighlightCarouselViewModel>? = shopProductEtalaseHighlightViewModel.etalaseHighlightCarouselViewModelList
+    override fun bind(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel) {
+        var etalaseHighlightCarouselViewModelList: List<EtalaseHighlightCarouselViewModel>? = shopProductEtalaseHighlightUiModel.etalaseHighlightCarouselViewModelList
         if (etalaseHighlightCarouselViewModelList == null) {
             etalaseHighlightCarouselViewModelList = ArrayList()
         }
