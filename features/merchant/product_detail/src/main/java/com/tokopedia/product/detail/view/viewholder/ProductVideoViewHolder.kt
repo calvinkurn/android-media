@@ -3,9 +3,10 @@ package com.tokopedia.product.detail.view.viewholder
 import android.animation.Animator
 import android.view.View
 import android.widget.ImageView
+import com.google.android.exoplayer2.Player
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.pdp_video_view_holder.view.*
  * Created by Yehezkiel on 23/11/20
  */
 class ProductVideoViewHolder(val view: View, private val productVideoCoordinator: ProductVideoCoordinator?,
-                             private val onVideoFullScreenClicked: ((String) -> Unit)? = null)
+                             private val onVideoFullScreenClicked: (() -> Unit)? = null)
     : AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
 
     private var mPlayer: ProductExoPlayer? = null
@@ -41,20 +42,20 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     override fun bind(data: MediaDataModel) {
         mVideoId = data.id
         thumbnail = data.urlOriginal
-        setThumbnail()
         productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
         setupVolume()
+        setThumbnail()
         video_volume?.setOnClickListener {
             setupVolume()
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
         video_full_screen?.setOnClickListener {
-            onVideoFullScreenClicked?.invoke(data.id)
+            onVideoFullScreenClicked?.invoke()
         }
     }
 
     private fun setThumbnail() = with(view) {
-        pdp_video_overlay.loadImage(thumbnail)
+        pdp_video_overlay.loadImageWithoutPlaceholder(thumbnail)
         pdp_video_overlay.alpha = 1F
         pdp_video_overlay.show()
     }
@@ -97,6 +98,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
             pdp_main_video.gone()
             setThumbnail()
         } else {
+            if (player.getExoPlayer().playbackState == Player.STATE_READY) removeThumbnail()
             player.setVideoStateListener(object : VideoStateListener {
                 override fun onInitialStateLoading() {
                     showBufferLoading()
@@ -112,7 +114,9 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
                 }
             })
             pdp_main_video.show()
-            pdp_main_video.player = player.getExoPlayer()
+            if (pdp_main_video.player == null) {
+                pdp_main_video.player = player.getExoPlayer()
+            }
         }
     }
 

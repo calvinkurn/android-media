@@ -21,7 +21,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductMediaViewHolder
      */
-    fun onVideoFullScreenClicked(videoId:String)
+    fun onVideoFullScreenClicked()
 
     /**
      * ProductSnapshotViewHolder

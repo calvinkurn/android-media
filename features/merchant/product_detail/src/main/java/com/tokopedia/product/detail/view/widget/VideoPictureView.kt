@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -30,7 +31,7 @@ class VideoPictureView @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.widget_picture_scrolling, this)
-        pdp_view_pager.offscreenPageLimit = 2
+        pdp_view_pager.offscreenPageLimit = 3
     }
 
     fun setup(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator,
@@ -77,6 +78,14 @@ class VideoPictureView @JvmOverloads constructor(
         videoPictureAdapter?.mediaData = mediaList
         pdp_view_pager.setPageTransformer { _, _ ->
             //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+        }
+    }
+
+    fun renderVideoAtFirstPosition(productVideoCoordinator: ProductVideoCoordinator) {
+        pdp_view_pager?.addOneTimeGlobalLayoutListener {
+            pdp_view_pager?.let {
+                productVideoCoordinator.onScrollChangedListener(it, 0)
+            }
         }
     }
 

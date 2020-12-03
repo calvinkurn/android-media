@@ -17,7 +17,6 @@ import com.tokopedia.product.detail.view.adapter.ProductVideoDetailAdapter
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
-import kotlinx.android.synthetic.main.fragment_product_video_viewer.*
 
 class ProductVideoDetailFragment : Fragment() {
 
@@ -33,10 +32,11 @@ class ProductVideoDetailFragment : Fragment() {
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var videoCoordinator: ProductVideoCoordinator? = null
     private var videoDetailAdapter: ProductVideoDetailAdapter? = null
-    private var videoDetailPager: ViewPager2? = null
-    private var closeBtn: IconUnify? = null
     private var mediaList: List<ProductVideoDataModel> = listOf()
     private var activityListener: ProductDetailActivityInterface? = null
+
+    private var videoDetailPager: ViewPager2? = null
+    private var closeBtn: IconUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getArgumentsBundle()
@@ -85,7 +85,7 @@ class ProductVideoDetailFragment : Fragment() {
     }
 
     private fun setupViewPagerCallback(productVideoCoordinator: ProductVideoCoordinator?) {
-        pdp_video_detail_pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        videoDetailPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
                 lastPosition = position

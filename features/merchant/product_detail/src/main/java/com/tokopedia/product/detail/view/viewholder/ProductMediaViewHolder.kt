@@ -34,6 +34,7 @@ class ProductMediaViewHolder(private val view: View,
 
             if (element.shouldRenderImageVariant) {
                 viewMediaPager.updateImage(element.listOfMedia, productVideoCoordinator)
+                viewMediaPager.renderVideoAtFirstPosition(productVideoCoordinator)
                 element.shouldRenderImageVariant = false
             }
 

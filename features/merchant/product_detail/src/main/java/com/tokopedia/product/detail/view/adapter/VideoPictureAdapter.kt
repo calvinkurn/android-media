@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
  * Created by Yehezkiel on 23/11/20
  */
 class VideoPictureAdapter(private val productVideoCoordinator: ProductVideoCoordinator?,
-                          private val onVideoFullScreenClicked: ((String) -> Unit)? = null) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
+                          private val onVideoFullScreenClicked: (() -> Unit)? = null) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     var mediaData: List<MediaDataModel> = listOf()
 

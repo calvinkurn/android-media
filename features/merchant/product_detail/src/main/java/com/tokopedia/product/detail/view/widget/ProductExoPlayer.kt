@@ -30,8 +30,8 @@ class ProductExoPlayer(val context: Context) {
                     MIN_PLAYBACK_START_BUFFER,
                     MIN_PLAYBACK_RESUME_BUFFER)
             .setTargetBufferBytes(-1)
-            .setPrioritizeTimeOverSizeThresholds(true).createDefaultLoadControl()
-
+            .setPrioritizeTimeOverSizeThresholds(true)
+            .createDefaultLoadControl()
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
             .setTrackSelector(DefaultTrackSelector(context))
@@ -72,17 +72,17 @@ class ProductExoPlayer(val context: Context) {
         this.videoStateListener = videoStateListener
     }
 
-    fun start(videoUrl: String, lastVideoPosition: Long, isMute: Boolean) {
+    fun start(videoUrl: String, lastVideoPosition: Long, isMute: Boolean, shouldPrepare: Boolean = true) {
         if (videoUrl.isBlank()) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
 
-        if (lastVideoPosition != 0L) {
+        if (lastVideoPosition != 0L && shouldPrepare) {
             exoPlayer.seekTo(lastVideoPosition)
         }
         toggleVideoVolume(isMute)
         exoPlayer.playWhenReady = isConnectedToWifi()
-        exoPlayer.prepare(mediaSource, lastVideoPosition == 0L, false)
+        prepareIfVideoDifferent(mediaSource, lastVideoPosition, shouldPrepare)
     }
 
     fun stop() {
@@ -116,6 +116,10 @@ class ProductExoPlayer(val context: Context) {
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
     fun isMute(): Boolean = exoPlayer.volume == 0F
+
+    private fun prepareIfVideoDifferent(mediaSource: MediaSource, lastVideoPosition: Long, shouldPrepare: Boolean) {
+        if (shouldPrepare) exoPlayer.prepare(mediaSource, lastVideoPosition == 0L, false)
+    }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))

@@ -34,21 +34,28 @@ class ProductVideoCoordinator(
         productVideoJob?.cancel()
         productVideoJob = scope.launch(mainCoroutineDispatcher) {
             val currentReceiver = (viewPager.getChildAt(0) as? RecyclerView)?.findViewHolderForAdapterPosition(position) as? ProductVideoReceiver
+            val isCurrentReceiverVideoType = currentReceiver != null
 
-            if (currentReceiver != null) {
-                clearPlayerEntry(lastReceiverProduct)
-
-                if (currentReceiver.getPlayer() == null) {
-                    currentReceiver.setPlayer(videoPlayer)
-                    val videoData = getVideoDataById(currentReceiver.getVideoId())
-                    videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition
-                            ?: 0L, videoData?.isMute ?: true)
-                    currentVideoId = currentReceiver.getVideoId()
+            if (isCurrentReceiverVideoType) {
+                if (lastReceiverProduct != currentReceiver) {
+                    //Means it swipe to another video and we need to change video URL
+                    clearPreviousVideoEntry(lastReceiverProduct)
                 }
+
+                //Set back the exoplayer to playerview
+                currentReceiver!!.setPlayer(videoPlayer)
+                val videoData = getVideoDataById(currentReceiver.getVideoId())
+                videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition
+                        ?: 0L, videoData?.isMute
+                        ?: true, lastReceiverProduct != currentReceiver)
+                currentVideoId = currentReceiver.getVideoId()
 
                 lastReceiverProduct = currentReceiver
             } else {
-                pauseSaveLastPosition(lastReceiverProduct)
+                lastReceiverProduct?.let {
+                    //Pause and save previous video player
+                    pauseVideoAndSaveLastPosition()
+                }
             }
         }
     }
@@ -65,18 +72,15 @@ class ProductVideoCoordinator(
     }
 
     fun configureVolume(isMute: Boolean, videoId: String) {
+        if (videoId.isEmpty()) return
         videoPlayer?.toggleVideoVolume(isMute)
         getVideoDataById(videoId)?.isMute = isMute
     }
 
-    fun saveLastVideoPosition(videoId: String) {
-        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = videoPlayer?.getExoPlayer()?.currentPosition
-                ?: 0L
-    }
-
     fun updateAndResume(newData: List<ProductVideoDataModel>) {
-        val updatedCurrentVideoPosition = newData.firstOrNull { it.videoId == currentVideoId }?.seekPosition ?: 0
-        val currentVideoPosition = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }?.seekPosition ?: 0
+        val updatedCurrentVideoPosition = newData.firstOrNull { it.videoId == currentVideoId }?.seekPosition
+                ?: 0
+        val currentVideoData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }
 
         newData.forEachIndexed { index, i ->
             productVideoDataModel[index].isMute = i.isMute
@@ -84,7 +88,8 @@ class ProductVideoCoordinator(
         }
 
         //If they not resume video in video detail, just ignore it
-        if (currentVideoPosition != updatedCurrentVideoPosition) {
+        if (currentVideoData?.seekPosition != updatedCurrentVideoPosition) {
+            configureVolume(currentVideoData?.isMute ?: false, currentVideoData?.videoId ?: "")
             resumeAndSeekTo(updatedCurrentVideoPosition)
         }
     }
@@ -117,8 +122,9 @@ class ProductVideoCoordinator(
         saveLastVideoPosition(currentVideoId)
     }
 
-    fun resumeAndSeekTo(lastSeenVideoPosition:Long) {
-        videoPlayer?.resumeAndSeekTo(lastSeenVideoPosition)
+    fun pauseVideoAndSaveLastPosition() {
+        videoPlayer?.pause()
+        saveLastVideoPosition(currentVideoId)
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
@@ -131,7 +137,7 @@ class ProductVideoCoordinator(
         }
     }
 
-    private fun clearPlayerEntry(receiverProduct: ProductVideoReceiver?) {
+    private fun clearPreviousVideoEntry(receiverProduct: ProductVideoReceiver?) {
         receiverProduct?.let {
             videoPlayer?.setVideoStateListener(null)
             onStopAndSaveLastPosition()
@@ -139,17 +145,17 @@ class ProductVideoCoordinator(
         }
     }
 
-    private fun pauseSaveLastPosition(receiverProduct: ProductVideoReceiver?) {
-        receiverProduct?.let {
-            videoPlayer?.setVideoStateListener(null)
-            videoPlayer?.pause()
-            saveLastVideoPosition(it.getVideoId())
-            it.setPlayer(null)
-        }
+    private fun resumeAndSeekTo(lastSeenVideoPosition: Long) {
+        videoPlayer?.resumeAndSeekTo(lastSeenVideoPosition)
     }
 
     private fun getVideoDataById(videoId: String): ProductVideoDataModel? {
         return productVideoDataModel.firstOrNull { it.videoId == videoId }
+    }
+
+    private fun saveLastVideoPosition(videoId: String) {
+        productVideoDataModel.firstOrNull { it.videoId == videoId }?.seekPosition = videoPlayer?.getExoPlayer()?.currentPosition
+                ?: 0L
     }
 }
 
