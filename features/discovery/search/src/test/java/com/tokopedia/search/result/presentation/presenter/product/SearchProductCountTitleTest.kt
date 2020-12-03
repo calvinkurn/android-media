@@ -12,6 +12,7 @@ import io.mockk.runs
 import io.mockk.slot
 import org.junit.Test
 import rx.Subscriber
+import io.mockk.just
 
 internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
