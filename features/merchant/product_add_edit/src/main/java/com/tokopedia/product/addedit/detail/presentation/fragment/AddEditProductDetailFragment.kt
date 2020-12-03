@@ -641,6 +641,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+
+        showChangeCategoryDialog()
     }
 
     private fun enableProductNameField() {
@@ -1369,6 +1371,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setSecondaryCTAClickListener {
                 dialog.dismiss()
                 enableWholesale()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun showChangeCategoryDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.message_change_category_title))
+            setDescription(getString(R.string.message_change_category))
+            setPrimaryCTAText(getString(R.string.action_change_category_positive))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.action_change_category_negative))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
             }
         }
         dialog.show()
