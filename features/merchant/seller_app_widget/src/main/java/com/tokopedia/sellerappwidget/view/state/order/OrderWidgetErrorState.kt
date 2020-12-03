@@ -9,13 +9,12 @@ import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
-import com.tokopedia.sellerappwidget.view.state.AppWidgetStateHelper
 
 /**
  * Created By @ilhamsuaib on 26/11/20
  */
 
-object OrderWidgetErrorState : AppWidgetStateHelper() {
+object OrderWidgetErrorState {
 
     fun setupErrorState(context: Context, awm: AppWidgetManager, remoteViews: RemoteViews, widgetId: Int) {
         val option = awm.getAppWidgetOptions(widgetId)
@@ -45,7 +44,7 @@ object OrderWidgetErrorState : AppWidgetStateHelper() {
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
                 imgUrl = Const.Images.ORDER_ON_EMPTY
         )
-        setupNormalCommonWidget<OrderAppWidget>(context, remoteViews, data)
+        OrderWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteViews, data)
     }
 
     private fun showLargeWidgetErrorState(context: Context, remoteViews: RemoteViews, widgetId: Int) {
@@ -55,6 +54,6 @@ object OrderWidgetErrorState : AppWidgetStateHelper() {
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
                 imgUrl = Const.Images.ORDER_ON_EMPTY
         )
-        setupLargeCommonWidget<OrderAppWidget>(context, remoteViews, data)
+        OrderWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteViews, data)
     }
 }

@@ -1,10 +1,11 @@
 package com.tokopedia.sellerappwidget.view.viewmodel
 
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProvider
+import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProviderImpl
 import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.domain.usecase.GetOrderUseCase
-import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
+import com.tokopedia.sellerappwidget.view.model.OrderUiModel
+import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
@@ -17,9 +18,8 @@ import javax.inject.Inject
 
 @AppWidgetScope
 class OrderAppWidgetViewModel @Inject constructor(
-        private val getOrderUseCase: Lazy<GetOrderUseCase>,
-        private val dispatcherProvider: AppWidgetDispatcherProvider
-) : BaseAppWidgetVM<OrderAppWidgetView>(dispatcherProvider) {
+        private val getOrderUseCase: Lazy<GetOrderUseCase>
+) : BaseAppWidgetVM<AppWidgetView<List<OrderUiModel>>>(AppWidgetDispatcherProviderImpl()) {
 
     fun getOrderList(dateFrm: String) {
         launchCatchError(block = {

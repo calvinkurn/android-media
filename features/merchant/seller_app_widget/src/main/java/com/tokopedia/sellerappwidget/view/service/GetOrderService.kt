@@ -17,7 +17,7 @@ import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetLoadingState
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
-import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
+import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetOrderWorker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -29,7 +29,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/11/20
  */
 
-class GetOrderService : JobIntentService(), OrderAppWidgetView {
+class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
 
     companion object {
         private const val JOB_ID = 8043

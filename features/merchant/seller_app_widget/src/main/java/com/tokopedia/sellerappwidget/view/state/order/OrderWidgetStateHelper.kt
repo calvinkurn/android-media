@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
-import com.tokopedia.sellerappwidget.common.*
+import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.common.Utils
+import com.tokopedia.sellerappwidget.common.WidgetSize
+import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 import com.tokopedia.sellerappwidget.view.state.AppWidgetStateHelper
@@ -45,7 +48,7 @@ object OrderWidgetStateHelper : AppWidgetStateHelper() {
     }
 
     fun setLastUpdated(context: Context, remoteView: RemoteViews) {
-        val updatedFmt = AppWidgetHelper.getOrderWidgetLastUpdatedFmt(context)
+        val updatedFmt = getWidgetLastUpdatedFmt(context, Const.SharedPrefKey.ORDER_LAST_UPDATED)
         val updated = context.getString(R.string.saw_updated)
         remoteView.setTextViewText(R.id.tvSawOrderUpdated, "$updated $updatedFmt")
         remoteView.setTextViewText(R.id.tvSawSmallOrderUpdated, "$updated $updatedFmt")
