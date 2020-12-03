@@ -109,7 +109,6 @@ object DeepLinkUrlConstant {
         const val ANGSURAN_INDOMOBIL_FINANCE = "https://www.tokopedia.com/angsuran/indomobil-finance/"
         const val TAGIHAN = "https://www.tokopedia.com/tagihan"
         const val BPJS = "https://www.tokopedia.com/bpjs/"
-        const val VOUCHER_ESTELER_77 = "https://www.tokopedia.com/voucher/es-teler-77/"
         const val ROAMING = "https://www.tokopedia.com/roaming/"
         const val ROAMING_INDOSAT = "https://www.tokopedia.com/roaming/indosat/"
         const val ROAMING_XL = "https://www.tokopedia.com/roaming/xl/"
