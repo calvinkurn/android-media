@@ -521,6 +521,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(fragment);
             }
             ft.commitNowAllowingStateLoss();
         });
