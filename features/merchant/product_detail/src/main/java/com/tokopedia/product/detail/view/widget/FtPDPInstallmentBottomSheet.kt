@@ -72,13 +72,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     protected fun configView(parentView: View) {
-        val textViewTitle = parentView.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        val textViewTitle = parentView.findViewById<TextView>(R.id.pdp_installment_tv_title)
         textViewTitle.text = title()
 
-        val layoutTitle = parentView.findViewById<View>(com.tokopedia.design.R.id.layout_title)
+        val layoutTitle = parentView.findViewById<View>(R.id.pdp_installment_layout_title)
         layoutTitle.setOnClickListener { v -> onCloseButtonClick() }
 
-        val closeButton = parentView.findViewById<View>(com.tokopedia.design.R.id.btn_close)
+        val closeButton = parentView.findViewById<View>(R.id.pdp_installment_btn_close)
         closeButton.setOnClickListener {
             dismiss()
         }
