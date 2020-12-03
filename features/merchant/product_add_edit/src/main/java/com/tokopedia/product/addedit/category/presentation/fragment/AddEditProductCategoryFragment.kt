@@ -29,7 +29,6 @@ import com.tokopedia.product.addedit.category.presentation.viewmodel.AddEditProd
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_edit_product_category.*
-import kotlinx.android.synthetic.main.fragment_add_edit_product_category.loaderUnify
 import java.util.*
 import javax.inject.Inject
 
