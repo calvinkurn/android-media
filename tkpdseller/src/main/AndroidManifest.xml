@@ -24,7 +24,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_order"
                     android:path="@string/path_track"/>
-
             </intent-filter>
         </activity>
     </application>
