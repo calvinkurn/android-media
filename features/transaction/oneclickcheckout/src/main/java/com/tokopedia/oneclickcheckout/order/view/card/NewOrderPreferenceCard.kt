@@ -133,12 +133,15 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     }
 
     private fun showShipping() {
-        val shipmentModel = preference.preference.shipment
-
         val shipping = shipment
 
         if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
-            // loading?
+            btnChangeDuration?.gone()
+            tvShippingCourier?.gone()
+            btnChangeCourier?.gone()
+            tvShippingErrorMessage?.gone()
+            btnReloadShipping?.gone()
+            iconReloadShipping?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)

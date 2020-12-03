@@ -533,7 +533,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         } else {
             tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)
             val message = MethodChecker.fromHtml(preference.onboardingHeaderMessage)
-            val infoButton = "Info"
+            val infoButton = getString(R.string.lbl_osp_secondary_header_info)
             val spannableString = SpannableString("$message $infoButton")
             spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(StyleSpan(BOLD), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)

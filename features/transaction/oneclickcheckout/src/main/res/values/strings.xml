@@ -37,6 +37,7 @@
     <string name="lbl_osp_header">Barang yang dibeli</string>
     <string name="lbl_osp_secondary_header_intro">Hai!</string>
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
+    <string name="lbl_osp_secondary_header_info">Info</string>
 
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
 
