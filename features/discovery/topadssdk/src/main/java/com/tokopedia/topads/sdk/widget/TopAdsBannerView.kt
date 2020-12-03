@@ -202,6 +202,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val linearLayoutMerchantVoucher = findViewById<LinearLayout?>(R.id.linearLayoutMerchantVoucher) ?: return
         val merchantVouchers = cpmData?.cpm?.cpmShop?.merchantVouchers ?: return
 
+        linearLayoutMerchantVoucher.removeAllViews()
+
         merchantVouchers.forEachIndexed { index, voucher ->
             val isFirstItem = index == 0
             val labelVoucher = createLabelVoucher(context, voucher, isFirstItem)
