@@ -13,8 +13,8 @@
             app:destination="@id/categoryFragment"
             app:enterAnim="@anim/nav_slide_in_right"
             app:exitAnim="@anim/nav_slide_out_left"
-            app:popEnterAnim="@anim/nav_fade_in"
-            app:popExitAnim="@anim/nav_fade_out" />
+            app:popExitAnim="@anim/slide_right_out_medium"
+            app:popEnterAnim="@anim/slide_left_in_medium"/>
         <argument
             android:name="@string/main_nav_args_source_key"
             app:argType="string"

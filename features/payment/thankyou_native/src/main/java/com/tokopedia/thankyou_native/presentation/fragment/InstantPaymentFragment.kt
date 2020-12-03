@@ -31,7 +31,6 @@ import com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import java.util.zip.ZipInputStream
 
 
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
@@ -87,8 +86,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun showCharacterAnimation() {
         context?.let {
-            val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
-            val lottieTask = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
             lottieTask?.addListener { result: LottieComposition? ->
                 result?.let {
                     lottieAnimationView?.setComposition(result)
