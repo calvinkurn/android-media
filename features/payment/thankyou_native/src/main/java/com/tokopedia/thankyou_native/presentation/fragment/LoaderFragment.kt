@@ -24,7 +24,8 @@ import com.tokopedia.thankyou_native.data.mapper.Invalid
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
+import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -77,9 +78,9 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun loadThankPageData() {
         globalError.gone()
         arguments?.let {
-            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
-                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
+            if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
+                thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
+                        it.getString(ARG_MERCHANT, ""))
             }
         }
     }

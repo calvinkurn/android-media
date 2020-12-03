@@ -111,6 +111,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
+    private fun setActionMenu() {
+        // val headerUnify = (activity as ThankYouPageActivity).getHeader()
+        //headerUnify.actionText = getString(R.string.thank_menu_detail)
+        //headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
+    }
+
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {

@@ -8,9 +8,17 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -23,6 +31,16 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+
+
+const val SCREEN_NAME = "Finish Transaction"
+const val ARG_PAYMENT_ID = "payment_id"
+const val ARG_MERCHANT = "merchant"
+
+private const val EXP_NAME = "Navigation Revamp"
+private const val VARIANT_OLD = "existing navigation"
+private const val VARIANT_REVAMP = "navigation revamp"
+
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
@@ -52,8 +70,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
-    override fun getToolbarResourceID() = R.id.thank_header
-
     override fun getParentViewResourceID(): Int = R.id.thank_parent_view
 
     override fun getNewFragment(): Fragment? {
@@ -65,14 +81,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 bundle.putAll(intent.extras)
             }
         }
-        thank_header.isShowBackButton = false
+        showToolbarBeforeLoading()
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
+
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
+            showToolbarAfterLoading()
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
@@ -155,6 +173,41 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     }
 
+    private fun showToolbarBeforeLoading() {
+        thank_header.isShowBackButton = false
+        thank_header.visible()
+        globalNabToolbar.gone()
+    }
+
+    private fun showToolbarAfterLoading() {
+        if (isGlobalNavEnable()) {
+            thank_header.gone()
+            globalNabToolbar.visible()
+            initializeGlobalNav()
+        } else {
+            thank_header.visible()
+            globalNabToolbar.gone()
+        }
+    }
+
+    private fun isGlobalNavEnable(): Boolean {
+        return true
+    }
+
+
+    private fun initializeGlobalNav() {
+        globalNabToolbar?.apply {
+            setNavigationOnClickListener { }
+            setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            setIcon(
+                    IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+            setupSearchbar(listOf(HintData("Cari lagi barang impianmu")))
+            setToolbarPageName("ThankYou")
+            show()
+        }
+    }
+
     private fun updateHeaderTitle(screenName: String) {
         thank_header.title = screenName
     }
@@ -191,9 +244,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     companion object {
-        const val SCREEN_NAME = "Finish Transaction"
-        const val ARG_PAYMENT_ID = "payment_id"
-        const val ARG_MERCHANT = "merchant"
         const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
     }
 
