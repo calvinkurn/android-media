@@ -29,7 +29,9 @@ data class ChipGetChatRatingListResponse(
                 @SerializedName("isSubmitted")
                 val isSubmitted: Boolean?,
                 @SerializedName("value")
-                val value: String?
+                val value: String?,
+                @SerializedName("attachmentType")
+                val attachmentType: Int?
             )
         }
     }

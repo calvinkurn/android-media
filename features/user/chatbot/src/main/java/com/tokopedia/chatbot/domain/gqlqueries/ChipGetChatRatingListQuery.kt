@@ -8,6 +8,7 @@ const val CHIP_GET_CHAT_RATING_LIST_QUERY = """query chipGetChatRatingListV5(${'
       isSuccess
     	list{
         caseChatID
+        attachmentType
         value
         isSubmitted
       }  

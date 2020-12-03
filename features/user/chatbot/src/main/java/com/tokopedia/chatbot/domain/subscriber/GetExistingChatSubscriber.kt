@@ -57,17 +57,19 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         if (ratings?.ratingListData?.isSuccess == 1) {
             for (rate in ratings.ratingListData.list ?: listOf()) {
                 val rateListMsgs = mappedPojo.listChat.filter { msg ->
-                    when (msg) {
-                        is HelpFullQuestionsViewModel -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
-                        is CsatOptionsViewModel -> (msg.csat?.caseChatId == rate.caseChatID)
+                    when {
+                        msg is HelpFullQuestionsViewModel && rate.attachmentType == TYPE_OPTION_LIST.toIntOrZero()
+                        -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
+                        msg is CsatOptionsViewModel && rate.attachmentType == TYPE_CSAT_OPTIONS.toIntOrZero()
+                        -> (msg.csat?.caseChatId == rate.caseChatID)
                         else -> false
                     }
                 }
                 rateListMsgs.forEach {
                     if (it is HelpFullQuestionsViewModel) {
-                        it.isSubmited = rate.isSubmitted ?: false
+                        it.isSubmited = rate.isSubmitted ?: true
                     }else if (it is CsatOptionsViewModel){
-                        it.isSubmited = rate.isSubmitted ?: false
+                        it.isSubmited = rate.isSubmitted ?: true
                     }
                 }
 
