@@ -24,7 +24,7 @@ class ProductDetailSharedViewModel : ViewModel() {
     }
 
     //Give back the data from video detail to pdp fragment
-    fun updateVideoData(video: List<ProductVideoDataModel>) {
+    fun updateVideoDataInPreviousFragment(video: List<ProductVideoDataModel>) {
         _productVideoData.postValue(video)
     }
 }

@@ -71,6 +71,17 @@ class ProductVideoCoordinator(
         }
     }
 
+    fun configureVideoCoordinator(context: Context, data: ProductVideoDataModel) {
+        if (videoPlayer == null) {
+            videoPlayer = ProductExoPlayer(context)
+        }
+
+        val listVideoId = productVideoDataModel.map { it.videoId }
+        if (data.videoId !in listVideoId) {
+            productVideoDataModel.add(data)
+        }
+    }
+
     fun configureVolume(isMute: Boolean, videoId: String) {
         if (videoId.isEmpty()) return
         videoPlayer?.toggleVideoVolume(isMute)
@@ -80,7 +91,8 @@ class ProductVideoCoordinator(
     fun updateAndResume(newData: List<ProductVideoDataModel>) {
         val updatedCurrentVideoPosition = newData.firstOrNull { it.videoId == currentVideoId }?.seekPosition
                 ?: 0
-        val currentVideoData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }
+        val currentVideoData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }?.seekPosition
+                ?: 0
 
         newData.forEachIndexed { index, i ->
             productVideoDataModel[index].isMute = i.isMute
@@ -88,8 +100,9 @@ class ProductVideoCoordinator(
         }
 
         //If they not resume video in video detail, just ignore it
-        if (currentVideoData?.seekPosition != updatedCurrentVideoPosition) {
-            configureVolume(currentVideoData?.isMute ?: false, currentVideoData?.videoId ?: "")
+        if (currentVideoData != updatedCurrentVideoPosition) {
+            val currentData = productVideoDataModel.firstOrNull { it.videoId == currentVideoId }
+            configureVolume(currentData?.isMute ?: false, currentData?.videoId ?: "")
             resumeAndSeekTo(updatedCurrentVideoPosition)
         }
     }

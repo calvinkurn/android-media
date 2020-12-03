@@ -982,9 +982,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onVideoFullScreenClicked() {
         activity?.let {
             productVideoCoordinator.pauseVideoAndSaveLastPosition()
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(ProductVideoDetailFragment::class.java.simpleName, ProductVideoDetailDataModel(productVideoCoordinator.getVideoDataModel().toMutableList()))
-            (it as ProductDetailActivity).addNewFragment(ProductVideoDetailFragment.getFragment(cacheManager.id ?: ""))
+            sharedViewModel?.updateVideoDetailData(productVideoCoordinator.getVideoDataModel())
+            (it as ProductDetailActivity).addNewFragment(ProductVideoDetailFragment())
         }
     }
 

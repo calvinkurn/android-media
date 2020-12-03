@@ -11,9 +11,9 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 /**
  * Created by Yehezkiel on 01/12/20
  */
-class ProductVideoDetailAdapter(private val productVideoCoordinator: ProductVideoCoordinator?,
-                                var mediaData: List<ProductVideoDataModel> = listOf()) : RecyclerView.Adapter<AbstractViewHolder<ProductVideoDataModel>>() {
+class ProductVideoDetailAdapter(private val productVideoCoordinator: ProductVideoCoordinator?) : RecyclerView.Adapter<AbstractViewHolder<ProductVideoDataModel>>() {
 
+    var mediaData: List<ProductVideoDataModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<ProductVideoDataModel> {
         return ProductVideoDetailViewHolder(LayoutInflater.from(parent.context)

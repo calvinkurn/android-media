@@ -53,7 +53,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         mVideoId = data.videoId
         thumbnail = data.videoUrl
         setThumbnail()
-        productVideoCoordinator?.configureVideoCoordinator(view.context, data.videoId, data.videoUrl)
+        productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
         setupVolume()
         video_volume?.setOnClickListener {

@@ -98,7 +98,7 @@ class ProductExoPlayer(val context: Context) {
         if (lastVideoPosition != 0L) {
             exoPlayer.seekTo(lastVideoPosition)
         }
-        exoPlayer.playWhenReady = true
+        exoPlayer.playWhenReady = false
     }
 
     fun destroy() {
