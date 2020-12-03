@@ -42,8 +42,8 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
             saveInstanceCacheManager?.run {
                 viewModel.isSmartReplyOn = get(TalkSmartReplyConstants.IS_SMART_REPLY_ON, Boolean::class.java) ?: false
-                viewModel.messageReady = get(TalkSmartReplyConstants.MESSAGE_READY, String::class.java) ?: ""
-                viewModel.messageNotReady = get(TalkSmartReplyConstants.MESSAGE_NOT_READY, String::class.java) ?: ""
+                viewModel.messageReady = get(TalkSmartReplyConstants.MESSAGE_READY, String::class.java) ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
+                viewModel.messageNotReady = get(TalkSmartReplyConstants.MESSAGE_NOT_READY, String::class.java) ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
             }
         }
     }

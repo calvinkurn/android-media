@@ -124,5 +124,7 @@
     <string name="smart_reply_available_stock_text_area_label">Stok Tersedia</string>
     <string name="smart_reply_unavailable_stock_text_area_label">Stok Kosong</string>
     <string name="smart_reply_detail_save_button">Simpan</string>
+    <string name="smart_reply_available_stock_text_area_default_text">Ready. Yuk, beli sekarang!😄</string>
+    <string name="smart_reply_unavailable_stock_text_area_default_text">Maaf, stoknya lagi kosong.☹️</string>
 
 </resources>

@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -22,8 +23,10 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentatio
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_smart_reply_settings.*
 import javax.inject.Inject
 
@@ -78,7 +81,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                     }
                 }
                 is Fail -> {
-
+                    showErrorToaster()
                 }
             }
         })
@@ -137,12 +140,9 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         return ""
     }
 
-    private fun showError() {
-
-    }
-
-    private fun hideError() {
-
+    private fun showErrorToaster() {
+        view?.let {
+            Toaster.build(it, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { viewModel.getSmartReplyData() }). show() }
     }
 
     private fun setupOnBackPressed() {
