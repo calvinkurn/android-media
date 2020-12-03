@@ -55,9 +55,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         setThumbnail()
         productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
-        setupVolume()
         video_volume?.setOnClickListener {
-            setupVolume()
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.videoId)
         }
     }
@@ -95,8 +93,8 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         pdp_video_loading?.hide()
     }
 
-    private fun setupVolume() {
-        video_volume?.setImageResource(if (mPlayer?.isMute() == true) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
+    private fun setupVolume(isMute:Boolean) {
+        video_volume?.setImageResource(if (!isMute) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(view) {
@@ -119,6 +117,10 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
 
                 override fun onVideoBuffering() {
                     showBufferLoading()
+                }
+
+                override fun configureVolume(isMute: Boolean) {
+                    setupVolume(isMute)
                 }
             })
             pdp_main_video.show()

@@ -150,7 +150,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyItemRangeChangesExceptContent() {
+    fun notifyItemRangeChangesExceptFirstPosition() {
         notifyItemRangeRemoved(1, visitables.size)
         notifyItemRangeChanged(1, visitables.size)
     }

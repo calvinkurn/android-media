@@ -8,8 +8,7 @@ data class ProductMediaDataModel(
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
         var shouldRefreshViewPagger: Boolean = true,
-        var shouldRenderImageVariant: Boolean = true,
-        var shouldShowImageReview: Boolean = false
+        var shouldRenderImageVariant: Boolean = true
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

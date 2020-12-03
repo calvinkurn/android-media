@@ -27,14 +27,10 @@ class ProductMediaViewHolder(private val view: View,
 
     override fun bind(element: ProductMediaDataModel) {
         with(view) {
-            viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
             viewMediaPager.setup(element.listOfMedia, productVideoCoordinator, listener, getComponentTrackData(element))
-
-            element.shouldRefreshViewPagger = false
 
             if (element.shouldRenderImageVariant) {
                 viewMediaPager.updateImage(element.listOfMedia, productVideoCoordinator)
-                viewMediaPager.renderVideoAtFirstPosition(productVideoCoordinator)
                 element.shouldRenderImageVariant = false
             }
 

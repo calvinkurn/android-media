@@ -42,10 +42,8 @@ class VideoPictureView @JvmOverloads constructor(
         if (videoPictureAdapter == null) {
             setupViewPagerCallback(productVideoCoordinator)
             setPageControl(media)
-        }
-
-        if (videoPictureAdapter == null || shouldRenderViewPager) {
             setupViewPager(media, productVideoCoordinator)
+            renderVideoAtFirstPosition(productVideoCoordinator)
         }
     }
 
@@ -61,8 +59,7 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         resetViewPagerToFirstPosition()
-
-        productVideoCoordinator?.onStopAndSaveLastPosition()
+        productVideoCoordinator?.pauseVideoAndSaveLastPosition()
     }
 
     private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
@@ -81,7 +78,7 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    fun renderVideoAtFirstPosition(productVideoCoordinator: ProductVideoCoordinator) {
+    private fun renderVideoAtFirstPosition(productVideoCoordinator: ProductVideoCoordinator) {
         pdp_view_pager?.addOneTimeGlobalLayoutListener {
             pdp_view_pager?.let {
                 productVideoCoordinator.onScrollChangedListener(it, 0)

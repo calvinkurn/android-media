@@ -357,10 +357,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 imageReviews = it.imageReviews
             }
 
-            mediaMap?.run {
-                shouldShowImageReview = it.imageReviews?.isNotEmpty() ?: false
-            }
-
             productDiscussionMostHelpfulMap?.run {
                 if (it.discussionMostHelpful == null) {
                     isShimmering = true

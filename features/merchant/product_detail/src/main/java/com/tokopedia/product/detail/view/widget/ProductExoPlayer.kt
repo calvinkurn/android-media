@@ -111,6 +111,7 @@ class ProductExoPlayer(val context: Context) {
         } else {
             exoPlayer.volume = 1F
         }
+        videoStateListener?.configureVolume(isMute)
     }
 
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
@@ -166,4 +167,5 @@ interface VideoStateListener {
     fun onInitialStateLoading()
     fun onVideoReadyToPlay()
     fun onVideoBuffering()
+    fun configureVolume(isMute: Boolean)
 }

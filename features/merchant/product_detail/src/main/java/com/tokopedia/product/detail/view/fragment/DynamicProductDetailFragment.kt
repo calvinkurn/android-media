@@ -308,6 +308,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
+        productVideoCoordinator.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         isLoadingInitialData = true
@@ -1698,7 +1699,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
-        dynamicAdapter.notifyDataSetChanged()
+        dynamicAdapter.notifyItemRangeChangesExceptFirstPosition()
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {

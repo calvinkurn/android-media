@@ -43,10 +43,8 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         mVideoId = data.id
         thumbnail = data.urlOriginal
         productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
-        setupVolume()
         setThumbnail()
         video_volume?.setOnClickListener {
-            setupVolume()
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
         video_full_screen?.setOnClickListener {
@@ -87,8 +85,8 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         pdp_video_loading?.hide()
     }
 
-    private fun setupVolume() {
-        video_volume?.setImageResource(if (mPlayer?.isMute() == true) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
+    private fun setupVolume(isMute: Boolean) {
+        video_volume?.setImageResource(if (!isMute) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(view) {
@@ -111,6 +109,10 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
 
                 override fun onVideoBuffering() {
                     showBufferLoading()
+                }
+
+                override fun configureVolume(isMute: Boolean) {
+                    setupVolume(isMute)
                 }
             })
             pdp_main_video.show()

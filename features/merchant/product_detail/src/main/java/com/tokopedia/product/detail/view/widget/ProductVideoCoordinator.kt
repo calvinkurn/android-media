@@ -107,13 +107,6 @@ class ProductVideoCoordinator(
         }
     }
 
-    /**
-     * Use this function when you want to fill the data when first/initial load
-     */
-    fun fillInitialData(data: List<ProductVideoDataModel>) {
-        this.productVideoDataModel = data.toMutableList()
-    }
-
     fun getVideoDataModel(): List<ProductVideoDataModel> {
         return productVideoDataModel
     }
@@ -126,6 +119,7 @@ class ProductVideoCoordinator(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
+        resetVideoCoordinator()
         scope.coroutineContext.cancelChildren()
         videoPlayer?.destroy()
     }
@@ -138,6 +132,14 @@ class ProductVideoCoordinator(
     fun pauseVideoAndSaveLastPosition() {
         videoPlayer?.pause()
         saveLastVideoPosition(currentVideoId)
+    }
+
+    private fun resetVideoCoordinator() {
+        onPause()
+        currentVideoId = ""
+        productVideoDataModel = mutableListOf()
+        videoPlayer = null
+        lastReceiverProduct = null
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {

@@ -245,7 +245,7 @@ fun View.isVisibleOnTheScreen(onViewVisible:() -> Unit, onViewNotVisible:() -> U
 }
 
 fun getVisiblePercent(v: View): Int {
-    if (v.isVisible) {
+    if (v.isShown) {
         val r = Rect()
         val isVisible = v.getGlobalVisibleRect(r)
         return if (isVisible) {
