@@ -1823,7 +1823,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         activity?.run {
             Toaster.build(
                     view = findViewById(android.R.id.content),
-                    text = reason.localizedMessage.orEmpty(),
+                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_fail),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
