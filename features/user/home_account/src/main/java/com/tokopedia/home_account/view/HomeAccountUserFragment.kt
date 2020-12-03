@@ -630,40 +630,28 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onItemViewBinded(position: Int, itemView: View) {
+    override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         if(accountPref.isShowCoachmark()) {
-            when (position) {
-                0 -> {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.account_user_item_profile_edit),
-                                    "Ubah data diri",
-                                    "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
-                                    CoachMark2.POSITION_BOTTOM
-                            )
+            if (position == 0 && data is ProfileDataView) {
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        itemView.findViewById(R.id.home_account_profile_member_section),
+                        "Info tentang akunmu ada di sini",
+                        "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
+                        CoachMark2.POSITION_BOTTOM
                     )
-
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_profile_financial_section),
-                                    "Cek jumlah dana dan investasimu",
-                                    "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
-                                    CoachMark2.POSITION_BOTTOM
-                            )
-                    )
-
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_profile_member_section),
-                                    "Lihat keuntunganmu di sini",
-                                    "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
-                                    CoachMark2.POSITION_TOP
-                            )
-                    )
-                }
+                )
             }
+            if (position == 1 && data is SettingDataView) {
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        itemView.findViewById(R.id.home_account_expandable_layout_title),
+                        "Ubah pengaturan dan cek info lainnya",
+                        "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
+                        CoachMark2.POSITION_TOP
+                    )
+                )
 
-            if (position == 0) {
                 context?.run {
                     val coachMark = CoachMark2(this)
                     coachMark.onFinishListener = {
