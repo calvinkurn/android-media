@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.app;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -62,7 +61,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.redirect.ClearActivity;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
@@ -82,7 +80,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
@@ -145,31 +142,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @NotNull
             @Override
             public Object execute() {
-                if (!checkAppSignature() || !checkPackageName()) {
-                    quitApp();
+                if (!checkAppSignature()) {
+                    killProcess(android.os.Process.myPid());
+                }
+                if (!checkPackageName()){
+                    killProcess(android.os.Process.myPid());
                 }
                 return true;
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
-    }
-
-    private void quitApp(){
-        if (isActivityRunning()) {
-            clearAllActivity();
-        } else {
-            killProcess(android.os.Process.myPid());
-        }
-    }
-
-    protected Boolean isActivityRunning() {
-        ActivityManager activityManager = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-        return tasks.size() > 0;
-    }
-
-    private void clearAllActivity() {
-        startActivity(new Intent(this, ClearActivity.class));
     }
 
     private boolean checkPackageName(){
