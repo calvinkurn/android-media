@@ -41,9 +41,12 @@ class VideoPictureView @JvmOverloads constructor(
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback(productVideoCoordinator)
-            setPageControl(media)
+        }
+
+        if (videoPictureAdapter == null || shouldRenderViewPager) {
             setupViewPager(media, productVideoCoordinator)
             renderVideoAtFirstPosition(productVideoCoordinator)
+            setPageControl(media)
         }
     }
 
@@ -70,7 +73,6 @@ class VideoPictureView @JvmOverloads constructor(
             VideoPictureAdapter(productVideoCoordinator, mListener!!::onVideoFullScreenClicked)
         }
 
-        pdp_view_pager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pdp_view_pager?.adapter = videoPictureAdapter
         videoPictureAdapter?.mediaData = mediaList
         pdp_view_pager.setPageTransformer { _, _ ->

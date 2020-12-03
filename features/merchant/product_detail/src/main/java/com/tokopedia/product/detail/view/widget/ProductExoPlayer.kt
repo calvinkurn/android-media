@@ -18,6 +18,9 @@ import com.google.android.exoplayer2.video.VideoListener
 
 /**
  * Created by Yehezkiel on 23/11/20
+ * ExoPlayer need to re-prepare if video url is changed, and this causing loading time when first open video.
+ * So we only prepare when needed, if next destination is also video type which means we need to change url. So we prepare it
+ * If next destination is not video type (image type) just pause the video.
  */
 class ProductExoPlayer(val context: Context) {
 
@@ -72,6 +75,11 @@ class ProductExoPlayer(val context: Context) {
         this.videoStateListener = videoStateListener
     }
 
+    /**
+     * @shouldPrepare
+     * True if last video is different with current video
+     * False if last video is same with current video (means we open the same video as before)
+     */
     fun start(videoUrl: String, lastVideoPosition: Long, isMute: Boolean, shouldPrepare: Boolean = true) {
         if (videoUrl.isBlank()) return
 
