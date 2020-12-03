@@ -29,7 +29,6 @@ class AddressRobot {
     fun searchWithKeyword(keyword: String) {
         waitForData()
         onView(withId(R.id.et_search))
-                .check(matches(isDisplayed()))
                 .check(matches(withContentDescription(R.string.content_desc_et_search)))
                 .perform (typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
