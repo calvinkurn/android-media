@@ -6,7 +6,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -24,13 +25,13 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchWithKeyword(keyword: String) {
-        waitForData()
         onView(withId(R.id.et_search))
-                .check(matches(withContentDescription(R.string.content_desc_et_search)))
-                .perform (typeText(keyword), closeSoftKeyboard())
+                .check(matches(isDisplayed()))
+                .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
         waitForData()
     }
