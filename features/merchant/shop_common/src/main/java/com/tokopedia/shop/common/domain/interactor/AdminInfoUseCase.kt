@@ -1,13 +1,13 @@
-package com.tokopedia.seller.active.common.domain.usecase
+package com.tokopedia.shop.common.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.active.common.data.query.AdminInfo
-import com.tokopedia.seller.active.common.domain.model.AdminInfoResponse
-import com.tokopedia.seller.active.common.domain.model.AdminInfoResult
+import com.tokopedia.shop.common.domain.interactor.model.AdminInfoResponse
+import com.tokopedia.shop.common.domain.interactor.model.AdminInfoResult
+import com.tokopedia.shop.common.data.source.cloud.query.AdminInfo
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

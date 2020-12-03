@@ -1,4 +1,4 @@
-package com.tokopedia.seller.active.common.data
+package com.tokopedia.shop.common.constant
 
 import androidx.annotation.StringDef
 
