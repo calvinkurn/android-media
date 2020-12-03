@@ -58,39 +58,43 @@ object RechargeHomepageSectionMapper {
     }
 
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
-        return sections.mapNotNull {
-            val id = it.id.toString()
-            with(RechargeHomepageViewModel.Companion) {
-                when (it.template) {
-                    SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
-                    SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
-                    SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
-                    SECTION_URGENCY_WIDGET -> {
-                        // Check if it is initial sections or not
-                        if (it.title.isEmpty() && it.items.isEmpty()) {
-                            ReminderWidgetModel(ReminderWidget(id), ReminderEnum.RECHARGE)
-                        } else {
-                            getReminderWidgetModel(it)
+        return sections.mapIndexedNotNull { index, it ->
+            if (index == 0) {
+                RechargeHomepageBannerEmptyModel(it)
+            } else {
+                val id = it.id.toString()
+                with(RechargeHomepageViewModel.Companion) {
+                    when (it.template) {
+                        SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
+                        SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
+                        SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
+                        SECTION_URGENCY_WIDGET -> {
+                            // Check if it is initial sections or not
+                            if (it.title.isEmpty() && it.items.isEmpty()) {
+                                ReminderWidgetModel(ReminderWidget(id), ReminderEnum.RECHARGE)
+                            } else {
+                                getReminderWidgetModel(it)
+                            }
                         }
-                    }
-                    SECTION_VIDEO_HIGHLIGHT-> RechargeHomepageVideoHighlightModel(it)
-                    SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
-                    SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
-                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
-                    SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
-                    SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
-                    SECTION_LEGO_BANNERS -> {
-                        // Check if it is initial sections or not
-                        if (it.title.isEmpty() && it.items.isEmpty()) {
-                            DynamicLegoBannerDataModel(ChannelModel(id, id))
-                        } else {
-                            getDynamicLegoBannerModel(it)
+                        SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
+                        SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
+                        SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
+                        SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                        SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                        SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
+                        SECTION_LEGO_BANNERS -> {
+                            // Check if it is initial sections or not
+                            if (it.title.isEmpty() && it.items.isEmpty()) {
+                                DynamicLegoBannerDataModel(ChannelModel(id, id))
+                            } else {
+                                getDynamicLegoBannerModel(it)
+                            }
                         }
+                        SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+                        SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                        SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
+                        else -> null
                     }
-                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
-                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
-                    SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
-                    else -> null
                 }
             }
         }
