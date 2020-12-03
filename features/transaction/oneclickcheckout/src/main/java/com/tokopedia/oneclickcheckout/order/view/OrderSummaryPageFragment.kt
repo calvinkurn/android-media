@@ -50,6 +50,10 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
 import com.tokopedia.oneclickcheckout.order.view.card.*
@@ -620,10 +624,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
                     val newView: View = when (onboarding.coachmarkType) {
-                        1 -> generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(it, detailIndexed.index)
-                        2 -> generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(it, detailIndexed.index)
-                        3 -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
-                        4 -> generateNewCoachMarkAnchorForExistingUserMultiProfile(it, detailIndexed.index)
+                        COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(it, detailIndexed.index)
+                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(it, detailIndexed.index)
+                        COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
+                        COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> generateNewCoachMarkAnchorForExistingUserMultiProfile(it, detailIndexed.index)
                         else -> it.findViewById(R.id.tv_header_2)
                     }
                     coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
@@ -636,10 +640,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 })
                 coachMark.onFinishListener = {
                     when (onboarding.coachmarkType) {
-                        1 -> orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                        2 -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                        3 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
-                        4 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
+                        COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
+                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                        COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
+                        COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
                     }
                 }
                 // manual scroll first item
@@ -658,20 +662,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int) {
         when (onboarding.coachmarkType) {
-            1 -> when (currentIndex) {
+            COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
             }
-            2 -> when (currentIndex) {
+            COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 2 -> orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
             }
-            3 -> when (currentIndex) {
+            COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserOneProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserOneProfile(userSession.get().userId)
             }
-            4 -> when (currentIndex) {
+            COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
             }
