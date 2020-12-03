@@ -39,6 +39,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCESSED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
@@ -57,6 +58,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CUSTOMER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIKIRIM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIPROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
@@ -88,6 +90,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORD
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIKIRIM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIPROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA_DI_TUJUAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
@@ -269,6 +272,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_UOH_WAITING_CONFIRMATION -> {
                         status = STATUS_MENUNGGU_KONFIRMASI
                         statusLabel = MENUNGGU_KONFIRMASI
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_PROCESSED -> {
+                        status = STATUS_DIPROSES
+                        statusLabel = DIPROSES
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_UOH_SENT -> {
@@ -722,6 +730,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
                 filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
                 filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true) ||
+                filterStatus.equals(PARAM_UOH_PROCESSED, true) ||
                 filterStatus.equals(PARAM_UOH_SENT, true) ||
                 filterStatus.equals(PARAM_UOH_DELIVERED, true) ||
                 filterStatus.equals(PARAM_DIGITAL, true) ||
@@ -748,6 +757,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
                         || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
             filter3?.title = orderList.categories.first().label
@@ -859,6 +869,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if ((filterStatus.equals(PARAM_MARKETPLACE, true)
                         || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                         && !isReset) {

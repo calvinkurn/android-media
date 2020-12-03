@@ -18,6 +18,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_MARKETPLACE = "marketplace"
     const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
     const val PARAM_UOH_WAITING_CONFIRMATION = "uoh_waiting_confirmation"
+    const val PARAM_UOH_PROCESSED = "uoh_processed"
     const val PARAM_UOH_SENT = "uoh_sent"
     const val PARAM_UOH_DELIVERED = "uoh_delivered"
     const val PARAM_DIGITAL = "digital"
@@ -142,6 +143,9 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_WAITING_CONFIRMATION = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_WAITING_CONFIRMATION"
+
+    @JvmField
+    val UNIFY_ORDER_PROCESSED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_PROCESSED"
 
     @JvmField
     val UNIFY_ORDER_SENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_SENT"

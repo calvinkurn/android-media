@@ -11,6 +11,7 @@ object UohConsts {
     const val DIKIRIM = "Dikirim"
     const val TIBA_DI_TUJUAN = "Tiba Di Tujuan"
     const val MENUNGGU_KONFIRMASI = "Menunggu Konfirmasi"
+    const val DIPROSES = "Diproses"
     const val SEMUA_TRANSAKSI_BERLANGSUNG = "Semua Transaksi Berlangsung"
     const val ALL_PRODUCTS = "Semua Produk"
     const val CHOOSE_DATE = "Pilih Tanggal"
@@ -137,6 +138,7 @@ object UohConsts {
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
 
     const val STATUS_MENUNGGU_KONFIRMASI = "menunggu_konfirmasi"
+    const val STATUS_DIPROSES = "diproses"
     const val STATUS_DIKIRIM = "dikirim"
     const val STATUS_TIBA_DI_TUJUAN = "tiba_di_tujuan"
 }

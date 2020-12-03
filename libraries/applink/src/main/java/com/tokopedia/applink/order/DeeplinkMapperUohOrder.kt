@@ -41,6 +41,11 @@ object DeeplinkMapperUohOrder {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_WAITING_CONFIRMATION
             else getInternalDeeplink(context, deeplink)
 
+        } else if (deeplink.equals(PURCHASE_PROCESSED, true)
+                || deeplink.equals(MARKETPLACE_ORDER_PROCESSED, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PROCESSED
+            else getInternalDeeplink(context, deeplink)
+
         } else if (deeplink.equals(PURCHASE_SHIPPED, true)
                 || deeplink.equals(MARKETPLACE_SENT, true)) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_SENT
