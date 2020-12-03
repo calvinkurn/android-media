@@ -9,6 +9,15 @@ data class CheckoutGeneralV2Params(
         val carts : Carts = Carts()
 )
 
+data class CheckoutGeneralV2InstantParams(
+        @SerializedName("carts")
+        @Expose
+        val carts : Carts = Carts(),
+        @SerializedName("gateway_code")
+        @Expose
+        val gatewayCode : String = ""
+)
+
 data class Carts(
         @SerializedName("business_type")
         @Expose
