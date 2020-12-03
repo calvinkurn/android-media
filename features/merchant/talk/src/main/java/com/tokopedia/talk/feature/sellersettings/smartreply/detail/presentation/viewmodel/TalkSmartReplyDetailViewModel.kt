@@ -18,48 +18,28 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    private val _setSmartReplyResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<DiscussionSmartReplyMutationResult>>()
-    val setSmartReplyResult: LiveData<com.tokopedia.usecase.coroutines.Result<DiscussionSmartReplyMutationResult>>
+    private val _setSmartReplyResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<String>>()
+    val setSmartReplyResult: LiveData<com.tokopedia.usecase.coroutines.Result<String>>
         get() = _setSmartReplyResult
 
-    private val _setSmartReplyTemplateResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<DiscussionSmartReplyMutationResult>>()
-    val setSmartReplyTemplateResult: LiveData<com.tokopedia.usecase.coroutines.Result<DiscussionSmartReplyMutationResult>>
+    private val _setSmartReplyTemplateResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<String>>()
+    val setSmartReplyTemplateResult: LiveData<com.tokopedia.usecase.coroutines.Result<String>>
         get() = _setSmartReplyTemplateResult
 
 
-    private var isSmartReplyOn: Boolean = false
-    private var messageReady: String = ""
-    private var messageNotReady: String = ""
-
-    fun setIsSmartReplyOn(isSmartReplyOn: Boolean) {
-        this.isSmartReplyOn = isSmartReplyOn
-    }
-
-    fun setMessageReady(messageReady: String) {
-        this.messageReady = messageReady
-    }
-
-    fun setMessageNotReady(messageNotReady: String) {
-        this.messageNotReady = messageNotReady
-    }
-
-    fun getIsSmartReplyOn(): Boolean {
-        return isSmartReplyOn
-    }
-
-    fun getMessageReady(): String {
-        return messageReady
-    }
-
-    fun getMessageNotReady(): String {
-        return messageNotReady
-    }
+    var isSmartReplyOn: Boolean = false
+    var messageReady: String = ""
+    var messageNotReady: String = ""
 
     fun setSmartReply() {
         launchCatchError(block = {
             discussionSetSmartReplySettingsUseCase.setRequestParams(isSmartReplyOn)
             val response = discussionSetSmartReplySettingsUseCase.executeOnBackground()
-            _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplySetting))
+            if (response.discussionSetSmartReplySetting.isSuccess) {
+                _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplySetting.reason))
+            } else {
+                _setSmartReplyResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplySetting.reason)))
+            }
         }) {
             _setSmartReplyResult.postValue(Fail(it))
         }
@@ -69,9 +49,13 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         launchCatchError(block = {
             discussionSetSmartReplyTemplateUseCase.setParams(messageReady, messageNotReady)
             val response = discussionSetSmartReplyTemplateUseCase.executeOnBackground()
-            _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplyTemplate))
+            if (response.discussionSetSmartReplyTemplate.isSuccess) {
+                _setSmartReplyTemplateResult.postValue(Success(response.discussionSetSmartReplyTemplate.reason))
+            } else {
+                _setSmartReplyTemplateResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplyTemplate.reason)))
+            }
         }) {
-            _setSmartReplyResult.postValue(Fail(it))
+            _setSmartReplyTemplateResult.postValue(Fail(it))
         }
     }
 
