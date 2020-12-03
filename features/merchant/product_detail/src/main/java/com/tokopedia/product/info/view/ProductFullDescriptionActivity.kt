@@ -32,6 +32,6 @@ class ProductFullDescriptionActivity : BaseSimpleActivity(){
             descriptionData = getParcelableExtra(PARAM_DESCRIPTION_DATA)
         }
         super.onCreate(savedInstanceState)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default))
+        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.design.R.drawable.ic_close_default))
     }
 }

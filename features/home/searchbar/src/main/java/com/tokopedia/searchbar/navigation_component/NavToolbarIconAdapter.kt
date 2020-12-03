@@ -140,7 +140,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
                 iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.icon_enable_default_color))
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color))
             }
         }
 
