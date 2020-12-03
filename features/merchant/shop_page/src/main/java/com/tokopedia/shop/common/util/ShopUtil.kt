@@ -29,7 +29,7 @@ object ShopUtil {
 
     fun isUsingNewNavigation(): Boolean {
         val navType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AbTestPlatform.NAVIGATION_VARIANT_REVAMP,
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV,
                 AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
         return (navType == AbTestPlatform.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
