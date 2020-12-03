@@ -2,9 +2,10 @@ package com.tokopedia.sellerorder.oldlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.oldlist.data.model.*
+import com.tokopedia.sellerorder.oldlist.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.oldlist.domain.filter.SomGetAllFilterUseCase
 import com.tokopedia.sellerorder.oldlist.presentation.viewmodel.SomFilterViewModel
+import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -58,7 +59,6 @@ class SomFilterViewModelTest {
     // shipping_list
     @Test
     fun getShippingList_shouldReturnSuccess() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -67,17 +67,17 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getShippingListResult()
         } returns Success(SomListAllFilter.Data(orderShippingList = listShipping).orderShippingList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val shippingListResult = somFilterViewModel.shippingListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.shippingListResult.value is Success)
-        assert((somFilterViewModel.shippingListResult.value as Success<MutableList<SomListAllFilter.Data.ShippingList>>).data.first().shippingId == 123)
+        assert(shippingListResult is Success)
+        assert((shippingListResult as Success<MutableList<SomListAllFilter.Data.ShippingList>>).data.first().shippingId == 123)
+        assert(filterListResult is Success && filterListResult.data)
     }
 
     @Test
     fun getShippingList_shouldReturnFail() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -86,16 +86,14 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getShippingListResult()
         } returns Fail(Throwable())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
 
-        //then
-        assert(somFilterViewModel.shippingListResult.value is Fail)
+        assert(somFilterViewModel.shippingListResult.observeAwaitValue() is Fail)
+        assert(somFilterViewModel.filterListResult.observeAwaitValue() is Fail)
     }
 
     @Test
     fun getShippingList_shouldNotReturnEmpty() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -104,18 +102,18 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getShippingListResult()
         } returns Success(SomListAllFilter.Data(orderShippingList = listShipping).orderShippingList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val shippingListResult = somFilterViewModel.shippingListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.shippingListResult.value is Success)
-        assert((somFilterViewModel.shippingListResult.value as Success<MutableList<SomListAllFilter.Data.ShippingList>>).data.size > 0)
+        assert(shippingListResult is Success)
+        assert((shippingListResult as Success<MutableList<SomListAllFilter.Data.ShippingList>>).data.size > 0)
+        assert(filterListResult is Success && filterListResult.data)
     }
 
     // status_order_list
     @Test
     fun getStatusOrderList_shouldReturnSuccess() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -124,17 +122,17 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getStatusOrderListResult()
         } returns Success(SomListAllFilter.Data.OrderFilterSomSingle(statusList = listStatusOrder).statusList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val statusOrderListResult = somFilterViewModel.statusOrderListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.statusOrderListResult.value is Success)
-        assert((somFilterViewModel.statusOrderListResult.value as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.first().id == 123)
+        assert(statusOrderListResult is Success)
+        assert((statusOrderListResult as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.first().id == 123)
+        assert(filterListResult is Success && filterListResult.data)
     }
 
     @Test
     fun getStatusOrderList_shouldReturnFail() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -143,16 +141,14 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getStatusOrderListResult()
         } returns Fail(Throwable())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
 
-        //then
-        assert(somFilterViewModel.statusOrderListResult.value is Fail)
+        assert(somFilterViewModel.statusOrderListResult.observeAwaitValue() is Fail)
+        assert(somFilterViewModel.filterListResult.observeAwaitValue() is Fail)
     }
 
     @Test
     fun getStatusOrderList_shouldNotReturnEmpty() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -161,18 +157,18 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getStatusOrderListResult()
         } returns Success(SomListAllFilter.Data.OrderFilterSomSingle(statusList = listStatusOrder).statusList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val statusOrderListResult = somFilterViewModel.statusOrderListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.statusOrderListResult.value is Success)
-        assert((somFilterViewModel.statusOrderListResult.value as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.size > 0)
+        assert(statusOrderListResult is Success)
+        assert((statusOrderListResult as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.size > 0)
+        assert(filterListResult is Success && filterListResult.data)
     }
 
     // order_type_list
     @Test
     fun getOrderTypeList_shouldReturnSuccess() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -181,17 +177,17 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getOrderTypeListResult()
         } returns Success(SomListAllFilter.Data(orderTypeList = listOrderType).orderTypeList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val orderTypeListResult = somFilterViewModel.orderTypeListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.orderTypeListResult.value is Success)
-        assert((somFilterViewModel.orderTypeListResult.value as Success<MutableList<SomListAllFilter.Data.OrderType>>).data.first().id == 123)
+        assert(orderTypeListResult is Success)
+        assert((orderTypeListResult as Success<MutableList<SomListAllFilter.Data.OrderType>>).data.first().id == 123)
+        assert(filterListResult is Success && filterListResult.data)
     }
 
     @Test
     fun getOrderTypeList_shouldReturnFail() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -200,16 +196,14 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getOrderTypeListResult()
         } returns Fail(Throwable())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
 
-        //then
-        assert(somFilterViewModel.orderTypeListResult.value is Fail)
+        assert(somFilterViewModel.orderTypeListResult.observeAwaitValue() is Fail)
+        assert(somFilterViewModel.filterListResult.observeAwaitValue() is Fail)
     }
 
     @Test
     fun getOrderTypeList_shouldNotReturnEmpty() {
-        //given
         coEvery {
             somGetAllFilterUseCase.execute(any())
         } returns Unit
@@ -218,11 +212,12 @@ class SomFilterViewModelTest {
             somGetAllFilterUseCase.getOrderTypeListResult()
         } returns Success(SomListAllFilter.Data(orderTypeList = listOrderType).orderTypeList.toMutableList())
 
-        //when
         somFilterViewModel.loadSomFilterData("")
+        val filterListResult = somFilterViewModel.filterListResult.observeAwaitValue()
+        val orderTypeListResult = somFilterViewModel.orderTypeListResult.observeAwaitValue()
 
-        //then
-        assert(somFilterViewModel.orderTypeListResult.value is Success)
-        assert((somFilterViewModel.orderTypeListResult.value as Success<MutableList<SomListAllFilter.Data.OrderType>>).data.size > 0)
+        assert(orderTypeListResult is Success)
+        assert((orderTypeListResult as Success<MutableList<SomListAllFilter.Data.OrderType>>).data.size > 0)
+        assert(filterListResult is Success && filterListResult.data)
     }
 }

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SmileyModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SmileyModel;
 
 import java.util.ArrayList;
 

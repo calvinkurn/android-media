@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:text="@string/regular_merchant"
             android:gravity="center_vertical"
-            android:textColor="@color/default_black_text"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
@@ -73,7 +73,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="@string/setting_verifikasi"
-            android:textColor="@color/setting_green"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintStart_toEndOf="@id/triangle"
