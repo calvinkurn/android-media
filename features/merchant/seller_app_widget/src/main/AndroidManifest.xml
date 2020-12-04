@@ -33,5 +33,10 @@
             android:name=".view.service.GetOrderService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".view.service.GetChatService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>
