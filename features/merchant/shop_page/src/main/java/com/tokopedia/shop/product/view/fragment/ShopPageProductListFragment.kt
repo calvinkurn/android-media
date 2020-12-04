@@ -1123,7 +1123,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
                     stopMonitoringPltRenderPage()
                     stopMonitoringPerformance()
-                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    view?.let { view ->
+                        getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         })
