@@ -41,7 +41,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val adminPermissionUseCase: AdminPermissionUseCase,
+        private val adminPermissionUseCase: AdminPermissionUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
