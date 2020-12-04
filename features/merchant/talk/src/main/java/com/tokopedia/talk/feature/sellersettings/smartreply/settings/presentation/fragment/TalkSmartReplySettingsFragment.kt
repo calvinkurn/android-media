@@ -14,6 +14,8 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTalkSmartReplySettingsComponent
@@ -58,6 +60,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        showLoading()
         observeSmartReplyData()
         setDescriptionText()
         setTncText()
@@ -76,6 +79,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                     with(it.data) {
                         updateStatisticsData(totalQuestion, totalAnsweredBySmartReply, replySpeed)
                         updateIsSmartReplyOnLabel(isSmartReplyOn)
+                        hideLoading()
                     }
                 }
                 is Fail -> {
@@ -149,6 +153,14 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                 findNavController().navigateUp()
             }
         })
+    }
+
+    private fun showLoading() {
+        talkSmartReplySettingsLoading.show()
+    }
+
+    private fun hideLoading() {
+        talkSmartReplySettingsLoading.hide()
     }
 
 }
