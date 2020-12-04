@@ -15,6 +15,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
 
@@ -28,7 +29,7 @@ class AddressRobot {
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(withContentDescription(R.string.content_desc_et_search))
+        onView(allOf(withId(R.id.et_search), withContentDescription(R.string.content_desc_et_search)))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
