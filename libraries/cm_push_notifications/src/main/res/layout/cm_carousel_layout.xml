@@ -11,7 +11,8 @@
         android:id="@+id/iv_appIcon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/qc_launcher" />
+        android:src="@drawable/qc_launcher"
+        android:contentDescription="@string/cm_app_title_name" />
 
     <TextView
         android:id="@+id/tv_appName"
@@ -55,7 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            android:src="@drawable/bg_button_white" />
+            android:src="@drawable/bg_button_white"
+            android:contentDescription="@string/cm_app_title_name"/>
 
         <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
@@ -69,7 +71,8 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="8dp"
-            android:src="@drawable/cm_ic_arrow" />
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@string/cm_app_title_name"/>
 
         <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
@@ -84,7 +87,8 @@
             android:focusable="true"
             android:padding="8dp"
             android:rotation="180"
-            android:src="@drawable/cm_ic_arrow" />
+            android:src="@drawable/cm_ic_arrow"
+            android:contentDescription="@string/cm_app_title_name"/>
 
     </RelativeLayout>
 
