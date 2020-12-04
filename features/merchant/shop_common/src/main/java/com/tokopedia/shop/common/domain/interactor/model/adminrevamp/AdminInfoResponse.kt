@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.domain.interactor.model
+package com.tokopedia.shop.common.domain.interactor.model.adminrevamp
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -12,7 +12,7 @@ data class AdminInfoResponse(
 data class GetAdminInfo(
         @SerializedName("admin_data")
         @Expose
-        val adminData: AdminInfoData? = AdminInfoData()
+        val adminData: List<AdminInfoData>? = listOf()
 )
 
 data class AdminInfoData(
@@ -24,11 +24,11 @@ data class AdminInfoData(
         val detailInfo: AdminInfoDetailInformation? = AdminInfoDetailInformation(),
         @SerializedName("response_detail")
         @Expose
-        val responseDetail: AdminInfoResponseDetail? = AdminInfoResponseDetail()
+        val responseDetail: AdminResponseDetail? = AdminResponseDetail()
 )
 
 sealed class AdminInfoResult {
-        class Success(val data: AdminInfoData): AdminInfoResult()
+        class Success(val data: AdminInfoData?): AdminInfoResult()
         class Fail(val throwable: Exception): AdminInfoResult()
 }
 
@@ -48,19 +48,4 @@ data class AdminRoleType(
         @SerializedName("is_shop_owner")
         @Expose
         val isShopOwner: Boolean? = false
-)
-
-data class AdminPermission(
-        @SerializedName("permission_id")
-        @Expose
-        val id: String? = ""
-)
-
-data class AdminInfoResponseDetail(
-        @SerializedName("code")
-        @Expose
-        val code: Int? = 0,
-        @SerializedName("error_message")
-        @Expose
-        val errorMessage: String? = ""
 )

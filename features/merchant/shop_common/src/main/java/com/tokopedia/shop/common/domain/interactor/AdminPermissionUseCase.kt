@@ -5,8 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.common.domain.interactor.model.AdminInfoResponse
-import com.tokopedia.shop.common.data.source.cloud.query.AdminInfo
+import com.tokopedia.shop.common.data.source.cloud.query.AdminPermissionList
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -17,10 +17,10 @@ class AdminPermissionUseCase @Inject constructor(
 
         private const val ERROR_MESSAGE = "Failed getting admin permission response"
 
-        fun createRequestParams(shopId: String) =
+        fun createRequestParams(shopId: Int) =
                 RequestParams.create().apply {
                     putString(AdminInfoUseCase.SOURCE_KEY, AdminInfoUseCase.SOURCE)
-                    putString(AdminInfoUseCase.SHOP_ID_KEY, shopId)
+                    putInt(AdminInfoUseCase.SHOP_ID_KEY, shopId)
                 }
     }
 
@@ -28,7 +28,7 @@ class AdminPermissionUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(AdminInfo.QUERY)
+        setGraphqlQuery(AdminPermissionList.QUERY)
         setTypeClass(AdminInfoResponse::class.java)
     }
 
@@ -37,11 +37,11 @@ class AdminPermissionUseCase @Inject constructor(
         setRequestParams(requestParams.parameters)
         val response = executeOnBackground()
         response.adminInfo?.adminData?.let { adminData ->
-            adminData.responseDetail?.errorMessage.let { error ->
+            adminData.firstOrNull()?.responseDetail?.errorMessage.let { error ->
                 if (error.isNullOrEmpty()) {
                     return getIsPermissionValid(
                             permissionToCheck.toList(),
-                            adminData.permissionList?.map { it.id }
+                            adminData.firstOrNull()?.permissionList?.map { it.id }
                     )
                 } else {
                     throw MessageErrorException(error)

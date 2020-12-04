@@ -15,11 +15,14 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -37,7 +40,8 @@ class SomListViewModel @Inject constructor(
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
-        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
+        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
+        private val adminPermissionUseCase: AdminPermissionUseCase,
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
@@ -72,6 +76,16 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
+    private val _isAdminEligible = MutableLiveData<Result<Boolean>>()
+    val isAdminEligible: LiveData<Result<Boolean>>
+        get() = _isAdminEligible
+
+    private val _canShowOrderData = MutableLiveData<Boolean>().apply {
+        value = true
+    }
+    val canShowOrderData: LiveData<Boolean>
+        get() = _canShowOrderData
+
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
@@ -82,6 +96,8 @@ class SomListViewModel @Inject constructor(
             }
         }
     }
+
+    private var getAdminPermissionJob: Job? = null
 
     init {
         bulkAcceptOrderStatusResult.apply {
@@ -168,7 +184,10 @@ class SomListViewModel @Inject constructor(
 
     fun getFilters() {
         launchCatchError(block = {
-            _filterResult.postValue(somListGetFilterListUseCase.execute())
+            getAdminPermissionJob?.join()
+            if (_canShowOrderData.value == true) {
+                _filterResult.postValue(somListGetFilterListUseCase.execute())
+            }
         }, onError = {
             _filterResult.postValue(Fail(it))
         })
@@ -176,7 +195,10 @@ class SomListViewModel @Inject constructor(
 
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
-            _waitingPaymentCounterResult.postValue(somListGetWaitingPaymentUseCase.execute())
+            getAdminPermissionJob?.join()
+            if (_canShowOrderData.value == true) {
+                _waitingPaymentCounterResult.postValue(somListGetWaitingPaymentUseCase.execute())
+            }
         }, onError = {
             _waitingPaymentCounterResult.postValue(Fail(it))
         })
@@ -187,8 +209,11 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob?.join()
+            getAdminPermissionJob?.join()
             getOrderListParams.nextOrderId = result.first
-            _orderListResult.postValue(Success(result.second))
+            if (_canShowOrderData.value == true) {
+                _orderListResult.postValue(Success(result.second))
+            }
         }, onError = {
             _orderListResult.postValue(Fail(it))
         })
@@ -262,5 +287,22 @@ class SomListViewModel @Inject constructor(
 
     fun setSortOrderBy(value: Int) {
         this.getOrderListParams.sortBy = value
+    }
+
+    fun getAdminPermission() {
+        if (getAdminPermissionJob == null || getAdminPermissionJob?.isCompleted == false) {
+            getAdminPermissionJob = launchCatchError(
+                    block = {
+                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
+                            _isAdminEligible.postValue(Success(isEligible ?: false))
+                            _canShowOrderData.postValue(isEligible)
+                        }
+                    },
+                    onError = {
+                        _isAdminEligible.postValue(Fail(it))
+                    }
+            )
+        }
     }
 }

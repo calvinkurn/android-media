@@ -9,8 +9,7 @@
         android:id="@+id/iv_admin_no_permission"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline_no_permission"
         app:layout_constraintBottom_toTopOf="@id/tv_admin_no_permission_title"
         app:srcCompat="@drawable/ic_admin_no_permission"/>
 
@@ -25,6 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_3"
         app:layout_constraintTop_toBottomOf="@id/iv_admin_no_permission"
+        app:layout_constraintBottom_toTopOf="@id/tv_admin_no_permission_desc"
         tools:text="Kamu tidak punya izin untuk mengakses halaman Penjualan"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -39,6 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_2"
         app:layout_constraintTop_toBottomOf="@id/tv_admin_no_permission_title"
+        app:layout_constraintBottom_toTopOf="@id/btn_admin_no_permission"
         tools:text="Hubungi pemilik toko untuk bisa mengakses halaman Penjualan, ya."/>
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -46,10 +47,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/admin_no_permission_action"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"
         app:unifyButtonType="main"
         app:unifyButtonSize="large"
-        app:layout_constraintTop_toBottomOf="@id/tv_admin_no_permission_desc"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="@id/guideline_no_permission"
+        app:layout_constraintTop_toBottomOf="@id/tv_admin_no_permission_desc"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_no_permission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
