@@ -50,8 +50,8 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     override fun onBackPressed() {
         if (intent.getBooleanExtra(EXTRA_IS_EDIT_MODE, false)) {
             ProductCategoryTracking.clickBackOtherCategory(UserSession(this).shopId)
-            finish()
         }
+        finish()
     }
 
     private fun setupUi() {
