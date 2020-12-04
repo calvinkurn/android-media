@@ -46,8 +46,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private var mapOfDataModel = mutableMapOf<String, Visitable<*>>()
     private val shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel?
         get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightUiModel
-    private val membershipStampViewModel: MembershipStampProgressViewModel?
-        get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressViewModel
+    private val membershipStampUiModel: MembershipStampProgressUiModel?
+        get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressUiModel
     private val shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel?
         get() = mapOfDataModel[KEY_MERCHANT_VOUCHER_DATA_MODEL] as? ShopMerchantVoucherViewModel
     private val shopProductFeaturedUiModel: ShopProductFeaturedUiModel?
@@ -284,7 +284,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun clearMembershipData() {
-        membershipStampViewModel?.let {
+        membershipStampUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -338,7 +338,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setMembershipDataModel(data: MembershipStampProgressViewModel) {
+    fun setMembershipDataModel(data: MembershipStampProgressUiModel) {
         if (!mapOfDataModel.containsKey(KEY_MEMBERSHIP_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -413,7 +413,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun refreshMembershipData() {
-        membershipStampViewModel?.let {
+        membershipStampUiModel?.let {
             notifyChangedItem(visitables.indexOf(it))
         }
     }
@@ -466,7 +466,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductSortFilterUiModel -> {
                     mutableMapDataModelPosition[KEY_SORT_FILTER_DATA_MODEL] = data
                 }
-                is MembershipStampProgressViewModel -> {
+                is MembershipStampProgressUiModel -> {
                     mutableMapDataModelPosition[KEY_MEMBERSHIP_DATA_MODEL] = data
                 }
                 is ShopMerchantVoucherViewModel -> {

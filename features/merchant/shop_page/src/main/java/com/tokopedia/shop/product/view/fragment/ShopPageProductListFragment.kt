@@ -1256,7 +1256,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetMembershipData(data: MembershipStampProgressViewModel) {
+    private fun onSuccessGetMembershipData(data: MembershipStampProgressUiModel) {
         if (data.listOfData.isNotEmpty()) {
             shopProductAdapter.setMembershipDataModel(data)
         }

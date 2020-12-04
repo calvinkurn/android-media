@@ -66,8 +66,8 @@ class ShopPageProductListViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
-    val membershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
-    val newMembershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
+    val membershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
+    val newMembershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
     val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedUiModel>>()
@@ -218,10 +218,10 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
-    private suspend fun getMembershipData(shopId: String): MembershipStampProgressViewModel {
+    private suspend fun getMembershipData(shopId: String): MembershipStampProgressUiModel {
         getMembershipUseCase.params = GetMembershipUseCaseNew.createRequestParams(shopId.toIntOrZero())
         val memberShipResponse = getMembershipUseCase.executeOnBackground()
-        return MembershipStampProgressViewModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
+        return MembershipStampProgressUiModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
     private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherViewModel? {
