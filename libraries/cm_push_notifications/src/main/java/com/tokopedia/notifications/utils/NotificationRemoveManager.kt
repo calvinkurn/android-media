@@ -50,9 +50,8 @@ open class NotificationRemoveManager(
 
     companion object {
         private val excludeListByCampaignId = listOf(
-                "-334",
-                "321",
-                "456"
+                // OTP Push Notification
+                "-1854"
         )
     }
 
