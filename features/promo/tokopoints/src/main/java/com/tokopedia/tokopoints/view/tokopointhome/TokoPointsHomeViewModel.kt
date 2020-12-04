@@ -39,8 +39,8 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
             if (data.tokopediaRewardTopSection?.isShowSavingPage == true) {
                 deferredSavingData = async { getUserSavingData() }
             }
-            if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection!!, deferredSavingData?.await()?.tokopointsUserSaving), dataSection.sectionContent.sectionContent))
+            if (data != null && dataSection != null && dataSection.sectionContent != null && data.tokopediaRewardTopSection != null) {
+                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection, deferredSavingData?.await()?.tokopointsUserSaving), dataSection.sectionContent.sectionContent))
             } else {
                 throw NullPointerException("error in data")
             }

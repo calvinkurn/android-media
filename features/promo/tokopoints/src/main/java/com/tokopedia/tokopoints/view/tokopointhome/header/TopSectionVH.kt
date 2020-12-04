@@ -49,7 +49,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var savingDesc: TextView? = null
     private var cardContainer: ConstraintLayout? = null
     private var containerUserSaving: ConstraintLayout? = null
-
+    private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
 
@@ -89,7 +89,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             } else {
                 mTargetText?.text = Html.fromHtml(it.text)
             }
-            customBackground(cardTierInfo,Color.parseColor("#" + it.backgroundColor),16F)
+            customBackground(cardTierInfo, Color.parseColor("#" + it.backgroundColor), MEMBER_STATUS_BG_RADII)
             cardTierInfo.setOnClickListener {
                 RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
                 AnalyticsTrackerUtil.sendEvent(itemView.context,
