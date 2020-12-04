@@ -44,10 +44,10 @@ data class KeywordDataItem(
         var bidSuggest: Int = 0,
 
         @field:SerializedName("total_search")
-        val totalSearch: String = "",
+        var totalSearch: String = "",
 
         @field:SerializedName("keyword")
-        val keyword: String = "",
+        var keyword: String = "",
 
         @field:SerializedName("source")
         val source: String = "",

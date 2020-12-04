@@ -83,6 +83,7 @@ class AddEditProductDescriptionFragment:
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
         const val VIDEO_REQUEST_DELAY = 250L
+        const val VALIDATE_REQUEST_DELAY = 250L
     }
 
     private lateinit var userSession: UserSessionInterface
@@ -209,7 +210,7 @@ class AddEditProductDescriptionFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription.textFieldInput.apply {
@@ -223,6 +224,7 @@ class AddEditProductDescriptionFragment:
                     textFieldDescription.setMessage("")
                     textFieldDescription.setError(false)
                 }
+                validateDescriptionText(it)
             }
         }
 
@@ -290,6 +292,7 @@ class AddEditProductDescriptionFragment:
         hideKeyboardWhenTouchOutside()
 
         observeProductInputModel()
+        observeDescriptionValidation()
         observeProductVideo()
 
         // PLT Monitoring
@@ -429,6 +432,12 @@ class AddEditProductDescriptionFragment:
         })
     }
 
+    private fun observeDescriptionValidation() {
+        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
+            updateDescriptionFieldErrorMessage(it)
+        })
+    }
+
     private fun updateVariantLayout() {
         if (descriptionViewModel.hasVariant) {
             tvEditVariant.visible()
@@ -518,6 +527,18 @@ class AddEditProductDescriptionFragment:
                 }
             }
         }
+    }
+
+    private fun validateDescriptionText(it: String) {
+        view?.postDelayed({
+            descriptionViewModel.validateProductDescriptionInput(it)
+        }, VALIDATE_REQUEST_DELAY)
+    }
+
+    private fun updateDescriptionFieldErrorMessage(message: String) {
+        textFieldDescription.setMessage(message)
+        textFieldDescription.setError(message.isNotEmpty())
+        btnSave.isEnabled = message.isEmpty()
     }
 
     private fun applyEditMode() {

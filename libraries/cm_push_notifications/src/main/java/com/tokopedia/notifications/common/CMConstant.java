@@ -189,10 +189,12 @@ public interface CMConstant {
 
     interface CouponCodeExtra {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface TimberTags {

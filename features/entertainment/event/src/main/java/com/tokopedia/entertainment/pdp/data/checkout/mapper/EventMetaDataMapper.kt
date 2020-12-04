@@ -15,17 +15,19 @@ object EventMetaDataMapper {
 
     fun getPassengerMetaData(metaDataResponse: MetaDataResponse, forms: List<Form>,
                              listAdditionalDataItems: List<EventCheckoutAdditionalData>,
-                             additionalDataPackage: EventCheckoutAdditionalData): MetaDataResponse {
+                             additionalDataPackage: EventCheckoutAdditionalData,
+                             missString: String
+    ): MetaDataResponse {
 
         val passengerInformation = forms.map {
-            val value = getValueForm(it)
+            val value = getValueForm(it, missString)
             PassengerInformation(it.name, value, it.title)
         }.toMutableList()
 
         if(additionalDataPackage.listForm.isNotEmpty() &&
                 additionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)){
             additionalDataPackage.listForm.map {
-                val value = getValueForm(it)
+                val value = getValueForm(it, missString)
                 passengerInformation.add(PassengerInformation(it.name, value, it.title))
             }
         }
@@ -39,7 +41,7 @@ object EventMetaDataMapper {
                     for (additionalItem in listAdditionalDataItems) {
                         if (itemMap.id.equals(additionalItem.idItemMap) && additionalItem.additionalType.equals(AdditionalType.ITEM_FILLED)) {
                             val passengerInformationItem = additionalItem.listForm.map {
-                                val value = getValueForm(it)
+                                val value = getValueForm(it, missString)
                                 PassengerInformation(it.name, value, it.title)
                             }.toMutableList()
                             val passengerFormItem = PassengerForm(passengerInformationItem)
@@ -52,8 +54,11 @@ object EventMetaDataMapper {
         return metaDataResponse
     }
 
-    private fun getValueForm(form: Form):String{
-        return if(form.elementType.equals(ELEMENT_LIST)) form.valuePosition else form.value
+    private fun getValueForm(form: Form, missString: String):String{
+        return if(form.value.equals(missString, false)) ""
+        else if(form.elementType.equals(ELEMENT_LIST)) form.valuePosition
+        else form.value
+
     }
 
     fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2Params {
@@ -63,6 +68,15 @@ object EventMetaDataMapper {
         checkoutGeneralV2Params.carts.businessType = productDetailData.checkoutBusinessType
         checkoutGeneralV2Params.carts.cartInfo.add(0, cartInfo)
         return checkoutGeneralV2Params
+    }
+
+    fun getCheckoutParamInstant(gatewayCode:String, metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2InstantParams {
+        val gson = Gson()
+        val checkoutGeneralV2InstantParams = CheckoutGeneralV2InstantParams(gatewayCode = gatewayCode)
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse,productDetailData,packageV3)),productDetailData.checkoutDataType)
+        checkoutGeneralV2InstantParams.carts.businessType = productDetailData.checkoutBusinessType
+        checkoutGeneralV2InstantParams.carts.cartInfo.add(0, cartInfo)
+        return checkoutGeneralV2InstantParams
     }
 
     private fun mapToIntMetaData(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): EventMetaDataCheckout {

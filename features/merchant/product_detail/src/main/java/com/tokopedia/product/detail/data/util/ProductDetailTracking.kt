@@ -12,20 +12,6 @@ import javax.inject.Inject
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
 
-    fun eventReportLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.EVENT_LABEL)
-    }
-
-    fun eventReportNoLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
-    }
-
     fun eventAtcClickLihat(productId: String?) {
         if (productId.isNullOrEmpty()) {
             return
@@ -181,17 +167,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION,
-                ""
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    fun eventClickSpecificationTabOnProductDescription(productId: String) {
-        val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION,
                 ""
         )
         mapEvent[KEY_PRODUCT_ID] = productId

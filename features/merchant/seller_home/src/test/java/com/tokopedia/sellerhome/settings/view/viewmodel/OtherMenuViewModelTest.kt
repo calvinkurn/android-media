@@ -3,29 +3,28 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
+import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.spyk
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,17 +49,18 @@ class OtherMenuViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     private lateinit var mViewModel: OtherMenuViewModel
-    private lateinit var testCoroutineDispatcher: SellerHomeCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
         mViewModel =
                 OtherMenuViewModel(
-                        testCoroutineDispatcher,
+                        coroutineTestRule.dispatchers,
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         userSession,
@@ -120,23 +120,24 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
+        coroutineTestRule.runBlockingTest {
+            val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
 
-        val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
+            mockViewModel.getAllSettingShopInfo(true)
 
-        mockViewModel.getAllSettingShopInfo(true)
+            coVerify {
+                mockViewModel["checkDelayErrorResponseTrigger"]()
+            }
 
-        coVerify {
-            mockViewModel["checkDelayErrorResponseTrigger"]()
-        }
+            mockViewModel.isToasterAlreadyShown.observeOnce {
+                assertTrue(it)
+            }
 
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertTrue(it)
-        }
+            advanceTimeBy(5000L)
 
-        (testCoroutineDispatcher.io() as? TestCoroutineDispatcher)?.advanceTimeBy(5000L)
-
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertFalse(it)
+            mockViewModel.isToasterAlreadyShown.observeOnce {
+                assertFalse(it)
+            }
         }
     }
 
@@ -170,4 +171,57 @@ class OtherMenuViewModelTest {
 
     }
 
+    @Test
+    fun `getFreeShippingStatus should return when free shipping feature disabled from remote config`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns true
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify(inverse = true) {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun `getFreeShippingStatus should return when free shipping in transition status is true from remote config`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        } returns true
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify(inverse = true) {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun `getFreeShippingStatus should success`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        } returns false
+
+        coEvery {
+            getShopFreeShippingInfoUseCase.execute(any())
+        } returns listOf(ShopInfoFreeShipping.FreeShippingInfo(FreeOngkir(isActive = true)))
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == true)
+    }
 }
