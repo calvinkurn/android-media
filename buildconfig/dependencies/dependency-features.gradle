@@ -21,7 +21,7 @@ ext {
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
-            categoryNavBottomSheet                  : ":features:category:category_navbottomsheet",
+            categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
 
