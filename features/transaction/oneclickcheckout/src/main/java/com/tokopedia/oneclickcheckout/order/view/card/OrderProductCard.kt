@@ -5,11 +5,9 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -17,13 +15,14 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
-
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
 
@@ -43,13 +42,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
-    private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
-    private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
-    private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
-    private val btnProtectionInfo by lazy { view.findViewById<UnifyImageButton>(R.id.btn_protection_info) }
-    private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
-    private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
-    private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
 
     private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
@@ -163,33 +155,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
 
             renderProductTickerMessage()
-            renderPurchaseProtection()
-        }
-    }
-
-    private fun renderPurchaseProtection() {
-        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-            tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
-            tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
-            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPrice, false).removeDecimalSuffix()
-            btnProtectionInfo.setOnClickListener {
-                val url = product.purchaseProtectionPlanData.protectionLinkUrl
-                if (url.isNotBlank()) {
-                    listener.onPurchaseProtectionInfoClicked(url)
-                }
-            }
-            cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
-            cbPurchaseProtection.setOnCheckedChangeListener { buttonView, isChecked ->
-                product.purchaseProtectionPlanData.stateChecked = isChecked
-                listener.onProductChange(product, false)
-                listener.onPurchaseProtectionCheckedChange()
-            }
-            cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
-            tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
-
-            groupPurchaseProtection.show()
-        } else {
-            groupPurchaseProtection.gone()
         }
     }
 
@@ -249,10 +214,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
-
-        fun onPurchaseProtectionInfoClicked(url: String)
-
-        fun onPurchaseProtectionCheckedChange()
     }
 
     companion object {

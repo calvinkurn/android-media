@@ -57,17 +57,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.main) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
-            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked) quantity.orderQuantity * orderCart.product.purchaseProtectionPlanData.protectionPrice else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            var subtotal = totalProductPrice + purchaseProtectionPrice + totalShippingPrice + insurancePrice
+            var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
             payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
             val fee = payment.getRealFee()
             subtotal += fee
             subtotal -= productDiscount
             subtotal -= shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, purchaseProtectionPrice, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
 
             var currentState = forceButtonState ?: orderTotal.buttonState
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {

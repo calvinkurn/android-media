@@ -71,7 +71,6 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                                     product.productId,
                                                     product.quantity.orderQuantity,
                                                     product.notes,
-                                                    product.purchaseProtectionPlanData.stateChecked
                                             )
                                     ),
                                     shippingInfo = ShippingInfo(
