@@ -66,5 +66,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackClickExpandNavigationAccordion(categoryId: String?) {}
     open fun trackClickCollapseNavigationAccordion(categoryId: String?) {}
     open fun trackClickCategoryOption(categoryId: String?) {}
+    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
 
 }

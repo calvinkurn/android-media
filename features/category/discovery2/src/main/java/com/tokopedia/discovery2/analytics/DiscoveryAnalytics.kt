@@ -378,7 +378,7 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
+    override fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
         val eventCategory = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
         val productItem = componentsItems.data?.firstOrNull()
         val map: MutableMap<String, Any> = mutableMapOf(
