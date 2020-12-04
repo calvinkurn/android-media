@@ -1248,7 +1248,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherViewModel) {
+    private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherUiModel) {
         shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
         data.shopMerchantVoucherViewModelArrayList?.let {
             if (it.isNotEmpty())

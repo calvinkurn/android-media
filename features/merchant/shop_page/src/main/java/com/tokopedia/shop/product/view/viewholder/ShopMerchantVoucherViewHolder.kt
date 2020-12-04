@@ -7,13 +7,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.R
-import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?) : AbstractViewHolder<ShopMerchantVoucherViewModel>(itemView) {
+class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?) : AbstractViewHolder<ShopMerchantVoucherUiModel>(itemView) {
 
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
 
@@ -22,10 +22,10 @@ class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetL
         onMerchantVoucherListWidgetListener?.let { merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(it) }
     }
 
-    override fun bind(shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel) {
+    override fun bind(shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel) {
         val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
 
-        shopMerchantVoucherViewModel.shopMerchantVoucherViewModelArrayList?.let {
+        shopMerchantVoucherUiModel.shopMerchantVoucherViewModelArrayList?.let {
             merchantVoucherListWidget?.setData(ArrayList(it.toMutableList()))
         }
 

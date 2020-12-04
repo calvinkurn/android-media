@@ -68,8 +68,8 @@ class ShopPageProductListViewModel @Inject constructor(
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
     val membershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
     val newMembershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
-    val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
-    val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
+    val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherUiModel>>()
+    val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherUiModel>>()
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedUiModel>>()
     val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightUiModel>>()
     val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleUiModel>>()
@@ -224,12 +224,12 @@ class ShopPageProductListViewModel @Inject constructor(
         return MembershipStampProgressUiModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
-    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherViewModel? {
+    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherUiModel? {
         return try {
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
                     GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
             ).toBlocking().first()
-            ShopMerchantVoucherViewModel(ShopPageProductListMapper.mapToMerchantVoucherViewModel(merchantVoucherResponse))
+            ShopMerchantVoucherUiModel(ShopPageProductListMapper.mapToMerchantVoucherViewModel(merchantVoucherResponse))
         } catch (e: Exception) {
             null
         }

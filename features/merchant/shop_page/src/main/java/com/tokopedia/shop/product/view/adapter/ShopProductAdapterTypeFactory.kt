@@ -72,7 +72,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
-    fun type(shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel): Int {
+    fun type(shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel): Int {
         return ShopMerchantVoucherViewHolder.LAYOUT
     }
 

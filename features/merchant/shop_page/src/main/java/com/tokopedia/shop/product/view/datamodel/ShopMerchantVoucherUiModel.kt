@@ -7,7 +7,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  * Created by zulfikarrahman on 1/16/18.
  */
 
-class ShopMerchantVoucherViewModel(merchantVoucherViewModels: List<MerchantVoucherViewModel>) : BaseShopProductViewModel {
+class ShopMerchantVoucherUiModel(merchantVoucherViewModels: List<MerchantVoucherViewModel>) : BaseShopProductViewModel {
 
     var shopMerchantVoucherViewModelArrayList: List<MerchantVoucherViewModel>? = null
         private set
