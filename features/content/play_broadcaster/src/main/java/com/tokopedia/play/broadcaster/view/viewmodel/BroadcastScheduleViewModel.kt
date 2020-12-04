@@ -3,17 +3,12 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.kotlin.extensions.toFormattedString
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -22,7 +17,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 01/12/20.
  */
-class SetupBroadcastScheduleViewModel @Inject constructor(
+class BroadcastScheduleViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore
@@ -35,40 +30,40 @@ class SetupBroadcastScheduleViewModel @Inject constructor(
         get() = hydraConfigStore.getMaxScheduleDate()
 
     val defaultScheduleDate: Date
-        get() = getCurrentSelectedDate()?:hydraConfigStore.getDefaultScheduleDate()
+        get() = getCurrentSelectedDate() ?: hydraConfigStore.getDefaultScheduleDate()
 
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
+
+    val schedule: BroadcastScheduleUiModel
+        get() = setupDataStore.getSchedule() ?: BroadcastScheduleUiModel.NoSchedule
 
     val observableSetBroadcastSchedule: LiveData<NetworkResult<Unit>>
         get() = _observableSetBroadcastSchedule
     private val _observableSetBroadcastSchedule = MutableLiveData<NetworkResult<Unit>>()
 
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(dispatcher.main + job)
+    val observableDeleteBroadcastSchedule: LiveData<NetworkResult<Unit>>
+        get() = _observableDeleteBroadcastSchedule
+    private val _observableDeleteBroadcastSchedule = MutableLiveData<NetworkResult<Unit>>()
 
-    private fun getCurrentSelectedDate() = when (val selectedDate = setupDataStore.getSelectedDate()) {
+    private fun getCurrentSelectedDate() = when (val selectedDate = setupDataStore.getSchedule()) {
         is BroadcastScheduleUiModel.Scheduled -> selectedDate.time
         else -> null
     }
 
     fun setBroadcastSchedule(selectedCalendar: Calendar) {
-        setupDataStore.setBroadcastSchedule(
-                BroadcastScheduleUiModel.Scheduled(
-                        time = selectedCalendar.time,
-                        formattedTime = selectedCalendar.time.toFormattedString(DATE_FORMAT_BROADCAST_SCHEDULE, Locale("id", "ID"))
-                )
-        )
-
-        scope.launch {
+        viewModelScope.launch {
             _observableSetBroadcastSchedule.value = NetworkResult.Loading
-            val value = setupDataStore.setBroadcastSchedule(channelId).map { Unit }
+            val value = setupDataStore.updateBroadcastSchedule(channelId, selectedCalendar.time)
             _observableSetBroadcastSchedule.value = value
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
+    fun deleteBroadcastSchedule() {
+        viewModelScope.launch {
+            _observableDeleteBroadcastSchedule.value = NetworkResult.Loading
+            val value = setupDataStore.deleteBroadcastSchedule(channelId)
+            _observableDeleteBroadcastSchedule.value = value
+        }
     }
 }

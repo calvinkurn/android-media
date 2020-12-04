@@ -27,14 +27,19 @@ class BroadcastScheduleViewComponent(
 
     private val tvDescSchedule = findViewById<TextView>(R.id.tv_desc_schedule)
     private val iconDescEdit = findViewById<IconUnify>(R.id.icon_desc_edit)
+    private val iconDescDelete = findViewById<IconUnify>(R.id.icon_desc_delete)
 
     init {
         iconDescEdit.setOnClickListener {
-            listener.onAddEditBroadcastScheduleClicked(this@BroadcastScheduleViewComponent)
+            listener.onAddEditBroadcastSchedule(this@BroadcastScheduleViewComponent)
         }
 
         iconHeaderEdit.setOnClickListener {
-            listener.onAddEditBroadcastScheduleClicked(this@BroadcastScheduleViewComponent)
+            listener.onAddEditBroadcastSchedule(this@BroadcastScheduleViewComponent)
+        }
+
+        iconDescDelete.setOnClickListener {
+            listener.onDeleteBroadcastSchedule(this@BroadcastScheduleViewComponent)
         }
     }
 
@@ -62,7 +67,7 @@ class BroadcastScheduleViewComponent(
 
     interface Listener {
 
-        fun onAddEditBroadcastScheduleClicked(view: BroadcastScheduleViewComponent)
-
+        fun onAddEditBroadcastSchedule(view: BroadcastScheduleViewComponent)
+        fun onDeleteBroadcastSchedule(view: BroadcastScheduleViewComponent)
     }
 }

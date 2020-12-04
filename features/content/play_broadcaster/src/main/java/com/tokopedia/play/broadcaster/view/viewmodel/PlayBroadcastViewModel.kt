@@ -63,8 +63,6 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getIngestUrl()
     val title: String
         get() = hydraConfigStore.getTitle()
-    val schedule: BroadcastScheduleUiModel
-        get() = observableBroadcastSchedule.value ?: BroadcastScheduleUiModel.NoSchedule
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -92,7 +90,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableReportDuration
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSelectedDate()
+    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()

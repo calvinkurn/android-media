@@ -52,7 +52,7 @@ abstract class PlayBroadcastSetupViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SetupBroadcastScheduleViewModel::class)
-    abstract fun getSetupBroadcastScheduleViewModel(viewModel: SetupBroadcastScheduleViewModel): ViewModel
+    @ViewModelKey(BroadcastScheduleViewModel::class)
+    abstract fun getSetupBroadcastScheduleViewModel(viewModel: BroadcastScheduleViewModel): ViewModel
 
 }

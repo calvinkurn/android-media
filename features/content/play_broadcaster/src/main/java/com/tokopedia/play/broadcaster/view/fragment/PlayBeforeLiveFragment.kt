@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -39,13 +38,18 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -54,6 +58,7 @@ import javax.inject.Inject
  */
 class PlayBeforeLiveFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
@@ -81,18 +86,26 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private val broadcastScheduleView by viewComponent {
         BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule, object : BroadcastScheduleViewComponent.Listener {
-            override fun onAddEditBroadcastScheduleClicked(view: BroadcastScheduleViewComponent) {
+            override fun onAddEditBroadcastSchedule(view: BroadcastScheduleViewComponent) {
                 openSetupBroadcastSchedulePage()
+            }
+
+            override fun onDeleteBroadcastSchedule(view: BroadcastScheduleViewComponent) {
+                getDeleteScheduleDialog()
+                        .show()
             }
         })
     }
 
-    private val earlyLiveStreamDialog by lifecycleBound(
-            creator = { getEarlyLiveStreamDialog(it.requireContext()) }
-    )
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(job + dispatcher.immediate)
+
+    private lateinit var earlyLiveStreamDialog: DialogUnify
+    private lateinit var deleteScheduleDialog: DialogUnify
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
+    private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
     private var toasterBottomMargin = 0
 
@@ -110,8 +123,9 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prepareViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        prepareViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        scheduleViewModel = ViewModelProvider(this, viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -122,20 +136,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupObserve()
         setupInsets(view)
 
         if (savedInstanceState != null) populateSavedData(savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeFollowers()
-        observeCreateChannel()
-        observeProductList()
-        observeCover()
-        observeLiveInfo()
-        observeBroadcastSchedule()
     }
 
     override fun onStart() {
@@ -157,6 +161,11 @@ class PlayBeforeLiveFragment @Inject constructor(
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_SETUP_DATA, GsonSingleton.instance.toJson(parentViewModel.getHydraSetupData()))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     private fun initView(view: View) {
@@ -195,6 +204,16 @@ class PlayBeforeLiveFragment @Inject constructor(
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()
         }
+    }
+
+    private fun setupObserve() {
+        observeFollowers()
+        observeCreateChannel()
+        observeProductList()
+        observeCover()
+        observeLiveInfo()
+        observeBroadcastSchedule()
+        observeDeleteBroadcastSchedule()
     }
 
     private fun setupInsets(view: View) {
@@ -258,6 +277,14 @@ class PlayBeforeLiveFragment @Inject constructor(
         parentViewModel.observableBroadcastSchedule.observe(viewLifecycleOwner, Observer {
             broadcastScheduleView.setSchedule(it)
         })
+    }
+
+    private fun observeDeleteBroadcastSchedule() {
+        scheduleViewModel.observableDeleteBroadcastSchedule.observe(viewLifecycleOwner) {
+            scope.launch {
+                parentViewModel.getChannelDetail()
+            }
+        }
     }
     //endregion
 
@@ -325,11 +352,11 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
-        val schedule = parentViewModel.schedule
+        val schedule = scheduleViewModel.schedule
         if (schedule is BroadcastScheduleUiModel.Scheduled) {
             val currentTime = Date()
             if (currentTime.before(schedule.time)) {
-                earlyLiveStreamDialog.show()
+                getEarlyLiveStreamDialog().show()
                 return
             }
         }
@@ -337,23 +364,47 @@ class PlayBeforeLiveFragment @Inject constructor(
         createLiveStream()
     }
 
-    private fun getEarlyLiveStreamDialog(context: Context): DialogUnify {
-        return DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
-            setPrimaryCTAClickListener {
-                createLiveStream()
-                dismiss()
+    private fun getEarlyLiveStreamDialog(): DialogUnify {
+        if (!::earlyLiveStreamDialog.isInitialized) {
+            earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
+                setPrimaryCTAClickListener {
+                    createLiveStream()
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
+                setSecondaryCTAClickListener { dismiss() }
+                setTitle(getString(R.string.play_broadcast_early_streaming_dialog_title))
+                setDescription(getString(R.string.play_broadcast_early_streaming_dialog_desc))
             }
-            setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
-            setSecondaryCTAClickListener { dismiss() }
-            setTitle(getString(R.string.play_broadcast_early_streaming_dialog_title))
-            setDescription(getString(R.string.play_broadcast_early_streaming_dialog_desc))
         }
+        return earlyLiveStreamDialog
+    }
+
+    private fun getDeleteScheduleDialog(): DialogUnify {
+        if (!::deleteScheduleDialog.isInitialized) {
+            deleteScheduleDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setPrimaryCTAText(getString(R.string.play_broadcast_delete_schedule_action))
+                setPrimaryCTAClickListener {
+                    deleteBroadcastSchedule()
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.play_broadcast_exit))
+                setSecondaryCTAClickListener { dismiss() }
+                setTitle(getString(R.string.play_broadcast_delete_schedule_dialog_title))
+                setDescription(getString(R.string.play_broadcast_delete_schedule_dialog_desc))
+            }
+        }
+        return deleteScheduleDialog
     }
 
     private fun createLiveStream() {
         prepareViewModel.createLiveStream()
         analytic.clickStartStreamingOnFinalSetupPage()
+    }
+
+    private fun deleteBroadcastSchedule() {
+        scheduleViewModel.deleteBroadcastSchedule()
     }
 
     private fun showToaster(

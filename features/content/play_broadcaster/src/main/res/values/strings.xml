@@ -155,4 +155,7 @@
     <string name="play_broadcast_cancel_streaming_action">Batal</string>
     <string name="play_broadcast_early_streaming_dialog_title">Mulai siarannya sekarang?</string>
     <string name="play_broadcast_early_streaming_dialog_desc">Jadwal yang sudah diatur akan pindah menjadi sekarang.</string>
+    <string name="play_broadcast_delete_schedule_action">Hapus</string>
+    <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
+    <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
 </resources>

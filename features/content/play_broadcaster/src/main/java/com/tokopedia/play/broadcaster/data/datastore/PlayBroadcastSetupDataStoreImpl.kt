@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
+import java.util.*
 import javax.inject.Inject
 
 class PlayBroadcastSetupDataStoreImpl @Inject constructor(
@@ -48,7 +49,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     }
 
     private fun overwriteBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStore) {
-        dataStore.getSelectedDate()?.let(::setBroadcastSchedule)
+        dataStore.getSchedule()?.let(::setBroadcastSchedule)
     }
 
     /**
@@ -135,19 +136,23 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Broadcast Schedule
      */
-    override fun getObservableSelectedDate(): LiveData<BroadcastScheduleUiModel> {
-        return scheduleDataStore.getObservableSelectedDate()
+    override fun getObservableSchedule(): LiveData<BroadcastScheduleUiModel> {
+        return scheduleDataStore.getObservableSchedule()
     }
 
-    override fun getSelectedDate(): BroadcastScheduleUiModel? {
-        return scheduleDataStore.getSelectedDate()
+    override fun getSchedule(): BroadcastScheduleUiModel? {
+        return scheduleDataStore.getSchedule()
     }
 
     override fun setBroadcastSchedule(scheduleDate: BroadcastScheduleUiModel) {
         scheduleDataStore.setBroadcastSchedule(scheduleDate)
     }
 
-    override suspend fun setBroadcastSchedule(channelId: String): NetworkResult<Unit> {
-        return scheduleDataStore.setBroadcastSchedule(channelId)
+    override suspend fun updateBroadcastSchedule(channelId: String, scheduledTime: Date): NetworkResult<Unit> {
+        return scheduleDataStore.updateBroadcastSchedule(channelId, scheduledTime)
+    }
+
+    override suspend fun deleteBroadcastSchedule(channelId: String): NetworkResult<Unit> {
+        return scheduleDataStore.deleteBroadcastSchedule(channelId)
     }
 }

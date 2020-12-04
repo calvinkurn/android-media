@@ -108,6 +108,19 @@ class UpdateChannelUseCase @Inject constructor(
             return QueryParams(query, params)
         }
 
+        fun createDeleteBroadcastScheduleRequest(
+                channelId: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.Status.fieldName to PlayChannelStatus.Draft.value.toInt()
+            )
+
+            val query = buildQueryString(listOf(FieldsToUpdate.Status))
+
+            return QueryParams(query, params)
+        }
+
         private fun buildQueryString(fields: List<FieldsToUpdate>): String {
             return buildString {
                 append("mutation UpdateChannel(${'$'}channelId: String!")
