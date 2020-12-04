@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/topupbills_search_input_view_number"
@@ -19,13 +19,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="#f3f4f5"/>
+        android:background="@color/Unify_N50"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topupbills_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>
