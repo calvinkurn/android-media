@@ -85,7 +85,6 @@ object ReviewConstants {
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
-    const val ARGS_RATING = "ARGS_RATING"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
@@ -95,10 +94,6 @@ object ReviewConstants {
     const val REPUTATION_SCORE_BAD = -1
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
-    const val REPUTATION_SCORE_EMPTY = 0
-
-    const val AB_TEST_KEY = "InboxUlasanRevamp2"
-    const val NEW_REVIEW_FLOW = "New Review Flow"
 
     const val REVIEW_PENDING_TRACE = "review_pending_trace"
     const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
