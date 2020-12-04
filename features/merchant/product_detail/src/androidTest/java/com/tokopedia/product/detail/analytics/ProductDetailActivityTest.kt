@@ -203,16 +203,17 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(12, scrollTo())
         )
         waitForTalk()
-        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
+                .check(matches(isDisplayed()))
+                .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(12, scrollTo())
         )
         waitForTalk()
         val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
