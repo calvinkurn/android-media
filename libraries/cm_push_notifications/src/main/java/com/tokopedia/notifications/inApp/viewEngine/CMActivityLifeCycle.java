@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.utils.NotificationRemoveManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -34,11 +33,10 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     private RemoteConfig remoteConfig;
 
-    public CMActivityLifeCycle(
-            Context context,
-            CmActivityLifecycleHandler lifecycleHandler
-    ) {
+    public CMActivityLifeCycle(Context context, CmActivityLifecycleHandler lifecycleHandler) {
+        removeManager = new NotificationRemoveManager(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+
         this.lifecycleHandler = lifecycleHandler;
     }
 
