@@ -99,7 +99,7 @@
             android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
-            app:typographyType="small"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tangerang Selatan"
             tools:visibility="visible" />
