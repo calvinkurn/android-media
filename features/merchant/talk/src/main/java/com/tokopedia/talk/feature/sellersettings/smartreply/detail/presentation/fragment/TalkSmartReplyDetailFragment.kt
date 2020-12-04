@@ -108,6 +108,18 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.setText(viewModel.messageNotReady)
     }
 
+    private fun onSuccessActivateSmartReply() {
+
+    }
+
+    private fun showToaster(text: String) {
+
+    }
+
+    private fun showErrorToaster(text: String) {
+
+    }
+
     private fun setupOnBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

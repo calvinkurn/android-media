@@ -20,5 +20,5 @@ abstract class TalkSmartReplyDetailViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TalkSmartReplyDetailViewModel::class)
-    internal abstract fun talkReadingViewModel(viewModel: TalkSmartReplyDetailViewModel): ViewModel
+    internal abstract fun talkSmartReplyDetailViewModel(viewModel: TalkSmartReplyDetailViewModel): ViewModel
 }

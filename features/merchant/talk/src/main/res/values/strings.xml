@@ -132,4 +132,8 @@
     <string name="smart_reply_label">SmartReply</string>
     <string name="smart_reply_dummy_reply">Ready. Yuk, beli sekarang!😄</string>
 
+    <string name="template_list_title">Template Balasan</string>
+    <string name="template_list_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>
+    <string name="template_list_button">Tambah Template</string>
+
 </resources>

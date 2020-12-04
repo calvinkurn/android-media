@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/talkTemplateLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:padding="@dimen/dp_12"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkTemplate"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/talkMoveTemplateIcon"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/talkMoveTemplateIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/talkEditTemplateIcon"
+        app:icon_name="EDIT"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/talkEditTemplateIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon_name="EDIT"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
