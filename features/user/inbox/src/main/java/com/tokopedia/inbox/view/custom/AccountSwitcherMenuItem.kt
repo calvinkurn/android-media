@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.binder.BadgeCounterBinder
@@ -36,7 +37,9 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
     }
 
     fun setName(name: String?) {
-        this.name?.text = name
+        name?.let {
+            this.name?.text = MethodChecker.fromHtml(name)
+        }
     }
 
     fun loadProfilePicture(imageUrl: String?) {

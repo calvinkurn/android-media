@@ -2,6 +2,7 @@ package com.tokopedia.inbox.view.custom
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.view.binder.BadgeCounterBinder
@@ -47,7 +48,7 @@ class NavigationHeader @Inject constructor(
             thumbnailUrl: String
     ) {
         ImageHandler.LoadImage(thumbnail, thumbnailUrl)
-        name?.text = userName
+        name?.text = MethodChecker.fromHtml(userName)
     }
 
     fun setBadgeCount(count: Int) {
