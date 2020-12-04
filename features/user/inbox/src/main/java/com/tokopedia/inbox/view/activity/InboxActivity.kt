@@ -31,6 +31,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
@@ -119,8 +120,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             navHeader.bindValue()
             navHeaderContainer = it.findViewById(R.id.inbox_toolbar)
         }
-        toolbar?.setCustomViewContentView(view)
-        toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
+        if (userSession.hasShop()) {
+            toolbar?.setCustomViewContentView(view)
+            toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
+        } else {
+            val title = getString(R.string.inbox)
+            toolbar?.setToolbarContentType(TOOLBAR_TYPE_TITLE)
+            toolbar?.setToolbarTitle(title)
+        }
     }
 
     private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
