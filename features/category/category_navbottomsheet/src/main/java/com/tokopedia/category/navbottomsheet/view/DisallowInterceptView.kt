@@ -1,44 +1,33 @@
-package com.tokopedia.category.navbottomsheet.view;
+package com.tokopedia.category.navbottomsheet.view
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.widget.LinearLayout;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.widget.LinearLayout
 
-public class DisallowInterceptView extends LinearLayout {
-    public DisallowInterceptView(Context context) {
-        super(context);
-        requestDisallowInterceptTouchEvent(true);
+class DisallowInterceptView : LinearLayout {
+    constructor(context: Context?) : super(context) {
+        requestDisallowInterceptTouchEvent(true)
     }
 
-    public DisallowInterceptView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        requestDisallowInterceptTouchEvent(true);
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        requestDisallowInterceptTouchEvent(true)
     }
 
-    public DisallowInterceptView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        requestDisallowInterceptTouchEvent(true);
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        requestDisallowInterceptTouchEvent(true)
     }
 
-
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        getParent().requestDisallowInterceptTouchEvent(true);
-        return super.dispatchTouchEvent(ev);
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        parent.requestDisallowInterceptTouchEvent(true)
+        return super.dispatchTouchEvent(ev)
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                requestDisallowInterceptTouchEvent(true);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                requestDisallowInterceptTouchEvent(false);
-                break;
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_MOVE -> requestDisallowInterceptTouchEvent(true)
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> requestDisallowInterceptTouchEvent(false)
         }
-        return super.onTouchEvent(event);
+        return super.onTouchEvent(event)
     }
-
 }
