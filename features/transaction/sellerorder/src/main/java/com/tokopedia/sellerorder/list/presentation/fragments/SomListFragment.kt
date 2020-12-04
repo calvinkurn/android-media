@@ -236,7 +236,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var isFromBottomSheetFilter = false
-    private var waitingPaymentOrderMenuItem: MenuItem? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -290,6 +289,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
         inflater.inflate(R.menu.menu_som_list, menu)
+        if (!canDisplayOrderData) {
+            hideWaitingPaymentOrderListMenu()
+        }
         this.menu = menu
         view?.postDelayed({
             reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
