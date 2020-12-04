@@ -31,7 +31,6 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
@@ -258,9 +257,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun hideCsatOptionList(model: CsatOptionsViewModel) {
         val adapter = getAdapter()
-        if (adapter.list.isNotEmpty() && adapter.list[0] is CsatOptionsViewModel) {
-            model.isSubmited = true
-            adapter.setElement(0, model)
+        var position: Int = 0
+        for (msg in adapter.list) {
+            if (msg is CsatOptionsViewModel && model.csat?.caseChatId == msg.csat?.caseChatId) {
+                model.isSubmited = true
+                adapter.setElement(position, model)
+                break;
+            }
+            position++
         }
     }
 
