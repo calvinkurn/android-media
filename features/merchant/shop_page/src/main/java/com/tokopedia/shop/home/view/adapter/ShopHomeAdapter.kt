@@ -440,7 +440,7 @@ class ShopHomeAdapter(
     fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
         visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
-            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isWidgetEmpty(widgetUiModel)) {
+            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
                 visitables.removeAt(position)
                 notifyItemRemoved(position)
             } else {
@@ -450,7 +450,7 @@ class ShopHomeAdapter(
         }
     }
 
-    private fun isWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
+    private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
         return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
                 || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
     }
