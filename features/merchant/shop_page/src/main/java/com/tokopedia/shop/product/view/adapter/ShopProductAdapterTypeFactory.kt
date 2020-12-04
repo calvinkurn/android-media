@@ -110,7 +110,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductChangeGridSectionViewHolder.LAYOUT
     }
 
-    fun type(shopProductAddViewModel: ShopProductAddViewModel): Int {
+    fun type(shopProductAddUiModel: ShopProductAddUiModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
 

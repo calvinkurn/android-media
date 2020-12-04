@@ -56,8 +56,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseUiModel
     private val shopEmptyProductUiModel: ShopEmptyProductUiModel?
         get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductUiModel
-    private val shopProductAddViewModel: ShopProductAddViewModel?
-        get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddViewModel
+    private val shopProductAddUiModel: ShopProductAddUiModel?
+        get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddUiModel
     private val shopProductFirstUiModel: ShopProductUiModel?
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] as? ShopProductUiModel
 
@@ -192,7 +192,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             visitables.remove(it)
             notifyRemovedItem(position)
         }
-        shopProductAddViewModel?.let {
+        shopProductAddUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -259,8 +259,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val totalData = visitables.size
             var indexStart = 0
             if (mapOfDataModel.isNotEmpty()) {
-                indexStart = if (null != shopProductAddViewModel) {
-                    visitables.indexOf(shopProductAddViewModel)
+                indexStart = if (null != shopProductAddUiModel) {
+                    visitables.indexOf(shopProductAddUiModel)
                 } else {
                     visitables.indexOf(mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL])
                 }
@@ -406,7 +406,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun addSellerAddProductDataModel() {
-        val shopProductAddViewModel = ShopProductAddViewModel()
+        val shopProductAddViewModel = ShopProductAddUiModel()
         visitables.add(shopProductAddViewModel)
         notifyInsertedItem(visitables.size - 1)
         mapDataModel()
@@ -481,7 +481,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductEtalaseTitleUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_TITLE_DATA_MODEL] = data
                 }
-                is ShopProductAddViewModel -> {
+                is ShopProductAddUiModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] = data
                 }
                 is ShopSellerEmptyProductAllEtalaseUiModel -> {
@@ -568,7 +568,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun getListWithoutProductCardDataAndLoadingMoreModel(): List<Visitable<*>> {
         return visitables.filter {
             it::class.java != ShopProductUiModel::class.java &&
-                    it::class.java != ShopProductAddViewModel::class.java &&
+                    it::class.java != ShopProductAddUiModel::class.java &&
                     it::class.java != ShopSellerEmptyProductAllEtalaseUiModel::class.java &&
                     it::class.java != ShopEmptyProductUiModel::class.java &&
                     it::class.java != LoadingMoreModel::class.java
