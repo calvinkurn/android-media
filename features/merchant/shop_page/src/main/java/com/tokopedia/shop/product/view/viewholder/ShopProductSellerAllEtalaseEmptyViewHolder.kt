@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
-import com.tokopedia.shop.product.view.datamodel.ShopSellerEmptyProductAllEtalaseViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopSellerEmptyProductAllEtalaseUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -18,7 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShopProductSellerAllEtalaseEmptyViewHolder(
         val view: View
-) : AbstractViewHolder<ShopSellerEmptyProductAllEtalaseViewModel>(view) {
+) : AbstractViewHolder<ShopSellerEmptyProductAllEtalaseUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -32,7 +32,7 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
     lateinit var labelShopProductSellerEmptyState: Typography
     lateinit var imageViewBackgroundPattern: ImageView
 
-    override fun bind(shopSellerEmptyProductAllEtalaseViewModel: ShopSellerEmptyProductAllEtalaseViewModel) {
+    override fun bind(shopSellerEmptyProductAllEtalaseUiModel: ShopSellerEmptyProductAllEtalaseUiModel) {
         labelShopProductSellerEmptyState.text = MethodChecker.fromHtml(
                 view.resources.getString(R.string.shop_product_seller_empty_state_label)
         )

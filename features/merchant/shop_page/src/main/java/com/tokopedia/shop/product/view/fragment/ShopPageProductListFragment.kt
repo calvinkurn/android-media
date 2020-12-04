@@ -854,7 +854,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         isOfficialStore,
                         isGoldMerchant
                 ))
-                ShopSellerEmptyProductAllEtalaseViewModel()
+                ShopSellerEmptyProductAllEtalaseUiModel()
             } else if (isOwner && selectedEtalaseId == SOLD_ETALASE_ID) {
                 title = getString(R.string.text_shop_no_product_seller)
                 description = getString(R.string.text_shop_no_product_description_seller)
