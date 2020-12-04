@@ -19,12 +19,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
-import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.datamodel.ShopProductPromoViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductPromoUiModel
 import com.tokopedia.shop.product.view.widget.NestedWebView
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_shop_product_limited_promo.*
@@ -44,7 +43,7 @@ class HomeProductFragment : BaseDaggerFragment() {
     lateinit var layoutLoading: View
     private var shopId: String = ""
 
-    private var shopProductPromoViewModel: ShopProductPromoViewModel = ShopProductPromoViewModel()
+    private var shopProductPromoUiModel: ShopProductPromoUiModel = ShopProductPromoUiModel()
 
     companion object {
         private const val MIN_SHOW_WEB_VIEW_PROGRESS = 80
@@ -86,18 +85,18 @@ class HomeProductFragment : BaseDaggerFragment() {
         shopId = arguments?.getString(SHOP_ID, "") ?: ""
         findViews()
         layoutLoading = view.findViewById(R.id.layout_loading)
-        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl())
-        if (isBind && isLogin == shopProductPromoViewModel.isLogin) {
+        shopProductPromoUiModel = getHomeData(getOfficialWebViewUrl())
+        if (isBind && isLogin == shopProductPromoUiModel.isLogin) {
             return
         }
         clearCache(shopPageNestedWebView)
-        if (shopProductPromoViewModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url, userSession)
+        if (shopProductPromoUiModel.isLogin) {
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url, userSession)
         } else {
-            shopPageNestedWebView.loadUrl(shopProductPromoViewModel.url)
+            shopPageNestedWebView.loadUrl(shopProductPromoUiModel.url)
         }
 
-        isLogin = shopProductPromoViewModel.isLogin
+        isLogin = shopProductPromoUiModel.isLogin
         isBind = true
     }
 
@@ -110,15 +109,15 @@ class HomeProductFragment : BaseDaggerFragment() {
         webView?.clearCache(true)
     }
 
-    private fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
+    private fun getHomeData(contentUrl: String): ShopProductPromoUiModel {
         if (contentUrl.isNotBlank()) {
             val url = if (userSession.isLoggedIn) {
                 ShopProductOfficialStoreUtils.getLogInUrl(contentUrl, userSession.deviceId, userSession.userId)
             } else contentUrl
 
-            return ShopProductPromoViewModel(url, userSession.userId, userSession.accessToken, userSession.isLoggedIn)
+            return ShopProductPromoUiModel(url, userSession.userId, userSession.accessToken, userSession.isLoggedIn)
         }
-        return ShopProductPromoViewModel()
+        return ShopProductPromoUiModel()
     }
 
     private fun getOfficialWebViewUrl(): String {

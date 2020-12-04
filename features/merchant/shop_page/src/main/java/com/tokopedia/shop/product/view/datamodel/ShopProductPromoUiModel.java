@@ -4,18 +4,18 @@ package com.tokopedia.shop.product.view.datamodel;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ShopProductPromoViewModel {
+public class ShopProductPromoUiModel {
 
     private String url;
     private boolean isLogin;
     private String userId;
     private String accessToken;
 
-    public ShopProductPromoViewModel() {
+    public ShopProductPromoUiModel() {
 
     }
 
-    public ShopProductPromoViewModel(String url, String userId, String accessToken, boolean isLogin) {
+    public ShopProductPromoUiModel(String url, String userId, String accessToken, boolean isLogin) {
         this.url = url;
         this.userId = userId;
         this.accessToken = accessToken;
