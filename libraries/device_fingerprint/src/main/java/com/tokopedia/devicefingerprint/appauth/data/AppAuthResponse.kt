@@ -17,5 +17,5 @@ data class StatusMessage(
         @Expose
         val message: String = ""
 ) {
-        var isSuccess = "true" == status
+        var isSuccess = status == "OK" && message == "success"
 }

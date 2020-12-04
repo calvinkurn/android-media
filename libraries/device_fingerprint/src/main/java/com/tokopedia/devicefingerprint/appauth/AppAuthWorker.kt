@@ -8,7 +8,6 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.devicefingerprint.appauth.usecase.AppAuthUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
-import com.tokopedia.encryption.security.md5
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +66,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
 
         var isRunning = false
 
-        private fun getAlreadySuccessSend(context: Context): Boolean {
+        private fun alreadySuccessSend(context: Context): Boolean {
             if (hasSuccessSendInt == 0) {
                 val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
                 hasSuccessSendInt = sp.getInt(KEY_SUCCESS, -1)
@@ -81,7 +80,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         }
 
         fun scheduleWorker(context: Context) {
-            if (getAlreadySuccessSend(context)) {
+            if (alreadySuccessSend(context)) {
                 return
             }
             if (isRunning) {
