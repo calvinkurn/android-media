@@ -21,6 +21,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 
 /**
@@ -69,6 +70,7 @@ class TopChatRoomAdapter(
         val nextItemIsSender: Boolean = when (nextItem) {
             is SendableViewModel -> nextItem.isSender
             is ProductCarouselUiModel -> nextItem.isSender
+            is ReviewUiModel -> nextItem.isSender
             else -> true
         }
         return isSender == nextItemIsSender

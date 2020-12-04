@@ -187,6 +187,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
+            TYPE_REVIEW_REMINDER -> convertToReviewReminder(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
