@@ -167,7 +167,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-            mPricePerProduct.setText(String.valueOf(cartItem.getProtectionPricePerProduct()));
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getProtectionPricePerProduct(), false)));
 
             if (cartItem.isProtectionCheckboxDisabled()) {
                 mCbPPP.setVisibility(View.GONE);

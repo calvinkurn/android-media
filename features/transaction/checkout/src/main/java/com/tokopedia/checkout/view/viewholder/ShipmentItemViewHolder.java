@@ -587,7 +587,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
-            mPricePerProduct.setText(String.valueOf(cartItemModel.getProtectionPricePerProduct()));
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
                 cbPPP.setVisibility(View.GONE);
