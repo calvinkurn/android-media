@@ -79,7 +79,7 @@
                     android:background="@color/Neutral_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/space_note" />
+                    app:layout_constraintTop_toBottomOf="@+id/tf_note" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_2"
