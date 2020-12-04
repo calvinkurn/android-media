@@ -98,7 +98,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductSortFilterViewHolder.LAYOUT
     }
 
-    fun type(viewModel: HideViewModel): Int {
+    fun type(uiModel: HideUiModel): Int {
         return HideViewHolder.LAYOUT
     }
 
