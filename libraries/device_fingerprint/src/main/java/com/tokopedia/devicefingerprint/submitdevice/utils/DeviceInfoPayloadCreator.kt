@@ -233,7 +233,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
     }
 
     private fun getAdsId(): String {
-        return AdvertisingIdClient.getAdvertisingIdInfo(context).id
+        return DeviceInfo.getAdsId(context)
     }
 
     private fun isTablet(): Boolean {

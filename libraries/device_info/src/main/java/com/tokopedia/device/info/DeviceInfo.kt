@@ -10,6 +10,7 @@ import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.tokopedia.device.info.cache.DeviceInfoCache
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
@@ -118,23 +119,53 @@ object DeviceInfo {
 
     @JvmStatic
     fun getAdsId(context: Context): String {
-        val adsIdCache: String = getCacheAdsId(context)
+        val appContext = context.applicationContext
+        val adsIdCache: String = getCacheAdsId(appContext)
         if (adsIdCache.isNotBlank()) {
             return adsIdCache
         } else {
-            val adInfo = try {
-                AdvertisingIdClient.getAdvertisingIdInfo(context)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Timber.w("""P2#FINGERPRINT#$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
-                return ""
+            var adId = ""
+            runBlocking(Dispatchers.IO) {
+                try {
+                    withTimeout(2000) {
+                        adId = getlatestAdId(appContext)
+                    }
+                } catch (ignored:Exception) { }
             }
+            return adId
+        }
+    }
+
+    fun getlatestAdId(context: Context): String {
+        return try {
+            val appContext = context.applicationContext
+            val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(appContext)
             if (adInfo != null) {
-                val adID: String = adInfo.getId()
-                setCacheAdsId(context, adID)
-                return adID
+                val adID = adInfo.id
+                setCacheAdsId(appContext, adID)
             }
-            return ""
+            adInfo.id
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Timber.w("""P2#FINGERPRINT#$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
+            ""
+        }
+    }
+
+    @JvmStatic
+    fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)?) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val adsIdCache: String = getCacheAdsId(context)
+            if (adsIdCache.isNotBlank()) {
+                withContext(Dispatchers.Main) {
+                    onSuccessGetAdsId?.invoke(adsIdCache)
+                }
+            } else {
+                val adId = getlatestAdId(context)
+                withContext(Dispatchers.Main) {
+                    onSuccessGetAdsId?.invoke(adId)
+                }
+            }
         }
     }
 
@@ -150,9 +181,7 @@ object DeviceInfo {
 
     private fun setCacheAdsId(context: Context, adsId: String) {
         val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        sp.edit()
-                .putString(KEY_ADVERTISINGID, adsId)
-                .apply()
+        sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
     }
 
     @JvmStatic

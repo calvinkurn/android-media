@@ -115,7 +115,7 @@ object FingerprintModelGenerator {
         val deviceAvailableProcessor = getAvailableProcessor(context.applicationContext)
         val deviceMemoryClass = getDeviceMemoryClassCapacity(context.applicationContext)
         val deviceDpi = getDeviceDpi(context.applicationContext)
-        val fp: FingerPrint = FingerPrint(
+        val fp = FingerPrint(
                 unique_id = DeviceInfo.getAdsId(context),
                 device_name = deviceName,
                 device_manufacturer = deviceFabrik,
