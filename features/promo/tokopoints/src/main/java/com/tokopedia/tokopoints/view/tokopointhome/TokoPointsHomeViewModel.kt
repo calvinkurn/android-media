@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
+import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Loading
@@ -39,7 +40,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                 deferredSavingData = async { getUserSavingData() }
             }
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection!!, deferredSavingData?.await()), dataSection.sectionContent.sectionContent))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection!!, deferredSavingData?.await()?.tokopointsUserSaving), dataSection.sectionContent.sectionContent))
             } else {
                 throw NullPointerException("error in data")
             }
@@ -64,4 +65,4 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
 }
 
 data class TokopointSuccess(val topSectionResponse: TopSectionResponse, val sectionList: MutableList<SectionContent>)
-data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: UserSavingResponse?)
+data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: TokopointsUserSaving?)

@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
@@ -47,6 +48,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var savingValue: TextView? = null
     private var savingDesc: TextView? = null
     private var cardContainer: ConstraintLayout? = null
+    private var containerUserSaving: ConstraintLayout? = null
 
 
     fun bind(model: TopSectionResponse) {
@@ -62,9 +64,14 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         savingValue = itemView.findViewById(R.id.tv_saving_value)
         savingDesc = itemView.findViewById(R.id.tv_saving_desc)
         cardContainer = itemView.findViewById(R.id.container_saving)
+        containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
-        model.userSavingResponse?.tokopointsUserSaving?.userSaving?.let { renderUserSaving(it) }
+        if (model.userSavingResponse?.userSaving!=null){
+        model.userSavingResponse.userSaving.let {
+            containerUserSaving?.show()
+            renderUserSaving(it)
+        }}
     }
 
     private fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
