@@ -14,7 +14,7 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherViewModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
@@ -390,9 +390,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         coVerify { getMerchantVoucherListUseCase.createObservable(any()) }
     }
 
-    private fun List<ShopFeaturedProduct>.toViewModel(): ShopProductFeaturedViewModel {
-        return ShopProductFeaturedViewModel(
-               this.map { shopFeaturedProduct ->
+    private fun List<ShopFeaturedProduct>.toViewModel(): ShopProductFeaturedUiModel {
+        return ShopProductFeaturedUiModel(
+                this.map { shopFeaturedProduct ->
                     ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
                             shopFeaturedProduct,
                             anyBoolean()

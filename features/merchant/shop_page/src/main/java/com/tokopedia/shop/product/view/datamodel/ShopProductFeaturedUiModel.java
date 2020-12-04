@@ -9,15 +9,15 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ShopProductFeaturedViewModel implements BaseShopProductViewModel {
+public class ShopProductFeaturedUiModel implements BaseShopProductViewModel {
 
     private List<ShopProductUiModel> shopProductUiModelList;
 
-    public ShopProductFeaturedViewModel(){
+    public ShopProductFeaturedUiModel(){
         shopProductUiModelList = new ArrayList<>();
     }
 
-    public ShopProductFeaturedViewModel(List<ShopProductUiModel> shopProductUiModelList) {
+    public ShopProductFeaturedUiModel(List<ShopProductUiModel> shopProductUiModelList) {
         setShopProductFeaturedViewModelList(shopProductUiModelList);
     }
 

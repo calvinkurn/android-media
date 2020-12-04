@@ -70,7 +70,7 @@ class ShopPageProductListViewModel @Inject constructor(
     val newMembershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
     val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
     val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
-    val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedViewModel>>()
+    val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedUiModel>>()
     val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightUiModel>>()
     val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleViewModel>>()
     val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
@@ -235,14 +235,14 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedViewModel? {
+    private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedUiModel? {
         try {
             getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
                     shopId.toIntOrZero(),
                     userId.toIntOrZero()
             )
             val featuredProductResponse = getShopFeaturedProductUseCase.executeOnBackground()
-            return ShopProductFeaturedViewModel(
+            return ShopProductFeaturedUiModel(
                     featuredProductResponse.map { shopFeaturedProduct ->
                         ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
                                 shopFeaturedProduct,

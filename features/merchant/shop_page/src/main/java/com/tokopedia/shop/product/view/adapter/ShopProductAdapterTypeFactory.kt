@@ -68,7 +68,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return MembershipStampProgressViewHolder.LAYOUT
     }
 
-    fun type(shopProductFeaturedViewModel: ShopProductFeaturedViewModel): Int {
+    fun type(shopProductFeaturedUiModel: ShopProductFeaturedUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
