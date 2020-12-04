@@ -1580,14 +1580,15 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
 }
 
 private fun testLabelVariantColor(): ProductCardModelMatcher {
-    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ff0016")
-    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#bf00ff")
-    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ffffff")
-    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#000000")
+    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#05056b")
+    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#800000")
+    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#f400a1")
+    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#faf0be")
+    val labelColor5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ebcca3")
     val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
 
     val productCardModel = ProductCardModel(
-            productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productName = "Test Variant Color 1",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -1599,14 +1600,14 @@ private fun testLabelVariantColor(): ProductCardModelMatcher {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
             hasThreeDots = true,
-            labelGroupVariantList = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelCustom)
+            labelGroupVariantList = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelColor5, labelCustom)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(5)
+        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(6)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)

@@ -7,13 +7,11 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -75,7 +73,14 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val willShowVariant = productCardModel.willShowVariant()
 
-    textViewProductName?.isSingleLine = willShowVariant
+    if (willShowVariant) {
+        textViewProductName?.isSingleLine = true
+    }
+    else {
+        textViewProductName?.isSingleLine = false
+        textViewProductName?.maxLines = 2
+        textViewProductName?.ellipsize = TextUtils.TruncateAt.END
+    }
 
     labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
         labelVariantContainer.removeAllViews()
@@ -195,17 +200,14 @@ private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
 }
 
 private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
-    val shouldMoveConstraint = productCardModel.discountPercentage.isNotEmpty() && productCardModel.slashedPrice.isEmpty()
-
-    if (!shouldMoveConstraint) return
-
+    val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
     view?.let {
         val constraintSet = ConstraintSet().apply { clone(it) }
 
         constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, R.id.labelDiscount, ConstraintSet.BOTTOM)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
 
         constraintSet.applyTo(it)
     }
