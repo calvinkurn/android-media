@@ -11,14 +11,14 @@ import java.util.List;
 
 public class ShopProductEtalaseHighlightUiModel implements BaseShopProductViewModel {
 
-    private List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList;
+    private List<EtalaseHighlightCarouselUiModel> etalaseHighlightCarouselUiModelList;
 
     public ShopProductEtalaseHighlightUiModel() {
-        etalaseHighlightCarouselViewModelList = new ArrayList<>();
+        etalaseHighlightCarouselUiModelList = new ArrayList<>();
     }
 
-    public ShopProductEtalaseHighlightUiModel(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
-        setEtalaseHighlightCarouselViewModelList(etalaseHighlightCarouselViewModelList);
+    public ShopProductEtalaseHighlightUiModel(List<EtalaseHighlightCarouselUiModel> etalaseHighlightCarouselUiModelList) {
+        setEtalaseHighlightCarouselUiModelList(etalaseHighlightCarouselUiModelList);
     }
 
     @Override
@@ -26,23 +26,23 @@ public class ShopProductEtalaseHighlightUiModel implements BaseShopProductViewMo
         return typeFactory.type(this);
     }
 
-    private void setEtalaseHighlightCarouselViewModelList(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
-        if (etalaseHighlightCarouselViewModelList == null) {
-            this.etalaseHighlightCarouselViewModelList = new ArrayList<>();
+    private void setEtalaseHighlightCarouselUiModelList(List<EtalaseHighlightCarouselUiModel> etalaseHighlightCarouselUiModelList) {
+        if (etalaseHighlightCarouselUiModelList == null) {
+            this.etalaseHighlightCarouselUiModelList = new ArrayList<>();
         } else {
-            this.etalaseHighlightCarouselViewModelList = etalaseHighlightCarouselViewModelList;
+            this.etalaseHighlightCarouselUiModelList = etalaseHighlightCarouselUiModelList;
         }
     }
 
-    public List<EtalaseHighlightCarouselViewModel> getEtalaseHighlightCarouselViewModelList() {
-        return etalaseHighlightCarouselViewModelList;
+    public List<EtalaseHighlightCarouselUiModel> getEtalaseHighlightCarouselUiModelList() {
+        return etalaseHighlightCarouselUiModelList;
     }
 
     public boolean updateWishListStatus(String productId, boolean wishList) {
-        if (etalaseHighlightCarouselViewModelList != null) {
-            for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
-                EtalaseHighlightCarouselViewModel etalaseHighlightCarouselViewModel = etalaseHighlightCarouselViewModelList.get(i);
-                List<ShopProductUiModel> shopProductUiModelList = etalaseHighlightCarouselViewModel.getShopProductUiModelList();
+        if (etalaseHighlightCarouselUiModelList != null) {
+            for (int i = 0, sizei = etalaseHighlightCarouselUiModelList.size(); i < sizei; i++) {
+                EtalaseHighlightCarouselUiModel etalaseHighlightCarouselUiModel = etalaseHighlightCarouselUiModelList.get(i);
+                List<ShopProductUiModel> shopProductUiModelList = etalaseHighlightCarouselUiModel.getShopProductUiModelList();
                 for (int j = 0, sizej = shopProductUiModelList.size(); j < sizej; j++) {
                     ShopProductUiModel shopProductUiModel = shopProductUiModelList.get(j);
                     if (shopProductUiModel.getId().equalsIgnoreCase(productId)) {

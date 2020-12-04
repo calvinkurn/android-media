@@ -12,13 +12,13 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterTypeFactory>{
+public class EtalaseHighlightCarouselUiModel implements Visitable<BaseAdapterTypeFactory>{
 
     private List<ShopProductUiModel> shopProductUiModelList;
     private ShopEtalaseItemDataModel shopEtalaseViewModel;
 
-    public EtalaseHighlightCarouselViewModel(List<ShopProductUiModel> shopProductUiModelList,
-                                             ShopEtalaseItemDataModel shopEtalaseViewModel) {
+    public EtalaseHighlightCarouselUiModel(List<ShopProductUiModel> shopProductUiModelList,
+                                           ShopEtalaseItemDataModel shopEtalaseViewModel) {
         setShopProductEtalaseHighLightViewModel(shopProductUiModelList);
         setEtalaseViewModel(shopEtalaseViewModel);
     }

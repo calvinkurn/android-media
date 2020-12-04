@@ -1236,7 +1236,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightUiModel) {
-        if (data.etalaseHighlightCarouselViewModelList.isNotEmpty()) {
+        if (data.etalaseHighlightCarouselUiModelList.isNotEmpty()) {
             shopProductAdapter.setShopProductEtalaseHighlightDataModel(data)
         }
     }

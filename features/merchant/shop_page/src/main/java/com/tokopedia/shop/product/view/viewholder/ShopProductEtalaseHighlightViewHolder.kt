@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapter
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory
-import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselViewModel
+import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseHighlightUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
@@ -37,12 +37,12 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
     }
 
     override fun bind(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel) {
-        var etalaseHighlightCarouselViewModelList: List<EtalaseHighlightCarouselViewModel>? = shopProductEtalaseHighlightUiModel.etalaseHighlightCarouselViewModelList
-        if (etalaseHighlightCarouselViewModelList == null) {
-            etalaseHighlightCarouselViewModelList = ArrayList()
+        var etalaseHighlightCarouselUiModelList: List<EtalaseHighlightCarouselUiModel>? = shopProductEtalaseHighlightUiModel.etalaseHighlightCarouselUiModelList
+        if (etalaseHighlightCarouselUiModelList == null) {
+            etalaseHighlightCarouselUiModelList = ArrayList()
         }
         etalaseHighlightAdapter.softClear()
-        etalaseHighlightAdapter.setElement(etalaseHighlightCarouselViewModelList)
+        etalaseHighlightAdapter.setElement(etalaseHighlightCarouselUiModelList)
         etalaseHighlightAdapter.notifyDataSetChanged()
     }
 

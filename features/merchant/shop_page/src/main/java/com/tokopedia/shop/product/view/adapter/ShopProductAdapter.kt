@@ -202,7 +202,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun getEtalaseNameHighLight(shopProductUiModel: ShopProductUiModel): String {
         shopProductEtalaseHighlightUiModel?.let {
-            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselViewModelList
+            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselUiModelList
             var i = 0
             val sizei = etalaseHighlightCarouselViewModelList.size
             while (i < sizei) {
@@ -224,7 +224,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun getEtalaseNameHighLightType(shopProductUiModel: ShopProductUiModel): Int? {
         return shopProductEtalaseHighlightUiModel?.let {
-            val matchEtalaseHighlight = it.etalaseHighlightCarouselViewModelList.firstOrNull {
+            val matchEtalaseHighlight = it.etalaseHighlightCarouselUiModelList.firstOrNull {
                 it.shopProductUiModelList.firstOrNull { it.id == shopProductUiModel.id } != null
             }
             matchEtalaseHighlight?.shopEtalaseViewModel?.type

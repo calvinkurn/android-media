@@ -15,7 +15,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselViewModel
+import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
@@ -48,7 +48,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
             bindShopProductCarousel(visitable.shopProductFeaturedViewModelList)
 
             tvSeeAll!!.visibility = View.GONE
-        } else if (visitable is EtalaseHighlightCarouselViewModel) {
+        } else if (visitable is EtalaseHighlightCarouselUiModel) {
             bindShopProductCarousel(visitable.shopProductUiModelList)
 
             val shopEtalaseViewModel = visitable.shopEtalaseViewModel
@@ -118,7 +118,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductUiModel> {
         return when (visitable) {
             is ShopProductFeaturedUiModel -> visitable.shopProductFeaturedViewModelList
-            is EtalaseHighlightCarouselViewModel -> visitable.shopProductUiModelList
+            is EtalaseHighlightCarouselUiModel -> visitable.shopProductUiModelList
             else -> listOf()
         }
     }

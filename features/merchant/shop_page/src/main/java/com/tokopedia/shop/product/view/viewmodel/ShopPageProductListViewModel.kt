@@ -191,10 +191,10 @@ class ShopPageProductListViewModel @Inject constructor(
                     ).listShopProductUiModel
                 }
             }.awaitAll()
-            val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselViewModel>()
+            val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselUiModel>()
             listProductEtalaseHighlightResponse.forEachIndexed { index, shopProductResponse ->
                 if (shopProductResponse.isNotEmpty()) {
-                    listEtalaseHighlightCarouselViewModel.add(EtalaseHighlightCarouselViewModel(
+                    listEtalaseHighlightCarouselViewModel.add(EtalaseHighlightCarouselUiModel(
                             shopProductResponse,
                             listEtalaseHighlight[index]
                     ))
