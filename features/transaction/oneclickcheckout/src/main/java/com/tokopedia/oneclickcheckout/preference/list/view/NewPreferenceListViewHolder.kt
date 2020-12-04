@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -81,8 +82,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
         tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
-        ivPayment.setImageUrl(paymentModel.image)
-//        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
+        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
         tvPaymentName.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
@@ -166,8 +166,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
         tvShippingDuration.text = serviceDur
 
         val paymentModel = preference.paymentModel
-        ivPayment.setImageUrl(paymentModel.image)
-//        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
+        ImageHandler.loadImageFitCenter(itemView.context, ivPayment, paymentModel.image)
         tvPaymentName.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
