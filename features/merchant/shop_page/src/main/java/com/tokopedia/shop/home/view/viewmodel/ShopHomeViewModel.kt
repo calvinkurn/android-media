@@ -199,7 +199,7 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getMerchantVoucherList(
             shopId: String,
-            numVoucher: Int = 0,
+            numVoucher: Int,
             shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel
     ): ShopHomeVoucherUiModel? {
         val voucherUiModel = shopPageHomeLayoutUiModel.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
@@ -462,9 +462,7 @@ class ShopHomeViewModel @Inject constructor(
         if (shopResultLayoutUiModel !is Success) return
         val shopLayoutUiModel = shopResultLayoutUiModel.data
         val carouselPlayWidgetUiModel = shopLayoutUiModel.listWidget.find { it is CarouselPlayWidgetUiModel }
-
-        if (carouselPlayWidgetUiModel == null || carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
-
+        if (carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
                     PlayWidgetUseCase.WidgetType.ShopPage(shopId),
@@ -496,9 +494,14 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun isCampaignFollower(campaignId: String): Boolean {
-        val campaignData = (_shopHomeLayoutData.value as? Success)?.data?.listWidget?.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()?.firstOrNull {
-            it.data?.firstOrNull()?.campaignId == campaignId
+        val homeLayoutData = shopHomeLayoutData.value
+        if (homeLayoutData !is Success) return false
+        return homeLayoutData.data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().any {
+            val campaignItem = it.data?.firstOrNull()
+            val nplItemCampaignId = campaignItem?.campaignId.orEmpty()
+            val dynamicRule = campaignItem?.dynamicRule
+            val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
+            nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
-        return campaignData?.data?.firstOrNull()?.dynamicRule?.descriptionHeader?.isNotEmpty() ?: false
     }
 }
