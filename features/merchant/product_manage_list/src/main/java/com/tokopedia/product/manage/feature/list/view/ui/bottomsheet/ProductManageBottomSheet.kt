@@ -125,6 +125,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                     else -> add(SetTopAds(product))
                 }
 
+                add(CreateBroadcastChat(product))
+
                 add(SetCashBack(product))
 
                 if(product.isFeatured == true && isPowerMerchantOrOfficialStore) {

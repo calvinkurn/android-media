@@ -17,7 +17,7 @@ data class GetProductV3 (
         return variant.products.all { isEmpty(it) }
     }
 
-    private fun isEmpty(product: Product): Boolean {
-        return product.stock == 0 || product.status == ProductStatus.EMPTY
+    private fun isEmpty(product: Product?): Boolean {
+        return product?.stock == 0 || product?.status == ProductStatus.EMPTY
     }
 }

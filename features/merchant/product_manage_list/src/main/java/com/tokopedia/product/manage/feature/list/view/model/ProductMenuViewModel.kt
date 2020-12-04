@@ -51,7 +51,7 @@ sealed class ProductMenuViewModel(
 
     data class CreateBroadcastChat(override val product: ProductViewModel): ProductMenuViewModel(
             R.string.product_manage_create_broadcast_chat,
-            IconUnify.SPEAKER,
+            R.drawable.ic_bc_chat,
             product
     )
 

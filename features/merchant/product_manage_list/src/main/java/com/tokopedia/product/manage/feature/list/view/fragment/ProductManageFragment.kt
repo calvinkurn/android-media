@@ -409,7 +409,34 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToCreateBroadCastChat(product: ProductViewModel) {
+        if(product.stock.isZero() || !product.isActive()) {
+            val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+            val action = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+            errorStateBroadcastChat(message, action)
+        } else {
+            //request variant
+            if(product.isVariant()) {
 
+            } else {
+                redirectToBroadcastChat()
+            }
+        }
+    }
+
+    private fun redirectToBroadcastChat() {
+
+    }
+
+    private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false) {
+        view?.let {
+            Toaster.build(it, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_SHORT, clickListener = View.OnClickListener {
+                if(isRetry) {
+
+                } else {
+                    return@OnClickListener
+                }
+            })
+        }
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
@@ -1281,7 +1308,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
             is CreateBroadcastChat -> {
                 goToCreateBroadCastChat(product)
-
             }
         }
 
