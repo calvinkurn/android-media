@@ -74,7 +74,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         mTextMembershipLabel?.text = data?.introductionText
 
         data?.target?.let {
-            mTargetText?.setTextColor(Color.parseColor("#" + it.textColor))
+            if (!it.textColor.isNullOrEmpty()) {
+                mTargetText?.setTextColor(Color.parseColor("#" + it.textColor))
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mTargetText?.text = Html.fromHtml(it.text, Html.FROM_HTML_MODE_LEGACY)
             } else {

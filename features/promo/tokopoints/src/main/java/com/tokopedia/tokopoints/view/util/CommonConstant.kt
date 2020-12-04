@@ -67,7 +67,7 @@ interface CommonConstant {
             const val MEMBERSHIP = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/membership"
             const val INFO = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/intro"
             const val DETAIL = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/kupon/detail"
-            const val USERSAVING = "tokopedia://webview?=https://www.tokopedia.com/rewards/saving"
+            const val USERSAVING = "tokopedia://webview?url=https://m.tokopedia.com/rewards/saving"
         }
     }
 
