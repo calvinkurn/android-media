@@ -218,6 +218,11 @@ class SomListSortFilterTab(
         return filterItems.isEmpty()
     }
 
+    fun getAllStatusCodes(): List<String> {
+        return somListFilterUiModel?.statusList?.find { it.key == SomConsts.STATUS_ALL_ORDER }
+                ?.id?.map { it.toString() }.orEmpty()
+    }
+
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
         fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean = true)

@@ -429,9 +429,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
+            if (refreshFilter) {
+                SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
+            }
             status.key
         } else {
             viewModel.setStatusOrderFilter(emptyList())
+            if (refreshFilter) {
+                SomAnalytics.eventClickStatusFilter(somListSortFilterTab?.getAllStatusCodes().orEmpty(), SomConsts.STATUS_NAME_ALL_ORDER)
+            }
             ""
         }
         setDefaultSortByValue()
@@ -482,7 +488,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             } else {
                 selectedFilterKeys.add(0, it)
             }
-            SomAnalytics.eventClickStatusFilter(selectedFilterKeys)
+            SomAnalytics.eventClickFilter(selectedFilterKeys)
         }
     }
 

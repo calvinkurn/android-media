@@ -207,8 +207,12 @@ object SomAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
     }
 
-    fun eventClickStatusFilter(orderStatus: List<String>) {
+    fun eventClickFilter(orderStatus: List<String>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderStatus.joinToString(","))
+    }
+
+    fun eventClickStatusFilter(orderStatus: List<String>, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "${orderStatus.joinToString(",")} - $orderStatusName")
     }
 
     fun eventClickStartAdvertise(orderStatus: String, orderStatusName: String) {
