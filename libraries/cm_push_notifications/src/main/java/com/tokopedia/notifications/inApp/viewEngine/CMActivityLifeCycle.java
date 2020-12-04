@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
-import com.tokopedia.notifications.utils.NotificationRemoveManager;
+import com.tokopedia.notifications.utils.NotificationCancelManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -28,11 +28,11 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     private int activityCount;
 
     private CmActivityLifecycleHandler lifecycleHandler;
-    private NotificationRemoveManager removeManager;
+    private NotificationCancelManager cancelManager;
     private RemoteConfig remoteConfig;
 
     public CMActivityLifeCycle(Context context, CmActivityLifecycleHandler lifecycleHandler) {
-        removeManager = new NotificationRemoveManager(context);
+        cancelManager = new NotificationCancelManager(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
 
         this.lifecycleHandler = lifecycleHandler;
@@ -71,7 +71,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStopped(Activity activity) {
         try {
             lifecycleHandler.onActivityStopInternal(activity);
-            removeManager.cancel();
+            cancelManager.cancel();
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -99,7 +99,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     private void clearNotification(Activity activity) {
         if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            removeManager.clearNotifications(activity.getApplicationContext());
+            cancelManager.clearNotifications(activity.getApplicationContext());
         }
     }
 

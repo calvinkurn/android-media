@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository.Companion.getInstance as pushRepository
 
-open class NotificationRemoveManager(
+open class NotificationCancelManager(
         private val context: Context
 ) : CoroutineScope {
 
