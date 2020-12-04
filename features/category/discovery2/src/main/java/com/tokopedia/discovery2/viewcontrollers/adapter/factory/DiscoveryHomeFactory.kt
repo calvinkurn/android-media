@@ -143,11 +143,11 @@ class DiscoveryHomeFactory {
 
             // Product Card Sprint Sale
             initializeComponent(ComponentsList.ProductCardSprintSale, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
-            initializeComponent(ComponentsList.ProductCardSprintSaleItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardSprintSaleItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             // Product Card Horizontal Sprint Sale
             initializeComponent(ComponentsList.ProductCardSprintSaleCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
-            initializeComponent(ComponentsList.ProductCardSprintSaleCarouselItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardSprintSaleCarouselItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             initializeComponent(ComponentsList.ProductListEmptyState, ::EmptyStateViewHolder, ::EmptyStateViewModel)
             initializeComponent(ComponentsList.SaleEndState, ::SaleEndStateViewHolder, ::SaleEndStateViewModel)

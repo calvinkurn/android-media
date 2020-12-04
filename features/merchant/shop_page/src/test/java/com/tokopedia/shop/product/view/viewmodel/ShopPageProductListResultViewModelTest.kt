@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
@@ -204,7 +204,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             verifyGetShopProductUseCaseCalled()
 
             assertNotNull(shopPageProductListResultViewModel.productDataEmpty.value)
-            assertTrue(shopPageProductListResultViewModel.productDataEmpty.value is Success<List<ShopProductViewModel>>)
+            assertTrue(shopPageProductListResultViewModel.productDataEmpty.value is Success<List<ShopProductUiModel>>)
         }
     }
 
