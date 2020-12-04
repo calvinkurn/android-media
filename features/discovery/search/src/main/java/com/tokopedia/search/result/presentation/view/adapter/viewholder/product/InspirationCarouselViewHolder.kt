@@ -181,9 +181,7 @@ class InspirationCarouselViewHolder(
 
         private fun setOutRectOffSetForCardView(outRect: Rect, view: View, parent: RecyclerView) {
             outRect.left = getLeftOffset(view, parent)
-            outRect.top = getTopOffset()
             outRect.right = getRightOffset(view, parent)
-            outRect.bottom = getBottomOffset()
         }
 
         private fun getLeftOffset(view: View, parent: RecyclerView): Int {
@@ -195,10 +193,6 @@ class InspirationCarouselViewHolder(
 
         private fun getLeftOffsetNotFirstItem(): Int { return (left / 4) - (cardViewHorizontalOffset / 2) }
 
-        private fun getTopOffset(): Int {
-            return top - cardViewVerticalOffset
-        }
-
         private fun getRightOffset(view: View, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(view) == (parent.adapter?.itemCount ?: 0) - 1) getRightOffsetLastItem()
             else getRightOffsetNotLastItem()
@@ -207,9 +201,5 @@ class InspirationCarouselViewHolder(
         private fun getRightOffsetLastItem(): Int { return right - (cardViewHorizontalOffset / 2) }
 
         private fun getRightOffsetNotLastItem(): Int { return (right / 4) - (cardViewHorizontalOffset / 2) }
-
-        private fun getBottomOffset(): Int {
-            return bottom - (cardViewVerticalOffset / 2)
-        }
     }
 }
