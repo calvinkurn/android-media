@@ -6,12 +6,12 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/dp_30">
+    android:padding="@dimen/spacing_lvl6">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginBottom="@dimen/spacing_lvl4">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_animation_view"
@@ -43,21 +43,21 @@
         android:id="@+id/text_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="center"
-        android:textColor="@color/Neutral_N700_68"
         android:text="@string/emoney_tap_card_instruction_message"
+        android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_try_again"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/emoney_nfc_tap_card_button_label_error"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>
