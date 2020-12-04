@@ -39,7 +39,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
             btnPay?.apply {
                 when (orderTotal.buttonType) {
                     OccButtonType.CHOOSE_PAYMENT -> {
-                        layoutParams?.width = Utils.convertDpToPixel(if (isNewFlow) 180f else 160f, context)
+                        layoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
