@@ -16,7 +16,7 @@ open class NotificationRemoveManager(
     private val jobs = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + jobs
+        get() = Dispatchers.IO + jobs
 
     fun clearNotification(context: Context) {
         clearNotificationByCampaignId { elements ->
@@ -27,7 +27,7 @@ open class NotificationRemoveManager(
     }
 
     private fun clearNotificationByCampaignId(invoke: (List<BaseNotificationModel>) -> Unit) {
-        launch(Dispatchers.IO) {
+        launch {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
                 val result = notifications
