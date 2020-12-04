@@ -1,0 +1,71 @@
+{
+  "address_id": 117757236,
+  "shop_products": [
+    {
+      "dropship_data": null,
+      "fcancel_partial": 0,
+      "finsurance": 1,
+      "is_dropship": 0,
+      "is_order_priority": 0,
+      "is_preorder": 0,
+      "product_data": [
+        {
+          "is_ppp": false,
+          "product_id": 1087281475,
+          "product_notes": null,
+          "product_quantity": 1
+        }
+      ],
+      "promo_codes": [],
+      "promos": [],
+      "shipping_info": {
+        "checksum": "DycKJ6KUcwPyN%2FPNzcj9P2QMBqg%3D",
+        "rates_feature": {
+          "ontime_delivery_guarantee": {
+            "available": false,
+            "duration": 0
+          }
+        },
+        "rates_id": "1605786171423985519",
+        "shipping_id": 23,
+        "sp_id": 45,
+        "ut": "1605786171"
+      },
+      "shop_id": 652660,
+      "warehouse_id": 4874
+    },
+    {
+      "dropship_data": null,
+      "fcancel_partial": 0,
+      "finsurance": 1,
+      "is_dropship": 0,
+      "is_order_priority": 0,
+      "is_preorder": 0,
+      "product_data": [
+        {
+          "is_ppp": true,
+          "product_id": 1260775819,
+          "product_notes": null,
+          "product_quantity": 2
+        }
+      ],
+      "promo_codes": [],
+      "promos": [],
+      "shipping_info": {
+        "checksum": "%2F24niKeOvgXM%2BvUAbuQ%2FVK2%2Bp9c%3D",
+        "rates_feature": {
+          "ontime_delivery_guarantee": {
+            "available": true,
+            "duration": 86400
+          }
+        },
+        "rates_id": "1605786176441513906",
+        "shipping_id": 11,
+        "sp_id": 33,
+        "ut": "1605786176"
+      },
+      "shop_id": 4926565,
+      "warehouse_id": 3531064
+    }
+  ]
+}

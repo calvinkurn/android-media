@@ -4,5 +4,5 @@
     <solid android:color="@color/transparent"/>
     <stroke
         android:width="@dimen/dp_2"
-        android:color="@color/setting_image_border"/>
+        android:color="@color/Unify_N75"/>
 </shape>
