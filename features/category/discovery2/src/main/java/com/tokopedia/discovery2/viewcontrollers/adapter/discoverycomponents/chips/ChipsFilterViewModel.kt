@@ -7,7 +7,6 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.usecase.ChipFilterUseCase
 import com.tokopedia.discovery2.usecase.ChipSelectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,25 +23,29 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
     @Inject
     lateinit var chipSelectionUseCase: ChipSelectionUseCase
 
-    @Inject
-    lateinit var chipFilterUseCase: ChipFilterUseCase
 
     init {
-        getChipFilters()
+        components.data?.let {
+            components.setComponentsItem(DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.ChipsFilterItem.componentName, components.name, position))
+        }
+        initDaggerInject()
     }
 
-    private fun getChipFilters() {
-        launchCatchError(block = {
-            listData.value = chipFilterUseCase.getChipFilterData(components.id, components.pageEndPoint, position, components.name) as ArrayList<ComponentsItem>
-        }, onError = {
-            it.printStackTrace()
-        })
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
     }
 
     fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
     }
 
+    override fun initDaggerInject() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
 
     fun onChipSelected(id: String?) {
         components.getComponentsItem()?.forEach {

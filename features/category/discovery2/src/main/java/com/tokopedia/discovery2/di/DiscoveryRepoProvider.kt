@@ -5,8 +5,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.childcategory.DiscoveryChildCategoryRepository
-import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
-import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRestRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
