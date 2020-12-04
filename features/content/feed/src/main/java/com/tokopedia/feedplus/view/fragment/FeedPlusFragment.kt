@@ -445,16 +445,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 when(it) {
                     is Success -> {
                         val data = it.data
-                        if (data.isSuccess) {
-                            onAddToCartSuccess()
-                        } else {
-                            onAddToCartFailed(data.applink)
+                        when {
+                            data.isSuccess -> {
+                                onAddToCartSuccess()
+                            }
+                            data.errorMsg.isNotEmpty() -> {
+                                view?.run {
+                                    Toaster.build(this, data.errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                            else -> {
+                                onAddToCartFailed(data.applink)
+                            }
                         }
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
                         view?.run {
-                            Toaster.make(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.build(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }

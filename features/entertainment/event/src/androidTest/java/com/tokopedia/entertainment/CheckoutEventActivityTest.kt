@@ -65,6 +65,7 @@ class CheckoutEventActivityTest {
             putExtra(EventCheckoutActivity.EXTRA_URL_PDP, "7-day-jr-all-shikoku-pass-23233")
             putExtra(EventCheckoutActivity.EXTRA_META_DATA, MockMetaData.getMetaDataResponse())
             putExtra(EventCheckoutActivity.EXTRA_PACKAGE_ID, "2104")
+            putExtra(EventCheckoutActivity.EXTRA_GATEWAY_CODE, "ZERO")
         }
 
         activityRule.launchActivity(intent)
