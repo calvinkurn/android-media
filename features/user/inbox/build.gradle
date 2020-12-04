@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.inboxCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation project(rootProject.ext.features.searchbar)
 
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -28,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

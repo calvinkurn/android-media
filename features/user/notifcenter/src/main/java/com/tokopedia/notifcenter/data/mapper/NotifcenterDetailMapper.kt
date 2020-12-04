@@ -43,6 +43,7 @@ class NotifcenterDetailMapper @Inject constructor() {
             if (needSectionTitle) {
                 items.add(SectionTitleUiModel("Terbaru"))
             }
+            sortProducts(notifcenterDetail.newList)
             items.addAll(notifcenterDetail.newList)
             if (notifcenterDetail.newPaging.hasNext) {
                 if (needLoadMoreButton) {
@@ -73,6 +74,7 @@ class NotifcenterDetailMapper @Inject constructor() {
             if (needSectionTitle) {
                 items.add(SectionTitleUiModel("Sebelumnya"))
             }
+            sortProducts(notifcenterDetail.list)
             items.addAll(notifcenterDetail.list)
             if (notifcenterDetail.paging.hasNext) {
                 if (needLoadMoreButton) {
@@ -85,6 +87,12 @@ class NotifcenterDetailMapper @Inject constructor() {
                 items = items,
                 hasNext = response.notifcenterDetail.paging.hasNext
         )
+    }
+
+    private fun sortProducts(notifications: List<NotificationUiModel>) {
+        notifications.forEach { notification ->
+            notification.productData = notification.productData.sortedBy { it.hasEmptyStock() }
+        }
     }
 
 

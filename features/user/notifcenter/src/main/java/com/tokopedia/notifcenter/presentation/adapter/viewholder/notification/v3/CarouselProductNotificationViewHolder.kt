@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,8 +20,6 @@ class CarouselProductNotificationViewHolder constructor(
         private val carouselListener: Listener?,
         private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, notificationItemListener) {
-
-    private var touchListener: RecyclerView.OnItemTouchListener? = null
 
     interface Listener {
         fun saveProductCarouselState(position: Int, state: Parcelable?)
@@ -74,13 +71,6 @@ class CarouselProductNotificationViewHolder constructor(
         super.bind(element)
         bindCarouselProduct(element)
         bindScrollState(element)
-        bindItemTouch(element)
-    }
-
-    override fun onViewRecycled() {
-        touchListener?.let {
-            rv?.removeOnItemTouchListener(it)
-        }
     }
 
     private fun bindCarouselProduct(element: NotificationUiModel) {
@@ -89,25 +79,6 @@ class CarouselProductNotificationViewHolder constructor(
 
     private fun bindScrollState(element: NotificationUiModel) {
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
-    }
-
-    private fun bindItemTouch(element: NotificationUiModel) {
-        touchListener = object : RecyclerView.OnItemTouchListener {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                when (e.action) {
-                    MotionEvent.ACTION_UP -> {
-                        markAsReadIfUnread(element)
-                    }
-                }
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-        }
-        touchListener?.let {
-            rv?.addOnItemTouchListener(it)
-        }
     }
 
     override fun showLongerContent(element: NotificationUiModel) {

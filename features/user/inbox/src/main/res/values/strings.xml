@@ -2,5 +2,5 @@
     <string name="inbox_title_notification">Notifikasi</string>
     <string name="inbox_title_chat">Chat</string>
     <string name="inbox_title_discussion">Diskusi</string>
-    <string name="title_change_role">Akun sudah diganti ke %s</string>
+    <string name="title_change_role">Akun sudah diganti ke %s.</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
 
@@ -21,6 +22,7 @@ object IconList {
     const val ID_WISHLIST = IconUnify.HEART
     const val ID_SHARE = IconUnify.SHARE_MOBILE
     const val ID_SETTING = IconUnify.SETTING
+    const val ID_SEARCH = IconUnify.SEARCH
 
     const val NAME_MESSAGE = "Inbox"
     const val NAME_NOTIFICATION = "Notif"
@@ -31,6 +33,7 @@ object IconList {
     const val NAME_SETTING = "Setting"
     const val NAME_BACK_BUTTON = "Back Button"
     const val NAME_SEARCH_BAR = "Search Bar"
+    const val NAME_SEARCH = "Search"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
 
@@ -134,6 +137,24 @@ object IconList {
                     applink = ApplinkConstInternalGlobal.GENERAL_SETTING,
                     disableRouteManager = disableRouteManager,
                     name = NAME_SETTING,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object SearchGlobalIcon: IconConfigItem {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_SEARCH,
+                    applink = ApplinkConstInternalMarketplace.CHAT_SEARCH,
+                    disableRouteManager = disableRouteManager,
+                    name = NAME_SEARCH,
+                    bundle = Bundle().run {
+                        this.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, pageSource)
+                        this
+                    },
                     disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()

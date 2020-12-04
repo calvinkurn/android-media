@@ -23,6 +23,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lb_product_label"
+            app:labelType="general_light_grey"
+            android:text="@string/title_empty_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_thumbnail" />
+
         <com.tokopedia.notifcenter.widget.ProductVariantLayout
             android:id="@+id/pvl_variant"
             android:layout_width="@dimen/notif_dp_0"
@@ -155,6 +165,17 @@
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_weight="1"
                 android:text="@string/notifcenter_btn_buy"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="transaction" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_empty_stock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="@string/title_empty_stock"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="transaction" />
         </LinearLayout>
