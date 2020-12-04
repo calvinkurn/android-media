@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700"
+                android:textColor="@color/Unify_N700"
                 android:textSize="@dimen/unify_font_16"
                 android:textStyle="bold"
                 tools:text="Tomodachi Shop" />
@@ -52,7 +52,7 @@
                 android:id="@+id/tvSawSmallOrderUpdated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/unify_font_10"
                 tools:text="Diperbarui 11.00" />
         </LinearLayout>
@@ -110,7 +110,7 @@
                 android:layout_width="@dimen/saw_dimen_1dp"
                 android:layout_height="@dimen/layout_lvl6"
                 android:layout_centerHorizontal="true"
-                android:background="@color/Neutral_N75" />
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:id="@+id/containerSawSmallOrderReadyToShip"
@@ -173,7 +173,7 @@
             android:layout_toEndOf="@+id/imgSawOrderAppIcon"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/unify_font_16"
             android:textStyle="bold"
             tools:text="Tomodachi Shop" />
@@ -207,7 +207,7 @@
             android:layout_alignBottom="@+id/tvSawOrderTotalOrder"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/unify_space_12"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/unify_font_10"
             tools:text="Diperbarui 11.00" />
 

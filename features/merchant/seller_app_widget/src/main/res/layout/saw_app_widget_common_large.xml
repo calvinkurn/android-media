@@ -38,7 +38,7 @@
             android:gravity="center"
             android:maxLines="3"
             android:textAlignment="center"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/unify_font_16"
             android:textStyle="bold"
             tools:text="Masuk ke Tokopedia Seller" />
@@ -51,6 +51,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/spacing_lvl1"
             android:textAlignment="center"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/unify_font_12"
             tools:text="Check pesanan biar nggak ada pesanan yang terlewat, ya." />
 

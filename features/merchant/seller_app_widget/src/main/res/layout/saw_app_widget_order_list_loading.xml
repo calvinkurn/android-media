@@ -87,7 +87,7 @@
                 android:layout_width="@dimen/saw_dimen_1dp"
                 android:layout_height="@dimen/layout_lvl6"
                 android:layout_centerHorizontal="true"
-                android:background="@color/Neutral_N50" />
+                android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -157,7 +157,7 @@
             android:layout_height="@dimen/saw_dimen_1dp"
             android:layout_above="@+id/shimmerSawLoadingBottomView"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            android:background="@color/Neutral_N75" />
+            android:background="@color/Unify_N75" />
 
         <RelativeLayout
             android:id="@+id/shimmerSawLoadingBottomView"

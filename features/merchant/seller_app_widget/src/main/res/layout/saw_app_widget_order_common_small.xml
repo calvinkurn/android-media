@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/unify_font_16"
         android:textStyle="bold"
         tools:text="Masuk ke Tokopedia" />
