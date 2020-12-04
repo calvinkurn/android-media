@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipment;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipmentPackage;
-import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
+import com.tokopedia.shop.info.view.model.ShopInfoLogisticUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class ShopInfoLogisticViewModelMapper {
     public List<Visitable> transform(List<ShopInfoShipment> shopInfoShipmentList) {
         List<Visitable> visitableList = new ArrayList<>();
         for (ShopInfoShipment shopInfoShipment : shopInfoShipmentList) {
-            ShopInfoLogisticViewModel logisticViewModel = new ShopInfoLogisticViewModel();
+            ShopInfoLogisticUiModel logisticViewModel = new ShopInfoLogisticUiModel();
             logisticViewModel.setShipmentImage(shopInfoShipment.getShipmentImage());
             logisticViewModel.setShipmentName(shopInfoShipment.getShipmentName());
             String packagName = "";
