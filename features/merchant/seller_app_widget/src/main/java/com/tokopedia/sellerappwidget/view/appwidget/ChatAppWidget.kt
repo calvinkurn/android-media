@@ -9,8 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
+import com.tokopedia.sellerappwidget.view.service.GetChatService
 import com.tokopedia.sellerappwidget.view.state.chat.*
-import com.tokopedia.sellerappwidget.view.work.GetChatListWorkerExecutor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -26,7 +26,7 @@ class ChatAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
-                GetChatListWorkerExecutor.runPeriodicWork(context)
+                GetChatService.startService(context)
             } else {
                 ChatWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -45,6 +45,7 @@ class ChatAppWidget : AppWidgetProvider() {
             }
             Const.Action.REFRESH -> refreshWidget(context)
             Const.Action.ITEM_CLICK -> onChatItemClick(context, intent)
+            Const.Action.OPEN_APPLINK -> AppWidgetHelper.openAppLink(context, intent)
         }
         super.onReceive(context, intent)
     }
@@ -69,7 +70,7 @@ class ChatAppWidget : AppWidgetProvider() {
                 return
             }
         }
-        GetChatListWorkerExecutor.runPeriodicWork(context)
+        GetChatService.startService(context)
     }
 
     private fun initUserSession(context: Context) {

@@ -43,6 +43,7 @@
         android:maxLines="3"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/unify_font_12"
         tools:text="Cek semua pesanan yang kamu terima disini" />
 
