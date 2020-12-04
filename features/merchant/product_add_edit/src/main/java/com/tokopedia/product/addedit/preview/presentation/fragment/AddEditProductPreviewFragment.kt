@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -173,7 +174,7 @@ class AddEditProductPreviewFragment:
     private var productStatusSwitch: SwitchUnify? = null
 
     //loading
-    private var loadingLayout: View? = null
+    private var loadingLayout: MotionLayout? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -1227,7 +1228,24 @@ class AddEditProductPreviewFragment:
     }
 
     private fun hideLoading() {
-        loadingLayout?.hide()
+        loadingLayout?.transitionToEnd()
+        loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                // no-op
+            }
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                loadingLayout?.hide()
+            }
+        })
     }
 
     private fun goToSellerAppProductManageThenSetCashback() {

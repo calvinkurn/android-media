@@ -22,9 +22,16 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val contentMarginTop = getGridViewContentMarginTop(context, hasLabelCampaign)
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             productCardHeightList.add(
-                    imageHeight + cardPaddingBottom + campaignLabelHeight + contentMarginTop + contentHeight + buttonAddToCartSectionHeight
+                            imageHeight +
+                            cardPaddingBottom +
+                            campaignLabelHeight +
+                            contentMarginTop +
+                            contentHeight +
+                            buttonAddToCartSectionHeight +
+                            buttonNotifyMeSectionHeight
             )
         }
 
@@ -59,6 +66,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             val totalHeight = cardPaddingTop +
                     campaignLabelHeight +
@@ -66,7 +74,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
                     cardPaddingBottom +
                     max(imageSize, contentHeight) +
                     buttonDeleteProductSectionHeight +
-                    buttonAddToCartSectionHeight
+                    buttonAddToCartSectionHeight +
+                    buttonNotifyMeSectionHeight
 
             productCardHeightList.add(totalHeight)
         }
@@ -301,6 +310,16 @@ private fun ProductCardModel.getButtonAddToCartSectionHeight(context: Context): 
         val buttonAddToCartHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_to_cart_height)
 
         buttonAddToCartMarginTop + buttonAddToCartHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getButtonNotifyMeSectionHeight(context: Context): Int {
+    return if (hasNotifyMeButton) {
+        val buttonNotifyMeMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_notify_me_margin_top)
+        val buttonNotifyMeHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_notify_me_height)
+
+        buttonNotifyMeMarginTop + buttonNotifyMeHeight
     }
     else 0
 }

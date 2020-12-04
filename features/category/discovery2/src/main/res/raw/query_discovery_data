@@ -4,7 +4,6 @@ query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: Str
       title
       components
      page_info {
-            Tags
             Id
             Identifier
             Name

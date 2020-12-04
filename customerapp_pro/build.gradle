@@ -284,7 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.kyc)
-    implementation project(rootProject.ext.features.developerOptions)
+    implementation project(rootProject.ext.features.feedbackForm)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.screenshot_observer)
 

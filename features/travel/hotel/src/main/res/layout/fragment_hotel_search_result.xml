@@ -57,15 +57,4 @@
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-
-    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-        android:id="@+id/bottom_action_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:fbType="group"
-        app:layout_anchor="@+id/recycler_view"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        app:layout_behavior="com.tokopedia.hotel.common.presentation.behaviour.QuickReturnFooterBehaviour" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

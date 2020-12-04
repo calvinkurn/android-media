@@ -30,8 +30,6 @@ public class BaseMainApplication extends MultiDexApplication {
         return baseAppComponent;
     }
 
-    public boolean checkAppSignature(){return false;}
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
