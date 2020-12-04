@@ -29,7 +29,7 @@ class SliderBannerItemViewHolder(itemView: View) : CircularViewHolder(itemView) 
     override fun bind(item: CircularModel, listener: CircularListener) {
         constraintLayout.removeAllViews()
         createImageViewConstrains(item)
-        ImageHandler.loadImage(itemView.context, bannerImageView, item.url, com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100)
+        ImageHandler.loadImage(itemView.context, bannerImageView, item.url, R.color.grey_1100, R.color.grey_1100)
         constraintSet.applyTo(constraintLayout)
         bannerImageView.setOnClickListener {
             listener.onClick(adapterPosition)
