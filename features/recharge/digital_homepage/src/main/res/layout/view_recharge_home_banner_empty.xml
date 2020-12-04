@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/banner_margin_top"
         android:layout_marginRight="@dimen/layout_lvl3"
         android:text="@string/recharge_home_empty_banner_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2" />
 
@@ -32,7 +32,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/layout_lvl3"
         android:text="@string/recharge_home_empty_banner_desc"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_banner_empty_title"
         app:typographyType="body_3" />
 

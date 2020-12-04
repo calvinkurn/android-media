@@ -112,7 +112,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             var flags = digital_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.run {
+                activity?.window?.statusBarColor =
+                        androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {
@@ -144,7 +147,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
+            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Unify_N200)
             context?.run {
                 searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
