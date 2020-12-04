@@ -1700,7 +1700,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
-        dynamicAdapter.notifyItemRangeChangesExceptFirstPosition()
+        dynamicAdapter.notifyDataSetChanged()
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {

@@ -44,6 +44,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
         private const val PRODUCT_VIDEO_DETAIL_TAG = "videoDetailTag"
+        private const val PRODUCT_DETAIL_TAG = "productDetailTag"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -171,6 +172,28 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         supportFragmentManager.beginTransaction().add(parentViewResourceID, fragment, PRODUCT_VIDEO_DETAIL_TAG)
                 .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
                 .commit()
+        hidePdpFragment()
+    }
+
+    /**
+     * Need to hide fragment to prevent fragment overdraw
+     */
+    private fun hidePdpFragment() {
+        val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragmentVideoDetail?.let {
+            supportFragmentManager.beginTransaction().hide(it).commit()
+        }
+    }
+
+    private fun showPdpFragment() {
+        val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragmentVideoDetail?.let {
+            supportFragmentManager.beginTransaction().show(it).commit()
+        }
+    }
+
+    override fun getTagFragment(): String {
+        return PRODUCT_DETAIL_TAG
     }
 
     override fun onBackPressed() {
@@ -179,6 +202,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         } else {
             val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(PRODUCT_VIDEO_DETAIL_TAG) as? ProductVideoDetailFragment
             if (fragmentVideoDetail?.isVisible == true) {
+                showPdpFragment()
                 fragmentVideoDetail.onBackButtonClicked()
             }
             supportFragmentManager.popBackStack()

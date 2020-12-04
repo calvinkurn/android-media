@@ -90,12 +90,11 @@
         android:id="@+id/pdp_volume_control"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_12"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="VOLUME_UP"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_mainimize_control"
-        app:srcCompat="@drawable/ic_pdp_volume_mute"
         tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
     <com.tokopedia.iconunify.IconUnify

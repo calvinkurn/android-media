@@ -72,7 +72,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     }
 
     private fun setupVolume(isMute: Boolean) {
-        video_volume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_DOWN)
+        video_volume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(view) {
