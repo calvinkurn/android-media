@@ -8,7 +8,7 @@ data class VariantOptionWithAttribute(
         val currentState: Int = 0,
         val variantHex: String = "",
         val variantName: String = "",
-        val image200: String = "",
+        val image100: String = "",
         val imageOriginal: String = "",
         val isBuyable: Boolean = false,
         val stock: Int = 0,

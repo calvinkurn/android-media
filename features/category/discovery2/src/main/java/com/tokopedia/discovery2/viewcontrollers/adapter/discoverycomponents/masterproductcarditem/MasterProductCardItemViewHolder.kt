@@ -7,18 +7,21 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private lateinit var productCardItemViewModel: MasterProductCardItemViewModel
-    private var masterProductCard: ProductCardGridView = itemView.findViewById(R.id.master_product_card)
+    private var masterProductCardGridView: ProductCardGridView? = null
+    private var masterProductCardListView: ProductCardListView? = null
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
     private var productCardName = ""
     private var dataItem: DataItem? = null
@@ -30,6 +33,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun initView() {
+        if (productCardItemViewModel.getTemplateType() == LIST) {
+            masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
+        } else {
+            masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
+        }
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
@@ -39,13 +47,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
         lifecycleOwner?.let {
-            productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer { data ->
+            productCardItemViewModel.getDataItemValue().observe(it, Observer { data ->
                 dataItem = data
             })
-            productCardItemViewModel.getProductModelValue().observe(lifecycleOwner, Observer { data ->
+            productCardItemViewModel.getProductModelValue().observe(it, Observer { data ->
                 populateData(data)
             })
-            productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer { position ->
+            productCardItemViewModel.getComponentPosition().observe(it, Observer { position ->
                 componentPosition = position
             })
         }
@@ -54,15 +62,29 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     private fun populateData(productCardModel: ProductCardModel) {
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
             productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-            masterProductCard.applyCarousel()
-            masterProductCard.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            masterProductCard.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            masterProductCardGridView?.let {
+                it.applyCarousel()
+                it.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
         } else {
-            masterProductCard.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            masterProductCard.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            setViewDims()
         }
-        masterProductCard.setProductModel(productCardModel)
+        masterProductCardGridView?.setProductModel(productCardModel)
+        masterProductCardListView?.setProductModel(productCardModel)
     }
+
+    private fun setViewDims() {
+        masterProductCardGridView?.let {
+            it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+        masterProductCardListView?.let {
+            it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            it.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+    }
+
 
     private fun handleUIClick(view: View) {
         when (view) {

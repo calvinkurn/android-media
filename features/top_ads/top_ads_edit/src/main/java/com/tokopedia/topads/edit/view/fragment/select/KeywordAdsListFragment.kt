@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.Constants.KEYWORD_CHARACTER_COUNT
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -21,7 +22,6 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.utils.Constants.COUNT
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
@@ -36,15 +36,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.btn_next
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.emptyLayout
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.headlineList
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.keyword_list
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.selected_info
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.tip_btn
-import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.txtRecommendation
 import javax.inject.Inject
 
 private const val EVENT_LIST_CHECKBOX = "kata kunci pilihan yang di ceklist"
@@ -247,7 +239,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         else
             keywordSelectedAdapter.itemCount
         selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
-        btn_next.isEnabled = count <= COUNT
+        btn_next.isEnabled = count <= KEYWORD_CHARACTER_COUNT
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {

@@ -27,4 +27,9 @@ object Constant {
         const val CART = "Cart"
         const val GLOBAL_MENU = "Global Menu"
     }
+
+    object ProductTemplate {
+        const val GRID =  "grid"
+        const val LIST = "list"
+    }
 }

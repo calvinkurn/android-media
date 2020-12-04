@@ -5,19 +5,19 @@ import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.liveness.utils.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LivenessDetectionViewModel @Inject constructor(
         private val uploadLivenessResultUseCase: UploadLivenessResultUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _livenessResponse = MutableLiveData<Result<LivenessData>>()
     val livenessResponseLiveData : LiveData<Result<LivenessData>>
@@ -25,7 +25,7 @@ class LivenessDetectionViewModel @Inject constructor(
 
     fun uploadImages(ktpPath: String, facePath: String, tkpdProjectId: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher.io) {
                 val livenessResponseResult = uploadLivenessResultUseCase.uploadImages(ktpPath, facePath, tkpdProjectId)
                 _livenessResponse.postValue(Success(livenessResponseResult))
             }

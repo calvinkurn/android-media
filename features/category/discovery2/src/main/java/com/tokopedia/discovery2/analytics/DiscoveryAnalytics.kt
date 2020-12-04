@@ -327,7 +327,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     private fun getProductName(productType: String?): String {
         return when (productType) {
-            PRODUCT_CARD_REVAMP_ITEM -> PRODUCT_CARD_REVAMP
+            PRODUCT_CARD_REVAMP_ITEM, MASTER_PRODUCT_CARD_ITEM_LIST -> PRODUCT_CARD_REVAMP
             PRODUCT_CARD_CAROUSEL_ITEM -> PRODUCT_CARD_CAROUSEL
             PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
             PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL

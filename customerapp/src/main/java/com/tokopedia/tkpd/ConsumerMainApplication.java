@@ -1,7 +1,11 @@
 package com.tokopedia.tkpd;
 
+import android.app.slice.Slice;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 
 import com.tokopedia.config.GlobalConfig;
@@ -11,6 +15,7 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.utils.permission.SlicePermission;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -64,6 +69,12 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     public void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SlicePermission.initPermission(this);
     }
 
     /**

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.view.View
+import android.widget.EditText
 import androidx.test.espresso.*
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -11,8 +12,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -20,6 +20,7 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.TabsUnify
+import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf.allOf
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +31,7 @@ class TalkPageRobot {
     }
 
     fun clickAction(idView: Int) {
-        onView(ViewMatchers.withId(idView)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(idView)).check(ViewAssertions.matches(isDisplayed()))
                 .perform(ViewActions.click())
     }
 
@@ -61,7 +62,7 @@ class TalkPageRobot {
     fun validate(gtmLogDbSource: GtmLogDBSource,
                  targetContext: Context,
                  fileName: String) {
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
+        assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
                 hasAllSuccess())
     }
 
@@ -120,5 +121,22 @@ fun waitForData() {
 }
 
 fun waitForTrackerSent() {
-    Thread.sleep(3000L)
+    Thread.sleep(4000L)
+}
+
+fun forceTypeText(text: String): ViewAction {
+    return object : ViewAction {
+        override fun getDescription(): String {
+            return "force type text"
+        }
+
+        override fun getConstraints(): Matcher<View> {
+            return allOf(isEnabled())
+        }
+
+        override fun perform(uiController: UiController?, view: View?) {
+            (view as? EditText)?.append(text)
+            uiController?.loopMainThreadUntilIdle()
+        }
+    }
 }
