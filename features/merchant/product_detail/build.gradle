@@ -118,7 +118,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayer
-    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.debugToolsDependencies.chuck

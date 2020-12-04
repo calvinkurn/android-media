@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.VideoStateListener
@@ -20,7 +21,8 @@ import kotlinx.android.synthetic.main.pdp_video_view_holder.view.*
  * Created by Yehezkiel on 23/11/20
  */
 class ProductVideoViewHolder(val view: View, private val productVideoCoordinator: ProductVideoCoordinator?,
-                             private val onVideoFullScreenClicked: (() -> Unit)? = null)
+                             private val listener: DynamicProductDetailListener?)
+
     : AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
 
     private var mPlayer: ProductExoPlayer? = null
@@ -48,7 +50,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
         video_full_screen?.setOnClickListener {
-            onVideoFullScreenClicked?.invoke()
+            listener?.onVideoFullScreenClicked()
         }
     }
 

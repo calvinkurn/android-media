@@ -18,16 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/pdp_video_overlay"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:contentDescription="@string/content_desc_img_pdp_video"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pdp_video_loading"
         android:layout_width="@dimen/dp_44"

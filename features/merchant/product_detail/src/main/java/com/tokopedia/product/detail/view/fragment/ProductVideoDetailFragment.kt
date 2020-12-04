@@ -17,7 +17,7 @@ import com.tokopedia.product.detail.view.adapter.ProductVideoDetailAdapter
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 
-class ProductVideoDetailFragment : Fragment() {
+class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var videoCoordinator: ProductVideoCoordinator? = null
@@ -55,7 +55,7 @@ class ProductVideoDetailFragment : Fragment() {
 
         videoCoordinator = ProductVideoCoordinator(viewLifecycleOwner)
 
-        videoDetailAdapter = ProductVideoDetailAdapter(videoCoordinator)
+        videoDetailAdapter = ProductVideoDetailAdapter(videoCoordinator, this)
         videoDetailPager?.adapter = videoDetailAdapter
 
         setupViewPagerCallback(videoCoordinator)
@@ -110,4 +110,13 @@ class ProductVideoDetailFragment : Fragment() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
         })
     }
+
+    override fun onMinimizeVideoClicked() {
+        onBackButtonClicked()
+        activityListener?.onBackPressed()
+    }
+}
+
+interface ProductVideoDetailInterface {
+    fun onMinimizeVideoClicked()
 }

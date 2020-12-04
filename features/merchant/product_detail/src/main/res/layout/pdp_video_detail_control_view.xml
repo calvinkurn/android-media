@@ -14,58 +14,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_play"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            app:srcCompat="@drawable/ic_pdp_video_play" />
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="PLAY"
+            tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@id/exo_pause"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            app:srcCompat="@drawable/ic_pdp_video_pause" />
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="PAUSE"
+            tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
     </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/exo_duration_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_pdp_rounded_black"
-        android:orientation="horizontal"
-        android:padding="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_volume_control"
-        app:layout_constraintTop_toTopOf="@+id/pdp_volume_control"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_volume_control">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="small"
-            tools:text="05:20" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/exo_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="small"
-            android:text=" / "
-            tools:text=" / " />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="small"
-            tools:text="30:00" />
-
-    </LinearLayout>
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
@@ -73,28 +38,75 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_8"
-        app:scrubber_color="@color/Unify_Static_White"
-        app:unplayed_color="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exo_duration_wrapper"
-        app:layout_constraintStart_toEndOf="@+id/pdp_video_detail_control" />
+        app:layout_constraintStart_toEndOf="@+id/pdp_video_detail_control"
+        app:layout_constraintTop_toTopOf="@+id/pdp_video_detail_control"
+        app:scrubber_color="@color/Unify_Static_White"
+        app:unplayed_color="@color/Unify_Static_White" />
 
+    <LinearLayout
+        android:id="@+id/exo_duration_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_5"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_volume_control"
+        app:layout_constraintEnd_toStartOf="@+id/pdp_volume_control"
+        app:layout_constraintTop_toTopOf="@+id/pdp_volume_control">
 
-    <ImageView
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@id/exo_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
+            tools:text="05:20"
+            tools:textColor="@color/Unify_Static_Black" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/exo_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pdp_video_divider"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
+            tools:text=" / "
+            tools:textColor="@color/Unify_Static_Black" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@id/exo_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
+            tools:text="30:00"
+            tools:textColor="@color/Unify_Static_Black" />
+
+    </LinearLayout>
+
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/pdp_volume_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_8"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_name="VOLUME_UP"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_maximize_control"
-        app:srcCompat="@drawable/ic_pdp_volume_mute" />
+        app:layout_constraintEnd_toStartOf="@+id/pdp_mainimize_control"
+        app:srcCompat="@drawable/ic_pdp_volume_mute"
+        tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
-    <ImageView
-        android:id="@+id/pdp_maximize_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/pdp_mainimize_control"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_name="SCREEN_NORMAL"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_pdp_video_maximize" />
+        app:srcCompat="@drawable/ic_pdp_video_maximize"
+        tools:icon_color_light_enable="@color/Unify_Static_Black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

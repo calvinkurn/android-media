@@ -27,7 +27,7 @@ interface DynamicProductDetailListener {
      * ProductSnapshotViewHolder
      */
     fun onImageClicked(position: Int)
-    fun onImageClickedTrack(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int)
     fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel)
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()

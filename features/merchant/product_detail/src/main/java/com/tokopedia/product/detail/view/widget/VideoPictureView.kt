@@ -67,11 +67,7 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
         val mediaList = processMedia(media)
-        videoPictureAdapter = if (mListener == null) {
-            VideoPictureAdapter(productVideoCoordinator)
-        } else {
-            VideoPictureAdapter(productVideoCoordinator, mListener!!::onVideoFullScreenClicked)
-        }
+        videoPictureAdapter = VideoPictureAdapter(productVideoCoordinator, mListener, componentTrackDataModel)
 
         pdp_view_pager?.adapter = videoPictureAdapter
         videoPictureAdapter?.mediaData = mediaList

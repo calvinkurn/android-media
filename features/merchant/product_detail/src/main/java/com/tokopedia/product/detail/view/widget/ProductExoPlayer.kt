@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
 import android.net.Uri
-import android.net.wifi.WifiManager
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -10,10 +9,10 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultAllocator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoListener
+import com.tokopedia.device.info.DeviceConnectionInfo
 
 
 /**
@@ -27,13 +26,10 @@ class ProductExoPlayer(val context: Context) {
     private var videoStateListener: VideoStateListener? = null
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
-            .setAllocator(DefaultAllocator(true, 16))
             .setBufferDurationsMs(MIN_BUFFER_DURATION,
                     MAX_BUFFER_DURATION,
                     MIN_PLAYBACK_START_BUFFER,
                     MIN_PLAYBACK_RESUME_BUFFER)
-            .setTargetBufferBytes(-1)
-            .setPrioritizeTimeOverSizeThresholds(true)
             .createDefaultLoadControl()
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
@@ -41,7 +37,7 @@ class ProductExoPlayer(val context: Context) {
             .setLoadControl(loadControl)
             .build()
 
-    private val wifi: WifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private val isConnectedToWifi: Boolean = DeviceConnectionInfo.isConnectWifi(context)
 
     init {
         exoPlayer.volume = 0F
@@ -89,7 +85,7 @@ class ProductExoPlayer(val context: Context) {
             exoPlayer.seekTo(lastVideoPosition)
         }
         toggleVideoVolume(isMute)
-        exoPlayer.playWhenReady = isConnectedToWifi()
+        exoPlayer.playWhenReady = isConnectedToWifi
         prepareIfVideoDifferent(mediaSource, lastVideoPosition, shouldPrepare)
     }
 
@@ -142,29 +138,15 @@ class ProductExoPlayer(val context: Context) {
         return mediaSource.createMediaSource(uri)
     }
 
-    private fun isConnectedToWifi(): Boolean {
-        if (wifi.isWifiEnabled) {
-            val wifiInfo = wifi.connectionInfo
-
-            if (wifiInfo.networkId == -1) {
-                return false
-            }
-
-            return true
-        } else {
-            return false
-        }
-    }
-
     companion object {
         //Minimum Video you want to buffer while Playing
-        private const val MIN_BUFFER_DURATION = 2000
+        private const val MIN_BUFFER_DURATION = 3000
 
         //Max Video you want to buffer during PlayBack
-        private const val MAX_BUFFER_DURATION = 5000
+        private const val MAX_BUFFER_DURATION = 18000
 
         //Min Video you want to buffer before start Playing it
-        private const val MIN_PLAYBACK_START_BUFFER = 1500
+        private const val MIN_PLAYBACK_START_BUFFER = 2000
 
         //Min video You want to buffer when user resumes video
         private const val MIN_PLAYBACK_RESUME_BUFFER = 2000

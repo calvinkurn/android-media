@@ -1003,9 +1003,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         return !viewModel.isShopOwner()
     }
 
-    override fun onImageClickedTrack(componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int) {
         DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                 ?: ComponentTrackDataModel())
+        onImageClicked(position)
     }
 
     override fun onImageClicked(position: Int) {
