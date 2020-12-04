@@ -31,10 +31,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -144,6 +141,10 @@ open class TopChatTypeFactoryImpl constructor(
         return BroadcastViewHolder.LAYOUT
     }
 
+    override fun type(reviewUiModel: ReviewUiModel): Int {
+        return ReviewViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
@@ -203,6 +204,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent)
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
