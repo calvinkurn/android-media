@@ -857,7 +857,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
     }
 
     override fun onPurchaseProtectionCheckedChange() {
