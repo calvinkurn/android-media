@@ -17,7 +17,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
@@ -35,9 +34,11 @@ import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -46,15 +47,14 @@ import javax.inject.Inject
 abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var seekBar: RangeSeekBar
     lateinit var priceRange: TextView
-    lateinit var iklakanButton: Button
     lateinit var priceEditText: EditText
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var progressBar: LoaderUnify
     lateinit var errorText: TextView
     lateinit var rangeStart: TextView
     lateinit var rangeEnd: TextView
-    lateinit var btnSubmit: Button
-    lateinit var tipBtn: Button
+    lateinit var btnSubmit: UnifyButton
+    lateinit var tipBtn: FloatingButtonUnify
     private var lowClickDivider = 1
     private var minDailyBudget = 1
     private var maxDailyBudget = 1
@@ -99,7 +99,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
             topAdsDeposit = it
             budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
         })
-        budgetViewModel.autoAdsData.observe(this, Observer {
+        budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             if (topAdsDeposit <= 0) {
                 insufficientCredit()
             } else
@@ -109,7 +109,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         priceEditText.addTextChangedListener(
                 object : NumberTextWatcher(priceEditText, "0") {
 
-                    override fun afterTextChanged(s: Editable?) {
+                    override fun afterTextChanged(s: Editable) {
                         priceEditText.removeTextChangedListener(this)
                         var text = replace(s.toString())
                         if (text.isEmpty())
@@ -127,7 +127,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                             btnSubmit.isEnabled = false
                         } else {
                             errorText.visibility = View.GONE
-                            btnSubmit.isEnabled = true
+                            btnSubmit.isEnabled = true                                                                                          
                         }
                         priceEditText.addTextChangedListener(this)
                     }
@@ -181,7 +181,6 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         priceRange = view.findViewById(R.id.price_range)
-        iklakanButton = view.findViewById(R.id.btn_submit)
         priceEditText = view.findViewById(R.id.budgetEditText)
         seekBar = view.findViewById(R.id.seekbar)
         progressBar = view.findViewById(R.id.loading)

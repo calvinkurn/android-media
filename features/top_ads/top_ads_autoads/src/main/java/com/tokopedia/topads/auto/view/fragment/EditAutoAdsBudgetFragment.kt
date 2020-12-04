@@ -2,10 +2,13 @@ package com.tokopedia.topads.auto.view.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.sheet.AutoAdsCreateSheet
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_autoads_edit_daily_budget.*
 
 /**
@@ -14,6 +17,8 @@ import kotlinx.android.synthetic.main.topads_autoads_edit_daily_budget.*
 class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener {
     private var autoAdsWidget: AutoAdsWidgetCommon? = null
     private val EDIT_AUTOADS = 1
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     override fun getLayoutId(): Int {
         return R.layout.topads_autoads_edit_daily_budget
@@ -41,6 +46,16 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        create_auto_bg.setImageDrawable(context?.getResDrawable(R.drawable.card_auto_ads_create))
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_title)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+        }
+
+        tipBtn?.addItem(tooltipView)
         autoAdsWidget?.loadData(EDIT_AUTOADS)
     }
 
@@ -67,7 +82,7 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
             activatedAds()
         }
         if (v?.id == R.id.tip_btn) {
-            AutoAdsCreateSheet.newInstance(context!!).show()
+            AutoAdsCreateSheet.newInstance().show(childFragmentManager, "")
         }
     }
 

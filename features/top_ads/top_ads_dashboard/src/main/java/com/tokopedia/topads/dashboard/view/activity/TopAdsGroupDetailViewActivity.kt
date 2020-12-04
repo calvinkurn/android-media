@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -27,8 +26,6 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
@@ -52,6 +49,7 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.unifycomponents.setCustomText
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
@@ -123,12 +121,15 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         view_pager_frag.adapter = getViewPagerAdapter()
         view_pager_frag.offscreenPageLimit = 3
         view_pager_frag.currentItem = 0
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<Fragment> = mutableListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
@@ -396,15 +397,18 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     fun setProductCount(size: Int) {
-        detailPagerAdapter.setTitleProduct(String.format(getString(R.string.topads_dash_product_count), size))
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCustomText(String.format(getString(R.string.topads_dash_product_count), size))
+//        detailPagerAdapter.setTitleProduct(String.format(getString(R.string.topads_dash_product_count), size))
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCustomText(String.format(getString(R.string.topads_dash_keyword_count), size))
+//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
     }
 
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCustomText(String.format(getString(R.string.topads_dash_neg_key_count), size))
+//        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

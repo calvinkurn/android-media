@@ -39,12 +39,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_3" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/dotImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image"
         android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
