@@ -9,8 +9,12 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.product.manage.common.feature.broadcastchat.domain.GetChatBlastSellerMetaDataUseCase
+import com.tokopedia.product.manage.common.feature.broadcastchat.presentation.model.ChatBlastSellerEntryPointUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
@@ -36,6 +40,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -50,29 +55,27 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-    private val editPriceUseCase: EditPriceUseCase,
-    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-    private val getProductListUseCase: GQLGetProductListUseCase,
-    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-    private val editStockUseCase: EditStockUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase,
-    private val multiEditProductUseCase: MultiEditProductUseCase,
-    private val getProductListMetaUseCase: GetProductListMetaUseCase,
-    private val editProductVariantUseCase: EditProductVariantUseCase,
-    private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+        private val editPriceUseCase: EditPriceUseCase,
+        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+        private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+        private val getProductListUseCase: GQLGetProductListUseCase,
+        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+        private val editStockUseCase: EditStockUseCase,
+        private val deleteProductUseCase: DeleteProductUseCase,
+        private val multiEditProductUseCase: MultiEditProductUseCase,
+        private val getProductListMetaUseCase: GetProductListMetaUseCase,
+        private val editProductVariantUseCase: EditProductVariantUseCase,
+        private val chatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     companion object {
         // Currently update data on server is not realtime.
@@ -114,6 +117,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _productFiltersTab
     val onClickPromoTopAds: LiveData<TopAdsPage>
         get() = _onClickPromoTopAds
+    val chatBlastSeller: LiveData<String>
+        get() = _chatBlastSeller
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -133,6 +138,7 @@ class ProductManageViewModel @Inject constructor(
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
+    private val _chatBlastSeller = MutableLiveData<String>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -147,8 +153,8 @@ class ProductManageViewModel @Inject constructor(
 
                 val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
                 val shopDomain = shopInfo.shopCore.domain
-                val isGoldMerchant  = shopInfo.goldOS.isGold == 1
-                val isOfficialStore= shopInfo.goldOS.isOfficial == 1
+                val isGoldMerchant = shopInfo.goldOS.isGold == 1
+                val isOfficialStore = shopInfo.goldOS.isOfficial == 1
 
                 ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
             }
@@ -227,29 +233,54 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun getProductList(
-        shopId: String,
-        filterOptions: List<FilterOption>? = null,
-        sortOption: SortOption? = null,
-        isRefresh: Boolean = false,
-        withDelay: Boolean = false
+            shopId: String,
+            filterOptions: List<FilterOption>? = null,
+            sortOption: SortOption? = null,
+            isRefresh: Boolean = false,
+            withDelay: Boolean = false
     ) {
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            val productList = withContext(dispatchers.io) {
-                if(withDelay) { delay(REQUEST_DELAY) }
-                val extraInfo = listOf(ExtraInfo.TOPADS)
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
-                val getProductList = getProductListUseCase.execute(requestParams)
-                val productListResponse = getProductList.productList
-                productListResponse?.data
-            }
 
-            if(isRefresh) { refreshList() }
-            showProductList(productList)
-            hideProgressDialog()
+            val result = awaitAll(
+                    asyncCatchError(dispatchers.io, block = {
+                        if (withDelay) {
+                            delay(REQUEST_DELAY)
+                        }
+                        val extraInfo = listOf(ExtraInfo.TOPADS)
+                        val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
+                        getProductListUseCase.execute(requestParams)
+
+                    }) {
+                        it
+                    },
+                    asyncCatchError(dispatchers.io, block = {
+                        chatBlastSellerMetaDataUseCase.executeOnBackground()
+                    }) {
+                        it
+                    }
+            )
+
+            if (result.isNotEmpty() && result.all { it != null }) {
+                val productListResponse = result.filterIsInstance<ProductList>().firstOrNull()
+                val productList = productListResponse?.data
+                val chatBlastSeller = result.filterIsInstance<ChatBlastSellerEntryPointUiModel>().firstOrNull()
+                        ?: ChatBlastSellerEntryPointUiModel()
+                if (isRefresh) {
+                    refreshList()
+                }
+                showProductList(productList)
+                setChatBlastSeller(chatBlastSeller)
+                hideProgressDialog()
+            } else {
+                val error = result.filterIsInstance<Throwable>().firstOrNull() ?: Throwable()
+                _productListResult.value = Fail(error)
+                hideProgressDialog()
+                return@launchCatchError
+            }
         }, onError = {
-            if(it is CancellationException) {
+            if (it is CancellationException) {
                 return@launchCatchError
             }
             hideProgressDialog()
@@ -257,22 +288,28 @@ class ProductManageViewModel @Inject constructor(
         }).let { getProductListJob = it }
     }
 
+    private fun setChatBlastSeller(chatBlastSeller: ChatBlastSellerEntryPointUiModel) {
+        _chatBlastSeller.value = chatBlastSeller.url
+    }
+
     fun getFiltersTab(withDelay: Boolean = false) {
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                if(withDelay) { delay(REQUEST_DELAY) }
+                if (withDelay) {
+                    delay(REQUEST_DELAY)
+                }
                 getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
-                    .productListMetaWrapper
-                    .productListMetaData
-                    .tabs
+                        .productListMetaWrapper
+                        .productListMetaData
+                        .tabs
             }
 
             _productFiltersTab.apply { value = Success(mapToFilterTabResult(response)) }
         }, onError = {
-            if(it is CancellationException) {
+            if (it is CancellationException) {
                 return@launchCatchError
             }
             _productFiltersTab.value = Fail(it)
@@ -320,7 +357,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
-        launchCatchError(block =  {
+        launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
                 editStockUseCase.executeOnBackground()
@@ -352,7 +389,7 @@ class ProductManageViewModel @Inject constructor(
                 editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }
 
-            if(response.isSuccess) {
+            if (response.isSuccess) {
                 _editVariantPriceResult.value = Success(result)
             } else {
                 val message = response.header.errorMessage.lastOrNull().orEmpty()
@@ -375,7 +412,7 @@ class ProductManageViewModel @Inject constructor(
                 editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }
 
-            if(response.isSuccess) {
+            if (response.isSuccess) {
                 _editVariantStockResult.value = Success(result)
             } else {
                 val message = response.header.errorMessage.lastOrNull().orEmpty()
@@ -391,41 +428,41 @@ class ProductManageViewModel @Inject constructor(
     fun getFreeClaim(graphqlQuery: String, shopId: String) {
         val requestParams = TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId)
         topAdsGetShopDepositGraphQLUseCase.execute(requestParams,
-            object : Subscriber<DataDeposit>() {
-                override fun onNext(dataDeposit: DataDeposit) {
-                    _getFreeClaimResult.value = Success(dataDeposit)
-                }
+                object : Subscriber<DataDeposit>() {
+                    override fun onNext(dataDeposit: DataDeposit) {
+                        _getFreeClaimResult.value = Success(dataDeposit)
+                    }
 
-                override fun onCompleted() {
-                }
+                    override fun onCompleted() {
+                    }
 
-                override fun onError(e: Throwable) {
-                    _getFreeClaimResult.value = Fail(e)
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        _getFreeClaimResult.value = Fail(e)
+                    }
+                })
     }
 
     fun getPopupsInfo(productId: String) {
         val shopId = productId.toIntOrZero()
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
-            object : Subscriber<Boolean>() {
-                override fun onNext(isSuccess: Boolean) {
-                    _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
-                }
+                object : Subscriber<Boolean>() {
+                    override fun onNext(isSuccess: Boolean) {
+                        _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
+                    }
 
-                override fun onCompleted() {
-                }
+                    override fun onCompleted() {
+                    }
 
-                override fun onError(e: Throwable) {
-                    _getPopUpResult.value = Fail(e)
-                }
+                    override fun onError(e: Throwable) {
+                        _getPopUpResult.value = Fail(e)
+                    }
 
-            })
+                })
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
-        launchCatchError( block = {
+        launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
                 deleteProductUseCase.executeOnBackground()
@@ -448,7 +485,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        launchCatchError( block = {
+        launchCatchError(block = {
             setFeaturedProductUseCase.setParams(productId.toInt(), status)
             withContext(dispatchers.io) {
                 setFeaturedProductUseCase.executeOnBackground()
@@ -476,9 +513,9 @@ class ProductManageViewModel @Inject constructor(
                     _selectedFilterAndSort.value?.sortOption?.let { selectedFilterCount++ }
 
                     filters.copy(
-                        filterOptions = selectedFilter,
-                        filterShownState = list,
-                        selectedFilterCount = selectedFilterCount
+                            filterOptions = selectedFilter,
+                            filterShownState = list,
+                            selectedFilterCount = selectedFilterCount
                     )
                 }
             } else {
@@ -489,13 +526,13 @@ class ProductManageViewModel @Inject constructor(
 
     fun resetSelectedFilter() {
         _selectedFilterAndSort.value = FilterOptionWrapper(
-            filterShownState = listOf(true, true, false, false)
+                filterShownState = listOf(true, true, false, false)
         )
     }
 
     fun getTotalProductCount(): Int {
-       return (_productFiltersTab.value as? Success<GetFilterTabResult>)
-           ?.data?.totalProductCount.orZero()
+        return (_productFiltersTab.value as? Success<GetFilterTabResult>)
+                ?.data?.totalProductCount.orZero()
     }
 
     fun toggleMultiSelect() {
@@ -506,7 +543,7 @@ class ProductManageViewModel @Inject constructor(
     fun onPromoTopAdsClicked(productId: String) {
         val topAdsInfo = _topAdsInfo.value
 
-        if(topAdsInfo != null) {
+        if (topAdsInfo != null) {
             val shopHasTopAds = topAdsInfo.isTopAds
             val shopHasAutoAds = topAdsInfo.isAutoAds
 
@@ -534,7 +571,7 @@ class ProductManageViewModel @Inject constructor(
         _productListResult.value = Success(productList)
     }
 
-    private fun setProductListFeaturedOnly(productsSize: Int){
+    private fun setProductListFeaturedOnly(productsSize: Int) {
         _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 

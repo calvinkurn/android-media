@@ -53,4 +53,8 @@ object ProductManageListConstant {
     const val FEATURED_PRODUCT_REMOVE_STATUS = 0
     const val FEATURED_PRODUCT_ADD_STATUS = 1
 
+    const val PATTERN_DATE = "dd-MM-yyyy"
+    const val HAS_TICKER_BROADCAST_CHAT = "hasTickerBroadcastChat"
+    const val HAS_DATE_TICKER_BC = "hasDateTickerBC"
+
 }

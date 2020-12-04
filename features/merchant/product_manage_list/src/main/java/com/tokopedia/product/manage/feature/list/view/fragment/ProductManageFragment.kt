@@ -4,10 +4,8 @@ import android.accounts.NetworkErrorException
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.ProgressDialog.show
+import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -34,6 +32,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -83,6 +82,8 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_DATE_TICKER_BC
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_TICKER_BROADCAST_CHAT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
@@ -93,6 +94,8 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
+import com.tokopedia.product.manage.feature.list.extension.getTimeNow
+import com.tokopedia.product.manage.feature.list.extension.isMoreOneMonth
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
@@ -138,6 +141,7 @@ import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -180,6 +184,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var filterTab: ProductManageFilterTab? = null
 
+    private var chatBlastSeller = ""
     private var shouldEnableMultiEdit: Boolean = false
     private var shouldAddAsFeatured: Boolean = false
     private var extraCacheManagerId: String = ""
@@ -198,6 +203,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    private val prefKey = this.javaClass.name + ".pref"
+    private var prefsTicker: SharedPreferences? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(getLayoutRes(), container, false)
@@ -212,6 +220,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             extraCacheManagerId = this.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
             sellerMigrationFeatureName = this.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
         }
+        prefsTicker = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -244,6 +253,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupInterceptor()
         setupSearchBar()
         setupProductList()
+        setupTickerBroadcast()
         setupFiltersTab()
         setupBottomSheet()
         setupMultiSelect()
@@ -254,6 +264,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observeDeleteProduct()
         observeProductListFeaturedOnly()
         observeProductList()
+        observeChatBlastSeller()
         observeFilterTabs()
         observeMultiSelect()
 
@@ -280,6 +291,38 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupDialogFeaturedProduct()
 
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun setupTickerBroadcast() {
+        prefsTicker?.let {
+            if (!it.getBoolean(HAS_TICKER_BROADCAST_CHAT, false)) {
+                tickerBroadcastChat?.apply {
+                    setTextDescription(getString(R.string.ticker_broadcast_chat))
+                    show()
+                    if(it.getString(HAS_DATE_TICKER_BC, "").isNullOrBlank()) it.edit().putString(HAS_DATE_TICKER_BC, getTimeNow())
+
+                    if(it.getString(HAS_DATE_TICKER_BC, "").orEmpty().isMoreOneMonth) hide()
+
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                        override fun onDismiss() {
+                            hide()
+                            it.edit().putBoolean(HAS_TICKER_BROADCAST_CHAT, true).apply()
+                        }
+                    })
+                }
+            } else {
+                tickerBroadcastChat.hide()
+            }
+        }
+    }
+
+    private fun observeChatBlastSeller() {
+        observe(viewModel.chatBlastSeller) {
+            if(it.isBlank()) return@observe
+            chatBlastSeller = it
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -418,12 +461,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             if(product.isVariant()) {
 
             } else {
-                redirectToBroadcastChat()
+                redirectToBroadcastChat(product.id)
             }
         }
     }
 
-    private fun redirectToBroadcastChat() {
+    private fun redirectToBroadcastChat(productId: String) {
+        val url = UriUtil.buildUri(chatBlastSeller)
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
 
     }
 
@@ -1552,6 +1597,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         removeObservers(viewModel.setFeaturedProductResult)
         removeObservers(viewModel.toggleMultiSelect)
         removeObservers(viewModel.productFiltersTab)
+        removeObservers(viewModel.chatBlastSeller)
     }
 
     override fun callInitialLoadAutomatically(): Boolean = false
