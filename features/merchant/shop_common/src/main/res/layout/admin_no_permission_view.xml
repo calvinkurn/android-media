@@ -9,9 +9,11 @@
         android:id="@+id/iv_admin_no_permission"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginHorizontal="@dimen/admin_no_permission_image_margin"
+        android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="@id/guideline_no_permission"
-        app:layout_constraintBottom_toTopOf="@id/tv_admin_no_permission_title"
-        app:srcCompat="@drawable/ic_admin_no_permission"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_admin_no_permission_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_admin_no_permission_title"
