@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clSimulationTableColumnHeader"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_N50"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tableHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30 hari**"
+        android:textSize="@dimen/unify_font_14"
+        app:layout_constraintBottom_toTopOf="@+id/offerLabel"
+        app:layout_constraintEnd_toEndOf="@+id/offerLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/offerLabel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/offerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:text="BUNGA 0%"
+        android:textSize="@dimen/unify_font_8"
+        app:labelType="general_dark_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableHeader" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

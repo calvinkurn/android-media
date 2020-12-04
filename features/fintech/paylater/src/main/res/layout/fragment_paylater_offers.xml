@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_16"
     android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
@@ -12,7 +12,7 @@
         android:id="@+id/tvTitlePenawaran"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:text="@string/paylater_title_detail"
         android:textSize="@dimen/unify_font_16"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
         android:id="@+id/paymentOptionViewPager"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_24"
         android:clipToPadding="false"
         android:paddingStart="@dimen/unify_space_16"
         android:paddingEnd="@dimen/unify_space_16"

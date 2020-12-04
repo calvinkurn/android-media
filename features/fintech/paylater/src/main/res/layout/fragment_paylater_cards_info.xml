@@ -9,55 +9,77 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginStart="@dimen/payLater_payment_cl_margin_dp_14"
+        android:layout_marginEnd="@dimen/payLater_payment_cl_margin_dp_14"
         android:background="@color/Neutral_N0"
         android:orientation="vertical">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/ivPaylaterPartner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
             android:scaleType="centerInside"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@tools:sample/avatars"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitlePaylaterPartner"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/payLater_payment_cl_margin_dp_14"
+            android:layout_marginEnd="@dimen/unify_space_16"
             android:text="@string/kredivo"
             android:textSize="@dimen/unify_font_14"
-            app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
-            app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
-            app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
             app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
+            app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
+            app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubTitlePaylaterPartner"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:text="Yuk, daftar sekarang!"
+            android:visibility="gone"
+            android:textSize="@dimen/unify_font_14"
+            app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
+            app:layout_constraintEnd_toEndOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintStart_toStartOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitlePaylaterPartner"
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/tvPaylaterPartnerStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="@dimen/unify_space_16"
             android:text="Aktif"
             android:textSize="@dimen/unify_font_10"
             app:labelType="general_dark_blue"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
             app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
             tools:text="Aktif" />
 
+       <!-- <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierPayLater"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>-->
+
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/borderGrey"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="21dp"
+            android:layout_height="@dimen/payLater_divider_height_dp_1"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivPaylaterPartner" />
@@ -66,22 +88,22 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPaymentDesciption"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="2dp"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginTop="@dimen/unify_space_2"
             android:layout_marginBottom="@dimen/unify_space_8"
             android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/borderGrey"
-            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             tools:listitem="@layout/paylater_cards_content_info_item" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnHowToUse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:text="@string/sp_how_to_use"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
@@ -94,8 +116,8 @@
             android:id="@+id/btnSeeMore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
             android:text="@string/sp_see_more"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toBottomOf="parent"

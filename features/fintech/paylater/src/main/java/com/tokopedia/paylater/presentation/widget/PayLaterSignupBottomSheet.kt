@@ -53,20 +53,23 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter()
+        rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter {
+            PayLaterRegisterBottomSheet.show(Bundle(), childFragmentManager)
+        }
         rvPayLaterPaymentMethods.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setDefaultParams() {
+        setTitle(DIALOG_TITLE)
         isDragable = true
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        //customPeekHeight = (getScreenHeight() / 2).toDp()
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     companion object {
-        private val DIALOG_TITLE = R.string.paylater_signup_title
+        private const val DIALOG_TITLE = "Mau daftar PayLater apa?"
 
         private const val TAG = "FT_TAG"
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {

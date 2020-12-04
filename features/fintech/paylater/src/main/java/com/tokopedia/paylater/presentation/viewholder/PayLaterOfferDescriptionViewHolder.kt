@@ -27,7 +27,7 @@ class PayLaterOfferDescriptionViewHolder(val view: View): RecyclerView.ViewHolde
 
 
     companion object {
-        val LAYOUT_ID = R.layout.paylater_cards_content_info_item
+        private val LAYOUT_ID = R.layout.paylater_cards_content_info_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterOfferDescriptionViewHolder(
                 inflater.inflate(PayLaterOfferDescriptionViewHolder.LAYOUT_ID, parent, false)

@@ -13,7 +13,7 @@ class PayLaterDataUseCase @Inject constructor(
         @Named(GQL_PAYLATER_ACTIVITY_DATA) val query: String, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<PayLaterActivityResponse>(graphqlRepository) {
 
-    fun getPayLaterData(onSuccess: (List<PayLaterProductData>) -> Unit,
+    fun getPayLaterData(onSuccess: (PayLaterProductData) -> Unit,
                         onError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(PayLaterActivityResponse::class.java)

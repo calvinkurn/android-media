@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Neutral_N0"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitlePenawaran"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:text="@string/paylater_title_simalisi"
+            android:textSize="@dimen/unify_font_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <LinearLayout
+            android:id="@+id/llPayLaterPartner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitlePenawaran" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:layout_width="@dimen/unify_space_2"
+            android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
+            app:layout_constraintStart_toEndOf="@id/llPayLaterPartner"
+            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner" />
+
+
+        <HorizontalScrollView
+            android:id="@+id/hsvInstallment"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
+            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner"
+            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TableLayout
+                android:id="@+id/tlInstallmentTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+            </TableLayout>
+
+        </HorizontalScrollView>
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerSimulasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="@string/paylater_simulasi_ticker_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llPayLaterPartner"
+            app:tickerType="information" />
+
+        <include
+            android:id="@+id/paylaterDaftarWidget"
+            layout="@layout/paylater_daftar_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnDaftarPayLater" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnDaftarPayLater"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:text="Daftar PayLater Sekarang"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tickerSimulasi"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPartnerRegistration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:layout_marginBottom="@dimen/unify_space_32"
+            android:text="@string/paylater_simulasi_supervised_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
+            app:typographyType="small" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/unify_space_64"
+            android:layout_height="@dimen/unify_space_24"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPartnerRegistration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvPartnerRegistration"
+            app:layout_constraintTop_toTopOf="@+id/tvPartnerRegistration"
+            tools:src="@tools:sample/avatars" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

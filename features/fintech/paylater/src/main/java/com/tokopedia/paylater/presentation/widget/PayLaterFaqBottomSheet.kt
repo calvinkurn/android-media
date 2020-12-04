@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.domain.model.PayLaterPartnerFaq
 import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -50,22 +51,32 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
 
     private fun setDefaultParams() {
+        setTitle(TITLE)
         isDragable = true
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        //customPeekHeight = (getScreenHeight() / 2).toDp()
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
 
     private fun initAdapter() {
-        rvPaylaterFaq.adapter = PayLaterPaymentFaqAdapter()
+        populateFaqData()
+        rvPaylaterFaq.adapter = PayLaterPaymentFaqAdapter(populateFaqData())
         rvPaylaterFaq.layoutManager =  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
+    private fun populateFaqData(): ArrayList<PayLaterPartnerFaq> {
+        val faqList = ArrayList<PayLaterPartnerFaq>()
+        for (i in 1..5)
+            faqList.add(PayLaterPartnerFaq("Berapa lama proses persetujuan aplikasi kredit online Kredivo?",
+                "Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya", false))
+        return faqList
+    }
+
+
     companion object {
-
-
+        private const val TITLE = "Hal yang sering ditanyakan"
         private const val TAG = "FT_TAG"
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val payLaterFaqBottomSheet = PayLaterFaqBottomSheet().apply {

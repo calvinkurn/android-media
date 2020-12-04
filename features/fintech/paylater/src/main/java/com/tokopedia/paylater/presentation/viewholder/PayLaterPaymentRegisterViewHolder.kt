@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.paylater_register_card_bottomsheet_item.vi
 
 class PayLaterPaymentRegisterViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-    private val divider: DividerUnify = view.findViewById(R.id.dividerVertical)
     fun bindData(position: Int) {
         if(position == 4)  view.dividerVertical.gone()
     }

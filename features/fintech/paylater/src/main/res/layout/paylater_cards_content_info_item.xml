@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4">
+    android:paddingTop="@dimen/unify_space_4">
 
     <ImageView
         android:id="@+id/ivBenifitsHeader"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
         app:layout_constraintEnd_toStartOf="@+id/tvBenefitsDesc"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,13 +18,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBenefitsDesc"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="12dp"
-        android:lineSpacingExtra="@dimen/spacing_lvl2"
-        android:paddingBottom="6dp"
+        android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:lineSpacingExtra="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/payLater_benefit_margin_dp_6"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"

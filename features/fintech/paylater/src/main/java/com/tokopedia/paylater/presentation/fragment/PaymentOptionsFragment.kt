@@ -8,12 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.OfferListResponse
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
-import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter.Companion.VIEW_HOW_TO_REGISTER_BUTTON
-import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter.Companion.VIEW_SEE_MORE_BUTTON
 import com.tokopedia.paylater.presentation.widget.PayLaterFaqBottomSheet
 import com.tokopedia.paylater.presentation.widget.PayLaterRegisterBottomSheet
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*

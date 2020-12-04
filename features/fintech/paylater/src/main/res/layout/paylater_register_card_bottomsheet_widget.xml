@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerType="announcement"
+        app:closeButtonVisibility="gone"
         app:titleText="Kredivo-mu sudah aktif" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnRegister"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="Daftar Sekarang"
         app:layout_constraintEnd_toEndOf="@id/tickerPaylaterRegister"
@@ -39,7 +40,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnFindMore"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="Cari Tahu Lebih Lanjut"

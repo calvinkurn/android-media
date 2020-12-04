@@ -9,6 +9,7 @@ import com.tokopedia.paylater.di.module.ViewModelModule
 import com.tokopedia.paylater.di.scope.PayLaterScope
 import com.tokopedia.paylater.presentation.activity.PayLaterActivity
 import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
+import com.tokopedia.paylater.presentation.fragment.PayLaterOffersFragment
 import dagger.Component
 
 @PayLaterScope
@@ -24,4 +25,5 @@ interface PayLaterComponent {
 
     fun inject(activity: PayLaterActivity)
     fun inject(payLaterFragment: PayLaterFragment)
+    fun inject(payLaterOffersFragment: PayLaterOffersFragment)
 }

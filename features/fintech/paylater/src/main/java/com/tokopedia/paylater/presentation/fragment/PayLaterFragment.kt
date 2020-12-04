@@ -55,7 +55,7 @@ class PayLaterFragment : BaseDaggerFragment() {
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list = mutableListOf<Fragment>()
-        list.add(SimulasiFragment.newInstance())
+        list.add(SimulationFragment.newInstance())
         list.add(PayLaterOffersFragment.newInstance())
         val pagerAdapter =  PayLaterPagerAdapter(context!!, childFragmentManager, 0)
         pagerAdapter.setList(list)
