@@ -78,7 +78,7 @@
                 android:completionThreshold="1"
                 android:digits="1234567890"
                 android:inputType="phone"
-                android:maxLength="@integer/product_max_character_postal_code" />
+                android:maxLength="5" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

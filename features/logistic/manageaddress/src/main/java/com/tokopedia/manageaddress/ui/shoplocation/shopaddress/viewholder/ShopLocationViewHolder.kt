@@ -1,10 +1,10 @@
-package com.tokopedia.shop.settings.address.view.viewholder
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder
 
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
-import com.tokopedia.shop.settings.R
+import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
 import kotlinx.android.synthetic.main.item_shop_location.view.*
 
 class ShopLocationViewHolder(val view: View, private val listener: OnIconMoreClicked): AbstractViewHolder<ShopLocationUiModel>(view) {

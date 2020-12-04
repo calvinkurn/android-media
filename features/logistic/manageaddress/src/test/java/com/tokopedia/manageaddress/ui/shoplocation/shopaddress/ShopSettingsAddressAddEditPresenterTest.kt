@@ -1,6 +1,6 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsaddress
 
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi

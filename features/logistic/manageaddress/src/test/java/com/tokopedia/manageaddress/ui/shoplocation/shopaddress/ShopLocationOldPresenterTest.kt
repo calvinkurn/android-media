@@ -1,7 +1,7 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsaddress
 
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,7 +9,7 @@ import org.junit.Test
 import rx.Subscriber
 
 @ExperimentalCoroutinesApi
-class ShopLocationPresenterTest: ShopSettingsAddressTestFixture() {
+class ShopLocationOldPresenterTest: ShopSettingsAddressTestFixture() {
 
     @Test
     fun `get shop location should be successful`() {

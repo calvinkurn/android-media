@@ -1,13 +1,13 @@
-package com.tokopedia.shop.settings.address.view.adapter
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
-import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 
-class ShopLocationTypeFactory(private val listener: ShopLocationViewHolder.OnIconMoreClicked): BaseAdapterTypeFactory(){
+class ShopLocationOldTypeFactory(private val listener: ShopLocationViewHolder.OnIconMoreClicked): BaseAdapterTypeFactory(){
 
     fun type(shopLocation: ShopLocationUiModel) = ShopLocationViewHolder.LAYOUT
 

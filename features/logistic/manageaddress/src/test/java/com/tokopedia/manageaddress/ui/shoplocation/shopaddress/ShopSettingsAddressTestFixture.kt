@@ -6,12 +6,8 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLoca
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.DeleteShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.GetShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.*
-import com.tokopedia.shop.settings.address.presenter.ShopLocationPresenter
+import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
@@ -37,7 +33,7 @@ abstract class ShopSettingsAddressTestFixture {
     @RelaxedMockK
     lateinit var deleteShopLocationUseCase: DeleteShopLocationUseCase
 
-    protected lateinit var shopLocationPresenter: ShopLocationPresenter
+    protected lateinit var shopLocationPresenter: ShopLocationOldPresenter
     protected lateinit var shopSettingsAddressAddEditPresenter: ShopSettingAddressAddEditPresenter
 
     @Before
@@ -45,7 +41,7 @@ abstract class ShopSettingsAddressTestFixture {
         MockKAnnotations.init(this)
         mockkStatic(TextUtils::class)
 
-        shopLocationPresenter = ShopLocationPresenter(getShopLocationUseCase, deleteShopLocationUseCase)
+        shopLocationPresenter = ShopLocationOldPresenter(getShopLocationUseCase, deleteShopLocationUseCase)
         shopSettingsAddressAddEditPresenter = ShopSettingAddressAddEditPresenter(addShopLocationUseCase, updateShopLocationUseCase)
     }
 }

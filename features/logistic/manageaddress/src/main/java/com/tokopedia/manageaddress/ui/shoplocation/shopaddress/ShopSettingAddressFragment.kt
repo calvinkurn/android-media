@@ -15,21 +15,21 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
-import com.tokopedia.shop.settings.address.presenter.ShopLocationPresenter
-import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
-import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
-import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
-import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
+import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
+import com.tokopedia.shop.settings.address.view.listener.ShopLocationOldView
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
-class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLocationTypeFactory>(),
-        ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
+class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLocationOldTypeFactory>(),
+        ShopLocationOldView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
     @Inject
-    lateinit var presenter: ShopLocationPresenter
+    lateinit var oldPresenter: ShopLocationOldPresenter
 
     var shopLocationUiModelList: List<ShopLocationUiModel>? = null
 
@@ -46,8 +46,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        getComponent(ShopSettingsComponent::class.java).inject(this)
-        presenter.attachView(this)
+        getComponent(ShopLocationComponent::class.java).inject(this)
+        oldPresenter.attachView(this)
     }
 
     override fun onStart() {
@@ -64,7 +64,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
         return inflater.inflate(R.layout.fragment_shop_setting_address_list, container, false)
     }
 
-    override fun getAdapterTypeFactory() = ShopLocationTypeFactory(this)
+    override fun getAdapterTypeFactory() = ShopLocationOldTypeFactory(this)
 
     override fun onItemClicked(t: ShopLocationUiModel?) {
         //no-op
@@ -73,7 +73,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
     override fun isLoadMoreEnabledByDefault() = false
 
     override fun loadData(page: Int) {
-        presenter.getShopAddress()
+        oldPresenter.getShopAddress()
     }
 
     override fun getEmptyDataViewModel() = EmptyModel().apply {
@@ -119,7 +119,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
     }
 
     override fun onDestroyView() {
-        presenter.detachView()
+        oldPresenter.detachView()
         super.onDestroyView()
     }
 
@@ -172,7 +172,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
                 setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
-                setOnOkClickListener { presenter.deleteItem(item); dismiss() }
+                setOnOkClickListener { oldPresenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()
             }

@@ -14,11 +14,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
+import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
-import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_shop_address_add.*
 import javax.inject.Inject
@@ -59,7 +59,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 }}
     }
     override fun initInjector() {
-        getComponent(ShopSettingsComponent::class.java).inject(this)
+        getComponent(ShopLocationComponent::class.java).inject(this)
         presenter.attachView(this)
     }
 

@@ -1,8 +1,8 @@
-package com.tokopedia.shop.settings.address.data
+package com.tokopedia.manageaddress.domain.model.shoplocation
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -20,6 +20,6 @@ data class ShopLocationUiModel(
         var email: String = "",
         var phone: String = "",
         var fax: String = ""
-) : Visitable<ShopLocationTypeFactory>, Parcelable {
-    override fun type(typeFactory: ShopLocationTypeFactory) = typeFactory.type(this)
+) : Visitable<ShopLocationOldTypeFactory>, Parcelable {
+    override fun type(typeFactory: ShopLocationOldTypeFactory) = typeFactory.type(this)
 }

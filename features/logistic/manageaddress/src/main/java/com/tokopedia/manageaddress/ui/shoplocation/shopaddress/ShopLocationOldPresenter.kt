@@ -1,17 +1,17 @@
 package com.tokopedia.shop.settings.address.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.DeleteShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.GetShopLocationUseCase
-import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
-import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
+import com.tokopedia.shop.settings.address.view.listener.ShopLocationOldView
 import rx.Subscriber
 import javax.inject.Inject
 
-class ShopLocationPresenter @Inject
+class ShopLocationOldPresenter @Inject
     constructor(private val getShopLocationUseCase: GetShopLocationUseCase, private val deleteShopLocationUseCase: DeleteShopLocationUseCase)
-    : BaseDaggerPresenter<ShopLocationView>(){
+    : BaseDaggerPresenter<ShopLocationOldView>(){
 
     override fun detachView() {
         getShopLocationUseCase.unsubscribe()
