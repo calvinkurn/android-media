@@ -50,4 +50,15 @@ object ShopLocationQuery {
           }
         }
     """.trimIndent()
+
+    /*ToDo: cari param yg mirip pake array ya*/
+    val setShopLocationStatus = """
+        mutation shopLocSetStatus(${'$'}inputShopLocSetStatus : [ShopLocParamSetStatus]!) 
+        {
+          ShopLocSetStatus(input: ${'$'}inputShopLocSetStatus ) {
+            status_message
+            is_success
+          }
+        }
+    """.trimIndent()
 }
