@@ -394,7 +394,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadWaitingPaymentOrderCounter()
         loadFilters()
 
-        // TODO: Change this value to dummy
+        // TODO: Change this value from dummy to user session
         val isShopAdmin = true
         if (isShopAdmin) {
             loadAdminPermission()
