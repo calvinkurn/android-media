@@ -29,9 +29,9 @@ object ShopUtil {
 
     fun isUsingNewNavigation(): Boolean {
         val navType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_KEY,
-                ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_OLD_VALUE
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV,
+                AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
-        return (navType == ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_NEW_VALUE && !GlobalConfig.isSellerApp())
+        return (navType == AbTestPlatform.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
     }
 }

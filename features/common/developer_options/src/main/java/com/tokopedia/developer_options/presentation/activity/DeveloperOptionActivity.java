@@ -53,6 +53,7 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -288,9 +289,9 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = "Navigation Revamp";
-        String VARIANT_OLD = "Existing Navigation";
-        String VARIANT_REVAMP = "Navigation Revamp";
+        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override

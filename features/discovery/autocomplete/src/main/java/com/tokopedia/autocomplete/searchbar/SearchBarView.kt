@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
 import rx.Observable
 import rx.Subscriber
@@ -72,7 +73,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP, ABTestRemoteConfigKey.AB_TEST_OLD_NAV) == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
             false
