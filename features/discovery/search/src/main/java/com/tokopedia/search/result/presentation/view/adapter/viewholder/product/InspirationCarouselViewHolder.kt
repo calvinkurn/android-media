@@ -21,10 +21,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
 import kotlinx.android.synthetic.main.search_inspiration_carousel.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class InspirationCarouselViewHolder(
         itemView: View,
@@ -40,6 +37,17 @@ class InspirationCarouselViewHolder(
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
 
+    override fun onViewRecycled() {
+        cancelJobs()
+        super.onViewRecycled()
+    }
+
+    private fun cancelJobs() {
+        if (isActive && !masterJob.isCancelled) {
+            masterJob.children.map { it.cancel() }
+        }
+    }
+
     override fun bind(element: InspirationCarouselViewModel) {
         bindTitle(element)
         bindContent(element)
@@ -51,6 +59,8 @@ class InspirationCarouselViewHolder(
 
     private fun bindContent(element: InspirationCarouselViewModel) {
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
+            if (it.itemDecorationCount == 0) it.addItemDecoration(createItemDecoration())
+
             if (element.layout == LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                 val option = element.options.getOrNull(0) ?: return
                 val productList = option.product.map{ product -> product.toProductCardModel() }
@@ -58,10 +68,6 @@ class InspirationCarouselViewHolder(
             } else {
                 it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
-            }
-
-            if (it.itemDecorationCount == 0) {
-                it.addItemDecoration(createItemDecoration())
             }
         }
     }
