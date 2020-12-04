@@ -1,7 +1,6 @@
 package com.tokopedia.shop.settings.common.widget
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Typeface
 import android.os.Build
 import androidx.annotation.ColorInt
@@ -102,7 +101,7 @@ class ImageLabelView : FrameLayout {
         super.setEnabled(enabled)
         isClickable = enabled
         if (enabled) {
-            tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             titleTextView!!.setTextColor(titleColorValue)
         } else {
             tvContent!!.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
