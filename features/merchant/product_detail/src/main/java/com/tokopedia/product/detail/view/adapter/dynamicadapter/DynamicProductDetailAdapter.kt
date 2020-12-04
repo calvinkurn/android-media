@@ -151,8 +151,7 @@ class DynamicProductDetailAdapter(
     }
 
     fun notifyItemRangeChangesExceptFirstPosition() {
-        notifyItemRangeRemoved(1, visitables.size)
-        notifyItemRangeChanged(1, visitables.size)
+        notifyItemRangeChanged(1, itemCount)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
