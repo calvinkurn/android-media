@@ -8,15 +8,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/talkSmartReplyDetailCardContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_N50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.widget.TalkSmartReplyDetailCard
+                android:id="@+id/talkSmartReplyDetailCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/talk_smart_reply_detail_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
             app:closeButtonVisibility="gone"
             app:descriptionText="@string/smart_reply_detail_ticker"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailCardContainer"
             app:tickerShapeType="loose"
             app:tickerType="announcement" />
 
@@ -56,37 +76,37 @@
             android:id="@+id/talkSmartReplyDetailAvailableStockTextArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailSubtitle"
             app:text_area_label="@string/smart_reply_available_stock_text_area_label"
-            app:text_area_placeholder=""
-            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailSubtitle"/>
+            app:text_area_placeholder="" />
 
         <com.tokopedia.unifycomponents.TextAreaUnify
             android:id="@+id/talkSmartReplyDetailUnavailableStockTextArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailAvailableStockTextArea"
             app:text_area_label="@string/smart_reply_unavailable_stock_text_area_label"
-            app:text_area_placeholder=""
-            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailAvailableStockTextArea"/>
+            app:text_area_placeholder="" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/talkSmartReplyDetailSubmitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_marginBottom="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:text="@string/smart_reply_detail_save_button"
+            android:layout_marginBottom="@dimen/layout_lvl2"
             android:enabled="false"
+            android:gravity="bottom"
+            android:text="@string/smart_reply_detail_save_button"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailUnavailableStockTextArea"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailUnavailableStockTextArea" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

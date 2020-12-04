@@ -10,11 +10,13 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecas
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkSmartReplyDetailViewModel @Inject constructor(
         private val discussionSetSmartReplyTemplateUseCase: DiscussionSetSmartReplyTemplateUseCase,
         private val discussionSetSmartReplySettingsUseCase: DiscussionSetSmartReplySettingsUseCase,
+        private val userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -30,6 +32,10 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
     var isSmartReplyOn: Boolean = false
     var messageReady: String = ""
     var messageNotReady: String = ""
+    val shopName: String
+        get() = userSession.shopName
+    val shopAvatar: String
+        get() = userSession.shopAvatar
 
     fun setSmartReply() {
         launchCatchError(block = {

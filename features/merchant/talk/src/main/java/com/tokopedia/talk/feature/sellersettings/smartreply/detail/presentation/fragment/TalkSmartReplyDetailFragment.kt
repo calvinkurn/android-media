@@ -11,6 +11,8 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
@@ -81,9 +83,24 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun initSwitchState() {
         talkSmartReplySwitch.isChecked = viewModel.isSmartReplyOn
         talkSmartReplySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.isSmartReplyOn = (isChecked)
+            viewModel.isSmartReplyOn = isChecked
             viewModel.setSmartReply()
+            if(isChecked) {
+                talkSmartReplyDetailCardContainer.hide()
+            } else {
+                setCardData()
+            }
         }
+        if(viewModel.isSmartReplyOn) {
+            talkSmartReplyDetailCardContainer.hide()
+            return
+        }
+        setCardData()
+    }
+
+    private fun setCardData() {
+        talkSmartReplyDetailCardContainer.show()
+        talkSmartReplyDetailCard.setData(viewModel.shopName, viewModel.shopAvatar)
     }
 
     private fun initTextArea() {

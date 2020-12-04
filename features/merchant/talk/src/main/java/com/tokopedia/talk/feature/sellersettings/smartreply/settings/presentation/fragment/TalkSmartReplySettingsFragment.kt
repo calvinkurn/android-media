@@ -92,19 +92,19 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun updateIsSmartReplyOnLabel(isActive: Boolean) {
+        talkStockSubtitleChevron.setOnClickListener {
+            val cacheManagerId = putDataIntoCacheManager()
+            if(cacheManagerId.isNullOrEmpty()) {
+                return@setOnClickListener
+            }
+            val destination = TalkSmartReplySettingsFragmentDirections.actionTalkSmartReplySettingsFragmentToTalkSmartReplyDetailFragment()
+            destination.cacheManagerId = cacheManagerId
+            NavigationController.navigate(this, destination)
+        }
         if(isActive) {
             talkIsSmartReplyOnLabel.apply {
                 setLabel(getString(R.string.smart_reply_active_label))
                 setLabelType(Label.GENERAL_LIGHT_GREEN)
-            }
-            talkStockSubtitleChevron.setOnClickListener {
-                val cacheManagerId = putDataIntoCacheManager()
-                if(cacheManagerId.isNullOrEmpty()) {
-                    return@setOnClickListener
-                }
-                val destination = TalkSmartReplySettingsFragmentDirections.actionTalkSmartReplySettingsFragmentToTalkSmartReplyDetailFragment()
-                destination.cacheManagerId = cacheManagerId
-                NavigationController.navigate(this, destination)
             }
             return
         }

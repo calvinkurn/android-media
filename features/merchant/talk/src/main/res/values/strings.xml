@@ -119,12 +119,17 @@
     <string name="smart_reply_active_label">Aktif</string>
     <string name="smart_reply_inactive_label">Tidak Aktif</string>
     <string name="smart_reply_tnc">Dengan mengaktifkan Smart Reply, kamu menyetujui\n&lt;a href = "">syarat dan ketentuan Tokopedia.&lt;/a></string>
-    <string name="smart_reply_detail_ticker">Pastikan kamu selalu memperbarui stok dan varian warna/ukuran produk di Tokopedia untuk menghindari pembatalan pesanan.</string>
+    <string name="smart_reply_detail_ticker">Update selalu stok produkmu untuk menghindari pembatalan pesanan oleh pembeli.</string>
     <string name="smart_reply_detail_stock_availability_title">Ketersediaan Stok</string>
     <string name="smart_reply_available_stock_text_area_label">Stok Tersedia</string>
     <string name="smart_reply_unavailable_stock_text_area_label">Stok Kosong</string>
     <string name="smart_reply_detail_save_button">Simpan</string>
     <string name="smart_reply_available_stock_text_area_default_text">Ready. Yuk, beli sekarang!😄</string>
     <string name="smart_reply_unavailable_stock_text_area_default_text">Maaf, stoknya lagi kosong.☹️</string>
+    <string name="smart_reply_dummy_buyer_text">Pembeli • beberapa saat lalu</string>
+    <string name="smart_reply_dummy_question_text">Ready stok?</string>
+    <string name="smart_reply_dummy_seller_reply_time">• beberapa saat lalu</string>
+    <string name="smart_reply_label">SmartReply</string>
+    <string name="smart_reply_dummy_reply">Ready. Yuk, beli sekarang!😄</string>
 
 </resources>
