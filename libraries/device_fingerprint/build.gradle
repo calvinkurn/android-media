@@ -37,6 +37,8 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.workManager
+    //for fingerprint model
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {

@@ -10,8 +10,6 @@ import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.tokopedia.device.info.cache.DeviceInfoCache
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
@@ -119,26 +117,24 @@ object DeviceInfo {
     }
 
     @JvmStatic
-    suspend fun getAdsId(context: Context): String? {
-        return withContext(Dispatchers.IO) {
-            val adsIdCache: String = getCacheAdsId(context)
-            if (adsIdCache.isNotBlank()) {
-                return@withContext adsIdCache
-            } else {
-                val adInfo = try {
-                    AdvertisingIdClient.getAdvertisingIdInfo(context)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Timber.w("""P2#FINGERPRINT#$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
-                    return@withContext ""
-                }
-                if (adInfo != null) {
-                    val adID: String = adInfo.getId()
-                    setCacheAdsId(context, adID)
-                    return@withContext adID
-                }
-                return@withContext ""
+    fun getAdsId(context: Context): String {
+        val adsIdCache: String = getCacheAdsId(context)
+        if (adsIdCache.isNotBlank()) {
+            return adsIdCache
+        } else {
+            val adInfo = try {
+                AdvertisingIdClient.getAdvertisingIdInfo(context)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Timber.w("""P2#FINGERPRINT#$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
+                return ""
             }
+            if (adInfo != null) {
+                val adID: String = adInfo.getId()
+                setCacheAdsId(context, adID)
+                return adID
+            }
+            return ""
         }
     }
 
