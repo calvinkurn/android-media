@@ -1,0 +1,52 @@
+{
+  "readme": "P1#LOGINREGISTER - Register Initial page",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": "{{.+}}",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "Register page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickRegister",
+      "eventCategory": "register page",
+      "eventAction": "click on button daftar - email",
+      "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickRegister",
+      "eventCategory": "register page",
+      "eventAction": "click on button daftar - email",
+      "eventLabel": "success",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickRegister",
+      "eventCategory": "register page",
+      "eventAction": "click masuk top",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickRegister",
+      "eventCategory": "register page",
+      "eventAction": "click masuk bottom",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "register page",
+      "eventAction": "click on masuk",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    }
+  ]
+}
