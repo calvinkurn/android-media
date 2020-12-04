@@ -39,7 +39,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackClickApplyFilter(mapParameters: Map<String, String>) {}
     open fun trackTimerSprintSale() {}
     open fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {}
-    open fun clearProductViewIds() {}
+    open fun clearProductViewIds(isRefresh : Boolean) {}
     open fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
     open fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {}

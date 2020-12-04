@@ -330,7 +330,7 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    override fun clearProductViewIds() {
+    override fun clearProductViewIds(isRefresh : Boolean) {
         viewedProductsSet.clear()
     }
 

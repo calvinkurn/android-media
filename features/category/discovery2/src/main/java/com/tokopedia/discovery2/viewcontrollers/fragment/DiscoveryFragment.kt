@@ -465,7 +465,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(false)
     }
 
     override fun onRefresh() {
@@ -474,10 +474,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun refreshPage() {
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {

@@ -183,7 +183,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
                 productMap[KEY_NAME] = it.name.toString()
-                productMap[KEY_POSITION] = componentsItems.position + 1
+                productMap[KEY_POSITION] = if (it.isTopads == false) viewedProductsSet.indexOf(it.productId) + 1 else viewedTopadsProductsSet.indexOf(it.productId) + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
                 productMap[KEY_VARIANT] = NONE_OTHER
             }
@@ -203,4 +203,12 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             getTracker().sendEnhanceEcommerceEvent(map)
         }
     }
+
+    override fun clearProductViewIds(isRefresh : Boolean) {
+        if(isRefresh) {
+            viewedProductsSet.clear()
+            viewedTopadsProductsSet.clear()
+        }
+    }
+
 }
