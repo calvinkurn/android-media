@@ -43,6 +43,7 @@ class ReviewViewHolder(
     }
 
     private fun bindName(element: ReviewUiModel) {
+        // TODO("Adjust margin if label exist")
         name?.text = element.reviewCard.productName
     }
 
