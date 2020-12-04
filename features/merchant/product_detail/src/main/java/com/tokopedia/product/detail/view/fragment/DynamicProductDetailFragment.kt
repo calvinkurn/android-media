@@ -778,7 +778,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun getPurchaseProtectionUrl(): String {
         pdpUiUpdater?.productProtectionMap?.let {
-            return it.data[1].applink
+            return it.data.getOrNull(1)?.applink ?: ""
         }
         return ""
     }
