@@ -16,7 +16,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselViewModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
@@ -44,7 +44,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     }
 
     override fun bind(visitable: Visitable<*>) {
-        if (visitable is ShopProductFeaturedViewModel) {
+        if (visitable is ShopProductFeaturedUiModel) {
             bindShopProductCarousel(visitable.shopProductFeaturedViewModelList)
 
             tvSeeAll!!.visibility = View.GONE
@@ -117,7 +117,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
     private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductUiModel> {
         return when (visitable) {
-            is ShopProductFeaturedViewModel -> visitable.shopProductFeaturedViewModelList
+            is ShopProductFeaturedUiModel -> visitable.shopProductFeaturedViewModelList
             is EtalaseHighlightCarouselViewModel -> visitable.shopProductUiModelList
             else -> listOf()
         }

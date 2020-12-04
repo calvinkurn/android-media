@@ -50,8 +50,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressViewModel
     private val shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel?
         get() = mapOfDataModel[KEY_MERCHANT_VOUCHER_DATA_MODEL] as? ShopMerchantVoucherViewModel
-    private val shopProductFeaturedViewModel: ShopProductFeaturedViewModel?
-        get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedViewModel
+    private val shopProductFeaturedUiModel: ShopProductFeaturedUiModel?
+        get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedUiModel
     private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseViewModel?
         get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseViewModel
     private val shopEmptyProductViewModel: ShopEmptyProductViewModel?
@@ -304,7 +304,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             }
             i++
         }
-        shopProductFeaturedViewModel?.let {
+        shopProductFeaturedUiModel?.let {
             val isFeaturedChanged = it.updateWishListStatus(productId, wishList)
             if (isFeaturedChanged) {
                 notifyChangedItem(visitables.indexOf(it))
@@ -362,7 +362,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductFeaturedDataModel(data: ShopProductFeaturedViewModel) {
+    fun setShopProductFeaturedDataModel(data: ShopProductFeaturedUiModel) {
         if (!mapOfDataModel.containsKey(KEY_FEATURED_PRODUCT_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -472,7 +472,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopMerchantVoucherViewModel -> {
                     mutableMapDataModelPosition[KEY_MERCHANT_VOUCHER_DATA_MODEL] = data
                 }
-                is ShopProductFeaturedViewModel -> {
+                is ShopProductFeaturedUiModel -> {
                     mutableMapDataModelPosition[KEY_FEATURED_PRODUCT_DATA_MODEL] = data
                 }
                 is ShopProductEtalaseHighlightUiModel -> {
