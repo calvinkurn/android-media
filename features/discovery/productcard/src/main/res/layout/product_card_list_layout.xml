@@ -230,6 +230,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="989jt orang"/>
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonDeleteProduct"
             android:layout_width="@dimen/dp_0"
@@ -253,6 +254,32 @@
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="medium"
             tools:visibility="gone" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonNotify"
+            android:contentDescription="@string/content_desc_notifyMe"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_button_add_to_cart_height"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:text="@string/product_card_text_notify_me"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/light_G500"
+            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
+            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            tools:text="@string/product_card_text_notify_me"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

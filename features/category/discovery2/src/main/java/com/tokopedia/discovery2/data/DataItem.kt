@@ -334,7 +334,7 @@ data class DataItem(
         val customStock: String? = null,
 
         @SerializedName("stock_wording")
-        val stockWording: StockWording? = null,
+        var stockWording: StockWording? = null,
 
         @SerializedName("total_interest_notify_me")
         val notifyMeCount: String = "0",
@@ -377,7 +377,8 @@ data class DataItem(
         var positionForParentItem: Int = 0,
 
         var typeProductCard: String? = "",
-        var tabName: String? = ""
+        var tabName: String? = "",
+        var hasNotifyMe: Boolean = false
 ) {
     val leftMargin: Int
         get() {
