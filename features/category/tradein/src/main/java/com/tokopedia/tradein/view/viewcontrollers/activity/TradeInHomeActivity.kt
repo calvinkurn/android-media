@@ -43,6 +43,8 @@ import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.android.synthetic.main.tradein_home_activity.*
 import timber.log.Timber
 import java.util.*
@@ -285,9 +287,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     private fun init() {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
-        if (TradeinConstants.LAKU6_BASEURL == TradeinConstants.LAKU6_BASEURL_STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().TYPE == Env.STAGING, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
