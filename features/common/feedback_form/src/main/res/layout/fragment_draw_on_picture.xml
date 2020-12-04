@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerDOP"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.tokopedia.feedback_form.drawonpicture.widgets.DrawOnPictureView
+        android:id="@+id/dopFeedbackForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgDoPUndo"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_color_round_shape"
+        app:layout_constraintBottom_toBottomOf="@id/bgDoPencil"
+        app:layout_constraintRight_toLeftOf="@id/bgDoPencil"
+        app:layout_constraintTop_toTopOf="@id/bgDoPencil" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnDoPUndo"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/bgDoPUndo"
+        app:layout_constraintLeft_toLeftOf="@id/bgDoPUndo"
+        app:layout_constraintRight_toRightOf="@id/bgDoPUndo"
+        app:layout_constraintTop_toTopOf="@id/bgDoPUndo"
+        app:srcCompat="@drawable/ic_undo_active" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgDoPencil"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:background="@drawable/bg_color_round_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnDoPencil"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/bgDoPencil"
+        app:layout_constraintLeft_toLeftOf="@id/bgDoPencil"
+        app:layout_constraintRight_toRightOf="@id/bgDoPencil"
+        app:layout_constraintTop_toTopOf="@id/bgDoPencil"
+        app:srcCompat="@drawable/ic_devops_edit" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekbarDopBrushSize"
+        android:layout_width="@dimen/layout_lvl9"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/devops_seekbar_margin_bottom"
+        android:max="45"
+        android:progressDrawable="@drawable/bg_devops_brush_seekbar"
+        android:rotation="270"
+        android:thumb="@drawable/ic_devops_brush_seekbar_thumb"
+        app:layout_constraintBottom_toTopOf="@id/containerBrushColor"
+        app:layout_constraintLeft_toLeftOf="@id/bgDoPencil"
+        app:layout_constraintRight_toRightOf="@id/bgDoPencil" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/containerBrushColor"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toTopOf="@id/bgDoPencil"
+        app:layout_constraintRight_toRightOf="@id/bgDoPencil">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBrushColors"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_gravity="center_vertical"
+            android:background="@color/grey_800"
+            android:clipToPadding="false" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

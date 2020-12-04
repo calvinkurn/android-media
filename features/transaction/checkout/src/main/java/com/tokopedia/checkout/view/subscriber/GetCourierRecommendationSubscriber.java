@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.subscriber;
 
-import android.text.TextUtils;
-
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -11,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.view.ShipmentContract;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.List;
 
@@ -85,7 +84,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                             if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
                                     shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
                                 if (shippingCourierUiModel.getProductData().getError() != null &&
-                                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
+                                        !UtilsKt.isNullOrEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {

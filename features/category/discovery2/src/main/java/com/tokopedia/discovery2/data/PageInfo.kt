@@ -22,9 +22,6 @@ data class PageInfo(
         @SerializedName("Id")
         val id: Int = 0,
 
-        @SerializedName("Tags")
-        val tags: String? = "",
-
         @SerializedName("share_config", alternate = ["share"])
         val share: Share? = null,
 
