@@ -386,7 +386,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -478,7 +478,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductEtalaseHighlightUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] = data
                 }
-                is ShopProductEtalaseTitleViewModel -> {
+                is ShopProductEtalaseTitleUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_TITLE_DATA_MODEL] = data
                 }
                 is ShopProductAddViewModel -> {

@@ -1223,7 +1223,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
         if(!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
             shopProductAdapter.setShopProductEtalaseTitleData(data)
         }

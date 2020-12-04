@@ -102,7 +102,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return HideViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseTitleViewModel: ShopProductEtalaseTitleViewModel): Int {
+    fun type(shopProductEtalaseTitleUiModel: ShopProductEtalaseTitleUiModel): Int {
         return ShopProductEtalaseTitleViewHolder.LAYOUT
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  * Created by zulfikarrahman on 1/16/18.
  */
 
-data class ShopProductEtalaseTitleViewModel(
+data class ShopProductEtalaseTitleUiModel(
         var etalaseName: String,
         var etalaseBadge: String
 ) : BaseShopProductViewModel {

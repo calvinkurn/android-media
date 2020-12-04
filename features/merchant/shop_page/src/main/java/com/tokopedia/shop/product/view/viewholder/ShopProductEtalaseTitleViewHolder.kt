@@ -11,13 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseTitleViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseTitleUiModel
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopProductEtalaseTitleViewModel>(itemView) {
+class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopProductEtalaseTitleUiModel>(itemView) {
     private var textView: TextView? = null
     private var ivBadge: ImageView? = null
 
@@ -25,10 +25,10 @@ class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<Sho
         findViews(itemView)
     }
 
-    override fun bind(shopProductFeaturedViewModel: ShopProductEtalaseTitleViewModel) {
-        textView!!.text = MethodChecker.fromHtml(shopProductFeaturedViewModel.etalaseName)
-        if (!TextUtils.isEmpty(shopProductFeaturedViewModel.etalaseBadge)) {
-            ImageHandler.LoadImage(ivBadge!!, shopProductFeaturedViewModel.etalaseBadge)
+    override fun bind(shopProductFeaturedUiModel: ShopProductEtalaseTitleUiModel) {
+        textView!!.text = MethodChecker.fromHtml(shopProductFeaturedUiModel.etalaseName)
+        if (!TextUtils.isEmpty(shopProductFeaturedUiModel.etalaseBadge)) {
+            ImageHandler.LoadImage(ivBadge!!, shopProductFeaturedUiModel.etalaseBadge)
             ivBadge!!.visibility = View.VISIBLE
         } else {
             ivBadge!!.visibility = View.GONE
