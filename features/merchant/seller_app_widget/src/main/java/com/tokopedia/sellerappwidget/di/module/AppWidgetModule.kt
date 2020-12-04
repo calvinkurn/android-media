@@ -2,7 +2,7 @@ package com.tokopedia.sellerappwidget.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProvider
 import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProviderImpl
@@ -27,7 +27,7 @@ class AppWidgetModule {
 
     @AppWidgetScope
     @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @AppWidgetScope
     @Provides

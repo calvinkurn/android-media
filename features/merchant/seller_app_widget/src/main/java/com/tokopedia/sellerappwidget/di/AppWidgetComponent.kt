@@ -2,6 +2,7 @@ package com.tokopedia.sellerappwidget.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.sellerappwidget.di.module.AppWidgetModule
+import com.tokopedia.sellerappwidget.view.service.GetChatService
 import com.tokopedia.sellerappwidget.view.service.GetOrderService
 import dagger.Component
 
@@ -17,4 +18,6 @@ import dagger.Component
 interface AppWidgetComponent {
 
     fun inject(gerOrderService: GetOrderService)
+
+    fun inject(gerOrderService: GetChatService)
 }
