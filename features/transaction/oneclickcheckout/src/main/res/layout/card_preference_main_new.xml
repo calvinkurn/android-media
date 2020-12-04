@@ -127,7 +127,7 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/iv_new_payment"
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"

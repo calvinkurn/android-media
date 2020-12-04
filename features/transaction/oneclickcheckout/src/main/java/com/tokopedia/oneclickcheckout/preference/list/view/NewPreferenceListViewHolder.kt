@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class NewMainPreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
@@ -32,7 +32,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
     private val tvShippingName = itemView.findViewById<Typography>(R.id.tv_new_shipping_name)
     private val tvShippingDuration = itemView.findViewById<Typography>(R.id.tv_new_shipping_duration)
 
-    private val ivPayment = itemView.findViewById<ImageUnify>(R.id.iv_new_payment)
+    private val ivPayment = itemView.findViewById<ImageView>(R.id.iv_new_payment)
     private val tvPaymentName = itemView.findViewById<Typography>(R.id.tv_new_payment_name)
     private val tvPaymentDetail = itemView.findViewById<Typography>(R.id.tv_new_payment_detail)
 
@@ -118,7 +118,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
     private val tvShippingName = itemView.findViewById<Typography>(R.id.tv_new_shipping_name)
     private val tvShippingDuration = itemView.findViewById<Typography>(R.id.tv_new_shipping_duration)
 
-    private val ivPayment = itemView.findViewById<ImageUnify>(R.id.iv_new_payment)
+    private val ivPayment = itemView.findViewById<ImageView>(R.id.iv_new_payment)
     private val tvPaymentName = itemView.findViewById<Typography>(R.id.tv_new_payment_name)
     private val tvPaymentDetail = itemView.findViewById<Typography>(R.id.tv_new_payment_detail)
 

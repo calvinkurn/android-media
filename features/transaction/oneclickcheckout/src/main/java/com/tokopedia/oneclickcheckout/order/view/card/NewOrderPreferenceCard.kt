@@ -7,6 +7,7 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -35,7 +36,6 @@ import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBo
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -72,7 +72,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val btnChangePaymentCC by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment_cc) }
     private val dividerCCPayment by lazy { view.findViewById<View>(R.id.divider_new_cc_payment) }
 
-    private val ivPayment by lazy { view.findViewById<ImageUnify>(R.id.iv_new_payment) }
+    private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_new_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_payment_detail) }
     private val btnChangePayment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment) }
