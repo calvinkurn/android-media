@@ -88,8 +88,8 @@ object ShopPageProductListMapper {
                 }
             }
 
-    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
-        return LabelGroupViewModel(
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
+        return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
                 type = labelGroup.type
@@ -189,11 +189,11 @@ object ShopPageProductListMapper {
         )
     }
 
-    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+    private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
-                position = labelGroupViewModel.position,
-                title = labelGroupViewModel.title,
-                type = labelGroupViewModel.type
+                position = labelGroupUiModel.position,
+                title = labelGroupUiModel.title,
+                type = labelGroupUiModel.type
         )
     }
 }
