@@ -284,7 +284,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeBulkAcceptOrder()
         observeBulkAcceptOrderStatus()
         observeIsAdminEligible()
-        observeCanShowOrderData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -907,6 +906,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             when(result) {
                 is Success -> {
                     result.data.let { isEligible ->
+                        canDisplayOrderData = isEligible
                         if (!isEligible) {
                             showAdminPermissionError()
                         }
@@ -916,12 +916,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     showGlobalError(result.throwable)
                 }
             }
-        }
-    }
-
-    private fun observeCanShowOrderData() {
-        viewModel.canShowOrderData.observe(viewLifecycleOwner) { canShow ->
-            canDisplayOrderData = canShow
         }
     }
 

@@ -83,8 +83,6 @@ class SomListViewModel @Inject constructor(
     private val _canShowOrderData = MutableLiveData<Boolean>().apply {
         value = true
     }
-    val canShowOrderData: LiveData<Boolean>
-        get() = _canShowOrderData
 
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
@@ -184,9 +182,10 @@ class SomListViewModel @Inject constructor(
 
     fun getFilters() {
         launchCatchError(block = {
+            val filterResult = somListGetFilterListUseCase.execute()
             getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
-                _filterResult.postValue(somListGetFilterListUseCase.execute())
+                _filterResult.postValue(filterResult)
             }
         }, onError = {
             _filterResult.postValue(Fail(it))
@@ -195,9 +194,10 @@ class SomListViewModel @Inject constructor(
 
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
+            val waitingPaymentResult = somListGetWaitingPaymentUseCase.execute()
             getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
-                _waitingPaymentCounterResult.postValue(somListGetWaitingPaymentUseCase.execute())
+                _waitingPaymentCounterResult.postValue(waitingPaymentResult)
             }
         }, onError = {
             _waitingPaymentCounterResult.postValue(Fail(it))
