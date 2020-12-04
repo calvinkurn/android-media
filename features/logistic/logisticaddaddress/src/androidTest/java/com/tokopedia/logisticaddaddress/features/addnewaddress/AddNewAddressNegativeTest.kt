@@ -40,7 +40,7 @@ class AddNewAddressNegativeTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
+        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(AUTOCOMPLETE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.autocomplete_jak_negative), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(GET_DISTRICT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)

@@ -40,7 +40,7 @@ class AddNewAddressTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
+        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(AUTOCOMPLETE_KEY, getRawString(context, R.raw.autocomplete_jak), FIND_BY_CONTAINS)
             addMockResponse(GET_DISTRICT_KEY, getRawString(context, R.raw.get_district_jakarta), FIND_BY_CONTAINS)
