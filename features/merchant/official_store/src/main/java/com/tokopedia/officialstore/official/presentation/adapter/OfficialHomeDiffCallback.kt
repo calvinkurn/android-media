@@ -3,7 +3,7 @@ package com.tokopedia.officialstore.official.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialHomeVisitable
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialHomeVisitable
 
 /**
  * Created by Lukas on 27/10/20.

@@ -3,12 +3,12 @@ package com.tokopedia.topchat.chatroom.domain.mapper
 import androidx.collection.ArrayMap
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
@@ -86,6 +86,26 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             }
         }
         return listChat
+    }
+
+    override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        return MessageViewModel(
+                messageId = chatItemPojoByDateByTime.msgId.toString(),
+                fromUid = chatItemPojoByDateByTime.senderId.toString(),
+                from = chatItemPojoByDateByTime.senderName,
+                fromRole = chatItemPojoByDateByTime.role,
+                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
+                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
+                replyTime = chatItemPojoByDateByTime.replyTime,
+                startTime = "",
+                isRead = chatItemPojoByDateByTime.isRead,
+                isDummy = false,
+                isSender = !chatItemPojoByDateByTime.isOpposite,
+                message = chatItemPojoByDateByTime.msg,
+                source = chatItemPojoByDateByTime.source,
+                blastId = chatItemPojoByDateByTime.blastId,
+                fraudStatus = chatItemPojoByDateByTime.fraudStatus
+        )
     }
 
     private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {

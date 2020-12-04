@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
@@ -39,6 +40,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Named
 
 class PaymentMethodFragment : BaseDaggerFragment() {
 
@@ -68,6 +70,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    @field:Named(PAYMENT_LISTING_URL)
     lateinit var paymentListingUrl: String
 
     private val viewModel: PaymentMethodViewModel by lazy {

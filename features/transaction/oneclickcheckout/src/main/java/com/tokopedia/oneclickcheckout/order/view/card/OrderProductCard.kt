@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.graphics.Paint
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -73,6 +74,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             tfNote?.textFieldInput?.textSize = 16f
             tfNote?.textFieldInput?.isSingleLine = false
             tfNote?.setCounter(MAX_NOTES_LENGTH)
+            tfNote?.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
             tfNote?.textFieldInput?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())

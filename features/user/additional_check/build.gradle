@@ -4,13 +4,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -56,7 +56,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.profileCompletion)
 
 }
 

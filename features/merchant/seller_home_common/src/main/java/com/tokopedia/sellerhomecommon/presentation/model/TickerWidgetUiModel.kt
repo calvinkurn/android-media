@@ -15,6 +15,7 @@ data class TickerWidgetUiModel(
         override val appLink: String = "",
         override val dataKey: String = "",
         override val ctaText: String = "",
+        override val isShowEmpty: Boolean = false,
         override var data: TickerDataUiModel? = null,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean = false,

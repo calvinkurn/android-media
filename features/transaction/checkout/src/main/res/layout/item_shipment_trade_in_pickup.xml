@@ -8,49 +8,6 @@
     android:padding="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_choose_duration_trade_in"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
-        android:text="@string/label_shipping_duration"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/tv_choose_duration_trade_in"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_choose_duration_trade_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/checkout_module_green_button_rounded_unify_new"
-        android:foreground="?selectableItemBackground"
-        android:paddingLeft="@dimen/dp_27"
-        android:paddingTop="@dimen/dp_9"
-        android:paddingRight="@dimen/dp_27"
-        android:paddingBottom="@dimen/dp_9"
-        android:text="@string/label_button_choose_courier_recommendation"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/label_choose_duration_trade_in"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
-
-    <include
-        android:id="@+id/ll_courier_recommendation_Trade_in_drop_off_state_loading"
-        layout="@layout/purchase_platform_partial_shimmering_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:visibility="gone"
-        tools:visibility="gone" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_trade_in_shipping_price_title"
         style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"

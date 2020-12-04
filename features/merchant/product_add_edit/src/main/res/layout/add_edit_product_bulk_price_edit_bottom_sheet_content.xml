@@ -33,6 +33,6 @@
         android:background="@drawable/product_add_edit_rect_green_solid"
         android:text="@string/action_bulk_edit_price"
         android:textAllCaps="false"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/Unify_N0" />
 
 </LinearLayout>

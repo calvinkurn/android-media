@@ -16,6 +16,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
 
@@ -37,7 +38,9 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail()
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo)
+
+        fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
         fun showLoadingDiscover()
 
@@ -72,6 +75,8 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
+
+        fun showPopup(): Function1<PopupError, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
@@ -114,6 +119,26 @@ interface LoginEmailPhoneContract {
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
+
+        fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)
+
+        fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
+
+        fun goToChooseAccountPageFacebook(accessToken: String)
+
+        fun goToAddPin2FA(enableSkip2FA: Boolean)
+
+        fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String)
+
+        fun onGoToChangeName()
+
+        fun goToForgotPassword()
+
+        fun goToTokopediaCareWebview()
+
+        fun goToRegisterInitial(source: String)
+
+        fun openGoogleLoginIntent()
     }
 
     interface Presenter : CustomerPresenter<View> {

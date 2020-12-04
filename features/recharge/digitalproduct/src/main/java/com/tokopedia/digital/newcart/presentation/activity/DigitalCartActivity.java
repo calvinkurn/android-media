@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
@@ -21,6 +20,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFra
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.user.session.UserSession;
 
 /**

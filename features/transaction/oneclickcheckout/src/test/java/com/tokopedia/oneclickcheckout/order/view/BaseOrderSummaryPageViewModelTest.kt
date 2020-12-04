@@ -4,18 +4,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
@@ -27,7 +27,7 @@ open class BaseOrderSummaryPageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @MockK
-    lateinit var addToCartOccExternalUseCase: AddToCartOccExternalUseCase
+    lateinit var addToCartOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>
 
     @MockK
     lateinit var getOccCartUseCase: GetOccCartUseCase
@@ -36,7 +36,7 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var ratesUseCase: GetRatesUseCase
 
     @MockK
-    lateinit var getPreferenceListUseCase: GetPreferenceListUseCase
+    lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
@@ -44,16 +44,16 @@ open class BaseOrderSummaryPageViewModelTest {
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
     @MockK
-    lateinit var editAddressUseCase: EditAddressUseCase
+    lateinit var editAddressUseCase: Lazy<EditAddressUseCase>
 
     @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
     @MockK
-    lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
+    lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
-    lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    lateinit var validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
@@ -63,8 +63,6 @@ open class BaseOrderSummaryPageViewModelTest {
 
     val testDispatchers: TestDispatchers = TestDispatchers
 
-    private val testSchedulers: ExecutorSchedulers = TestSchedulers
-
     lateinit var helper: OrderSummaryPageViewModelTestHelper
 
     lateinit var orderSummaryPageViewModel: OrderSummaryPageViewModel
@@ -73,9 +71,12 @@ open class BaseOrderSummaryPageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
-        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, testSchedulers, addToCartOccExternalUseCase,
-                getOccCartUseCase, ratesUseCase, getPreferenceListUseCase, updateCartOccUseCase, ratesResponseStateConverter,
-                editAddressUseCase, checkoutOccUseCase, clearCacheAutoApplyStackUseCase,
-                validateUsePromoRevampUseCase, userSessionInterface, orderSummaryAnalytics)
+        orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers, getPreferenceListUseCase,
+                OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
+                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
+                userSessionInterface, orderSummaryAnalytics)
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

@@ -14,4 +14,5 @@ interface HomeComponentTypeFactory {
     fun type(productHighlightDataModel: ProductHighlightDataModel): Int
     fun type(lego4AutoDataModel: Lego4AutoDataModel): Int
     fun type(featuredShopDataModel: FeaturedShopDataModel): Int
+    fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int
 }

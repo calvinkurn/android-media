@@ -130,6 +130,7 @@
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
+    <string name="shop_settings_info">Informasi Toko</string>
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
     <string name="shop_settings_add_address">Tambah Lokasi</string>
@@ -179,7 +180,17 @@
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
+    <string name="label_title_draft_product">Draft Produk</string>
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+
+    <!-- Review   -->
+    <string name="review_text">Ulasan</string>
+    <string name="title_review_reply">Balas Ulasan</string>
+    <string name="title_activity_reputation_review">Ulasan</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
+    <string name="title_filter">Filter</string>
+    <string name="title_report">Laporkan</string>
+
 </resources>

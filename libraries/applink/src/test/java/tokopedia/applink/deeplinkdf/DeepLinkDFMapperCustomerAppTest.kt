@@ -74,9 +74,9 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check profile appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://people/12345"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check profile appLink then should return DF_CONTENT_PROFILE in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/12345"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PROFILE)
     }
 
     @Test
@@ -713,18 +713,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check hotel external appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://hotel"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check group chat list internal play appLink then should return DF_USER_GROUPCHAT in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_GROUPCHAT)
-    }
-
-    @Test
-    fun `check group chat detail internal play appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat/12345/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_GROUPCHAT)
     }
 
     @Test

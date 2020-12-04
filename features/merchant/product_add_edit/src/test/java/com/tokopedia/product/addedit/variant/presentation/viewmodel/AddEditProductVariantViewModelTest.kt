@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
@@ -9,8 +10,12 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -47,6 +52,36 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.removeVariant()
         assert(viewModel.getSelectedVariantUnitValues(0).size == 0)
         assert(viewModel.getSelectedVariantUnitValues(1).size == 0)
+
+    }
+
+    @Test
+    fun `When updateVariantInputModel with old data is success Expect update variantInputModel`() {
+        spiedViewModel.productInputModel.value = ProductInputModel()
+
+        val selectedUnitValuesLevel1 = mutableListOf(
+                variantDetailTest1.units[0].unitValues[2],
+                variantDetailTest1.units[0].unitValues[3]
+        )
+
+        val selectedUnitValuesLevel2 = mutableListOf(
+                variantDetailTest2.units[0].unitValues[2],
+                variantDetailTest2.units[0].unitValues[3]
+        )
+
+        val variantPhotos = listOf(
+                VariantPhoto(variantDetailTest2.units[0].unitValues[2].value, "/url/to/file.jpg"),
+                VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
+        )
+
+        spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
+        spiedViewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
+        spiedViewModel.setSelectedVariantDetails(variantDetailsTest)
+        spiedViewModel.isOldVariantData = true
+        spiedViewModel.updateVariantInputModel(variantPhotos)
+
+        val selection = spiedViewModel.productInputModel.value?.variantInputModel?.selections
+        assert(selection != null && selection.isNotEmpty())
 
     }
 
@@ -333,11 +368,43 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
-    fun `getCategoryVariantCombination function should execute getCategoryVariantCombinationUseCase`() {
+    fun `getCategoryVariantCombination function should execute getCategoryVariantCombinationUseCase`() = runBlocking {
+
+        coEvery {
+            getVariantCategoryCombinationUseCase.executeOnBackground()
+        } returns GetVariantCategoryCombinationResponse()
+
         viewModel.getVariantCategoryCombination(0, listOf())
+
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
+    }
+
+    @Test
+    fun `getCategoryVariantCombination function in edit mode should execute getCategoryVariantCombinationUseCase`() = runBlocking {
+        val selections = listOf(SelectionInputModel(
+                variantId = "111"
+        ))
+        viewModel.productInputModel.value = ProductInputModel(productId = 10000L)
+        viewModel.productInputModel.getOrAwaitValue()
+        viewModel.isEditMode.getOrAwaitValue()
+
+        coEvery {
+            getVariantCategoryCombinationUseCase.executeOnBackground()
+        } returns GetVariantCategoryCombinationResponse()
+
+        viewModel.getVariantCategoryCombination(0, selections)
+
+        coVerify {
+            getVariantCategoryCombinationUseCase.executeOnBackground()
+        }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
     }
 
     @Test
@@ -563,5 +630,25 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val variantPhotos = viewModel.getProductVariantPhotos(productInputModel)
         val actualVariantPhoto = variantPhotos.first()
         assert(actualVariantPhoto.fileName == expectedPhotoFileName)
+    }
+
+    @Test
+    fun `view model should be able to convert picture variant input model into variant photo if picture is empty`() {
+        val productVariantInputModel = ProductVariantInputModel(combination = listOf(0), pictures = listOf())
+        val selectionInputModel = SelectionInputModel(variantId = COLOUR_VARIANT_TYPE_ID.toString())
+        val optionInputModel = OptionInputModel(value = "Red")
+        selectionInputModel.options = listOf(optionInputModel)
+        val productInputModel = ProductInputModel(variantInputModel = VariantInputModel(products = listOf(productVariantInputModel), selections = listOf(selectionInputModel)))
+        val variantPhotos = viewModel.getProductVariantPhotos(productInputModel)
+        assert(variantPhotos.first().imageUrlOrPath.isEmpty())
+    }
+
+    @Test
+    fun `view model should unable to convert picture variant input model into variant photo if variant is not color type`() {
+        val productVariantInputModel = ProductVariantInputModel(combination = listOf(0), pictures = listOf())
+        val selectionInputModel = SelectionInputModel(variantId = "999")
+        val productInputModel = ProductInputModel(variantInputModel = VariantInputModel(products = listOf(productVariantInputModel), selections = listOf(selectionInputModel)))
+        val variantPhotos = viewModel.getProductVariantPhotos(productInputModel)
+        assert(variantPhotos.isEmpty())
     }
 }

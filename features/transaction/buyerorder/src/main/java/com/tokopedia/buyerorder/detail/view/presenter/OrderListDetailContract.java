@@ -14,6 +14,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -60,6 +61,10 @@ public interface OrderListDetailContract {
 
         void setPricing(Pricing pricing);
 
+        void setDiscount(Discount discount);
+
+        void setDiscountVisibility(int visibility);
+
         void setPaymentData(PaymentData paymentData);
 
         void setContactUs(ContactUs contactUs, String helpLink);
@@ -75,8 +80,6 @@ public interface OrderListDetailContract {
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
 
         void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails);
-
-        Context getAppContext();
 
         Context getActivity();
 
@@ -102,7 +105,7 @@ public interface OrderListDetailContract {
 
         void finishOrderDetail();
 
-        void showSucessMessage(String message);
+        void showSuccessMessage(String message);
 
         void showSuccessMessageWithAction(String message);
 

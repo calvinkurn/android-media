@@ -59,4 +59,6 @@ object BuyerConsts {
     const val APPLINK_INTERNAL_ORDER = "tokopedia-android-internal://order"
     const val HOST_HOTEL = "hotel"
     const val HOST_FLIGHT = "pesawat"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
 }

@@ -16,8 +16,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -35,11 +37,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
+import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
@@ -47,6 +51,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CUSTOMER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
@@ -67,16 +72,21 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_FINI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.NOTES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_ID
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_NAME
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_PRICE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUANTITY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS_SINGLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_EVENTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
@@ -85,8 +95,10 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -95,6 +107,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListComponentInstance
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
@@ -179,7 +193,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultStartDateStr = ""
     private var defaultEndDate = ""
     private var defaultEndDateStr = ""
-    private var arrayFilterDate = arrayOf<String>()
+    private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -194,6 +208,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
+    private var gson = Gson()
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -248,7 +263,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                     PARAM_DEALS -> {
                         status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS_SINGLE
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                     }
                     PARAM_PESAWAT -> {
                         status = SEMUA_TRANSAKSI
@@ -269,6 +284,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_HOTEL -> {
                         status = SEMUA_TRANSAKSI
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
+                    }
+                    PARAM_TRAVEL_ENTERTAINMENT -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
                 }
                 paramUohOrder.status = status
@@ -302,9 +321,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        activity?.let {
-            arrayFilterDate = it.resources?.getStringArray(R.array.filter_date) as Array<String>
-        }
+        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as? Array<String>
     }
 
     private fun observingData() {
@@ -314,6 +331,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingOrderHistory()
         observingRecommendationList()
         observingAtc()
+        observingAtcMulti()
         observingFlightResendEmail()
         observingTrainResendEmail()
     }
@@ -399,7 +417,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             paramUohOrder.uUID = ""
             paramUohOrder.page = currPage
         }
-        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
+        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
 
     private fun loadRecommendationList() {
@@ -437,9 +455,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             loadRecommendationList()
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -454,6 +474,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
+                    UohIdlingResource.decrement()
+                }
+                is Fail -> {
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -476,16 +500,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
-    private fun observingAtc() {
-        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+    private fun observingAtcMulti() {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -494,9 +520,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -519,9 +547,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -542,10 +572,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -566,10 +598,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -585,9 +619,29 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
+                }
+            }
+        })
+    }
+
+    private fun observingAtc() {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.isDataError()) {
+                        it.data.getAtcErrorMessage()?.let { errorMsg -> showToaster(errorMsg, Toaster.TYPE_ERROR) }
+                    } else {
+                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
+                    }
+                }
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, Toaster.TYPE_ERROR) }
                 }
             }
         })
@@ -621,7 +675,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 || filterStatus.equals(PARAM_GIFTCARDS, true)
                 || filterStatus.equals(PARAM_INSURANCE, true)
                 || filterStatus.equals(PARAM_MODALTOKO, true)
-                || filterStatus.equals(PARAM_HOTEL, true)) {
+                || filterStatus.equals(PARAM_HOTEL, true)
+                || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -648,7 +703,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_GIFTCARDS, true) ||
                 filterStatus.equals(PARAM_INSURANCE, true) ||
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
-                filterStatus.equals(PARAM_HOTEL, true)) {
+                filterStatus.equals(PARAM_HOTEL, true) ||
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -668,9 +724,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             filter3?.title = orderList.categories[1].label
 
-        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true) ||
-                filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true))
-                && !isReset) {
+        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
             filter3?.title = orderList.categories[2].label
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
@@ -686,8 +742,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
-            showToaster(resetMsg, Toaster.TYPE_NORMAL)
+            val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
+            resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             resetFilter()
             refreshHandler?.startRefresh()
             userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
@@ -703,12 +759,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
         val arrayListMapDate = arrayListOf<HashMap<String, String>>()
         var i = 0
-        if (arrayFilterDate.isNotEmpty()) {
-            arrayFilterDate.forEach { optionDate ->
-                val mapKey = HashMap<String, String>()
-                mapKey["$i"] = optionDate
-                arrayListMapDate.add(mapKey)
-                i++
+        arrayFilterDate?.let { arrayDate ->
+            if (arrayDate.isNotEmpty()) {
+                arrayDate.forEach { optionDate ->
+                    val mapKey = HashMap<String, String>()
+                    mapKey["$i"] = optionDate
+                    arrayListMapDate.add(mapKey)
+                    i++
+                }
             }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
@@ -760,33 +818,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
 
-        if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+        if ((filterStatus.equals(PARAM_MARKETPLACE, true)
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
+                        && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DIGITAL
 
-        } else if (filterStatus.equals(PARAM_EVENTS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+        } else if ((filterStatus.equals(PARAM_EVENTS, true)
+                        || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true)
+                        || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
+                        && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 
-        } else if (filterStatus.equals(PARAM_DEALS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_PESAWAT, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_GIFTCARDS, true) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
+                        || filterStatus.equals(PARAM_INSURANCE, true)
+                        || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_INSURANCE, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_MODALTOKO, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_HOTEL, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
 
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
@@ -853,32 +904,38 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 searchBarIsNotEmpty -> {
                     emptyStatus = context?.let { context ->
+                            ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
+                                activity?.resources?.let { resource ->
+                                    UohEmptyState(drawable,
+                                            resource.getString(R.string.uoh_search_empty),
+                                            resource.getString(R.string.uoh_search_empty_desc),
+                                            false, "")
+                                }
 
-                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_search_empty),
-                                    resources.getString(R.string.uoh_search_empty_desc),
-                                    false, "")
-                        }
+                            }
                     }
                 }
                 paramUohOrder.status.isNotEmpty() -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_filter_empty),
-                                    resources.getString(R.string.uoh_filter_empty_desc),
-                                    true, resources.getString(R.string.uoh_filter_empty_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_filter_empty),
+                                        resource.getString(R.string.uoh_filter_empty_desc),
+                                        true, resource.getString(R.string.uoh_filter_empty_btn))
+                            }
                         }
                     }
                 }
                 else -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_no_order),
-                                    resources.getString(R.string.uoh_no_order_desc),
-                                    true, resources.getString(R.string.uoh_no_order_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_no_order),
+                                        resource.getString(R.string.uoh_no_order_desc),
+                                        true, resource.getString(R.string.uoh_no_order_btn))
+                            }
                         }
                     }
                 }
@@ -903,10 +960,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun initInjector() {
         activity?.let {
             DaggerUohListComponent.builder()
-                    .uohComponent(UohComponentInstance.getUohComponent(it.application))
+                    .baseAppComponent(getBaseAppComponent())
+                    .uohListModule(context?.let { UohListModule(it)})
                     .build()
                     .inject(this)
         }
+    }
+
+    private fun getBaseAppComponent(): BaseAppComponent {
+        return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
     private fun showBottomSheetFilterOptions(title: String) {
@@ -1034,7 +1096,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
                 if (paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_order), paramFinishOrder)
+                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
 
                 userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
@@ -1061,7 +1123,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             bottomSheetLsFinishOrder?.dismiss()
             currIndexNeedUpdate = index
             uohItemAdapter.showLoaderAtIndex(index)
-            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
+            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_lsprint), orderId)
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1106,17 +1168,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
         viewBottomSheet.btn_send_email?.setOnClickListener {
             if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-                val flightQueryParam = Gson().fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+                val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
+                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
-                val trainQueryParam = Gson().fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+                val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
+                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_train), param)
             }
             userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
@@ -1310,17 +1372,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun showToaster(message: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, type, "")
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
         }
     }
 
     private fun showToasterAtc(message: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
                 RouteManager.route(context, ApplinkConst.CART)
                 userSession?.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
-            })
+            }).show()
         }
     }
 
@@ -1356,28 +1418,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
                     bottomSheetKebabMenu?.dismiss()
-
-                    if (orderData.metadata.listProducts.isNotEmpty()) {
-                        val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
-                        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
-
-                        // analytics
-                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-                        var i = 0
-                        orderData.metadata.products.forEach {
-                            val objProduct = jsonArray.get(i).asJsonObject
-                            arrayListProducts.add(ECommerceAdd.Add.Products(
-                                    name = it.title,
-                                    id = objProduct.get(EE_PRODUCT_ID).asString,
-                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
-                                    quantity = objProduct.get(EE_QUANTITY).asString,
-                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
-                            ))
-                            i++
-                        }
-                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
-                    }
+                    atc(orderData)
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
@@ -1388,7 +1429,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     RouteManager.route(context, applinkTrack)
                 }
                 dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                    val linkUrl = dotMenu.appURL
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
             }
@@ -1407,8 +1448,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         // analytics
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceClick.Products>()
         var i = 0
@@ -1443,27 +1484,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
                 }
                 button.actionType.equals(GQL_ATC, true) -> {
-                    if (order.metadata.listProducts.isNotEmpty()) {
-                        val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-                        val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
-
-                        // analytics
-                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-                        var i = 0
-                        order.metadata.products.forEach {
-                            val objProduct = jsonArray.get(i).asJsonObject
-                            arrayListProducts.add(ECommerceAdd.Add.Products(
-                                    name = it.title,
-                                    id = objProduct.get(EE_PRODUCT_ID).asString,
-                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
-                                    quantity = objProduct.get(EE_QUANTITY).asString,
-                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
-                            ))
-                            i++
-                        }
-                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, order.verticalCategory) }
-                    }
+                    atc(order)
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
@@ -1474,14 +1495,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetLsFinishOrder(index, order.verticalID)
                 }
                 button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, order.verticalID)
+                    val linkUrl = button.appURL
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     currIndexNeedUpdate = index
                     orderIdNeedUpdated = order.orderUUID
                     if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(activity?.resources, R.raw.recharge_set_fail), order.verticalID.toInt())
                     }
                 }
             }
@@ -1511,8 +1532,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
         var i = 0
@@ -1557,13 +1578,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString(),
-                list = list
-        ), topAds)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString(),
+                    list = list
+            ), topAds)
         }
     }
 
@@ -1576,11 +1597,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds, it)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString()), topAds, it)
         }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
@@ -1595,17 +1616,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
-        val jsonArrayAtc = JsonArray()
-        val atcJsonObject = JsonObject()
-        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
-        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
-        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
-        atcJsonObject.addProperty(UohConsts.NOTES, "")
-        atcJsonObject.addProperty(UohConsts.CATEGORY, recommendationItem.categoryBreadcrumbs)
-        atcJsonObject.addProperty(UohConsts.PRODUCT_NAME, recommendationItem.name)
-        atcJsonObject.addProperty(UohConsts.PRODUCT_PRICE, recommendationItem.priceInt)
-        jsonArrayAtc.add(atcJsonObject)
-        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArrayAtc)
+        val atcParam = AddToCartRequestParams(
+                productId = recommendationItem.productId.toLong(),
+                productName = recommendationItem.name,
+                price = recommendationItem.priceInt.toString(),
+                quantity = recommendationItem.quantity,
+                shopId = recommendationItem.shopId,
+                category = recommendationItem.categoryBreadcrumbs,
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION)
+        uohListViewModel.doAtc(atcParam)
 
         // analytics
         trackAtcRecommendationItem(recommendationItem)
@@ -1632,7 +1651,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -1662,5 +1681,43 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
         startActivity(intent)
+    }
+
+    private fun atc(orderData: UohListOrder.Data.UohOrders.Order) {
+        if (orderData.metadata.listProducts.isNotEmpty()) {
+            val listOfStrings = gson.fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
+            val jsonArray: JsonArray = gson.toJsonTree(listOfStrings).asJsonArray
+            val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
+            for (x in 0 until jsonArray.size()) {
+                val objParam = jsonArray.get(x).asJsonObject
+                listParamAtcMulti.add(AddToCartMultiParam(
+                        productId = objParam.get(PRODUCT_ID).asInt,
+                        productName = objParam.get(PRODUCT_NAME).asString,
+                        productPrice = objParam.get(PRODUCT_PRICE).asInt,
+                        qty = objParam.get(QUANTITY).asInt,
+                        notes = objParam.get(NOTES).asString,
+                        shopId = objParam.get(SHOP_ID).asInt,
+                        custId = objParam.get(CUSTOMER_ID).asInt,
+                        warehouseId = objParam.get(WAREHOUSE_ID).asInt
+                ))
+            }
+
+            uohListViewModel.doAtcMulti(userSession?.userId
+                    ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+
+            // analytics
+            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+            orderData.metadata.products.forEachIndexed { index, product ->
+                val objProduct = jsonArray.get(index).asJsonObject
+                arrayListProducts.add(ECommerceAdd.Add.Products(
+                        name = product.title,
+                        id = objProduct.get(EE_PRODUCT_ID).asString,
+                        price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                        quantity = objProduct.get(EE_QUANTITY).asString,
+                        dimension79 = objProduct.get(EE_SHOP_ID).asString
+                ))
+            }
+            userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
-import com.tokopedia.product.manage.verification.verifyErrorEquals
-import com.tokopedia.product.manage.verification.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test

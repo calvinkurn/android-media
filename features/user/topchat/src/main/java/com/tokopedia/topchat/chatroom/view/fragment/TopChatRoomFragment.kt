@@ -32,13 +32,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.attachcommon.data.VoucherPreview
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -157,6 +157,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var searchQuery: String = ""
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
+
+    //This used only for set extra in finish activity
+    private var isFavoriteShop: Boolean? = null
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -933,7 +936,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     it.getString(com.tokopedia.imagepicker.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
-                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    MAX_SIZE_IMAGE_PICKER,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                     null,
                     true,
@@ -1037,10 +1040,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (data == null)
             return
 
-        if (!data.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+        if (!data.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
             return
 
-        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
         presenter.initProductPreviewFromAttachProduct(resultProducts)
     }
 
@@ -1119,6 +1122,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     onSuccessUnFollowShopFromBcHandler()
                     addBroadCastSpamHandler(isFollow)
                 }
+                isFavoriteShop = isFollow
             }
         }
     }
@@ -1246,6 +1250,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
             bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
             bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+            isFavoriteShop?.let {
+                bundle.putString(ApplinkConst.Chat.SHOP_FOLLOWERS_CHAT_KEY, it.toString())
+            }
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
@@ -1493,6 +1500,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     element.stopFollowShop()
                     onSuccessFollowShopFromBcHandler()
                     adapter.removeBroadcastHandler(element)
+                    isFavoriteShop = true
                 },
                 onError = {
                     element.stopFollowShop()
@@ -1685,6 +1693,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     companion object {
+        private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle

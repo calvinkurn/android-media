@@ -14,6 +14,7 @@ public class TopAdsCommonConstant {
     public static final String TOPADS_SELLER_CENTER = "https://seller.tokopedia.com/about-topads/";
 
     public static final String PARAM_SHOP_ID = "shop_id";
+    public static final String DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp";
 
     public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
     public static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";

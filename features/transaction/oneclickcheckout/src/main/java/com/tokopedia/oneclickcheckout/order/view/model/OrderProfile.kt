@@ -45,14 +45,6 @@ data class OrderProfilePayment(
         val gatewayName: String = "",
         val image: String = "",
         val description: String = "",
-        val url: String = "",
-        val minimumAmount: Long = 0,
-        val maximumAmount: Long = 0,
-        val fee: Double = 0.0,
-        val walletAmount: Long = 0,
         val metadata: String = "",
-        val mdr: Float = 0f,
-        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
         val tickerMessage: String = ""
 )

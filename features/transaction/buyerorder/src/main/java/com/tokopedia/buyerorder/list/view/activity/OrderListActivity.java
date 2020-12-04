@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -178,14 +179,9 @@ public class OrderListActivity extends BaseSimpleActivity
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             getInitialData(orderCategory);
-            presenter.getTickerInfo();
+            presenter.getTickerInfo(this);
         }
 
-    }
-
-    @Override
-    public Context getAppContext() {
-        return this.getApplicationContext();
     }
 
     @Override
@@ -196,6 +192,11 @@ public class OrderListActivity extends BaseSimpleActivity
         } else {
             return bundle;
         }
+    }
+
+    @Override
+    public Context getActivity() {
+        return this;
     }
 
     @Override
@@ -318,6 +319,7 @@ public class OrderListActivity extends BaseSimpleActivity
     }
 
     public void getInitialData(String orderCategory) {
-        presenter.getInitData(orderCategory);
+        presenter.getInitData(GraphqlHelper.loadRawString(getResources(),
+                R.raw.initorderlist), orderCategory);
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.data.entity.request.AddAddressParam
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject

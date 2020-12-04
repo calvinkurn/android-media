@@ -1,12 +1,12 @@
 package com.tokopedia.seller.product.manage.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.manageitem.data.cloud.model.category.ProductManageCategoryViewModel;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -14,7 +14,9 @@ import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 public class ProductManageCategoryPickerAdapter extends BaseListAdapter<ProductManageCategoryViewModel> implements ProductManageCategoryPickerViewHolder.ListenerCheckedCategory {
 
-    private long idCategorySelected = ProductManageConstant.FILTER_ALL_CATEGORY;
+    public static final long FILTER_ALL_CATEGORY = -9;
+
+    private long idCategorySelected = FILTER_ALL_CATEGORY;
 
     public void setIdCategorySelected(long idCategorySelected) {
         this.idCategorySelected = idCategorySelected;

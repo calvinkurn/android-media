@@ -5,44 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
-        app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        tools:targetApi="lollipop">
-
-        <TextView
-            android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/dp_14"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:text="@string/label_save"
-            android:visibility="gone"
-            tools:visibility="visible" />
-    </androidx.appcompat.widget.Toolbar>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/container"
-        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -182,6 +182,7 @@ class CartModule {
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+                                  followShopUseCase: FollowShopUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
@@ -191,7 +192,7 @@ class CartModule {
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
                 updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, schedulers
+                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase, schedulers
         )
     }
 
@@ -207,6 +208,13 @@ class CartModule {
     @Named(AtcConstant.MUTATION_ATC_EXTERNAL)
     fun provideAddToCartExternalMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_external)
+    }
+
+    @Provides
+    @CartScope
+    @Named(FollowShopUseCase.MUTATION_NAME)
+    fun provideFollowShopMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
     }
 
 }

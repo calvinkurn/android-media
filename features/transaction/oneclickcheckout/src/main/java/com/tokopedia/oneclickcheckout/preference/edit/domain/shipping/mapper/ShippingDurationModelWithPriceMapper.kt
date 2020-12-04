@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper
 
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.*
 import javax.inject.Inject
 

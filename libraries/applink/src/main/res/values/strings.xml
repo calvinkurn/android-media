@@ -48,6 +48,7 @@
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
+    <string name="title_module_attachproduct">Lampirkan Product</string>
 
     <!--Seller Order Management-->
     <string name="som_title">Seller Order Management</string>
@@ -60,6 +61,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
+    <string name="title_loginphone">Login Phone</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
@@ -111,4 +113,12 @@
 
     <!-- Product Review -->
     <string name="title_product_review">Product Review</string>
+
+    <!-- Review -->
+    <string name="title_review_inbox">Review Inbox</string>
+    <string name="title_review_detail">Review Detail</string>
+    <string name="title_create_review">Create Review</string>
+  
+    <!-- Inactive Phone -->
+    <string name="title_update_inactive_phone">Inactive Phone</string>
 </resources>

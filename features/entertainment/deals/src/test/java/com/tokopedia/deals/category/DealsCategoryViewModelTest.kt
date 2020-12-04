@@ -121,7 +121,7 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryShouldContainsData() {
         val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
-        val mockResult = mapper.mapCategoryLayout(mockEvent, 1)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(

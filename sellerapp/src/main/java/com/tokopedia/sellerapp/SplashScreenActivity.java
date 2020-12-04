@@ -15,7 +15,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -27,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
@@ -52,6 +55,9 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(new Intent(this, FallbackActivity.class));
             finish();
         }
+        CMPushNotificationManager.getInstance()
+                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+
         syncFcmToken();
     }
 
@@ -151,7 +157,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
+        Intent intent = RouteManager.getIntent(context, LANDING_SHOP_CREATION);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;

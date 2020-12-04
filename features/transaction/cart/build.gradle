@@ -32,13 +32,13 @@ android {
 }
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
     }
     dependencies {
@@ -80,11 +80,13 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.seamlessLoginCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.searchbar)
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.mockk

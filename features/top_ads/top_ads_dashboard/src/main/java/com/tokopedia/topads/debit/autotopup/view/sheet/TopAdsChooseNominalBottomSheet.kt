@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
@@ -49,11 +48,8 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private var topUpChoice = 2
     private var autoTopUpData: AutoTopUpStatus? = null
 
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
     private val viewModel by lazy {
-        viewModelProvider.get(TopAdsAutoTopUpViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(TopAdsAutoTopUpViewModel::class.java)
     }
 
     companion object {
@@ -126,15 +122,16 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
             onLoadFinish {
                 this.setOnItemClickListener { _, _, position, _ ->
                     defPosition = position
-                    selectOperation(this,listUnify,position)
+                    selectOperation(this, listUnify, position)
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
                         defPosition = position
-                        selectOperation(this,listUnify,position)
+                        selectOperation(this, listUnify, position)
                     }
                 }
-                selectOperation(this,listUnify,defPosition)
+                if (autoTopUpData?.availableNominals?.size != 0)
+                    selectOperation(this, listUnify, defPosition)
             }
         }
     }
@@ -179,17 +176,17 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
             onLoadFinish {
                 this.setOnItemClickListener { _, _, position, _ ->
                     topUpChoice = position
-                    select(this,listUnify,position)
+                    select(this, listUnify, position)
 
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
                         topUpChoice = position
-                        select(this,listUnify,position)
+                        select(this, listUnify, position)
                     }
                 }
-
-                select(this,listUnify,topUpChoice)
+                if (topUpChoice < listUnify.size)
+                    select(this, listUnify, topUpChoice)
             }
         }
     }

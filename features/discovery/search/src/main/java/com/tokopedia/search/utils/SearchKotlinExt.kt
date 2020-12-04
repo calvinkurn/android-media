@@ -1,7 +1,7 @@
 package com.tokopedia.search.utils
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
@@ -35,7 +35,7 @@ internal fun String?.decodeQueryParameter(): String {
 
 internal fun safeCastRupiahToInt(price: String?): Int {
     return try {
-        CurrencyFormatHelper.convertRupiahToInt(price)
+        CurrencyFormatHelper.convertRupiahToInt(price ?: "")
     }
     catch(throwable: Throwable) {
         0

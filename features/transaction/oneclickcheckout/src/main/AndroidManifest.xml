@@ -62,6 +62,11 @@
             android:label="@string/title_one_click_checkout_credit_card_and_debit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".preference.edit.view.payment.topup.OvoTopUpWebViewActivity"
+            android:label="@string/title_one_click_checkout_top_up_ovo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

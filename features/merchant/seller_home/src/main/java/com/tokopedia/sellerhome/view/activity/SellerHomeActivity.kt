@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -36,7 +35,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
@@ -87,7 +85,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private var navigator: SellerHomeNavigator? = null
 
     private var statusBarCallback: StatusBarCallback? = null
-    private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
     var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
@@ -187,10 +184,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    fun stopPerformanceMonitoringSellerHomeLayout() {
-        performanceMonitoringSellerHomelayout?.stopTrace()
     }
 
     private fun setupBackground() {
@@ -421,7 +414,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun initPerformanceMonitoringSellerHome() {
-        performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
     }

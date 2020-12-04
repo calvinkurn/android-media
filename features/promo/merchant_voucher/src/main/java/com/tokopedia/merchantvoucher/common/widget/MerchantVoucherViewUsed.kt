@@ -132,7 +132,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                             MethodChecker.getDrawable(context, R.drawable.bg_used_voucher)
                     )
                     btnUseVoucher.setTextColor(
-                            MethodChecker.getColor(context,R.color.white)
+                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                     )
                     btnUseVoucher.visibility = View.VISIBLE
                     btnUseVoucher.isEnabled = false

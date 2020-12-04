@@ -17,7 +17,6 @@
         android:id="@+id/ticker_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         app:autoSlideDelayNumber="5000"
         app:closeButtonVisibility="gone"
         app:enableAutoSlide="true"

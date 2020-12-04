@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -170,6 +171,22 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
+
+    fun trackGlobalNavBarClick(buttonName : String, userID : String?) {
+        val eventCategory = "$TOP_NAV - $VALUE_DISCOVERY_PAGE"
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to CLICK_NAV_DRAWER,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "click $buttonName nav",
+                KEY_EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                USER_ID to (userID ?: ""),
+                BUSINESS_UNIT to HOME_BROWSE,
+                PAGE_TYPE to pageType,
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier))
+        getTracker().sendGeneralEvent(map)
+    }
+
     fun trackLihatSemuaClick(headerName: String?) {
         val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
                 ?: EMPTY_STRING)
@@ -262,14 +279,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     private fun trackEventImpressionProductCard(componentsItems: ComponentsItem, isLogin: Boolean) {
-        val tabName = getTabValue(componentsItems)
         val login = if (isLogin) LOGIN else NON_LOGIN
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         componentsItems.data?.get(0)?.let {
             val productTypeName = getProductName(it.typeProductCard)
             productCardImpressionLabel = "$login - $productTypeName"
-            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - $tabName"
+            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -282,7 +298,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             addSourceData(productMap)
             if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                 productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - $tabName - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
             }
 
         }
@@ -312,7 +328,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     private fun getProductName(productType: String?): String {
         return when (productType) {
-            PRODUCT_CARD_REVAMP_ITEM -> PRODUCT_CARD_REVAMP
+            PRODUCT_CARD_REVAMP_ITEM, MASTER_PRODUCT_CARD_ITEM_LIST -> PRODUCT_CARD_REVAMP
             PRODUCT_CARD_CAROUSEL_ITEM -> PRODUCT_CARD_CAROUSEL
             PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
             PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL
@@ -326,14 +342,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackProductCardClick(componentsItems: ComponentsItem, isLogin: Boolean) {
         if (!componentsItems.data.isNullOrEmpty()) {
-            val tabName = getTabValue(componentsItems)
             val login = if (isLogin) LOGIN else NON_LOGIN
             val list = ArrayList<Map<String, Any>>()
             val listMap = HashMap<String, Any>()
             componentsItems.data?.get(0)?.let {
                 val productTypeName = getProductName(it.typeProductCard)
                 productCardImpressionLabel = "$login - $productTypeName"
-                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - $tabName"
+                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem.plus(1)} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
                 listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -346,7 +361,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 addSourceData(listMap)
                 if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
                     listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                            "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - $tabName - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+                            "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
                 }
             }
             list.add(listMap)
@@ -368,6 +383,33 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         }
     }
 
+    fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
+        val eventCategory = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+        val productItem = componentsItems.data?.firstOrNull()
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_CLICK_DISCOVERY,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "${productItem?.notifyMe?.let { 
+                    if(it) PRODUCT_NOTIFY_CANCEL_CLICK else PRODUCT_NOTIFY_CLICK
+                }}",
+                KEY_EVENT_LABEL to "${productItem?.productId ?: ""} - ${if (isLogin) LOGIN else NON_LOGIN} - ${getProductComponentName(componentsItems.name)} - - ${if (productItem?.tabName.isNullOrEmpty()) "" else formatTabName(productItem!!.tabName)}")
+        getTracker().sendGeneralEvent(map)
+    }
+
+    private fun formatTabName(tabName: String?): String{
+        return tabName?.replace("\n","") ?: ""
+    }
+
+    private fun  getProductComponentName(componentName: String?): String {
+        return when(componentName){
+            ComponentNames.ProductCardRevampItem.componentName -> ComponentNames.ProductCardRevamp.componentName
+            ComponentNames.ProductCardCarouselItem.componentName -> ComponentNames.ProductCardCarousel.componentName
+            ComponentNames.ProductCardSprintSaleItem.componentName -> ComponentNames.ProductCardSprintSale.componentName
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName -> ComponentNames.ProductCardSprintSaleCarousel.componentName
+            else -> ""
+        }
+    }
+
     private fun getTabValue(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
@@ -385,7 +427,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     private fun getNotificationStatus(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
-            return if (it.properties?.buttonNotification == true) NOTIFY_ON else NOTIFY_OFF
+            return if (componentsItems.data?.firstOrNull()?.notifyMe != null) NOTIFY_ON else NOTIFY_OFF
         }
         return NOTIFY_ON
     }

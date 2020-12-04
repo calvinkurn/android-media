@@ -61,4 +61,5 @@
     <string name="label_move_to_wishlist">Pindahkan ke Wishlist</string>
     <string name="label_cannot_be_processed">Tidak bisa diproses (%d)</string>
     <string name="message_no_cart_item_selected">Pilih barang dulu sebelum beli</string>
+    <string name="toolbar_page_name_cart">Cart</string>
 </resources>

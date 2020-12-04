@@ -70,10 +70,10 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
 
         if (data.getSelectedOption() == null) {
             txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
-            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_44))
+            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Unify_N700_44))
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
-            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_96))
+            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, R.color.Unify_N700_96))
         }
     }
 

@@ -7,18 +7,17 @@ import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionRe
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
+import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
-
 @TokoPointScope
-class TokopointsHomeRepository @Inject constructor(@Named(TP_GQL_TOKOPOINT_TOP_SECTION_NEW) private val tp_gql_topsection_new: String,
-                                                   @Named(TP_GQL_HOME_PAGE_SECTION) val tp_gql_homepage_section: String,
-                                                   @Named(TP_GQL_REWARD_INTRO) val tp_gql_reward_intro: String,
-                                                   map: Map<String, String>) : CatalogPurchaseRedeemptionRepository(map) {
+class TokopointsHomeRepository @Inject constructor(@Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_TOP_SECTION_NEW) private val tp_gql_topsection_new: String,
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_HOME_PAGE_SECTION) val tp_gql_homepage_section: String,
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_INTRO) val tp_gql_reward_intro: String) {
 
 
     @Inject

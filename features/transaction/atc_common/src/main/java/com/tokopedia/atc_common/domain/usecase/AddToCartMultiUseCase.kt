@@ -2,6 +2,7 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.JsonArray
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,32 +23,26 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
         private const val CATEGORY_KEY = "category"
     }
 
-    suspend fun execute(userId: String, query: String, paramJsonArray: JsonArray): Result<AtcMultiData> {
+    suspend fun execute(userId: String, query: String, listParam: ArrayList<AddToCartMultiParam>): Result<AtcMultiData> {
         useCase.setGraphqlQuery(query)
         useCase.setTypeClass(AtcMultiData::class.java)
-        useCase.setRequestParams(generateParam(paramJsonArray))
+        useCase.setRequestParams(generateParam(listParam))
 
         return try {
             val atc = useCase.executeOnBackground()
             if (atc.atcMulti.buyAgainData.success == 1) {
-                for (jsonElement in paramJsonArray) {
-                    try {
-                        val product = jsonElement.asJsonObject
-                        val productId = product[PRODUCT_ID_KEY].asInt
-                        val productName = product[PRODUCT_NAME_KEY].asString
-                        val quantity = product[QUANTITY_KEY].asInt
-                        val productPrice = product[PRODUCT_PRICE_KEY].asInt
-                        val category = product[CATEGORY_KEY]?.asString ?: ""
-                        AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
-                                quantity.toString(), category)
-                        AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
-                                quantity.toString(), category, "",
-                                "", "", "",
-                                "", "", userId)
-                    } catch (t: Throwable) {
-                        // failed parse json
-                        Timber.d(t)
-                    }
+                for (param in listParam) {
+                    val productId = param.productId
+                    val productName = param.productName
+                    val quantity = param.qty
+                    val productPrice = param.productPrice
+                    val category = param.category
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
+                            quantity.toString(), category)
+                    AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
+                            quantity.toString(), category, "",
+                            "", "", "",
+                            "", "", userId)
                 }
             }
             Success(atc)
@@ -56,7 +51,7 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
         }
     }
 
-    private fun generateParam(jsonArray: JsonArray): Map<String, Any?> {
-        return mapOf(PARAM to jsonArray)
+    private fun generateParam(arrayAtcMultiParam: ArrayList<AddToCartMultiParam>): Map<String, Any?> {
+        return mapOf(PARAM to arrayAtcMultiParam)
     }
 }

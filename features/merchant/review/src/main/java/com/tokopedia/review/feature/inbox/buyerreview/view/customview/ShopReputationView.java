@@ -98,7 +98,7 @@ public class ShopReputationView extends BaseCustomView {
     }
 
     private void updateMedalView(LinearLayout reputationLayout, @DrawableRes int imageResource, int levelMedal) {
-        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
+        int medalMargin = getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_3);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
             if (i < levelMedal) {
@@ -116,17 +116,17 @@ public class ShopReputationView extends BaseCustomView {
             public void onClick(View v) {
 
                 dialog = new BottomSheetDialog(getContext());
-                dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
-                TextView point = dialog.findViewById(R.id.reputation_point);
+                dialog.setContentView(com.tokopedia.design.R.layout.seller_reputation_bottom_sheet_dialog);
+                TextView point = dialog.findViewById(com.tokopedia.design.R.id.reputation_point);
 
                 String pointText = TextUtils.isEmpty(pointValue) || pointValue.equals("0") ?
-                        getContext().getString(R.string.no_reputation_yet) :
+                        getContext().getString(com.tokopedia.design.R.string.no_reputation_yet) :
                         String.valueOf(pointValue) + " " + getContext().getString(R.string.point);
 
                 if (point != null) {
                     point.setText(pointText);
                 }
-                LinearLayout sellerReputation = dialog.findViewById(R.id.seller_reputation);
+                LinearLayout sellerReputation = dialog.findViewById(com.tokopedia.design.R.id.seller_reputation);
                 updateMedalView(sellerReputation, getIconResource(medalType), level);
                 Button closeButton = dialog.findViewById(R.id.close_button);
 
@@ -154,15 +154,15 @@ public class ShopReputationView extends BaseCustomView {
     private int getIconResource(int type) {
         switch (type) {
             case MEDAL_TYPE_1:
-                return R.drawable.ic_badge_bronze;
+                return com.tokopedia.design.R.drawable.ic_badge_bronze;
             case MEDAL_TYPE_2:
-                return R.drawable.ic_badge_silver;
+                return com.tokopedia.design.R.drawable.ic_badge_silver;
             case MEDAL_TYPE_3:
-                return R.drawable.ic_badge_gold;
+                return com.tokopedia.design.R.drawable.ic_badge_gold;
             case MEDAL_TYPE_4:
-                return R.drawable.ic_badge_diamond;
+                return com.tokopedia.design.R.drawable.ic_badge_diamond;
             default:
-                return R.drawable.ic_badge_none;
+                return com.tokopedia.design.R.drawable.ic_badge_none;
         }
     }
 }

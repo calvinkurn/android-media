@@ -18,13 +18,7 @@
             android:layout_height="match_parent"
             android:measureAllChildren="false">
 
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loaderUnify"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_50"
-                android:layout_gravity="center"
-                app:loader_corner_radius="@dimen/dp_16"
-                app:loader_type="circular" />
+            <include layout="@layout/tp_shimmer_homepage"/>
 
             <include layout="@layout/tp_home_layout_new" />
 

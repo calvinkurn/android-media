@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:src="@drawable/ic_rating_star_four"/>
+        tools:src="@drawable/review_ic_rating_star_four"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivOptionReviewFeedback"

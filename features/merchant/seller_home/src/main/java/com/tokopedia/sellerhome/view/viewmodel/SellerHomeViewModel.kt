@@ -2,8 +2,8 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -38,9 +38,11 @@ class SellerHomeViewModel @Inject constructor(
         private val getTableDataUseCase: Lazy<GetTableDataUseCase>,
         private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
+        private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
+        private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
-        private val dispatcher: SellerHomeCoroutineDispatcher
-) : CustomBaseViewModel(dispatcher.main()) {
+        private val dispatcher: CoroutineDispatchers
+) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
@@ -71,6 +73,8 @@ class SellerHomeViewModel @Inject constructor(
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
+    private val _multiLineGraphWidgetData = MutableLiveData<Result<List<MultiLineGraphDataUiModel>>>()
+    private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -94,19 +98,27 @@ class SellerHomeViewModel @Inject constructor(
         get() = _pieChartWidgetData
     val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
         get() = _barChartWidgetData
+    val multiLineGraphWidgetData: LiveData<Result<List<MultiLineGraphDataUiModel>>>
+        get() = _multiLineGraphWidgetData
+    val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
+        get() = _announcementWidgetData
+
+    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
+        executeOnBackground()
+    }
 
     private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeOnBackground())
+                liveData.value = Success(useCase.executeUseCase())
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeOnBackground())
+        liveData.value = Success(useCase.executeUseCase())
     }
 
     fun getTicker() {
@@ -155,7 +167,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getPostWidgetData(dataKeys: List<String>) {
+    fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
@@ -200,9 +212,33 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
+                getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
+            })
+            _multiLineGraphWidgetData.value = result
+        }, onError = {
+            _multiLineGraphWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getAnnouncementWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
+                getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+                return@withContext getAnnouncementUseCase.get().executeOnBackground()
+            })
+            _announcementWidgetData.value = result
+        }, onError = {
+            _announcementWidgetData.value = Fail(it)
+        })
+    }
+
     fun getShopLocation() {
         launchCatchError(block = {
-            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io()) {
+            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io) {
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })

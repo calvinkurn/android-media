@@ -711,7 +711,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun showToaster(msg: String, type: Int) {
         val toaster = Toaster
         view?.let { v ->
-            toaster.make(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK)
+            toaster.build(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK).show()
         }
     }
 

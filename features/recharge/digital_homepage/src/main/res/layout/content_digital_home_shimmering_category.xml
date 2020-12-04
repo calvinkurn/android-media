@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16"
+    android:padding="@dimen/spacing_lvl4"
     tools:ignore="MissingDefaultResource">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:orientation="vertical">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="150dp"
+            android:layout_width="@dimen/shimmering_text_view_width"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:corners="@integer/section_shimmering_corner" />
 
         <LinearLayout
@@ -27,62 +27,62 @@
             android:weightSum="5">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
         </LinearLayout>
@@ -91,13 +91,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:orientation="vertical">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="150dp"
+            android:layout_width="@dimen/shimmering_text_view_width"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:corners="@integer/section_shimmering_corner" />
 
         <LinearLayout
@@ -107,62 +107,62 @@
             android:weightSum="5">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
         </LinearLayout>
@@ -174,9 +174,9 @@
         android:orientation="vertical">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="150dp"
+            android:layout_width="@dimen/shimmering_text_view_width"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:corners="@integer/section_shimmering_corner" />
 
         <LinearLayout
@@ -186,62 +186,62 @@
             android:weightSum="5">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="@dimen/layout_lvl5"
+                    android:layout_height="@dimen/layout_lvl5"
                     app:corners="@integer/section_shimmering_corner" />
             </LinearLayout>
         </LinearLayout>

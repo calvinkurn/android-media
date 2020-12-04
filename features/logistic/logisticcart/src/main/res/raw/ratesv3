@@ -52,6 +52,12 @@ query RatesV3($param: OngkirRatesV3Input!) {
           is_cod
           cod_text
         }
+        mvc {
+          is_mvc
+          mvc_title
+          mvc_logo
+          mvc_error_message
+        }
         products {
           shipper_name
           shipper_id
@@ -105,6 +111,11 @@ query RatesV3($param: OngkirRatesV3Input!) {
               text_detail
               url_detail
               icon_url
+            }
+            mvc {
+              is_mvc
+              mvc_logo
+              mvc_error_message
             }
           }
           eta {

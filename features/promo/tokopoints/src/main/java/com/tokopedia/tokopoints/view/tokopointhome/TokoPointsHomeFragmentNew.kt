@@ -123,7 +123,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun initObserver() {
-        addRedeemCouponObserver()
         addTokopointDetailObserver()
         addRewardIntroObserver()
     }
@@ -220,10 +219,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
         }
-    })
-
-    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context, it) }
     })
 
     override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
@@ -333,7 +328,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
 
                 if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
-                        && !sectionContent.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
+                        && !sectionContent.layoutCategoryAttr.categoryTokopointsList!!.isEmpty()) {
                     val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(
@@ -342,7 +337,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     sectionList.add(sectionContent)
                 }
 
-                if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList.isEmpty()) {
+                if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList!!.isEmpty()) {
                     val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
                     @Suppress("UNCHECKED_CAST")
                     viewBinders.put(

@@ -199,7 +199,7 @@ class LineGraphViewHolder(
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
-                    (data as? LineChartEntry)?.let {
+                    data?.let {
                         view.tvShcTooltipTitle.text = it.xLabel
                         view.tvShcTooltipValue.text = it.yLabel
                     }

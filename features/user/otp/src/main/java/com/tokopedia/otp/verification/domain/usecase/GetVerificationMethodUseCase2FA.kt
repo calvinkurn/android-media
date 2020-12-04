@@ -11,7 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
-import com.tokopedia.otp.verification.domain.data.OtpModeListPojo
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.query.OtpModeListQuery2FA
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

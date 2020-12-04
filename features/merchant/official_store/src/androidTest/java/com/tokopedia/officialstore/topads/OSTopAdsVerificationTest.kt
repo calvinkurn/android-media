@@ -23,7 +23,7 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixLeftViewHolder
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -111,7 +111,7 @@ class OSTopAdsVerificationTest {
                 for (grid in item.channelModel.channelGrids)
                     if (grid.isTopads) count++
             }
-            is ProductRecommendationViewModel -> {
+            is ProductRecommendationDataModel -> {
                 if (item.productItem.isTopAds) count++
             }
         }

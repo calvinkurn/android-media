@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <View
@@ -45,14 +46,14 @@
             app:layout_scrollFlags="scroll|snap"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.feedplus.view.customview.FeedMainToolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
+            android:id="@+id/toolbarParent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|snap" />
+            app:layout_scrollFlags="enterAlways"/>
 
         <View
             android:visibility="invisible"

@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.domain.data
+package com.tokopedia.otp.verification.domain.pojo
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

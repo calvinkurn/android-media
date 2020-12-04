@@ -18,9 +18,8 @@ import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel;
 
 
 /**
@@ -28,7 +27,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail
  */
 
 public class InboxReputationDetailHeaderViewHolder extends
-        AbstractViewHolder<InboxReputationDetailHeaderViewModel> {
+        AbstractViewHolder<InboxReputationDetailHeaderUiModel> {
 
     private static final int NO_REPUTATION = 0;
     public static final int SMILEY_BAD = -1;
@@ -89,7 +88,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     @Override
-    public void bind(final InboxReputationDetailHeaderViewModel element) {
+    public void bind(final InboxReputationDetailHeaderUiModel element) {
         ImageHandler.loadImageCircle2(userAvatar.getContext(), userAvatar, element.getAvatarImage());
         userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +106,7 @@ public class InboxReputationDetailHeaderViewHolder extends
 
         setReputation(element);
 
-        if (!TextUtils.isEmpty(element.getDeadline()) && element.getReputationDataViewModel()
+        if (!TextUtils.isEmpty(element.getDeadline()) && element.getReputationDataUiModel()
                 .isShowLockingDeadline()) {
             deadline.setText(element.getDeadline());
             deadlineLayout.setVisibility(View.VISIBLE);
@@ -115,26 +114,26 @@ public class InboxReputationDetailHeaderViewHolder extends
             deadlineLayout.setVisibility(View.GONE);
         }
 
-        if (element.getReputationDataViewModel().isAutoScored()) {
+        if (element.getReputationDataUiModel().isAutoScored()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_auto_scored);
             promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
-        } else if (element.getReputationDataViewModel().isLocked()
-                && element.getReputationDataViewModel().isInserted()) {
+        } else if (element.getReputationDataUiModel().isLocked()
+                && element.getReputationDataUiModel().isInserted()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.review_is_saved);
             promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
-        } else if (element.getReputationDataViewModel().isLocked()) {
+        } else if (element.getReputationDataUiModel().isLocked()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.locked_reputation);
             promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             adapter.showLockedSmiley();
-        } else if (element.getReputationDataViewModel().isInserted()) {
+        } else if (element.getReputationDataUiModel().isInserted()) {
             lockedLayout.setVisibility(View.GONE);
             promptMessage.setText(context.getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
@@ -145,14 +144,14 @@ public class InboxReputationDetailHeaderViewHolder extends
             promptMessage.setText(MethodChecker.fromHtml(getPromptText(element)));
         }
 
-        if (element.getReputationDataViewModel().isEditable()) {
+        if (element.getReputationDataUiModel().isEditable()) {
             changeButton.setVisibility(View.VISIBLE);
             changeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (changeButton.getText().equals(context.getString(R.string
                             .change))) {
-                        adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
+                        adapter.showChangeSmiley(element.getReputationDataUiModel().getReviewerScore());
                         changeButton.setText(context.getString(R.string
                                 .title_cancel));
                     } else {
@@ -169,40 +168,24 @@ public class InboxReputationDetailHeaderViewHolder extends
 
     }
 
-    private void goToInfoPage(InboxReputationDetailHeaderViewModel element) {
-        if (element.getRole() == InboxReputationItemViewModel.ROLE_SELLER) {
+    private void goToInfoPage(InboxReputationDetailHeaderUiModel element) {
+        if (element.getRole() == InboxReputationItemUiModel.ROLE_SELLER) {
             reputationListener.onGoToShopDetail(element.getShopId());
         } else {
             reputationListener.onGoToPeopleProfile(element.getUserId());
         }
     }
 
-    private void setFavorite(RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
-        if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
-            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
-                    .getContext(), R.drawable.white_button_rounded));
-            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
-                    .grey_500));
-            favoriteText.setText(R.string.already_favorite);
-        } else {
-            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
-                    .getContext(), R.drawable.green_button_rounded));
-            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
-                    .white));
-            favoriteText.setText(R.string.favorite_button);
-        }
-    }
-
-    private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
+    private void setSmileyOpponent(InboxReputationDetailHeaderUiModel element) {
 
         opponentSmileyText.setText(getOpponentSmileyPromptText(element));
 
-        if (!element.getReputationDataViewModel().isShowRevieweeScore()
-                && element.getReputationDataViewModel().
+        if (!element.getReputationDataUiModel().isShowRevieweeScore()
+                && element.getReputationDataUiModel().
                 getRevieweeScore() != NO_REPUTATION) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.reputation_ic_done_24dp);
         } else {
-            switch (element.getReputationDataViewModel().getRevieweeScore()) {
+            switch (element.getReputationDataUiModel().getRevieweeScore()) {
                 case NO_REPUTATION:
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_empty);
                     break;
@@ -210,7 +193,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_bad);
                     break;
                 case SMILEY_NEUTRAL:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_neutral);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_neutral);
                     break;
                 case SMILEY_GOOD:
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_good);
@@ -220,23 +203,23 @@ public class InboxReputationDetailHeaderViewHolder extends
         }
     }
 
-    private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
-        if (element.getReputationDataViewModel().getRevieweeScore() == NO_REPUTATION)
-            return element.getRole() == InboxReputationItemViewModel
+    private String getOpponentSmileyPromptText(InboxReputationDetailHeaderUiModel element) {
+        if (element.getReputationDataUiModel().getRevieweeScore() == NO_REPUTATION)
+            return element.getRole() == InboxReputationItemUiModel
                     .ROLE_SELLER ? context.getString(R.string
                     .seller_has_not_review) : context.getString(R.string
                     .buyer_has_not_review);
         else
-            return element.getRole() == InboxReputationItemViewModel
+            return element.getRole() == InboxReputationItemUiModel
                     .ROLE_SELLER ? context.getString(R.string
                     .score_from_seller) : context.getString(R.string
                     .score_from_buyer);
     }
 
-    private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
+    private void setSmiley(InboxReputationDetailHeaderUiModel element, ReputationAdapter adapter) {
         changeButton.setText(context.getString(R.string
                 .change));
-        switch (element.getReputationDataViewModel().getReviewerScore()) {
+        switch (element.getReputationDataUiModel().getReviewerScore()) {
             case SMILEY_BAD:
                 adapter.showSmileyBad();
                 break;
@@ -250,29 +233,29 @@ public class InboxReputationDetailHeaderViewHolder extends
         }
     }
 
-    private String getPromptText(InboxReputationDetailHeaderViewModel element) {
+    private String getPromptText(InboxReputationDetailHeaderUiModel element) {
         return context.getString(R.string
                 .reputation_prompt) + " " + element.getName() + "?";
     }
 
-    public void setReputation(InboxReputationDetailHeaderViewModel element) {
-        if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
+    public void setReputation(InboxReputationDetailHeaderUiModel element) {
+        if (element.getRole() == InboxReputationItemUiModel.ROLE_BUYER) {
             userReputationView.setVisibility(View.VISIBLE);
             shopReputationView.setVisibility(View.GONE);
             userReputationView.setValue(
-                    element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation() == 1,
-                    element.getRevieweeBadgeCustomerViewModel().getPositive(),
-                    element.getRevieweeBadgeCustomerViewModel().getNeutral(),
-                    element.getRevieweeBadgeCustomerViewModel().getNegative()
+                    element.getRevieweeBadgeCustomerUiModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerUiModel().getNoReputation() == 1,
+                    element.getRevieweeBadgeCustomerUiModel().getPositive(),
+                    element.getRevieweeBadgeCustomerUiModel().getNeutral(),
+                    element.getRevieweeBadgeCustomerUiModel().getNegative()
             );
         } else {
             userReputationView.setVisibility(View.GONE);
             shopReputationView.setVisibility(View.VISIBLE);
             shopReputationView.setValue(
-                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
-                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
+                    element.getRevieweeBadgeSellerUiModel().getReputationBadge().getSet(),
+                    element.getRevieweeBadgeSellerUiModel().getReputationBadge().getLevel(),
+                    String.valueOf(element.getRevieweeBadgeSellerUiModel().getScore()));
 
         }
     }

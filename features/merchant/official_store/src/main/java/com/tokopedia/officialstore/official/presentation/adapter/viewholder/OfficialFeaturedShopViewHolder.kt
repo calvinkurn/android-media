@@ -9,18 +9,18 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.Shop
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.viewmodel_official_featured_shop.view.*
 
-class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
+class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
 
     private var adapter: FeaturedShopAdapter? = null
 
     private var officialStoreTracking: OfficialStoreTracking? = null
 
-    override fun bind(element: OfficialFeaturedShopViewModel) {
+    override fun bind(element: OfficialFeaturedShopDataModel) {
         if(adapter == null){
             adapter = FeaturedShopAdapter(itemView.context)
             itemView.recycler_view_featured_shop?.addItemDecoration(GridSpacingItemDecoration(2, 8))

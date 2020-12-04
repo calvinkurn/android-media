@@ -3,6 +3,7 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
@@ -37,8 +38,11 @@ object CMNotificationUtils {
     internal val STATE_LOGGED_IN = "LOGGED_IN"
 
     val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
+    val CUSTOMER_APP_NAME = "Tokopedia"
     val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
+    val SELLER_APP_NAME = "seller"
     val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
+    val MITRA_APP_NAME = "mitra"
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
@@ -233,12 +237,12 @@ object CMNotificationUtils {
         if (context != null) {
             val packageName = context.packageName
             if (CUSTOMER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "Tokopedia"
+                appName = CUSTOMER_APP_NAME
             } else if (SELLER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "seller"
+                appName = SELLER_APP_NAME
             }
             if (MITRA_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "mitra"
+                appName = MITRA_APP_NAME
             }
         }
         return appName
@@ -294,6 +298,21 @@ object CMNotificationUtils {
                 it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
         }
         TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
+    }
+
+
+    fun isDarkMode(context: Context): Boolean {
+        return try {
+            when (context.resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+                else -> false
+            }
+        } catch (ignored: Exception) {
+            false
+        }
     }
 }
 

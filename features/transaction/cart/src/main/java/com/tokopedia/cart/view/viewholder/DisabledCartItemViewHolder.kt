@@ -8,6 +8,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
+import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_FOLLOWSHOP
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
@@ -94,13 +95,16 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     ACTION_WISHLIST, ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
                     }
-                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT -> {
+                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT, ACTION_FOLLOWSHOP -> {
                         when {
                             data.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER && it.id == ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
                             }
                             data.selectedUnavailableActionId == ACTION_SIMILARPRODUCT && it.id == ACTION_SIMILARPRODUCT -> {
                                 renderActionSimilarProduct(it, data)
+                            }
+                            data.selectedUnavailableActionId == ACTION_FOLLOWSHOP && it.id == ACTION_FOLLOWSHOP -> {
+                                renderFollowShop(it, data)
                             }
                         }
                     }
@@ -113,51 +117,76 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderActionDelete(data: DisabledCartItemHolderData) {
-        itemView.btn_delete_cart.setOnClickListener {
-            data.data?.let {
-                actionListener?.onDeleteDisabledItem(data)
+        itemView.btn_delete_cart?.apply {
+            setOnClickListener {
+                data.data?.let {
+                    actionListener?.onDeleteDisabledItem(data)
+                }
             }
+            show()
         }
-        itemView.btn_delete_cart.show()
     }
 
-    private fun renderActionSimilarProduct(it: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action.text = it.message
-        itemView.tv_product_unavailable_action.setOnClickListener {
-            if (data.selectedUnavailableActionLink.isNotBlank()) {
-                actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
+    private fun renderFollowShop(actionData: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action?.apply {
+            text = actionData.message
+            setOnClickListener {
+                data.data?.originData?.shopId?.let {
+                    if (it.isNotEmpty()) {
+                        actionListener?.onFollowShopClicked(it, data.errorType)
+                    }
+                }
             }
+            setTextColor(ContextCompat.getColor(context, R.color.GeneralLightGreenText))
+            show()
         }
-        actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
-        itemView.tv_product_unavailable_action.show()
+    }
+
+    private fun renderActionSimilarProduct(actionData: ActionData, data: DisabledCartItemHolderData) {
+        itemView.tv_product_unavailable_action?.apply {
+            text = actionData.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotBlank()) {
+                    actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
+            show()
+        }
     }
 
     private fun renderActionCheckoutInBrowser(actionData: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action.text = actionData.message
-        itemView.tv_product_unavailable_action.setOnClickListener {
-            if (data.selectedUnavailableActionLink.isNotBlank()) {
-                actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
+        itemView.tv_product_unavailable_action?.apply {
+            text = actionData.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotBlank()) {
+                    actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
+                }
             }
+            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            actionListener?.onShowTickerTobacco()
+            show()
         }
-        actionListener?.onShowTickerTobacco()
-        itemView.tv_product_unavailable_action.show()
     }
 
     private fun renderActionWishlist(actionData: ActionData, data: DisabledCartItemHolderData) {
-        if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
-            itemView.text_move_to_wishlist.text = actionData.message
-            itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
-            itemView.text_move_to_wishlist.setOnClickListener { }
-        } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
-            itemView.text_move_to_wishlist.text = actionData.message
-            itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-            itemView.text_move_to_wishlist.setOnClickListener {
-                itemView.iv_image_product?.let {
-                    actionListener?.onAddDisabledItemToWishlist(data, it)
+        itemView.text_move_to_wishlist?.apply {
+            if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
+                text = actionData.message
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+                setOnClickListener { }
+            } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
+                text = actionData.message
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+                setOnClickListener {
+                    itemView.iv_image_product?.let {
+                        actionListener?.onAddDisabledItemToWishlist(data, it)
+                    }
                 }
             }
+            show()
         }
-        itemView.text_move_to_wishlist.show()
     }
 
     private fun renderDivider(data: DisabledCartItemHolderData) {

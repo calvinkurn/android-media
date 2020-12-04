@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
@@ -15,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -103,6 +103,7 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -174,7 +175,7 @@ class AddEditProductPreviewFragment:
     private var productStatusSwitch: SwitchUnify? = null
 
     //loading
-    private var loadingLayout: View? = null
+    private var loadingLayout: MotionLayout? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -256,7 +257,7 @@ class AddEditProductPreviewFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -340,6 +341,7 @@ class AddEditProductPreviewFragment:
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
+            viewModel.setIsDataChanged(true)
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -355,24 +357,10 @@ class AddEditProductPreviewFragment:
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                // when we perform add product, the productId will be 0
-                // when we perform edit product, the productId will be provided from the getProductV3 response
-                // when we perform open draft, previous state before we save the product to draft will be the same
-                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                    viewModel.productInputModel.value?.apply {
-                        startProductEditService(this)
-                        showLoading()
-                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
-                    }
-                } else {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        startProductAddService(productInputModel)
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
-                    }
+                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                    viewModel.validateProductNameInput(it)
                 }
             }
-
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -468,6 +456,7 @@ class AddEditProductPreviewFragment:
         observeProductVariant()
         observeImageUrlOrPathList()
         observeIsLoading()
+        observeValidationMessage()
         observeSaveProductDraft()
 
         // stop prepare page PLT monitoring
@@ -501,6 +490,9 @@ class AddEditProductPreviewFragment:
                             moveToDetailFragment(newProductInputModel, true)
                         }
                     }
+                    if (isEditted.any { true }) {
+                        viewModel.setIsDataChanged(true)
+                    }
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
@@ -509,6 +501,7 @@ class AddEditProductPreviewFragment:
                         viewModel.productInputModel.value?.let {
                             updateProductStatusSwitch(it)
                         }
+                        viewModel.setIsDataChanged(true)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -545,6 +538,7 @@ class AddEditProductPreviewFragment:
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        viewModel.setIsDataChanged(true)
         if (isAdding()) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
         } else {
@@ -625,35 +619,43 @@ class AddEditProductPreviewFragment:
     private fun setupBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.label_title_on_dialog))
-                    setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                    setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-                    if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
-                        setDescription(getString(R.string.label_description_on_dialog_edit))
-                        setSecondaryCTAClickListener {
-                            activity?.finish()
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                        }
-                    } else {
-                        setDescription(getString(R.string.label_description_on_dialog))
-                        setSecondaryCTAClickListener {
-                            saveProductToDraft()
-                            moveToManageProduct()
-                            ProductAddStepperTracking.trackDraftYes(shopId)
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                            ProductAddStepperTracking.trackDraftCancel(shopId)
-                        }
-                    }
-                }.show()
+                // send tracker
                 if (isEditing()) {
                     ProductEditStepperTracking.trackBack(shopId)
                 } else {
                     ProductAddStepperTracking.trackBack(shopId)
+                }
+
+                if (!viewModel.getIsDataChanged()) {
+                    // finish activity if there is no data changes
+                    activity?.finish()
+                } else {
+                    // show dialog
+                    DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                        setTitle(getString(R.string.label_title_on_dialog))
+                        setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                        setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                        if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
+                            setDescription(getString(R.string.label_description_on_dialog_edit))
+                            setSecondaryCTAClickListener {
+                                activity?.finish()
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                            }
+                        } else {
+                            setDescription(getString(R.string.label_description_on_dialog))
+                            setSecondaryCTAClickListener {
+                                saveProductToDraft()
+                                moveToManageProduct()
+                                ProductAddStepperTracking.trackDraftYes(shopId)
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                                ProductAddStepperTracking.trackDraftCancel(shopId)
+                            }
+                        }
+                    }.show()
                 }
             }
         })
@@ -696,7 +698,7 @@ class AddEditProductPreviewFragment:
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
                         startProductAddService(productInputModel)
-                        activity?.finish()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
                         view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
                     }
@@ -780,7 +782,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
@@ -789,7 +791,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.show()
         }
@@ -802,7 +804,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.show()
         }
@@ -933,6 +935,38 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun observeValidationMessage() {
+        viewModel.resetValidateResult() // reset old result when re-observe
+        viewModel.validationResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result.result) {
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                ValidationResultModel.Result.VALIDATION_SUCCESS -> {
+                    if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        viewModel.productInputModel.value?.apply {
+                            startProductEditService(this)
+                            showLoading()
+                            Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                        }
+                    } else {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            startProductAddService(productInputModel)
+                            activity?.setResult(RESULT_OK)
+                            activity?.finish()
+                        }
+                    }
+                }
+                ValidationResultModel.Result.VALIDATION_ERROR -> {
+                    view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                }
+                else -> {
+                    // no-op
+                }
+            }
+        })
+    }
+
     private fun observeSaveProductDraft() {
         viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -952,6 +986,7 @@ class AddEditProductPreviewFragment:
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
+        viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1211,10 +1246,30 @@ class AddEditProductPreviewFragment:
 
     private fun showLoading() {
         loadingLayout?.show()
+        doneButton?.hide()
     }
 
     private fun hideLoading() {
-        loadingLayout?.hide()
+        doneButton?.show()
+        loadingLayout?.transitionToEnd()
+        loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                // no-op
+            }
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                loadingLayout?.hide()
+                loadingLayout?.progress = 0.0f
+            }
+        })
     }
 
     private fun goToSellerAppProductManageThenSetCashback() {

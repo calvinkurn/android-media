@@ -1,11 +1,11 @@
-package com.tokopedia.digital.home.di
+package com.tokopedia.digital.home.old.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
-import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
+import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageDispatchersProvider
-import com.tokopedia.digital.home.presentation.util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomeTrackingUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

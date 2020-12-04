@@ -83,7 +83,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         thumbnail.loadImage(model.video.coverUrl)
 
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = if (model.totalViewVisible && model.channelType != PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = if (model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 

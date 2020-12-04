@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end|right"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 

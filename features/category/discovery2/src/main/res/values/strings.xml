@@ -43,7 +43,6 @@
     <string name="ongoing_end_title">Yaah, Kejar Diskon ini udah selesai</string>
     <string name="ongoing_end_description">Jangan sedih ya. Banyak produk dan promo menarik dapat kamu temukan di Kejar Diskon selanjutnya!</string>
     <string name="ongoing_end_button">Lanjut Belanja</string>
-
     <string name="content_desc_brand_recom_iv">image recom brand</string>
     <string name="content_desc_promo_image">image promo carousel</string>
     <string name="content_desc_appCompatImageViewDouble">image kupon</string>
@@ -51,5 +50,7 @@
     <string name="content_desc_banner_image_view">image banner timer</string>
     <string name="content_desc_title_tv">text title banner</string>
     <string name="error_message">Ada yang salah. Silakan coba lagi</string>
-
+    <string name="discovery_default_search_title">Cari di Tokopedia</string>
+    <string name="discovery_tokopedia">Tokopedia</string>
+    <string name="discovery_page_name">discovery page</string>
 </resources>

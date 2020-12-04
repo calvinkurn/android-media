@@ -358,13 +358,16 @@ open class AddToCartDoneBottomSheet :
                 )
             }
         }
-        DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
-                item,
-                item.position,
-                addToCartDoneViewModel.isLoggedIn(),
-                item.pageName,
-                item.header
-        )
+        addedProductDataModel?.productId?.let {
+            DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
+                    item,
+                    item.position,
+                    addToCartDoneViewModel.isLoggedIn(),
+                    item.pageName,
+                    item.header,
+                    it
+            )
+        }
         if (position.size > 1) {
             lastAdapterPosition = position[0]
             goToPDP(item, position[1])
@@ -385,14 +388,17 @@ open class AddToCartDoneBottomSheet :
                 )
             }
         }
-        productDetailTracking.eventAddToCartRecommendationImpression(
-                item.position,
-                item,
-                addToCartDoneViewModel.isLoggedIn(),
-                item.pageName,
-                item.header,
-                trackingQueue
-        )
+        addedProductDataModel?.productId?.let {
+            productDetailTracking.eventAddToCartRecommendationImpression(
+                    item.position,
+                    item,
+                    addToCartDoneViewModel.isLoggedIn(),
+                    item.pageName,
+                    item.header,
+                    it,
+                    trackingQueue
+            )
+        }
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
@@ -423,13 +429,16 @@ open class AddToCartDoneBottomSheet :
             if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
-                productDetailTracking.eventAddToCartRecommendationATCClick(
-                        item,
-                        item.position,
-                        addToCartDoneViewModel.isLoggedIn(),
-                        item.pageName,
-                        item.header
-                )
+                addedProductDataModel?.productId?.let {
+                    productDetailTracking.eventAddToCartRecommendationATCClick(
+                            item,
+                            item.position,
+                            addToCartDoneViewModel.isLoggedIn(),
+                            item.pageName,
+                            item.header,
+                            it
+                        )
+                }
             }
         }
     }

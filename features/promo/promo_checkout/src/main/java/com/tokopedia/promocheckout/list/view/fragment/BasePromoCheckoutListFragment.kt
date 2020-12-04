@@ -70,6 +70,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         return inflater.inflate(R.layout.fragment_promo_checkout_list, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
@@ -107,7 +111,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
         with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
@@ -124,7 +128,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         textInputCoupon.setText(promoCode)
 
         populateLastSeen()

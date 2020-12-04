@@ -94,6 +94,8 @@
     <string name="ent_pdp_form_error_empty_value_msg">%s belum diisi</string>
     <string name="ent_pdp_form_error_regex_msg">%s belum sesuai format</string>
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
+    <string name="ent_pdo_form_date_picker_placeholder">dd/mm/yyyy</string>
+
 
     <string name="ent_checkout_payment">Sedang diproses</string>
     <string name="ent_checkout_error">Oke</string>
@@ -117,7 +119,9 @@
     <string name="ent_form_data_bottomsheet">Pilih %s</string>
     <string name="ent_checkout_data_nullable_form">Data belum diisi</string>
     <string name="ent_bottomsheet_placeholder">Cari %s</string>
-    <string name="ent_pdp_form_error_all_msg">%s yang Anda isi belum lengkap</string>
+    <string name="ent_pdp_form_error_all_msg">%s belum diisi</string>
+    <string name="ent_pdp_form_error_all_msg_fragment">%s yang Anda isi belum lengkap</string>
+
 
     <string name="ent_redeem_title">Redeem Your Ticket</string>
     <string name="ent_redeem_title_owner">Data Pemilik Tiket</string>

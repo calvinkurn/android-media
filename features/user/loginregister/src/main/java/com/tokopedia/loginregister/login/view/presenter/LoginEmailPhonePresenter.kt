@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
@@ -33,7 +32,6 @@ import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -120,6 +118,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -133,6 +132,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 LoginTokenFacebookSubscriber(userSession,
                         view.onSuccessLoginFacebookPhone(),
                         view.onErrorLoginFacebookPhone(),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToSecurityQuestion(""))
         )
     }
@@ -157,6 +157,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -184,8 +185,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        { view.onSuccessLoginEmail() },
+                        { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email),
                         onFinished = {
@@ -202,8 +204,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
-                    { getUserInfo() },
+                    { view.onSuccessReloginAfterSQ(it) },
                     view.onErrorReloginAfterSQ(validateToken),
+                    { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
         }

@@ -46,7 +46,9 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
                     LoginTokenSubscriber(
                             userSession,
                             onSuccessLoginToken(),
-                            onFailedLoginToken(), {},
+                            onFailedLoginToken(),
+                            onSuccessLoginToken(),
+                            {},
                             onGoToSecurityQuestion()
                     )
             )

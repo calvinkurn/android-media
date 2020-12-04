@@ -210,6 +210,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         }
 
         if (canGoNext) {
+            flightCancellationPassengerViewModel.trackOnNext()
             navigateToReasonPage()
         } else {
             showShouldChooseAtLeastOnePassengerError()

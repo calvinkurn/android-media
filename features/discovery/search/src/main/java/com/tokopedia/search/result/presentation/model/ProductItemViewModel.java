@@ -6,11 +6,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
+import com.tokopedia.utils.text.currency.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +55,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsClickShopUrl;
     private boolean isNew;
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
+    private List<LabelGroupVariantViewModel> labelGroupVariantList = new ArrayList<>();
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
     private String sourceEngine = "";
@@ -353,6 +354,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.labelGroupList;
     }
 
+    public void setLabelGroupVariantList(List<LabelGroupVariantViewModel> productLabelGroupVariantList) {
+        this.labelGroupVariantList = productLabelGroupVariantList;
+    }
+
+    public List<LabelGroupVariantViewModel> getLabelGroupVariantList() {
+        return this.labelGroupVariantList;
+    }
+
     public void setFreeOngkirViewModel(FreeOngkirViewModel freeOngkirViewModel) {
         this.freeOngkirViewModel = freeOngkirViewModel;
     }
@@ -378,7 +387,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     public String getCategoryString() {
-        return StringUtils.isBlank(categoryName) ? categoryBreadcrumb : categoryName;
+        return StringUtils.INSTANCE.isBlank(categoryName) ? categoryBreadcrumb : categoryName;
     }
 
     public void setMinOrder(int minOrder) {
@@ -463,7 +472,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     public boolean willShowRatingAndReview() {
-        return (getRating() > 0 || StringUtils.isNotBlank(getRatingString()))
+        return (getRating() > 0 || StringUtils.INSTANCE.isNotBlank(getRatingString()))
                 && getCountReview() > 0;
     }
 

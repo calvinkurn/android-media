@@ -2,8 +2,8 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsItem
-import com.tokopedia.logisticdata.data.autocomplete.Place
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import javax.inject.Inject
 
 /**

@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -21,12 +21,14 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_ERROR
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,7 +42,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatchers
+        private val validateProductNameUseCase: ValidateProductNameUseCase,
+        private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
@@ -83,6 +86,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
+    private val mValidationResult = MutableLiveData<ValidationResultModel>()
+    val validationResult: LiveData<ValidationResultModel> get() = mValidationResult
+
     val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
@@ -92,9 +98,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     var productDomain: Product = Product()
 
     var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
-
-    val hasWholesale: Boolean
-        get() = productInputModel.value?.detailInputModel?.wholesaleList?.isNotEmpty() ?: false
 
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
@@ -111,6 +114,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         } else {
+                            productInputModel.itemSold = 0 // reset item sold when duplicate product
                             productInputModel.detailInputModel.currentProductName = ""
                         }
 
@@ -280,16 +284,44 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    fun getStatusStockViewVariant(): Int {
-        val isActive: Boolean = productInputModel.value?.detailInputModel?.status == 1
-        val stockCount: Int = productInputModel.value?.detailInputModel?.stock ?: 0
-        return if (!isActive) {
-            TYPE_WAREHOUSE
-        } else if (isActive && stockCount > 0) {
-            TYPE_ACTIVE_LIMITED
-        } else {
-            TYPE_ACTIVE
+    fun setIsDataChanged(isChanged: Boolean) {
+        productInputModel.value?.isDataChanged = isChanged
+    }
+
+    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
+    fun validateProductNameInput(productName: String) {
+        mIsLoading.value = true
+        productInputModel.value?.detailInputModel?.apply {
+            if (productName == currentProductName) {
+                mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                mIsLoading.value = false
+                return
+            }
         }
+        launchCatchError(block = {
+            val response = withContext(dispatcher.io) {
+                validateProductNameUseCase.setParamsProductName(productId.value, productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults
+                    .joinToString("\n")
+            val validationResult = if (response.productValidateV3.isSuccess)
+                VALIDATION_SUCCESS else VALIDATION_ERROR
+            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mIsLoading.value = false
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
+                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mIsLoading.value = false
+        })
+    }
+
+    fun resetValidateResult() {
+        mValidationResult.value?.result = UNVALIDATED
+        mValidationResult.value?.message = ""
     }
 
 }

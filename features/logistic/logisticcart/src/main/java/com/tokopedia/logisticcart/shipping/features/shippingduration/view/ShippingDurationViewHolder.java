@@ -7,13 +7,16 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.R;
@@ -45,12 +48,17 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPriceOrDuration;
     private TextView tvTextDesc;
     private ImageView imgCheck;
+    private ImageView imgMvc;
+    private Typography tvMvc;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
+    private Typography tvMvcError;
     private Label labelCodAvailable;
+    private ConstraintLayout layoutMvc;
     private Label labelCodAvailabelEta;
+    private FrameLayout flDisableContainer;
 
     private int cartPosition;
 
@@ -69,6 +77,11 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
         labelCodAvailabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
+        imgMvc = itemView.findViewById(R.id.img_mvc);
+        tvMvc = itemView.findViewById(R.id.tv_mvc_text);
+        tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
+        flDisableContainer = itemView.findViewById(R.id.fl_container);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -116,6 +129,25 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 tvOrderPrioritas.setVisibility(View.GONE);
             }
 
+        }
+
+        /*MVC*/
+        if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == 1 ) {
+            layoutMvc.setVisibility(View.VISIBLE);
+            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext() , R.drawable.fg_enabled_item));
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            tvMvcError.setVisibility(View.GONE);
+        } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
+            layoutMvc.setVisibility(View.VISIBLE);
+            flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext() , R.drawable.fg_disabled_item));
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            tvMvcError.setVisibility(View.VISIBLE);
+            tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
+        } else {
+            layoutMvc.setVisibility(View.GONE);
+            tvMvcError.setVisibility(View.GONE);
         }
 
         /*ETA*/

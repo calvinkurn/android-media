@@ -75,7 +75,7 @@ class PromoTicketView : View {
 
     private fun setBorderPaint() {
         mDividerPaint.color = resources.getColor(R.color.promo_ticket_colorshadow)
-        mDividerPaint.strokeWidth = resources.getDimension(R.dimen.dp_2)
+        mDividerPaint.strokeWidth = resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_2)
         mDividerPaint.pathEffect = DashPathEffect(floatArrayOf(10f, 5f), 1.0.toFloat())
     }
 

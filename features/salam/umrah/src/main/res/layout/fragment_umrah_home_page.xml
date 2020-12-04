@@ -2,7 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator_umrah_home_page"
-    android:background="@color/white"
+    android:background="@color/Neutral_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,19 +21,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_24" />
+                android:paddingBottom="@dimen/spacing_lvl5" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_umrah_home_page_message"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/spacing_lvl8"
+                android:layout_height="@dimen/spacing_lvl8"
                 android:layout_gravity="bottom|right"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                android:backgroundTint="@color/green_300"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:layout_marginRight="@dimen/unify_space_12"
+                android:backgroundTint="@color/Green_G500"
                 app:srcCompat="@drawable/ic_umrah_message"
-                app:backgroundTint="@color/green_300"
-                app:fabCustomSize="@dimen/dp_48"
+                app:backgroundTint="@color/Green_G500"
+                app:fabCustomSize="@dimen/spacing_lvl8"
                 android:clickable="true"
                 />
         </FrameLayout>

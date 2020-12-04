@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_filter"
@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:theme="?toolbarTheme"
         android:elevation="@dimen/dp_4"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetLeft="@dimen/layout_lvl0"
+        app:contentInsetStart="@dimen/layout_lvl0"
+        app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
@@ -23,12 +23,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dp_18"
-            android:layout_marginRight="@dimen/dp_18"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/reset"
             app:typographyWeight="reguler"
             app:typographyType="body_1"
-            android:textColor="@color/green_text"/>
+            android:textColor="@color/Unify_G600"/>
     </androidx.appcompat.widget.Toolbar>
 </com.google.android.material.appbar.AppBarLayout>

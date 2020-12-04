@@ -67,7 +67,7 @@ class ShopHomeAdapterTypeFactory(
         return CarouselPlayWidgetViewHolder.LAYOUT
     }
 
-    override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
+    override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
         return when(productCardType) {
             ShopProductViewGridType.SMALL_GRID -> {
                 ShopHomeProductViewHolder.LAYOUT

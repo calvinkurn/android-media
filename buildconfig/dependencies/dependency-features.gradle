@@ -9,6 +9,7 @@ ext {
             developerOptions                : ":features:common:developer_options",
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
+            feedbackForm                    : ":features:common:feedback_form",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
@@ -76,6 +77,7 @@ ext {
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
+            homeNav                         : ":features:discovery:home_nav",
             recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
@@ -89,6 +91,7 @@ ext {
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
+            shopWidget                      : ":features:discovery:shopwidget",
 
             homecredit                      : ":features:fintech:home_credit",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
@@ -104,7 +107,7 @@ ext {
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
 
-            logisticdata                    : ":features:logistic:logisticdata",
+            logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
@@ -135,6 +138,7 @@ ext {
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerHome                      : ":features:merchant:seller_home",
             sellerHomeCommon                : ":features:merchant:seller_home_common",
@@ -188,6 +192,7 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsHeadline                  : ":features:top_ads:top_ads_headline",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -210,7 +215,6 @@ ext {
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",
-            groupchat                       : ":features:user:groupchat",
             logout                          : ":features:user:logout",
             loginphone                      : ":features:user:loginphone",
             loginregister                   : ":features:user:loginregister",
@@ -235,11 +239,13 @@ ext {
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:user:fcm_common",
+            homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
-            logintestapp                    : ":testapp-features:user:logintestapp"
+            logintestapp                    : ":testapp-features:user:logintestapp",
+            customer_mid_app                : ":customer_mid_app"
     ]
 }

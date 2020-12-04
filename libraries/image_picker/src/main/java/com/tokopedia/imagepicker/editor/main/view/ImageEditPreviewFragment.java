@@ -163,7 +163,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             if (onImageEditPreviewFragmentListener.canUndo(imageIndex)) {
                 ivUndo.getDrawable().clearColorFilter();
             } else {
-                ivUndo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_700),
+                ivUndo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500),
                         PorterDuff.Mode.MULTIPLY);
             }
             ivUndo.setVisibility(View.VISIBLE);
@@ -171,7 +171,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             if (onImageEditPreviewFragmentListener.canRedo(imageIndex)) {
                 ivRedo.getDrawable().clearColorFilter();
             } else {
-                ivRedo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_700),
+                ivRedo.getDrawable().setColorFilter(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500),
                         PorterDuff.Mode.MULTIPLY);
             }
             ivRedo.setVisibility(View.VISIBLE);
@@ -403,17 +403,17 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         // Overlay view options
         overlayView.setFreestyleCropMode(OverlayView.FREESTYLE_CROP_MODE_DISABLE);
 
-        overlayView.setDimmedColor(getResources().getColor(R.color.grey_title));
+        overlayView.setDimmedColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
         overlayView.setCircleDimmedLayer(isCirclePreview);
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
-        overlayView.setCropFrameColor(getResources().getColor(R.color.white));
+        overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
-        overlayView.setCropGridColor(getResources().getColor(R.color.white_65));
+        overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0_68));
         overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         setToInitialRatio();

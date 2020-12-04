@@ -47,6 +47,9 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
 
+    @JvmField
+    val SELLER_HOME_SOM_CANCELLATION_REQUEST = "$INTERNAL_SELLERAPP/sellerhome-som-cancellation-request"
+
     //SellerOnboardingActivity
     @JvmField
     val WELCOME = "$INTERNAL_SELLERAPP/welcome"
@@ -84,4 +87,8 @@ object ApplinkConstInternalSellerapp {
     //SellerMenuActivity
     @JvmField
     val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
+
+    // SellerActionActivity
+    @JvmField
+    val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
 }

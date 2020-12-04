@@ -17,8 +17,9 @@ import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
@@ -161,7 +162,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid
@@ -198,11 +199,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        if (btnUnlimitedBudget.isChecked) {
+        if (btnUnlimitedBudget?.isChecked != false) {
             daily_budget?.visibility = View.GONE
         }
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked == btnUnlimitedBudget.id) {
+            if (isChecked == btnUnlimitedBudget?.id) {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_1, "")
                 daily_budget?.visibility = View.GONE
                 validation3 = true
@@ -306,7 +307,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[PRICE_BID] = getCurrentBid()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
-            dataMap[BUDGET_LIMITED] = btnUnlimitedBudget.isChecked
+            dataMap[BUDGET_LIMITED] = btnUnlimitedBudget?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {
         }
@@ -314,7 +315,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun checkDataChanged(): Boolean {
-        return initialBudgetChoice != btnUnlimitedBudget.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
+        return initialBudgetChoice != btnUnlimitedBudget?.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
                 initialPriceBid != getCurrentBid() || groupName != getCurrentTitle()
     }
 

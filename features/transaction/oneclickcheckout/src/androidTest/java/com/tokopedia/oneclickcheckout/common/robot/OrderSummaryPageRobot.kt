@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.TextView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -15,6 +16,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.junit.Assert.assertEquals
@@ -74,6 +76,15 @@ class OrderSummaryPageRobot {
     fun clickBboTicker() {
         onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
         onView(withId(R.id.ticker_action)).perform(click())
+    }
+
+    fun clickOvoActivationButton(func: OvoActivationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        OvoActivationBottomSheetRobot().apply(func)
+    }
+
+    fun clickOvoTopUpButton() {
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
     }
 
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
@@ -216,7 +227,11 @@ class OrderSummaryPageRobot {
     }
 
     fun assertProfilePayment(paymentName: String) {
-        onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(withText(paymentName)))
+        onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
+    }
+
+    fun assertProfilePaymentDetail(detail: String) {
+        onView(withId(R.id.tv_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
     }
 
     fun assertInstallment(detail: String?) {
@@ -245,10 +260,20 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
+    fun assertProfilePaymentOvoError(message: String?, buttonText: String?) {
+        if (message != null) {
+            onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
+        }
+        if (buttonText != null) {
+            onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+        }
+    }
+
     fun assertPayment(total: String, buttonText: String) {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText))).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             assertEquals(true, view.isEnabled)
+            assertEquals(false, (view as UnifyButton).isLoading)
         }
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
     }
@@ -310,7 +335,7 @@ class OrderSummaryPageRobot {
 class OrderSummaryPageResultRobot {
 
     fun assertGoToPayment(redirectUrl: String, queryString: String, method: String) {
-        val paymentPassData = Intents.getIntents().first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
+        val paymentPassData = Intents.getIntents().last().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
         assertEquals(redirectUrl, paymentPassData.redirectUrl)
         assertEquals(queryString, paymentPassData.queryString)
         assertEquals(method, paymentPassData.method)
@@ -390,5 +415,17 @@ class InstallmentDetailBottomSheetRobot {
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             radioButtonUnify.performClick()
         }
+    }
+}
+
+class OvoActivationBottomSheetRobot {
+
+    fun performActivation(isSuccess: Boolean) {
+        onView(withId(R.id.web_view)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
+        }
+        //block main thread for webview processing
+        Thread.sleep(2000)
     }
 }
