@@ -37,14 +37,10 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     }
 
     override fun getItemCount(): Int {
-        // return uohItemMapKeyList.size
         return filterBundleList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // val valueMap = uohItemMapKeyList[position].values.first().toString()
-        // val keyMap = uohItemMapKeyList[position].keys.first().toString()
-
         if (filterBundleList[position].type == 0) {
             holder.itemView.sublabel_option.gone()
             holder.itemView.divider_sublabel.gone()

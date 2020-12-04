@@ -252,8 +252,7 @@ class BuyerAccountMapper @Inject constructor(
             val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
-            // return (rollence && remoteConfigFirebase)
-            return true
+            return (rollence && remoteConfigFirebase)
 
         } catch (e: Exception) {
             false
