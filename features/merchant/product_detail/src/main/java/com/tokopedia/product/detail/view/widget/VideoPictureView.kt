@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
+import kotlinx.android.synthetic.main.widget_video_picture.view.*
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -30,7 +30,7 @@ class VideoPictureView @JvmOverloads constructor(
     private var videoPictureAdapter: VideoPictureAdapter? = null
 
     init {
-        View.inflate(context, R.layout.widget_picture_scrolling, this)
+        View.inflate(context, R.layout.widget_video_picture, this)
         pdp_view_pager.offscreenPageLimit = 3
     }
 
