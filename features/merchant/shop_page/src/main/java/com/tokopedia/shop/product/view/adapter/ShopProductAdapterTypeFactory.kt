@@ -52,7 +52,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductListEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopEmptyProductViewModel: ShopEmptyProductViewModel): Int {
+    fun type(shopEmptyProductUiModel: ShopEmptyProductUiModel): Int {
         return ShopProductsEmptyViewHolder.LAYOUT
     }
 

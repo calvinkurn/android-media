@@ -54,8 +54,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedUiModel
     private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseViewModel?
         get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseViewModel
-    private val shopEmptyProductViewModel: ShopEmptyProductViewModel?
-        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductViewModel
+    private val shopEmptyProductUiModel: ShopEmptyProductUiModel?
+        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductUiModel
     private val shopProductAddViewModel: ShopProductAddViewModel?
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddViewModel
     private val shopProductFirstUiModel: ShopProductUiModel?
@@ -187,7 +187,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             visitables.remove(it)
             notifyRemovedItem(position)
         }
-        shopEmptyProductViewModel?.let {
+        shopEmptyProductUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -487,7 +487,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopSellerEmptyProductAllEtalaseViewModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] = data
                 }
-                is ShopEmptyProductViewModel -> {
+                is ShopEmptyProductUiModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] = data
                 }
                 is ShopProductUiModel -> {
@@ -570,7 +570,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             it::class.java != ShopProductUiModel::class.java &&
                     it::class.java != ShopProductAddViewModel::class.java &&
                     it::class.java != ShopSellerEmptyProductAllEtalaseViewModel::class.java &&
-                    it::class.java != ShopEmptyProductViewModel::class.java &&
+                    it::class.java != ShopEmptyProductUiModel::class.java &&
                     it::class.java != LoadingMoreModel::class.java
         }
     }

@@ -858,16 +858,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             } else if (isOwner && selectedEtalaseId == SOLD_ETALASE_ID) {
                 title = getString(R.string.text_shop_no_product_seller)
                 description = getString(R.string.text_shop_no_product_description_seller)
-                ShopEmptyProductViewModel(isOwner, title, description)
+                ShopEmptyProductUiModel(isOwner, title, description)
             } else {
                 title = getString(R.string.shop_product_limited_empty_products_title_owner)
                 description = getString(R.string.shop_product_limited_empty_products_content_owner)
-                ShopEmptyProductViewModel(isOwner, title, description)
+                ShopEmptyProductUiModel(isOwner, title, description)
             }
         } else {
             title = getString(R.string.text_shop_no_product)
             description = getString(R.string.text_shop_no_product_follow)
-            ShopEmptyProductViewModel(isOwner, title, description)
+            ShopEmptyProductUiModel(isOwner, title, description)
         }
     }
 

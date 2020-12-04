@@ -3,7 +3,7 @@ package com.tokopedia.shop.product.view.datamodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 
-data class ShopEmptyProductViewModel(
+data class ShopEmptyProductUiModel(
         val isMyShop: Boolean,
         val title : String,
         val description: String
