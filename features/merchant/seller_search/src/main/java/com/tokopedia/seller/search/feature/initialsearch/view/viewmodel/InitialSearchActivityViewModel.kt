@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
-import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 class InitialSearchActivityViewModel @Inject constructor(
     private val getPlaceholderUseCase: GetSellerSearchPlaceholderUseCase,
-    private val dispatchers: CoroutineDispatcherProvider
-): BaseViewModel(dispatchers.main()) {
+    private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     val searchPlaceholder: LiveData<Result<String>>
         get() = _searchPlaceholder
@@ -24,7 +24,7 @@ class InitialSearchActivityViewModel @Inject constructor(
 
     fun getSearchPlaceholder() {
         launchCatchError(block = {
-            val placeholder = withContext(dispatchers.io()) {
+            val placeholder = withContext(dispatchers.io) {
                 getPlaceholderUseCase.executeOnBackground()
                     .response
                     .sentence

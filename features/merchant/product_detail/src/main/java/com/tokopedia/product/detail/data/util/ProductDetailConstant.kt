@@ -91,12 +91,11 @@ object ProductDetailConstant {
     const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
 
     //Mapper
-    const val SOCIAL_PROOF = "social_proof"
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val SHOP_INFO = "shop_info"
     const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
-    const val DISCUSSION = "discussion"
+    const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val REVIEW = "review"

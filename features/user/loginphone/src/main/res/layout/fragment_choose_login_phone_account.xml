@@ -39,17 +39,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chooseAccountTitle"/>
       
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/chooseAccountLoader"
-            android:layout_width="@dimen/spacing_lvl6"
-            android:layout_height="@dimen/spacing_lvl6"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-      
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/chooseAccountLoader"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_shop_creation"

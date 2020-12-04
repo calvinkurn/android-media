@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.model.*
@@ -23,7 +24,7 @@ import org.mockito.ArgumentMatchers.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
+class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getSelectedImagesUrl should return expected list of Url`() {
@@ -296,6 +297,97 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when getAfterEditImageList should add all images when 5 images`() {
+        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5edited")
+        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5")
+        val edited = arrayListOf(false, false, false, false, true)
+
+        val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
+                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5edited"))
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+
+        Assert.assertEquals(expectedData, actualData)
+    }
+
+    @Test
+    fun `when getAfterEditImageList should add images and add when DefaultImageReviewUiModel less than 5 images`() {
+        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4")
+        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4edited")
+        val edited = arrayListOf(false, false, false, true)
+
+        val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
+                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+                ImageReviewUiModel("picture4"), DefaultImageReviewUiModel())
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+
+        Assert.assertEquals(expectedData, actualData)
+    }
+
+    @Test
+    fun `when editReview with images should execute expected usecases`() {
+        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+
+        onEditReview_thenReturn(expectedResponse)
+
+        fillInImages()
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifyEditReviewSuccess(com.tokopedia.review.common.data.Success(it.success))
+        }
+    }
+
+    @Test
+    fun `when editReview with images results in back end error should return failure`() {
+        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+
+        onEditReview_thenReturn(expectedResponse)
+
+        fillInImages()
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifyEditReviewError(com.tokopedia.review.common.data.Fail(Throwable()))
+        }
+    }
+
+    @Test
+    fun `when editReview wit images results in network error should return failure`() {
+        val expectedResponse = Throwable()
+
+        onEditReviewError_thenReturn(expectedResponse)
+
+        fillInImages()
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    private fun fillInImages() {
+        val feedbackId = anyInt()
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
+                ProductrevGetReviewDetail(
+                        review = ProductrevGetReviewDetailReview(
+                                attachments = images
+                        )
+                )
+        )
+
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+
+        viewModel.getReviewDetails(feedbackId)
+
+        verifyGetReviewDetailUseCaseCalled()
+        verifyReviewDetailsSuccess(com.tokopedia.review.common.data.Success(expectedReviewDetailResponse.productrevGetReviewDetail))
     }
 
     private fun verifyGetReviewDetailUseCaseCalled() {

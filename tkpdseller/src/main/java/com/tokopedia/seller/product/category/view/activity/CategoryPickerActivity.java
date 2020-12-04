@@ -7,18 +7,16 @@ import android.net.Uri;
 
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.manageitem.common.listener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
-import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
+import com.tokopedia.seller.product.category.view.tracking.ProductAddEditCategoryTracking;
 import com.tokopedia.user.session.UserSession;
-
-import org.parceler.Parcels;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,7 +71,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         Intent intent = new Intent();
-        intent.putExtra(CATEGORY_RESULT_LEVEL, Parcels.wrap(listCategory));
+        intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, (ArrayList<CategoryViewModel>) listCategory);
         CategoryViewModel chosenCategory = listCategory.get(listCategory.size() - 1);
         intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.getId());
         intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.getName());
@@ -101,15 +99,10 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getIntent().getBooleanExtra(ProductAddEditDraftListPageTracking.EXTRA_IS_EDIT_MODE, false)) {
-            ProductAddEditDraftListPageTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
+        if (getIntent().getBooleanExtra(ProductAddEditCategoryTracking.EXTRA_IS_EDIT_MODE, false)) {
+            ProductAddEditCategoryTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
         }
     }
 }

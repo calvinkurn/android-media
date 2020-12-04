@@ -132,6 +132,9 @@ data class Reply(
         @SerializedName("role")
         val role: String = "",
         @Expose
+        @SerializedName("fraudStatus")
+        val fraudStatus: Int = 0,
+        @Expose
         @SerializedName("msg")
         val msg: String = "",
         @Expose

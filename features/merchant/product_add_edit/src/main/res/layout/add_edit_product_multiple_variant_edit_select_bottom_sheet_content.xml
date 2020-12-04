@@ -11,7 +11,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/label_variant_multiple_select_all"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"

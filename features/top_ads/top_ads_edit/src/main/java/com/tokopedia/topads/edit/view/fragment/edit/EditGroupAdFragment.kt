@@ -17,8 +17,9 @@ import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
@@ -161,7 +162,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid

@@ -570,7 +570,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun showNavigationOnboarding() {
         activity?.let {
-            var bottomSheet = BottomSheetUnify()
+            val bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
                 showCoachMark(bottomSheet)
@@ -587,7 +587,9 @@ open class HomeFragment : BaseDaggerFragment(),
             bottomSheet.setCloseClickListener {
                 bottomSheet.dismiss()
             }
-            childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
+            childFragmentManager.run {
+                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+            }
             saveFirstViewNavigation(false)
         }
     }
@@ -613,8 +615,15 @@ open class HomeFragment : BaseDaggerFragment(),
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
             coachMark.dismissCoachMark()
         }
-        bottomSheet.dismiss()
-        coachMark.showCoachMark(step = coachMarkItem, index = 0)
+
+        //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+        //will be removed along the coachmark removal in the future
+        try {
+            bottomSheet.dismiss()
+            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -1202,7 +1211,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
-                this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
                 HomeComponentCallback(getHomeViewModel()),
@@ -1216,7 +1224,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
-                this
+                this,
+                CategoryNavigationCallback(context, this)
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1528,8 +1537,12 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyContent
         navAbTestCondition(ifNavRevamp = {
-            if (isFirstViewNavigation()) showNavigationOnboarding()
+            if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
+    }
+
+    private fun remoteConfigIsShowOnboarding(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
     }
 
     private fun needToShowGeolocationComponent() {

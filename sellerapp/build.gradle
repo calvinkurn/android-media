@@ -16,10 +16,6 @@ def allowDistribution() {
     return "false";
 }
 
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
-}
-
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -108,11 +104,7 @@ android {
             zipAlignEnabled true
 //            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            if (allowProguard()) {
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            } else {
-                proguardFiles 'proguard-rules.txt'
-            }
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -226,6 +218,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.topAdsEdit)
+    implementation project(rootProject.ext.features.topAdsHeadline)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
@@ -255,6 +248,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)

@@ -97,10 +97,6 @@ class AccountHeaderViewHolder(itemView: View,
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
 
-        val cdnUrl = remoteConfig.getString(MainNavConst.ImageUrl.KEY_IMAGE_HOST, MainNavConst.ImageUrl.CDN_URL)
-        val saldoImageUrl = cdnUrl + MainNavConst.ImageUrl.SALDO_IMG
-        val ovoImageUrl = cdnUrl + MainNavConst.ImageUrl.OVO_IMG
-
         userImage.loadImageCircle(element.userImage)
         userImage.isClickable = false
         tvName.isClickable = false
@@ -120,14 +116,14 @@ class AccountHeaderViewHolder(itemView: View,
             btnTryAgain.setOnClickListener{
                 mainNavListener.onErrorProfileOVOClicked(element)
             }
-            usrOvoBadge.loadImage(ovoImageUrl)
+            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
         } else if (element.isGetOvoError && !element.isGetSaldoError) {
             tvOvo.text = element.saldo
             usrOvoBadge.setImageResource(R.drawable.ic_saldo)
         } else {
             tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
             if (element.ovoSaldo.isNotEmpty()) {
-                usrOvoBadge.loadImage(ovoImageUrl)
+                usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.saldo.isNotEmpty()) {
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
             }

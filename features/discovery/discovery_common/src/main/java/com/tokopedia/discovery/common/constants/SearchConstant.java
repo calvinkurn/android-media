@@ -132,13 +132,6 @@ public interface SearchConstant {
         String QUERY = "SIMILAR_SEARCH_QUERY";
     }
 
-    interface Advertising {
-        String ADVERTISING_ID = "ADVERTISINGID";
-        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
-        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
-        String APP_CLIENT_ID = "appClientId";
-    }
-
     interface ABTestRemoteConfigKey {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";

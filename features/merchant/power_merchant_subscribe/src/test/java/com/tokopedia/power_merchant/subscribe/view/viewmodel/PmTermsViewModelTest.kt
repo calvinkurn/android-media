@@ -2,8 +2,8 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
 import com.tokopedia.abstraction.common.network.exception.Header
 import com.tokopedia.power_merchant.subscribe.domain.model.ValidatePowerMerchantResponse
-import com.tokopedia.power_merchant.subscribe.verification.verifyErrorEquals
-import com.tokopedia.power_merchant.subscribe.verification.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

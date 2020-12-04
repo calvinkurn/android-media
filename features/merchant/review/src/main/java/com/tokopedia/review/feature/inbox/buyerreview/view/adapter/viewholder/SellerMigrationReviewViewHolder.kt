@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel
 
 class SellerMigrationReviewViewHolder(
         view: View,

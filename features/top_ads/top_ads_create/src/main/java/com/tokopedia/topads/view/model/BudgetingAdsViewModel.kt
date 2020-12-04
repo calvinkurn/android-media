@@ -16,9 +16,9 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
 import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.BidInfoDataItem
-import com.tokopedia.topads.data.response.DataSuggestions
 import com.tokopedia.topads.data.response.ResponseBidInfo
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

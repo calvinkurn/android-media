@@ -9,12 +9,12 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.data.PlayWidgetHeaderReminder
-import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
@@ -44,7 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
@@ -64,7 +64,7 @@ class ShopHomeViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
 
     private val getShopProductUseCase: GqlGetShopProductUseCase = mockk(relaxed = true)
@@ -90,6 +90,7 @@ class ShopHomeViewModelTest {
     private lateinit var viewModelSpykData: ShopHomeViewModel
 
     private val mockShopId = "1234"
+    private val mockCampaignId = "123"
     private val mockPage = 2
     private val shopProductFilterParameter = ShopProductFilterParameter().apply {
         setSortId("6")
@@ -163,7 +164,9 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether response get lazy load product success is not null`() {
-        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(),ShopProduct())
+        )
 
         viewModel.getNewProductList(mockShopId, mockPage, shopProductFilterParameter)
 
@@ -403,7 +406,6 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether checkCampaignNplRemindMeStatusData post Success value`() {
-        val mockCampaignId = "123"
         val mockAction = "action"
         coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
         viewModel.clickRemindMe(mockCampaignId, mockAction)
@@ -413,7 +415,6 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether checkCampaignNplRemindMeStatusData post Fail value`() {
-        val mockCampaignId = "123"
         val mockAction = "action"
         coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
         viewModel.clickRemindMe(mockCampaignId, mockAction)
@@ -510,6 +511,101 @@ class ShopHomeViewModelTest {
         )
         viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, true)
         assert(viewModel.getSortNameById("").isEmpty())
+    }
+
+    @Test
+    fun `check whether playWidgetObservable value is not null when get data is success`() {
+        val playWidgetMock = PlayWidget()
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+                listWidget = listOf(ShopLayoutWidget.Widget(type ="dynamic" ))
+        )
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns PlayWidgetUiModel.Small(
+                "title",
+                "action title",
+                "applink",
+                "weblink",
+                PlayWidgetConfigUiModel(
+                        true,
+                        1000,
+                        true,
+                        1,
+                        1,
+                        2
+                ),
+                true,
+                listOf()
+        )
+        viewModel.getPlayWidget(mockShopId)
+        coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
+        assert(viewModel.playWidgetObservable.value != null)
+    }
+
+    @Test
+    fun `check whether playWidgetObservable value is null when shopHomeLayoutData value is fail`() {
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } throws Exception()
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getPlayWidget(mockShopId)
+        assert(viewModel.playWidgetObservable.value == null)
+    }
+
+    @Test
+    fun `check whether playWidgetObservable value is null when play widget not found on shopHomeLayoutData`() {
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+                listWidget = listOf(ShopLayoutWidget.Widget(
+                        type = "promo",
+                        data = listOf(ShopLayoutWidget.Widget.Data())
+                ))
+        )
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getPlayWidget(mockShopId)
+        assert(viewModel.playWidgetObservable.value == null)
+    }
+
+    @Test
+    fun `check whether isCampaignFollower return true if matched campaign found and dynamicRuleDescription is not empty`() {
+        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+                listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(
+                        data = listOf(ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
+                                campaignId = mockCampaignId,
+                                dynamicRule = ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
+                                        descriptionHeader = "header"
+                                )
+                        ))
+                ))
+        ))
+        assert(viewModelSpykData.isCampaignFollower(mockCampaignId))
+    }
+
+    @Test
+    fun `check whether isCampaignFollower return false if matched campaign found but dynamicRuleDescription is empty`() {
+        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+                listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(
+                        data = listOf(ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem(
+                                campaignId = mockCampaignId,
+                                dynamicRule = ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
+                                        descriptionHeader = ""
+                                )
+                        ))
+                ))
+        ))
+        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+    }
+
+    @Test
+    fun `check whether isCampaignFollower return false if home layout data is fail`() {
+        every { viewModelSpykData.shopHomeLayoutData.value } returns Fail(Exception())
+        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+    }
+
+    @Test
+    fun `check whether isCampaignFollower return false if ui model data value is null`() {
+        every { viewModelSpykData.shopHomeLayoutData.value } returns Success(ShopPageHomeLayoutUiModel(
+                listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(data = null)))
+        )
+        assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
     }
 
 }

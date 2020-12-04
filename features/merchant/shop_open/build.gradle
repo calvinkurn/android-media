@@ -61,11 +61,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.parcelerApi
     implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    kapt  rootProject.ext.miscDependencies.parceler
+    testImplementation project(rootProject.ext.libraries.unitTest)
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }

@@ -64,6 +64,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
@@ -82,8 +84,6 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
 
@@ -132,6 +132,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     //Ui Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

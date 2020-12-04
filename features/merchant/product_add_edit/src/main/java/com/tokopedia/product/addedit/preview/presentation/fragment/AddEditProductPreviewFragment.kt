@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -173,7 +174,7 @@ class AddEditProductPreviewFragment:
     private var productStatusSwitch: SwitchUnify? = null
 
     //loading
-    private var loadingLayout: View? = null
+    private var loadingLayout: MotionLayout? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -255,7 +256,7 @@ class AddEditProductPreviewFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -793,7 +794,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
@@ -802,7 +803,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.show()
         }
@@ -815,7 +816,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.show()
         }
@@ -1227,7 +1228,24 @@ class AddEditProductPreviewFragment:
     }
 
     private fun hideLoading() {
-        loadingLayout?.hide()
+        loadingLayout?.transitionToEnd()
+        loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                // no-op
+            }
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                loadingLayout?.hide()
+            }
+        })
     }
 
     private fun goToSellerAppProductManageThenSetCashback() {
