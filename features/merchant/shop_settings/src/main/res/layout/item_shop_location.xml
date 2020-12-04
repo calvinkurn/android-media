@@ -84,7 +84,7 @@
                 app:lv_image_margin_right="@dimen/dp_16"
                 app:lv_image_width="@dimen/dp_20"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/font_black_disabled_38"
+                app:lv_title_color="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"/>
 
@@ -99,7 +99,7 @@
                 app:lv_image_margin_right="@dimen/dp_16"
                 app:lv_image_width="@dimen/dp_20"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/font_black_disabled_38"
+                app:lv_title_color="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"/>
 
@@ -114,7 +114,7 @@
                 app:lv_image_margin_right="@dimen/dp_16"
                 app:lv_image_width="@dimen/dp_20"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/font_black_disabled_38"
+                app:lv_title_color="@color/Unify_N700_32"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"/>
         </LinearLayout>

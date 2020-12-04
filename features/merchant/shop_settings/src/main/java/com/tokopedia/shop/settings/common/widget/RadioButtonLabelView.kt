@@ -87,7 +87,7 @@ class RadioButtonLabelView : FrameLayout {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.RadioButtonLabelView)
         try {
             titleText = styledAttributes.getString(R.styleable.RadioButtonLabelView_rblv_title)
-            titleColorValue = styledAttributes.getColor(R.styleable.RadioButtonLabelView_rblv_title_color, ContextCompat.getColor(context, com.tokopedia.design.R.color.font_black_primary_70))
+            titleColorValue = styledAttributes.getColor(R.styleable.RadioButtonLabelView_rblv_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             titleTextStyleValue = styledAttributes.getInt(R.styleable.RadioButtonLabelView_rblv_title_text_style, Typeface.NORMAL)
             titleTextSize = styledAttributes.getDimension(R.styleable.RadioButtonLabelView_rblv_title_text_size, resources.getDimension(com.tokopedia.design.R.dimen.sp_16))
         } finally {
@@ -100,7 +100,7 @@ class RadioButtonLabelView : FrameLayout {
         if (enabled) {
             titleTextView!!.setTextColor(titleColorValue)
         } else {
-            titleTextView!!.setTextColor(ContextCompat.getColor(context,  com.tokopedia.design.R.color.font_black_disabled_38))
+            titleTextView!!.setTextColor(ContextCompat.getColor(context,  com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         }
     }
 

@@ -35,7 +35,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
             supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))

@@ -165,7 +165,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -177,7 +177,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         tvSave?.apply {
             visibility = View.VISIBLE
             isEnabled = true
-            setTextColor(ContextCompat.getColor(context, R.color.merchant_green))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             setOnClickListener { onSaveButtonClicked() }
         }
     }
