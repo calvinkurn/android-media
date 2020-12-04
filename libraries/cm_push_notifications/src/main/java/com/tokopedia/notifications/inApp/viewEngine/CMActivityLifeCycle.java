@@ -7,11 +7,11 @@ import android.os.Bundle;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.utils.NotificationRemoveManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,14 +23,12 @@ import timber.log.Timber;
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    static String TAG = CMActivityLifeCycle.class.getSimpleName();
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private int activityCount;
+
     private CmActivityLifecycleHandler lifecycleHandler;
-
     private NotificationRemoveManager removeManager;
-
     private RemoteConfig remoteConfig;
 
     public CMActivityLifeCycle(Context context, CmActivityLifecycleHandler lifecycleHandler) {
