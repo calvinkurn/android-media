@@ -37,7 +37,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -77,9 +76,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val restrictionEngineData: LiveData<Result<RestrictValidateRestriction>>
         get() = _restrictionEngineData
 
-    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
+    fun getShop(shopId: String?, shopDomain: String? = "", isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
-        if (id == 0 && shopDomain == null) return
+        if (id == 0 && shopDomain == "") return
         launchCatchError(block = {
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0) listOf() else listOf(id), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
@@ -162,7 +161,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             isForceRefresh: Boolean = true
     ) {
         launchCatchError(block = {
-            val getProductResp = withContext(Dispatchers.IO) {
+            val getProductResp = withContext(dispatcherProvider.io) {
                 val productFilter = ShopProductFilterInput(page, perPage, search, etalase, sortId)
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)
@@ -178,9 +177,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
-        getShopInfoUseCase
         clearGetShopProductUseCase()
-
     }
 
     fun clearGetShopProductUseCase() {
@@ -223,7 +220,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false): List<ShopEtalaseItemDataModel> {
+    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean): List<ShopEtalaseItemDataModel> {
         val params: RequestParams = if (isOwner) {
             GetShopEtalaseByShopUseCase.createRequestParams(
                     shopId,
@@ -247,7 +244,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     private suspend fun getShopProductData(
             shopId: String,
             productFilter: ShopProductFilterInput,
-            isForceRefresh: Boolean = false,
+            isForceRefresh: Boolean,
             etalaseType: Int
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
@@ -291,7 +288,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 getFilterResultCountData(shopId, searchKeyword, etalaseId, tempShopProductFilterParameter)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
-        }) {}
+        }) {
+            shopProductFilterCountLiveData.postValue(Fail(it))
+        }
     }
 
     private suspend fun getFilterResultCountData(
