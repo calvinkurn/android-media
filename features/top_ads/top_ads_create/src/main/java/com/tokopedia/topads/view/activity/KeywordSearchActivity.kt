@@ -151,7 +151,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         manualAd.visibility = View.GONE
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
             adapter.items.clear()
-            txtError.text = validateKeyword(search.searchBarTextField.text.toString().trim())
+            txtError.text = Utils.validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
             if (txtError.text.isNotEmpty()) {
                 setEmpty(true)
                 txtError.visibility = View.VISIBLE
@@ -161,18 +161,6 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
                 viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
                         ?: "", ::onSuccessSearch)
             }
-        }
-    }
-
-    private fun validateKeyword(text: CharSequence?): CharSequence? {
-        return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
-            getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
-            getString(R.string.error_keyword)
-        } else if (text!!.length > 50) {
-            getString(R.string.error_max_length)
-        } else {
-            null
         }
     }
 

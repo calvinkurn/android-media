@@ -380,6 +380,13 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                     buttonAddShowcaseBottomSheet?.isLoading = true
                     createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
                 }
+
+                // on dismiss bottomsheet
+                setOnDismissListener {
+                    activity?.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+                }
             })
             isKeyboardOverlap = false
         }
@@ -406,6 +413,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
+                activity?.let { activity ->
+                    KeyboardHandler.showSoftKeyboard(activity)
+                }
             }
         }
     }
