@@ -98,7 +98,7 @@ object DeeplinkConstDigital {
             "belajar/quipper" to "tokopedia://digital/form?category_id=111&menu_id=84&operator_id=704&template=voucher",
             "belajar/zenius" to "tokopedia://digital/form?category_id=111&menu_id=84&operator_id=705&template=voucher",
             "belajar/lip" to "tokopedia://digital/form?category_id=111&menu_id=84&operator_id=706&template=voucher",
-            "belajar/puwadhika" to "tokopedia://digital/form?category_id=111&menu_id=84&operator_id=708&template=voucher",
+            "belajar/purwadhika" to "tokopedia://digital/form?category_id=111&menu_id=84&operator_id=708&template=voucher",
 
             "telepon" to "tokopedia://digital/form?category_id=10&menu_id=121&template=general",
             "tagihan/telepon" to "tokopedia://digital/form?category_id=10&menu_id=121&template=general",
@@ -131,7 +131,7 @@ object DeeplinkConstDigital {
             "pajak/pbb/jawa-tengah" to "tokopedia://digital/form?category_id=49&operator_id=970&menu_id=155&template=general",
             "pajak/pbb" to "tokopedia://digital/form?category_id=22&menu_id=127&template=general",
             "pajak/pbb/kota-bandung" to "tokopedia://digital/form?category_id=22&operator_id=1034&menu_id=127&template=general",
-            "pajak/pbb/kota-cirebon" to "tokopedia://digital/form?category_id=22&operator_id=1035&menu_id=127&template=general",
+            "pajak/pbb/kab-cirebon" to "tokopedia://digital/form?category_id=22&operator_id=1035&menu_id=127&template=general",
             "pajak/pbb/kota-serang" to "tokopedia://digital/form?category_id=22&operator_id=1032&menu_id=127&template=general",
             "pajak/pbb/kota-sukabumi" to "tokopedia://digital/form?category_id=22&operator_id=1031&menu_id=127&template=general",
             "pajak/pbb/kota-tangerang" to "tokopedia://digital/form?category_id=22&operator_id=1030&menu_id=127&template=general",

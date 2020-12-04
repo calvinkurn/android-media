@@ -78,7 +78,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of token listrik then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=3&operator_id=6&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.GENERAL_TEMPLATE}?category_id=3&menu_id=113&operator_id=6&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.TOKEN_LISTRIK, expectedDeepLink)
     }
 
@@ -90,7 +90,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of streaming then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13menu_id=81&template=voucher"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13&menu_id=81&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.STREAMING, expectedDeepLink)
     }
 
@@ -198,7 +198,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of iflix then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13&menu_id=81&operator_id=160&template=voucher"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13&operator_id=160&menu_id=81&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.IFLIX, expectedDeepLink)
     }
 
@@ -212,12 +212,6 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of wifi id then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13&menu_id=81&operator_id=202&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.WIFI_ID, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of hooq then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=13&menu_id=81&operator_id=229&template=voucher"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.HOOQ, expectedDeepLink)
     }
 
     @Test
@@ -408,7 +402,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of paket data telkomsel then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&operator_id=12&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_TELKOMSEL, expectedDeepLink)
     }
 
@@ -420,13 +414,13 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of paket data xl then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_XL, expectedDeepLink)
     }
 
     @Test
     fun `check link url of paket data axis then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&&menu_id=2&template=telcopre"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL}?category_id=2&menu_id=2&template=telcopre"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.PAKET_DATA_AXIS, expectedDeepLink)
     }
 
@@ -456,7 +450,7 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check link url of bfi finance then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.GENERAL_TEMPLATE}?category_id=7&&menu_id=123&operator_id=526&template=general"
+        val expectedDeepLink = "${ApplinkConsInternalDigital.GENERAL_TEMPLATE}?category_id=7&menu_id=123&operator_id=526&template=general"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.ANGSURAN_BFI_FINANCE, expectedDeepLink)
     }
 
@@ -518,12 +512,6 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of zenius then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=111&menu_id=84&operator_id=705&template=voucher"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_ZENIUS, expectedDeepLink)
-    }
-
-    @Test
-    fun `check link url of ilp then should be equal to the actual`() {
-        val expectedDeepLink = "${ApplinkConsInternalDigital.VOUCHER_GAME}?category_id=111&menu_id=84&operator_id=706&template=voucher"
-        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.DIGITAL.BELAJAR_ILP, expectedDeepLink)
     }
 
     @Test

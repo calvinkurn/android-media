@@ -136,7 +136,6 @@ object DeepLinkUrlConstant {
         const val BELAJAR_RUANG_GURU = "https://www.tokopedia.com/belajar/ruangguru/"
         const val BELAJAR_QUIPPER = "https://www.tokopedia.com/belajar/quipper/"
         const val BELAJAR_ZENIUS = "https://www.tokopedia.com/belajar/zenius/"
-        const val BELAJAR_ILP = "https://www.tokopedia.com/belajar/ilp/"
         const val BELAJAR_PURWADHIKA = "https://www.tokopedia.com/belajar/purwadhika/"
         const val BELAJAR = "https://www.tokopedia.com/belajar/"
         const val PAJAK_SAMSAT = "https://www.tokopedia.com/pajak/samsat/"
