@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -303,12 +302,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
+
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
-                intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
-                startActivityForResult(intent, REQUEST_CODE_CATEGORY)
+                if (viewModel.isEditing) {
+                    showChangeCategoryDialog {
+                        startCategoryActivity(REQUEST_CODE_CATEGORY)
+                    }
+                } else {
+                    startCategoryActivity(REQUEST_CODE_CATEGORY)
+                }
             }
         }
 
@@ -641,10 +645,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
-    }
-
-    private fun enableProductNameField() {
-        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun onDestroyView() {
@@ -1374,6 +1374,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         dialog.show()
     }
 
+    private fun showChangeCategoryDialog(onAccepted: () -> Unit) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.message_change_category_title))
+            setDescription(getString(R.string.message_change_category))
+            setSecondaryCTAText(getString(R.string.action_change_category_positive))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
+                onAccepted()
+            }
+            setPrimaryCTAText(getString(R.string.action_change_category_negative))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun enableWholesale() {
         val productPriceInput = productPriceField?.textFieldInput?.editableText
                 .toString().replace(".", "")
@@ -1655,6 +1673,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setNavigationResult(bundle, requestKey)
             findNavController().navigateUp()
         }
+    }
+
+    private fun startCategoryActivity(requestCodeCategory: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+        intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing))
+        startActivityForResult(intent, requestCodeCategory)
+    }
+
+    private fun enableProductNameField() {
+        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {

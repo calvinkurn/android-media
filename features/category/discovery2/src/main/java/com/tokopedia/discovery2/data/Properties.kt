@@ -1,13 +1,11 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 
 data class Properties(
         @SerializedName("columns")
         val columns: String? = null,
-
-        @SerializedName("button_notification")
-        val buttonNotification: Boolean? = null,
 
         @SerializedName("registered_message")
         val registeredMessage: String? = null,
@@ -43,6 +41,9 @@ data class Properties(
         val limitProduct: Boolean = false,
 
         @SerializedName("target_id")
-        var targetId: String? = null
+        var targetId: String? = null,
+
+        @SerializedName("template")
+        val template: String = GRID
 
 )

@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.talk.feature.reply.presentation.util.TalkDebouncer
 import com.tokopedia.talk.feature.reply.presentation.util.textwatcher.TalkReplyTextWatcher
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
 

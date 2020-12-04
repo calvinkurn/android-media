@@ -4,10 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
-import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlin.math.roundToInt
 
@@ -35,6 +32,7 @@ abstract class ProductItemViewHolder(
                 ratingString = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
+                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
                 shopRating = shopRating,
                 isShopRatingYellow = isShopRatingYellow
         )
@@ -60,6 +58,12 @@ abstract class ProductItemViewHolder(
     private fun List<LabelGroupViewModel>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
         return this?.map {
             ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+        } ?: listOf()
+    }
+
+    private fun List<LabelGroupVariantViewModel>?.toProductCardModelLabelGroupVariant(): List<ProductCardModel.LabelGroupVariant> {
+        return this?.map {
+            ProductCardModel.LabelGroupVariant(type = it.type, typeVariant = it.typeVariant, title = it.title, hexColor = it.hexColor)
         } ?: listOf()
     }
 

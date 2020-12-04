@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -48,5 +49,4 @@ class ProductCardRevampViewModel(val application: Application, val components: C
 
 
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
-
 }

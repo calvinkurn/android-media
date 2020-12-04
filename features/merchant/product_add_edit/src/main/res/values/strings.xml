@@ -4,6 +4,7 @@
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
+    <string name="label_title_draft_product">Draft Produk</string>
 
     <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, isi informasi produkmu</string>
@@ -46,6 +47,10 @@
     <string name="title_category_dialog">Kategori tidak bisa diubah</string>
     <string name="immutable_category_message">Kamu tidak bisa ubah kategori untuk produk yang memiliki varian</string>
     <string name="action_close_category_dialog">Tutup</string>
+    <string name="message_change_category_title">Yakin mau ubah kategori?</string>
+    <string name="message_change_category">Spesifikasi produkmu akan hilang jika kamu mengubah kategori produk ini.</string>
+    <string name="action_change_category_positive">Ya, Lanjutkan</string>
+    <string name="action_change_category_negative">Batal</string>
 
     <!-- add edit product catalog -->
     <string name="add_product_catalog_header">Katalog</string>
@@ -210,8 +215,21 @@
     <string name="label_description_on_dialog_edit">Datamu tidak akan tersimpan jika kamu kembali ke halaman sebelumnya.</string>
     <string name="label_cta_primary_button_on_dialog">Batal</string>
     <string name="label_cta_secondary_button_on_dialog">Ya</string>
+    <string name="label_delete_button_on_dialog">Hapus</string>
+    <string name="label_cancel_button_on_dialog">Batal</string>
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
     <string name="label_succes_save_draft">Produk berhasil disimpan dalam draft</string>
+    <string name="label_draft_menu_add_product">Tambah Produk</string>
+    <string name="label_draft_menu_delete_all_draft">Hapus Semua Draft</string>
+    <string name="label_draft_item_percent_complete">%1$d%% complete</string>
+    <string name="label_draft_menu_delete_all_draft_dialog_message">Yakin hapus semua Draft?</string>
+    <string name="label_draft_success_delete_draft_message">Semua draft Produk berhasil dihapus</string>
+    <string name="label_draft_error_delete_draft_message">Terjadi kesalahan dalam menghapus semua draft. Silakan coba kembali.</string>
+    <string name="label_draft_delete_draft_dialog_message">Apakah Anda yakin ingin menghapus draft produk?</string>
+    <string name="label_draft_delete_draft_dialog_has_product_name_message">Apakah Anda yakin ingin menghapus draft produk <![CDATA[<b>%1$s</b>]]>?</string>
+    <string name="label_draft_product_empty">Draft Produk Anda kosong</string>
+    <string name="label_draft_product_add_product">Tambah Produk</string>
+    <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
 
     <!-- set cash back -->
     <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
@@ -320,6 +338,8 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

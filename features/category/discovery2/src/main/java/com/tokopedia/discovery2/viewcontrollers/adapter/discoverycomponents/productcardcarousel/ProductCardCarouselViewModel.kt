@@ -90,7 +90,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
-                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
+                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)

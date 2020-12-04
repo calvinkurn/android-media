@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.circularViewPager)
     implementation project(rootProject.ext.features.navBottomSheet)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

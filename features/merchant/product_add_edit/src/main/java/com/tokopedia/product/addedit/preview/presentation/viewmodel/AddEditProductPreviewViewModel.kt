@@ -21,8 +21,13 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_ERROR
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -37,7 +42,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatchers
+        private val validateProductNameUseCase: ValidateProductNameUseCase,
+        private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
@@ -79,6 +85,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
+
+    private val mValidationResult = MutableLiveData<ValidationResultModel>()
+    val validationResult: LiveData<ValidationResultModel> get() = mValidationResult
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -280,5 +289,39 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
+    fun validateProductNameInput(productName: String) {
+        mIsLoading.value = true
+        productInputModel.value?.detailInputModel?.apply {
+            if (productName == currentProductName) {
+                mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                mIsLoading.value = false
+                return
+            }
+        }
+        launchCatchError(block = {
+            val response = withContext(dispatcher.io) {
+                validateProductNameUseCase.setParamsProductName(productId.value, productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults
+                    .joinToString("\n")
+            val validationResult = if (response.productValidateV3.isSuccess)
+                VALIDATION_SUCCESS else VALIDATION_ERROR
+            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mIsLoading.value = false
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
+                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mIsLoading.value = false
+        })
+    }
+
+    fun resetValidateResult() {
+        mValidationResult.value?.result = UNVALIDATED
+        mValidationResult.value?.message = ""
+    }
 
 }
