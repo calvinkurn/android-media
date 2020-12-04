@@ -99,7 +99,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     private void clearNotification(Activity activity) {
         if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            removeManager.clearNotification(activity.getApplicationContext());
+            removeManager.clearNotifications(activity.getApplicationContext());
         }
     }
 

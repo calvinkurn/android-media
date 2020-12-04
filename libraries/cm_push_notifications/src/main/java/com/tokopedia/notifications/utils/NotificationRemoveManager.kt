@@ -11,22 +11,26 @@ import com.tokopedia.notifications.database.pushRuleEngine.PushRepository.Compan
 
 open class NotificationRemoveManager(
         private val context: Context
-): CoroutineScope {
+) : CoroutineScope {
 
     private val jobs = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + jobs
 
-    fun clearNotification(context: Context) {
-        clearNotificationByCampaignId { elements ->
-            elements.forEach {
-                clearNotificationManager(context, it.notificationId)
+    fun clearNotifications(context: Context) {
+        getCancellableNotifications { notifications ->
+            notifications.forEach {
+                cancelNotificationManager(context, it.notificationId)
             }
         }
     }
 
-    private fun clearNotificationByCampaignId(invoke: (List<BaseNotificationModel>) -> Unit) {
+    fun cancel() {
+        jobs.cancelChildren()
+    }
+
+    private fun getCancellableNotifications(invoke: (List<BaseNotificationModel>) -> Unit) {
         launch {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
@@ -39,13 +43,9 @@ open class NotificationRemoveManager(
         }
     }
 
-    private fun clearNotificationManager(context: Context, notificationId: Int) {
+    private fun cancelNotificationManager(context: Context, notificationId: Int) {
         (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.let { it.cancel(notificationId) }
         NotificationManagerCompat.from(context).cancel(notificationId)
-    }
-
-    fun cancel() {
-        jobs.cancelChildren()
     }
 
     companion object {
