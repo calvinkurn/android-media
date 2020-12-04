@@ -1,7 +1,7 @@
 package com.tokopedia.shop.settings.address.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
@@ -19,15 +19,15 @@ class ShopSettingAddressAddEditPresenter @Inject constructor(private val addShop
         updateShopLocationUseCase.unsubscribe()
     }
 
-    fun saveAddress(shopLocationUiModel: ShopLocationUiModel, isNew: Boolean){
+    fun saveAddress(shopLocationOldUiModel: ShopLocationOldUiModel, isNew: Boolean){
         val useCase: UseCase<String> = if (isNew) addShopLocationUseCase else updateShopLocationUseCase
-        val requestParam = AddShopLocationUseCase.createRequestParams(shopLocationUiModel.name,
-                shopLocationUiModel.address, shopLocationUiModel.districtId, shopLocationUiModel.cityId,
-                shopLocationUiModel.stateId, shopLocationUiModel.postalCode, shopLocationUiModel.email,
-                shopLocationUiModel.phone, shopLocationUiModel.fax)
+        val requestParam = AddShopLocationUseCase.createRequestParams(shopLocationOldUiModel.name,
+                shopLocationOldUiModel.address, shopLocationOldUiModel.districtId, shopLocationOldUiModel.cityId,
+                shopLocationOldUiModel.stateId, shopLocationOldUiModel.postalCode, shopLocationOldUiModel.email,
+                shopLocationOldUiModel.phone, shopLocationOldUiModel.fax)
 
         if (!isNew)
-            requestParam.putString(ID, shopLocationUiModel.id)
+            requestParam.putString(ID, shopLocationOldUiModel.id)
 
         useCase.execute(requestParam, object : Subscriber<String>() {
             override fun onNext(string: String?) {

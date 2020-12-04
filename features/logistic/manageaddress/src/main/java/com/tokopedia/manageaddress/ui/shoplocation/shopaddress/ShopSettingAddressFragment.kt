@@ -17,7 +17,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
-import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
@@ -25,13 +25,13 @@ import com.tokopedia.shop.settings.address.view.listener.ShopLocationOldView
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
-class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLocationOldTypeFactory>(),
+class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, ShopLocationOldTypeFactory>(),
         ShopLocationOldView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
     @Inject
     lateinit var oldPresenter: ShopLocationOldPresenter
 
-    var shopLocationUiModelList: List<ShopLocationUiModel>? = null
+    var shopLocationOldUiModelList: List<ShopLocationOldUiModel>? = null
 
     companion object {
         private const val REQUEST_CODE_ADD_ADDRESS = 1
@@ -66,7 +66,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
 
     override fun getAdapterTypeFactory() = ShopLocationOldTypeFactory(this)
 
-    override fun onItemClicked(t: ShopLocationUiModel?) {
+    override fun onItemClicked(t: ShopLocationOldUiModel?) {
         //no-op
     }
 
@@ -84,8 +84,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
         callback = this@ShopSettingAddressFragment
     }
 
-    override fun onSuccessLoadAddresses(addresses: List<ShopLocationUiModel>?) {
-        shopLocationUiModelList = addresses
+    override fun onSuccessLoadAddresses(addresses: List<ShopLocationOldUiModel>?) {
+        shopLocationOldUiModelList = addresses
         super.renderList(addresses ?: listOf())
         activity?.invalidateOptionsMenu()
     }
@@ -111,7 +111,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (shopLocationUiModelList == null) {
+        if (shopLocationOldUiModelList == null) {
             menu?.clear()
         } else {
             inflater?.inflate(R.menu.menu_add_shop_address, menu)
@@ -142,7 +142,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
         }
     }
 
-    override fun onIconClicked(item: ShopLocationUiModel, pos: Int) {
+    override fun onIconClicked(item: ShopLocationOldUiModel, pos: Int) {
         activity?.let {
             Menus(it).apply {
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
@@ -165,7 +165,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
         }
     }
 
-    private fun deleteShopAddress(item: ShopLocationUiModel) {
+    private fun deleteShopAddress(item: ShopLocationOldUiModel) {
         activity?.let {
             Dialog(it, Dialog.Type.PROMINANCE).apply {
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
@@ -179,7 +179,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
         }
     }
 
-    private fun editShopAddress(item: ShopLocationUiModel) {
+    private fun editShopAddress(item: ShopLocationOldUiModel) {
         context?.let {
             startActivityForResult(ShopSettingAddressAddEditActivity
                     .createIntent(it, item, false), REQUEST_CODE_EDIT_ADDRESS)

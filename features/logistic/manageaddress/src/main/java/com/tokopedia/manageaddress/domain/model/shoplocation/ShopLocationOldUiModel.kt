@@ -6,7 +6,7 @@ import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocat
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ShopLocationUiModel(
+data class ShopLocationOldUiModel(
         val id: String = "",
         var name: String = "",
         var address: String = "",

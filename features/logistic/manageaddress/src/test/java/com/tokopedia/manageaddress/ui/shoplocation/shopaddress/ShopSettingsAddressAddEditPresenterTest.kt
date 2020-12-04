@@ -1,6 +1,6 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsaddress
 
-import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +20,7 @@ class ShopSettingsAddressAddEditPresenterTest: ShopSettingsAddressTestFixture() 
             secondArg<Subscriber<String>>().onNext("success")
         }
 
-        shopSettingsAddressAddEditPresenter.saveAddress(ShopLocationUiModel(), true)
+        shopSettingsAddressAddEditPresenter.saveAddress(ShopLocationOldUiModel(), true)
 
         verify {
             addShopLocationUseCase.execute(any(), any())
@@ -36,7 +36,7 @@ class ShopSettingsAddressAddEditPresenterTest: ShopSettingsAddressTestFixture() 
             secondArg<Subscriber<String>>().onError(Throwable())
             secondArg<Subscriber<String>>().onNext("success")
         }
-        shopSettingsAddressAddEditPresenter.saveAddress(ShopLocationUiModel(), false)
+        shopSettingsAddressAddEditPresenter.saveAddress(ShopLocationOldUiModel(), false)
 
         verify {
             updateShopLocationUseCase.execute(any(), any())

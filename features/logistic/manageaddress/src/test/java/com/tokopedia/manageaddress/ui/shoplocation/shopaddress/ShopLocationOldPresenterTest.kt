@@ -1,6 +1,6 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsaddress
 
-import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationUiModel
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
 import io.mockk.every
 import io.mockk.verify
@@ -38,7 +38,7 @@ class ShopLocationOldPresenterTest: ShopSettingsAddressTestFixture() {
             secondArg<Subscriber<String>>().onNext("success")
         }
 
-        shopLocationPresenter.deleteItem(ShopLocationUiModel())
+        shopLocationPresenter.deleteItem(ShopLocationOldUiModel())
 
         verify {
             deleteShopLocationUseCase.execute(any(), any())
