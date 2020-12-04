@@ -40,7 +40,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     private var shouldHideL1: Boolean = false
     private val model = CategoryNavStateModel()
     private var selectedLevelOnePosition: Int = 0
-    private var expandedLevelTwoPosition = -1
+    private var expandedLevelTwoPosition = NOTHING_SELECTED
 
     init {
         isFullpage = true
@@ -89,7 +89,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
                     it.data.categoryDetailData?.let { categoryDetailData ->
                         categoryNavBottomViewModel.setupStateModel(categoryDetailData, model)
                     }
-                    if (model.selectedLevelOneID != "-1") {
+                    if (model.selectedLevelOneID.isNotBlank()) {
                         if (shouldHideL1)
                             selectedLevelOnePosition = categoryNavBottomViewModel.getPositionFromCategoryId(categoryList, model.selectedLevelOneID)
                         else
@@ -133,9 +133,9 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
         if (createNewAdapter) {
             val adapter = CategoryLevelTwoExpandableAdapter(categoryList[selectedPosition]?.child)
             slave_list.setAdapter(adapter)
-            if (model.selectedLevelTwoID != "-1")
+            if (model.selectedLevelTwoID.isNotBlank())
                 expandedLevelTwoPosition = categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child, model.selectedLevelTwoID).also { expandedLevelTwoPosition ->
-                    if (expandedLevelTwoPosition != -1) {
+                    if (expandedLevelTwoPosition != NOTHING_SELECTED) {
                         adapter.selectedL3Position =
                                 categoryNavBottomViewModel.getSelectedL3PositionWithSemua(categoryList[selectedPosition]?.child?.get(expandedLevelTwoPosition)?.child, model.selectedLevelThreeID)
                         slave_list.post {
@@ -145,13 +145,13 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
                     }
                 }
         } else {
-            if (expandedLevelTwoPosition != -1) {
+            if (expandedLevelTwoPosition != NOTHING_SELECTED) {
                 val collapsePosition = expandedLevelTwoPosition
-                expandedLevelTwoPosition = -1
+                expandedLevelTwoPosition = NOTHING_SELECTED
                 slave_list.collapseGroup(collapsePosition)
             }
             (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).levelTwoList = categoryList[selectedPosition]?.child
-            (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).selectedL3Position = -1
+            (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).selectedL3Position = NOTHING_SELECTED
             (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).notifyDataSetChanged()
         }
     }
@@ -180,8 +180,8 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
                     if (model.selectedLevelTwoID == categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id)
                         categoryNavBottomViewModel.getSelectedL3PositionWithSemua(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child, model.selectedLevelThreeID)
                     else
-                        -1
-            if (expandedLevelTwoPosition != -1 && newL2Expanded) {
+                        NOTHING_SELECTED
+            if (expandedLevelTwoPosition != NOTHING_SELECTED && newL2Expanded) {
                 val collapsePosition = expandedLevelTwoPosition
                 expandedLevelTwoPosition = groupPosition
                 slave_list.collapseGroup(collapsePosition)
@@ -194,7 +194,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
         slave_list.setOnGroupCollapseListener { groupPosition ->
             if (groupPosition == expandedLevelTwoPosition) {
                 gtmListener?.onL2Collapsed(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.name)
-                expandedLevelTwoPosition = -1
+                expandedLevelTwoPosition = NOTHING_SELECTED
             }
         }
 
@@ -219,7 +219,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
                         gtmListener?.onL3Clicked(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.name)
                     }
                 dismiss()
-            }, 200)
+            }, DELAY_TO_SHOW_CHANGING_CHECKBOXES)
 
             return@setOnChildClickListener true
         }
@@ -258,6 +258,8 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     companion object {
         const val CATEGORY_ID = "catID"
         const val SHOULD_HIDE_L1 = "shouldHideL1"
+        const val NOTHING_SELECTED = -1
+        const val DELAY_TO_SHOW_CHANGING_CHECKBOXES:Long = 200
         fun getInstance(selectedCatId: String, categoryListener: CategorySelected? = null, gtmProviderListener: GtmProviderListener? = null, shouldHideL1View: Boolean = false): CategoryNavBottomSheet {
             return CategoryNavBottomSheet().apply {
                 arguments = Bundle().apply {

@@ -71,12 +71,12 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getSelectedL3PositionWithSemua(levelThreeCategoryList: List<ChildItem?>?, selectedLevelThreeID: String): Int {
-        return if (selectedLevelThreeID != "-1")
-            getPositionFromL2L3CategoryId(levelThreeCategoryList, selectedLevelThreeID).let {
-                if (it != -1)
-                    it + 1
+        return if (selectedLevelThreeID.isNotEmpty())
+            getPositionFromL2L3CategoryId(levelThreeCategoryList, selectedLevelThreeID).let {selectedLevelThreePosition->
+                if (selectedLevelThreePosition != -1)
+                    selectedLevelThreePosition + 1
                 else
-                    it
+                    selectedLevelThreePosition
             }
         else
             0
@@ -89,14 +89,14 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun setupStateModel(categoryDetailData: CategoryDetailData,model: CategoryNavStateModel) {
+    fun setupStateModel(categoryDetailData: CategoryDetailData, model: CategoryNavStateModel) {
         if (0 != categoryDetailData.id) {
             if (0 != categoryDetailData.parent) {
                 if (categoryDetailData.parent == categoryDetailData.rootId) {
 //                    Given id is L2.
                     model.selectedLevelOneID = categoryDetailData.parent.toString()
                     model.selectedLevelTwoID = categoryDetailData.id.toString()
-                    model.selectedLevelThreeID = "-1"
+                    model.selectedLevelThreeID = ""
                 } else {
 //                    Given Id is L3
                     model.selectedLevelOneID = categoryDetailData.rootId.toString()
@@ -107,8 +107,8 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
                 if (categoryDetailData.id == categoryDetailData.rootId) {
 //                    Given id is L1
                     model.selectedLevelOneID = categoryDetailData.id.toString()
-                    model.selectedLevelTwoID = "-1"
-                    model.selectedLevelThreeID = "-1"
+                    model.selectedLevelTwoID = ""
+                    model.selectedLevelThreeID = ""
                 }
             }
         }
