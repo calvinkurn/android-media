@@ -149,7 +149,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                     tabsChildComponentsItemList.addAll(componentList)
                                     listComponents.addAll(componentList)
                                 }
-                                this.setComponentsItem(tabsChildComponentsItemList, component.tabName)
+                                this.setComponentsItem(tabsChildComponentsItemList, tabData.name)
                             }
                         }
                     }

@@ -3,7 +3,7 @@ package com.tokopedia.shop.info.view.model;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticTypeFactory;
 
-public class ShopInfoLogisticViewModel implements Visitable<ShopInfoLogisticTypeFactory> {
+public class ShopInfoLogisticUiModel implements Visitable<ShopInfoLogisticTypeFactory> {
 
     private String shipmentImage;
     private String shipmentName;

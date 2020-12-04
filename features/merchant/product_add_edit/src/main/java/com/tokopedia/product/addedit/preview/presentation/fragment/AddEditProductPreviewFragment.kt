@@ -103,6 +103,7 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -356,24 +357,10 @@ class AddEditProductPreviewFragment:
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                // when we perform add product, the productId will be 0
-                // when we perform edit product, the productId will be provided from the getProductV3 response
-                // when we perform open draft, previous state before we save the product to draft will be the same
-                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                    viewModel.productInputModel.value?.apply {
-                        startProductEditService(this)
-                        showLoading()
-                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
-                    }
-                } else {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        startProductAddService(productInputModel)
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
-                    }
+                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                    viewModel.validateProductNameInput(it)
                 }
             }
-
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -469,6 +456,7 @@ class AddEditProductPreviewFragment:
         observeProductVariant()
         observeImageUrlOrPathList()
         observeIsLoading()
+        observeValidationMessage()
         observeSaveProductDraft()
 
         // stop prepare page PLT monitoring
@@ -710,7 +698,7 @@ class AddEditProductPreviewFragment:
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
                         startProductAddService(productInputModel)
-                        activity?.finish()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
                         view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
                     }
@@ -947,6 +935,38 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun observeValidationMessage() {
+        viewModel.resetValidateResult() // reset old result when re-observe
+        viewModel.validationResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result.result) {
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                ValidationResultModel.Result.VALIDATION_SUCCESS -> {
+                    if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        viewModel.productInputModel.value?.apply {
+                            startProductEditService(this)
+                            showLoading()
+                            Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                        }
+                    } else {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            startProductAddService(productInputModel)
+                            activity?.setResult(RESULT_OK)
+                            activity?.finish()
+                        }
+                    }
+                }
+                ValidationResultModel.Result.VALIDATION_ERROR -> {
+                    view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                }
+                else -> {
+                    // no-op
+                }
+            }
+        })
+    }
+
     private fun observeSaveProductDraft() {
         viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -966,6 +986,7 @@ class AddEditProductPreviewFragment:
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
+        viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1225,9 +1246,11 @@ class AddEditProductPreviewFragment:
 
     private fun showLoading() {
         loadingLayout?.show()
+        doneButton?.hide()
     }
 
     private fun hideLoading() {
+        doneButton?.show()
         loadingLayout?.transitionToEnd()
         loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
@@ -1244,6 +1267,7 @@ class AddEditProductPreviewFragment:
 
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
                 loadingLayout?.hide()
+                loadingLayout?.progress = 0.0f
             }
         })
     }

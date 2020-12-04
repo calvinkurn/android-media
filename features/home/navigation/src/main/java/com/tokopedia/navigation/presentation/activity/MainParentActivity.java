@@ -595,15 +595,6 @@ public class MainParentActivity extends BaseActivity implements
 
         addShortcuts();
 
-        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return checkAppSignature();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
-
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
@@ -615,14 +606,6 @@ public class MainParentActivity extends BaseActivity implements
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
             NotificationManagerCompat.from(this).cancelAll();
         }
-    }
-
-    @NotNull
-    private boolean checkAppSignature(){
-        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
-        }
-        return true;
     }
 
     @Override
