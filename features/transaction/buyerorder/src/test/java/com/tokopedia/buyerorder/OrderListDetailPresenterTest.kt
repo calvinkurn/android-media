@@ -59,18 +59,18 @@ class OrderListDetailPresenterTest {
     fun finishOrderGql_shouldReturnSuccess() {
         //given
         every {
-            finishOrderGqlUseCase.execute(any(), any())
+            finishOrderGqlUseCase.execute(any())
         } answers {
-            secondArg<Subscriber<UohFinishOrder.Data>>().onStart()
-            secondArg<Subscriber<UohFinishOrder.Data>>().onCompleted()
-            secondArg<Subscriber<UohFinishOrder.Data>>().onNext(UohFinishOrder.Data(UohFinishOrder.Data.FinishOrderBuyer(success = 1, message = listMsgSuccess)))
+            firstArg<Subscriber<UohFinishOrder.Data>>().onStart()
+            firstArg<Subscriber<UohFinishOrder.Data>>().onCompleted()
+            firstArg<Subscriber<UohFinishOrder.Data>>().onNext(UohFinishOrder.Data(UohFinishOrder.Data.FinishOrderBuyer(success = 1, message = listMsgSuccess)))
         }
 
         //when
         orderListDetailPresenter.finishOrderGql("", "", "", "")
 
         //then
-        verify { finishOrderGqlUseCase.execute(any(), any()) }
+        verify { finishOrderGqlUseCase.execute(any()) }
         verify { view.showSuccessMessage(listMsgSuccess[0]) }
     }
 }
