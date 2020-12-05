@@ -17,6 +17,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -169,6 +170,7 @@ public class SplashScreenActivity extends SplashScreen {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
                 TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LoggingUtils.initByRemoteConfig(remoteConfig);
             }
 
             @Override
