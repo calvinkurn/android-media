@@ -225,9 +225,9 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
-        private const val EXP_TOP_NAV = "Navigation Revamp"
-        private const val VARIANT_OLD = "Existing Navigation"
-        private const val VARIANT_REVAMP = "Navigation Revamp"
+        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
@@ -766,9 +766,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
-                    HomeRollanceConst.Navigation.VARIANT_REVAMP
+                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
                 } else {
-                    HomeRollanceConst.Navigation.VARIANT_OLD
+                    AbTestPlatform.NAVIGATION_VARIANT_OLD
                 })
     }
 
@@ -1219,7 +1219,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
-                this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
                 HomeComponentCallback(getHomeViewModel()),
@@ -1233,7 +1232,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
-                this
+                this,
+                CategoryNavigationCallback(context, this)
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

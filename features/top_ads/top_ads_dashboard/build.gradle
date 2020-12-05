@@ -66,6 +66,7 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation project(rootProject.ext.libraries.charts)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"

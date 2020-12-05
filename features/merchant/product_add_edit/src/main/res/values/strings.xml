@@ -14,6 +14,8 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
+    <string name="label_edit_product_notification_title">Mau atur Spesifikasi produkmu?</string>
+    <string name="label_edit_product_notification_description">Saat ini pengaturan untuk Spesifikasi baru tersedia di Tokopedia versi desktop.</string>
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
@@ -320,6 +322,5 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
-
 
 </resources>

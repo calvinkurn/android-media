@@ -18,7 +18,7 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
@@ -82,7 +82,7 @@ abstract class ShopPageProductListViewModelTestFixture {
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
 
     @Before

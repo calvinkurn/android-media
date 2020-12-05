@@ -91,6 +91,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
+        sendErrorBroadcast()
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
@@ -252,6 +253,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
         val bundle = Bundle()
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
+        result.putExtras(bundle)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
+    }
+
+    private fun sendErrorBroadcast() {
+        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+        val bundle = Bundle()
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR)
         result.putExtras(bundle)
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(result)
     }

@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_description_title"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
@@ -60,7 +60,7 @@
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_11"
             android:text="@string/label_add_product_description_tips"
-            android:textColor="@color/container_help_text"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivDescriptionTipsBulb"

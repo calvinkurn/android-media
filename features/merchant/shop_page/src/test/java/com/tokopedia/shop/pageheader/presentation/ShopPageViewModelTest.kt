@@ -27,7 +27,7 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -67,7 +67,7 @@ class ShopPageViewModelTest {
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
 
     private lateinit var shopPageViewModel : ShopPageViewModel

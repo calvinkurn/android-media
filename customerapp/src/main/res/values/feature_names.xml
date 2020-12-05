@@ -109,6 +109,10 @@
     <string name="topads_menu_seller_centre">Seller Center</string>
     <string name="topads_dash_desc_credit_label">Kredit TopAds</string>
     <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
+    <string name="topads_dashboard_ad_type_selection_title">Tambah Iklan</string>
+    <string name="topads_headline_detail_title">Detail Iklan Toko</string>
+
+
 
     <!--TopAds Create Ads-->
     <string name="create_group">Buat Group Iklan</string>

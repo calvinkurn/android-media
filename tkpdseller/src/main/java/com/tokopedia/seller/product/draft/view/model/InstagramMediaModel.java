@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.draft.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.base.list.seller.view.old.RecyclerViewItem;
+
 
 /**
  * Created by Tkpd_Eka on 4/6/2016.

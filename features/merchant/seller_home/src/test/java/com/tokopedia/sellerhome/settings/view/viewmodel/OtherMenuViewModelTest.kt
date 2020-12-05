@@ -3,14 +3,13 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,7 +24,6 @@ import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,17 +48,18 @@ class OtherMenuViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     private lateinit var mViewModel: OtherMenuViewModel
-    private lateinit var testCoroutineDispatcher: SellerHomeCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
         mViewModel =
                 OtherMenuViewModel(
-                        testCoroutineDispatcher,
+                        coroutineTestRule.dispatchers,
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         userSession,
@@ -120,23 +119,24 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
+        coroutineTestRule.runBlockingTest {
+            val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
 
-        val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
+            mockViewModel.getAllSettingShopInfo(true)
 
-        mockViewModel.getAllSettingShopInfo(true)
+            coVerify {
+                mockViewModel["checkDelayErrorResponseTrigger"]()
+            }
 
-        coVerify {
-            mockViewModel["checkDelayErrorResponseTrigger"]()
-        }
+            mockViewModel.isToasterAlreadyShown.observeOnce {
+                assertTrue(it)
+            }
 
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertTrue(it)
-        }
+            advanceTimeBy(5000L)
 
-        (testCoroutineDispatcher.io() as? TestCoroutineDispatcher)?.advanceTimeBy(5000L)
-
-        mockViewModel.isToasterAlreadyShown.observeOnce {
-            assertFalse(it)
+            mockViewModel.isToasterAlreadyShown.observeOnce {
+                assertFalse(it)
+            }
         }
     }
 

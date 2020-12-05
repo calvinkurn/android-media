@@ -7,19 +7,17 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.report.data.model.ProductReportReason
-import com.tokopedia.report.util.CoroutineDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import javax.inject.Inject
 import javax.inject.Named
 
 class ProductReportViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  @Named("product_report_reason")
                                                  private val reportReasonQuery: String,
-                                                 dispatcher: CoroutineDispatcherProvider): BaseViewModel(dispatcher.io()) {
+                                                 dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io) {
 
     val reasonResponse =  MutableLiveData<Result<List<ProductReportReason>>>()
 

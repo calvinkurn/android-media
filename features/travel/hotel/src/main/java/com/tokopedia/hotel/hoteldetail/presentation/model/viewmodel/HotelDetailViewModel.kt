@@ -1,7 +1,12 @@
 package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,12 +31,24 @@ import javax.inject.Inject
  */
 class HotelDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                private val dispatcher: TravelDispatcherProvider,
-                                               private val useCase: GetHotelRoomListUseCase)
+                                               private val useCase: GetHotelRoomListUseCase,
+                                               private val travelTickerUseCase: TravelTickerCoroutineUseCase)
     : BaseViewModel(dispatcher.io()) {
 
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
+
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
+    fun fetchTickerData() {
+        launch(dispatcher.ui()) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.SEARCH_DETAIL)
+            mutableTickerData.postValue(tickerData)
+        }
+    }
 
     fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String,
                            propertyId: Long, searchParam: HotelHomepageModel, source: String) {

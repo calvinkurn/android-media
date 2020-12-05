@@ -1203,4 +1203,20 @@ class ModelBuilder {
     fun <T>buildPlayResultSuccess(
             data: T
     ) = PlayResult.Success(data)
+
+    fun buildShareInfoUiModel(channel: Channel): ShareInfoUiModel {
+        val fullShareContent = try {
+            channel.share.text.replace("${'$'}{url}", channel.share.redirectUrl)
+        } catch (e: Throwable) {
+            "${channel.share.text}/n${channel.share.redirectUrl}"
+        }
+
+        return ShareInfoUiModel(
+                content = fullShareContent,
+                isShowButton = channel.share.isShowButton
+                        && channel.share.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
 }

@@ -1,14 +1,15 @@
 package com.tokopedia.seller.product.category.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.common.category.view.model.CategoryViewModel;
-import com.tokopedia.seller.product.category.view.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
+import com.tokopedia.seller.R;
 
 /**
  * @author sebastianuskh on 4/4/17.

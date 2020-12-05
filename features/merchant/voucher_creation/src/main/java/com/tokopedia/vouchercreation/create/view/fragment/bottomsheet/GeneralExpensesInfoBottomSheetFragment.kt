@@ -31,7 +31,7 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
             }
         }
 
-        val TAG = GeneralExpensesInfoBottomSheetFragment::javaClass.name
+        val TAG = "GeneralExpensesInfoBottomSheet"
     }
 
     override var bottomSheetViewTitle: String? = null

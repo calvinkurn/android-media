@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -73,11 +74,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         private const val REQUEST_FROM_PDP = 399
 
         @SuppressLint("SyntheticAccessor")
-        fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "") = SimilarProductRecommendationFragment().apply {
+        fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = SimilarProductRecommendationFragment().apply {
             this.ref = ref
             this.source = source
             this.productId = productId
             this.internalRef = internalRef
+            this.fragmentInflater = fragmentInflater
         }
     }
 

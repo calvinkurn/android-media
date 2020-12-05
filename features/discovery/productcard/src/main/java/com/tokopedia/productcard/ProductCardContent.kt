@@ -13,11 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -36,8 +34,8 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderRating(productCardModel)
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
-    renderShopRating(productCardModel)
     renderSalesAndRating(productCardModel)
+    renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
@@ -170,6 +168,31 @@ private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
+    renderSalesRatingFloat(productCardModel)
+    renderTextIntegrityWithSalesRatingFloat(productCardModel)
+}
+
+private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesRatingFloat = productCardModel.willShowRating()
+
+    imageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+
+    salesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+        it.text = productCardModel.countSoldRating
+    }
+}
+
+private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesAndRating = productCardModel.willShowSalesAndRating()
+
+    salesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
+
+    textViewSales?.shouldShowWithAction(willShowSalesAndRating) {
+        it.initLabelGroup(productCardModel.getLabelIntegrity())
+    }
+}
+
 private fun View.renderShopRating(productCardModel: ProductCardModel) {
     if (productCardModel.isShowShopRating()) {
         imageShopRating?.visible()
@@ -181,22 +204,6 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
-    }
-}
-
-private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
-    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()) {
-        textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
-    }
-
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowRating()) {
-        val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
-        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
-        drawableStar?.let {
-            drawableStar.setBounds(0, 0, 25, 25)
-            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-        salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
 

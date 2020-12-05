@@ -41,6 +41,7 @@ import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
@@ -72,9 +73,6 @@ import javax.inject.Named;
 
 import kotlin.Unit;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_NAV;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_PLT_NETWORK_METRICS;
@@ -127,6 +125,7 @@ public class SearchActivity extends BaseActivity
     private SearchParameter searchParameter;
     private boolean isABTestNavigationRevamp = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startPerformanceMonitoring();
@@ -163,8 +162,8 @@ public class SearchActivity extends BaseActivity
     private boolean isABTestNavigationRevamp() {
         try {
             return RemoteConfigInstance.getInstance().getABTestPlatform()
-                    .getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV)
-                    .equals(AB_TEST_NAV_REVAMP);
+                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                    .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -511,7 +510,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureSearchNavigationSearchBar(){
-        String query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ");
+        String query = searchParameter.getSearchQuery();
 
         List<HintData> hintData = new ArrayList();
         hintData.add(new HintData(query, query));

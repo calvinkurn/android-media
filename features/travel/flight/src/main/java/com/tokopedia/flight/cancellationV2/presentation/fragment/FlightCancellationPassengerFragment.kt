@@ -76,8 +76,17 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onActivityCreated(savedInstanceState)
 
         flightCancellationPassengerViewModel.cancellationPassengerList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            renderCancellationList(it)
-            setupNextButton()
+            if (it.isNotEmpty()) {
+                renderCancellationList(it)
+                setupNextButton()
+            } else {
+                activity?.let { mActivity ->
+                    val intent = Intent()
+                    intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
+                    mActivity.setResult(Activity.RESULT_CANCELED, intent)
+                    mActivity.finish()
+                }
+            }
         })
     }
 
@@ -210,6 +219,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         }
 
         if (canGoNext) {
+            flightCancellationPassengerViewModel.trackOnNext()
             navigateToReasonPage()
         } else {
             showShouldChooseAtLeastOnePassengerError()
@@ -239,6 +249,8 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         const val EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY"
         const val EXTRA_FIRST_CHECK = "EXTRA_FIRST_CHECK"
+
+        const val EXTRA_IS_CANCEL_ERROR = "EXTRA_IS_CANCEL_ERROR"
 
         const val REQUEST_REASON_AND_PROOF_CANCELLATION = 1111
 

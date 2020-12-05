@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewTreeObserver
 import android.widget.SeekBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -62,6 +64,24 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        containerDOP.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                containerDOP.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val imageSize = getImageSize()
+                val heightRatio: Float = containerDOP.height.toFloat() / imageSize.second.toFloat()
+                val widthRatio: Float = containerDOP.width.toFloat() / imageSize.first.toFloat()
+                val layoutParams = dopFeedbackForm.layoutParams
+                if (heightRatio < widthRatio) {
+                    layoutParams.height = MATCH_PARENT
+                } else {
+                    layoutParams.width = MATCH_PARENT
+                }
+
+                dopFeedbackForm.requestLayout()
+            }
+        })
 
         initViews()
         observeViewModel()
@@ -183,6 +203,16 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         intent.putExtra(EXTRA_DRAW_IMAGE_URI_OLD, oldPath)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun getImageSize(): Pair<Int, Int> {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(File(imageUri.getPath()).getAbsolutePath(), options)
+        val imageHeight = options.outHeight
+        val imageWidth = options.outWidth
+
+        return Pair(imageWidth, imageHeight)
     }
 
     companion object {

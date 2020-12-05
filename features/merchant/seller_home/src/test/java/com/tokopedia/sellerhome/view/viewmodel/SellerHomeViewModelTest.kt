@@ -1,12 +1,11 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -83,15 +82,15 @@ class SellerHomeViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
-
-    private lateinit var testDispatcher: SellerHomeCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = SellerHomeCoroutineTestDispatcher
 
         viewModel = SellerHomeViewModel(
                 dagger.Lazy { userSession },
@@ -109,7 +108,7 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getMultiLineGraphUseCase },
                 dagger.Lazy { getAnnouncementDataUseCase },
                 remoteConfig,
-                testDispatcher
+                coroutineTestRule.dispatchers
         )
 
         dynamicParameter = getDynamicParameter()

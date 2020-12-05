@@ -8,12 +8,11 @@ import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,6 +51,9 @@ class CentralizedPromoViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -85,8 +87,6 @@ class CentralizedPromoViewModelTest {
         } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
-    private val testCoroutineDispatcher: SellerHomeCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
-
     private val viewModel : CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(
             context,
@@ -95,7 +95,7 @@ class CentralizedPromoViewModelTest {
             getPostUseCase,
             getChatBlastSellerMetadataUseCase,
             remoteConfig,
-            testCoroutineDispatcher
+            coroutineTestRule.dispatchers
         )
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -7,14 +8,11 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Random;
 
 /**
@@ -28,9 +26,8 @@ public class FileUtils {
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
-
-    public static String getFolderPathForUpload() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
+    public static String getFolderPathForUpload(Context context) {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + context.getApplicationContext().getPackageName() + "/";
     }
 
     public static String generateUniqueFileName() {
@@ -38,8 +35,8 @@ public class FileUtils {
     }
 
     @NonNull
-    private static File getTkpdCacheDirectory() {
-        String tkpdFolderPath = getFolderPathForUpload();
+    private static File getTkpdCacheDirectory(Context context) {
+        String tkpdFolderPath = getFolderPathForUpload(context);
 
         File tkpdRootdirectory = new File(tkpdFolderPath);
         if (!tkpdRootdirectory.exists()) {
@@ -53,8 +50,8 @@ public class FileUtils {
     }
 
     @NonNull
-    public static File getTkpdImageCacheFile(String fileName) {
-        File tkpdCachedirectory = getTkpdCacheDirectory();
+    public static File getTkpdImageCacheFile(Context context, String fileName) {
+        File tkpdCachedirectory = getTkpdCacheDirectory(context);
         return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + FILE_IMAGE_EXT);
     }
 
@@ -62,10 +59,10 @@ public class FileUtils {
      * write byte buffer to Cache File int TkpdCacheDirectory
      * This "cache file" is a representation of the bytes.
      */
-    public static File writeImageToTkpdPath(byte[] buffer) {
+    public static File writeImageToTkpdPath(Context context, byte[] buffer) {
         if (buffer != null) {
             String fileName = generateUniqueFileName();
-            File photo = getTkpdImageCacheFile(fileName);
+            File photo = getTkpdImageCacheFile(context, fileName);
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {
@@ -90,9 +87,14 @@ public class FileUtils {
      * The file represents the copy of the original bitmap and can be deleted/modified
      * without changing the original image
      */
-    public static File writeImageToTkpdPath(String galleryOrCameraPath) {
-        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
-                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
+    public static File writeImageToTkpdPath(Context context, String galleryOrCameraPath) {
+        return writeImageToTkpdPath(
+                context,
+                convertLocalImagePathToBytes(galleryOrCameraPath,
+                        DEF_WIDTH_CMPR,
+                        DEF_WIDTH_CMPR,
+                        DEF_QLTY_COMPRESS)
+        );
     }
 
     private static boolean writeBufferToFile(byte[] buffer, String path) {

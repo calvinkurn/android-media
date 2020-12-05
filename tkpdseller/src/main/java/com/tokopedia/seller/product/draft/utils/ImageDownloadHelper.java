@@ -112,7 +112,7 @@ public class ImageDownloadHelper {
                                 String cacheFilePath = cacheFile.getAbsolutePath();
                                 File photo;
                                 if (needCompressTkpd) {
-                                    photo = FileUtils.writeImageToTkpdPath(cacheFilePath);
+                                    photo = FileUtils.writeImageToTkpdPath(context, cacheFilePath);
                                 } else {
                                     photo = writeImageToTkpdPath(cacheFile);
                                 }
@@ -137,7 +137,7 @@ public class ImageDownloadHelper {
         File dest = null;
         try {
 
-            File directory = new File(FileUtils.getFolderPathForUpload());
+            File directory = new File(FileUtils.getFolderPathForUpload(context));
             if (!directory.exists()) {
                 directory.mkdirs();
             }

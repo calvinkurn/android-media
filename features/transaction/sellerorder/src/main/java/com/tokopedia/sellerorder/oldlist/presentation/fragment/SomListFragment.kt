@@ -642,7 +642,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
-                filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
+                filterItem.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400)
                 filterItem.isSelected = true
                 if (it.key.equals(STATUS_ALL_ORDER, true) ||
                         it.key.equals(STATUS_DONE, true) ||

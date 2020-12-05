@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository;
 import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.domain.mapper.ProductDraftMapper;
 import com.tokopedia.usecase.RequestParams;
