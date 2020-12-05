@@ -3,13 +3,15 @@ package com.tokopedia.shop.product.view.datamodel
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 
 /**
- * Created by nathan on 2/6/18.
+ * Created by zulfikarrahman on 1/16/18.
  */
 
-class ShopSellerEmptyProductAllEtalaseViewModel : BaseShopProductViewModel {
+data class ShopProductEtalaseTitleUiModel(
+        var etalaseName: String,
+        var etalaseBadge: String
+) : BaseShopProductViewModel {
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

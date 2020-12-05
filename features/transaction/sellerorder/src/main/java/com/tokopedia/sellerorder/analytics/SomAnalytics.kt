@@ -150,8 +150,8 @@ object SomAnalytics {
         sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_REQUEST_PICKUP_POPUP)
     }
 
-    fun eventClickButtonTolakPesananPopup(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, statusOrder)
+    fun eventClickButtonTolakPesananPopup(statusOrder: String, statusOrderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, "$statusOrder - $statusOrderName")
     }
 
     fun eventClickButtonChatPembeliPopup(statusOrder: String) {
@@ -207,8 +207,12 @@ object SomAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
     }
 
-    fun eventClickStatusFilter(orderStatus: String, orderStatusName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "$orderStatus - $orderStatusName")
+    fun eventClickFilter(orderStatus: List<String>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderStatus.joinToString(","))
+    }
+
+    fun eventClickStatusFilter(orderStatus: List<String>, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "${orderStatus.joinToString(",")} - $orderStatusName")
     }
 
     fun eventClickStartAdvertise(orderStatus: String, orderStatusName: String) {
