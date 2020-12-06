@@ -68,8 +68,6 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-
-    implementation project(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

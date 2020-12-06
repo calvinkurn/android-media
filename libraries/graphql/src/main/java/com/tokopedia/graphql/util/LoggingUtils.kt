@@ -6,13 +6,16 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import timber.log.Timber
 
 object LoggingUtils {
-    const val KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold"
     const val DEFAULT_RESP_SIZE_THRES = 10000L
     var gqlResponseSizeThreshold = DEFAULT_RESP_SIZE_THRES
 
     @JvmStatic
-    fun initByRemoteConfig(remoteConfig: RemoteConfig) {
-        gqlResponseSizeThreshold = remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG, DEFAULT_RESP_SIZE_THRES)
+    fun setResponseSize(responseSize: Long) {
+        var sizeToSet = responseSize
+        if (sizeToSet <= 0) {
+            sizeToSet = DEFAULT_RESP_SIZE_THRES
+        }
+        gqlResponseSizeThreshold = sizeToSet
     }
 
     @JvmStatic
