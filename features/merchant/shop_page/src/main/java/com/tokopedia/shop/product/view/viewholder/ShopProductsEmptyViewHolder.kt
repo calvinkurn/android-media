@@ -6,14 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE
-import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopProductsEmptyViewHolder(
         val view: View,
         private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolderListener?
-) : AbstractViewHolder<ShopEmptyProductViewModel>(view) {
+) : AbstractViewHolder<ShopEmptyProductUiModel>(view) {
 
     companion object {
         @JvmField
@@ -42,7 +42,7 @@ class ShopProductsEmptyViewHolder(
     }
 
 
-    override fun bind(element: ShopEmptyProductViewModel) {
+    override fun bind(element: ShopEmptyProductUiModel) {
         ImageHandler.loadImage(
                 view.context,
                 imageViewEmptyImage,

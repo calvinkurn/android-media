@@ -10,7 +10,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
  * Created by nathan on 2/6/18.
  */
 
-class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
+class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
 
     var id: String? = null
     var name: String? = null
@@ -34,7 +34,7 @@ class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
     var etalaseId = ""
-    var labelGroupList: List<LabelGroupViewModel> = listOf()
+    var labelGroupList: List<LabelGroupUiModel> = listOf()
     var pdpViewCount: String = ""
     var stockLabel: String = ""
     var stockBarPercentage: Int = 0

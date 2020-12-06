@@ -6,7 +6,7 @@
         android:id="@+id/menu_add_edit"
         android:title="@string/save"
         android:visible="true"
-        android:iconTint="@color/tkpd_main_green"
+        android:iconTint="@color/Unify_G400"
         app:showAsAction="always|collapseActionView" />
 
 </menu>
