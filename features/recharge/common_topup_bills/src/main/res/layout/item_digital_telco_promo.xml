@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_5"
-    app:cardCornerRadius="@dimen/dp_5"
-    app:cardElevation="@dimen/dp_2">
+    android:layout_margin="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl2"
+    app:cardElevation="@dimen/spacing_lvl1">
 
     <LinearLayout
         android:id="@+id/promo_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/promo_item_margin">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_promo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/promo_item_margin"
+            android:layout_marginTop="@dimen/promo_item_margin"
+            android:layout_marginRight="@dimen/promo_item_margin"
             android:lines="2"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
@@ -34,11 +35,11 @@
 
             <ImageView
                 android:id="@+id/img_voucher"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 android:layout_alignTop="@+id/btn_copy_promo"
                 android:layout_alignBottom="@id/btn_copy_promo"
-                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/promo_item_margin"
                 android:gravity="center_vertical"
                 app:srcCompat="@drawable/common_topup_ic_voucher" />
 
@@ -48,8 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/btn_copy_promo"
                 android:layout_alignBottom="@id/btn_copy_promo"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
                 android:layout_toRightOf="@+id/img_voucher"
                 android:gravity="center_vertical"
                 android:text="@string/common_topup_title_promo_code"
@@ -74,24 +75,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/promo_code"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_12"
-                android:lineHeight="@dimen/sp_16"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_4"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/promo_item_margin"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/promo_item_margin"
+                android:lineHeight="@dimen/fontSize_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl3"
+                android:paddingTop="@dimen/spacing_lvl2"
+                android:paddingRight="@dimen/spacing_lvl3"
+                android:paddingBottom="@dimen/spacing_lvl2"
                 app:typographyType="heading_6"
                 tools:background="@drawable/digital_bg_green_rounded"
                 tools:text="Disalin"
                 tools:textColor="@color/Unify_N0" />
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_12" />
 
     </LinearLayout>
 
