@@ -14,13 +14,15 @@ import com.tokopedia.product.manage.common.feature.broadcastchat.domain.GetChatB
 import com.tokopedia.product.manage.common.feature.broadcastchat.presentation.model.ChatBlastSellerEntryPointUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
-import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
@@ -74,6 +76,7 @@ class ProductManageViewModel @Inject constructor(
         private val getProductListMetaUseCase: GetProductListMetaUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
         private val chatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
+        private val getProductVariantUseCase: GetProductVariantUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -85,6 +88,8 @@ class ProductManageViewModel @Inject constructor(
 
     val viewState: LiveData<ViewState>
         get() = _viewState
+    val getProductVariantsResult: LiveData<GetVariantResult>
+        get() = _getProductVariantsResult
     val productListResult: LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
     val productListFeaturedOnlyResult: LiveData<Result<Int>>
@@ -121,6 +126,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _chatBlastSeller
 
     private val _viewState = MutableLiveData<ViewState>()
+    private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
@@ -286,6 +292,27 @@ class ProductManageViewModel @Inject constructor(
             hideProgressDialog()
             _productListResult.value = Fail(it)
         }).let { getProductListJob = it }
+    }
+
+    fun getProductVariants(productId: String) {
+        showLoadingDialog()
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val requestParams = GetProductVariantUseCase.createRequestParams(productId)
+                val response = getProductVariantUseCase.execute(requestParams)
+
+                val variant = response.getProductV3
+                ProductManageVariantMapper.mapToVariantsResult(variant)
+            }
+
+            if (result.variants.isNotEmpty()) {
+                _getProductVariantsResult.value = result
+            }
+
+            hideLoadingDialog()
+        }, onError = {
+            hideLoadingDialog()
+        })
     }
 
     private fun setChatBlastSeller(chatBlastSeller: ChatBlastSellerEntryPointUiModel) {
@@ -585,5 +612,13 @@ class ProductManageViewModel @Inject constructor(
 
     private fun hideProgressDialog() {
         _viewState.value = HideProgressDialog
+    }
+
+    private fun showLoadingDialog() {
+        _viewState.value = ShowLoadingDialog
+    }
+
+    private fun hideLoadingDialog() {
+        _viewState.value = HideLoadingDialog
     }
 }

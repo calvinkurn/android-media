@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.app.ProgressDialog.show
 import android.content.*
 import android.graphics.Typeface
@@ -85,6 +86,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_DATE_TICKER_BC
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_TICKER_BROADCAST_CHAT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
@@ -205,6 +207,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private val prefKey = this.javaClass.name + ".pref"
     private var prefsTicker: SharedPreferences? = null
+    private var progressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -254,6 +257,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupSearchBar()
         setupProductList()
         setupTickerBroadcast()
+        setupProgressDialogVariant()
         setupFiltersTab()
         setupBottomSheet()
         setupMultiSelect()
@@ -293,13 +297,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
+    private fun setupProgressDialogVariant() {
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog?.setMessage(getString(R.string.message_loading_progress_dialog))
+    }
+
     private fun setupTickerBroadcast() {
         prefsTicker?.let {
             if (!it.getBoolean(HAS_TICKER_BROADCAST_CHAT, false)) {
                 tickerBroadcastChat?.apply {
                     setTextDescription(getString(R.string.ticker_broadcast_chat))
                     show()
-                    if(it.getString(HAS_DATE_TICKER_BC, "").isNullOrBlank()) it.edit().putString(HAS_DATE_TICKER_BC, getTimeNow())
+                    if(it.getString(HAS_DATE_TICKER_BC, "").isNullOrBlank())
+                        it.edit().putString(HAS_DATE_TICKER_BC, getTimeNow())
 
                     if(it.getString(HAS_DATE_TICKER_BC, "").orEmpty().isMoreOneMonth) hide()
 
@@ -467,9 +477,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun redirectToBroadcastChat(productId: String) {
-        val url = UriUtil.buildUri(chatBlastSeller)
+        val chatBlastUrl = "$chatBlastSeller/create"
+        val url = Uri.parse(chatBlastUrl).buildUpon().appendQueryParameter(PRODUCT_ID, productId).build().toString()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
-
     }
 
     private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false) {

@@ -296,4 +296,5 @@
     <string name="content_desc_checkBoxSelect">checkbox produk</string>
     <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
     <string name="ticker_broadcast_chat">Promosikan produkmu dengan buat Broadcast Chat lewat Atur Produk, yuk!</string>
+    <string name="message_loading_progress_dialog">Loading</string>
 </resources>

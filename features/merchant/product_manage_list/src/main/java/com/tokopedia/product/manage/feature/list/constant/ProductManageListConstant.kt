@@ -56,5 +56,6 @@ object ProductManageListConstant {
     const val PATTERN_DATE = "dd-MM-yyyy"
     const val HAS_TICKER_BROADCAST_CHAT = "hasTickerBroadcastChat"
     const val HAS_DATE_TICKER_BC = "hasDateTickerBC"
+    const val PRODUCT_ID = "product_id"
 
 }
