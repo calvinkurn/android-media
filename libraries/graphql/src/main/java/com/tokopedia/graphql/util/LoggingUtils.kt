@@ -2,7 +2,6 @@ package com.tokopedia.graphql.util
 
 import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.remoteconfig.RemoteConfig
 import timber.log.Timber
 
 object LoggingUtils {
