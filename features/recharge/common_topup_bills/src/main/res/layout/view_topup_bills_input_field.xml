@@ -39,7 +39,7 @@
         app:srcCompat="@drawable/ic_info_black"
         tools:visibility="visible" />
 
-    <com.tokopedia.design.text.BackEditText
+    <com.tokopedia.common.topupbills.widget.TopupBillsBackEditText
         android:id="@+id/ac_input"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
