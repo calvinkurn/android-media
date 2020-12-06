@@ -580,16 +580,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun submitResultReason() {
-        // old submit cancel
-        val intent = Intent()
-        intent.putExtra(OrderListContants.REASON, reasonCancel)
-        intent.putExtra(OrderListContants.REASON_CODE, reasonCode)
-        intent.putExtra(MarketPlaceDetailFragment.ACTION_BUTTON_URL, uri)
-        activity?.setResult(MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST, intent)
-        activity?.finish()
-    }
-
     private fun submitRequestCancel() {
         userSession?.let {
             buyerCancellationViewModel.requestCancel(

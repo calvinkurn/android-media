@@ -1,7 +1,8 @@
 package com.tokopedia.buyerorder.detail.domain
 
-import com.tokopedia.buyerorder.detail.data.DetailsData
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -10,9 +11,9 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
- * Created by fwidjaja on 18/11/20.
+ * Created by fwidjaja on 06/12/20.
  */
-class GetOrderDetailUseCase @Inject constructor(private val graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase) : UseCase<DetailsData>() {
+class BuyerGetRecommendationUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<RecommendationResponse>() {
     private var query: String = ""
     private var params: MutableMap<String, Any> = mutableMapOf()
 
@@ -21,12 +22,12 @@ class GetOrderDetailUseCase @Inject constructor(private val graphqlUseCase: com.
         this.params = params
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<DetailsData> {
-        val graphqlRequest = GraphqlRequest(query, DetailsData::class.java)
+    override fun createObservable(requestParams: RequestParams): Observable<RecommendationResponse> {
+        val graphqlRequest = GraphqlRequest(query, RecommendationResponse::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val actionButtonList = it.getData<DetailsData>(DetailsData::class.java)
+            val actionButtonList = it.getData<RecommendationResponse>(RecommendationResponse::class.java)
             actionButtonList
         }
                 .subscribeOn(Schedulers.io())

@@ -29,6 +29,7 @@ import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.BuyerUtils;
@@ -479,6 +480,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess) {
+        // no-op
+    }
+
+    @Override
     public void setRecommendation(Object recommendationResponse) {
         RechargeWidgetResponse rechargeWidgetResponse = (RechargeWidgetResponse) recommendationResponse;
         if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
@@ -613,5 +619,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
+    }
+
+    @Override
+    public void setActionButtonLayoutClickable(Boolean isClickable) {
+        // no op
+    }
+
+    @Override
+    public void setActionButtonText(String txt) {
+        // no op
     }
 }

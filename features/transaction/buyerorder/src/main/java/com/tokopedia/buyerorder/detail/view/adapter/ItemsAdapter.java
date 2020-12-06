@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -193,7 +194,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count, int pos) {
         if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, pos, true);
+            if (context != null) {
+                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, pos, true);
+            }
         } else {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
@@ -448,7 +451,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayoutDeals.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    if (context != null) {
+                        presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    }
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     if (!TextUtils.isEmpty(item.getTrackingNumber())) {
                         String[] voucherCodes = item.getTrackingNumber().split(",");
@@ -518,8 +523,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 }
                             }
                         } else {
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
                                 setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getQuantity());
                             }
@@ -666,6 +671,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void showRetryButtonToaster(String msg);
 
+
     }
 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {
@@ -765,10 +771,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else {
                     llTanggalEvent.setVisibility(View.GONE);
                 }
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded() && context != null) {
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayout.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 }
                 if (!hasViews) {
                     customTicketView1.setVisibility(View.GONE);
@@ -789,8 +795,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         for (int i = 0; i < size; i++) {
                             ActionButton actionButton = item.getTapActions().get(i);
                             TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
                                 setActionButtonClick(tapActionTextView, actionButton);
                             }
@@ -818,8 +824,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 actionTextView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                            presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                            presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
                                         } else {
                                             setActionButtonClick(actionTextView, actionButton);
                                         }

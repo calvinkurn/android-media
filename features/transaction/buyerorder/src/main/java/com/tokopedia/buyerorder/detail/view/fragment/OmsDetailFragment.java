@@ -37,11 +37,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.BuyerUtils;
@@ -636,8 +638,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         actionButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                    presenter.setActionButton(actionButtons, null, 0, false);
+                if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON) && getContext() != null) {
+                    presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), actionButtons, null, 0, false);
                 } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                     RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
                 }
@@ -762,6 +764,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess) {
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -836,7 +843,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                                 Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
                             }
                         }
-                        presenter.setActionButton(item.getActionButtons(), null, 0, false);
+                        if (getContext() != null) {
+                            presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), item.getActionButtons(), null, 0, false);
+                        }
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                     }
@@ -882,8 +891,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             actionButtonLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                        presenter.hitEventEmail(actionButton,orderDetails.getMetadata(), actionButtonText,actionButtonLayout);
+                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) &&
+                            actionButton.getName().equalsIgnoreCase("customer_notification")) {
+                        presenter.hitEventEmail(actionButton,orderDetails.getMetadata());
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                     }
@@ -1054,5 +1064,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     );
                 }
         );
+    }
+
+    @Override
+    public void setActionButtonLayoutClickable(Boolean isClickable) {
+        actionButtonLayout.setClickable(isClickable);
+    }
+
+    @Override
+    public void setActionButtonText(String txt) {
+        actionButtonText.setText(txt);
     }
 }

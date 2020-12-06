@@ -34,10 +34,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerUtils;
-import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
-import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
-import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.common.SaveDateBottomSheetActivity;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
@@ -930,28 +927,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setSelectFilterName(String selectFilterName) {
         orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
-    }
-
-    @Override
-    public void requestCancelOrder(Status status, RequestCancelInfo requestCancelInfo) {
-        Intent intent = new Intent(getContext(), RequestCancelActivity.class);
-        intent.putExtra("OrderId", selectedOrderId);
-        intent.putExtra("action_button_url", actionButtonUri);
-        if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
-                    && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime())
-                    && getView() != null) {
-                Toaster.build(getView(),
-                        requestCancelInfo.getRequestCancelNote(),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_ERROR,
-                        getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
-                        }).show();
-            } else
-                startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
-        } else if (status.status().equals(STATUS_CODE_11)) {
-            startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 0), REQUEST_CANCEL_ORDER);
-        }
     }
 
     private void trackOrder() {

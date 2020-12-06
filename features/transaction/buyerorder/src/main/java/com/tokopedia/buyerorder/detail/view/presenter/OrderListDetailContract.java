@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -121,16 +122,21 @@ public interface OrderListDetailContract {
 
         JsonArray generateInputQueryBuyAgain(List<Items> items);
 
+        void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess);
+
+        void setActionButtonLayoutClickable(Boolean isClickable);
+
+        void setActionButtonText(String txt);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
-        void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+        void getActionButtonGql(String query, List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
+        void hitEventEmail(ActionButton actionButton, String metadata);
 
-        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
+        void onBuyAgainItems(String query, List<Items> items, String eventActionLabel, String statusCode);
     }
 
     interface ActionInterface {

@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;

@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

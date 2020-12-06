@@ -67,8 +67,6 @@ public class OrderListContract {
 
         void finishOrderDetail();
 
-        void requestCancelOrder(Status status, RequestCancelInfo requestCancelInfo);
-
         void showSuccessMessageWithAction(String message);
 
         void setFilterRange(DefaultDate defaultDate, CustomDate customDate);

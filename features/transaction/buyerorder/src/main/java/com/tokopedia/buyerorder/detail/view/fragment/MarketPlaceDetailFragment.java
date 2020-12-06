@@ -55,6 +55,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.BuyerUtils;
@@ -77,7 +78,7 @@ import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity;
@@ -86,10 +87,8 @@ import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -101,9 +100,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -112,7 +109,6 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
@@ -156,8 +152,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
-    public static final int REJECT_BUYER_REQUEST = 102;
-    public static final int CANCEL_BUYER_REQUEST = 103;
     public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
@@ -798,7 +792,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainItems(orderDetails.getItems(), " - order", status.status());
+                        if (getContext() != null && getContext().getResources() != null) {
+                            presenter.onBuyAgainItems(
+                                    GraphqlHelper.loadRawString(getContext().getResources(),
+                                            com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi),
+                                    orderDetails.getItems(), " - order", status.status());
+                        }
                     }
                 });
             } else {
@@ -832,7 +831,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainItems(orderDetails.getItems(), " - order", status.status());
+                            if (getContext() != null && getContext().getResources() != null) {
+                                presenter.onBuyAgainItems(GraphqlHelper.loadRawString(getContext().getResources(),
+                                        com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi),
+                                        orderDetails.getItems(), " - order", status.status());
+                            }
                         }
                     });
                 } else {
@@ -844,6 +847,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 stickyButtonAdded = true;
             }
         }
+    }
+
+    @Override
+    public void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess) {
+        orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), listAtcProducts, isAtcMultiSuccess, true, " - order", status.status());
     }
 
     @Override
@@ -1081,28 +1089,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
-            int reasonCode = 1;
-            if (resultCode == REJECT_BUYER_REQUEST) {
-                // only from old activity - RequestCancelActivity.java, now already redirected to BuyerRequestCancelActivity.kt --> so no source which setResult REJECT_BUYER_REQUEST
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                if (getArguments() != null) {
-                    presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-                }
-            } else if (resultCode == CANCEL_BUYER_REQUEST) {
-                // from BuyerRequestCancelFragment
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                if (getArguments() != null) {
-                    presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-                }
-            } else if (resultCode == CANCEL_BUYER_REQUEST_TWO_LAYER) {
-                reason = data.getStringExtra(OrderListContants.REASON);
-                reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                if (getArguments() != null) {
-                    presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
-                }
-            } else if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
+            if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 String resultMsg = data.getStringExtra(RESULT_MSG_INSTANT_CANCEL);
                 int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
                 if (result == 1) {
@@ -1362,5 +1349,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             jsonArray.add(passenger);
         }
         return jsonArray;
+    }
+
+    @Override
+    public void setActionButtonLayoutClickable(Boolean isClickable) {
+        // no op
+    }
+
+    @Override
+    public void setActionButtonText(String txt) {
+        // no op
     }
 }

@@ -1,48 +1,30 @@
 package com.tokopedia.buyerorder.detail.view.presenter;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
-import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
-import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
-import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
-import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
-import com.tokopedia.buyerorder.detail.data.Discount;
-import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Items;
-import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
-import com.tokopedia.buyerorder.detail.data.PayMethod;
-import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
-import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
+import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
+import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
@@ -54,9 +36,6 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kotlin.util.DownloadHelper;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
@@ -64,14 +43,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -94,6 +69,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
 
+    private final UserSessionInterface userSessionInterface;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -113,9 +89,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     /*@Inject
     GetOrderDetailUseCase getOrderDetailUseCase;*/
     @Inject
-    UserSessionInterface userSessionInterface;
-    @Inject
     FinishOrderGqlUseCase finishOrderGqlUseCase;
+    @Inject
+    SetActionButtonUseCase setActionButtonUseCase;
+    @Inject
+    BuyerGetRecommendationUseCase buyerGetRecommendationUseCase;
 
     public String pdfUri = " ";
     private OrderDetails details;
@@ -124,9 +102,19 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase,
-                                    FinishOrderGqlUseCase finishOrderGqlUseCase) {
+                                    FinishOrderGqlUseCase finishOrderGqlUseCase,
+                                    AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase,
+                                    UserSessionInterface userSessionInterface,
+                                    SetActionButtonUseCase setActionButtonUseCase,
+                                    SendEventNotificationUseCase sendEventNotificationUseCase,
+                                    BuyerGetRecommendationUseCase buyerGetRecommendationUseCase) {
         this.orderDetailsUseCase = orderDetailsUseCase;
         this.finishOrderGqlUseCase = finishOrderGqlUseCase;
+        this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
+        this.userSessionInterface = userSessionInterface;
+        this.setActionButtonUseCase = setActionButtonUseCase;
+        this.sendEventNotificationUseCase = sendEventNotificationUseCase;
+        this.buyerGetRecommendationUseCase = buyerGetRecommendationUseCase;
     }
 
     @Override
@@ -188,25 +176,25 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        if (getView() != null && getView().getActivity() != null) {
+                        if (getView() != null) {
                             Timber.d("error occured" + e);
                             getView().hideProgressBar();
                         }
                     }
     
-            @Override
-            public void onNext(GraphqlResponse response) {
-                if (response != null) {
-                    DetailsData data = response.getData(DetailsData.class);
-                    if (data != null && isViewAttached()) {
+                    @Override
+                    public void onNext(GraphqlResponse response) {
+                        if (response != null) {
+                            DetailsData data = response.getData(DetailsData.class);
+                            if (data != null && getView() != null) {
                                 orderDetails = data.orderDetails();
                                 details = data.orderDetails();
-                        getView().setDetailsData(data.orderDetails());
-                        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)
-                           || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
-                            requestCancelInfo = details.getRequestCancelInfo();
-                        }
-                    }
+                                getView().setDetailsData(data.orderDetails());
+                                if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)
+                                   || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
+                                    requestCancelInfo = details.getRequestCancelInfo();
+                                }
+                            }
 
                             if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                                 List<Items> list = orderDetails.getItems();
@@ -230,16 +218,43 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 }
                             }
                         }
-                        getRecommendation();
+                        if (getView() != null && getView().getActivity() != null) {
+                            getRecommendation(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                                    R.raw.recommendation_mp));
+                        }
                     }
                 });
             }
         }
     }
 
-    public void getRecommendation() {
+    public void getRecommendation(String query) {
         if (TextUtils.isEmpty(category)) category = "";
-        GraphqlRequest graphqlRequest = null;
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(DEVICE_ID, DEFAULT_DEVICE_ID);
+        variables.put(CATEGORY_IDS, category);
+        variables.put(MP_CATEGORY_IDS, categoryList);
+        buyerGetRecommendationUseCase.setup(query, variables);
+        buyerGetRecommendationUseCase.execute(new Subscriber<RecommendationResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(RecommendationResponse recommendationResponse) {
+                if (getView() != null) {
+                    getView().setRecommendation(recommendationResponse);
+                }
+            }
+        });
+
+
+        /*GraphqlRequest graphqlRequest = null;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
         variable.put(CATEGORY_IDS, category);
@@ -272,15 +287,53 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     }
                 }
             });
-        }
+        }*/
     }
 
     @Override
-    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, RelativeLayout actionButtonLayout) {
-        if (actionButton.getName().equalsIgnoreCase("customer_notification")) {
-            sendEventNotificationUseCase.setPath(actionButton.getUri());
-            sendEventNotificationUseCase.setBody(metadata);
-            sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+    public void hitEventEmail(ActionButton actionButton, String metadata) {
+        sendEventNotificationUseCase.setPath(actionButton.getUri());
+        sendEventNotificationUseCase.setBody(metadata);
+        sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null) {
+                    getView().showSuccessMessageWithAction(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                if (getView() != null && getView().getActivity() != null) {
+                    Type token = new TypeToken<SendEventEmail>() {}.getType();
+                    RestResponse restResponse = typeDataResponseMap.get(token);
+                    getView().setActionButtonLayoutClickable(false);
+                    if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
+                        getView().setActionButtonText(getView().getActivity().getString(R.string.event_voucher_code_success));
+                        getView().showSuccessMessageWithAction(getView().getActivity().getString(R.string.event_voucher_code_copied));
+                    } else {
+                        Gson gson = new Gson();
+                        getView().setActionButtonText(getView().getActivity().getString(R.string.event_voucher_code_fail));
+                        SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
+                        getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getActionButtonGql(String query, List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
+        if (getView() != null) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put(PARAM, actionButtons);
+            setActionButtonUseCase.setup(query, variables);
+            setActionButtonUseCase.execute(new Subscriber<ActionButtonList>() {
                 @Override
                 public void onCompleted() {
 
@@ -288,27 +341,30 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                 @Override
                 public void onError(Throwable e) {
-                    if (getView() != null) {
-                        getView().showSuccessMessageWithAction(e.getMessage());
-                    }
+                    Timber.d("error occured" + e);
                 }
 
                 @Override
-                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                    if (getView() != null && getView().getActivity() != null) {
-                        Type token = new TypeToken<SendEventEmail>() {
-                        }.getType();
-                        RestResponse restResponse = typeDataResponseMap.get(token);
-                        actionButtonLayout.setClickable(false);
-                        if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
-                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_success));
-                            getView().showSuccessMessageWithAction(getView().getActivity().getString(R.string.event_voucher_code_copied));
+                public void onNext(ActionButtonList actionButtonList) {
+                    if (view != null) {
+                        if (flag) {
+                            if (actionButtonList != null) {
+                                view.setTapActionButton(position, actionButtonList.getActionButtonList());
+                                for (int i = 0; i < actionButtonList.getActionButtonList().size(); i++) {
+                                    if (actionButtonList.getActionButtonList().get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
+                                        actionButtonList.getActionButtonList().get(i).setBody(actionButtons.get(i).getBody());
+                                    }
+                                }
+                            }
                         } else {
-                            Gson gson = new Gson();
-                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_fail));
-                            SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
-                            getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
+                            if (actionButtonList != null) {
+                                view.setActionButton(position, actionButtonList.getActionButtonList());
+                            }
                         }
+                    } else {
+                        if (actionButtonList != null && actionButtonList.getActionButtonList() != null
+                        && actionButtonList.getActionButtonList().size() > 0 && getView() != null)
+                            getView().setActionButtons(actionButtonList.getActionButtonList());
                     }
                 }
             });
@@ -316,75 +372,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
-        Map<String, Object> variables = new HashMap<>();
-        this.view = view;
-        variables.put(PARAM, actionButtons);
-
-        orderDetailsUseCase = new GraphqlUseCase();
-
+    public void onBuyAgainItems(String query, List<Items> items, String eventActionLabel, String statusCode) {
         if (getView() != null && getView().getActivity() != null) {
-            GraphqlRequest graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                    R.raw.tapactions), ActionButtonList.class, variables);
+            Map<String, Object> variables = new HashMap<>();
 
-            orderDetailsUseCase.clearRequest();
-            orderDetailsUseCase.addRequest(graphqlRequest);
-            orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<GraphqlResponse>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.d("error occured" + e);
-                        }
-
-                        @Override
-                        public void onNext(GraphqlResponse response) {
-                            if (view != null) {
-                                if (response != null) {
-                                    ActionButtonList data = response.getData(ActionButtonList.class);
-                                    if (data != null) {
-                                        actionButtonList = data.getActionButtonList();
-                                        if (actionButtonList != null)
-                                            if (flag) {
-                                                view.setTapActionButton(position, actionButtonList);
-                                                for (int i = 0; i < actionButtonList.size(); i++) {
-                                                    if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
-                                                        actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
-                                                    }
-                                                }
-                                            } else {
-                                                view.setActionButton(position, actionButtonList);
-                                            }
-                                    }
-                                }
-                            } else {
-                                if (response != null) {
-                                    ActionButtonList data = response.getData(ActionButtonList.class);
-                                    if (data != null) {
-                                        actionButtonList = data.getActionButtonList();
-                                        if (actionButtonList != null && actionButtonList.size() > 0 && getView() != null)
-                                            getView().setActionButtons(actionButtonList);
-                                    }
-                                }
-                            }
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
-        if (getView() != null && getView().getActivity() != null) {Map<String, Object> variables = new HashMap<>();
-
-        JsonArray params = getView().generateInputQueryBuyAgain(items);
-        variables.put(PARAM, params);
-            addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+            JsonArray params = getView().generateInputQueryBuyAgain(items);
+            variables.put(PARAM, params);
+            addToCartMultiLegacyUseCase.setup(query, variables, userSessionInterface.getUserId());
             addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
                 @Override
                 public void onCompleted() {
@@ -408,67 +402,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         } else {
                             getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                         }
-                        orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
+                        getView().hitAnalyticsBuyAgain(atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1);
                     }
                 }
             });
-        }
-    }
-
-    public void updateOrderCancelReason(String cancelReason, String orderId,
-                                        int cancelOrReplacement, String url) {
-        if (getView() != null && getView().getActivity() != null) {
-            UserSession userSession = new UserSession(getView().getActivity());
-            String userId = userSession.getUserId();
-
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putString("reason_cancel", cancelReason);
-            requestParams.putString("user_id", userId);
-            requestParams.putString("order_id", orderId);
-            requestParams.putString("device_id", userSession.getDeviceId());
-            if (cancelOrReplacement != 1) {
-                requestParams.putInt("r_code", cancelOrReplacement);
-            }
-            getView().showProgressBar();
-
-            postCancelReasonUseCase.setRequestParams(requestParams);
-            postCancelReasonUseCase.cancelOrReplaceOrder(url);
-            postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                                                @Override
-                                                public void onCompleted() {
-
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-                                                    if (getView() != null) {
-                                                        Timber.d(e);
-                                                        getView().showErrorMessage(e.getMessage());
-                                                        getView().hideProgressBar();
-                                                        getView().finishOrderDetail();
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                                                    if (getView() != null) {
-                                                        Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                                                        }.getType();
-                                                        RestResponse restResponse = typeDataResponseMap.get(token);
-                                                        DataResponseCommon dataResponse = restResponse.getData();
-                                                        CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                                                        if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                            getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
-                                                        else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                                                            getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                                                        else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                            getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
-                                                        getView().hideProgressBar();
-                                                        getView().finishOrderDetail();
-                                                    }
-                                                }
-                                            }
-            );
         }
     }
 
