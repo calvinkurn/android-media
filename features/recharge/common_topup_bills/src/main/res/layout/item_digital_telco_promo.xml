@@ -13,15 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/promo_item_margin">
+        android:paddingBottom="@dimen/unify_space_12">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_promo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/promo_item_margin"
-            android:layout_marginTop="@dimen/promo_item_margin"
-            android:layout_marginRight="@dimen/promo_item_margin"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
             android:lines="2"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
@@ -39,7 +39,7 @@
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_alignTop="@+id/btn_copy_promo"
                 android:layout_alignBottom="@id/btn_copy_promo"
-                android:layout_marginLeft="@dimen/promo_item_margin"
+                android:layout_marginLeft="@dimen/unify_space_12"
                 android:gravity="center_vertical"
                 app:srcCompat="@drawable/common_topup_ic_voucher" />
 
@@ -75,9 +75,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/promo_code"
-                android:layout_marginLeft="@dimen/promo_item_margin"
+                android:layout_marginLeft="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/promo_item_margin"
+                android:layout_marginRight="@dimen/unify_space_12"
                 android:lineHeight="@dimen/fontSize_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl3"
                 android:paddingTop="@dimen/spacing_lvl2"

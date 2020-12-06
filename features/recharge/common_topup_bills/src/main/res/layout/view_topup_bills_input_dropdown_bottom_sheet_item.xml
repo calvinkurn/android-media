@@ -12,7 +12,7 @@
         android:id="@+id/vg_input_dropdown_icon"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:layout_marginRight="@dimen/input_dropdown_item_icon_margin"
+        android:layout_marginRight="@dimen/unify_space_12"
         android:visibility="gone"
         tools:visibility="visible" />
 

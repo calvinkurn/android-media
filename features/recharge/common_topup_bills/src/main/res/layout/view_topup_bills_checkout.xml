@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:paddingBottom="@dimen/checkout_view_padding"
+    android:paddingBottom="@dimen/unify_space_12"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -25,7 +25,7 @@
         android:id="@+id/txt_recharge_checkout_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/checkout_view_label_margin"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:lines="1"
         android:text="@string/common_topup_checkout_view_total_value_label"
         android:textColor="@color/Unify_N700_96"
