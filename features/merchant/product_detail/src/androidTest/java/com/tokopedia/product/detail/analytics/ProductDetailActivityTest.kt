@@ -202,7 +202,6 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        waitForTalk()
         onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
                 .check(matches(isDisplayed()))
                 .perform(click())
@@ -210,13 +209,8 @@ class ProductDetailActivityTest {
 
     private fun clickThreadDetailDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulQuestions))), scrollTo()))
-        waitForTalk()
         val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(0, clickChildViewWithId(R.id.productDetailDiscussionThread)))
-    }
-
-    private fun waitForTalk() {
-        Thread.sleep(7000L)
     }
 
     private fun clickTabDiscussion() {
