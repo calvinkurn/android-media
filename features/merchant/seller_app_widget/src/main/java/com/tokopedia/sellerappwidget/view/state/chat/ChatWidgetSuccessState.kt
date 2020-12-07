@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
@@ -59,7 +60,8 @@ object ChatWidgetSuccessState {
 
             //load app icon
             Utils.getAppIcon(context)?.let {
-                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawChatAppIcon, it, widgetId)
+                val radius = context.dpToPx(6).toInt()
+                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawChatAppIcon, it, widgetId, radius)
             }
 
             //setup refresh button

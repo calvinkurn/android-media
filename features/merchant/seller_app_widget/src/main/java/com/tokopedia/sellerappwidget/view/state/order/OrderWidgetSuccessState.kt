@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
@@ -49,6 +50,11 @@ object OrderWidgetSuccessState {
             setInt(R.id.btnSawSmallOrderRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
 
             OrderWidgetStateHelper.setupRefreshIntent<OrderAppWidget>(context, remoteViews, R.id.btnSawSmallOrderRefresh, widgetId)
+
+            Utils.getAppIcon(context)?.let {
+                val radius = context.dpToPx(6).toInt()
+                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawSmallOrderAppIcon, it, widgetId, radius)
+            }
 
             registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
             registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
@@ -111,7 +117,8 @@ object OrderWidgetSuccessState {
             }
 
             Utils.getAppIcon(context)?.let {
-                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId)
+                val radius = context.dpToPx(6).toInt()
+                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId, radius)
             }
 
             registerAppLinkIntent(context, R.id.imgSawOrderAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)

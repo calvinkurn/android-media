@@ -35,7 +35,7 @@ class GetOrderWorker(
 
             workRequest?.let {
                 WorkManager.getInstance(context)
-                        .beginUniqueWork (TAG_RUN_PERIODIC, ExistingWorkPolicy.REPLACE, it)
+                        .beginUniqueWork(TAG_RUN_PERIODIC, ExistingWorkPolicy.REPLACE, it)
                         .enqueue()
             }
         }

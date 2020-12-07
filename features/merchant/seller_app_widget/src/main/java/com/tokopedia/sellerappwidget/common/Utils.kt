@@ -1,12 +1,13 @@
 package com.tokopedia.sellerappwidget.common
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.widget.RemoteViews
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.AppWidgetTarget
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,11 +17,13 @@ import java.util.*
 
 object Utils {
 
-    fun getAppIcon(context: Context): Drawable? {
+    fun getAppIcon(context: Context): Int? {
         val pm = context.packageManager
         return try {
-            pm.getApplicationIcon(context.packageName)
+            val appInfo = pm.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
+            appInfo.icon
         } catch (e: PackageManager.NameNotFoundException) {
+            Timber.e(e)
             null
         }
     }
@@ -31,18 +34,19 @@ object Utils {
     }
 
     fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, imgUrl: String, widgetId: Int) {
-        val awt = AppWidgetTarget(context.applicationContext, imgViewId, remoteViews, widgetId)
-        Glide.with(context.applicationContext)
+        val awt = AppWidgetTarget(context, imgViewId, remoteViews, widgetId)
+        Glide.with(context)
                 .asBitmap()
                 .load(imgUrl)
                 .into(awt)
     }
 
-    fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, drawable: Drawable, widgetId: Int) {
-        val awt = AppWidgetTarget(context.applicationContext, imgViewId, remoteViews, widgetId)
-        Glide.with(context.applicationContext)
+    fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, resId: Int, widgetId: Int, radius: Int) {
+        val awt = AppWidgetTarget(context, imgViewId, remoteViews, widgetId)
+        Glide.with(context)
                 .asBitmap()
-                .load(drawable)
+                .load(resId)
+                .transform(CenterCrop(), RoundedCorners(radius))
                 .into(awt)
     }
 }
