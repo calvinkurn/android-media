@@ -1640,6 +1640,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun removeObservers() {
         removeObservers(viewModel.viewState)
         removeObservers(viewModel.productListResult)
+        removeObservers(viewModel.getProductVariantsResult)
         removeObservers(viewModel.shopInfoResult)
         removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)

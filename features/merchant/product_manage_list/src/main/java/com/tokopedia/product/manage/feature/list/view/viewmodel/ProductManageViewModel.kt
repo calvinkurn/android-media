@@ -266,7 +266,7 @@ class ProductManageViewModel @Inject constructor(
         showLoadingDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val requestParams = GetProductVariantUseCase.createRequestParams(productId)
+                val requestParams = GetProductVariantUseCase.createRequestParams(productId, false)
                 val response = getProductVariantUseCase.execute(requestParams)
 
                 val variant = response.getProductV3
