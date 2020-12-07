@@ -55,7 +55,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        launchCatchError(block = {
+        launchCatchError(dispatchers.io, block = {
             _shopBasicData.postValue(Success(getShopBasicData().await()))
             _shopStatusData.postValue(Success(getShopStatus(shopId, includeOS).await()))
         }, onError = {})
@@ -70,17 +70,15 @@ class ShopSettingsInfoViewModel @Inject constructor (
     ) {
         updateShopScheduleUseCase.unsubscribe()
 
-        launchCatchError(block = {
-            val updateScheduleResponse: String = withContext(dispatchers.io) {
-                val requestParams = UpdateShopScheduleUseCase.createRequestParams(
-                        action = action,
-                        closeNow = closeNow,
-                        closeStart = closeStart,
-                        closeEnd = closeEnd,
-                        closeNote = closeNote
-                )
-                updateShopScheduleUseCase.getData(requestParams)
-            }
+        launchCatchError(dispatchers.io, block = {
+            val requestParams = UpdateShopScheduleUseCase.createRequestParams(
+                    action = action,
+                    closeNow = closeNow,
+                    closeStart = closeStart,
+                    closeEnd = closeEnd,
+                    closeNote = closeNote
+            )
+            val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
             _updateScheduleResult.postValue(Success(updateScheduleResponse))
         }) {
             _updateScheduleResult.postValue(Fail(it))
