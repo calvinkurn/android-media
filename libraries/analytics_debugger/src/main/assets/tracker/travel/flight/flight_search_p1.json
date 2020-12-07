@@ -4,7 +4,7 @@
   "query": [
     {
       "event": "select_content",
-      "eventAction": "product click",
+      "eventAction": "product click v2",
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - .*-.*}}",
       "sessionIris": "{{.*}}",
@@ -26,6 +26,7 @@
           "item_category": "Flight",
           "dimension76": "{{.*}}",
           "dimension75": "{{.*}}",
+          "dimension107": "{{.*}}",
           "dimension67": "{{.*}}",
           "dimension66": "{{.*}}",
           "dimension72": "{{.*}}",
@@ -42,7 +43,7 @@
     },
     {
       "event": "view_item_list",
-      "eventAction": "product impressions",
+      "eventAction": "product impressions v2",
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - .*-.*}}",
       "sessionIris": "{{.*}}",
@@ -64,6 +65,7 @@
           "item_category": "Flight",
           "dimension76": "{{.*}}",
           "dimension75": "{{.*}}",
+          "dimension107": "{{.*}}",
           "dimension67": "{{.*}}",
           "dimension66": "{{.*}}",
           "dimension72": "{{.*}}",
