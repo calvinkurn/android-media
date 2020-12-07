@@ -31,14 +31,15 @@ class InspirationCarouselOptionGridViewHolder(
     }
 
     private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
+        val countSoldRating = labelGroupList.getOrNull(0)?.title ?: ""
+
         return ProductCardModel(
                 productImageUrl = imgUrl,
                 productName = name,
                 formattedPrice = priceStr,
-                ratingCount = rating,
-                reviewCount = countReview,
                 slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else ""
+                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+                countSoldRating = countSoldRating
         )
     }
 
