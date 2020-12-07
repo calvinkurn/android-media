@@ -2,7 +2,6 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -751,15 +750,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun loadInitialData() {
-        isLoadingNewProductData = true
-        shopProductAdapter.clearAllElements()
-        stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
-        startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
-        showLoading()
-        initialProductListData?.let{
-            viewModel.setInitialProductList(it)
+        if (isOnViewCreated && isShopProductTabSelected()  && userVisibleHint) {
+            isLoadingNewProductData = true
+            shopProductAdapter.clearAllElements()
+            stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
+            showLoading()
+            initialProductListData?.let{
+                viewModel.setInitialProductList(it)
+            }
+            viewModel.getShopFilterData(shopId)
+            isOnViewCreated = false
         }
-        viewModel.getShopFilterData(shopId)
     }
 
     private fun promoClicked(url: String?) {
@@ -875,7 +877,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (userVisibleHint) {
+        if (isShopProductTabSelected()) {
             startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
         }
         super.onCreate(savedInstanceState)
@@ -891,9 +893,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun startMonitoringPltRenderPage() {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.startMonitoringPltRenderPage(it)
-                }
+                shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
     }
@@ -901,9 +901,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun stopMonitoringPltRenderPage() {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.stopMonitoringPltRenderPage(it)
-                }
+                shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
     }
@@ -911,9 +909,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun startMonitoringPltCustomMetric(tag: String) {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.startCustomMetric(it, tag)
-                }
+                shopPageActivity.startCustomMetric(it, tag)
             }
         }
     }
@@ -921,9 +917,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun stopMonitoringPltCustomMetric(tag: String) {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.stopCustomMetric(it, tag)
-                }
+                shopPageActivity.stopCustomMetric(it, tag)
             }
         }
     }
@@ -931,17 +925,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun invalidateMonitoringPlt() {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.invalidateMonitoringPlt(it)
-                }
+                shopPageActivity.invalidateMonitoringPlt(it)
             }
         }
     }
 
     private fun stopMonitoringPerformance() {
-        if (!isShowNewShopHomeTab()) {
-            (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
-        }
+        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
+    }
+
+    private fun isShopProductTabSelected(): Boolean {
+        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -974,22 +968,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
         isOnViewCreated = true
-        loadInitialDataAfterOnViewCreated(userVisibleHint)
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
+        loadInitialData()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        loadInitialDataAfterOnViewCreated(isVisibleToUser)
         super.setUserVisibleHint(isVisibleToUser)
-    }
-
-    private fun loadInitialDataAfterOnViewCreated(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isOnViewCreated) {
-            loadInitialData()
-            isOnViewCreated = false
-        }
+        loadInitialData()
     }
 
     private fun getArgumentsData() {

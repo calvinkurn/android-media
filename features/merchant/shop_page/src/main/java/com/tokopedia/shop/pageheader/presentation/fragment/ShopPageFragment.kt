@@ -3,7 +3,6 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 import android.app.Activity
 import android.content.ClipData
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -55,7 +54,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -64,7 +62,6 @@ import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpa
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -246,7 +243,7 @@ class ShopPageFragment :
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
-
+    var selectedPosition = -1
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
             shopViewModel.isMyShop(shopId)
@@ -302,44 +299,6 @@ class ShopPageFragment :
         viewPager.adapter = viewPagerAdapter
         viewPager.offscreenPageLimit = PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, true)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, false)
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, true)
-                if (isFirstLoading) {
-                    isFirstLoading = false
-                } else {
-                    shopPageTracking?.clickTab(
-                            shopViewModel.isMyShop(shopId),
-                            listShopPageTabModel[tab.position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
-                }
-                if (isSellerMigrationEnabled(context)) {
-                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
-                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-                        if (tab.position == tabFeedPosition) {
-                            showBottomSheetSellerMigration()
-                        } else {
-                            hideBottomSheetSellerMigration()
-                        }
-                    }else{
-                        hideBottomSheetSellerMigration()
-                    }
-                }
-            }
-        })
         swipeToRefresh.setOnRefreshListener {
             refreshData()
             updateStickyContent()
@@ -1001,42 +960,88 @@ class ShopPageFragment :
     private fun setupTabs() {
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
+        selectedPosition = getSelectedTabPosition()
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = viewPager.currentItem
-        if (shouldOverrideTabToHome) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab, true)
             }
-        }
-        if (shouldOverrideTabToReview) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
-            } else {
-                selectedPosition
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab, false)
             }
-        }
-        if (shouldOverrideTabToProduct) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            } else {
-                selectedPosition
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                selectedPosition = tab.position
+                viewPagerAdapter.handleSelectedTab(tab, true)
+                if (isFirstLoading) {
+                    isFirstLoading = false
+                } else {
+                    shopPageTracking?.clickTab(
+                            shopViewModel.isMyShop(shopId),
+                            listShopPageTabModel[tab.position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                        if (tab.position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
+                    }
+                }
             }
-        }
-        if (shouldOverrideTabToFeed) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-            } else {
-                selectedPosition
-            }
-        }
+        })
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun getSelectedTabPosition(): Int {
+        var selectedPosition = viewPager.currentItem
+        if(tabLayout.tabCount == 0){
+            if (shouldOverrideTabToHome) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
+                } else {
+                    viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+                }
+            }
+            if (shouldOverrideTabToReview) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+            if (shouldOverrideTabToProduct) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+            if (shouldOverrideTabToFeed) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+        }
+        return selectedPosition
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
@@ -1462,6 +1467,14 @@ class ShopPageFragment :
         if(isMyShop) {
             shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
             shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
+    }
+
+    fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
+        return if (viewPagerAdapter.isFragmentObjectExists(tabFragmentClass)) {
+            viewPagerAdapter.getFragmentPosition(tabFragmentClass) == selectedPosition
+        } else {
+            false
         }
     }
 }

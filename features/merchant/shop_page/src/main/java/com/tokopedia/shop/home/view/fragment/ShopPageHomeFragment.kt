@@ -202,9 +202,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var isLoadInitialData = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        if (isShopHomeTabSelected())
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
         getIntentData()
         setupPlayWidget()
         super.onCreate(savedInstanceState)
@@ -218,6 +220,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         setupPlayWidgetAnalyticListener()
+    }
+
+    private fun isShopHomeTabSelected(): Boolean {
+        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -283,6 +289,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
+        isLoadInitialData = true
         loadInitialData()
     }
 
@@ -322,6 +329,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
+        loadInitialData()
     }
 
     override fun onPause() {
@@ -358,15 +366,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        shopHomeAdapter.clearAllElements()
-        recycler_view.visible()
-        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        globalError_shopPage.hide()
-        showLoading()
-        shopHomeAdapter.isOwner = isOwner
-        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
+        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
+            shopHomeAdapter.clearAllElements()
+            recycler_view.visible()
+            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+            globalError_shopPage.hide()
+            showLoading()
+            shopHomeAdapter.isOwner = isOwner
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+            viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
+            isLoadInitialData = false
+        }
     }
 
     private fun getIntentData() {
