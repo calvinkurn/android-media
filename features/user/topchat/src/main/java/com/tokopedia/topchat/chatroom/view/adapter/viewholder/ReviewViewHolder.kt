@@ -1,7 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -37,6 +39,7 @@ class ReviewViewHolder(
 
     override fun bind(element: ReviewUiModel) {
         super.bind(element)
+        bindGravity(element)
         bindImage(element)
         bindBackground(element)
         bindLabel(element)
@@ -44,6 +47,22 @@ class ReviewViewHolder(
         bindBuyerLabel(element)
         bindStar(element)
         bindStarClick(element)
+    }
+
+    private fun bindGravity(element: ReviewUiModel) {
+        if (element.isSender) {
+            setGravity(Gravity.END)
+        } else {
+            setGravity(Gravity.START)
+        }
+    }
+
+    private fun setGravity(gravity: Int) {
+        val lp = container?.layoutParams as? FrameLayout.LayoutParams
+        lp?.let {
+            lp.gravity = gravity
+            container?.layoutParams = it
+        }
     }
 
     private fun bindImage(element: ReviewUiModel) {
