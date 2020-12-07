@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,8 +74,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var tvSave: TextView? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
-    private var currentTime = 0L
-    private var currentTimeGetData = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -105,8 +102,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         setupSaveBtn()
 
         observeLiveData()
-        currentTimeGetData = System.currentTimeMillis()
-        Log.d("SHOP_BASIC_INFO_GET", "$currentTimeGetData")
         getAllowShopNameDomainChanges()
         container.requestFocus()
 
@@ -395,8 +390,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
-            currentTime = System.currentTimeMillis() - currentTime
-            Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
             when(it) {
                 is Success -> {
                     it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
@@ -416,8 +409,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeAllowShopNameDomainChanges() {
         observe(viewModel.allowShopNameDomainChanges) {
-            currentTimeGetData = System.currentTimeMillis() - currentTimeGetData
-            Log.d("SHOP_BASIC_INFO_GET", "$currentTimeGetData")
             when(it) {
                 is Success -> {
                     val data = it.data
@@ -559,8 +550,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         if (!isSavedLocalImageUrlEmpty()) {
             viewModel.uploadShopImage(savedLocalImageUrl ?: "", name, domain, tagLine, desc)
         } else {
-            currentTime = System.currentTimeMillis()
-            Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
 
