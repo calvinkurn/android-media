@@ -61,7 +61,6 @@ class AddNewAddressNegativeTest {
         val screenName = "/user/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
-            setLayout()
             searchWithKeyword(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
@@ -83,7 +82,6 @@ class AddNewAddressNegativeTest {
         val screenName = "/cart/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
-            setLayout()
             searchWithKeyword(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
@@ -105,7 +103,6 @@ class AddNewAddressNegativeTest {
         val screenName = "/user/address/create/cart"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
-            setLayout()
             searchWithKeyword(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
