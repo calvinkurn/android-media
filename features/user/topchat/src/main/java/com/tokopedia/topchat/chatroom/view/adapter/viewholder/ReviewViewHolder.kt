@@ -56,7 +56,7 @@ class ReviewViewHolder(
 
     private fun bindLabel(element: ReviewUiModel) {
         // TODO("Handle for sender")
-        if (!element.isSender && !element.allowReview && !element.isReviewed) {
+        if (!element.isSender && element.hasExpired()) {
             label?.apply {
                 show()
                 setLabelType(Label.GENERAL_LIGHT_RED)
@@ -80,7 +80,7 @@ class ReviewViewHolder(
     }
 
     private fun bindBuyerLabel(element: ReviewUiModel) {
-        if (!element.isSender && element.isReviewed && !element.allowReview) {
+        if (!element.isSender && element.hasReviewed()) {
             buyerLabelStatus?.show()
         } else {
             buyerLabelStatus?.hide()
@@ -88,7 +88,7 @@ class ReviewViewHolder(
     }
 
     private fun bindStar(element: ReviewUiModel) {
-        if (!element.isSender && (element.allowReview || element.isReviewed)) {
+        if (!element.isSender && element.shouldShowStar()) {
             reputation?.show()
             reputation?.resetStars()
             if (element.isReviewed) {
@@ -101,6 +101,18 @@ class ReviewViewHolder(
 
     private fun bindStarClick(element: ReviewUiModel) {
         reputation?.reviewable = !element.isReviewed || element.allowReview
+    }
+
+    private fun ReviewUiModel.hasReviewed(): Boolean {
+        return isReviewed && !allowReview
+    }
+
+    private fun ReviewUiModel.shouldShowStar(): Boolean {
+        return (allowReview || isReviewed)
+    }
+
+    private fun ReviewUiModel.hasExpired(): Boolean {
+        return !allowReview && !isReviewed
     }
 
     companion object {
