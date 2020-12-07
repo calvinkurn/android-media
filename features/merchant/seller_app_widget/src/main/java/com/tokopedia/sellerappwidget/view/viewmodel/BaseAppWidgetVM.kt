@@ -1,6 +1,6 @@
 package com.tokopedia.sellerappwidget.view.viewmodel
 
-import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -9,11 +9,11 @@ import kotlin.coroutines.CoroutineContext
  */
 
 abstract class BaseAppWidgetVM<T>(
-        protected val dispatcherProvider: AppWidgetDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.main
+        get() = dispatchers.main
 
     protected var view: T? = null
         private set
