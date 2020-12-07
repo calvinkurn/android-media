@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Tokopedia Seller Widget</string>
+    <string name="saw_chat">Chat</string>
+    <string name="saw_seller_order">Penjualan</string>
     <string name="saw_ready_to_ship">Siap Dikirim</string>
     <string name="saw_new_order">Pesanan Baru</string>
     <string name="saw_order">pesanan</string>
