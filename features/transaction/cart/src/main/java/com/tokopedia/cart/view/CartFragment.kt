@@ -1360,6 +1360,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onRecentViewProductImpression(element: CartRecentViewItemHolderData) {
+        recentViewList?.let {
+            if (element.isTopAds) {
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        this::class.java.simpleName,
+                        element.trackerImageUrl,
+                        element.id,
+                        element.name,
+                        element.imageUrl
+                )
+            }
+        }
+    }
+
     override fun onRecentViewProductClicked(productId: String) {
         (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
@@ -1393,17 +1407,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartPageAnalytics.enhancedEcommerceProductViewLastSeen(
                     dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
             )
-        }
-        recentViewList?.forEach {
-            if (it.isTopAds) {
-                TopAdsUrlHitter(context).hitImpressionUrl(
-                        this::class.java.simpleName,
-                        it.trackerImageUrl,
-                        it.id,
-                        it.name,
-                        it.imageUrl
-                )
-            }
         }
     }
 

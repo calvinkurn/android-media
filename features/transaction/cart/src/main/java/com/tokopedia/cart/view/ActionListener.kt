@@ -77,4 +77,6 @@ interface ActionListener {
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+
+    fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
 }

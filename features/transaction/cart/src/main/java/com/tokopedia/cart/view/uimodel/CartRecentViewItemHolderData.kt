@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 
 /**
@@ -27,4 +28,4 @@ data class CartRecentViewItemHolderData(
         var freeOngkirImageUrl: String = "",
         var clickUrl: String = "",
         var trackerImageUrl: String = "",
-        var labelGroupList: List<RecommendationLabel> = listOf() )
+        var labelGroupList: List<RecommendationLabel> = listOf() ) : ImpressHolder(){}

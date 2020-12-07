@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
 import kotlinx.android.synthetic.main.item_product_recent_view.view.*
 
@@ -51,6 +52,11 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
                             hasAddToCartButton = true
                     )
             )
+            setImageProductViewHintListener(element, object : ViewHintListener {
+                override fun onViewHint() {
+                    actionListener?.onRecentViewProductImpression(element)
+                }
+            })
 
             setOnClickListener {
                 actionListener?.onRecentViewProductClicked(element.id)
