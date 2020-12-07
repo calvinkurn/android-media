@@ -385,15 +385,13 @@ public class ProductViewModelMapper {
                     product.getUrl(),
                     product.getApplink(),
                     product.getDescription(),
-                    product.getOriginalPrice(),
-                    product.getDiscountExpired(),
-                    product.getDiscountStart(),
-                    product.getDiscountPercentage(),
-                    product.getRatingAverage(),
                     position,
                     inspirationCarouselType,
+                    product.getRatingAverage(),
+                    convertToLabelGroupList(product.getLabelGroupList()),
                     layout,
-                    convertToLabelGroupList(product.getLabelGroupList())
+                    product.getOriginalPrice(),
+                    product.getDiscountPercentage()
             ));
         }
 

@@ -271,10 +271,6 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
-                                original_price
-                                discount_percentage
-                                discount_start
-                                discount_expired
                                 rating_average
                                 label_groups {
                                     title
@@ -282,6 +278,8 @@ class SearchProductFirstPageGqlUseCase(
                                     position
                                     url
                                 }
+                                original_price
+                                discount_percentage
                             }
                         }
                     }

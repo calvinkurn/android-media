@@ -655,29 +655,21 @@ data class SearchProductModel(
             @Expose
             val description: List<String> = listOf(),
 
-            @SerializedName("original_price")
-            @Expose
-            val originalPrice: String = "",
-
-            @SerializedName("discount_expired")
-            @Expose
-            val discountExpired: String = "",
-
-            @SerializedName("discount_start")
-            @Expose
-            val discountStart: String = "0",
-
-            @SerializedName("discount_percentage")
-            @Expose
-            val discountPercentage: Int = 0,
-
             @SerializedName("rating_average")
             @Expose
             val ratingAverage: String = "",
 
             @SerializedName("label_groups")
             @Expose
-            val labelGroupList: List<ProductLabelGroup> = listOf()
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("original_price")
+            @Expose
+            val originalPrice: String = "",
+
+            @SerializedName("discount_percentage")
+            @Expose
+            val discountPercentage: Int = 0
     )
 
     data class SearchInspirationWidget(

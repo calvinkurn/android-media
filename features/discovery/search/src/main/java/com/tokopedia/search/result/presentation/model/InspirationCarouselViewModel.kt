@@ -46,15 +46,13 @@ class InspirationCarouselViewModel(
             val url: String = "",
             val applink: String = "",
             val description: List<String> = listOf(),
-            val originalPrice: String = "",
-            val discountExpired: String = "",
-            val discountStart: String = "",
-            val discountPercentage: Int = 0,
-            val ratingAverage: String = "",
             val optionPosition: Int = 0,
             val inspirationCarouselType: String = "",
+            val ratingAverage: String = "",
+            val labelGroupList: List<LabelGroupViewModel> = listOf(),
             val layout: String = "",
-            val labelGroupList: List<LabelGroupViewModel> = listOf()
+            val originalPrice: String = "",
+            val discountPercentage: Int = 0
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
