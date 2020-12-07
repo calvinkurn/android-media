@@ -53,6 +53,7 @@ import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivit
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -147,14 +148,14 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
             userSession = new UserSession(this);
 
             Uri uri = getIntent().getData();
             boolean isChangeUrlApplink
                     = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
 
-            if(isChangeUrlApplink) {
+            if (isChangeUrlApplink) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -168,9 +169,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void handleUri(Uri uri) {
-        if(uri.getLastPathSegment().startsWith(STAGING)){
+        if (uri.getLastPathSegment().startsWith(STAGING)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
-        } else if (uri.getLastPathSegment().startsWith(LIVE)){
+        } else if (uri.getLastPathSegment().startsWith(LIVE)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
         }
         TokopediaUrl.Companion.deleteInstance();
@@ -288,9 +289,9 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = "Navigation Revamp";
-        String VARIANT_OLD = "Existing Navigation";
-        String VARIANT_REVAMP = "Navigation Revamp";
+        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -359,7 +360,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                 } else {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -437,11 +438,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        reviewNotifBtn.setOnClickListener(v ->{
+        reviewNotifBtn.setOnClickListener(v -> {
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777,notifReview);
-                });
+            notificationManagerCompat.notify(777, notifReview);
+        });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
         toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
@@ -499,10 +500,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
             if (state) {
                 Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
+                        "(TODO) UI Block is enabled with delay " + delay, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
+                        "(TODO) UI Block is disabled", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -558,12 +559,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse.setOnClickListener(v -> {
             new FakeResponseActivityProvider().startActivity(this);
         });
+
     }
 
     private int toInt(String str) {
         try {
             return Integer.parseInt(str);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return 0;
         }
     }

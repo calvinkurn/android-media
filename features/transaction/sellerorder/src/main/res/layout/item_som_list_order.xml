@@ -156,7 +156,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toTopOf="@id/ivSomListProduct"
-                app:layout_constraintVertical_bias="0"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="heading_6"
                 tools:text="Air Jorda Gym Red Satin Original" />
@@ -169,14 +168,12 @@
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingBottom="1.5dp"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_68"
-                app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
+                app:layout_constraintBottom_toTopOf="@id/tvSomListProductExtra"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListProductName"
-                app:layout_constraintVertical_bias="0"
                 app:typographyType="heading_6"
                 tools:text="(Red)" />
 
@@ -186,13 +183,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
-                android:paddingBottom="1.5dp"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListProductVariant"
-                app:layout_constraintVertical_bias="0"
                 app:typographyType="body_3"
                 tools:text="+2 produk lainnya" />
 

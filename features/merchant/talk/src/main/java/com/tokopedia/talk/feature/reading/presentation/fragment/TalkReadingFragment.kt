@@ -49,7 +49,7 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx

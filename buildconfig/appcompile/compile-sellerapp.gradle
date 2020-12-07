@@ -117,6 +117,7 @@ include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 include "features:top_ads:top_ads_detail_sheet"
+include "features:top_ads:top_ads_headline"
 
 include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"

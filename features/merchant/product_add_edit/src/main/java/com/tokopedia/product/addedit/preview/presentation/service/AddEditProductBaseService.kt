@@ -13,6 +13,7 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -119,7 +120,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
             onUploadProductImagesSuccess(uploadIdList, variantInputModel)
         }, onError = { throwable ->
-            setUploadProductDataError(throwable.localizedMessage.orEmpty())
+            setUploadProductDataError(cleanErrorMessage(throwable.localizedMessage.orEmpty()))
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
     }
@@ -250,7 +251,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     private fun sendSuccessBroadcast() {
-        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+        val result = Intent(BROADCAST_ADD_PRODUCT)
         val bundle = Bundle()
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
         result.putExtras(bundle)

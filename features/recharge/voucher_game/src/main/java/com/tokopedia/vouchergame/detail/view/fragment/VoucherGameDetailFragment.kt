@@ -418,7 +418,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         context?.run {
             if (value) {
                 input_field_label.text = getString(R.string.vg_input_field_error_message)
-                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.red_600))
+                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Red_R600))
             } else {
                 input_field_label.visibility = View.GONE
             }
@@ -672,7 +672,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     companion object {
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_6
+        val ITEM_DECORATOR_SIZE = R.dimen.voucher_game_dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1

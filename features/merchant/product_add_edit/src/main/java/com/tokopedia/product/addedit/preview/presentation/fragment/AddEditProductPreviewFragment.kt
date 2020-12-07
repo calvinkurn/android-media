@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -102,6 +103,7 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -112,6 +114,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -133,6 +136,9 @@ class AddEditProductPreviewFragment:
 
     // action button
     private var doneButton: AppCompatTextView? = null
+
+    // notification
+    private var tickerAddEditProductNotification: Ticker? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -173,7 +179,7 @@ class AddEditProductPreviewFragment:
     private var productStatusSwitch: SwitchUnify? = null
 
     //loading
-    private var loadingLayout: View? = null
+    private var loadingLayout: MotionLayout? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -263,6 +269,9 @@ class AddEditProductPreviewFragment:
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
+
+        // action button
+        tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -355,24 +364,10 @@ class AddEditProductPreviewFragment:
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-                // when we perform add product, the productId will be 0
-                // when we perform edit product, the productId will be provided from the getProductV3 response
-                // when we perform open draft, previous state before we save the product to draft will be the same
-                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                    viewModel.productInputModel.value?.apply {
-                        startProductEditService(this)
-                        showLoading()
-                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
-                    }
-                } else {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        startProductAddService(productInputModel)
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
-                    }
+                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                    viewModel.validateProductNameInput(it)
                 }
             }
-
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -468,6 +463,7 @@ class AddEditProductPreviewFragment:
         observeProductVariant()
         observeImageUrlOrPathList()
         observeIsLoading()
+        observeValidationMessage()
         observeSaveProductDraft()
 
         // stop prepare page PLT monitoring
@@ -709,7 +705,7 @@ class AddEditProductPreviewFragment:
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
                         startProductAddService(productInputModel)
-                        activity?.finish()
+                        Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
                         view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
                     }
@@ -776,6 +772,8 @@ class AddEditProductPreviewFragment:
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
+        tickerAddEditProductNotification?.show()
+
         enablePhotoEdit()
         enableDetailEdit()
         enableDescriptionEdit()
@@ -946,6 +944,38 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun observeValidationMessage() {
+        viewModel.resetValidateResult() // reset old result when re-observe
+        viewModel.validationResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result.result) {
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                ValidationResultModel.Result.VALIDATION_SUCCESS -> {
+                    if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        viewModel.productInputModel.value?.apply {
+                            startProductEditService(this)
+                            showLoading()
+                            Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                        }
+                    } else {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            startProductAddService(productInputModel)
+                            activity?.setResult(RESULT_OK)
+                            activity?.finish()
+                        }
+                    }
+                }
+                ValidationResultModel.Result.VALIDATION_ERROR -> {
+                    view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                }
+                else -> {
+                    // no-op
+                }
+            }
+        })
+    }
+
     private fun observeSaveProductDraft() {
         viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -965,6 +995,7 @@ class AddEditProductPreviewFragment:
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
+        viewModel.validationResult.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1224,10 +1255,30 @@ class AddEditProductPreviewFragment:
 
     private fun showLoading() {
         loadingLayout?.show()
+        doneButton?.hide()
     }
 
     private fun hideLoading() {
-        loadingLayout?.hide()
+        doneButton?.show()
+        loadingLayout?.transitionToEnd()
+        loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                // no-op
+            }
+
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+                // no-op
+            }
+
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                loadingLayout?.hide()
+                loadingLayout?.progress = 0.0f
+            }
+        })
     }
 
     private fun goToSellerAppProductManageThenSetCashback() {

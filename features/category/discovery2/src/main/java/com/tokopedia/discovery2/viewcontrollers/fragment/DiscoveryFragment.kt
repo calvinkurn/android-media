@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -70,9 +71,9 @@ private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
-private const val EXP_NAME = "Navigation Revamp"
-private const val VARIANT_OLD = "Existing Navigation"
-private const val VARIANT_REVAMP = "Navigation Revamp"
+private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
 
@@ -162,7 +163,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             navToolbar.visibility = View.VISIBLE
             oldToolbar.visibility = View.GONE
-            navToolbar.setOnBackButtonClickListener(backButtonClickListener = ::handleBackPress)
+            navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
     }
 
@@ -284,7 +285,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 getDiscoveryAnalytics().trackSearchClick()
                 handleSearchClick(data)
             }
-            typographyHeader.text = data?.name ?: getString(R.string.tokopedia)
+            typographyHeader.text = data?.name ?: getString(R.string.discovery_tokopedia)
         } else {
             setupSearchBar(data)
         }
@@ -300,9 +301,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             } else {
                 navToolbar.setIcon(
                         IconBuilder()
-                                .addIcon(IconList.ID_SHARE) { handleShareClick(data.share) }
-                                .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
-                                .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
+                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data.share) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
             }
         } else {
@@ -325,7 +326,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun setToolBarPageInfoOnFail() {
         if (showOldToolbar) {
-            typographyHeader.text = getString(R.string.tokopedia)
+            typographyHeader.text = getString(R.string.discovery_tokopedia)
             ivSearch.hide()
             ivShare.hide()
         } else {
@@ -339,19 +340,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
                 IconBuilder()
-                        .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
-                        .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
+                        .addIcon(iconId =  IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId =  IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
     }
 
     private fun setupSearchBar(data: PageInfo?) {
         navToolbar.setupSearchbar(
                 hints = listOf(HintData(placeholder = data?.searchTitle
-                        ?: getString(R.string.default_search_title))),
+                        ?: getString(R.string.discovery_default_search_title))),
                 searchbarClickCallback = {
                     handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
                     handleSearchClick(data)
-                }
+                },
+                disableDefaultGtmTracker = true
         )
     }
 

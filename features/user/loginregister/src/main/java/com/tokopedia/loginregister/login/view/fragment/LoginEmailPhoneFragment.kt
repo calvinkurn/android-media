@@ -148,7 +148,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    private var isEnableFingerprint = true
+    protected var isEnableFingerprint = true
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd = true
     private var isFromRegister = false
@@ -359,6 +359,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun prepareView() {
 
         initTokopediaCareText()
+        partialRegisterInputView.showForgotPassword()
 
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
@@ -493,7 +494,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView.showDefaultView()
     }
 
-    private fun goToForgotPassword() {
+    override fun goToForgotPassword() {
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText.text.toString().trim())
@@ -503,7 +504,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun goToTokopediaCareWebview() {
+    override fun goToTokopediaCareWebview() {
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
@@ -564,10 +565,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             onDismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+            openGoogleLoginIntent()
         }
+    }
 
+    override fun openGoogleLoginIntent(){
+        val intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
     }
 
     private fun onLoginFacebookClick() {
@@ -579,7 +583,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun onDismissBottomSheet() {
+    fun onDismissBottomSheet() {
         try {
             if (bottomSheet != null) {
                 bottomSheet.dismiss()
@@ -650,7 +654,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtension?.hide()
     }
 
-    private fun goToRegisterInitial(source: String) {
+    override fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
             var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
@@ -851,11 +855,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
         analytics.trackLoginPhoneNumber()
-        activity?.let {
-            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_LOGIN_PHONE)
-        }
+        routeToVerifyPage(phoneNumber, REQUEST_LOGIN_PHONE, OTP_LOGIN_PHONE_NUMBER)
+    }
 
+    override fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int){
+        activity?.let {
+            val intent =  goToVerification(phone = phoneNumber, otpType = otpType)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
@@ -1104,7 +1111,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 && !TextUtils.isEmpty(email))
     }
 
-    private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
+    override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null && activity!!.applicationContext != null) {
             val intent = RouteManager.getIntent(activity,
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
@@ -1114,7 +1121,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun goToChooseAccountPageFacebook(accessToken: String) {
+    override fun goToChooseAccountPageFacebook(accessToken: String) {
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
@@ -1258,7 +1265,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+    override fun goToAddPin2FA(enableSkip2FA: Boolean){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
@@ -1272,7 +1279,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun isFromAtcPage(): Boolean = source == SOURCE_ATC
 
-    private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
+    override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
         val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
@@ -1306,7 +1313,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun onGoToChangeName() {
+    override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
             startActivityForResult(intent, REQUEST_ADD_NAME)

@@ -65,6 +65,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -138,6 +139,7 @@ class ShopPageFragment :
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
+        const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -183,6 +185,7 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
+    private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
         get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
             isUsingNewNavigation()
@@ -500,6 +503,7 @@ class ShopPageFragment :
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 isFirstCreateShop = getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
+                isForceNotShowingTab = getBooleanExtra(FORCE_NOT_SHOWING_HOME_TAB, false)
                 data?.run {
                     if (shopId.isEmpty()) {
                         if (pathSegments.size > 1) {
@@ -669,7 +673,7 @@ class ShopPageFragment :
             setIcon(iconBuilder)
             if(shopViewModel.isUserSessionActive)
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
-            setToolbarPageName("$SHOPPAGE - $shopId")
+            setToolbarPageName(SHOP_PAGE)
         }
     }
 
@@ -912,7 +916,7 @@ class ShopPageFragment :
             shopId = this@ShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
             isGoldMerchant = shopPageP1Data.isGoldMerchant
-            shopHomeType = shopPageP1Data.shopHomeType
+            shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab } ?: ShopHomeType.NONE
             topContentUrl = shopPageP1Data.topContentUrl
             shopName = shopPageP1Data.shopName
             shopDomain = shopPageP1Data.shopDomain

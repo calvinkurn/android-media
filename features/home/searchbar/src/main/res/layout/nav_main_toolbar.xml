@@ -45,8 +45,8 @@
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_gravity="center"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/layout_search"
                 app:layout_constraintBottom_toBottomOf="@id/layout_search"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,13 +74,16 @@
                 android:id="@+id/layout_search"
                 tools:visibility="visible"
                 android:visibility="gone"
+                android:gravity="center"
                 app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
                 app:layout_constraintStart_toEndOf="@id/nav_icon_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_width="0dp"
                 android:background="@drawable/nav_toolbar_searchbar_bg_corner"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/dp_36"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/spacing_lvl2"
                 android:paddingRight="@dimen/spacing_lvl2">
@@ -96,6 +99,7 @@
                     android:layout_height="@dimen/dp_14"/>
 
                 <TextView
+                    android:layout_gravity="center"
                     android:id="@+id/et_search"
                     android:contentDescription="@string/content_desc_et_search"
                     android:gravity="center_vertical"
@@ -132,7 +136,6 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_4"
             android:background="@color/Unify_N200"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>

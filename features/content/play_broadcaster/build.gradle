@@ -16,6 +16,10 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 buildscript {

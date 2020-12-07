@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -50,7 +47,7 @@ interface DynamicProductDetailListener {
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
-    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
+    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
     fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
 
@@ -137,6 +134,11 @@ interface DynamicProductDetailListener {
      */
     fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
     fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
+
+    /**
+     * ProductDetailInfoViewHolder
+     */
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>)
 
     /**
      * ProductReportViewHolder

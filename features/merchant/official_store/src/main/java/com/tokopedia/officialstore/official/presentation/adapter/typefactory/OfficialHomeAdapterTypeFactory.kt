@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -8,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
@@ -20,7 +22,9 @@ class OfficialHomeAdapterTypeFactory(
         private val dcEventHandler: DynamicChannelEventHandler,
         private val featuredShopListener: FeaturedShopListener,
         private val homeComponentListener: HomeComponentListener,
-        private val legoBannerListener: DynamicLegoBannerListener
+        private val legoBannerListener: DynamicLegoBannerListener,
+        private val mixLeftComponentListener: MixLeftComponentListener,
+        private val recycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
@@ -97,6 +101,10 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedShopViewHolder.LAYOUT
     }
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
@@ -106,7 +114,12 @@ class OfficialHomeAdapterTypeFactory(
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
-            DynamicChannelMixLeftViewHolder.LAYOUT -> DynamicChannelMixLeftViewHolder(view, dcEventHandler)
+            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(
+                    view,
+                    mixLeftComponentListener,
+                    homeComponentListener,
+                    recycledViewPool
+            )
             DynamicChannelMixTopViewHolder.LAYOUT -> DynamicChannelMixTopViewHolder(view, dcEventHandler)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)

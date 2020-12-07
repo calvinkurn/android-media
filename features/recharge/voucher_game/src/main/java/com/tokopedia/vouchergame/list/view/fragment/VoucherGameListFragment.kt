@@ -265,7 +265,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                 RouteManager.route(context, ApplinkConst.PROMO_LIST)
             }
             context?.let {
-                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.unify_G500))
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500))
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 
@@ -426,8 +426,8 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_14
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3
+        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3
