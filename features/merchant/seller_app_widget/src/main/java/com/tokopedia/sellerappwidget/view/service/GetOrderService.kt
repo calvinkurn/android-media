@@ -67,13 +67,13 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, orderStatusId)
 
         val dateFormat = "dd/MM/yyyy"
-        val nowMillis = Date()
-        val yesterdayMillis = Date(nowMillis.time.minus(TimeUnit.DAYS.toMillis(1)))
-        val today = Utils.formatDate(nowMillis, dateFormat)
-        val yesterday = Utils.formatDate(yesterdayMillis, dateFormat)
+        val today = Date()
+        val last90Days = Date(today.time.minus(TimeUnit.DAYS.toMillis(90)))
+        val endDateFmt = Utils.formatDate(today, dateFormat)
+        val startDateFmt = Utils.formatDate(last90Days, dateFormat)
 
         showLoadingState()
-        viewModel.getOrderList(yesterday, today)
+        viewModel.getOrderList(startDateFmt, endDateFmt)
     }
 
     override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
