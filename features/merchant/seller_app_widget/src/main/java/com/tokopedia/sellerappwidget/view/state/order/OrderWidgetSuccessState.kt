@@ -53,6 +53,7 @@ object OrderWidgetSuccessState {
             registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
             registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
             registerAppLinkIntent(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+            registerAppLinkIntent(context, R.id.imgSawSmallOrderAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
         }
     }
 
@@ -112,6 +113,10 @@ object OrderWidgetSuccessState {
             Utils.getAppIcon(context)?.let {
                 Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId)
             }
+
+            registerAppLinkIntent(context, R.id.imgSawOrderAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)
+            registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
+            registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
         }
     }
 
