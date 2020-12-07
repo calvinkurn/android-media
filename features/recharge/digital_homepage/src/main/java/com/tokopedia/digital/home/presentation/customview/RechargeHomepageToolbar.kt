@@ -20,19 +20,20 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
 
     fun toInitialMode() {
         hideShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        setBackgroundColor(resources.getColor(android.R.color.transparent))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        } else navigationIcon = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
     }
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))
+        setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))
-        } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
+        } else navigationIcon =  ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
 
