@@ -308,12 +308,12 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun disableSaveBtn() {
         tvSave?.isEnabled = false
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300))
     }
 
     private fun enableSaveBtn() {
         tvSave?.isEnabled = true
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
+        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
     private fun isShopNameTextFieldError(): Boolean {
