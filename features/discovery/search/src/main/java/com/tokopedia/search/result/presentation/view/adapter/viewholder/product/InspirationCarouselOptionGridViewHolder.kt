@@ -31,16 +31,21 @@ class InspirationCarouselOptionGridViewHolder(
     }
 
     private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
-        val countSoldRating = labelGroupList.find { it.isLabelIntegrity() }?.title ?: ""
-
         return ProductCardModel(
                 productImageUrl = imgUrl,
                 productName = name,
                 formattedPrice = priceStr,
                 slashedPrice = if (discountPercentage > 0) originalPrice else "",
                 discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                countSoldRating = countSoldRating
+                countSoldRating = ratingAverage,
+                labelGroupList = labelGroupList.toProductCardModelLabelGroup()
         )
+    }
+
+    private fun List<InspirationCarouselViewModel.Option.Product.LabelGroup>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
+        return this?.map {
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.url)
+        } ?: listOf()
     }
 
     private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {

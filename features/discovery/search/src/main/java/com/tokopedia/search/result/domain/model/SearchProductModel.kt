@@ -671,6 +671,10 @@ data class SearchProductModel(
             @Expose
             val discountPercentage: Int = 0,
 
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
             @SerializedName("label_groups")
             @Expose
             val labelGroupList: List<InspirationCarouselLabelGroup> = listOf()

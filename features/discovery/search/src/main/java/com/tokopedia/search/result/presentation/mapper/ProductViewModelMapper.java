@@ -389,6 +389,7 @@ public class ProductViewModelMapper {
                     product.getDiscountExpired(),
                     product.getDiscountStart(),
                     product.getDiscountPercentage(),
+                    product.getRatingAverage(),
                     position,
                     inspirationCarouselType,
                     layout,

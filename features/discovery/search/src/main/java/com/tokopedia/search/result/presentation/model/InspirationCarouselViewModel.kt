@@ -50,6 +50,7 @@ class InspirationCarouselViewModel(
             val discountExpired: String = "",
             val discountStart: String = "",
             val discountPercentage: Int = 0,
+            val ratingAverage: String = "",
             val optionPosition: Int = 0,
             val inspirationCarouselType: String = "",
             val layout: String = "",
