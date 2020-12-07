@@ -892,8 +892,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         viewModel.isNameRecommendationSelected = true
 
-        productNameField?.textFieldInput?.setText(productName)
-        productNameField?.textFieldInput?.setSelection(productName.length)
+        var newProductName = productName
+        val maxLengthKeyword = 70
+
+        if (productName.trim().length > maxLengthKeyword) {
+            newProductName = productName.take(maxLengthKeyword)
+        }
+
+        productNameField?.textFieldInput?.setText(newProductName)
+        productNameField?.textFieldInput?.setSelection(newProductName.length)
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)

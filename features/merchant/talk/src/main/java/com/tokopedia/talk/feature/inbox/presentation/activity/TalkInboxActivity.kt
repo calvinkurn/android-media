@@ -39,7 +39,6 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)

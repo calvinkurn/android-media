@@ -8,6 +8,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.state.Resource
@@ -26,6 +27,10 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = parentFragment as? NotificationItemListener
+    }
+
+    override fun initCtaButton() {
+        cta?.hide()
     }
 
     fun handleEventReminderState(

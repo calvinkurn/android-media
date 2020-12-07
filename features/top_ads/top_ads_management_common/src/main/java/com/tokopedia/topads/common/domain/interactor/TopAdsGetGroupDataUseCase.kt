@@ -38,7 +38,7 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
         query = queryString
     }
 
-    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String): RequestParams {
+    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupType: Int): RequestParams {
         val queryMap = HashMap<String, Any?>()
         val requestParams = RequestParams.create()
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
@@ -48,7 +48,7 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
         queryMap[START_DATE] = startDate
         queryMap[END_DATE] = endDate
         queryMap[STATUS] = status
-        queryMap[GROUP_TYPE] = 1
+        queryMap[GROUP_TYPE] = groupType
         requestParams.putAll(mapOf(QUERY_INPUT to queryMap))
         return requestParams
     }

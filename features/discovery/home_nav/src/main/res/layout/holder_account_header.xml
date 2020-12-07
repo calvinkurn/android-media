@@ -20,6 +20,7 @@
         tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:foreground="?attr/selectableItemBackground"
             android:id="@+id/btn_login"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
@@ -32,6 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:foreground="?attr/selectableItemBackground"
             android:id="@+id/btn_register"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
@@ -71,7 +73,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_login_as"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginRight="@dimen/dp_40"
             android:layout_marginLeft="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/img_user_login_as"
@@ -104,10 +106,13 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/usr_badge"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
             android:layout_marginLeft="@dimen/dp_10"
             android:scaleType="fitCenter"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
 
             app:layout_constraintBottom_toTopOf="@id/usr_ovo_badge"
             app:layout_constraintLeft_toRightOf="@id/img_user_login"
@@ -134,9 +139,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_6"
             android:textSize="@dimen/sp_16"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             app:layout_constraintLeft_toRightOf="@id/usr_badge"
             app:layout_constraintTop_toTopOf="@id/usr_badge"
             app:layout_constraintBottom_toBottomOf="@id/usr_badge"
+            app:layout_constraintRight_toLeftOf="@id/btn_settings"
             app:typographyType="heading_4"
             tools:text="John Doe"/>
 
@@ -162,6 +171,19 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintVertical_chainStyle="packed"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_try_again"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="@string/btn_try_again"
+            app:layout_constraintTop_toTopOf="@id/img_user_login"
+            app:layout_constraintBottom_toBottomOf="@id/img_user_login"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:visibility="gone"/>
 
 
         <com.tokopedia.unifyprinciples.Typography

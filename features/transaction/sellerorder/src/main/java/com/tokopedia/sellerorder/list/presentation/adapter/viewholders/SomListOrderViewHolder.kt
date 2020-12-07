@@ -154,20 +154,15 @@ class SomListOrderViewHolder(
                     if (productVariant.isBlank()) {
                         maxLines = 2
                         isSingleLine = false
-                        if (element.orderProduct.size > 1) {
-                            setPadding(0, 0, 0, 0)
-                        } else {
-                            setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
-                        }
                     } else {
                         maxLines = 1
                         isSingleLine = true
                     }
                     text = productName
                     val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.verticalBias = if (element.orderProduct.size == 1) {
-                        0.5f
-                    } else 0f
+                    layoutParams.verticalBias = if (element.orderProduct.size > 1 && productVariant.isNotBlank()) {
+                        0f
+                    } else 0.5f
                     this.layoutParams = layoutParams
                     return@apply
                 }
@@ -175,10 +170,10 @@ class SomListOrderViewHolder(
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
+                tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
+                    getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                } else ""
             }
-            tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
-                getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-            } else ""
         }
     }
 

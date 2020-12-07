@@ -89,7 +89,7 @@
 
     <string name="in_full">Selengkapnya</string>
 
-    <string name="notification_empty_message">Belum ada notifikasi</string>
+    <string name="notification_empty_message">Belum ada notifikasi.</string>
 
     <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
     <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
@@ -119,7 +119,8 @@
     <string name="title_notifcenter_end_until">Berlaku sampai</string>
     <string name="title_notifcenter_promo_already_ended">Promo telah berakhir</string>
     <string name="title_notifcenter_see_more">Lihat Lebih Banyak</string>
-    <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!</string>
+    <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!.</string>
     <string name="title_success_bump_reminder">Siap-siap, kamu bakal jadi yang pertama dapat kabar saat barang ini tersedia lagi.</string>
     <string name="title_success_delete_reminder">Pengingat telah dihapus.</string>
+    <string name="title_empty_stock">Stok Habis</string>
 </resources>

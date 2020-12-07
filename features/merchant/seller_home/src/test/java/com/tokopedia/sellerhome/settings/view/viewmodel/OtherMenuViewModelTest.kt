@@ -3,23 +3,24 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
+import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.spyk
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -170,4 +171,57 @@ class OtherMenuViewModelTest {
 
     }
 
+    @Test
+    fun `getFreeShippingStatus should return when free shipping feature disabled from remote config`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns true
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify(inverse = true) {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun `getFreeShippingStatus should return when free shipping in transition status is true from remote config`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        } returns true
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify(inverse = true) {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun `getFreeShippingStatus should success`() {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        } returns false
+
+        coEvery {
+            getShopFreeShippingInfoUseCase.execute(any())
+        } returns listOf(ShopInfoFreeShipping.FreeShippingInfo(FreeOngkir(isActive = true)))
+
+        mViewModel.getFreeShippingStatus()
+
+        coVerify {
+            getShopFreeShippingInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == true)
+    }
 }

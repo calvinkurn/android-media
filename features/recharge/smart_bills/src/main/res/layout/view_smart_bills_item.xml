@@ -12,7 +12,7 @@
         android:id="@+id/smart_bills_item_content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Neutral_N0"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingTop="@dimen/smart_bills_item_padding"
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:textColor="@color/tkpd_main_orange"
+                android:textColor="@color/Yellow_Y500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="Rp 200.000.000" />
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:text="@string/smart_bills_item_detail"
-                android:textColor="@color/green_250"
+                android:textColor="@color/Green_G500"
                 app:typographyType="small" />
 
         </LinearLayout>

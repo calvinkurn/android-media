@@ -69,8 +69,12 @@ class OfficialHomeMapper (
                     categoryName.toEmptyStringIfNull(),
                     listener
             )
-            if(index == -1) add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            else set(index, officialFeaturedShop)
+            if(index == -1) {
+                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
+                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
+            } else {
+                set(index, officialFeaturedShop)
+            }
 
             adapter?.submitList(this.toMutableList())
         }

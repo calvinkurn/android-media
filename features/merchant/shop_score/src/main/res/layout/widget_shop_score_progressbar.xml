@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="13dp"
             app:default_limit="80"
-            app:rcBackgroundColor="@color/grey_300"
+            app:rcBackgroundColor="@color/Unify_N100"
             app:rcMax="100"
             app:rcRadius="20dp" />
 
@@ -22,7 +22,7 @@
             android:id="@+id/shop_score_view_limit"
             android:layout_width="1dp"
             android:layout_height="13dp"
-            android:background="@android:color/white" />
+            android:background="@color/Unify_N0" />
     </FrameLayout>
 
     <FrameLayout

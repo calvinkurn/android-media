@@ -76,6 +76,7 @@ class BuyerAccountMapper @Inject constructor(
             isAffiliate = accountDataModel.isAffiliate
         }
 
+        userSession.shopName = buyerCardViewModel.shopName
         userSession.setHasPassword(accountDataModel.userProfileCompletion.isCreatedPassword)
 
         return buyerCardViewModel

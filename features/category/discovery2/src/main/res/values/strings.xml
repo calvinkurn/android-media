@@ -50,7 +50,7 @@
     <string name="content_desc_banner_image_view">image banner timer</string>
     <string name="content_desc_title_tv">text title banner</string>
     <string name="error_message">Ada yang salah. Silakan coba lagi</string>
-    <string name="default_search_title">Cari di Tokopedia</string>
-    <string name="tokopedia">Tokopedia</string>
-    <string name="discovery_page">discovery page</string>
+    <string name="discovery_default_search_title">Cari di Tokopedia</string>
+    <string name="discovery_tokopedia">Tokopedia</string>
+    <string name="discovery_page_name">discovery page</string>
 </resources>

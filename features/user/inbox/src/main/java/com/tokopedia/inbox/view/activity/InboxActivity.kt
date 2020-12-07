@@ -5,9 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,9 +17,11 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
+import com.tokopedia.inbox.domain.cache.InboxCacheManager
+import com.tokopedia.inbox.domain.cache.InboxCacheState
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
-import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
+import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.getRoleName
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
@@ -27,8 +29,13 @@ import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -41,13 +48,20 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var navHeader: NavigationHeader
+
+    @Inject
+    lateinit var cacheManager: InboxCacheManager
+
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
-    private var roleNotificationCounter: Typography? = null
     private var bottomNav: InboxBottomNavigationView? = null
-    private var currentRole: ConstraintLayout? = null
+    private var navHeaderContainer: ConstraintLayout? = null
+    private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
-    private var inboxCounter: InboxCounter = InboxCounter()
+    private var toolbar: NavToolbar? = null
+    private var inboxBadgeCounter: InboxCounter = InboxCounter()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -58,21 +72,20 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupInjector()
+        InboxCacheState.init(cacheManager)
+        setupLastPreviousState()
         setContentView(R.layout.activity_inbox)
         setupView()
         setupConfig()
-        setupSwitcher()
         setupNavigator()
         setupBackground()
         setupNotificationBar()
-        setupBottomNav()
         setupObserver()
+        setupToolbar()
         setupInitialPage()
-    }
-
-    override fun clearNotificationCounter() {
-        inboxCounter.getByRole(InboxConfig.role)?.notifcenterInt = 0
-        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
+        setupInitialToolbar()
+        setupBottomNav()
+        setupSwitcher()
     }
 
     private fun setupInjector() {
@@ -82,28 +95,77 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                 .inject(this)
     }
 
+    private fun setupLastPreviousState() {
+        InboxCacheState.role?.let {
+            InboxConfig.setRole(it)
+        }
+        InboxCacheState.initialPage?.let {
+            InboxConfig.initialPage = it
+        }
+    }
+
+    override fun clearNotificationCounter() {
+        val notificationRole = inboxBadgeCounter.getByRole(InboxConfig.role) ?: return
+        notificationRole.notifcenterInt = 0
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
+        navHeader.setBadgeCount(notificationRole.totalInt)
+    }
+
+    private fun setupToolbar() {
+        toolbar?.switchToLightToolbar()
+        val view = View.inflate(
+                this, R.layout.partial_inbox_nav_content_view, null
+        ).also {
+            navHeader.bindNavHeaderView(it)
+            navHeader.bindValue()
+            navHeaderContainer = it.findViewById(R.id.inbox_toolbar)
+        }
+        if (userSession.hasShop()) {
+            toolbar?.setCustomViewContentView(view)
+            toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
+        } else {
+            val title = getString(R.string.inbox)
+            toolbar?.setToolbarContentType(TOOLBAR_TYPE_TITLE)
+            toolbar?.setToolbarTitle(title)
+        }
+    }
+
+    private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
+        val icon = IconBuilder()
+        if (hasChatSearch) {
+            icon.addIcon(IconList.ID_SEARCH) { }
+        }
+        icon.addIcon(IconList.ID_CART) { }
+        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        toolbar?.setIcon(icon)
+    }
+
     private fun setupView() {
-        roleNotificationCounter = findViewById(R.id.unread_counter)
         bottomNav = findViewById(R.id.inbox_bottom_nav)
-        currentRole = findViewById(R.id.cl_current_role_container)
+        container = findViewById(R.id.coor_container)
         fragmentContainer = findViewById(R.id.fragment_contaier)
+        toolbar = findViewById(R.id.inbox_nav_toolbar)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        InboxCacheState.saveAllCache(cacheManager)
         InboxConfig.removeListener(this)
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
+        navHeader.bindValue()
+        InboxCacheState.updateRole(role)
         showNotificationRoleChanged(role)
-        updateBottomNavNotificationCounter()
+        updateBadgeCounter()
     }
 
     private fun showNotificationRoleChanged(@RoleType role: Int) {
         val name = userSession.getRoleName(role)
         val message = getString(R.string.title_change_role, name)
-        fragmentContainer?.let {
+        container?.let {
+            Toaster.toasterCustomBottomHeight = 50.toPx()
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                     .show()
         }
@@ -116,7 +178,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupSwitcher() {
         switcher = AccountSwitcherBottomSheet.create()
-        currentRole?.setOnClickListener {
+        navHeaderContainer?.setOnClickListener {
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
         }
     }
@@ -151,24 +213,18 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupObserver() {
         viewModel.notifications.observe(this, Observer { result ->
             if (result is Success) {
-                inboxCounter = result.data
-                updateBottomNavNotificationCounter()
-                updateToolbarNotificationCounter()
+                inboxBadgeCounter = result.data
+                updateBadgeCounter()
             }
         })
     }
 
-    private fun updateBottomNavNotificationCounter() {
-        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
-        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole?.notifcenterInt)
-        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole?.chatInt)
-        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole?.talkInt)
-    }
-
-    private fun updateToolbarNotificationCounter() {
-        // TODO: to be implemented on global nav custom view
-        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
-        BadgeCounterBinder.bindBadgeCounter(roleNotificationCounter, notificationRole?.totalInt)
+    private fun updateBadgeCounter() {
+        val notificationRole = inboxBadgeCounter.getByRole(InboxConfig.role) ?: return
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        navHeader.setBadgeCount(notificationRole.totalInt)
     }
 
     private fun setupBottomNav() {
@@ -178,13 +234,19 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             setOnNavigationItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.NOTIFICATION)
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
+                        updateToolbarIcon()
                     }
                     R.id.menu_inbox_chat -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.CHAT)
                         onBottomNavSelected(InboxFragmentType.CHAT)
+                        updateToolbarIcon(true)
                     }
                     R.id.menu_inbox_discussion -> {
+                        InboxCacheState.updateInitialPage(InboxFragmentType.DISCUSSION)
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
+                        updateToolbarIcon()
                     }
                 }
                 return@setOnNavigationItemSelectedListener true
@@ -193,9 +255,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupInitialPage() {
-        navigator?.start(InboxFragmentType.NOTIFICATION)
-        bottomNav?.setSelectedPage(InboxFragmentType.NOTIFICATION)
+        navigator?.start(InboxConfig.initialPage)
+        bottomNav?.setSelectedPage(InboxConfig.initialPage)
         viewModel.getNotifications()
+    }
+
+    private fun setupInitialToolbar() {
+        val isChatPage = InboxConfig.initialPage == InboxFragmentType.CHAT
+        updateToolbarIcon(isChatPage)
     }
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
