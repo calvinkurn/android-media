@@ -19,6 +19,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -82,7 +83,8 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
-    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase?>()
+    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
+    private var shopSortList = mutableListOf<ShopProductSortModel>()
 
     fun getBuyerShopPageProductTabData(
             shopId: String,
@@ -113,7 +115,7 @@ class ShopPageProductListViewModel @Inject constructor(
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
-                val productListDataAsync = async(Dispatchers.IO) {
+                val productListDataAsync = async(dispatcherProvider.io) {
                     if (initialProductListData == null) {
                         getProductList(
                                 getShopProductUseCase,
@@ -208,7 +210,7 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private fun getSort(etalaseId: String?): Int {
+    private fun getSort(etalaseId: String): Int {
         return when (etalaseId) {
             SOLD_ETALASE -> ORDER_BY_MOST_SOLD
             DISCOUNT_ETALASE -> ORDER_BY_LAST_UPDATE
@@ -224,10 +226,10 @@ class ShopPageProductListViewModel @Inject constructor(
         return MembershipStampProgressUiModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
-    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherUiModel? {
+    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int?): ShopMerchantVoucherUiModel? {
         return try {
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
-                    GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
+                    GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher.orZero())
             ).toBlocking().first()
             ShopMerchantVoucherUiModel(ShopPageProductListMapper.mapToMerchantVoucherViewModel(merchantVoucherResponse))
         } catch (e: Exception) {
@@ -385,7 +387,7 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
         listGetShopHighlightProductUseCase.forEach {
-            it?.clearCache()
+            it.clearCache()
         }
         listGetShopHighlightProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
@@ -419,6 +421,7 @@ class ShopPageProductListViewModel @Inject constructor(
             )
             etalaseResponse.await()?.let { etalase ->
                 sortResponse.await()?.let{sort ->
+                    shopSortList = sort
                     shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
                 }
             }
@@ -483,7 +486,7 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun getSortNameById(sortId: String): String {
-        return (shopSortFilterData.value as? Success)?.data?.sortList?.firstOrNull {
+        return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
     }
