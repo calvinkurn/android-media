@@ -275,6 +275,7 @@ class SearchProductFirstPageGqlUseCase(
                                 discount_percentage
                                 discount_start
                                 discount_expired
+                                rating_average
                                 label_groups {
                                     title
                                     type
