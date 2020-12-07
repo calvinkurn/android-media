@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -55,9 +56,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        launchCatchError(block = {
-            _shopBasicData.value = Success(getShopBasicData().await())
-            _shopStatusData.value = Success(getShopStatus(shopId, includeOS).await())
+        launchCatchError(dispatchers.io, block = {
+            _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))
+            _shopStatusData.postValue(Success(getShopStatusAsync(shopId, includeOS).await()))
         }, onError = {})
     }
 
@@ -85,8 +86,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    private fun getShopBasicData(): Deferred<ShopBasicDataModel> {
-        return async(dispatchers.io) {
+    private fun getShopBasicDataAsync(): Deferred<ShopBasicDataModel> {
+        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
             var shopBasicData = ShopBasicDataModel()
             try {
                 shopBasicData = getShopBasicDataUseCase.getData(RequestParams.EMPTY) // getShopBasicDataUseCase.executeOnBackground()
@@ -97,8 +98,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    private fun getShopStatus(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
-        return async(dispatchers.io) {
+    private fun getShopStatusAsync(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
+        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
             var shopStatusData = GoldGetPmOsStatus()
             try {
                 val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
