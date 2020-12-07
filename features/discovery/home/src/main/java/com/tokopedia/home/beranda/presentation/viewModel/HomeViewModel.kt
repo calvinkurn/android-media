@@ -1118,6 +1118,7 @@ open class HomeViewModel @Inject constructor(
                 }
             }){
                 it.printStackTrace()
+                removeAllTopAdsData()
             }
         }
     }
