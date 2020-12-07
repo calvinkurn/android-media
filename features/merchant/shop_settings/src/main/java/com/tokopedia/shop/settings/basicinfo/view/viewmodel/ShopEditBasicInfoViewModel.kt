@@ -196,14 +196,11 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun updateShopBasicData(requestParams: RequestParams) {
-        launchCatchError(block = {
+        launchCatchError(dispatchers.io, block = {
             updateShopBasicDataUseCase.setParams(requestParams)
-            val updateShopBasicData = withContext(dispatchers.io) {
-                updateShopBasicDataUseCase.executeOnBackground()
-            }
-            _updateShopBasicData.value = Success(updateShopBasicData)
+            _updateShopBasicData.postValue(Success(updateShopBasicDataUseCase.executeOnBackground()))
         }) {
-            _updateShopBasicData.value = Fail(it)
+            _updateShopBasicData.postValue(Fail(it))
         }
     }
 
