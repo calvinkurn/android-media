@@ -38,16 +38,4 @@ internal object GetProductList {
         }
     }
     """.trimIndent()
-
-    val QUERY_BROADCAST_CHAT = """
-        query {
-          chatBlastSellerMetadata {
-            shopId
-            promo
-            promoType
-            expirePromo
-            url
-          }
-        }
-    """.trimIndent()
 }
