@@ -62,13 +62,6 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         viewModel.bindView(this)
     }
 
-    private fun initInjector() {
-        DaggerAppWidgetComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
-
     override fun onHandleWork(intent: Intent) {
         orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, orderStatusId)
 
@@ -80,6 +73,26 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         viewModel.getOrderList(today)
     }
 
+    override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
+        val orderList = result.data
+        sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
+        OrderAppWidget.setOnSuccess(applicationContext, orderList, orderStatusId)
+        GetOrderWorker.runWorker(applicationContext)
+    }
+
+    override fun onFailedGetOrderList(fail: Fail) {
+        OrderAppWidget.setOnError(applicationContext)
+        GetOrderWorker.runWorker(applicationContext)
+        Timber.e(fail.throwable)
+    }
+
+    private fun initInjector() {
+        DaggerAppWidgetComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
     private fun showLoadingState() {
         val remoteViews = RemoteViews(applicationContext.packageName, R.layout.saw_app_widget_order)
         val awm = AppWidgetManager.getInstance(applicationContext)
@@ -89,18 +102,5 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
             OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
-    }
-
-    override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
-        val orderList = result.data
-        sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
-        OrderAppWidget.setOnSuccess(applicationContext, orderList, orderStatusId)
-        GetOrderWorker.runWorkerPeriodically(applicationContext)
-    }
-
-    override fun onFailedGetOrderList(fail: Fail) {
-        OrderAppWidget.setOnError(applicationContext)
-        GetOrderWorker.runWorkerPeriodically(applicationContext)
-        Timber.e(fail.throwable)
     }
 }

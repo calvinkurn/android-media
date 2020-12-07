@@ -20,7 +20,7 @@ class GetOrderWorker(
         private const val REPEAT_INTERVAL = 15L
         private var workRequest: OneTimeWorkRequest? = null
 
-        fun runWorkerPeriodically(context: Context) {
+        fun runWorker(context: Context) {
             if (workRequest == null) {
                 val constraints = Constraints.Builder()
                         .setRequiresDeviceIdle(false)

@@ -62,7 +62,7 @@ object OrderWidgetSuccessState {
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val orderItemsByType = ArrayList(widgetItems.filter { it.statusId == orderStatusId })
+            val orderItemsByType = widgetItems.filter { it.statusId == orderStatusId }
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
@@ -115,7 +115,7 @@ object OrderWidgetSuccessState {
         }
     }
 
-    private fun setupOrderList(context: Context, remoteViews: RemoteViews, items: ArrayList<OrderUiModel>, widgetId: Int, orderStatusId: Int) {
+    private fun setupOrderList(context: Context, remoteViews: RemoteViews, items: List<OrderUiModel>, widgetId: Int, orderStatusId: Int) {
         with(remoteViews) {
             //setup widget list view
             val randomNumber = (Math.random() * 10000).toInt()
@@ -123,7 +123,7 @@ object OrderWidgetSuccessState {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
                 putExtra(Const.Extra.BUNDLE, Bundle().also {
-                    it.putParcelableArrayList(Const.Extra.ORDER_ITEMS, items)
+                    it.putParcelableArrayList(Const.Extra.ORDER_ITEMS, ArrayList(items))
                 })
             }
             setRemoteAdapter(R.id.lvSawOrderList, intent)

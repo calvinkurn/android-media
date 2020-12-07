@@ -72,6 +72,7 @@ class GetOrderUseCase @Inject constructor(
               orderList(input: ${'$'}input) {
                 list {
                   order_id
+                  order_status_id
                   deadline_text
                   order_product {
                     product_id
