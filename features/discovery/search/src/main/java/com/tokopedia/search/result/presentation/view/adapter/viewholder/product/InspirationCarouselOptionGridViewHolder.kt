@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_grid.view.*
 
@@ -42,9 +43,9 @@ class InspirationCarouselOptionGridViewHolder(
         )
     }
 
-    private fun List<InspirationCarouselViewModel.Option.Product.LabelGroup>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
+    private fun List<LabelGroupViewModel>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
         return this?.map {
-            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.url)
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
         } ?: listOf()
     }
 
