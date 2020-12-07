@@ -37,7 +37,7 @@ data class FeedbackFormRequest(
         @SerializedName("expected")
         var expected: String?,
         @SerializedName("labelIDs")
-        var labelsId: ArrayList<Int>?,
+        var labelsId: ArrayList<Int?>,
         @SerializedName("type")
         var type: Int?,
         @SerializedName("detail")
