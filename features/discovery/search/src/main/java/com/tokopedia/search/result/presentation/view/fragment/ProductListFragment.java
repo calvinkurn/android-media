@@ -1379,12 +1379,14 @@ public class ProductListFragment
     public void onInspirationCarouselGridProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselListProduct(product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
     public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
         redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
-
     }
 
     @Override
@@ -1409,7 +1411,10 @@ public class ProductListFragment
 
     @Override
     public void onImpressedInspirationCarouselGridProduct(@NotNull InspirationCarouselViewModel.Option.Product product) {
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
 
+        SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override

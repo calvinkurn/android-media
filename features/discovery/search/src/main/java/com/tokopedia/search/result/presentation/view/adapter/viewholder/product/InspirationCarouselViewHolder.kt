@@ -65,6 +65,7 @@ class InspirationCarouselViewHolder(
                 val option = element.options.getOrNull(0) ?: return
                 val productList = option.product.map{ product -> product.toProductCardModel() }
                 it.initRecyclerViewForGrid(option, productList)
+                configureSeeAllButton(option)
             } else {
                 it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
@@ -126,6 +127,21 @@ class InspirationCarouselViewHolder(
     private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.inspiration_carousel_grid_product_card_grid_width)
         return list.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+    }
+
+    private fun configureSeeAllButton(option: InspirationCarouselViewModel.Option) {
+        showSeeAllButton()
+        bindSeeAllButtonListener(option)
+    }
+
+    private fun showSeeAllButton() {
+        itemView.inspirationCarouselSeeAllButton?.visibility = View.VISIBLE
+    }
+
+    private fun bindSeeAllButtonListener(option: InspirationCarouselViewModel.Option) {
+        itemView.inspirationCarouselSeeAllButton?.setOnClickListener {
+            inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
+        }
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
