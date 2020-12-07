@@ -677,25 +677,7 @@ data class SearchProductModel(
 
             @SerializedName("label_groups")
             @Expose
-            val labelGroupList: List<InspirationCarouselLabelGroup> = listOf()
-    )
-
-    data class InspirationCarouselLabelGroup(
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("type")
-            @Expose
-            val type: String = "",
-
-            @SerializedName("position")
-            @Expose
-            val position: String = "",
-
-            @SerializedName("url")
-            @Expose
-            val url: String = ""
+            val labelGroupList: List<ProductLabelGroup> = listOf()
     )
 
     data class SearchInspirationWidget(

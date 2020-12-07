@@ -401,11 +401,11 @@ public class ProductViewModelMapper {
     }
 
     private List<InspirationCarouselViewModel.Option.Product.LabelGroup> convertToInspirationCarouselLabelGroup(
-            List<SearchProductModel.InspirationCarouselLabelGroup> list
+            List<SearchProductModel.ProductLabelGroup> list
     ) {
         List<InspirationCarouselViewModel.Option.Product.LabelGroup> labelGroupList = new ArrayList<>();
 
-        for(SearchProductModel.InspirationCarouselLabelGroup labelGroup: list) {
+        for(SearchProductModel.ProductLabelGroup labelGroup: list) {
             labelGroupList.add(new InspirationCarouselViewModel.Option.Product.LabelGroup(
                 labelGroup.getTitle(),
                 labelGroup.getType(),

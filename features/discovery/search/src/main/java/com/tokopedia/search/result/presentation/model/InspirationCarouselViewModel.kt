@@ -54,20 +54,11 @@ class InspirationCarouselViewModel(
             val optionPosition: Int = 0,
             val inspirationCarouselType: String = "",
             val layout: String = "",
-            val labelGroupList: List<LabelGroup> = listOf()
+            val labelGroupList: List<LabelGroupViewModel> = listOf()
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
-            }
-
-            class LabelGroup(
-                val title: String = "",
-                val type: String = "",
-                val position: String = "",
-                val url: String = ""
-            ) {
-                fun isLabelIntegrity() = position == SearchConstant.ProductCardLabel.LABEL_INTEGRITY
             }
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
