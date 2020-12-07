@@ -18,6 +18,8 @@ import java.util.*
 class ImagePickerEditPhotoActivity : ImageEditorActivity() {
 
     var userSession: UserSession? = null
+    private var isEditProduct = false
+    private var isAddProduct = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isEditProduct = intent.getBooleanExtra(IS_EDIT, false)
@@ -44,18 +46,22 @@ class ImagePickerEditPhotoActivity : ImageEditorActivity() {
     }
 
     override fun trackContinue() {
-        if (isAddProduct || !isEditProduct) {
-            trackEditContinue(userSession!!.shopId)
-        } else {
-            trackContinue(userSession!!.shopId)
+        userSession?.apply {
+            if (isAddProduct || !isEditProduct) {
+                trackEditContinue(shopId)
+            } else {
+                trackContinue(shopId)
+            }
         }
     }
 
     override fun trackBack() {
-        if (isAddProduct || !isEditProduct) {
-            trackEditBack(userSession!!.shopId)
-        } else {
-            trackBack(userSession!!.shopId)
+        userSession?.apply {
+            if (isAddProduct || !isEditProduct) {
+                trackEditBack(shopId)
+            } else {
+                trackBack(shopId)
+            }
         }
     }
 
@@ -75,8 +81,6 @@ class ImagePickerEditPhotoActivity : ImageEditorActivity() {
     }
 
     companion object {
-        private var isEditProduct = false
-        private var isAddProduct = false
         const val IS_EDIT = "is_edit"
         const val IS_ADD = "is_add"
     }

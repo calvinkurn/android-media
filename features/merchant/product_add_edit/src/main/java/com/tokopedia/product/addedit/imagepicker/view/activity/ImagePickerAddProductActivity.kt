@@ -16,6 +16,8 @@ import java.util.*
 class ImagePickerAddProductActivity : ImagePickerActivity() {
 
     var userSession: UserSession? = null
+    private var isEditProduct = false
+    private var isAddProduct = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isEditProduct = intent.getBooleanExtra(IS_EDIT, false)
@@ -37,33 +39,37 @@ class ImagePickerAddProductActivity : ImagePickerActivity() {
     override fun trackContinue() {}
 
     override fun trackBack() {
-        if (isAddProduct || !isEditProduct) {
-            ProductAddChooseImageTracking.trackBack(userSession!!.shopId)
-        } else {
-            ProductEditChooseImageTracking.trackBack(userSession!!.shopId)
+        userSession?.apply {
+            if (isAddProduct || !isEditProduct) {
+                ProductAddChooseImageTracking.trackBack(shopId)
+            } else {
+                ProductEditChooseImageTracking.trackBack(shopId)
+            }
         }
     }
 
     override fun getEditorIntent(selectedImagePaths: ArrayList<String>): Intent {
-        if (isAddProduct || !isEditProduct) {
-            ProductAddChooseImageTracking.trackContinue(userSession!!.shopId)
-        } else {
-            ProductEditChooseImageTracking.trackContinue(userSession!!.shopId)
+        userSession?.apply {
+            if (isAddProduct || !isEditProduct) {
+                ProductAddChooseImageTracking.trackContinue(shopId)
+            } else {
+                ProductEditChooseImageTracking.trackContinue(shopId)
+            }
         }
 
         val targetIntent = Intent(this, ImagePickerEditPhotoActivity::class.java)
         val origin = super.getEditorIntent(selectedImagePaths)
 
-        targetIntent.putExtras(origin.extras!!)
-        targetIntent.putExtra(IS_EDIT, isEditProduct)
-        targetIntent.putExtra(IS_ADD, isAddProduct)
+        origin.extras?.let {
+            targetIntent.putExtras(it)
+            targetIntent.putExtra(IS_EDIT, isEditProduct)
+            targetIntent.putExtra(IS_ADD, isAddProduct)
+        }
 
         return targetIntent
     }
 
     companion object {
-        private var isEditProduct = false
-        private var isAddProduct = false
         const val IS_EDIT = "is_edit"
         const val IS_ADD = "is_add"
 
