@@ -25,16 +25,12 @@ abstract class ProductItemViewHolder(
                 priceRange = priceRange ?: "",
                 shopBadgeList = badgesList.toProductCardModelShopBadges(),
                 shopLocation = shopCity,
-                ratingCount = rating.toRatingCount(isTopAds),
-                reviewCount = countReview,
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
                 isTopAds = isTopAds || isOrganicAds,
-                ratingString = ratingString,
+                countSoldRating = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
-                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
-                shopRating = shopRating,
-                isShopRatingYellow = isShopRatingYellow
+                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant()
         )
     }
 
