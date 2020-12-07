@@ -70,7 +70,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                             ProductData(
                                                     product.productId,
                                                     product.quantity.orderQuantity,
-                                                    product.notes
+                                                    product.notes,
                                             )
                                     ),
                                     shippingInfo = ShippingInfo(

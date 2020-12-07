@@ -25,7 +25,7 @@ data class OrderProduct(
         var isSlashPrice: Boolean = false,
         var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
-        var tickerMessage: ProductTickerMessage = ProductTickerMessage()
+        var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
 ) {
 
     fun getPrice(): Long {
