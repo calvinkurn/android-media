@@ -6,10 +6,7 @@ import com.tokopedia.home.analytics.v2.HomePlayWidgetAnalyticListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 
 /**
  * Created by mzennis on 19/10/20.
@@ -77,7 +74,7 @@ class CarouselPlayWidgetViewHolder(
         if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
             playWidgetAnalyticListener.widgetId = element.homeChannel.id
             playWidgetAnalyticListener.widgetName = element.widgetUiModel.title
-            playWidgetAnalyticListener.setWidgetPosition(element.homeChannel.getPosition())
+            playWidgetAnalyticListener.setBusinessWidgetPosition(element.widgetUiModel.config.businessWidgetPosition)
         }
     }
 
