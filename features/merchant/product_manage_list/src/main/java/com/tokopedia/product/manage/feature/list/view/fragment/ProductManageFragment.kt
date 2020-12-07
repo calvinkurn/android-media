@@ -524,7 +524,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             } else {
                 return@OnClickListener
             }
-        })
+        }).show()
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
