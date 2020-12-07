@@ -99,7 +99,7 @@ class ReviewViewHolder(
     }
 
     private fun bindBuyerLabel(element: ReviewUiModel) {
-        if (!element.isSender && element.hasReviewed()) {
+        if (!element.isSender && element.isReviewed) {
             buyerLabelStatus?.show()
         } else {
             buyerLabelStatus?.hide()
@@ -130,12 +130,8 @@ class ReviewViewHolder(
         return !isReviewed && !allowReview
     }
 
-    private fun ReviewUiModel.hasReviewed(): Boolean {
-        return isReviewed && !allowReview
-    }
-
     private fun ReviewUiModel.shouldShowStar(): Boolean {
-        return (isReviewed || allowReview)
+        return !hasExpired()
     }
 
     companion object {
