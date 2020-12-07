@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.track.TrackApp
@@ -38,19 +39,19 @@ class ShopPlayWidgetAnalyticListener(
     private val isPlayWidgetSellerApp: Boolean
         get() = GlobalConfig.isSellerApp()
 
-    override fun onImpressPlayWidget(view: PlayWidgetView, widgetPositionInList: Int) {
+    override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         if (!isPlayWidgetSellerApp) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_SELLER,
                 eventAction = "impression - widget play",
-                eventLabel = "$shopId - $widgetPositionInList - ${getFoldPosition(widgetPositionInList)}",
+                eventLabel = "$shopId - $verticalWidgetPosition - $businessWidgetPosition",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
                                 name = "/shoppage play outside banner",
                                 creative = shopName,
-                                position = widgetPositionInList.toString()
+                                position = verticalWidgetPosition.toString()
                         )
                 )
         )
@@ -63,14 +64,14 @@ class ShopPlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
-    override fun onClickViewAll(view: PlayWidgetMediumView, widgetPosition: Int) {
+    override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int, businessWidgetPosition: Int,) {
         if (isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_BUYER,
                         EVENT_ACTION to "click view all play",
-                        EVENT_LABEL to "$shopId - Tokopedia Play - ${getFoldPosition(widgetPosition)}",
+                        EVENT_LABEL to "$shopId - Tokopedia Play - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
                         CURRENT_SITE to "tokopediamarketplace",
                         USER_ID to userId
@@ -82,14 +83,15 @@ class ShopPlayWidgetAnalyticListener(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumOverlayUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         if (isPlayWidgetSellerApp) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_BUYER,
                 eventAction = "impression on play sgc banner",
-                eventLabel = "view on banner play - $shopId - ${getFoldPosition(widgetPosition)}",
+                eventLabel = "view on banner play - $shopId - $businessWidgetPosition",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
@@ -107,14 +109,15 @@ class ShopPlayWidgetAnalyticListener(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumOverlayUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         if (isPlayWidgetSellerApp) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = PROMO_CLICK,
                 eventCategory = SHOP_PAGE_BUYER,
                 eventAction = CLICK,
-                eventLabel = "click on banner play - $shopId - ${getFoldPosition(widgetPosition)}",
+                eventLabel = "click on banner play - $shopId - $businessWidgetPosition",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
@@ -133,14 +136,15 @@ class ShopPlayWidgetAnalyticListener(
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         val trackerMap = if (isPlayWidgetSellerApp) {
             BaseTrackerBuilder().constructBasicPromotionView(
                     event = PROMO_VIEW,
                     eventCategory = SHOP_PAGE_SELLER,
                     eventAction = "impression card - widget play",
-                    eventLabel = "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}",
+                    eventLabel = "$shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = item.channelId,
@@ -160,7 +164,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_VIEW,
                     eventCategory = SHOP_PAGE_BUYER,
                     eventAction = "impression on play sgc channel",
-                    eventLabel = "view channel - $shopId - ${item.channelId} - $channelPositionInList - ${getFoldPosition(widgetPosition)} - $isAutoPlay",
+                    eventLabel = "view channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - $isAutoPlay",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = widgetId,
@@ -180,14 +184,15 @@ class ShopPlayWidgetAnalyticListener(
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         val trackerMap = if (isPlayWidgetSellerApp) {
             BaseTrackerBuilder().constructBasicPromotionClick(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_SELLER,
                     eventAction = CLICK,
-                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = item.channelId,
@@ -207,7 +212,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_BUYER,
                     eventAction = CLICK,
-                    eventLabel = "click channel - $shopId - ${item.channelId} - $channelPositionInList - ${getFoldPosition(widgetPosition)} - $isAutoPlay",
+                    eventLabel = "click channel - $shopId - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - $isAutoPlay",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = widgetId,
@@ -227,7 +232,8 @@ class ShopPlayWidgetAnalyticListener(
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
             isRemindMe: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         if (isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -235,7 +241,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_BUYER,
                         EVENT_ACTION to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
-                        EVENT_LABEL to "${item.channelId} - $channelPositionInList - ${getFoldPosition(widgetPosition)}",
+                        EVENT_LABEL to "${item.channelId} - $channelPositionInList - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
                         CURRENT_SITE to "tokopediamarketplace",
                         USER_ID to userId
@@ -247,7 +253,8 @@ class ShopPlayWidgetAnalyticListener(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumBannerUiModel,
             channelPositionInList: Int,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {
         if (isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -255,7 +262,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_BUYER,
                         EVENT_ACTION to "click other content",
-                        EVENT_LABEL to "$shopId - ${getFoldPosition(widgetPosition)}",
+                        EVENT_LABEL to "$shopId - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
                         CURRENT_SITE to "tokopediamarketplace",
                         USER_ID to userId
@@ -263,14 +270,14 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickMoreActionChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, widgetPosition: Int) {
+    override fun onClickMoreActionChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_SELLER,
                         EVENT_ACTION to "click option button on card - widget play",
-                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                        EVENT_LABEL to "$shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}}",
                         BUSINESS_UNIT to "play",
                         CURRENT_SITE to "tokopediaseller",
                         USER_ID to userId,
@@ -279,14 +286,14 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, widgetPosition: Int) {
+    override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_SELLER,
                         EVENT_ACTION to "click delete on card - widget play",
-                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                        EVENT_LABEL to "$shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}}",
                         BUSINESS_UNIT to "play",
                         CURRENT_SITE to "tokopediaseller",
                         USER_ID to userId,
@@ -390,8 +397,6 @@ class ShopPlayWidgetAnalyticListener(
                 )
         )
     }
-
-    private fun getFoldPosition(widgetPosition: Int) = if (widgetPosition <= 2) 0 else 1
 
     private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {
         return when(channelType) {

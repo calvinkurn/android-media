@@ -33,8 +33,8 @@ class PlayWidgetCoordinator(
 
     private val widgetHolderListener = object : PlayWidgetViewHolder.Listener {
 
-        override fun onWidgetImpressed(view: PlayWidgetView, position: Int) {
-            mAnalyticListener?.onImpressPlayWidget(view, position)
+        override fun onWidgetImpressed(view: PlayWidgetView, item: PlayWidgetUiModel, position: Int) {
+            mAnalyticListener?.onImpressPlayWidget(view, item, position)
         }
     }
 
