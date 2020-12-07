@@ -31,7 +31,7 @@ class InspirationCarouselOptionGridViewHolder(
     }
 
     private fun InspirationCarouselViewModel.Option.Product.toProductCardModel(): ProductCardModel {
-        val countSoldRating = labelGroupList.getOrNull(0)?.title ?: ""
+        val countSoldRating = labelGroupList.find { it.isLabelIntegrity() }?.title ?: ""
 
         return ProductCardModel(
                 productImageUrl = imgUrl,

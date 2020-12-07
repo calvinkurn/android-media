@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -64,7 +65,9 @@ class InspirationCarouselViewModel(
                 val type: String = "",
                 val position: String = "",
                 val url: String = ""
-            )
+            ) {
+                fun isLabelIntegrity() = position == SearchConstant.ProductCardLabel.LABEL_INTEGRITY
+            }
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
