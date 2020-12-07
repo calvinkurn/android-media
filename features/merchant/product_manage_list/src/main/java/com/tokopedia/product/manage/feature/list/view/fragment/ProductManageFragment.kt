@@ -508,12 +508,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             if (product.isVariant()) {
                 viewModel.getProductVariants(product.id)
             } else {
-                GlobalScope.launch {
-                    showProgressDialogVariant()
-                    delay(REQUEST_DELAY)
-                    redirectToBroadcastChat(product.id)
-                    hideProgressDialogVariant()
-                }
+                redirectToBroadcastChat(product.id)
             }
         }
     }
