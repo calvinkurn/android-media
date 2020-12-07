@@ -504,7 +504,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             if (product.isVariant()) {
                 viewModel.getProductVariants(product.id)
             } else {
+                showProgressDialogVariant()
                 redirectToBroadcastChat(product.id)
+                hideProgressDialogVariant()
             }
         }
     }
