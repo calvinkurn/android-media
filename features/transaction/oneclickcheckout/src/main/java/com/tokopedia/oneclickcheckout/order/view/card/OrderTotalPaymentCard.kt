@@ -29,30 +29,38 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
         layoutPayment?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    fun setupPayment(orderTotal: OrderTotal) {
+    fun setupPayment(orderTotal: OrderTotal, isNewFlow: Boolean) {
         setupPaymentError(orderTotal.paymentErrorMessage)
-        setupButtonBayar(orderTotal)
+        setupButtonBayar(orderTotal, isNewFlow)
     }
 
-    private fun setupButtonBayar(orderTotal: OrderTotal) {
+    private fun setupButtonBayar(orderTotal: OrderTotal, isNewFlow: Boolean) {
         view.context?.let { context ->
             btnPay?.apply {
                 when (orderTotal.buttonType) {
                     OccButtonType.CHOOSE_PAYMENT -> {
-                        layoutParams?.width = Utils.convertDpToPixel(160f, context)
+                        layoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
-                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                if (isNewFlow) {
+                                    setText(R.string.change_payment_method)
+                                } else {
+                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                }
                             }
                             OccButtonState.DISABLE -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
-                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                if (isNewFlow) {
+                                    setText(R.string.change_payment_method)
+                                } else {
+                                    setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                }
                             }
                             else -> {
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)

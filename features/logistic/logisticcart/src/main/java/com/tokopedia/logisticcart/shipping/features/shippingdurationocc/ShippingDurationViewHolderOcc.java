@@ -46,6 +46,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
+    private Typography tvMvcError;
     private Label labelCodAvailable;
 
     private int cartPosition;
@@ -63,6 +64,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
+        tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
@@ -74,6 +76,9 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         } else {
             tvShippingInformation.setVisibility(View.GONE);
         }
+
+        // OCC has no MVC
+        tvMvcError.setVisibility(View.GONE);
 
         if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&
                 shippingDurationUiModel.getServiceData().getIsPromo() == 1) {

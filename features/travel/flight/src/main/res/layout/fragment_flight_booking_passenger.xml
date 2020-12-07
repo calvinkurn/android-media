@@ -173,7 +173,8 @@
                     app:text_field_label="@string/flight_passenger_passport_expiration_hint"
                     app:text_field_label_static="true"
                     app:text_field_placeholder="@string/flight_passenger_passport_expiration_secondary_hint"
-                    tools:layout_height="@dimen/layout_lvl2" />
+                    tools:layout_height="@dimen/layout_lvl2"
+                    app:text_field_message="@string/flight_booking_passenger_passport_expiry_helper_text"/>
 
                 <com.tokopedia.unifycomponents.TextFieldUnify
                     android:id="@+id/til_nationality"

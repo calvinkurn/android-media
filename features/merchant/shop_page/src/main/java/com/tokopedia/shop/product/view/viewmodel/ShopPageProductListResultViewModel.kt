@@ -27,7 +27,7 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
@@ -68,8 +68,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
     val shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
 
-    private val _productDataEmpty = MutableLiveData<Result<List<ShopProductViewModel>>>()
-    val productDataEmpty: LiveData<Result<List<ShopProductViewModel>>>
+    private val _productDataEmpty = MutableLiveData<Result<List<ShopProductUiModel>>>()
+    val productDataEmpty: LiveData<Result<List<ShopProductUiModel>>>
         get() = _productDataEmpty
 
     private val _restrictionEngineData = MutableLiveData<Result<RestrictValidateRestriction>>()

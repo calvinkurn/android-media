@@ -55,6 +55,10 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     val eticketData: LiveData<Result<String>>
         get() = mutableETicketData
 
+    private val mutableInvoiceData = MutableLiveData<Result<String>>()
+    val invoiceData: LiveData<Result<String>>
+        get() = mutableInvoiceData
+
     private val mutableCancellationData = MutableLiveData<List<FlightCancellationJourney>>()
     val cancellationData: LiveData<List<FlightCancellationJourney>>
         get() = mutableCancellationData
@@ -86,6 +90,16 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         }) {
             it.printStackTrace()
             mutableETicketData.postValue(Fail(it))
+        }
+    }
+
+    fun fetchInvoiceData() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            val invoiceData = getInvoiceEticketUseCase.executeGetInvoice(orderId)
+            if (invoiceData.isNotEmpty()) mutableInvoiceData.postValue(Success(invoiceData))
+        }) {
+            it.printStackTrace()
+            mutableInvoiceData.postValue(Fail(it))
         }
     }
 
