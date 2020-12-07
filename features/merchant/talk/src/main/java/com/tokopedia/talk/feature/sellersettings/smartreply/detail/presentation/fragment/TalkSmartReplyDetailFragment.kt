@@ -17,7 +17,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmar
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.fragment_talk_smart_reply_detail.*
 import javax.inject.Inject

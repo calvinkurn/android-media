@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 
 class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplateComponent> {
 

@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 
 class TalkSellerSettingsActivity : BaseSimpleActivity() {
 
