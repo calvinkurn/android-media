@@ -61,6 +61,8 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testPriorityRatingAverage())
     it.add(testLabelCampaign())
     it.add(testNotifyMeButton())
+    it.add(testLabelVariantColor())
+    it.add(testLabelVariantSize())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -780,7 +782,7 @@ private fun testProductRatingStar1(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
@@ -805,7 +807,7 @@ private fun testProductRatingStar2(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
@@ -830,7 +832,7 @@ private fun testProductRatingStar3(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
@@ -855,7 +857,7 @@ private fun testProductRatingStar4(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
@@ -880,7 +882,7 @@ private fun testProductRatingStar5(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
@@ -1565,6 +1567,98 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelVariantColor(): ProductCardModelMatcher {
+    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#05056b")
+    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#800000")
+    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#f400a1")
+    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#faf0be")
+    val labelColor5 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ebcca3")
+    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
+
+    val productCardModel = ProductCardModel(
+            productName = "Test Variant Color 1",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupVariantList = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelColor5, labelCustom)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(6)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelVariantSize(): ProductCardModelMatcher {
+    val labelSize1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S", type = LIGHT_GREY)
+    val labelSize2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M", type = LIGHT_GREY)
+    val labelSize3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXXL", type = LIGHT_GREY)
+    val labelSize4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "All size", type = LIGHT_GREY)
+    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
+
+    val productCardModel = ProductCardModel(
+            productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupVariantList = listOf(labelSize1, labelSize2, labelSize3, labelSize4, labelCustom)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(4)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)

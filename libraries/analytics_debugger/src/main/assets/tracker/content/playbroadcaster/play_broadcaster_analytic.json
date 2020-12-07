@@ -462,28 +462,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "view popup message exit on preparation page",
-      "event": "viewSellerBroadcastIris",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "currentSite": "{{.*}}",
-      "shopId": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click keluar on preparation page",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "currentSite": "{{.*}}",
-      "shopId": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "error state on preparation page",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
@@ -642,10 +620,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click selesai on report page",
-      "event": "clickSellerBroadcast",
+      "eventAction": "error state on report page",
+      "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+ - \\d+ - .+}}",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",
@@ -653,10 +631,43 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "error state on report page",
+      "eventAction": "click save vod",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete vod",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view confirm on pop up delete",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete on pop up delete",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",

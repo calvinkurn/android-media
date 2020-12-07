@@ -12,6 +12,7 @@ import android.text.style.TypefaceSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -54,6 +55,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreVie
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
@@ -176,6 +179,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
 
+                renderLabelMerchantVouchers(cpmData)
+
                 val items = ArrayList<Item<*>>()
                 items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
                 for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
@@ -190,6 +195,34 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 bannerAdsAdapter!!.setList(items)
             }
         }
+    }
+
+    private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
+        val context = context ?: return
+        val linearLayoutMerchantVoucher = findViewById<LinearLayout?>(R.id.linearLayoutMerchantVoucher) ?: return
+        val merchantVouchers = cpmData?.cpm?.cpmShop?.merchantVouchers ?: return
+
+        linearLayoutMerchantVoucher.removeAllViews()
+
+        merchantVouchers.forEachIndexed { index, voucher ->
+            val isFirstItem = index == 0
+            val labelVoucher = createLabelVoucher(context, voucher, isFirstItem)
+
+            linearLayoutMerchantVoucher.addView(labelVoucher)
+        }
+    }
+
+    private fun createLabelVoucher(context: Context, voucherText: String, isFirstItem: Boolean): Label {
+        val layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+        layoutParams.marginStart = if (isFirstItem) 0 else 4.toPx()
+
+        val labelVoucher = Label(context)
+
+        labelVoucher.setLabelType(Label.GENERAL_LIGHT_GREEN)
+        labelVoucher.text = voucherText
+        labelVoucher.layoutParams = layoutParams
+
+        return labelVoucher
     }
 
     private fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {

@@ -169,6 +169,8 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
+        loadTickerTrouble(otpModeListData)
+
         when (otpModeListData.linkType) {
             TYPE_HIDE_LINK -> onTypeHideLink()
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
@@ -246,6 +248,15 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
 
+    }
+
+    private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
+        if (otpModeListData.enableTicker) {
+            viewBound.ticker?.show()
+            viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
+        } else {
+            viewBound.ticker?.hide()
+        }
     }
 
     private fun showLoading() {
