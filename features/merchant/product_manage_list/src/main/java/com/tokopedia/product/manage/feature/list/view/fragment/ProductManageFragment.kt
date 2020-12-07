@@ -525,7 +525,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 goToCreateBroadCastChat(product)
             } else {
                 return@OnClickListener
-            }
+            }F
         }).show()
     }
 
