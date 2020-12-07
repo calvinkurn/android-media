@@ -15,7 +15,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
 
@@ -25,11 +24,6 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        waitForData()
-    }
-
-    fun setLayout() {
-        onView(allOf(withId(R.id.layout_search))).check(matches(isDisplayed()))
         waitForData()
     }
 
