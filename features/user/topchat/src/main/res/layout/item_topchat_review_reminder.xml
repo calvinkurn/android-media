@@ -56,6 +56,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:text="@string/title_topchat_reviewed"
             android:visibility="gone"
+            app:labelType="general_light_grey"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@+id/tv_product_name"
             app:layout_constraintEnd_toEndOf="parent"

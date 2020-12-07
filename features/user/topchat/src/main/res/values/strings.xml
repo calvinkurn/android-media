@@ -197,4 +197,5 @@ yang ditemukan</string>
     <string name="title_topchat_sender_chat_banned">Pesan ini mengandung kata yang tidak diizinkan.</string>
     <string name="title_topchat_check_tnc"><![CDATA[Cek Syarat & Ketentuan]]></string>
     <string name="title_topchat_reviewed">Sudah diulas</string>
+    <string name="title_topchat_review_expire">Waktu Penilaian Habis</string>
 </resources>

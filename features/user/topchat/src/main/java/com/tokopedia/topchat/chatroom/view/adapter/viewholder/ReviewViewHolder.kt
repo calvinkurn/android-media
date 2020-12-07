@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
@@ -37,9 +38,9 @@ class ReviewViewHolder(
     override fun bind(element: ReviewUiModel) {
         super.bind(element)
         bindImage(element)
-        bindName(element)
         bindBackground(element)
         bindLabel(element)
+        bindName(element)
         bindBuyerLabel(element)
         bindStar(element)
         bindStarClick(element)
@@ -49,28 +50,32 @@ class ReviewViewHolder(
         ImageHandler.LoadImage(thumbnail, element.reviewCard.imageUrl)
     }
 
-    private fun bindName(element: ReviewUiModel) {
-        name?.text = element.reviewCard.productName
-        val lp = name?.layoutParams
-        if (lp is ViewGroup.MarginLayoutParams) {
-            if (element.isSender) {
-                name?.setMargin(lp.leftMargin, 4.toPx(), lp.rightMargin, lp.bottomMargin)
-            } else {
-                name?.setMargin(lp.leftMargin, 0, lp.rightMargin, lp.bottomMargin)
-            }
-        }
-    }
-
     private fun bindBackground(element: ReviewUiModel) {
         container?.background = leftBg
     }
 
     private fun bindLabel(element: ReviewUiModel) {
-        // TODO("Not yet implemented")
-        if (element.isSender) {
-            label?.show()
+        // TODO("Handle for sender")
+        if (!element.isSender && !element.allowReview && !element.isReviewed) {
+            label?.apply {
+                show()
+                setLabelType(Label.GENERAL_LIGHT_RED)
+                setText(R.string.title_topchat_review_expire)
+            }
         } else {
             label?.hide()
+        }
+    }
+
+    private fun bindName(element: ReviewUiModel) {
+        name?.text = element.reviewCard.productName
+        val lp = name?.layoutParams
+        if (lp is ViewGroup.MarginLayoutParams) {
+            if (label?.isVisible == true) {
+                name?.setMargin(lp.leftMargin, 4.toPx(), lp.rightMargin, lp.bottomMargin)
+            } else {
+                name?.setMargin(lp.leftMargin, 0, lp.rightMargin, lp.bottomMargin)
+            }
         }
     }
 
