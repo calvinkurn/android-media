@@ -23,9 +23,9 @@
                 android:layout_width="4dp"
                 android:layout_height="@dimen/layout_lvl0"
                 android:layout_marginTop="5.5dp"
-                android:layout_marginBottom="3.5dp"
+                android:layout_marginBottom="1dp"
                 android:background="@drawable/ic_order_status_indicator"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListInvoice"
+                app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus" />
 
@@ -58,13 +58,24 @@
                 android:id="@+id/tvSomListInvoice"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/spacing_lvl1"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
                 app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListOrderStatus"
                 app:typographyType="small"
                 tools:text="INV/20161025/XVI/X/51234657" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSomListBuyerName"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/spacing_lvl1"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+                app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
+                app:layout_constraintTop_toBottomOf="@id/tvSomListInvoice"
+                app:typographyType="small"
+                tools:text="Smitty Werben Man Jensen" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListResponseLabel"
@@ -74,8 +85,9 @@
                 android:paddingBottom="@dimen/spacing_lvl2"
                 android:text="@string/som_list_response_before_label"
                 android:textColor="@color/Unify_N700_68"
-                app:layout_constraintBottom_toTopOf="@id/icDeadline"
+                app:layout_constraintBottom_toTopOf="@id/tvSomListDeadline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus"
                 app:typographyType="small" />
@@ -104,9 +116,9 @@
                 android:gravity="center_vertical"
                 android:padding="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_N0"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListInvoice"
+                app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvSomListInvoice"
+                app:layout_constraintStart_toEndOf="@id/tvSomListBuyerName"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListResponseLabel"
                 app:typographyType="small"
                 app:typographyWeight="bold"
@@ -120,7 +132,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
                 android:background="@color/Unify_N50"
-                app:layout_constraintTop_toBottomOf="@id/tvSomListInvoice" />
+                app:layout_constraintTop_toBottomOf="@id/tvSomListBuyerName" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tickerSomListOrder"
@@ -183,66 +195,67 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
                 app:layout_constraintTop_toBottomOf="@id/tvSomListProductVariant"
-                app:typographyType="body_3"
+                app:typographyType="small"
                 tools:text="+2 produk lainnya" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvSomListCourierLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icSomListCourier"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/som_list_order_item_padding"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:text="@string/som_list_order_courier_label"
-                android:textColor="@color/Unify_N700_68"
+                app:icon_enable_state="true"
+                app:icon_name="COURIER"
                 app:layout_constraintEnd_toStartOf="@id/tvSomListCourierValue"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivSomListProduct"
-                app:typographyType="body_3" />
+                app:layout_constraintTop_toBottomOf="@id/ivSomListProduct" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListCourierValue"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
                 android:layout_marginBottom="1.5dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListCourierLabel"
+                app:layout_constraintBottom_toBottomOf="@id/icSomListCourier"
                 app:layout_constraintEnd_toStartOf="@id/btnQuickAction"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@id/tvSomListCourierLabel"
+                app:layout_constraintStart_toEndOf="@id/icSomListCourier"
+                app:layout_constraintTop_toTopOf="@id/icSomListCourier"
                 app:typographyType="body_3"
                 tools:text="Reguler - JNE" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvSomListDestinationLabel"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icSomListDestination"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/som_list_order_item_padding"
-                android:text="@string/som_list_order_destination_label"
-                android:textColor="@color/Unify_N700_68"
+                app:icon_enable_state="true"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                app:icon_name="LOCATION"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSomListCourierLabel"
-                app:typographyType="body_3" />
+                app:layout_constraintTop_toBottomOf="@id/icSomListCourier" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSomListDestinationValue"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/som_list_order_item_padding"
                 android:textColor="@color/Unify_N700_96"
-                app:layout_constraintBottom_toBottomOf="@id/tvSomListDestinationLabel"
+                app:layout_constraintBottom_toBottomOf="@id/icSomListDestination"
                 app:layout_constraintEnd_toStartOf="@id/btnQuickAction"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@id/tvSomListDestinationLabel"
+                app:layout_constraintStart_toEndOf="@id/icSomListDestination"
+                app:layout_constraintTop_toTopOf="@id/icSomListDestination"
                 app:typographyType="body_3"
                 tools:text="D.I. Aceh" />
 

@@ -5,7 +5,11 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -57,6 +61,7 @@ class SomListOrderViewHolder(
             setupCheckBox(element)
             setupOrderStatus(element)
             setupInvoice(element)
+            setupBuyerName(element)
             setupDeadline(element)
             // body
             setupTicker(element)
@@ -120,7 +125,7 @@ class SomListOrderViewHolder(
     private fun setupDestinationInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListDestinationValue.text = element.destinationProvince
-            tvSomListDestinationLabel.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
+            icSomListDestination.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
             tvSomListDestinationValue.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
         }
     }
@@ -129,7 +134,7 @@ class SomListOrderViewHolder(
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
-            tvSomListCourierLabel.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
+            icSomListCourier.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
         }
     }
@@ -189,6 +194,7 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDeadline(element: SomListOrderUiModel) {
         with(itemView) {
             val deadlineText = element.deadlineText
@@ -213,6 +219,7 @@ class SomListOrderViewHolder(
                     val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }
+                tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 tvSomListResponseLabel.show()
                 tvSomListDeadline.show()
                 icDeadline.show()
@@ -225,14 +232,23 @@ class SomListOrderViewHolder(
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListInvoice.text = element.orderResi
+        itemView.tvSomListInvoice.apply {
+            text = element.orderResi
+            showWithCondition(element.orderResi.isNotBlank())
+        }
+    }
+
+    private fun setupBuyerName(element: SomListOrderUiModel) {
+        itemView.tvSomListBuyerName.apply {
+            text = element.buyerName
+            showWithCondition(element.buyerName.isNotBlank())
         }
     }
 
     private fun setupOrderStatus(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListOrderStatus.text = element.status
+        itemView.tvSomListOrderStatus.apply {
+            text = element.status
+            showWithCondition(element.status.isNotBlank())
         }
     }
 
@@ -279,6 +295,16 @@ class SomListOrderViewHolder(
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
+            }
+        }
+    }
+
+    private fun composeDeadlineLabel(isPreOrder: Boolean): SpannableStringBuilder {
+        return SpannableStringBuilder(getString(R.string.som_list_response_before_label)).apply {
+            if (isPreOrder) {
+                val preOrderFlagString = getString(R.string.som_list_pre_order_flag)
+                append(" $preOrderFlagString")
+                setSpan(StyleSpan(Typeface.BOLD), length - preOrderFlagString.length - 1, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
     }
