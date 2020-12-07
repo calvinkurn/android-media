@@ -15,7 +15,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -256,7 +255,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         page.setText(pageName)
         feedbackPagePresenter.setSelectedPage(selection)
         labelsId = arrayListOf(selection)
-        Log.d("LABEL", labelsId.toString())
     }
 
     private fun allPermissionsGranted(): Boolean {
