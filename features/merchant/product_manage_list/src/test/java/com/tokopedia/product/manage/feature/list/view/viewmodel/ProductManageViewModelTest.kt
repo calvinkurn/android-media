@@ -12,6 +12,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createProduct
 import com.tokopedia.product.manage.data.createProductViewModel
@@ -702,6 +703,20 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `when get variants success should set live data value success`() {
+        val getVariantResult = GetProductVariantResponse()
+        val productId = "1400068494"
+
+        onGetVariants_thenReturn(getVariantResult)
+
+        viewModel.getProductVariants(productId)
+
+        val expectedResult = Success(getVariantResult)
+
+        viewModel.getProductVariantsResult.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
     fun `when get popups info error should set live data value fail`() {
         val error = NullPointerException()
 
@@ -726,6 +741,14 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
         }
+    }
+
+    private fun onGetVariants_thenReturn(response: GetProductVariantResponse) {
+        coEvery { getProductVariantUseCase.execute(any()) } returns response
+    }
+
+    private fun verifyGetVariantsCalled() {
+        coVerify { getProductVariantUseCase.execute(any())}
     }
 
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {

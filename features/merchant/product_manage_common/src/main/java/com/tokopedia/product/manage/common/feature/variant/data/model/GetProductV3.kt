@@ -7,10 +7,10 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 data class GetProductV3 (
     @Expose
     @SerializedName("productName")
-    val productName: String,
+    val productName: String = "",
     @Expose
     @SerializedName("variant")
-    val variant: Variant
+    val variant: Variant = Variant()
 ) {
 
     fun isAllStockEmpty(): Boolean {

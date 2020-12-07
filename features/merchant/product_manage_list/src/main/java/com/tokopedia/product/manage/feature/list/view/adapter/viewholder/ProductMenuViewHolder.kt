@@ -22,7 +22,7 @@ class ProductMenuViewHolder(
         with(itemView) {
             textMenu.text = context.getString(menu.title)
             if (getString(menu.title) == getString(R.string.product_manage_create_broadcast_chat)) {
-                icuPmlMoreMenu.background = ContextCompat.getDrawable(context, R.drawable.ic_bc_chat)
+                icuPmlMoreMenu.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bc_chat))
             } else {
                 icuPmlMoreMenu.setImage(menu.icon)
             }

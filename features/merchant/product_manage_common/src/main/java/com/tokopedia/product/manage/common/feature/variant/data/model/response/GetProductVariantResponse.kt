@@ -7,5 +7,5 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.GetProduct
 data class GetProductVariantResponse(
     @Expose
     @SerializedName("getProductV3")
-    val getProductV3: GetProductV3
+    val getProductV3: GetProductV3 = GetProductV3()
 )
