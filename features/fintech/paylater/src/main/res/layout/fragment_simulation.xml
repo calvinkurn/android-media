@@ -126,6 +126,7 @@
             android:layout_width="@dimen/unify_space_64"
             android:layout_height="@dimen/unify_space_24"
             android:layout_marginStart="@dimen/unify_space_8"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="@+id/tvPartnerRegistration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvPartnerRegistration"

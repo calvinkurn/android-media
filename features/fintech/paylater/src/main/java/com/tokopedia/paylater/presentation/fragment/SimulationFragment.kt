@@ -10,7 +10,6 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -19,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
 import com.tokopedia.paylater.presentation.widget.PayLaterSignupBottomSheet
-import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.fragment_simulation.*
 
 class SimulationFragment : Fragment() {
@@ -92,9 +90,9 @@ class SimulationFragment : Fragment() {
     private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, context: Context, showBackGround: Boolean): View? {
         val rowHeaderNoRecom = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
         rowHeaderNoRecom.layoutParams = layoutParam
-        val ivPaylaterPartner1 = rowHeaderNoRecom.findViewById<ImageUnify>(R.id.ivPaylaterPartner)
+        val ivPayLaterPartner = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
         ImageHandler.loadImage(context,
-                ivPaylaterPartner1,
+                ivPayLaterPartner,
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                 R.drawable.ic_loading_image)
         if (showBackGround)
@@ -108,9 +106,9 @@ class SimulationFragment : Fragment() {
     private fun getRecomView(layoutParam: ViewGroup.LayoutParams): View? {
         val rowHeaderRecom = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
         rowHeaderRecom.layoutParams = layoutParam
-        val ivPaylaterPartner2 = rowHeaderRecom.findViewById<ImageUnify>(R.id.ivPaylaterPartner)
+        val ivPayLaterPartner = rowHeaderRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
         ImageHandler.loadImage(context,
-                ivPaylaterPartner2,
+                ivPayLaterPartner,
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                 R.drawable.ic_loading_image)
         return rowHeaderRecom

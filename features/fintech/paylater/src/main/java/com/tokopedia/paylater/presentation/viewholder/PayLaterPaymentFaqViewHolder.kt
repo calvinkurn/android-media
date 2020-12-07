@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
@@ -13,12 +14,12 @@ import kotlinx.android.synthetic.main.paylater_card_faq_item.view.*
 
 class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-    fun bindData(faqData: PayLaterPartnerFaq, notifyItem: () -> Unit) {
+    fun bindData(faqData: PayLaterPartnerFaq) {
+        view.tvFaqHeading.text = faqData.faqQuestion
         setLayout(faqData)
         view.setOnClickListener {
             faqData.expandLayout = !faqData.expandLayout
             setLayout(faqData)
-            notifyItem()
         }
     }
 

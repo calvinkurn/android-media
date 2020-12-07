@@ -15,7 +15,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: () -> U
     fun bindData() {
         view.ivPayLaterArrow.setOnClickListener { clickListener() }
         ImageHandler.loadImage(view.context,
-                view.ivPaylaterPartner,
+                view.ivPayLaterPartner,
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                 R.drawable.ic_loading_image)
     }

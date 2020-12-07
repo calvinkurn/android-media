@@ -13,4 +13,7 @@
     <string name="kredivo">Kredivo</string>
     <string name="sp_how_to_use">Lihat Cara Pakai</string>
     <string name="sp_see_more">Lihat Lebih Lengkap</string>
+
+    <!-- BottomSheet title-->
+    <string name="paylater_find_out_more_heading">Hal yang sering ditanyakan</string>
 </resources>

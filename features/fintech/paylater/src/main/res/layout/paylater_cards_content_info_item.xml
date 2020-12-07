@@ -10,6 +10,7 @@
         android:id="@+id/ivBenifitsHeader"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toStartOf="@+id/tvBenefitsDesc"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"

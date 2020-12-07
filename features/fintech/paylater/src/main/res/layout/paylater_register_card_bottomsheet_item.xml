@@ -36,9 +36,6 @@
         app:layout_constraintTop_toTopOf="@+id/ivCircleGreen"
         app:typographyType="body_2" />
 
-    <!--
-    hide this for last item in recycler view
-    -->
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerVertical"
         android:layout_width="@dimen/unify_space_2"

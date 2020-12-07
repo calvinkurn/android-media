@@ -14,6 +14,7 @@ import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.OfferDescriptionItem
 import com.tokopedia.paylater.domain.model.OfferListResponse
+import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
@@ -28,7 +29,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
@@ -43,7 +44,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderTabAndViewPager()
+        //renderTabAndViewPager()
         observeViewModel()
     }
 
@@ -60,20 +61,23 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         return "Detail Penawaran"
     }
 
-    private fun renderTabAndViewPager() {
+    private fun renderTabAndViewPager(productList: ArrayList<PayLaterItemProductData>) {
         context?.let {
-            paymentOptionViewPager.adapter = getViewPagerAdapter()
+            paymentOptionViewPager.adapter = getViewPagerAdapter(productList)
             paymentOptionViewPager.pageMargin = 16.dpToPx(it.resources.displayMetrics)
         }
 
     }
 
-    private fun getViewPagerAdapter(): PagerAdapter {
+    private fun getViewPagerAdapter(productList: ArrayList<PayLaterItemProductData>): PagerAdapter {
         val list: ArrayList<Fragment> = ArrayList()
-        val dataList = populateDummyData()
-        for (i in 0 until dataList.size) {
+        // for dummy data
+        productList.add(productList[0])
+        productList.add(productList[0])
+
+        for (productData in productList) {
             val bundle = Bundle().apply {
-                putParcelable("dummy", dataList[i])
+                putParcelable("payLaterData", productData)
             }
             list.add(PaymentOptionsFragment.newInstance(bundle))
         }
@@ -81,11 +85,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-
+        // hide loading
+        if (!data.productList.isNullOrEmpty()) {
+            renderTabAndViewPager(data.productList)
+        }
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-
+        // show error layout
     }
 
     private fun populateDummyData(): ArrayList<OfferListResponse> {
