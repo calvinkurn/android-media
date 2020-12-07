@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.common.feature.variant.adapter.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.common.feature.variant.adapter.factory.ProductVariantAdapterFactory
 import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
-import com.tokopedia.product.manage.common.feature.variant.data.model.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductVariant(
@@ -34,6 +33,4 @@ data class ProductVariant(
     fun isEmpty(): Boolean {
         return stock == 0
     }
-
-
 }
