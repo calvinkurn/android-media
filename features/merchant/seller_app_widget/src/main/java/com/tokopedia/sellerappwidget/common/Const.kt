@@ -16,7 +16,7 @@ object Const {
         const val ORDER_ITEM = "order"
         const val ORDER_ITEMS = "orders"
         const val ORDER_STATUS_ID = "order_status_id"
-        const val CHAT_ITEM = "orders"
+        const val CHAT_ITEM = "chat"
         const val CHAT_ITEMS = "chats"
     }
 

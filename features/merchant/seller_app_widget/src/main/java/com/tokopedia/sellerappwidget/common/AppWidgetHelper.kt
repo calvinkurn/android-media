@@ -4,15 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
-import androidx.annotation.LayoutRes
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.R
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
 /**
@@ -20,10 +16,6 @@ import kotlin.math.ceil
  */
 
 object AppWidgetHelper {
-
-    fun getRemoteView(context: Context, @LayoutRes layoutRes: Int): RemoteViews {
-        return RemoteViews(context.packageName, layoutRes)
-    }
 
     fun getOrderWidgetRemoteView(context: Context): RemoteViews {
         return RemoteViews(context.packageName, R.layout.saw_app_widget_order)
@@ -51,5 +43,13 @@ object AppWidgetHelper {
 
     inline fun <reified T : AppWidgetProvider> getAppWidgetIds(context: Context, awm: AppWidgetManager): IntArray {
         return awm.getAppWidgetIds(ComponentName(context, T::class.java))
+    }
+
+    fun openAppLink(context: Context, intent: Intent) {
+        val appLink = intent.data?.toString().orEmpty()
+        val appLinkIntent = RouteManager.getIntent(context, appLink).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(appLinkIntent)
     }
 }

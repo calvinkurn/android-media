@@ -3,15 +3,18 @@ package com.tokopedia.sellerappwidget.domain.mapper
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.data.model.ChatListModel
+import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 01/12/20
  */
 
-class ChatMapper {
+@AppWidgetScope
+class ChatMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(chatList: List<ChatListModel>): List<ChatUiModel> {
         return chatList.map {

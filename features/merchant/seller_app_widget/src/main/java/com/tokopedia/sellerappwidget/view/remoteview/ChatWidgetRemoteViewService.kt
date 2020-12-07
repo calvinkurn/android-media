@@ -56,7 +56,13 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
                 } else {
                     View.GONE
                 }
+                val bottomSpaceVisibility = if (position == chats.size.minus(1)) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
                 setInt(R.id.horLineSawChatListItem, Const.Method.SET_VISIBILITY, horLineVisibility)
+                setInt(R.id.horLineSawChatListBottomSpace, Const.Method.SET_VISIBILITY, bottomSpaceVisibility)
 
                 //handle on item click
                 val fillIntent = Intent().apply {
