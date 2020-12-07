@@ -58,7 +58,8 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
             app:srcCompat="@drawable/ic_kebab_buyer"
             android:contentDescription="@string/icon_placeholder"
-            android:paddingStart="@dimen/dp_4"/>
+            android:paddingStart="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_8"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_uoh_order"
