@@ -1,16 +1,20 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BackgroundGenerator
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ReviewViewHolder(
@@ -43,8 +47,15 @@ class ReviewViewHolder(
     }
 
     private fun bindName(element: ReviewUiModel) {
-        // TODO("Adjust margin if label exist")
         name?.text = element.reviewCard.productName
+        val lp = name?.layoutParams
+        if (lp is ViewGroup.MarginLayoutParams) {
+            if (element.isSender) {
+                name?.setMargin(lp.leftMargin, 4.toPx(), lp.rightMargin, lp.bottomMargin)
+            } else {
+                name?.setMargin(lp.leftMargin, 0, lp.rightMargin, lp.bottomMargin)
+            }
+        }
     }
 
     private fun bindBackground(element: ReviewUiModel) {
@@ -53,7 +64,11 @@ class ReviewViewHolder(
 
     private fun bindLabel(element: ReviewUiModel) {
         // TODO("Not yet implemented")
-        label?.hide()
+        if (element.isSender) {
+            label?.show()
+        } else {
+            label?.hide()
+        }
     }
 
     private fun bindReputation(element: ReviewUiModel) {
