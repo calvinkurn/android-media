@@ -393,9 +393,9 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun observeUpdateShopData() {
-        currentTime = System.currentTimeMillis()
-        Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
         observe(viewModel.updateShopBasicData) {
+            currentTime = System.currentTimeMillis() - currentTime
+            Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
             when(it) {
                 is Success -> {
                     it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
