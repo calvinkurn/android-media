@@ -395,12 +395,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadTickers()
         loadWaitingPaymentOrderCounter()
         loadFilters()
-
-        // TODO: Change this value from dummy to user session
-        val isShopAdmin = true
-        if (isShopAdmin) {
-            loadAdminPermission()
-        }
+        loadAdminPermission()
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         }
