@@ -24,6 +24,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -202,9 +203,8 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
-                .check(matches(isDisplayed()))
-                .perform(click())
+        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(12, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
     }
 
     private fun clickThreadDetailDiscussion() {
