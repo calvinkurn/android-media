@@ -2,6 +2,14 @@ package com.tokopedia.product.manage.common.feature.list.analytics
 
 import com.tokopedia.product.manage.common.feature.list.constant.CLICK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT_BROADCAST_CHAT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.BUSINESS_UNIT_BROADCAST_CHAT_SA
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.CURRENT_SITE_BROADCAST_CHAT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.CURRENT_SITE_BROADCAST_CHAT_SA
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CAROUSEL
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_MANAGE_PAGE
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer.EVENT_LABEL_BROADCAST_CHAT
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.track.TrackApp
 
@@ -36,14 +44,17 @@ object ProductManageTracking {
         return this.plus(allocationType)
     }
 
-    fun eventClickBroadcastChat(action: String,
-                                label: String,
-                                userId: String,
-                                currentSite: String,
-                                businessUnit: String) {
+    private fun eventClickBroadcastChatCustom(
+            action: String,
+            category: String,
+            label: String,
+            userId: String,
+            currentSite: String,
+            businessUnit: String,
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
                 ProductManageDataLayer.EVENT_NAME,
-                ProductManageDataLayer.EVENT_CATEGORY,
+                category,
                 action,
                 label
         ).dataTracking.customDimension(userId, currentSite, businessUnit))
@@ -110,8 +121,14 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_FEATURED, label)
     }
 
-    fun eventClickBroadcastChatFromCarousel(userId: String) {
-        eventProductManage()
+    fun eventClickBroadcastChat(userId: String = "", productId: String = "", isCarousel: Boolean) {
+        if (isCarousel) {
+            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_ON_CAROUSEL, category = EVENT_CATEGORY_PRODUCT_MANAGE_PAGE,
+                    label = EVENT_LABEL_BROADCAST_CHAT, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT)
+        } else {
+            eventClickBroadcastChatCustom(action = EVENT_ACTION_CLICK_ON_CAROUSEL, category = EVENT_CATEGORY,
+                    label = productId, userId = userId, currentSite = CURRENT_SITE_BROADCAST_CHAT_SA, businessUnit = BUSINESS_UNIT_BROADCAST_CHAT_SA)
+        }
     }
 
     fun eventToggleReminder(state: String) {

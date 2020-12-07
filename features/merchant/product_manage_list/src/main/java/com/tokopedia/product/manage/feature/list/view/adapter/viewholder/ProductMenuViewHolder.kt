@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
@@ -18,9 +19,15 @@ class ProductMenuViewHolder(
     }
 
     override fun bind(menu: ProductMenuViewModel) {
-        itemView.textMenu.text = itemView.context.getString(menu.title)
-        itemView.icuPmlMoreMenu.setImage(menu.icon)
-        itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+        with(itemView) {
+            textMenu.text = context.getString(menu.title)
+            if (getString(menu.title) == getString(R.string.product_manage_create_broadcast_chat)) {
+                icuPmlMoreMenu.background = ContextCompat.getDrawable(context, R.drawable.ic_bc_chat)
+            } else {
+                icuPmlMoreMenu.setImage(menu.icon)
+            }
+            setOnClickListener { listener.onClickOptionMenu(menu) }
+        }
     }
 
     interface ProductMenuListener {

@@ -20,6 +20,10 @@ data class GetVariantResult(
         return variants.find { it.isPrimary }?.isEmpty() == true
     }
 
+    fun isEmptyOtherVariant(): Boolean {
+        return variants.find { !it.isPrimary }?.isEmpty() == true
+    }
+
     fun getMainVariant(): ProductVariant? {
         return variants.find { it.isPrimary && !it.isEmpty() }
     }

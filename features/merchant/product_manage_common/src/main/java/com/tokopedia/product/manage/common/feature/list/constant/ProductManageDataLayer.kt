@@ -111,7 +111,7 @@ object ProductManageDataLayer {
     const val BUSINESS_UNIT = "businessUnit"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
-    const val BUSINESS_UNIT_BROADCAST_CHAT = "communication"
+    const val BUSINESS_UNIT_BROADCAST_CHAT = "communication, value"
     const val CURRENT_SITE_BROADCAST_CHAT = "tokopediamarketplace"
     const val EVENT_ACTION_CLICK_ON_CAROUSEL = "click on carousel"
     const val EVENT_LABEL_BROADCAST_CHAT = "broadcast chat"
@@ -120,5 +120,6 @@ object ProductManageDataLayer {
     //SA
     const val EVENT_ACTION_CLICK_BROADCAST_CHAT = "click broadcast chat"
     const val CURRENT_SITE_BROADCAST_CHAT_SA = "tokopediaseller"
+    const val BUSINESS_UNIT_BROADCAST_CHAT_SA = "communication"
 
 }

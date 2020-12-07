@@ -9,9 +9,6 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.product.manage.common.feature.broadcastchat.domain.GetChatBlastSellerMetaDataUseCase
-import com.tokopedia.product.manage.common.feature.broadcastchat.presentation.model.ChatBlastSellerEntryPointUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
@@ -42,7 +39,6 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -75,7 +71,6 @@ class ProductManageViewModel @Inject constructor(
         private val multiEditProductUseCase: MultiEditProductUseCase,
         private val getProductListMetaUseCase: GetProductListMetaUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
-        private val chatBlastSellerMetaDataUseCase: GetChatBlastSellerMetaDataUseCase,
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -88,7 +83,7 @@ class ProductManageViewModel @Inject constructor(
 
     val viewState: LiveData<ViewState>
         get() = _viewState
-    val getProductVariantsResult: LiveData<GetVariantResult>
+    val getProductVariantsResult: LiveData<Result<GetVariantResult>>
         get() = _getProductVariantsResult
     val productListResult: LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
@@ -122,11 +117,9 @@ class ProductManageViewModel @Inject constructor(
         get() = _productFiltersTab
     val onClickPromoTopAds: LiveData<TopAdsPage>
         get() = _onClickPromoTopAds
-    val chatBlastSeller: LiveData<String>
-        get() = _chatBlastSeller
 
     private val _viewState = MutableLiveData<ViewState>()
-    private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
+    private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
@@ -248,45 +241,20 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-
-            val result = awaitAll(
-                    asyncCatchError(dispatchers.io, block = {
-                        if (withDelay) {
-                            delay(REQUEST_DELAY)
-                        }
-                        val extraInfo = listOf(ExtraInfo.TOPADS)
-                        val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
-                        getProductListUseCase.execute(requestParams)
-
-                    }) {
-                        it
-                    },
-                    asyncCatchError(dispatchers.io, block = {
-                        chatBlastSellerMetaDataUseCase.executeOnBackground()
-                    }) {
-                        it
-                    }
-            )
-
-            if (result.isNotEmpty() && result.all { it != null }) {
-                val productListResponse = result.filterIsInstance<ProductList>().firstOrNull()
-                val productList = productListResponse?.data
-                val chatBlastSeller = result.filterIsInstance<ChatBlastSellerEntryPointUiModel>().firstOrNull()
-                        ?: ChatBlastSellerEntryPointUiModel()
-                if (isRefresh) {
-                    refreshList()
-                }
-                showProductList(productList)
-                setChatBlastSeller(chatBlastSeller)
-                hideProgressDialog()
-            } else {
-                val error = result.filterIsInstance<Throwable>().firstOrNull() ?: Throwable()
-                _productListResult.value = Fail(error)
-                hideProgressDialog()
-                return@launchCatchError
+            val productList = withContext(dispatchers.io) {
+                if(withDelay) { delay(REQUEST_DELAY) }
+                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
+                val getProductList = getProductListUseCase.execute(requestParams)
+                val productListResponse = getProductList.productList
+                productListResponse?.data
             }
+
+            if(isRefresh) { refreshList() }
+            showProductList(productList)
+            hideProgressDialog()
         }, onError = {
-            if (it is CancellationException) {
+            if(it is CancellationException) {
                 return@launchCatchError
             }
             hideProgressDialog()
@@ -306,17 +274,14 @@ class ProductManageViewModel @Inject constructor(
             }
 
             if (result.variants.isNotEmpty()) {
-                _getProductVariantsResult.value = result
+                _getProductVariantsResult.value = Success(result)
             }
 
             hideLoadingDialog()
         }, onError = {
+            _getProductVariantsResult.value = Fail(it)
             hideLoadingDialog()
         })
-    }
-
-    private fun setChatBlastSeller(chatBlastSeller: ChatBlastSellerEntryPointUiModel) {
-        _chatBlastSeller.value = chatBlastSeller.url
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {

@@ -58,4 +58,6 @@ object ProductManageListConstant {
     const val HAS_DATE_TICKER_BC = "hasDateTickerBC"
     const val PRODUCT_ID = "product_id"
 
+    const val BROADCAST_CHAT_CREATE = "https://m.tokopedia.com/broadcast-chat/create"
+
 }
