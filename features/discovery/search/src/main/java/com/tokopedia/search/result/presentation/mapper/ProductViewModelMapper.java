@@ -391,11 +391,29 @@ public class ProductViewModelMapper {
                     product.getDiscountPercentage(),
                     position,
                     inspirationCarouselType,
-                    layout
+                    layout,
+                    convertToInspirationCarouselLabelGroup(product.getLabelGroupList())
             ));
         }
 
         return products;
+    }
+
+    private List<InspirationCarouselViewModel.Option.Product.LabelGroup> convertToInspirationCarouselLabelGroup(
+            List<SearchProductModel.InspirationCarouselLabelGroup> list
+    ) {
+        List<InspirationCarouselViewModel.Option.Product.LabelGroup> labelGroupList = new ArrayList<>();
+
+        for(SearchProductModel.InspirationCarouselLabelGroup labelGroup: list) {
+            labelGroupList.add(new InspirationCarouselViewModel.Option.Product.LabelGroup(
+                labelGroup.getTitle(),
+                labelGroup.getType(),
+                labelGroup.getPosition(),
+                labelGroup.getUrl()
+            ));
+        }
+
+        return labelGroupList;
     }
 
     private List<InspirationCardViewModel> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationWidget searchInspirationWidget) {

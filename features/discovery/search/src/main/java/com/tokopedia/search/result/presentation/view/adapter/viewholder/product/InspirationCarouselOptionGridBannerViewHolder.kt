@@ -22,6 +22,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
     override fun bind(item: InspirationCarouselViewModel.Option) {
         if (item.bannerImageUrl.isNotEmpty()) {
             bindBannerImage(item)
+            hideDescButton()
         } else {
             bindProductDesc(item)
             showGridButton()
@@ -33,6 +34,11 @@ class InspirationCarouselOptionGridBannerViewHolder(
         itemView.optionGridCardViewBannerImage?.shouldShowWithAction(item.bannerImageUrl.isNotEmpty()) {
             ImageHandler.loadImageFitCenter(itemView.context, itemView.optionGridCardViewBannerImage, item.bannerImageUrl)
         }
+    }
+
+    private fun hideDescButton() {
+        itemView.optionGridBannerDesc?.visibility = View.GONE
+        itemView.optionGridBannerButton?.visibility = View.GONE
     }
 
     private fun bindProductDesc(item: InspirationCarouselViewModel.Option) {

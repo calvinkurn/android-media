@@ -669,7 +669,29 @@ data class SearchProductModel(
 
             @SerializedName("discount_percentage")
             @Expose
-            val discountPercentage: Int = 0
+            val discountPercentage: Int = 0,
+
+            @SerializedName("label_groups")
+            @Expose
+            val labelGroupList: List<InspirationCarouselLabelGroup> = listOf()
+    )
+
+    data class InspirationCarouselLabelGroup(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("type")
+            @Expose
+            val type: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
     )
 
     data class SearchInspirationWidget(

@@ -275,6 +275,12 @@ class SearchProductFirstPageGqlUseCase(
                                 discount_percentage
                                 discount_start
                                 discount_expired
+                                label_groups {
+                                    title
+                                    type
+                                    position
+                                    url
+                                }
                             }
                         }
                     }
