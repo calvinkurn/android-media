@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.talk.common.constants.TalkConstants.COMMENT_ID
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReplyBottomSheetClickedListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.widget_talk_report_bottom_sheet.*
 
