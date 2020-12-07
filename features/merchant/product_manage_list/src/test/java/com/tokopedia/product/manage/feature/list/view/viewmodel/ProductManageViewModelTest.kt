@@ -696,6 +696,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
         viewModel.getPopupsInfo(productId)
 
+        verifyGetVariantsCalled()
+
         val expectedResult = Success(GetPopUpResult(productId, showPopup))
 
         viewModel.getPopUpResult
