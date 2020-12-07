@@ -34,7 +34,7 @@ class AddressRobot {
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(withId(R.id.et_search))
+        onView(withId(R.id.et_search_logistic))
                 .check(matches(withText("")))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
