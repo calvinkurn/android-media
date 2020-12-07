@@ -48,13 +48,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val updateScheduleResult: LiveData<Result<String>>
         get() = _updateScheduleResult
 
-
-    fun detachView() {
-        getShopBasicDataUseCase.unsubscribe()
-        getShopStatusUseCase.unsubscribe()
-        updateShopScheduleUseCase.unsubscribe()
-    }
-
     fun getShopData(shopId: String, includeOS: Boolean) {
         launchCatchError(dispatchers.io, block = {
             _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))
@@ -69,8 +62,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
             closeEnd: String,
             closeNote: String
     ) {
-        updateShopScheduleUseCase.unsubscribe()
-
         launchCatchError(dispatchers.io, block = {
             val requestParams = UpdateShopScheduleUseCase.createRequestParams(
                     action = action,
