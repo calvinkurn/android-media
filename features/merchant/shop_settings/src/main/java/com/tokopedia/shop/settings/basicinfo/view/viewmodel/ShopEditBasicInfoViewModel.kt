@@ -21,9 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopEditBasicInfoViewModel @Inject constructor(
@@ -75,14 +73,14 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         get() = _validateShopDomainJob
 
     fun getAllowShopNameDomainChanges() {
-        launchCatchError(block = {
-            val data = withContext(dispatchers.io) {
+        launchCatchError(dispatchers.io, block = {
+            val data = async(start = CoroutineStart.LAZY) {
                 val allowShopNameDomainChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground()
                 allowShopNameDomainChanges.data
             }
-            _allowShopNameDomainChanges.value = Success(data)
+            _allowShopNameDomainChanges.postValue(Success(data.await()))
         }) {
-            _allowShopNameDomainChanges.value = Fail(it)
+            _allowShopNameDomainChanges.postValue(Fail(it))
         }
     }
 
