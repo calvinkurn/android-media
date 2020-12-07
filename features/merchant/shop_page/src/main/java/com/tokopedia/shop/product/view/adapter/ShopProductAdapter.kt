@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.adapter
 
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -27,7 +26,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductAdapterTypeFactory.attachAdapter(this)
     }
 
-    val shopProductViewModelList: MutableList<ShopProductViewModel> = mutableListOf()
+    val shopProductUiModelList: MutableList<ShopProductUiModel> = mutableListOf()
     val shopProductSortFilterUiViewModel: ShopProductSortFilterUiModel?
         get() = mapOfDataModel[KEY_SORT_FILTER_DATA_MODEL] as? ShopProductSortFilterUiModel
     val shopProductSortFilterPosition: Int
@@ -35,7 +34,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             visitables.indexOf(it)
         } ?: 0
     val shopProductFirstViewModelPosition: Int
-        get() = shopProductFirstViewModel?.let {
+        get() = shopProductFirstUiModel?.let {
             visitables.indexOf(it)
         } ?: 0
     val shopChangeProductGridSegment: Int
@@ -45,27 +44,27 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
     private var mapOfDataModel = mutableMapOf<String, Visitable<*>>()
-    private val shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel?
-        get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightViewModel
-    private val membershipStampViewModel: MembershipStampProgressViewModel?
-        get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressViewModel
-    private val shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel?
-        get() = mapOfDataModel[KEY_MERCHANT_VOUCHER_DATA_MODEL] as? ShopMerchantVoucherViewModel
-    private val shopProductFeaturedViewModel: ShopProductFeaturedViewModel?
-        get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedViewModel
-    private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseViewModel?
-        get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseViewModel
-    private val shopEmptyProductViewModel: ShopEmptyProductViewModel?
-        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductViewModel
-    private val shopProductAddViewModel: ShopProductAddViewModel?
-        get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddViewModel
-    private val shopProductFirstViewModel: ShopProductViewModel?
-        get() = mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] as? ShopProductViewModel
+    private val shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel?
+        get() = mapOfDataModel[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] as? ShopProductEtalaseHighlightUiModel
+    private val membershipStampUiModel: MembershipStampProgressUiModel?
+        get() = mapOfDataModel[KEY_MEMBERSHIP_DATA_MODEL] as? MembershipStampProgressUiModel
+    private val shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel?
+        get() = mapOfDataModel[KEY_MERCHANT_VOUCHER_DATA_MODEL] as? ShopMerchantVoucherUiModel
+    private val shopProductFeaturedUiModel: ShopProductFeaturedUiModel?
+        get() = mapOfDataModel[KEY_FEATURED_PRODUCT_DATA_MODEL] as? ShopProductFeaturedUiModel
+    private val sellerEmptyProductAllEtalaseDataModel: ShopSellerEmptyProductAllEtalaseUiModel?
+        get() = mapOfDataModel[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] as? ShopSellerEmptyProductAllEtalaseUiModel
+    private val shopEmptyProductUiModel: ShopEmptyProductUiModel?
+        get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductUiModel
+    private val shopProductAddUiModel: ShopProductAddUiModel?
+        get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddUiModel
+    private val shopProductFirstUiModel: ShopProductUiModel?
+        get() = mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] as? ShopProductUiModel
 
     override fun showErrorNetwork(message: String, onRetryListener: ErrorNetworkModel.OnRetryListener) {
         errorNetworkModel.errorMessage = message
         errorNetworkModel.onRetryListener = onRetryListener
-        this.shopProductViewModelList.clear()
+        this.shopProductUiModelList.clear()
         clearAllNonDataElement()
         visitables.add(errorNetworkModel)
         notifyDataSetChanged()
@@ -73,7 +72,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     override fun isShowLoadingMore(): Boolean {
-        return shopProductViewModelList.size > 0
+        return shopProductUiModelList.size > 0
     }
 
     override fun isItemClickableByDefault(): Boolean {
@@ -81,7 +80,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     override fun getEndlessDataSize(): Int {
-        return shopProductViewModelList.size
+        return shopProductUiModelList.size
     }
 
     override fun getStickyHeaderPosition(): Int {
@@ -188,12 +187,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             visitables.remove(it)
             notifyRemovedItem(position)
         }
-        shopEmptyProductViewModel?.let {
+        shopEmptyProductUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
         }
-        shopProductAddViewModel?.let {
+        shopProductAddUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -201,18 +200,18 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun getEtalaseNameHighLight(shopProductViewModel: ShopProductViewModel): String {
-        shopProductEtalaseHighlightViewModel?.let {
-            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselViewModelList
+    fun getEtalaseNameHighLight(shopProductUiModel: ShopProductUiModel): String {
+        shopProductEtalaseHighlightUiModel?.let {
+            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselUiModelList
             var i = 0
             val sizei = etalaseHighlightCarouselViewModelList.size
             while (i < sizei) {
-                val shopProductViewModelList = etalaseHighlightCarouselViewModelList[i].shopProductViewModelList
+                val shopProductViewModelList = etalaseHighlightCarouselViewModelList[i].shopProductUiModelList
                 var j = 0
                 val sizej = shopProductViewModelList.size
                 while (j < sizej) {
                     val shopProductViewModelEtalase = shopProductViewModelList[j]
-                    if (shopProductViewModelEtalase.id == shopProductViewModel.id && shopProductViewModel.etalaseId == etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseId) {
+                    if (shopProductViewModelEtalase.id == shopProductUiModel.id && shopProductUiModel.etalaseId == etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseId) {
                         return etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseName
                     }
                     j++
@@ -223,10 +222,10 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         } ?: return ALL_ETALASE
     }
 
-    fun getEtalaseNameHighLightType(shopProductViewModel: ShopProductViewModel): Int? {
-        return shopProductEtalaseHighlightViewModel?.let {
-            val matchEtalaseHighlight = it.etalaseHighlightCarouselViewModelList.firstOrNull {
-                it.shopProductViewModelList.firstOrNull { it.id == shopProductViewModel.id } != null
+    fun getEtalaseNameHighLightType(shopProductUiModel: ShopProductUiModel): Int? {
+        return shopProductEtalaseHighlightUiModel?.let {
+            val matchEtalaseHighlight = it.etalaseHighlightCarouselUiModelList.firstOrNull {
+                it.shopProductUiModelList.firstOrNull { it.id == shopProductUiModel.id } != null
             }
             matchEtalaseHighlight?.shopEtalaseViewModel?.type
         }
@@ -256,12 +255,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun clearProductList() {
-        if (shopProductViewModelList.isNotEmpty()) {
+        if (shopProductUiModelList.isNotEmpty()) {
             val totalData = visitables.size
             var indexStart = 0
             if (mapOfDataModel.isNotEmpty()) {
-                indexStart = if (null != shopProductAddViewModel) {
-                    visitables.indexOf(shopProductAddViewModel)
+                indexStart = if (null != shopProductAddUiModel) {
+                    visitables.indexOf(shopProductAddUiModel)
                 } else {
                     visitables.indexOf(mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL])
                 }
@@ -269,14 +268,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             if (indexStart >= 0 && totalData <= visitables.size && indexStart < totalData) {
                 visitables.subList(indexStart, totalData).clear()
                 notifyRemovedItemRange(indexStart, totalData)
-                shopProductViewModelList.clear()
+                shopProductUiModelList.clear()
                 mapDataModel()
             }
         }
     }
 
     fun clearMerchantVoucherData() {
-        shopMerchantVoucherViewModel?.let {
+        shopMerchantVoucherUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -285,7 +284,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun clearMembershipData() {
-        membershipStampViewModel?.let {
+        membershipStampUiModel?.let {
             val position = visitables.indexOf(it)
             visitables.remove(it)
             notifyRemovedItem(position)
@@ -295,9 +294,9 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun updateWishListStatus(productId: String, wishList: Boolean) {
         var i = 0
-        val sizei = shopProductViewModelList.size
+        val sizei = shopProductUiModelList.size
         while (i < sizei) {
-            val shopProductViewModel = shopProductViewModelList[i]
+            val shopProductViewModel = shopProductUiModelList[i]
             if (shopProductViewModel.id.equals(productId, ignoreCase = true)) {
                 shopProductViewModel.isWishList = wishList
                 notifyChangedItem(visitables.indexOf(shopProductViewModel))
@@ -305,14 +304,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             }
             i++
         }
-        shopProductFeaturedViewModel?.let {
+        shopProductFeaturedUiModel?.let {
             val isFeaturedChanged = it.updateWishListStatus(productId, wishList)
             if (isFeaturedChanged) {
                 notifyChangedItem(visitables.indexOf(it))
             }
         }
 
-        shopProductEtalaseHighlightViewModel?.let {
+        shopProductEtalaseHighlightUiModel?.let {
             val isEtalaseChanged = it.updateWishListStatus(productId, wishList)
             if (isEtalaseChanged) {
                 notifyChangedItem(visitables.indexOf(it))
@@ -339,7 +338,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setMembershipDataModel(data: MembershipStampProgressViewModel) {
+    fun setMembershipDataModel(data: MembershipStampProgressUiModel) {
         if (!mapOfDataModel.containsKey(KEY_MEMBERSHIP_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -351,7 +350,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setMerchantVoucherDataModel(data: ShopMerchantVoucherViewModel) {
+    fun setMerchantVoucherDataModel(data: ShopMerchantVoucherUiModel) {
         if (!mapOfDataModel.containsKey(KEY_MERCHANT_VOUCHER_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -363,7 +362,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductFeaturedDataModel(data: ShopProductFeaturedViewModel) {
+    fun setShopProductFeaturedDataModel(data: ShopProductFeaturedUiModel) {
         if (!mapOfDataModel.containsKey(KEY_FEATURED_PRODUCT_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -375,7 +374,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductEtalaseHighlightDataModel(data: ShopProductEtalaseHighlightViewModel) {
+    fun setShopProductEtalaseHighlightDataModel(data: ShopProductEtalaseHighlightUiModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_HIGHLIGHT_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -387,7 +386,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+    fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
             val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
             visitables.add(listWithoutProductListData.size, data)
@@ -399,28 +398,28 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun setProductListDataModel(productList: List<ShopProductViewModel>) {
+    fun setProductListDataModel(productList: List<ShopProductUiModel>) {
         visitables.addAll(productList)
-        shopProductViewModelList.addAll(productList)
+        shopProductUiModelList.addAll(productList)
         notifyInsertedItemRange(lastIndex, productList.size)
         mapDataModel()
     }
 
     fun addSellerAddProductDataModel() {
-        val shopProductAddViewModel = ShopProductAddViewModel()
+        val shopProductAddViewModel = ShopProductAddUiModel()
         visitables.add(shopProductAddViewModel)
         notifyInsertedItem(visitables.size - 1)
         mapDataModel()
     }
 
     fun refreshMembershipData() {
-        membershipStampViewModel?.let {
+        membershipStampUiModel?.let {
             notifyChangedItem(visitables.indexOf(it))
         }
     }
 
     fun refreshMerchantVoucherData() {
-        shopMerchantVoucherViewModel?.let {
+        shopMerchantVoucherUiModel?.let {
             notifyChangedItem(visitables.indexOf(it))
         }
     }
@@ -431,7 +430,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         mapDataModel()
     }
 
-    fun addEmptyStateData(productList: List<ShopProductViewModel>) {
+    fun addEmptyStateData(productList: List<ShopProductUiModel>) {
         if(productList.isNotEmpty()) {
             if (visitables.getOrNull(lastIndex) !is ShopProductEmptySearchUiModel) {
                 visitables.add(ShopProductEmptySearchUiModel())
@@ -441,7 +440,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 visitables.add(ShopProductTitleEmptyUiModel())
                 notifyInsertedItem(lastIndex)
             }
-            if(visitables.getOrNull(lastIndex) !is ShopProductViewModel) {
+            if(visitables.getOrNull(lastIndex) !is ShopProductUiModel) {
                 val lastIndex = visitables.size
                 visitables.addAll(productList)
                 notifyItemRangeInserted(lastIndex, productList.size)
@@ -467,31 +466,31 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 is ShopProductSortFilterUiModel -> {
                     mutableMapDataModelPosition[KEY_SORT_FILTER_DATA_MODEL] = data
                 }
-                is MembershipStampProgressViewModel -> {
+                is MembershipStampProgressUiModel -> {
                     mutableMapDataModelPosition[KEY_MEMBERSHIP_DATA_MODEL] = data
                 }
-                is ShopMerchantVoucherViewModel -> {
+                is ShopMerchantVoucherUiModel -> {
                     mutableMapDataModelPosition[KEY_MERCHANT_VOUCHER_DATA_MODEL] = data
                 }
-                is ShopProductFeaturedViewModel -> {
+                is ShopProductFeaturedUiModel -> {
                     mutableMapDataModelPosition[KEY_FEATURED_PRODUCT_DATA_MODEL] = data
                 }
-                is ShopProductEtalaseHighlightViewModel -> {
+                is ShopProductEtalaseHighlightUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_HIGHLIGHT_DATA_MODEL] = data
                 }
-                is ShopProductEtalaseTitleViewModel -> {
+                is ShopProductEtalaseTitleUiModel -> {
                     mutableMapDataModelPosition[KEY_ETALASE_TITLE_DATA_MODEL] = data
                 }
-                is ShopProductAddViewModel -> {
+                is ShopProductAddUiModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] = data
                 }
-                is ShopSellerEmptyProductAllEtalaseViewModel -> {
+                is ShopSellerEmptyProductAllEtalaseUiModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL] = data
                 }
-                is ShopEmptyProductViewModel -> {
+                is ShopEmptyProductUiModel -> {
                     mutableMapDataModelPosition[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] = data
                 }
-                is ShopProductViewModel -> {
+                is ShopProductUiModel -> {
                     if (!mutableMapDataModelPosition.containsKey(KEY_SHOP_PRODUCT_FIRST_DATA_MODEL)) {
                         mutableMapDataModelPosition[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] = data
                     }
@@ -568,10 +567,10 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     private fun getListWithoutProductCardDataAndLoadingMoreModel(): List<Visitable<*>> {
         return visitables.filter {
-            it::class.java != ShopProductViewModel::class.java &&
-                    it::class.java != ShopProductAddViewModel::class.java &&
-                    it::class.java != ShopSellerEmptyProductAllEtalaseViewModel::class.java &&
-                    it::class.java != ShopEmptyProductViewModel::class.java &&
+            it::class.java != ShopProductUiModel::class.java &&
+                    it::class.java != ShopProductAddUiModel::class.java &&
+                    it::class.java != ShopSellerEmptyProductAllEtalaseUiModel::class.java &&
+                    it::class.java != ShopEmptyProductUiModel::class.java &&
                     it::class.java != LoadingMoreModel::class.java
         }
     }

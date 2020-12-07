@@ -45,6 +45,8 @@ import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -336,10 +338,10 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     private void getPriceFromSDK(Context context) {
         String campaignId = TradeinConstants.CAMPAIGN_ID_PROD;
-        if (TradeinConstants.LAKU6_BASEURL.equals(TradeinConstants.LAKU6_BASEURL_STAGING))
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING)
             campaignId = TradeinConstants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
+                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().getTYPE() == Env.STAGING, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
         requestPermission();
     }
 
