@@ -48,5 +48,4 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
             mProductRevampComponentViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
-
 }

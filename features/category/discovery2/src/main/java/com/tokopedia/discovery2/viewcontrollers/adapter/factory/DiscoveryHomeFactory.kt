@@ -135,6 +135,7 @@ class DiscoveryHomeFactory {
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
             initializeComponent(ComponentsList.ProductCardRevampItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
+            initializeComponent(ComponentsList.MasterProductCardItemList, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             // Product Card Horizontal Carousel
             initializeComponent(ComponentsList.ProductCardCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
