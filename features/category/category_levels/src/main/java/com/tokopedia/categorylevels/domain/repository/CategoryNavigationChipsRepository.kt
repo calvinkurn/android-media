@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 
 private const val KEY_CATEGORY_ID = "categoryID"
+private const val KEY_IS_TRENDING = "isTrending"
 
 class CategoryNavigationChipsRepository : BaseRepository(), ChildCategoryRepository {
 
@@ -26,6 +27,7 @@ class CategoryNavigationChipsRepository : BaseRepository(), ChildCategoryReposit
     private fun createRequestParams(id: Int): Map<String, Any> {
         val requestParams = RequestParams.create()
         requestParams.putInt(KEY_CATEGORY_ID, id)
+        requestParams.putBoolean(KEY_IS_TRENDING, true)
         return requestParams.parameters
     }
 
