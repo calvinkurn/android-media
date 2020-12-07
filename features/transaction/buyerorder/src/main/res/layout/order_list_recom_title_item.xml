@@ -3,7 +3,7 @@
     android:id="@+id/title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/black_70"
+    android:textColor="@color/Unify_N700_68"
     android:textStyle="bold"
     android:textSize="@dimen/dp_14"
     android:padding="@dimen/dp_10"/>

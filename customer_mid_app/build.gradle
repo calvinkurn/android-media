@@ -88,7 +88,6 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.features.accountHome)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.loginregister)
