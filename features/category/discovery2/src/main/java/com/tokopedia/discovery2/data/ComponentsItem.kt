@@ -94,6 +94,9 @@ data class ComponentsItem(
         return componentsItem
     }
 
+    fun reInitComponentItems(){
+        componentsItem = null
+    }
 }
 
 
