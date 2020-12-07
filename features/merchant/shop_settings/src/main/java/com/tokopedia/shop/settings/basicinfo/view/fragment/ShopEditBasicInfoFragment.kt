@@ -251,7 +251,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     if (input.isBlank()) {
                         val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
                         showShopNameInputError(message)
-                        viewModel.cancelValidateShopName()
                     } else {
                         resetShopNameInput()
                         viewModel.validateShopName(input)
@@ -275,7 +274,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     if (input.isBlank()) {
                         val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
                         showShopDomainInputError(message)
-                        viewModel.cancelValidateShopDomain()
                     } else {
                         resetShopDomainInput()
                         viewModel.validateShopDomain(input)
