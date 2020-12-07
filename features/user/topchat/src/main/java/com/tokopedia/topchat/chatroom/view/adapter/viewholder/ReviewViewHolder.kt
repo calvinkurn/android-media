@@ -42,6 +42,7 @@ class ReviewViewHolder(
         bindLabel(element)
         bindBuyerLabel(element)
         bindStar(element)
+        bindStarClick(element)
     }
 
     private fun bindImage(element: ReviewUiModel) {
@@ -91,6 +92,10 @@ class ReviewViewHolder(
         } else {
             reputation?.hide()
         }
+    }
+
+    private fun bindStarClick(element: ReviewUiModel) {
+        reputation?.reviewable = !element.isReviewed
     }
 
     companion object {
