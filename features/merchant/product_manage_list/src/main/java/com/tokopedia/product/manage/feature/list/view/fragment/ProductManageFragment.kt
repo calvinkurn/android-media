@@ -122,6 +122,7 @@ import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMana
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel.Companion.REQUEST_DELAY
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
@@ -149,6 +150,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
@@ -489,7 +493,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             redirectToBroadcastChat(mainProduct?.id.orEmpty())
         } else {
             val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-            val action = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+            val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
             errorStateBroadcastChat(message, action)
         }
     }
@@ -497,16 +501,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun goToCreateBroadCastChat(product: ProductViewModel?) {
         if (product?.stock.isZero() || product?.isActive() != true) {
             val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-            val action = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+            val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
             errorStateBroadcastChat(message, action)
         } else {
             //request variant
             if (product.isVariant()) {
                 viewModel.getProductVariants(product.id)
             } else {
-                showProgressDialogVariant()
-                redirectToBroadcastChat(product.id)
-                hideProgressDialogVariant()
+                GlobalScope.launch {
+                    showProgressDialogVariant()
+                    delay(REQUEST_DELAY)
+                    redirectToBroadcastChat(product.id)
+                    hideProgressDialogVariant()
+                }
             }
         }
     }
