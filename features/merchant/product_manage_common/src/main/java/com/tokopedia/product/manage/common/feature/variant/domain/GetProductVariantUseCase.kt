@@ -19,10 +19,10 @@ class GetProductVariantUseCase @Inject constructor(
         private const val PARAM_VARIANT = "variant"
         private const val PARAM_EDIT = "edit"
 
-        fun createRequestParams(productId: String, paramEdit: Boolean = true): RequestParams {
+        fun createRequestParams(productId: String): RequestParams {
             val optionsParam = RequestParams()
             optionsParam.putBoolean(PARAM_VARIANT, true)
-            optionsParam.putBoolean(PARAM_EDIT, paramEdit)
+            optionsParam.putBoolean(PARAM_EDIT, true)
 
             return RequestParams().apply {
                 putString(PARAM_PRODUCT_ID, productId)
