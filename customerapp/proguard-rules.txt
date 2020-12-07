@@ -235,3 +235,10 @@
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
 -dontwarn com.tokopedia.sortfilter.SortFilter*
+
+
+# To show pop-up via CM engine
+-keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+-keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
+-keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
+-keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment

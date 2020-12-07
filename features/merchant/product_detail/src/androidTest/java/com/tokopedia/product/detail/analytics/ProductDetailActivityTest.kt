@@ -24,7 +24,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -49,7 +48,7 @@ class ProductDetailActivityTest {
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
-    var activityRule: IntentsTestRule<ProductDetailActivity> = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+    var activityRule: IntentsTestRule<ProductDetailActivity> = object : IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             clearLogin()
@@ -113,7 +112,7 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickAddToCart()
         } assertTest {
-            if(addToCartBottomSheetIsVisible() == true) {
+            if (addToCartBottomSheetIsVisible() == true) {
                 performClose(activityRule)
                 waitForTrackerSent()
                 validate(gtmLogDBSource, targetContext, ADD_TO_CART_LOGIN_PATH)
@@ -202,18 +201,15 @@ class ProductDetailActivityTest {
     }
 
     private fun clickSeeAllDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
-        )
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
         waitForTalk()
-        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
+                .check(matches(isDisplayed()))
+                .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
-        )
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulQuestions))), scrollTo()))
         waitForTalk()
         val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(0, clickChildViewWithId(R.id.productDetailDiscussionThread)))
@@ -224,9 +220,7 @@ class ProductDetailActivityTest {
     }
 
     private fun clickTabDiscussion() {
-        onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5, scrollTo())
-        )
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.chipSocialProofItem))), scrollTo()))
         onView(allOf(withId(R.id.chipSocialProofItem), withParent(withId(R.id.root_socproof))))
                 .check(matches(isDisplayed()))
                 .perform(click())
@@ -251,18 +245,14 @@ class ProductDetailActivityTest {
     }
 
     private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(6, scrollTo())
-        )
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
     }
 
     private fun clickSeeGuideSizeChart() {
-        onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(6, scrollTo())
-        )
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
     }
