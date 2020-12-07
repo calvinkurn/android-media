@@ -1362,21 +1362,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecentViewProductClicked(productId: String) {
         (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
+                if (recentView.isTopAds) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            this::class.java.simpleName,
+                            recentView.clickUrl,
+                            recentView.id,
+                            recentView.name,
+                            recentView.imageUrl
+                    )
+                }
                 if (FLAG_IS_CART_EMPTY) {
                     cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
                             position.toString(),
                             dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position)
                     )
                 } else {
-                    if (recentView.isTopAds) {
-                        TopAdsUrlHitter(context).hitClickUrl(
-                                this::class.java.simpleName,
-                                recentView.clickUrl,
-                                recentView.id,
-                                recentView.name,
-                                recentView.imageUrl
-                        )
-                    }
                     cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(
                             position.toString(),
                             dPresenter.generateRecentViewProductClickDataLayer(recentView, position)
@@ -1397,7 +1397,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (it.isTopAds) {
                 TopAdsUrlHitter(context).hitImpressionUrl(
                         this::class.java.simpleName,
-                        it.clickUrl,
+                        it.trackerImageUrl,
                         it.id,
                         it.name,
                         it.imageUrl

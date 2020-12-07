@@ -26,4 +26,5 @@ data class CartRecentViewItemHolderData(
         var isFreeOngkirActive: Boolean = false,
         var freeOngkirImageUrl: String = "",
         var clickUrl: String = "",
+        var trackerImageUrl: String = "",
         var labelGroupList: List<RecommendationLabel> = listOf() )

@@ -31,6 +31,7 @@ class RecentViewMapper @Inject constructor() {
         cartRecentViewItemHolderData.labelGroupList = recentView.labelGroupList
         cartRecentViewItemHolderData.slashedPrice = recentView.slashedPrice
         cartRecentViewItemHolderData.clickUrl = recentView.clickUrl
+        cartRecentViewItemHolderData.trackerImageUrl = recentView.trackerImageUrl
 
         if (recentView.badgesUrl.size > 0) {
             cartRecentViewItemHolderData.badgesUrl = recentView.badgesUrl
