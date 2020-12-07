@@ -149,7 +149,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                     tabsChildComponentsItemList.addAll(componentList)
                                     listComponents.addAll(componentList)
                                 }
-                                this.setComponentsItem(tabsChildComponentsItemList, component.tabName)
+                                this.setComponentsItem(tabsChildComponentsItemList, tabData.name)
                             }
                         }
                     }
@@ -223,14 +223,15 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 setComponentsItem(component.getComponentsItem(), component.tabName)
             })
             component.needPagination = true
-            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName) })
+            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                properties = component.properties
+            } })
         } else {
             listComponents.add(component)
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
-                component.showVerticalLoader = false
                 listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
             } else if (component.getComponentsItem()?.size == 0) {
                 listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))

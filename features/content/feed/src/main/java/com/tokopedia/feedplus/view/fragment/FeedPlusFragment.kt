@@ -445,16 +445,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 when(it) {
                     is Success -> {
                         val data = it.data
-                        if (data.isSuccess) {
-                            onAddToCartSuccess()
-                        } else {
-                            onAddToCartFailed(data.applink)
+                        when {
+                            data.isSuccess -> {
+                                onAddToCartSuccess()
+                            }
+                            data.errorMsg.isNotEmpty() -> {
+                                view?.run {
+                                    Toaster.build(this, data.errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                            else -> {
+                                onAddToCartFailed(data.applink)
+                            }
                         }
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
                         view?.run {
-                            Toaster.make(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.build(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -1635,9 +1643,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        if (newList.size > rowNumber) {
-            val (_, _, _, _, footer) = newList[rowNumber]
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
@@ -1657,8 +1665,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-
-            adapter.updateList(newList)
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 

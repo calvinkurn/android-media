@@ -440,7 +440,7 @@ class ShopHomeAdapter(
     fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
         visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
-            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder) {
+            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
                 visitables.removeAt(position)
                 notifyItemRemoved(position)
             } else {
@@ -448,6 +448,11 @@ class ShopHomeAdapter(
                 notifyChangedItem(position)
             }
         }
+    }
+
+    private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
+        return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
+                || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
     }
 
     fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {

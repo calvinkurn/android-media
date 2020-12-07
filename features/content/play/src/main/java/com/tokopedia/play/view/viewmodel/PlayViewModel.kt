@@ -454,7 +454,7 @@ class PlayViewModel @Inject constructor(
 
                 if (!isActive) return@launchCatchError
 
-                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
                 launch { getBadgeCart(channel.configuration.showCart) }
                 launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
@@ -643,13 +643,10 @@ class PlayViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun getTotalLikes(feedInfoUiModel: FeedInfoUiModel) {
+    private suspend fun getTotalLikes(channelId: String) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(
-                        contentId = feedInfoUiModel.contentId,
-                        contentType = feedInfoUiModel.contentType,
-                        likeType = feedInfoUiModel.likeType)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)

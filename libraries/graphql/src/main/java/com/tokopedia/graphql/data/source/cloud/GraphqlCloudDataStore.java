@@ -138,7 +138,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         return null;
                     }
                     if (httpResponse.body() != null) {
-                        LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
+                        LoggingUtils.logGqlSize("java", requests, httpResponse.body().toString());
                     }
 
                     JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
