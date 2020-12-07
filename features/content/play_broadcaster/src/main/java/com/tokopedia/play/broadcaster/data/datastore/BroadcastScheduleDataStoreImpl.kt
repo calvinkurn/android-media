@@ -3,12 +3,12 @@ package com.tokopedia.play.broadcaster.data.datastore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -20,7 +20,7 @@ import javax.inject.Inject
  */
 class BroadcastScheduleDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
-        private val updateChannelUseCase: UpdateChannelUseCase
+        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 ): BroadcastScheduleDataStore {
 
     private val _scheduleLiveData = MutableLiveData<BroadcastScheduleUiModel>()
@@ -80,9 +80,9 @@ class BroadcastScheduleDataStoreImpl @Inject constructor(
 
         updateChannelUseCase.apply {
             setQueryParams(
-                    UpdateChannelUseCase.createUpdateBroadcastScheduleRequest(
+                    PlayBroadcastUpdateChannelUseCase.createUpdateBroadcastScheduleRequest(
                             channelId = channelId,
-                            status = PlayChannelStatus.ScheduledLive,
+                            status = PlayChannelStatusType.ScheduledLive,
                             date = selectedDate.toFormattedString(DATE_FORMAT_RFC3339)
                     )
             )
@@ -93,7 +93,7 @@ class BroadcastScheduleDataStoreImpl @Inject constructor(
     private suspend fun removeSchedule(channelId: String) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
-                    UpdateChannelUseCase.createDeleteBroadcastScheduleRequest(
+                    PlayBroadcastUpdateChannelUseCase.createDeleteBroadcastScheduleRequest(
                             channelId = channelId
                     )
             )
