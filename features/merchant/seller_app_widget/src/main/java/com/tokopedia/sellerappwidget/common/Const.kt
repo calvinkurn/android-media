@@ -37,7 +37,8 @@ object Const {
     }
 
     object SharedPrefKey {
-        const val ORDER_LAST_UPDATED = "order_last_updated"
-        const val CHAT_LAST_UPDATED = "chat_last_updated"
+        const val ORDER_LAST_UPDATED = "saw_order_last_updated"
+        const val CHAT_LAST_UPDATED = "saw_chat_last_updated"
+        const val LAST_PRUNE_WORK = "saw_last_prune_work"
     }
 }

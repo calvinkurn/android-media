@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.work.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.service.GetOrderService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
@@ -13,7 +15,7 @@ import java.util.concurrent.TimeUnit
 class GetOrderWorker(
         private val context: Context,
         workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+) : BaseAppWidgetWorker(context, workerParams) {
 
     companion object {
         private const val TAG_RUN_PERIODIC = "get_order_worker"
@@ -41,8 +43,10 @@ class GetOrderWorker(
         }
     }
 
-    override fun doWork(): Result {
-        GetOrderService.startService(context, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
-        return Result.success()
+    override suspend fun doWork(): Result {
+        return withContext(Dispatchers.IO) {
+            GetOrderService.startService(context, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
+            super.doWork()
+        }
     }
 }

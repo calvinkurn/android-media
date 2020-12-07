@@ -3,6 +3,8 @@ package com.tokopedia.sellerappwidget.view.work
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.sellerappwidget.view.service.GetChatService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
@@ -12,7 +14,7 @@ import java.util.concurrent.TimeUnit
 class GetChatWorker(
         private val context: Context,
         workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+) : BaseAppWidgetWorker(context, workerParams) {
 
     companion object {
         private const val TAG_WORKER = "get_chat_worker"
@@ -41,8 +43,10 @@ class GetChatWorker(
         }
     }
 
-    override fun doWork(): Result {
-        GetChatService.startService(context)
-        return Result.success()
+    override suspend fun doWork(): Result {
+        return withContext(Dispatchers.IO) {
+            GetChatService.startService(context)
+            super.doWork()
+        }
     }
 }
