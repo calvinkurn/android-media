@@ -20,14 +20,10 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-//        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
     packagingOptions {
         exclude 'META-INF/**'
     }
-//    testOptions {
-//        execution 'ANDROIDX_TEST_ORCHESTRATOR'
-//    }
 }
 
 dependencies {
