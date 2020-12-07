@@ -115,8 +115,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun getShopBasicData() {
-        getShopBasicDataUseCase.unsubscribe()
-
         launchCatchError(block = {
             val shopBasicData = withContext(dispatchers.io) {
                 getShopBasicDataUseCase.getData(RequestParams.EMPTY)
@@ -134,8 +132,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         tagline: String,
         description: String
     ) {
-        uploadShopImageUseCase.unsubscribe()
-
         launchCatchError(block = {
             val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
             val uploadShopImage = withContext(dispatchers.io) {
@@ -164,11 +160,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             shopName, shopDomain, tagLine, description, logoCode)
 
         updateShopBasicData(requestParams)
-    }
-
-    fun detachView() {
-        getShopBasicDataUseCase.unsubscribe()
-        uploadShopImageUseCase.unsubscribe()
     }
 
     fun setCurrentShopData(data: ShopBasicDataModel) {
