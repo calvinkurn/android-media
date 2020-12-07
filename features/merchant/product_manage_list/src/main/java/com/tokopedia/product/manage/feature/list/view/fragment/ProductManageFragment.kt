@@ -516,7 +516,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun redirectToBroadcastChat(productId: String) {
         val chatBlastUrl = BROADCAST_CHAT_CREATE
         val url = Uri.parse(chatBlastUrl).buildUpon().appendQueryParameter(PRODUCT_ID, productId).build().toString()
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 
     private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false, product: ProductViewModel? = null) {
@@ -525,7 +525,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 goToCreateBroadCastChat(product)
             } else {
                 return@OnClickListener
-            }F
+            }
         }).show()
     }
 
