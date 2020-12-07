@@ -253,9 +253,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeUpdateScheduleData() {
-        currentMillisSchedule = System.currentTimeMillis() - currentMillisSchedule
-        Log.d("SHOP_SETTINGS_INFO_SCHE", "$currentMillisSchedule")
         shopSettingsInfoViewModel.updateScheduleResult.observe(viewLifecycleOwner, Observer {
+            currentMillisSchedule = System.currentTimeMillis() - currentMillisSchedule
+            Log.d("SHOP_SETTINGS_INFO_SCHE", "$currentMillisSchedule")
             when (it) {
                 is Success -> onSuccessUpdateShopSchedule(it.data)
                 is Fail -> onErrorUpdateShopSchedule(it.throwable)
