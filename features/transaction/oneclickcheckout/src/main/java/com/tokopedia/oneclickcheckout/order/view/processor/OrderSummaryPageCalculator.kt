@@ -67,7 +67,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal += fee
             subtotal -= productDiscount
             subtotal -= shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, purchaseProtectionPrice, cashbacks)
 
             var currentState = forceButtonState ?: orderTotal.buttonState
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {
