@@ -12,10 +12,10 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
-import com.tokopedia.product.manage.data.createEditVariantResult
-import com.tokopedia.product.manage.data.createProduct
-import com.tokopedia.product.manage.data.createProductViewModel
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.data.*
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
@@ -696,8 +696,6 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
         viewModel.getPopupsInfo(productId)
 
-        verifyGetVariantsCalled()
-
         val expectedResult = Success(GetPopUpResult(productId, showPopup))
 
         viewModel.getPopUpResult
@@ -706,16 +704,47 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
     fun `when get variants success should set live data value success`() {
-        val getVariantResult = GetProductVariantResponse()
-        val productId = "1400068494"
+        runBlocking {
+            val productName = "Tokopedia"
+            val variantList = listOf(
+                    createProductVariantResponse(combination = listOf(0, 1)),
+                    createProductVariantResponse(combination = listOf(1, 0))
+            )
+            val firstOption = listOf(
+                    createOptionResponse(value = "Biru"),
+                    createOptionResponse(value = "Hijau")
+            )
+            val secondOption = listOf(
+                    createOptionResponse(value = "S"),
+                    createOptionResponse(value = "M")
+            )
+            val selections = listOf(
+                    createSelectionResponse(options = firstOption),
+                    createSelectionResponse(options = secondOption)
+            )
+            val response = createGetVariantResponse(
+                    productName,
+                    products = variantList,
+                    selections = selections
+            )
 
-        onGetVariants_thenReturn(getVariantResult)
+            val productId = "1400068494"
 
-        viewModel.getProductVariants(productId)
+            onGetVariants_thenReturn(response)
 
-        val expectedResult = Success(getVariantResult)
+            viewModel.getProductVariants(productId)
 
-        viewModel.getProductVariantsResult.verifySuccessEquals(expectedResult)
+            val productVariants = listOf(
+                    createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
+                    createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
+            )
+            val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
+            val expectedSuccessResult = Success(expectedResult)
+
+            verifyGetVariantsCalled()
+
+            viewModel.getProductVariantsResult.verifySuccessEquals(expectedSuccessResult)
+        }
     }
 
     @Test
