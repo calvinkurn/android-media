@@ -63,6 +63,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 }
                             }
                             else -> {
+                                layoutParams?.width = Utils.convertDpToPixel(160f, context)
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)
                                 isLoading = true
                             }
