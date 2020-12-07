@@ -11,7 +11,6 @@ import com.moengage.push.PushManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.customer_mid_app.BuildConfig;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.PushNotification;
@@ -88,7 +87,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     }
 
     private void executeCrashlyticLog(Bundle data, String message) {
-        if (!BuildConfig.DEBUG) {
+        if (!GlobalConfig.DEBUG) {
             String logMessage = generateLogMessage(data, message);
             FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
             Timber.w(

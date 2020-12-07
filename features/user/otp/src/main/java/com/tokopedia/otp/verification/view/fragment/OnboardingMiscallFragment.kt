@@ -1,5 +1,6 @@
 package com.tokopedia.otp.verification.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -30,7 +31,7 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = OnboardingMisscallViewBinding()
 
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private val permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
@@ -84,12 +85,10 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun checkPermissionGetPhoneNumber(){
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
-
-        activity?.let {
-            permissionCheckerHelper.request(it, getPermissions()) { }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.request(it, getPermissions()) { }
+            }
         }
     }
 
@@ -99,6 +98,15 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
                 PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
         )
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
     }
 
     companion object {

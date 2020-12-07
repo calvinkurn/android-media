@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
-import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselViewModel
+import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
@@ -33,7 +33,7 @@ class EtalaseHighlightAdapterTypeFactory(
         return EmptyResultViewHolder.LAYOUT
     }
 
-    fun type(etalaseHighlightCarouselViewModel: EtalaseHighlightCarouselViewModel): Int {
+    fun type(etalaseHighlightCarouselUiModel: EtalaseHighlightCarouselUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 

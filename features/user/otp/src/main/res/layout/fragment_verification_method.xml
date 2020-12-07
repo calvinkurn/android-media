@@ -18,19 +18,34 @@
             android:fitsSystemWindows="true"
             android:visibility="gone"
             tools:visibility="visible">
+          
+          <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerVerificationMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:tickerType="announcement"
+            app:tickerShapeType="loose"
+            app:closeButtonVisibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 android:gravity="center_horizontal"
                 android:text="@string/choose_verification_method"
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tickerVerificationMethod"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 

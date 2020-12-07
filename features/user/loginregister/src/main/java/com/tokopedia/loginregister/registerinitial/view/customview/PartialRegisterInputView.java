@@ -351,8 +351,9 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void showLoginEmailView(@NotNull String email) {
         isButtonValidatorActived = false;
 
+        showForgotPassword();
+
         wrapperPassword.setVisibility(View.VISIBLE);
-        btnForgotPassword.setVisibility(View.VISIBLE);
         btnChange.setVisibility(View.VISIBLE);
         tvMessage.setVisibility(GONE);
 
@@ -367,8 +368,9 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void showDefaultView() {
         isButtonValidatorActived = true;
 
+        hideForgotPassword();
+
         wrapperPassword.setVisibility(View.GONE);
-        btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
         tvMessage.setVisibility(VISIBLE);
 
@@ -392,6 +394,18 @@ public class PartialRegisterInputView extends BaseCustomView {
     private void hideEmailExtension() {
         if (emailExtension != null) {
             emailExtension.setVisibility(View.GONE);
+        }
+    }
+
+    public void showForgotPassword() {
+        if(btnForgotPassword != null) {
+            btnForgotPassword.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideForgotPassword() {
+        if(btnForgotPassword != null) {
+            btnForgotPassword.setVisibility(View.GONE);
         }
     }
 }

@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
 import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
