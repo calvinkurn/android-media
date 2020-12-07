@@ -242,11 +242,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
                 return@setOnEditorActionListener true
             }
-
             return@setOnEditorActionListener false
         }
-
-//        searchAddress?.searchBarTextField?.setOnTouchListener(onSearchViewTouchListener())
 
         searchAddress?.clearListener = {
            performSearch("")
