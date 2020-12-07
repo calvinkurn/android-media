@@ -21,7 +21,6 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
     lateinit var recommendationUseCase: GetRecommendationUseCase
 
     companion object {
-        //TODO niranjan move query params to repo
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
     }
 
