@@ -65,6 +65,7 @@ class CheckoutEventActivityTest {
             putExtra(EventCheckoutActivity.EXTRA_URL_PDP, "7-day-jr-all-shikoku-pass-23233")
             putExtra(EventCheckoutActivity.EXTRA_META_DATA, MockMetaData.getMetaDataResponse())
             putExtra(EventCheckoutActivity.EXTRA_PACKAGE_ID, "2104")
+            putExtra(EventCheckoutActivity.EXTRA_GATEWAY_CODE, "ZERO")
         }
 
         activityRule.launchActivity(intent)
@@ -84,6 +85,8 @@ class CheckoutEventActivityTest {
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<EventPDPTextFieldViewHolder>(0, typeText("Firmanda Mulyawan Nugroho")))
         Thread.sleep(3000)
         onView(withId(R.id.simpanBtn)).perform(click())
+        Thread.sleep(3000)
+        onView(withId(android.R.id.content)).perform(ViewActions.swipeUp())
         Thread.sleep(3000)
         onView(withId(R.id.item_checkout_event_data_tambahan_package)).perform(click())
         Thread.sleep(7000)

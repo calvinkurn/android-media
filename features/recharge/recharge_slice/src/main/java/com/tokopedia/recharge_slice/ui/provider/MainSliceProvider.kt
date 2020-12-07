@@ -56,6 +56,7 @@ class MainSliceProvider : SliceProvider() {
 
     var loadString: String? = ""
     var alreadyLoadData: Boolean = false
+    var isError: Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
@@ -106,8 +107,11 @@ class MainSliceProvider : SliceProvider() {
                 if (userSession.isLoggedIn) {
                     if (!alreadyLoadData)
                         getData(sliceUri)
+                    if(alreadyLoadData  && isError){
+                        return sliceNoAccess(sliceUri)
+                    }
                     return list(contextNonNull, sliceUri, INFINITY) {
-                        setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                        setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
                             if (recommendationModel.isNullOrEmpty() && !alreadyLoadData)
@@ -117,7 +121,7 @@ class MainSliceProvider : SliceProvider() {
                                 primaryAction = createPendingIntentNoAccess()?.let {
                                     SliceAction.create(
                                             it,
-                                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                                             SMALL_IMAGE,
                                             ""
                                     )
@@ -175,13 +179,13 @@ class MainSliceProvider : SliceProvider() {
     private fun sliceNotLogin(sliceUri: Uri): Slice {
         Timber.w("""${contextNonNull.resources.getString(R.string.slice_track_timber_impression)}${contextNonNull.resources.getString(R.string.slice_user_not_login)}""")
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_login)
                 primaryAction = createPendingIntentLogin()?.let {
                     SliceAction.create(
                             it,
-                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             SMALL_IMAGE,
                             ""
                     )
@@ -193,13 +197,13 @@ class MainSliceProvider : SliceProvider() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            setAccentColor(ContextCompat.getColor(contextNonNull,com.tokopedia.unifyprinciples.R.color.Green_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_access)
                 primaryAction = createPendingIntentNoAccess()?.let {
                     SliceAction.create(
                             it,
-                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             SMALL_IMAGE,
                             ""
                     )
@@ -223,6 +227,8 @@ class MainSliceProvider : SliceProvider() {
                 alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
+                isError = true
+                updateSlice(sliceUri)
                 Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
             }
         }
