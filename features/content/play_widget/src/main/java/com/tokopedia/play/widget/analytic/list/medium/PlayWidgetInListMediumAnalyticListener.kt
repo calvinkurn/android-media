@@ -45,6 +45,20 @@ interface PlayWidgetInListMediumAnalyticListener {
             widgetPosition: Int
     ) {}
 
+    fun onClickMoreActionChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int,
+            widgetPosition: Int
+    ) {}
+
+    fun onClickDeleteChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int,
+            widgetPosition: Int
+    ) {}
+
     fun onImpressChannelCard(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumChannelUiModel,

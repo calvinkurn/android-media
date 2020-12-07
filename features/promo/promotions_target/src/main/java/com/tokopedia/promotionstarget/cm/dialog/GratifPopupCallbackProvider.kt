@@ -41,13 +41,10 @@ class GratifPopupCallbackProvider(val dataConsumer: DataConsumer) {
             }
 
             override fun onIgnored(reason: Int) {
-                if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
-                    dialogHandlerContract?.dataConsumed(data)
-                }
+                //Do nothing
             }
 
             override fun onExeption(ex: Exception) {
-                dialogHandlerContract?.dataConsumed(data)
                 dialogHandlerContract?.cmInflateException(data)
             }
         }

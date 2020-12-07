@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.info.view.adapter.viewholder.ShopInfoLogisticViewHolder;
-import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
+import com.tokopedia.shop.info.view.model.ShopInfoLogisticUiModel;
 
 /**
  * @author by alvarisi on 12/21/17.
@@ -14,7 +14,7 @@ import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
 public class ShopInfoLogisticAdapterTypeFactory extends BaseAdapterTypeFactory implements ShopInfoLogisticTypeFactory {
 
     @Override
-    public int type(ShopInfoLogisticViewModel viewModel) {
+    public int type(ShopInfoLogisticUiModel viewModel) {
         return ShopInfoLogisticViewHolder.getLAYOUT();
     }
 

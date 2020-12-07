@@ -8,7 +8,6 @@ import android.graphics.LightingColorFilter
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -158,21 +157,22 @@ class SomListOrderViewHolder(
                         maxLines = 1
                         isSingleLine = true
                     }
+                    if (element.orderProduct.size == 1 && productVariant.isBlank()) {
+                        setPadding(0, 0, 1.5f.dpToPx().toInt(), 0)
+                    } else {
+                        setPadding(0, 0, 0, 0)
+                    }
                     text = productName
-                    val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.verticalBias = if (element.orderProduct.size > 1 && productVariant.isNotBlank()) {
-                        0f
-                    } else 0.5f
-                    this.layoutParams = layoutParams
                     return@apply
                 }
                 tvSomListProductVariant.apply {
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
-                tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
-                    getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-                } else ""
+                tvSomListProductExtra.apply {
+                    text = getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                    showWithCondition(element.orderProduct.size > 1)
+                }
             }
         }
     }

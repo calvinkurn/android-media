@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_NFC
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
@@ -150,6 +150,7 @@ class PermissionCheckerHelper {
             PERMISSION_WRITE_EXTERNAL_STORAGE -> context.getString(R.string.permission_write_storage)
             PERMISSION_READ_EXTERNAL_STORAGE -> context.getString(R.string.permission_read_storage)
             PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
+            PERMISSION_NFC -> context.getString(R.string.permission_nfc)
             else -> ""
         }
     }
@@ -234,7 +235,7 @@ class PermissionCheckerHelper {
                                    REQUEST_PERMISSION_CODE: Int) {
 
         try {
-            activity.requestPermissions(permissions,
+            ActivityCompat.requestPermissions(activity, permissions,
                     REQUEST_PERMISSION_CODE)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
