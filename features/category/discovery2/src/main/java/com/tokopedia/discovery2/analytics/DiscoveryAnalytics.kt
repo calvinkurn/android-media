@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -182,7 +183,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 USER_ID to (userID ?: ""),
                 BUSINESS_UNIT to HOME_BROWSE,
                 PAGE_TYPE to pageType,
-                PAGE_PATH to pagePath)
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier))
         getTracker().sendGeneralEvent(map)
     }
 
@@ -327,7 +328,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     private fun getProductName(productType: String?): String {
         return when (productType) {
-            PRODUCT_CARD_REVAMP_ITEM -> PRODUCT_CARD_REVAMP
+            PRODUCT_CARD_REVAMP_ITEM, MASTER_PRODUCT_CARD_ITEM_LIST -> PRODUCT_CARD_REVAMP
             PRODUCT_CARD_CAROUSEL_ITEM -> PRODUCT_CARD_CAROUSEL
             PRODUCT_SPRINT_SALE_ITEM -> PRODUCT_SPRINT_SALE
             PRODUCT_SPRINT_SALE_CAROUSEL_ITEM -> PRODUCT_SPRINT_SALE_CAROUSEL
@@ -379,6 +380,33 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
             productCardItemList = EMPTY_STRING
+        }
+    }
+
+    fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
+        val eventCategory = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+        val productItem = componentsItems.data?.firstOrNull()
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_CLICK_DISCOVERY,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "${productItem?.notifyMe?.let { 
+                    if(it) PRODUCT_NOTIFY_CANCEL_CLICK else PRODUCT_NOTIFY_CLICK
+                }}",
+                KEY_EVENT_LABEL to "${productItem?.productId ?: ""} - ${if (isLogin) LOGIN else NON_LOGIN} - ${getProductComponentName(componentsItems.name)} - - ${if (productItem?.tabName.isNullOrEmpty()) "" else formatTabName(productItem!!.tabName)}")
+        getTracker().sendGeneralEvent(map)
+    }
+
+    private fun formatTabName(tabName: String?): String{
+        return tabName?.replace("\n","") ?: ""
+    }
+
+    private fun  getProductComponentName(componentName: String?): String {
+        return when(componentName){
+            ComponentNames.ProductCardRevampItem.componentName -> ComponentNames.ProductCardRevamp.componentName
+            ComponentNames.ProductCardCarouselItem.componentName -> ComponentNames.ProductCardCarousel.componentName
+            ComponentNames.ProductCardSprintSaleItem.componentName -> ComponentNames.ProductCardSprintSale.componentName
+            ComponentNames.ProductCardSprintSaleCarouselItem.componentName -> ComponentNames.ProductCardSprintSaleCarousel.componentName
+            else -> ""
         }
     }
 

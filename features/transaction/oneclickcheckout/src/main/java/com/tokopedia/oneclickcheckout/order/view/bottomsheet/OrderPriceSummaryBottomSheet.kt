@@ -38,17 +38,6 @@ class OrderPriceSummaryBottomSheet {
     private fun setupView(child: View, orderCost: OrderCost) {
         child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
-        val tvPurchaseProtectionPriceLabel = child.tv_purchase_protection_price_label
-        val tvPurchaseProtectionPriceValue = child.tv_purchase_protection_price_value
-        if (orderCost.purchaseProtectionPrice > 0) {
-            tvPurchaseProtectionPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.purchaseProtectionPrice, false).removeDecimalSuffix()
-            tvPurchaseProtectionPriceLabel.visible()
-            tvPurchaseProtectionPriceValue.visible()
-        } else {
-            tvPurchaseProtectionPriceLabel.gone()
-            tvPurchaseProtectionPriceValue.gone()
-        }
-
         val tvTotalProductDiscountValue = child.tv_total_product_discount_value
         val tvTotalProductDiscountLabel = child.tv_total_product_discount_label
         if (orderCost.productDiscountAmount > 0) {

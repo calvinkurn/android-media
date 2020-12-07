@@ -9,7 +9,7 @@
             android:launchMode="singleInstance"
             android:label="@string/two_factor_title"
             android:name=".view.activity.TwoFactorActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

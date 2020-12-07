@@ -119,6 +119,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -247,8 +248,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = "Existing Navigation"
-        const val TOOLBAR_VARIANT_NAVIGATION = "Navigation Revamp"
+        const val TOOLBAR_VARIANT_BASIC = AbTestPlatform.NAVIGATION_VARIANT_OLD
+        const val TOOLBAR_VARIANT_NAVIGATION = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -503,7 +504,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
 
-        val EXP_NAME = "Navigation Revamp"
+        val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
         toolbarType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 EXP_NAME, TOOLBAR_VARIANT_BASIC
         )
@@ -634,7 +635,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+            cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
+        } else {
+            cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        }
+
         if (isAtcExternalFlow()) {
             routeToHome()
         }
@@ -839,11 +845,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             navToolbar.apply {
-                setOnBackButtonClickListener { onBackPressed() }
+                setOnBackButtonClickListener(
+                        disableDefaultGtmTracker = true,
+                        backButtonClickListener = ::onBackPressed
+                )
                 setIcon(
                         IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, false, ::onNavigationToolbarWishlistClicked)
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_LOTTIE_WISHLIST,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarWishlistClicked
+                                )
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_GLOBAL,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarNavGlobalClicked
+                                )
                 )
 
                 if (isToolbarWithBackButton) {
@@ -856,7 +873,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onNavigationToolbarWishlistClicked() {
+        cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
         routeToWishlist()
+    }
+
+    private fun onNavigationToolbarNavGlobalClicked() {
+        cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
     }
 
     private fun initBasicToolbar(view: View) {

@@ -72,6 +72,10 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         return super.getItemViewType(position)
     }
 
+    override fun getItemId(position: Int): Long {
+        return iconConfig.iconList[position].id.toLong()
+    }
+
     fun resetIcon(iconConfig: IconConfig) {
         this.iconConfig = iconConfig
         notifyDataSetChanged()
@@ -136,7 +140,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
                 iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Unify_N0))
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Unify_N700))
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.icon_enable_default_color))
             }
         }
 

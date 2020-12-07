@@ -72,6 +72,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
       occ_main_onboarding {
         force_show_coachmark
         show_onboarding_ticker
+        coachmark_type
         onboarding_ticker {
             title
             message
@@ -195,19 +196,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         }
         cart_string
         payment_profile
-        purchase_protection_plan_data {
-          protection_available
-          protection_type_id
-          protection_price_per_product
-          protection_price
-          protection_title
-          protection_subtitle
-          protection_link_text
-          protection_link_url
-          protection_opt_in
-          protection_checkbox_disabled
-          unit
-        }
         shop {
           shop_id
           user_id
@@ -338,6 +326,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 link
             }
           }
+          occ_revamp_error_message {
+            message
+            button {
+                text
+                action
+            }
+          }
           ticker_message
           is_enable_next_button
           is_disable_pay_button
@@ -368,6 +363,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           service_id
           service_duration
           service_name
+          sp_id
+          recommendation_service_id
+          recommendation_sp_id
+          is_free_shipping_selected
         }
       }
       promo {
@@ -549,6 +548,11 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           action
           color
         }
+      }
+      occ_revamp {
+        enable
+        total_profile
+        change_template_text
       }
     }
   }

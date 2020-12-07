@@ -1,12 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
-import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -174,6 +173,24 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
+    fun `Calculate Total Revamp Below Minimum`() {
+        // Given
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
     fun `Calculate Total Below Minimum In OVO Only Campaign`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -207,6 +224,24 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT,
                 "Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPayment.maximumAmount, false)}). Silahkan pilih pembayaran lain."),
                 orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Revamp Above Maximum`() {
+        // Given
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -459,6 +494,69 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
+    fun `Calculate Total Revamp Has Payment Error And Button`() {
+        // Given
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val message = "error"
+        val button = "button"
+        val action = "action"
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
+    fun `Calculate Total Revamp Has Payment Error And Button Also Disable Pay Button`() {
+        // Given
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val message = "error"
+        val button = "button"
+        val action = "action"
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), isDisablePayButton = true)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
+    fun `Calculate Total Revamp Has Payment Credit Card Error And Button`() {
+        // Given
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val message = "error"
+        val button = "button"
+        val action = "action"
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), errorMessage = OrderPaymentErrorMessage(message = "cc error", button = OrderPaymentErrorMessageButton(text = "cc button")))
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
+    }
+
+    @Test
     fun `Calculate Total With Promos`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -489,7 +587,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, 0, listOf(
+        assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, listOf(
                 "cashback" to "Rp1000"
         )), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
     }

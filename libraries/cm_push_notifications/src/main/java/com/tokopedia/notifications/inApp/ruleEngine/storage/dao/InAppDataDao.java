@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface InAppDataDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(CMInApp inAppData);
+    long insert(CMInApp inAppData);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<CMInApp> inAppDataList);
@@ -23,7 +23,7 @@ public interface InAppDataDao {
     @Query("DELETE FROM inapp_data where id = :id")
     void deleteRecord(long id);
 
-    @Query("SELECT * from inapp_data where s = :screenName or s = '*'")
+    @Query("SELECT * from inapp_data where s LIKE '%' || :screenName || '%' or s = '*'")
     List<CMInApp> getDataForScreen(String screenName);
 
     @Query("SELECT * from inapp_data where parentId = :parentId and perst_on = 0 and freq = 0 and is_interacted = 1")

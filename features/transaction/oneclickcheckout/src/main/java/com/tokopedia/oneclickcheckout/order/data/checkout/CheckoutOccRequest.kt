@@ -60,9 +60,7 @@ data class ProductData(
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("product_notes")
-        val productNotes: String = "",
-        @SerializedName("is_ppp")
-        val isPPP: Boolean = false
+        val productNotes: String = ""
 )
 
 data class ShippingInfo(

@@ -3,8 +3,11 @@ package com.tokopedia.entertainment.pdp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
+import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2InstantParams
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2Params
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutInstantResponse
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
@@ -44,6 +47,10 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val eventCheckoutResponse: LiveData<EventCheckoutResponse>
         get() = eventCheckoutResponseMutable
 
+    private val eventCheckoutInstantResponseMutable = MutableLiveData<EventCheckoutInstantResponse>()
+    val eventCheckoutInstantResponse: LiveData<EventCheckoutInstantResponse>
+        get() = eventCheckoutInstantResponseMutable
+
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
         launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
@@ -66,6 +73,19 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
             val response = withContext(dispatcher) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             eventCheckoutResponseMutable.value = response.getSuccessData<EventCheckoutResponse>()
+        }) {
+            errorGeneralValueMutable.postValue(it)
+        }
+    }
+
+    fun checkoutEventInstant(checkoutGeneralV2InstantParams: CheckoutGeneralV2InstantParams) {
+        launchCatchError(block = {
+
+            val params = mapOf(PARAM to checkoutGeneralV2InstantParams)
+            val graphqlRequest = GraphqlRequest(EventQuery.mutationEventCheckoutInstant(),EventCheckoutInstantResponse::class.java, params)
+
+            val response = withContext(dispatcher) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            eventCheckoutInstantResponseMutable.value = response.getSuccessData<EventCheckoutInstantResponse>()
         }) {
             errorGeneralValueMutable.postValue(it)
         }

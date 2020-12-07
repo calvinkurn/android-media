@@ -25,7 +25,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
 
     private lateinit var product: OrderProduct
