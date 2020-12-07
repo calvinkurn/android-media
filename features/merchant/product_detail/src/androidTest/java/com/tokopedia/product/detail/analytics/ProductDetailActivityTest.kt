@@ -205,7 +205,7 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        val viewInteraction = onView(allOf(withId(R.id.rv_pdp), withContentDescription(SEE_ALL_DISCUSSION_TEXT))).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(12, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
     }
 
