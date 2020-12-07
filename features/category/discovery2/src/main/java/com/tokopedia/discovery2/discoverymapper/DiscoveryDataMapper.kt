@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
@@ -91,6 +92,15 @@ class DiscoveryDataMapper {
                 }
             }
         }
+    }
+
+    fun mapProductListToCircularModel(listItem: List<DataItem>) : ArrayList<CircularModel> {
+        val bannerList = ArrayList<CircularModel>()
+        listItem.forEachIndexed { index, it ->
+            val circularModel = CircularModel(index, it.imageUrlDynamicMobile ?: "")
+            bannerList.add(circularModel)
+        }
+        return bannerList
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
