@@ -127,7 +127,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:paddingStart="@dimen/dp_4" />
+                android:layout_marginEnd="@dimen/dp_8" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
