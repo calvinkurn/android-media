@@ -33,18 +33,36 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/lb_review_product"
             app:typographyType="body_3"
             tools:text="@tools:sample/lorem/random" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lb_review_buyer_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/title_topchat_reviewed"
+            android:visibility="gone"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_product_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/tv_product_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_product_name"
+            tools:visibility="visible" />
 
         <com.tokopedia.reputation.common.view.AnimatedReputationView
             android:id="@+id/ar_review_reminder"

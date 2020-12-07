@@ -23,6 +23,7 @@ class ReviewViewHolder(
 
     private val thumbnail: ImageUnify? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val label: Label? = itemView?.findViewById(R.id.lb_review_product)
+    private val buyerLabelStatus: Label? = itemView?.findViewById(R.id.lb_review_buyer_status)
     private val name: Typography? = itemView?.findViewById(R.id.tv_product_name)
     private val container: ConstraintLayout? = itemView?.findViewById(R.id.cl_container)
     private val reputation: AnimatedReputationView? = itemView?.findViewById(
@@ -39,6 +40,7 @@ class ReviewViewHolder(
         bindName(element)
         bindBackground(element)
         bindLabel(element)
+        bindBuyerLabel(element)
         bindReputation(element)
     }
 
@@ -68,6 +70,14 @@ class ReviewViewHolder(
             label?.show()
         } else {
             label?.hide()
+        }
+    }
+
+    private fun bindBuyerLabel(element: ReviewUiModel) {
+        if (!element.isSender && element.isReviewed) {
+            buyerLabelStatus?.show()
+        } else {
+            buyerLabelStatus?.hide()
         }
     }
 
