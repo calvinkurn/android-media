@@ -431,6 +431,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     setPosition(position)
                 }
         )
-        if (!visitableList.contains(dataModel)) visitableList.add(dataModel)
+        val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
+        if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
     }
 }
