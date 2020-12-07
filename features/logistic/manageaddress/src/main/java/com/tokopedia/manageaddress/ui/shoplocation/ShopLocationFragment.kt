@@ -8,8 +8,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
@@ -49,16 +47,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         bottomSheetAddressType = BottomSheetUnify()
         val viewBottomSheetAddressType = View.inflate(context, R.layout.bottomsheet_deactivate_location, null).apply {
             if (addressActiveState) {
-                btn_activate_location.gone()
-                btn_deactivate_location.visible()
-                btn_deactivate_location.setOnClickListener {
+                btn_set_location_status.text = "Nonaktifkan Lokasi"
+                btn_set_location_status.setOnClickListener {
                     Toast.makeText(context, "Deactivate Location", Toast.LENGTH_SHORT).show()
                     bottomSheetAddressType?.dismiss()
                 }
             } else {
-                btn_deactivate_location.gone()
-                btn_activate_location.visible()
-                btn_activate_location.setOnClickListener {
+                btn_set_location_status.text = "Aktifkan Lokasi"
+                btn_set_location_status.setOnClickListener {
                     Toast.makeText(context, "Activate Location", Toast.LENGTH_SHORT).show()
                     bottomSheetAddressType?.dismiss()
                 }
@@ -77,7 +73,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
     }
 
-    override fun onShopLocationAddressTypeCllicked() {
+    override fun onShopLocationStateStatusClicked() {
         openBottomSheetAddressType()
     }
 
