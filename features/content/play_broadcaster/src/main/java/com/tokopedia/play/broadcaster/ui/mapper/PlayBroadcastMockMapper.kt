@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
@@ -165,7 +166,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
                 coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
-                status = PlayChannelStatus.Draft
+                status = PlayChannelStatusType.Draft
         )
     }
 

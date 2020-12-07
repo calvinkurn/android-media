@@ -6,7 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -166,7 +166,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
             shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());

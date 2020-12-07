@@ -8,7 +8,7 @@ import com.tokopedia.sortfilter.SortFilter.Companion.RELATIONSHIP_AND
 import com.tokopedia.sortfilter.SortFilter.Companion.TYPE_QUICK
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_LATEST
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.widget_talk_reading_header.view.*

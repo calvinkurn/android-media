@@ -21,10 +21,9 @@ private fun ViewGroup.forAllChild(action: (View?) -> Unit) {
 }
 
 private fun MutableList<View>.addChildView(child: View?) {
-    if (child is ViewGroup) {
-        this.addAll(child.getChildren())
-    }
-    else if (child != null) {
-        this.add(child)
-    }
+    child ?: return
+
+    this.add(child)
+
+    if (child is ViewGroup) this.addAll(child.getChildren())
 }
