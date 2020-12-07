@@ -651,7 +651,15 @@ data class SearchProductModel(
 
             @SerializedName("description")
             @Expose
-            val description: List<String> = listOf()
+            val description: List<String> = listOf(),
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("label_groups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf()
     )
 
     data class SearchInspirationWidget(

@@ -6,8 +6,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
 
@@ -30,8 +34,7 @@ class InspirationCarouselOptionListViewHolder(
         bindProductImage(productOption.imgUrl)
         bindProductName(productOption.name)
         bindProductPrice(productOption.priceStr)
-        bindProductRating(productOption.rating)
-        bindReviewCount(productOption.countReview)
+        bindSalesAndRating(productOption)
     }
 
     private fun bindOptionTitle(title: String) {
@@ -91,28 +94,32 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindProductRating(rating: Int) {
-        itemView.productRating?.shouldShowWithAction(rating > 0){
-            itemView.imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
-            itemView.imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
-            itemView.imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
-            itemView.imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
-            itemView.imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+    private fun bindSalesAndRating(product: InspirationCarouselViewModel.Option.Product) {
+        bindRatingSalesFloat(product)
+        bindTextIntegrityWithSalesRatingFloat(product)
+    }
+
+    private fun bindRatingSalesFloat(product: InspirationCarouselViewModel.Option.Product) {
+        val willShowSalesRatingFloat = product.willShowRating()
+
+        itemView.optionListCardImageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+
+        itemView.optionListCardSalesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+            it.text = product.ratingAverage
         }
     }
 
-    private fun getRatingDrawable(isActive: Boolean): Int {
-        return if(isActive) R.drawable.search_inspiration_carousel_ic_rating_active
-        else R.drawable.search_inspiration_carousel_ic_rating_default
-    }
+    private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselViewModel.Option.Product) {
+        val willShowSalesAndRating = product.willShowSalesAndRating()
 
-    private fun bindReviewCount(reviewCount: Int){
-        itemView.productReviewCount?.shouldShowWithAction(reviewCount > 0) {
-            it.text = getReviewCountFormattedAsText(reviewCount)
+        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
+
+        itemView.optionListCardTextViewSales?.shouldShowWithAction(willShowSalesAndRating) {
+            it.initLabelGroup(product.getLabelIntegrity()?.toProductCardModelLabelGroup())
         }
     }
 
-    private fun getReviewCountFormattedAsText(reviewCount: Int): String {
-        return "($reviewCount)"
+    private fun LabelGroupViewModel.toProductCardModelLabelGroup(): ProductCardModel.LabelGroup {
+        return ProductCardModel.LabelGroup(position = position, title = title, type = type, imageUrl = imageUrl)
     }
 }

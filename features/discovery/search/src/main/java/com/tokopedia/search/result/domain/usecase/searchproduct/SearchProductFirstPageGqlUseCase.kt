@@ -269,6 +269,13 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
+                                rating_average
+                                label_groups {
+                                    title
+                                    type
+                                    position
+                                    url
+                                }
                             }
                         }
                     }
