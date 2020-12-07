@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -66,11 +67,13 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, orderStatusId)
 
         val dateFormat = "dd/MM/yyyy"
-        val now = Date()
-        val today = Utils.formatDate(now, dateFormat)
+        val nowMillis = Date()
+        val yesterdayMillis = Date(nowMillis.time.minus(TimeUnit.DAYS.toMillis(1)))
+        val today = Utils.formatDate(nowMillis, dateFormat)
+        val yesterday = Utils.formatDate(yesterdayMillis, dateFormat)
 
         showLoadingState()
-        viewModel.getOrderList(today)
+        viewModel.getOrderList(yesterday, today)
     }
 
     override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {

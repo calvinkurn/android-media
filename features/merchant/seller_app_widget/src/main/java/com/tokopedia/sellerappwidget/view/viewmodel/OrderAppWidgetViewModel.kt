@@ -21,9 +21,9 @@ class OrderAppWidgetViewModel @Inject constructor(
         private val getOrderUseCase: Lazy<GetOrderUseCase>
 ) : BaseAppWidgetVM<AppWidgetView<List<OrderUiModel>>>(AppWidgetDispatcherProviderImpl()) {
 
-    fun getOrderList(dateFrm: String) {
+    fun getOrderList(startDateFrm: String, endDateFrm: String) {
         launchCatchError(block = {
-            getOrderUseCase.get().params = GetOrderUseCase.createParams(dateFrm)
+            getOrderUseCase.get().params = GetOrderUseCase.createParams(startDateFrm, endDateFrm)
             val result = Success(withContext(dispatcherProvider.io) {
                 getOrderUseCase.get().executeOnBackground()
             })

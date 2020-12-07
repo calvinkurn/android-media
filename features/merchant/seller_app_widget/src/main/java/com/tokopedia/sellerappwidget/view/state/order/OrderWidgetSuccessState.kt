@@ -127,7 +127,6 @@ object OrderWidgetSuccessState {
                 })
             }
             setRemoteAdapter(R.id.lvSawOrderList, intent)
-            setEmptyView(R.id.lvSawOrderList, R.id.containerSawOrderListEmpty)
 
             //setup list view item click event
             val itemIntent = Intent(context, OrderAppWidget::class.java).apply {
@@ -140,6 +139,8 @@ object OrderWidgetSuccessState {
 
             //setup empty state for new order / ready to ship
             if (items.isEmpty()) {
+                setInt(R.id.containerSawOrderListEmpty, Const.Method.SET_VISIBILITY, View.VISIBLE)
+                setInt(R.id.lvSawOrderList, Const.Method.SET_VISIBILITY, View.GONE)
                 if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
                     setTextViewText(R.id.tvSawOrderMessageOnEmpty, context.getString(R.string.saw_order_new_order_on_empty_message))
                     setTextViewText(R.id.tvSawOrderSubMessageOnEmpty, context.getString(R.string.saw_order_new_order_on_empty_sub_message))
@@ -149,6 +150,9 @@ object OrderWidgetSuccessState {
                 }
 
                 Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderEmptyState, Const.Images.ORDER_ON_EMPTY, widgetId)
+            } else {
+                setInt(R.id.containerSawOrderListEmpty, Const.Method.SET_VISIBILITY, View.GONE)
+                setInt(R.id.lvSawOrderList, Const.Method.SET_VISIBILITY, View.VISIBLE)
             }
         }
     }

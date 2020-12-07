@@ -42,14 +42,15 @@ class GetOrderUseCase @Inject constructor(
 
         /**
          * create params to get order list
-         * @param dateFmt should be date with format dd/MM/yyyy
+         * @param startDateFmt should be date with format dd/MM/yyyy
+         * @param endDateFmt should be date with format dd/MM/yyyy
          * @return `RequestParams`
          * */
-        fun createParams(dateFmt: String): RequestParams {
+        fun createParams(startDateFmt: String, endDateFmt: String): RequestParams {
             val input = InputParameterModel(
                     batchPage = 0,
-                    startDate = dateFmt,
-                    endDate = dateFmt,
+                    startDate = startDateFmt,
+                    endDate = endDateFmt,
                     filterStatus = FILTER_STATUS,
                     isBuyerRequestCancel = 0,
                     isMobile = true,
@@ -60,7 +61,7 @@ class GetOrderUseCase @Inject constructor(
                     search = "",
                     shippingList = emptyList(),
                     sortBy = 0,
-                    statusList = listOf(Const.OrderStatusId.NEW_ORDER, Const.OrderStatusId.READY_TO_SHIP)
+                    statusList = listOf(Const.OrderStatusId.READY_TO_SHIP, Const.OrderStatusId.NEW_ORDER)
             )
             return RequestParams.create().apply {
                 putObject(KEY_INPUT, input)
