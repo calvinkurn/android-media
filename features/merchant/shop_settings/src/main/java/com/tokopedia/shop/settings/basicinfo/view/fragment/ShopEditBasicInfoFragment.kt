@@ -76,6 +76,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
     private var currentTime = 0L
+    private var currentTimeGetData = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -104,6 +105,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         setupSaveBtn()
 
         observeLiveData()
+        currentTimeGetData = System.currentTimeMillis()
+        Log.d("SHOP_BASIC_INFO_GET", "$currentTimeGetData")
         getAllowShopNameDomainChanges()
         container.requestFocus()
 
@@ -415,6 +418,8 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeAllowShopNameDomainChanges() {
         observe(viewModel.allowShopNameDomainChanges) {
+            currentTimeGetData = System.currentTimeMillis() - currentTimeGetData
+            Log.d("SHOP_BASIC_INFO_GET", "$currentTimeGetData")
             when(it) {
                 is Success -> {
                     val data = it.data
