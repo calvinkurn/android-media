@@ -254,4 +254,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel) {
         presenter.onCuratedCampaignCardClicked(curatedCampaignViewModel)
     }
+
+    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String) {
+        AutocompleteTracking.eventClickCuratedCampaignCard(userId, label, type)
+    }
+
+    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
+        AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
+    }
 }

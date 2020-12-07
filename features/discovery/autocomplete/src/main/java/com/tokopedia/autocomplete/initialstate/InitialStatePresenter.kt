@@ -198,7 +198,14 @@ class InitialStatePresenter @Inject constructor(
     private fun addCuratedCampaignCard(listVisitable: MutableList<Visitable<*>>, initialStateData: InitialStateData) {
         val item = initialStateData.items.getOrNull(0) ?: return
 
-        listVisitable.add(item.convertToCuratedCampaignViewModel(initialStateData.featureId))
+        val curatedCampaignViewModel = item.convertToCuratedCampaignViewModel(initialStateData.featureId)
+        listVisitable.add(curatedCampaignViewModel)
+        onImpressCuratedCampaignCard(curatedCampaignViewModel)
+    }
+
+    private fun onImpressCuratedCampaignCard(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        val label = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+        view?.onCuratedCampaignCardImpressed(getUserId(), label, curatedCampaignViewModel.type)
     }
 
     private fun addRecentSearchData(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
@@ -511,6 +518,8 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        val label = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+        view?.trackEventClickCuratedCampaignCard(getUserId(), label, curatedCampaignViewModel.type)
 
         view?.route(curatedCampaignViewModel.applink, searchParameter)
         view?.finish()

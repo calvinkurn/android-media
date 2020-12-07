@@ -38,6 +38,10 @@ interface InitialStateContract {
         fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String)
 
         fun refreshViewWithPosition(position: Int)
+
+        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
+
+        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
