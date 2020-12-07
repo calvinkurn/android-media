@@ -75,7 +75,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
             holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, R.color.category_L1_unselected_title))
         }
 
-        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.content_desc_category_name)}
+        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.nbs_content_desc_name)}
     }
 
 

@@ -1,6 +1,5 @@
 <resources>
-    <string name="category_try_again">try again</string>
-    <string name="kategori_title">Kategori</string>
-    <string name="content_desc_category_imageview">image kategori</string>
-    <string name="content_desc_category_name">text nama kategori</string>
+    <string name="nbs_kategori_title">Kategori</string>
+    <string name="nbs_content_desc_imageview">image kategori</string>
+    <string name="nbs_content_desc_name">text nama kategori</string>
 </resources>
