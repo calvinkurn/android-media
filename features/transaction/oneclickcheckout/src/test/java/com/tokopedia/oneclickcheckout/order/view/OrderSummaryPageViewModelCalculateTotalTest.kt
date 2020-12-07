@@ -740,7 +740,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
-    fun `Calculate Total with Purchase Protection Unchecked`() {
+    fun `Calculate Total with Purchase Protection Unchecked from State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED)))
