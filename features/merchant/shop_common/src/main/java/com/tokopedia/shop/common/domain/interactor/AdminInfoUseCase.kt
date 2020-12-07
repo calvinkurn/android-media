@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.query.AdminInfo
-import com.tokopedia.shop.common.domain.interactor.model.AdminInfoResponse
-import com.tokopedia.shop.common.domain.interactor.model.AdminInfoResult
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResponse
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResult
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -15,17 +15,17 @@ class AdminInfoUseCase @Inject constructor(
         gqlRepository: GraphqlRepository): GraphqlUseCase<AdminInfoResponse>(gqlRepository) {
 
     companion object {
-        private const val SOURCE = "akw-testing"
+        const val SOURCE = "akw-testing"
 
-        private const val SOURCE_KEY = "source"
-        private const val SHOP_ID_KEY = "shopId"
+        const val SOURCE_KEY = "source"
+        const val SHOP_ID_KEY = "shopId"
 
         private const val ERROR_MESSAGE = "Failed getting admin info response"
 
-        fun createRequestParams(shopId: String) =
+        fun createRequestParams(shopId: Int) =
                 RequestParams.create().apply {
                     putString(SOURCE_KEY, SOURCE)
-                    putString(SHOP_ID_KEY, shopId)
+                    putInt(SHOP_ID_KEY, shopId)
                 }
     }
 
@@ -42,9 +42,9 @@ class AdminInfoUseCase @Inject constructor(
         try {
             val response = executeOnBackground()
             response.adminInfo?.adminData?.let { adminData ->
-                adminData.responseDetail?.errorMessage.let { error ->
+                adminData.firstOrNull()?.responseDetail?.errorMessage.let { error ->
                     if (error.isNullOrEmpty()) {
-                        return AdminInfoResult.Success(adminData)
+                        return AdminInfoResult.Success(adminData.firstOrNull())
                     } else {
                         throw MessageErrorException(error)
                     }

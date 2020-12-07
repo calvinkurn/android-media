@@ -2,11 +2,12 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -35,12 +36,16 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     protected val viewModel: AddEditProductPreviewViewModel by lazy {
         spyk(AddEditProductPreviewViewModel(getProductUseCase,
                 getProductMapper,
                 resourceProvider,
                 getProductDraftUseCase,
                 saveProductDraftUseCase,
+                userSession,
                 CoroutineTestDispatchersProvider))
     }
 

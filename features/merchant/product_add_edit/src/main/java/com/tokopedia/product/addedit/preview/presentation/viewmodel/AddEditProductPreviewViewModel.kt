@@ -5,11 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -24,10 +25,14 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -37,6 +42,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
+        private val adminPermissionUseCase: AdminPermissionUseCase,
+        private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -51,6 +58,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
+            // TODO: Change to userSession value
+            val isShopAdmin = true
             if (!productId.value.isNullOrBlank()) getProductData(it)
         }
     }
@@ -80,6 +89,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
+    private val shouldRequestAdminPermission = MutableLiveData<Boolean>().apply {
+        value = false
+    }
+
     val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
@@ -92,6 +105,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
+
+    private var getAdminPermissionJob: Job? = null
 
     init {
         with (productInputModel) {
@@ -279,5 +294,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
+    fun setShouldRequestAdminPermission(shouldRequest: Boolean) {
+        shouldRequestAdminPermission.value = shouldRequest
+    }
+
+    private fun getAdminInfo() {
+        mIsLoading.value = true
+        getAdminPermissionJob =
+                launchCatchError(
+                    block = {
+                        val requestParams =
+                                AdminPermissionUseCase.createRequestParams(
+                                        userSession.shopId.toIntOrZero())
+                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.PRODUCT)
+                    },
+                    onError = {
+
+                    }
+        )
+    }
 
 }

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.usecase.GetLocationAdminUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminInfoUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
@@ -14,7 +14,7 @@ import rx.Subscriber
 class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
-                           private val getLocationAdminUseCase: GetLocationAdminUseCase? = null,
+                           val getAdminInfoUseCase: GetAdminInfoUseCase? = null,
                            val showLocationAdminPopUp: (() -> Unit)? = null,
                            val showLocationAdminError: ((e: Throwable) -> Unit)? = null,
                            val onFinished: () -> Unit? = {}) :
@@ -51,14 +51,16 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                 val profile = response.getData<ProfilePojo>(ProfilePojo::class.java)
                 val shopId = profile.shopInfo.shopData.shopId.toIntOrNull() ?: 0
 
-                getLocationAdminUseCase?.let {
-                    it.execute(shopId, GetLocationAdminSubscriber(
+                if(getAdminInfoUseCase != null) {
+                    getAdminInfoUseCase.execute(shopId, GetAdminInfoSubscriber(
                         userSession,
                         { onSuccessGetUserProfile(response) },
                         showLocationAdminPopUp,
                         showLocationAdminError
                     ))
-                } ?: onSuccessGetUserProfile(response)
+                } else {
+                    onSuccessGetUserProfile(response)
+                }
             }
             error.isNotEmpty() -> {
                 val message = error.firstOrNull()?.message.orEmpty()

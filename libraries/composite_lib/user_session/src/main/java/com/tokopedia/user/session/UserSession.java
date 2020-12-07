@@ -33,8 +33,6 @@ import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER_NEW_ONBOAR
 import static com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT;
 import static com.tokopedia.user.session.Constants.IS_LOCATION_ADMIN;
 import static com.tokopedia.user.session.Constants.IS_LOGIN;
-import static com.tokopedia.user.session.Constants.IS_MANAGE_PRODUCT_ADMIN;
-import static com.tokopedia.user.session.Constants.IS_MANAGE_STOCK_ADMIN;
 import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
 import static com.tokopedia.user.session.Constants.IS_MULTI_LOCATION_SHOP;
 import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
@@ -478,26 +476,6 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Override
     public void setIsLocationAdmin(boolean isLocationAdmin) {
         setBoolean(LOGIN_SESSION, IS_LOCATION_ADMIN, isLocationAdmin);
-    }
-
-    @Override
-    public boolean isManageProductAdmin() {
-        return getAndTrimOldBoolean(LOGIN_SESSION, IS_MANAGE_PRODUCT_ADMIN, false);
-    }
-
-    @Override
-    public void setIsManageProductAdmin(boolean isManageProductAdmin) {
-        setBoolean(LOGIN_SESSION, IS_MANAGE_PRODUCT_ADMIN, isManageProductAdmin);
-    }
-
-    @Override
-    public boolean isManageStockAdmin() {
-        return getAndTrimOldBoolean(LOGIN_SESSION, IS_MANAGE_STOCK_ADMIN, false);
-    }
-
-    @Override
-    public void setIsManageStockAdmin(boolean isManageStockAdmin) {
-        setBoolean(LOGIN_SESSION, IS_MANAGE_STOCK_ADMIN, isManageStockAdmin);
     }
 
     @Override
