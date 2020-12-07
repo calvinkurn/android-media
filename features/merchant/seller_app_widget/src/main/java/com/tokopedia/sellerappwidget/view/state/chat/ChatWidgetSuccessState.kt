@@ -66,8 +66,8 @@ object ChatWidgetSuccessState {
             setInt(R.id.btnSawChatRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
             ChatWidgetStateHelper.setupRefreshIntent<ChatAppWidget>(context, remoteViews, R.id.btnSawChatRefresh, widgetId)
 
-            registerAppLinkIntent(context, R.id.tvSawChatShopName, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
-            registerAppLinkIntent(context, R.id.tvSawChatTotalChat, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+            registerAppLinkIntent(context, R.id.tvSawChatShopName, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
+            registerAppLinkIntent(context, R.id.tvSawChatTotalChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
             registerAppLinkIntent(context, R.id.imgSawChatAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
         }
     }
