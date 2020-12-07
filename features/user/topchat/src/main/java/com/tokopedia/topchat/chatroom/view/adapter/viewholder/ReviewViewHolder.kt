@@ -119,7 +119,15 @@ class ReviewViewHolder(
     }
 
     private fun bindStarClick(element: ReviewUiModel) {
-        reputation?.reviewable = !element.isReviewed || element.allowReview
+        reputation?.reviewable = element.waitingForReview()
+    }
+
+    private fun ReviewUiModel.waitingForReview(): Boolean {
+        return !isReviewed && allowReview
+    }
+
+    private fun ReviewUiModel.hasExpired(): Boolean {
+        return !isReviewed && !allowReview
     }
 
     private fun ReviewUiModel.hasReviewed(): Boolean {
@@ -127,11 +135,7 @@ class ReviewViewHolder(
     }
 
     private fun ReviewUiModel.shouldShowStar(): Boolean {
-        return (allowReview || isReviewed)
-    }
-
-    private fun ReviewUiModel.hasExpired(): Boolean {
-        return !allowReview && !isReviewed
+        return (isReviewed || allowReview)
     }
 
     companion object {
