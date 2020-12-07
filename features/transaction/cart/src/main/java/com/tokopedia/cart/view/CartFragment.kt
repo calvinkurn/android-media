@@ -634,7 +634,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+            cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
+        } else {
+            cartPageAnalytics.eventClickAtcCartClickArrowBack()
+        }
+
         if (isAtcExternalFlow()) {
             routeToHome()
         }
@@ -839,11 +844,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             navToolbar.apply {
-                setOnBackButtonClickListener { onBackPressed() }
+                setOnBackButtonClickListener(
+                        disableDefaultGtmTracker = true,
+                        backButtonClickListener = ::onBackPressed
+                )
                 setIcon(
                         IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, false, ::onNavigationToolbarWishlistClicked)
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_LOTTIE_WISHLIST,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarWishlistClicked
+                                )
+                                .addIcon(
+                                        iconId = IconList.ID_NAV_GLOBAL,
+                                        disableDefaultGtmTracker = true,
+                                        onClick = ::onNavigationToolbarNavGlobalClicked
+                                )
                 )
 
                 if (isToolbarWithBackButton) {
@@ -856,7 +872,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onNavigationToolbarWishlistClicked() {
+        cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
         routeToWishlist()
+    }
+
+    private fun onNavigationToolbarNavGlobalClicked() {
+        cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
     }
 
     private fun initBasicToolbar(view: View) {

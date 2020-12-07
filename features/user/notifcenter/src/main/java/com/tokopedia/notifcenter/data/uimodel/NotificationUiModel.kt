@@ -29,7 +29,7 @@ data class NotificationUiModel(
         @SerializedName("notif_id")
         val notifId: String = "",
         @SerializedName("product_data")
-        val productData: List<ProductData> = listOf(),
+        var productData: List<ProductData> = listOf(),
         @SerializedName("image")
         val imageMetaData: List<ImageMetaData> = listOf(),
         @SerializedName("read_status")

@@ -162,7 +162,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             navToolbar.visibility = View.VISIBLE
             oldToolbar.visibility = View.GONE
-            navToolbar.setOnBackButtonClickListener(backButtonClickListener = ::handleBackPress)
+            navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
     }
 
@@ -284,7 +284,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 getDiscoveryAnalytics().trackSearchClick()
                 handleSearchClick(data)
             }
-            typographyHeader.text = data?.name ?: getString(R.string.tokopedia)
+            typographyHeader.text = data?.name ?: getString(R.string.discovery_tokopedia)
         } else {
             setupSearchBar(data)
         }
@@ -300,9 +300,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             } else {
                 navToolbar.setIcon(
                         IconBuilder()
-                                .addIcon(IconList.ID_SHARE) { handleShareClick(data.share) }
-                                .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
-                                .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
+                                .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data.share) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                                .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
             }
         } else {
@@ -325,7 +325,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun setToolBarPageInfoOnFail() {
         if (showOldToolbar) {
-            typographyHeader.text = getString(R.string.tokopedia)
+            typographyHeader.text = getString(R.string.discovery_tokopedia)
             ivSearch.hide()
             ivShare.hide()
         } else {
@@ -339,19 +339,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
                 IconBuilder()
-                        .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
-                        .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
+                        .addIcon(iconId =  IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId =  IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
     }
 
     private fun setupSearchBar(data: PageInfo?) {
         navToolbar.setupSearchbar(
                 hints = listOf(HintData(placeholder = data?.searchTitle
-                        ?: getString(R.string.default_search_title))),
+                        ?: getString(R.string.discovery_default_search_title))),
                 searchbarClickCallback = {
                     handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
                     handleSearchClick(data)
-                }
+                },
+                disableDefaultGtmTracker = true
         )
     }
 

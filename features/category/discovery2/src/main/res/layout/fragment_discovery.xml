@@ -34,10 +34,10 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarInitialTheme = "light"
-            app:toolbarDefaultHint = "@string/default_search_title"
+            app:toolbarDefaultHint = "@string/discovery_default_search_title"
             app:toolbarContentType="typeSearchbar"
             app:toolbarBackButton="back"
-            app:toolbarPageName="@string/discovery_page"
+            app:toolbarPageName="@string/discovery_page_name"
             android:visibility="gone"
             tools:visibility = "visible"/>
 

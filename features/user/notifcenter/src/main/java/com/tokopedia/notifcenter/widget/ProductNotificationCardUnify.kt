@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,6 +18,7 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductNotificationCardUnify(
@@ -25,6 +27,7 @@ class ProductNotificationCardUnify(
 ) : CardUnify(context, attrs) {
 
     private var thumbnail: ImageView? = null
+    private var thumbnailLabel: Label? = null
     private var productName: TextView? = null
     private var productPrice: TextView? = null
     private var productVariant: ProductVariantLayout? = null
@@ -35,10 +38,19 @@ class ProductNotificationCardUnify(
     private var btnAtc: UnifyButton? = null
     private var btnReminder: UnifyButton? = null
     private var btnDeleteReminder: UnifyButton? = null
+    private var btnEmptyStock: UnifyButton? = null
 
     private var listener: NotificationItemListener? = null
     private var notification: NotificationUiModel? = null
     private var adapterPosition: Int? = null
+
+    /**
+     * Same color if dark mode
+     */
+    private var color: Int = MethodChecker.getColor(
+            context, com.tokopedia.unifyprinciples.R.color.light_N700_68
+    )
+    private var colorString = "#" + Integer.toHexString(color)
 
     init {
         initView()
@@ -52,6 +64,7 @@ class ProductNotificationCardUnify(
 
     private fun initViewBinding(view: View) {
         thumbnail = view.findViewById(R.id.iv_thumbnail)
+        thumbnailLabel = view.findViewById(R.id.lb_product_label)
         productName = view.findViewById(R.id.tv_product_name)
         productPrice = view.findViewById(R.id.tv_product_price)
         productVariant = view.findViewById(R.id.pvl_variant)
@@ -62,6 +75,7 @@ class ProductNotificationCardUnify(
         btnAtc = view.findViewById(R.id.btn_atc)
         btnReminder = view.findViewById(R.id.tv_reminder)
         btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
+        btnEmptyStock = view.findViewById(R.id.btn_empty_stock)
     }
 
     fun bindProductData(
@@ -74,6 +88,7 @@ class ProductNotificationCardUnify(
             show()
             initField(listener, notification, adapterPosition)
             bindProductImage(product)
+            bindThumbnailLabel(product)
             bindProductCampaign(product)
             bindProductVariant(product)
             bindProductPrice(product)
@@ -84,6 +99,7 @@ class ProductNotificationCardUnify(
             bindAtcClick(product)
             bindReminder(product)
             bindDeleteReminder(product)
+            bindEmptyStock(product)
         } else {
             hide()
         }
@@ -107,10 +123,28 @@ class ProductNotificationCardUnify(
         bindDeleteReminder(product)
     }
 
+    private fun bindThumbnailLabel(product: ProductData) {
+        if (product.hasEmptyStock() || product.isEmptyButton() || product.isReminderButton()) {
+            thumbnailLabel?.show()
+            thumbnailLabel?.unlockFeature = true
+            thumbnailLabel?.setLabelType(colorString)
+        } else {
+            thumbnailLabel?.hide()
+        }
+    }
+
+    private fun bindEmptyStock(product: ProductData) {
+        if (product.isEmptyButton()) {
+            btnEmptyStock?.show()
+        } else {
+            btnEmptyStock?.hide()
+        }
+    }
+
     private fun bindReminder(product: ProductData) {
         val notification = notification
         val adapterPosition = adapterPosition
-        if (product.hasEmptyStock() && !product.hasReminder &&
+        if (product.isReminderButton() && !product.hasReminder &&
                 notification != null && adapterPosition != null) {
             btnReminder?.show()
             bindBumpReminderState(product)
@@ -129,7 +163,7 @@ class ProductNotificationCardUnify(
     private fun bindDeleteReminder(product: ProductData) {
         val notification = notification
         val adapterPosition = adapterPosition
-        if (product.hasEmptyStock() && product.hasReminder &&
+        if (product.isReminderButton() && product.hasReminder &&
                 notification != null && adapterPosition != null) {
             btnDeleteReminder?.show()
             bindDeleteReminderState(product)
@@ -202,7 +236,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindBuyClick(product: ProductData) {
-        if (product.hasEmptyStock()) {
+        if (!product.isBuyButton()) {
             btnCheckout?.hide()
         } else {
             btnCheckout?.show()
@@ -213,7 +247,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindAtcClick(product: ProductData) {
-        if (product.hasEmptyStock()) {
+        if (!product.isBuyButton()) {
             btnAtc?.hide()
         } else {
             btnAtc?.show()

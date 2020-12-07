@@ -18,7 +18,7 @@
 
             <View
                 android:id="@+id/view_header_card"
-                android:layout_width="3dp"
+                android:layout_width="@dimen/recharge_custom_product_card_header_card_width"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:background="@drawable/bg_red_custom_banner_header"
@@ -37,7 +37,7 @@
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="PAKET DATA"
-                tools:textSize="10sp"
+                tools:textSize="@dimen/fontSize_lvl1"
                 tools:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -90,7 +90,7 @@
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="20%"
-                    tools:textSize="10sp"
+                    tools:textSize="@dimen/fontSize_lvl1"
                     tools:textStyle="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -121,7 +121,7 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100.000"
-                tools:textSize="14sp" />
+                tools:textSize="@dimen/fontSize_lvl3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

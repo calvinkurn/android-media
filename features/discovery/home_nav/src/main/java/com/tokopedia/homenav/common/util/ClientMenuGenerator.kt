@@ -56,6 +56,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_wishlist_tracker_name),
                 id = ID_WISHLIST_MENU,
                 srcIconId = IconUnify.HEART,
                 itemTitle = context.getString(R.string.menu_user_menu_wishlist),
@@ -67,6 +68,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getFavoriteShopMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_favorite_shop_tracker_name),
                 id = ID_FAVORITE_SHOP,
                 srcIconId = IconUnify.SHOP_FAVORITE,
                 itemTitle = context.getString(R.string.menu_user_menu_favorite_shop),
@@ -78,6 +80,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_recent_view_tracker_name),
                 id = ID_RECENT_VIEW,
                 srcIconId = IconUnify.CLOCK,
                 itemTitle = context.getString(R.string.menu_user_menu_recent_view),
@@ -89,6 +92,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getSubscriptionMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_subscription_tracker_name),
                 id = ID_SUBSCRIPTION,
                 srcIconId = IconUnify.BILL,
                 itemTitle = context.getString(R.string.menu_user_menu_subscription),
@@ -100,6 +104,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getComplainMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_complain_tracker_name),
                 id = ID_COMPLAIN,
                 srcIconId = IconUnify.COMPLAINT,
                 itemTitle = context.getString(R.string.menu_user_menu_complain),
@@ -111,6 +116,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getTokopediaCareMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_tokopedia_care_tracker_name),
                 id = ID_TOKOPEDIA_CARE,
                 srcIconId = IconUnify.CALL_CENTER,
                 itemTitle = context.getString(R.string.menu_user_menu_tokopedia_care),
@@ -122,6 +128,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getQRCodeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
+                trackerName = context.getString(R.string.menu_user_menu_qr_code_tracker_name),
                 id = ID_QR_CODE,
                 srcIconId = IconUnify.QR_CODE,
                 itemTitle = context.getString(R.string.menu_user_menu_qr_code),

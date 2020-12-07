@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -42,7 +43,7 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUi
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -83,6 +84,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
     private var inboxType = ""
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REPLY_REQUEST_CODE) {
@@ -206,7 +208,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromArgument()
         super.onCreate(savedInstanceState)
-        viewModel.setInboxType(inboxType)
+        setInboxType()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -222,6 +224,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeInboxList()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
     }
 
     private fun goToReply(questionId: String) {
@@ -448,7 +456,15 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setInboxType()  {
-        viewModel.setInboxType(inboxType)
+        if(isOldView()) {
+            viewModel.setInboxType(inboxType)
+            return
+        }
+        if(containerListener?.role == RoleType.BUYER) {
+            viewModel.setInboxType(TalkInboxTab.BUYER_TAB)
+            return
+        }
+        viewModel.setInboxType(TalkInboxTab.SHOP_TAB)
     }
 
     private fun isOldView(): Boolean {
