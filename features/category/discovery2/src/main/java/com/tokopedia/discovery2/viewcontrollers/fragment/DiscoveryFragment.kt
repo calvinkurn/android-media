@@ -651,6 +651,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             discoveryViewModel.getTabItem(it.position)?.let { dataItem ->
                 getDiscoveryAnalytics().trackBottomNavBarClick(dataItem.name ?: "", getUserID())
                 RouteManager.route(this.context, dataItem.applinks)
+                activity?.finish()
             }
         }
     }
