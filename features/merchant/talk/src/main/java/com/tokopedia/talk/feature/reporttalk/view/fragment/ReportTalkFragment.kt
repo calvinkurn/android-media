@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
 import com.tokopedia.talk.feature.reporttalk.di.DaggerReportTalkComponent
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity

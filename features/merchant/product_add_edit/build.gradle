@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.categoryCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -50,6 +51,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.flexBoxLayout
@@ -71,6 +73,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation project(rootProject.ext.libraries.unitTest)
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting

@@ -17,6 +17,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
@@ -80,7 +81,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var userSessionInterface: UserSessionInterface? = null
 
     //Performance Monitoring
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
 
@@ -88,6 +89,8 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
+
+    var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
@@ -155,6 +158,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         }
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        productDetailLoadTimeMonitoringListener?.onStopPltListener()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()

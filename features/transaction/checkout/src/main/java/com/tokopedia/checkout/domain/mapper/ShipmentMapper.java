@@ -110,7 +110,7 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
             dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
             dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
-            dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
+            dataResult.setBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
             dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
             dataResult.setError(!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));

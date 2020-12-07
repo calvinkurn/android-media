@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
 import kotlinx.android.parcel.Parcelize
 
@@ -44,7 +45,9 @@ data class ProductCardModel (
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
-        val countSoldRating: String = ""
+        val countSoldRating: String = "",
+        val hasNotifyMeButton: Boolean = false,
+        val labelGroupVariantList: List<LabelGroupVariant> = listOf()
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -81,6 +84,17 @@ data class ProductCardModel (
         fun isShowLabelCampaign(): Boolean {
             return imageUrl.isNotEmpty() && title.isNotEmpty()
         }
+    }
+
+    data class LabelGroupVariant(
+            val typeVariant: String = "",
+            var title: String = "",
+            val type: String = "",
+            val hexColor: String = ""
+    ) {
+        fun isColor() = typeVariant == TYPE_VARIANT_COLOR
+        fun isSize() = typeVariant == TYPE_VARIANT_SIZE
+        fun isCustom() = typeVariant == TYPE_VARIANT_CUSTOM
     }
 
     fun getLabelProductStatus(): LabelGroup? {
@@ -132,4 +146,69 @@ data class ProductCardModel (
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
+
+    fun willShowVariant(): Boolean {
+        return labelGroupVariantList.isNotEmpty()
+    }
+
+    fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
+        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
+
+        if (colorVariant.size < 2 && sizeVariant.size < 2) return listOf()
+
+        val colorVariantTaken = if (colorVariant.size >= 2) 5 else 0
+        val sizeVariantTaken = if (colorVariantTaken > 0) 0 else 5
+
+        return colorVariant.take(colorVariantTaken) + sizeVariant.take(sizeVariantTaken) + customVariant
+    }
+
+    private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
+        val sizeVariantLimit = 18
+        var sizeVariantCount = 0
+        var hiddenSizeVariant = 0
+
+        val colorVariant = mutableListOf<LabelGroupVariant>()
+        val sizeVariant = mutableListOf<LabelGroupVariant>()
+        val customVariant = mutableListOf<LabelGroupVariant>()
+
+        labelGroupVariantList.forEach { element ->
+            when {
+                element.isColor() -> {
+                    colorVariant.add(element)
+                }
+                element.isSize() -> {
+                    val additionalSize = element.title.length + 2
+
+                    if ((sizeVariantCount + additionalSize) <= sizeVariantLimit) {
+                        sizeVariant.add(element)
+                        sizeVariantCount += additionalSize
+                    }
+                    else {
+                        hiddenSizeVariant++
+                    }
+                }
+                else -> {
+                    customVariant.add(element)
+                }
+            }
+        }
+
+        processHiddenSizeVariant(hiddenSizeVariant, customVariant)
+
+        return Triple(colorVariant, sizeVariant, customVariant)
+    }
+
+    private fun processHiddenSizeVariant(hiddenSizeVariant: Int, customVariant: MutableList<LabelGroupVariant>) {
+        if (hiddenSizeVariant <= 0) return
+
+        val labelGroupCustomVariant = customVariant.getOrNull(0)
+                ?: LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "0")
+
+        val title = (labelGroupCustomVariant.title.toIntOrZero() + hiddenSizeVariant).toString()
+
+        labelGroupCustomVariant.title = title
+
+        customVariant.clear()
+        customVariant.add(labelGroupCustomVariant)
+    }
 }
