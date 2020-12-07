@@ -197,6 +197,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun updateShopBasicData(requestParams: RequestParams) {
         launchCatchError(block = {
+            updateShopBasicDataUseCase.setParams(requestParams)
             val updateShopBasicData = updateShopBasicDataUseCase.executeOnBackground()
             _updateShopBasicData.value = Success(updateShopBasicData)
         }) {
