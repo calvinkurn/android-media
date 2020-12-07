@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
