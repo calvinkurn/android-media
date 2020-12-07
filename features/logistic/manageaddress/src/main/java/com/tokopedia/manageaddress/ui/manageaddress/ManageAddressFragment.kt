@@ -252,21 +252,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         searchAddress?.searchBarPlaceholder = "Cari Alamat"
     }
 
-    private fun onSearchViewClickListener(): View.OnClickListener {
-        return View.OnClickListener { view ->
-            searchAddress?.searchBarTextField?.isCursorVisible = true
-            openSoftKeyboard()
-        }
-    }
-
-    private fun onSearchViewTouchListener(): View.OnTouchListener {
-        return View.OnTouchListener { view, motionEvent ->
-            searchAddress?.searchBarTextField?.isCursorVisible = true
-            openSoftKeyboard()
-            false
-        }
-    }
-
     private fun updateData(data: List<RecipientAddressModel>) {
         adapter.addList(data)
     }
