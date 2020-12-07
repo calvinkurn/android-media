@@ -64,21 +64,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
 
-    private var _validateShopNameJob: Job? = null
-    val validateShopNameJob: Job?
-        get() = _validateShopNameJob
-
-    private var _validateShopDomainJob: Job? = null
-    val validateShopDomainJob: Job?
-        get() = _validateShopDomainJob
-
     fun getAllowShopNameDomainChanges() {
         launchCatchError(dispatchers.io, block = {
-            val data = async(start = CoroutineStart.LAZY) {
-                val allowShopNameDomainChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground()
-                allowShopNameDomainChanges.data
-            }
-            _allowShopNameDomainChanges.postValue(Success(data.await()))
+            val allowShopNameDomainChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground()
+            _allowShopNameDomainChanges.postValue(Success(allowShopNameDomainChanges.data))
         }) {
             _allowShopNameDomainChanges.postValue(Fail(it))
         }
@@ -86,8 +75,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun validateShopName(shopName: String) {
         if(shopName == currentShop?.name) return
-
-        cancelValidateShopName()
 
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
@@ -100,15 +87,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             _validateShopName.value = Success(data)
         }) {
             _validateShopName.value = Fail(it)
-        }.let { _validateShopNameJob = it }
+        }
 
         setCurrentShopName(shopName)
     }
 
     fun validateShopDomain(domain: String) {
         if(domain == currentShop?.domain) return
-
-        cancelValidateShopDomain()
 
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
@@ -126,7 +111,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             _validateShopDomain.value = Success(data)
         }) {
             _validateShopDomain.value = Fail(it)
-        }.let { _validateShopDomainJob = it }
+        }
     }
 
     fun getShopBasicData() {
@@ -184,14 +169,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun detachView() {
         getShopBasicDataUseCase.unsubscribe()
         uploadShopImageUseCase.unsubscribe()
-    }
-
-    fun cancelValidateShopName() {
-        _validateShopNameJob?.cancel()
-    }
-
-    fun cancelValidateShopDomain() {
-        _validateShopDomainJob?.cancel()
     }
 
     fun setCurrentShopData(data: ShopBasicDataModel) {
