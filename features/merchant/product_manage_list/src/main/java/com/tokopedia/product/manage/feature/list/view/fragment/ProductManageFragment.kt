@@ -518,15 +518,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false, product: ProductViewModel? = null) {
-        view?.let {
-            Toaster.build(it, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_SHORT, clickListener = View.OnClickListener {
-                if (isRetry) {
-                    goToCreateBroadCastChat(product)
-                } else {
-                    return@OnClickListener
-                }
-            })
-        }
+        Toaster.build(coordinatorLayout, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_SHORT, clickListener = View.OnClickListener {
+            if (isRetry) {
+                goToCreateBroadCastChat(product)
+            } else {
+                return@OnClickListener
+            }
+        })
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
