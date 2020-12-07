@@ -55,9 +55,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        launchCatchError(dispatchers.io, block = {
-            _shopBasicData.postValue(Success(getShopBasicData().await()))
-            _shopStatusData.postValue(Success(getShopStatus(shopId, includeOS).await()))
+        launchCatchError(block = {
+            _shopBasicData.value = Success(getShopBasicData().await())
+            _shopStatusData.value = Success(getShopStatus(shopId, includeOS).await())
         }, onError = {})
     }
 

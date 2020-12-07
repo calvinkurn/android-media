@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +75,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var tvSave: TextView? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
+    private var currentTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -391,6 +393,8 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun observeUpdateShopData() {
+        currentTime = System.currentTimeMillis()
+        Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
         observe(viewModel.updateShopBasicData) {
             when(it) {
                 is Success -> {
@@ -552,6 +556,8 @@ class ShopEditBasicInfoFragment: Fragment() {
         if (!isSavedLocalImageUrlEmpty()) {
             viewModel.uploadShopImage(savedLocalImageUrl ?: "", name, domain, tagLine, desc)
         } else {
+            currentTime = System.currentTimeMillis()
+            Log.d("SHOP_BASIC_INFO_SAVE", "$currentTime")
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
 

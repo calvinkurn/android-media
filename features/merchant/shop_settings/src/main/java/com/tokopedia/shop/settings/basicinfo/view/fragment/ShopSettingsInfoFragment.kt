@@ -7,6 +7,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
     private var shopId: String = "0"     // 67726 for testing
+    private var currentMillis = 0L
+    private var currentMillisOSStatus = 0L
+    private var currentMillisMerchant = 0L
+    private var currentMillisSchedule = 0L
+
 
     private var progressDialog: ProgressDialog? = null
 
@@ -131,6 +137,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         setOnOkClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
+                            currentMillisSchedule = System.currentTimeMillis()
+                            Log.d("SHOP_SETTINGS_INFO_SCHE", "$currentMillisSchedule")
                             shopSettingsInfoViewModel.updateShopSchedule(
                                     action = if (shopBasicDataModel!!.isClosed) ShopScheduleActionDef.CLOSED else ShopScheduleActionDef.OPEN,
                                     closeNow = false,
@@ -187,9 +195,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
 
         loadShopBasicData()
+        currentMillisMerchant = System.currentTimeMillis()
+        Log.d("SHOP_SETTINGS_INFO_MERC", "$currentMillisMerchant")
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
         onFragmentResult()
+
 
         observeShopBasicData()
         observeShopStatus()
@@ -242,6 +253,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeUpdateScheduleData() {
+        currentMillisSchedule = System.currentTimeMillis() - currentMillisSchedule
+        Log.d("SHOP_SETTINGS_INFO_SCHE", "$currentMillisSchedule")
         shopSettingsInfoViewModel.updateScheduleResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUpdateShopSchedule(it.data)
@@ -252,6 +265,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun observeShopStatus() {
         shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, Observer {
+            currentMillisOSStatus = System.currentTimeMillis() - currentMillisOSStatus
+            Log.d("SHOP_SETTINGS_INFO_STAT", "$currentMillisOSStatus")
             when (it) {
                 is Success -> {
                     val shopStatusData = it.data.result.data
@@ -282,6 +297,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun observeShopBasicData() {
         shopSettingsInfoViewModel.shopBasicData.observe(viewLifecycleOwner, Observer {
+            currentMillis = System.currentTimeMillis() - currentMillis
+            Log.d("SHOP_SETTINGS_INFO_INFO", "$currentMillis")
             when (it) {
                 is Success -> {
                     hideLoading()
@@ -310,6 +327,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun observeOsMerchantData() {
         shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
+            currentMillisMerchant = System.currentTimeMillis() - currentMillisMerchant
+            Log.d("SHOP_SETTINGS_INFO-MERC", "$currentMillisMerchant")
             when (it) {
                 is Success -> {
                     it.data.getIsOfficial.let { osData ->
@@ -349,6 +368,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun loadShopBasicData() {
         showLoading()
+        currentMillis = System.currentTimeMillis()
+        Log.d("SHOP_SETTINGS_INFO-INFO", "$currentMillis")
+        currentMillisOSStatus = System.currentTimeMillis()
+        Log.d("SHOP_SETTINGS_INFO-STAT", "$currentMillisOSStatus")
         shopSettingsInfoViewModel.getShopData(
                 shopId,
                 includeOS = false
