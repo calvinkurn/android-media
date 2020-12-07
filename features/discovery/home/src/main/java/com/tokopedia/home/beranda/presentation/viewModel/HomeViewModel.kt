@@ -480,7 +480,6 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluateGeolocationComponent(newHomeViewModel)
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
-            newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
@@ -757,25 +756,6 @@ open class HomeViewModel @Inject constructor(
             }
         }
 
-        return homeDataModel
-    }
-
-    private fun evaluatePlayCarouselWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { homeViewModel ->
-            // find the old data from current list
-            val playWidget = homeVisitableListData.find { visitable -> visitable is CarouselPlayWidgetDataModel }
-            if(playWidget != null) {
-                // Find the new play widget is still available or not
-                val list = homeViewModel.list.toMutableList()
-                val playIndex = list.indexOfFirst { visitable -> visitable is CarouselPlayWidgetDataModel }
-
-                // if on new home available the data, it will be load new data
-                if(playIndex != -1){
-                    list[playIndex] = playWidget
-                    return homeViewModel.copy(list = list)
-                }
-            }
-        }
         return homeDataModel
     }
 
