@@ -23,7 +23,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +104,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import timber.log.Timber;
+
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
@@ -1337,7 +1338,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 category = item.getCategory();
                 productName = item.getTitle();
             } catch (Exception e) {
-                Log.e("error parse", e.getMessage());
+                Timber.d("error parse - %s", e.getMessage());
             }
             passenger.addProperty(BuyerConsts.PRODUCT_ID, productId);
             passenger.addProperty(BuyerConsts.QUANTITY, quantity);

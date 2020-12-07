@@ -252,42 +252,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 }
             }
         });
-
-
-        /*GraphqlRequest graphqlRequest = null;
-        Map<String, Object> variable = new HashMap<>();
-        variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
-        variable.put(CATEGORY_IDS, category);
-        variable.put(MP_CATEGORY_IDS, categoryList);
-        if (getView() != null && getView().getActivity() != null) {
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                    R.raw.recommendation_mp), RecommendationResponse.class, variable);
-        }
-
-        if (graphqlRequest != null) {
-            orderDetailsUseCase = new GraphqlUseCase();
-            orderDetailsUseCase.clearRequest();
-            orderDetailsUseCase.addRequest(graphqlRequest);
-            orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                }
-
-                @Override
-                public void onNext(GraphqlResponse response) {
-                    RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
-                    if (getView() != null) {
-                        getView().setRecommendation(recommendationResponse);
-                    }
-                }
-            });
-        }*/
     }
 
     @Override
