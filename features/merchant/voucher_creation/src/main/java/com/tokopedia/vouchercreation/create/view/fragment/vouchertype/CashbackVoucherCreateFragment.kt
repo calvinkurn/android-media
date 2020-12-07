@@ -462,11 +462,12 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                 when (result) {
                     is Success -> {
                         val recommendationData = result.data
+                        updateTextFieldValues(CashbackType.Rupiah, recommendationData)
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, recommendationData)
-                        if (activeCashbackType == CashbackType.Rupiah) {
-                            updateTextFieldValues(CashbackType.Rupiah, recommendationData)
-                            adapter.notifyDataSetChanged()
+                        rupiahCashbackTextFieldList.forEach { uiModel ->
+                            viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
                         }
+                        if (activeCashbackType == CashbackType.Rupiah) adapter.notifyDataSetChanged()
                     }
                     is Fail -> {
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, viewModel.getStaticRecommendationData())
@@ -477,11 +478,12 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                 when (result) {
                     is Success -> {
                         val recommendationData = result.data
+                        updateTextFieldValues(CashbackType.Percentage, recommendationData)
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, recommendationData)
-                        if (activeCashbackType == CashbackType.Percentage) {
-                            updateTextFieldValues(CashbackType.Percentage, recommendationData)
-                            adapter.notifyDataSetChanged()
+                        percentageCashbackTextFieldList.forEach { uiModel ->
+                            viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
                         }
+                        if (activeCashbackType == CashbackType.Percentage) adapter.notifyDataSetChanged()
                     }
                     is Fail -> {
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, viewModel.getStaticRecommendationData())
@@ -596,7 +598,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     override fun onClickableSpanClicked() {
         val voucherRecommendation = viewModel.getVoucherRecommendationData(activeCashbackType)
         updateTextFieldValues(activeCashbackType, voucherRecommendation)
-        when(activeCashbackType) {
+        when (activeCashbackType) {
             CashbackType.Rupiah -> {
                 rupiahCashbackTextFieldList.forEach { uiModel ->
                     viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
