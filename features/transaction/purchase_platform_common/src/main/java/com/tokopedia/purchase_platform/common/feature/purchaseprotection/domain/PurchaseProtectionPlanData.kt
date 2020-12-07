@@ -16,5 +16,13 @@ data class PurchaseProtectionPlanData(
         var isProtectionOptIn: Boolean = false,
         var isProtectionCheckboxDisabled: Boolean = false,
         var unit: String = "",
-        var stateChecked: Boolean = false
-) : Parcelable
+        var stateChecked: Int = 0
+) : Parcelable {
+
+    companion object {
+        const val STATE_EMPTY = 0
+        const val STATE_UNTICKED = 1
+        const val STATE_TICKED = 2
+    }
+
+}
