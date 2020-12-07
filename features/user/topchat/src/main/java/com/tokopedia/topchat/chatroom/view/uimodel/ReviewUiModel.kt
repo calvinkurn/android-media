@@ -29,6 +29,7 @@ class ReviewUiModel(
 
     val isSender: Boolean get() = !reply.isOpposite
     val isReviewed: Boolean get() = reviewCard.isReviewed
+    val ratingInt: Int get() = reviewCard.rating.toInt()
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)

@@ -41,7 +41,7 @@ class ReviewViewHolder(
         bindBackground(element)
         bindLabel(element)
         bindBuyerLabel(element)
-        bindReputation(element)
+        bindStar(element)
     }
 
     private fun bindImage(element: ReviewUiModel) {
@@ -81,8 +81,16 @@ class ReviewViewHolder(
         }
     }
 
-    private fun bindReputation(element: ReviewUiModel) {
-        // TODO("Not yet implemented")
+    private fun bindStar(element: ReviewUiModel) {
+        if (!element.isSender) {
+            reputation?.show()
+            reputation?.resetStars()
+            if (element.isReviewed) {
+                reputation?.renderInitialReviewWithData(element.ratingInt)
+            }
+        } else {
+            reputation?.hide()
+        }
     }
 
     companion object {
