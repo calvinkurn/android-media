@@ -26,6 +26,7 @@ class ChatAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
+                showLoadingState(context, appWidgetManager, appWidgetIds)
                 GetChatService.startService(context)
             } else {
                 ChatWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
@@ -48,6 +49,15 @@ class ChatAppWidget : AppWidgetProvider() {
             Const.Action.OPEN_APPLINK -> AppWidgetHelper.openAppLink(context, intent)
         }
         super.onReceive(context, intent)
+    }
+
+    private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {
+        val remoteViews = AppWidgetHelper.getChatWidgetRemoteView(context)
+        ids.forEach {
+            ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
+            ChatWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            awm.updateAppWidget(it, remoteViews)
+        }
     }
 
     private fun onChatItemClick(context: Context, intent: Intent) {

@@ -6,8 +6,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.RemoteViews
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -28,6 +30,7 @@ class OrderAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
+                showLoadingState(context, appWidgetManager, appWidgetIds)
                 GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
             } else {
                 OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
@@ -76,6 +79,15 @@ class OrderAppWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
+    }
+
+    private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {
+        val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
+        ids.forEach {
+            OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
+            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            awm.updateAppWidget(it, remoteViews)
+        }
     }
 
     private fun initUserSession(context: Context) {
