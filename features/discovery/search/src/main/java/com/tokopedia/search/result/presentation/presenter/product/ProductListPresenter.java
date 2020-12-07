@@ -25,7 +25,6 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
-import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
@@ -95,15 +94,8 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID;
@@ -149,10 +141,8 @@ final class ProductListPresenter
     private int startFrom = 0;
     private int totalData = 0;
     private boolean hasLoadData = false;
-    private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
-    private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
     private String navSource = "";
     private String pageId = "";
     private String pageTitle = "";
@@ -210,8 +200,6 @@ final class ProductListPresenter
     public void attachView(ProductListSectionContract.View view) {
         super.attachView(view);
 
-        useRatingString = getIsUseRatingString();
-        shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
         isABTestNavigationRevamp = isABTestNavigationRevamp();
     }
@@ -225,39 +213,6 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    private boolean getIsUseRatingString() {
-        try {
-            return getView().getABTestRemoteConfig()
-                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                    .equals(AB_TEST_VARIANT_COMMA_STAR);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private ShopRatingABTestStrategy getShopRatingABTestStrategy() {
-        String shopRatingABVariant = getShopRatingABVariant();
-
-        switch(shopRatingABVariant) {
-            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
-            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
-            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
-            default: return null;
-        }
-    }
-
-    private String getShopRatingABVariant() {
-        try {
-            return getView().getABTestRemoteConfig().getString(AB_TEST_SHOP_RATING);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return "";
         }
     }
 
@@ -499,9 +454,9 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+            ProductViewModelMapper mapper = new ProductViewModelMapper();
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -579,9 +534,7 @@ final class ProductListPresenter
                     item.setImageUrl300(topAds.getProduct().getImage().getM_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
-                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
-                    item.setRating(useRatingString ? 0 : topAds.getProduct().getProductRating());
-                    item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
+                    item.setRatingString(topAds.getProduct().getProductRatingFormat());
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
                     item.setShopID(topAds.getShop().getId());
@@ -598,10 +551,6 @@ final class ProductListPresenter
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
                     item.setProductUrl(topAds.getProduct().getUri());
                     item.setMinOrder(topAds.getProduct().getProductMinimumOrder());
-
-                    if (shopRatingABTestStrategy != null) {
-                        shopRatingABTestStrategy.processShopRatingVariant(topAds, item);
-                    }
 
                     list.add(i, item);
                     j++;
@@ -851,9 +800,9 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1051,9 +1000,9 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
