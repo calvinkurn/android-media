@@ -14,6 +14,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
@@ -35,7 +36,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    private static final String REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page";
+    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -157,6 +158,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
                 TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
             }
 
             @Override

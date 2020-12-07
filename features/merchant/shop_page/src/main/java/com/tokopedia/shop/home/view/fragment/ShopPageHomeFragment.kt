@@ -454,7 +454,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_RENDER)
                     stopMonitoringPltRenderPage()
                     stopMonitoringPerformance()
-                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    view?.let { view ->
+                        getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         })

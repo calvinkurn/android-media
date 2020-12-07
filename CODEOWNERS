@@ -93,6 +93,7 @@
 /features/top_ads/top_ads_create/                       @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_widget/                       @tokopedia/android-minionskywalker-dev
+/features/top_ads/top_ads_headline/                     @tokopedia/android-minionskywalker-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
@@ -200,6 +201,7 @@
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
 /features/user/campaign_shake_landing/                  @tokopedia/android-minionkevin-dev
 /features/home/account-home/                        	@tokopedia/android-minionkevin-dev
+/features/user/home_account/                        	@tokopedia/android-minionkevin-dev
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
@@ -223,7 +225,7 @@
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
 /features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
-/features/promo/promotions_ui_common					@tokopedia/android-minionsolo-dev
+/features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionsolo-dev
 
 
@@ -267,6 +269,7 @@
 /libraries/date_picker_range/							@tokopedia/android-core-dev
 /libraries/dev_monitoring_tools/					    @tokopedia/android-core-dev
 /libraries/device_info/                                 @tokopedia/android-core-dev
+/libraries/device_fingerprint                           @tokopedia/android-core-dev
 /libraries/dynamic_features/							@tokopedia/android-core-dev
 /libraries/encryption/							        @tokopedia/android-core-dev
 /libraries/fingerprint/									@tokopedia/android-core-dev
@@ -301,6 +304,7 @@
 /libraries/translator/									@tokopedia/android-core-dev
 /libraries/travel_calendar/								@tokopedia/android-core-dev
 /libraries/twitter_share/								@tokopedia/android-core-dev
+/libraries/unit_test                                    @tokopedia/android-core-dev
 /libraries/utils                                        @tokopedia/android-core-dev
 /libraries/video_recorder/								@tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
@@ -309,6 +313,7 @@
 /libraries/websocket/									@tokopedia/android-core-dev
 /libraries/webview/										@tokopedia/android-core-dev
 /libraries/williamchart/								@tokopedia/android-core-dev
+/libraries/work_manager_util/					        @tokopedia/android-core-dev
 /libraries/youtubeutil/									@tokopedia/android-core-dev
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
 /libraries/blockcanary                                  @tokopedia/android-core-dev
@@ -333,6 +338,7 @@
 /tkpdabstraction/                                   	@tokopedia/android-gatekeeperlegacy-dev
 
 /customerapp/                                       	@tokopedia/android-core-dev
+/customer_mid_app/                                      @tokopedia/android-core-dev
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
 

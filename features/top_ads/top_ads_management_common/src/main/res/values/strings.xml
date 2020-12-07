@@ -120,6 +120,7 @@
     <string name="topads_common_min_bid">Biaya minimum Rp%s</string>
     <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
     <string name="topads_common_headline_klik">/1000 kali tampil</string>
+    <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
 
 
 

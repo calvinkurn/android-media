@@ -2,7 +2,14 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
+import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -160,5 +167,26 @@ class Utils {
             }
             return ""
         }
+
+        fun parsedColor(context: Context, fontColor: String, defaultColor: Int): Int {
+            return try {
+                Color.parseColor(fontColor)
+            } catch (exception: Exception) {
+                MethodChecker.getColor(context, defaultColor)
+            }
+        }
+
+        fun setTimerBoxDynamicBackground(view: View, color: Int) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    view.background.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
+                } else {
+                    view.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                }
+            } catch (exception: Exception) {
+                view.setBackgroundColor(MethodChecker.getColor(view.context, color))
+            }
+        }
+
     }
 }
