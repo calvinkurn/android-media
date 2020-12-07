@@ -149,6 +149,7 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_12"
+                android:visibility="gone"
                 app:card_type="clear"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
