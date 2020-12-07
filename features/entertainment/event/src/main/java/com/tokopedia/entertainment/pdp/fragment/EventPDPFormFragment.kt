@@ -118,7 +118,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
                         else -> resources.getString(R.string.ent_pdp_title_form)
                     }
                     val errorForm = String.format(resources.getString(R.string.ent_pdp_form_error_all_msg_fragment), typeTitle.toLowerCase().capitalize())
-                    Toaster.build(it, errorForm, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                    Toaster.build(it, errorForm, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg))).show()
                 }
             } else {
                 activity?.run {

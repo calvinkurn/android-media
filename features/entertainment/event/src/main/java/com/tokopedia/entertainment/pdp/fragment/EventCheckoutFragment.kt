@@ -167,7 +167,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 val error = it
                 view?.let {
                     progressDialog.dismiss()
-                    Toaster.build(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
+                    Toaster.build(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error)).show()
                 }
             }
         })
@@ -178,7 +178,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 view?.let {
                     progressDialog.dismiss()
                     Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                            it.context.getString(R.string.ent_checkout_error))
+                            it.context.getString(R.string.ent_checkout_error)).show()
                 }
             }
         })
@@ -192,7 +192,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     if (data.checkout.data.success == 0) {
                         view?.let {
                             Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                    context.getString(R.string.ent_checkout_error))
+                                    context.getString(R.string.ent_checkout_error)).show()
                         }
                     } else {
                         val paymentData = data.checkout.data.data.queryString
@@ -213,7 +213,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         } else {
                             view?.let {
                                 Toaster.build(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                        context.getString(R.string.ent_checkout_error))
+                                        context.getString(R.string.ent_checkout_error)).show()
                             }
                         }
                     }
@@ -230,7 +230,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 if (data.checkout.data.success == 0) {
                     view?.let {
                         Toaster.build(it, data.checkout.header.messages.first(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                context.getString(R.string.ent_checkout_error))
+                                context.getString(R.string.ent_checkout_error)).show()
                     }
                 } else {
                     RouteManager.route(context, data.checkout.data.data.redirectUrl)
@@ -383,25 +383,25 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 context?.let {
                     when{
                         !userSessionInterface.isLoggedIn -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                         }
                         forms.isEmpty() -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                             scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                             widget_event_checkout_pessangers.startAnimationWiggle()
                         }
                         !forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form)) -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                             scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
                             widget_event_checkout_pessangers.startAnimationWiggle()
                         }
                         isAdditionalItemFormNull() && isItemFormActive -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                             scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
                             getRecycleViewWidgetAnimator()
                         }
                         eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
+                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                             scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
                             item_checkout_event_data_tambahan_package.startAnimationWiggle()
                         }

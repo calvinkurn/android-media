@@ -110,7 +110,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         })
 
         dealBrandCategoryActivityViewModel.errorMessage.observe(this, Observer {
-            Toaster.build(container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         })
     }
 
