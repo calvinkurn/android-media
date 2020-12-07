@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -130,6 +131,7 @@ class ShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
@@ -154,6 +156,8 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
+
+        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -489,6 +493,7 @@ class ShopPageFragment :
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
+                handlePlayBroadcastExtra(this@run)
             }
             if (GlobalConfig.isSellerApp()) {
                 shopId = shopViewModel.userShopId
@@ -1200,6 +1205,8 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
+        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
+            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1222,6 +1229,23 @@ class ShopPageFragment :
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
+    }
+
+    fun collapseAppBar() {
+        appBarLayout.post {
+            appBarLayout.setExpanded(false)
+        }
+    }
+
+    fun isNewlyBroadcastSaved(): Boolean? {
+        val args = arguments
+        return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
+            args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
+        }
+    }
+
+    fun clearIsNewlyBroadcastSaved() {
+        arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
     }
 
     override fun onFollowerTextClicked(shopFavourited: Boolean) {
@@ -1471,6 +1495,51 @@ class ShopPageFragment :
             shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
             shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
         }
+    }
+
+    /**
+     * Play Widget "Start Live Streaming"
+     */
+    override fun onStartLiveStreamingClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            handlePlayBroadcastExtra(data)
+            refreshData()
+        }
+    }
+
+    private fun handlePlayBroadcastExtra(data: Intent) {
+        val isChannelSaved: Boolean = if (data.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED)) {
+            data.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
+        } else return
+
+        if (arguments == null) arguments = Bundle()
+        arguments?.putBoolean(NEWLY_BROADCAST_CHANNEL_SAVED, isChannelSaved)
+
+        if (isChannelSaved) showWidgetTranscodingToaster()
+        else showWidgetDeletedToaster()
+    }
+
+    private fun showWidgetTranscodingToaster() {
+        Toaster.build(
+                view = requireView(),
+                text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showWidgetDeletedToaster() {
+        Toaster.build(
+                requireView(),
+                getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+        ).show()
     }
 
     fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
