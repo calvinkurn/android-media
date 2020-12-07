@@ -52,6 +52,8 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
+import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
@@ -61,6 +63,7 @@ import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -87,10 +90,14 @@ import javax.inject.Inject
 class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     var adapter: HomeAccountUserAdapter? = null
+    var financialAdapter: HomeAccountFinancialAdapter? = null
+    var memberAdapter: HomeAccountMemberAdapter? = null
 
     val coachMarkItem = ArrayList<CoachMark2Item>()
 
     var appBarCollapseListener: onAppBarCollapseListener? = null
+
+    var isNeedRefreshProfileItems = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -174,6 +181,42 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
         })
+
+        viewModel.walletData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success -> {
+                    val mappedMember = mapper.mapToFinancialData(it.data)
+                    val saldo = mapper.mapSaldo(viewModel.internalBuyerData!!).items
+                    saldo.addAll(mappedMember)
+                    financialAdapter?.addItems(saldo)
+                    financialAdapter?.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
+                }
+
+                is Fail -> {
+
+                }
+            }
+        })
+
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success -> {
+                    val mappedMember = mapper.mapMemberItemDataView(it.data)
+                    memberAdapter?.addItems(mappedMember)
+                    memberAdapter?.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
+                }
+
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    private fun onSuccessGetWallet(wallet: WalletModel){
+//        val mappedWallet = mapper.mapToFinancialData(wallet)
     }
 
     private fun onFailGetData(throwable: Throwable) {
@@ -258,7 +301,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         setupStatusBar()
         setupObserver()
-        adapter = HomeAccountUserAdapter(this)
+
+        financialAdapter = HomeAccountFinancialAdapter(this)
+        memberAdapter = HomeAccountMemberAdapter(this)
+
+        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter)
         setupList()
         setLoadMore()
         showLoading()
@@ -286,7 +333,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
             onRefresh()
             getData()
+            isNeedRefreshProfileItems = true
         }
+    }
+
+    private fun getProfileData(){
+        viewModel.getWalletBalance()
+        viewModel.getShortcutData()
     }
 
     private fun getData(){
@@ -348,7 +401,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (GlobalConfig.isAllowDebuggingTools()) {
             addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
         }
-        addItem(SettingDataView("", mutableListOf(
+        addItem(SettingDataView("", arrayListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
@@ -628,6 +681,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             startActivityForResult(RouteManager.getIntent(activity,
                     ApplinkConstInternalGlobal.ADD_PASSWORD), AccountConstants.REQUEST.REQUEST_ADD_PASSWORD)
         }
+    }
+
+    override fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter) {
+        this.financialAdapter = financialAdapter
+        this.memberAdapter = memberAdapter
+        if(isNeedRefreshProfileItems){
+            getProfileData()
+        }
+        isNeedRefreshProfileItems = false
     }
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {

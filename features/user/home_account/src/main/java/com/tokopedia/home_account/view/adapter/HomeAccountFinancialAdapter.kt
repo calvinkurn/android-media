@@ -14,12 +14,17 @@ import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 
 class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener): RecyclerView.Adapter<FinancialItemViewHolder>() {
 
-    var list: List<CommonDataView> = mutableListOf()
+    var list: MutableList<CommonDataView> = arrayListOf()
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: FinancialItemViewHolder, position: Int) {
         holder.bind(list[position])
+    }
+
+    fun addItems(itemList: List<CommonDataView>) {
+        this.list.clear()
+        this.list.addAll(itemList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinancialItemViewHolder {

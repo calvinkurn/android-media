@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.home_account_member.view.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
+class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, val financialAdapter: HomeAccountFinancialAdapter?, val memberAdapter: HomeAccountMemberAdapter?): BaseViewHolder(itemView) {
 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
@@ -62,6 +62,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             }
 
             listener.onItemViewBinded(adapterPosition, itemView, profile)
+            listener.onProfileAdapterReady(financialAdapter!!, memberAdapter!!)
         }
     }
 
@@ -70,20 +71,18 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     }
 
     private fun setupFinancialAdapter(itemView: View, profile: ProfileDataView) {
-        itemView?.home_account_financial_layout_title?.text = profile.financial.title
-        val adapter = HomeAccountFinancialAdapter(listener)
-        adapter.list = profile.financial.items
-        itemView.home_account_financial_layout_rv?.adapter = adapter
+        itemView?.home_account_financial_layout_title?.text = profile.financial?.title
+        financialAdapter?.list = profile.financial?.items ?: mutableListOf()
+        itemView.home_account_financial_layout_rv?.adapter = financialAdapter
         itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
-        itemView.home_account_member_layout_title?.text = profile.members.title
-        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members.icon)
+        itemView.home_account_member_layout_title?.text = profile.members?.title
+        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members?.icon ?: "")
 
-        val adapter = HomeAccountMemberAdapter(listener)
-        adapter.list = profile.members.items
-        itemView.home_account_member_layout_rv?.adapter = adapter
+        memberAdapter?.list = profile.members?.items?: arrayListOf()
+        itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)

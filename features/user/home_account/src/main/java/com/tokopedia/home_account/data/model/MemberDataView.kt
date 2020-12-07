@@ -8,7 +8,7 @@ package com.tokopedia.home_account.data.model
 data class MemberDataView(
         val title: String = "",
         val icon: String = "",
-        val items: List<MemberItemDataView> = listOf()
+        val items: ArrayList<MemberItemDataView> = arrayListOf()
 )
 
 data class MemberItemDataView(

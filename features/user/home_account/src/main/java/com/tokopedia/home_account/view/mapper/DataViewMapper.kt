@@ -6,7 +6,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.navigation_common.model.TokopointsModel
+import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -28,7 +28,7 @@ class DataViewMapper @Inject constructor(
                 email = userSession.email,
                 avatar = accountDataModel.profile.profilePicture,
                 members = mapToMemberDataView(accountDataModel),
-                financial = mapToFinancialData(accountDataModel),
+                financial = mapSaldo(accountDataModel),
                 backdrop = accountDataModel.tokopoints.status.tier.backgroundImgUrl
         )
     }
@@ -41,60 +41,69 @@ class DataViewMapper @Inject constructor(
         )
     }
 
-    fun mapMemberItemDataView(shortcutResponse: ShortcutResponse): List<MemberItemDataView> {
-        return shortcutResponse.tokopointsShortcutList.shortcutGroupList.flatMap { it.shortcutList }.map {
-            MemberItemDataView(
-                    title = it.description,
-                    subtitle = it.cta.text,
-                    icon = it.iconImageURL,
-                    applink = it.cta.appLink
-            )
+    fun mapMemberItemDataView(shortcutResponse: ShortcutResponse): ArrayList<MemberItemDataView> {
+        val items = arrayListOf<MemberItemDataView>()
+        if(shortcutResponse.tokopointsShortcutList.shortcutGroupList.isNotEmpty() && shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList.isNotEmpty()) {
+            shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList.forEach {
+                items.add(
+                    MemberItemDataView(
+                        title = it.description,
+                        subtitle = it.cta.text,
+                        icon = it.iconImageURL,
+                        applink = it.cta.appLink
+                    )
+                )
+            }
         }
+
+        return items
     }
 
-    fun mapToFinancialData(accountDataModel: UserAccountDataModel): SettingDataView {
+    fun mapToFinancialData(wallet: WalletModel): List<CommonDataView> {
         val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
 
-        val dataView = SettingDataView("Dana & Investasi")
-        if(accountDataModel.wallet.walletType != null && accountDataModel.wallet.walletType == OVO) {
-            if(!accountDataModel.wallet.isLinked) {
-                val body =  if (accountDataModel.wallet.amountPendingCashback > 0) {
-                    "(+" + accountDataModel.wallet.pendingCashback + ")"
+//        val saldo = mapSaldo(accountDataModel)
+        val items = arrayListOf<CommonDataView>()
+        if(wallet.walletType != null && wallet.walletType == OVO) {
+            if(!wallet.isLinked) {
+                val body =  if (wallet.amountPendingCashback > 0) {
+                    "(+" + wallet.pendingCashback + ")"
                 } else {
-                    accountDataModel.wallet.text.toEmptyStringIfNull()
+                    wallet.text.toEmptyStringIfNull()
                 }
 
                 val item = CommonDataView(
-                        title = accountDataModel.wallet.action?.text.toEmptyStringIfNull(),
+                        title = wallet.action?.text.toEmptyStringIfNull(),
                         body = body,
                         urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
-                        applink = accountDataModel.wallet.action?.applink.toEmptyStringIfNull(),
+                        applink = wallet.action?.applink.toEmptyStringIfNull(),
                         icon = R.drawable.ic_account_ovo
                 )
-                dataView.items.add(item)
+                items.add(item)
             } else {
                 val item = CommonDataView(
-                    title = accountDataModel.wallet.cashBalance.toEmptyStringIfNull(),
-                    body = "Points " + accountDataModel.wallet.pointBalance.toEmptyStringIfNull(),
-                    type = CommonViewHolder.TYPE_DEFAULT,
-                    applink = accountDataModel.wallet.applink.toEmptyStringIfNull(),
-                    icon = R.drawable.ic_account_ovo
+                        title = wallet.cashBalance.toEmptyStringIfNull(),
+                        body = "Points " + wallet.pointBalance.toEmptyStringIfNull(),
+                        type = CommonViewHolder.TYPE_DEFAULT,
+                        applink = wallet.applink.toEmptyStringIfNull(),
+                        icon = R.drawable.ic_account_ovo
                 )
-                dataView.items.add(item)
+                items.add(item)
             }
-
-            val saldoItem = CommonDataView(
-                    title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
-                    body = "Saldo",
-                    type = CommonViewHolder.TYPE_DEFAULT,
-//                    urlIcon = cdnUrl + AccountConstants.Url.SALDO_IMG,
-                    icon = R.drawable.ic_account_balance,
-                    applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
-            )
-            val goldItem = CommonDataView(title = "Rp 20.000.000", body = "Emas", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_emas)
-            dataView.items.add(saldoItem)
-//            dataView.items.add(goldItem)
         }
+        return items
+    }
+
+    fun mapSaldo(accountDataModel: UserAccountDataModel): SettingDataView {
+        val dataView = SettingDataView("Dana & Investasi")
+        val saldoItem = CommonDataView(
+                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
+                body = "Saldo",
+                type = CommonViewHolder.TYPE_DEFAULT,
+                icon = R.drawable.ic_account_balance,
+                applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
+        )
+        dataView.items.add(saldoItem)
         return dataView
     }
 

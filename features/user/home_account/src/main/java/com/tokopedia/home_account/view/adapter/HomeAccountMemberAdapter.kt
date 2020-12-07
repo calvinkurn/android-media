@@ -14,9 +14,14 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder
 
 class HomeAccountMemberAdapter(val listener: HomeAccountUserListener): RecyclerView.Adapter<MemberItemViewHolder>() {
 
-    var list: List<MemberItemDataView> = mutableListOf()
+    var list: ArrayList<MemberItemDataView> = arrayListOf()
 
     override fun getItemCount(): Int = list.size
+
+    fun addItems(itemList: List<MemberItemDataView>) {
+        this.list.clear()
+        this.list.addAll(itemList)
+    }
 
     override fun onBindViewHolder(holder: MemberItemViewHolder, position: Int) {
         holder.bind(list[position])
