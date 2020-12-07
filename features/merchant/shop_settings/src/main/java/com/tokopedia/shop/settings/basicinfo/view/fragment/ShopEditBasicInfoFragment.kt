@@ -121,11 +121,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.detachView()
-    }
-
     override fun onPause() {
         super.onPause()
         dismissToaster()
