@@ -3,11 +3,9 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -49,7 +47,6 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -74,7 +71,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         HotelRoomAndGuestBottomSheets.HotelGuestListener,
         HotelLastSearchViewHolder.LastSearchListener,
         TravelVideoBannerWidget.ActionListener,
-        HotelHomepagePopularCitiesWidget.ActionListener{
+        HotelHomepagePopularCitiesWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -567,6 +564,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
 
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
+        showPromoContainer()
         bannerImpressionIndex.add(0)
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
@@ -600,21 +598,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 data as TravelCollectiveBannerModel.Banner
 
                 val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
+                image.setImageUrl(data.attribute.imageUrl, placeholderHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height), isSkipCache = true)
                 image.setOnClickListener {
                     onPromoClicked(data, data.position)
                 }
-                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        image.heightRatio = BANNER_HEIGHT_RATIO
-                        image.loadImage(data.attribute.imageUrl)
-                    }
-                })
             }
 
             promoDataList.forEachIndexed { index, banner -> banner.position = index }
             addItems(R.layout.hotel_carousel_item, ArrayList(promoDataList), itemParam)
-            showPromoContainer()
         }
     }
 
