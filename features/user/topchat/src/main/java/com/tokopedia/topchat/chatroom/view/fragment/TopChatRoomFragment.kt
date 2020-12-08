@@ -1698,11 +1698,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ApplinkConstInternalMarketplace.CREATE_REVIEW,
                 review.reputationId.toString(), review.productId.toString()
         )
-        Uri.parse(uri).buildUpon()
+        val uriString = Uri.parse(uri).buildUpon()
                 .appendQueryParameter(PARAM_RATING, starCount.toString())
                 .build()
                 .toString()
-        val intent = RouteManager.getIntent(context, uri)
+        val intent = RouteManager.getIntent(context, uriString)
         activity?.startActivityForResult(intent, REQUEST_REVIEW)
     }
 
