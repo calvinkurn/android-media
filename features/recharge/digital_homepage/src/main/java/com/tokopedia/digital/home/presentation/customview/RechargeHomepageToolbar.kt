@@ -29,7 +29,6 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
 
     fun toOnScrolledMode() {
         showShadow()
-        setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
