@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,6 +87,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private lateinit var remoteConfig: RemoteConfig
 
+    private var bannerWidthInPixels = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -136,6 +139,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
+    }
+
+    private fun measureBannerWidth() {
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -598,7 +608,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 data as TravelCollectiveBannerModel.Banner
 
                 val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-                image.setImageUrl(data.attribute.imageUrl, placeholderHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height), isSkipCache = true)
+                image.layoutParams.width = if (bannerWidthInPixels > 0) {
+                    bannerWidthInPixels
+                } else {
+                    resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
+                }
+                image.setImageUrl(data.attribute.imageUrl, BANNER_HEIGHT_RATIO, placeholderHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height), isSkipCache = true)
                 image.setOnClickListener {
                     onPromoClicked(data, data.position)
                 }
