@@ -28,6 +28,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -64,6 +65,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
@@ -88,6 +90,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
@@ -521,6 +524,11 @@ class AddEditProductPreviewFragment:
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
                     onSetCashbackResult(cacheManager)
+                }
+                REQUEST_CODE_SHOP_LOCATION -> {
+                    view?.let {
+                        showToasterSuccessSetLocation()
+                    }
                 }
             }
         }
@@ -997,10 +1005,8 @@ class AddEditProductPreviewFragment:
         viewModel.locationValidation.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (it.data) {
-                        Toast.makeText(context, "True", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(context, "False", Toast.LENGTH_LONG).show()
+                    if (!it.data) {
+                        showDialogLocationValidation()
                     }
                 }
                 is Fail -> {
@@ -1342,6 +1348,36 @@ class AddEditProductPreviewFragment:
             val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
             startActivity(intent)
             activity?.finish()
+        }
+    }
+
+    private fun showDialogLocationValidation() {
+        DialogUnify(
+                requireContext(),
+                DialogUnify.SINGLE_ACTION,
+                DialogUnify.NO_IMAGE
+        ).apply {
+            setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
+            setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
+            setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
+            setPrimaryCTAClickListener {
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                    putExtra(EXTRA_IS_FULL_FLOW, false)
+                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+                }
+            }
+        }.show()
+    }
+
+    private fun showToasterSuccessSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_success_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ) { /*no op*/ }.show()
         }
     }
 

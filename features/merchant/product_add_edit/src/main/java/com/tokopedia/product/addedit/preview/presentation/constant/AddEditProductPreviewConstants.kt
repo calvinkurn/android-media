@@ -16,6 +16,7 @@ class AddEditProductPreviewConstants {
         const val EXTRA_FROM_NOTIF_SUCCESS = "FROM_NOTIF_SUCCESS"
         const val EXTRA_FROM_NOTIF_EDIT_PRODUCT = "FROM_NOTIF_EDIT_PRODUCT"
         const val EXTRA_FROM_UPLOADING = "EXTRA_UPLOADING"
+        const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
         const val TYPE_ACTIVE = 1
         const val TYPE_ACTIVE_LIMITED = 2
         const val TYPE_WAREHOUSE = 3
