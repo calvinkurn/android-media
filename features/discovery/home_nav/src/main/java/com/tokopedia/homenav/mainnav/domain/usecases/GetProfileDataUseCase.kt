@@ -98,7 +98,7 @@ class GetProfileDataUseCase @Inject constructor(
         return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
-    fun setCallCacheData() {
-        isCallCacheData = true
+    fun setCallCacheData(isCache: Boolean) {
+        isCallCacheData = isCache
     }
 }
