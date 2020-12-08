@@ -322,6 +322,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         }
         travel_homepage_destination_view_pager.buildView()
         layout_travel_destination_shimmering.hide()
+        layout_travel_destination_shimmering.alpha = 0f
     }
 
     private fun scrollImageViewPagerIndicator(currentPosition: Int) {

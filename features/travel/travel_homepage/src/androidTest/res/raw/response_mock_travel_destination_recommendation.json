@@ -18,7 +18,7 @@
         "meta": {
           "title": "Yuk, explore Jakarta!",
           "webURL": "",
-          "appURL": ""
+          "appURL": "tokopedia://hotel/dashboard"
         }
       }
     }
