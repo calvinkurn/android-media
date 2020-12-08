@@ -12,10 +12,9 @@
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/optionGridCardViewConstraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Purple_P500"
-        android:paddingBottom="@dimen/dp_8">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/optionGridCardViewBannerImage"
@@ -23,6 +22,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

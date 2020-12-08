@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -24,6 +25,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
             bindBannerImage(item)
             hideDescButton()
         } else {
+            renderBackgroundColor()
             bindProductDesc(item)
             showGridButton()
         }
@@ -32,13 +34,19 @@ class InspirationCarouselOptionGridBannerViewHolder(
 
     private fun bindBannerImage(item: InspirationCarouselViewModel.Option) {
         itemView.optionGridCardViewBannerImage?.shouldShowWithAction(item.bannerImageUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.optionGridCardViewBannerImage, item.bannerImageUrl)
+            ImageHandler.loadImageWithoutPlaceholder(itemView.optionGridCardViewBannerImage, item.bannerImageUrl)
         }
     }
 
     private fun hideDescButton() {
         itemView.optionGridBannerDesc?.visibility = View.GONE
         itemView.optionGridBannerButton?.visibility = View.GONE
+    }
+
+    private fun renderBackgroundColor() {
+        itemView.optionGridCardViewConstraintLayout?.background = ColorDrawable(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_P500)
+        )
     }
 
     private fun bindProductDesc(item: InspirationCarouselViewModel.Option) {
