@@ -35,10 +35,15 @@ class ReviewViewHolder(
 
     private val leftBg = BackgroundGenerator.generateLeftBackgroundReviewReminder(container)
 
+    override fun getChatStatusId(): Int {
+        return R.id.chat_status
+    }
+
     override fun alwaysShowTime(): Boolean = true
 
     override fun bind(element: ReviewUiModel) {
         super.bind(element)
+        bindChatReadStatus(element)
         bindGravity(element)
         bindImage(element)
         bindBackground(element)
