@@ -12,10 +12,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductVideoDetailTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivityInterface
 import com.tokopedia.product.detail.view.adapter.ProductVideoDetailAdapter
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
+import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 
 class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
 
@@ -68,8 +70,8 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
 
     private fun observeData() {
         sharedViewModel?.productVideoDetailData?.observeOnce(requireActivity(), {
-            if (it.isNotEmpty()) {
-                val newInstanceData = it.map { oldData ->
+            if (it.listOfVideo.isNotEmpty()) {
+                val newInstanceData = it.listOfVideo.map { oldData ->
                     oldData.copy()
                 }
 
@@ -114,9 +116,31 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
     override fun onMinimizeVideoClicked() {
         onBackButtonClicked()
         activityListener?.onBackPressed()
+        val videoDetailData = sharedViewModel?.productVideoDetailData?.value
+        videoDetailData?.let {
+            ProductVideoDetailTracking.eventCLickMinimizeVideo(it.productId, it.shopTypeString, it.shopId, it.userId)
+        }
+    }
+
+    override fun onVolumeVideoClicked(isMute: Boolean) {
+        val videoDetailData = sharedViewModel?.productVideoDetailData?.value
+        videoDetailData?.let {
+            ProductVideoDetailTracking.eventClickVideoDetailVolume(it.productId, it.shopTypeString, it.shopId, it.userId, isMute)
+        }
     }
 }
 
+data class ProductVideoDetailDataModel(
+        val listOfVideo: List<ProductVideoDataModel> = listOf(),
+
+        //Tracker Data
+        val shopTypeString: String = "",
+        val shopId: String = "",
+        val userId: String = "",
+        val productId: String = ""
+)
+
 interface ProductVideoDetailInterface {
     fun onMinimizeVideoClicked()
+    fun onVolumeVideoClicked(isMute: Boolean)
 }

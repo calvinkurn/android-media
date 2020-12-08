@@ -57,6 +57,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -251,6 +252,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
+    private var alreadyHitVideoTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
 
     //View
@@ -359,6 +361,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onPause() {
         super.onPause()
+        trackVideoState()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
@@ -370,6 +373,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onResume() {
         super.onResume()
         reloadCartCounter()
+    }
+
+    private fun trackVideoState() {
+        if (alreadyHitVideoTracker && productVideoCoordinator != null) {
+            val videoTrackerData = viewModel.videoTrackerData.value
+            val isAutoPlay = if (context == null) false else DeviceConnectionInfo.isConnectWifi(requireContext())
+
+            videoTrackerData?.let {
+                DynamicProductDetailTracking.Click.eventVideoStateChange(
+                        viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
+                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
+                )
+                alreadyHitVideoTracker = true
+            }
+        }
     }
 
     private fun reloadCartCounter() {
@@ -975,11 +993,29 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onVideoFullScreenClicked() {
         activity?.let { activity ->
             productVideoCoordinator?.let {
+                val trackerData = viewModel.getDynamicProductInfoP1
                 it.pauseVideoAndSaveLastPosition()
-                sharedViewModel?.updateVideoDetailData(it.getVideoDataModel())
+                sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
+                        //Tracker Data
+                        trackerData?.shopTypeString
+                        ?: "",
+                        trackerData?.basic?.shopID ?: "",
+                        viewModel.userId, trackerData?.basic?.productID ?: ""))
+
                 (activity as ProductDetailActivity).addNewFragment(ProductVideoDetailFragment())
+                DynamicProductDetailTracking.Click.eventClickFullScreenVideo(viewModel.getDynamicProductInfoP1, viewModel.userId,
+                        DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0))
             }
         }
+    }
+
+    override fun onVideoVolumeCLicked(isMute: Boolean) {
+        DynamicProductDetailTracking.Click.eventClickVideoVolume(viewModel.getDynamicProductInfoP1, viewModel.userId,
+                DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0), isMute)
+    }
+
+    override fun onVideoStateChange(stopDuration: Long, videoDuration:Long) {
+        viewModel.updateVideoTrackerData(stopDuration, videoDuration)
     }
 
     override fun getProductVideoCoordinator(): ProductVideoCoordinator? {

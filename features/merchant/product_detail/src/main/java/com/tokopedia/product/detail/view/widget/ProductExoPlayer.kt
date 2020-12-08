@@ -59,6 +59,11 @@ class ProductExoPlayer(val context: Context) {
                     }
                     else -> videoStateListener?.onVideoBuffering()
                 }
+
+                if (!playWhenReady && exoPlayer.currentPosition != 0L && playbackState == ExoPlayer.STATE_READY) {
+                    //Track only when video stop
+                    videoStateListener?.onVideoStateChange(exoPlayer.currentPosition, exoPlayer.duration)
+                }
             }
         })
     }
@@ -158,4 +163,5 @@ interface VideoStateListener {
     fun onVideoReadyToPlay()
     fun onVideoBuffering()
     fun configureVolume(isMute: Boolean)
+    fun onVideoStateChange(stopDuration: Long, videoDuration: Long) //Tracker Purpose
 }

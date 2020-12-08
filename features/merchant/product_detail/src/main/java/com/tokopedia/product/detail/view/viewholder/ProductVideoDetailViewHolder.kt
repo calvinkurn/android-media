@@ -54,6 +54,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
         video_volume?.setOnClickListener {
+            viewListener.onVolumeVideoClicked(mPlayer?.isMute() ?: false)
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.videoId)
         }
 
@@ -97,6 +98,10 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
 
                 override fun configureVolume(isMute: Boolean) {
                     setupVolume(isMute)
+                }
+
+                override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+
                 }
             })
             pdp_main_video.show()

@@ -23,6 +23,8 @@ interface DynamicProductDetailListener {
      * ProductMediaViewHolder
      */
     fun onVideoFullScreenClicked()
+    fun onVideoVolumeCLicked(isMute: Boolean)
+    fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
     /**
      * ProductSnapshotViewHolder
