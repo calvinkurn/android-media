@@ -198,13 +198,13 @@ open class TopChatTypeFactoryImpl constructor(
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
+            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, deferredAttachment, adapterListener)
             else -> createViewHolder(parent, type)
         }
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, deferredAttachment)
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)

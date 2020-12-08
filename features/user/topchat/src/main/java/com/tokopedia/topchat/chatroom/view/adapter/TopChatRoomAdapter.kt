@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.adapter
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
@@ -27,7 +29,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 /**
  * @author : Steven 02/01/19
  */
-class TopChatRoomAdapter(
+class TopChatRoomAdapter constructor(
         private val context: Context?,
         private val adapterTypeFactory: TopChatTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
@@ -38,6 +40,7 @@ class TopChatRoomAdapter(
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
     private val carouselViewPool = RecyclerView.RecycledViewPool()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -78,6 +81,18 @@ class TopChatRoomAdapter(
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
+    }
+
+    override fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            itemPair.second ?: return@post
+            val message = MessageViewModel(element.reply)
+            visitables[position] = message
+            notifyItemChanged(position)
+        }
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
@@ -317,5 +332,17 @@ class TopChatRoomAdapter(
             }
         }
         return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
+            lastKnownPosition: Int, element: T
+    ): Pair<Int, T?> {
+        val item = visitables.getOrNull(lastKnownPosition)
+        if (item == element) {
+            return Pair(lastKnownPosition, item as? T)
+        }
+        val updatePosition = visitables.indexOf(element)
+        return Pair(updatePosition, item as? T)
     }
 }

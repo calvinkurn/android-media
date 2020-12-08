@@ -28,9 +28,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/iv_product_thumbnail"
-            tools:text="Menunggu Diulas" />
+            tools:text="Menunggu Diulas"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
@@ -73,11 +75,13 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
             app:show_desc="false"
-            tools:layout_height="20dp" />
+            tools:layout_height="20dp"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier3"

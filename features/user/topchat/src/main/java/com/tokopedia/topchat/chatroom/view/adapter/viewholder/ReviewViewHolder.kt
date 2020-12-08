@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BackgroundGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
@@ -26,7 +27,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ReviewViewHolder constructor(
         itemView: View?,
-        private val deferredAttachment: DeferredViewHolderAttachment
+        private val deferredAttachment: DeferredViewHolderAttachment,
+        private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<ReviewUiModel>(itemView) {
 
     private val thumbnail: ImageUnify? = itemView?.findViewById(R.id.iv_product_thumbnail)
@@ -60,7 +62,11 @@ class ReviewViewHolder constructor(
         bindGravity(element)
         bindSyncReview(element)
         bindLoading(element)
-        if (!element.isLoading || element.isError) {
+        if (element.isError) {
+            adapterListener.changeToFallbackUiModel(element, adapterPosition)
+            return
+        }
+        if (!element.isLoading) {
             bindChatReadStatus(element)
             bindImage(element)
             bindBackground(element)
