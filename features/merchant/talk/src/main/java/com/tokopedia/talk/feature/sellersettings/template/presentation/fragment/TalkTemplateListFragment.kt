@@ -101,6 +101,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun renderList(templates: List<String>) {
         adapter.setData(templates)
+        talkTemplateListRecyclerView.show()
         initSwitch()
     }
 

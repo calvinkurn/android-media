@@ -3,6 +3,8 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
+import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
 
 class TalkTemplateListAdapter(private val talkTemplateListListener: TalkTemplateListListener) :
@@ -11,7 +13,7 @@ class TalkTemplateListAdapter(private val talkTemplateListListener: TalkTemplate
     private val templates = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TalkTemplateListViewHolder {
-        return TalkTemplateListViewHolder(parent, talkTemplateListListener)
+        return TalkTemplateListViewHolder(parent.inflateLayout(R.layout.item_talk_template, false), talkTemplateListListener)
     }
 
     override fun getItemCount(): Int {
@@ -40,5 +42,6 @@ class TalkTemplateListAdapter(private val talkTemplateListListener: TalkTemplate
     fun setData(chatTemplates: List<String>) {
         templates.clear()
         templates.addAll(chatTemplates)
+        notifyDataSetChanged()
     }
 }

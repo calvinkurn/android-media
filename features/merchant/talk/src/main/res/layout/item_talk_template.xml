@@ -3,6 +3,7 @@
     android:id="@+id/talkTemplateLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/layout_lvl2"
     android:layout_marginStart="@dimen/layout_lvl2"
     android:layout_marginEnd="@dimen/layout_lvl2"
     android:padding="@dimen/dp_12"
@@ -20,20 +21,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/talkMoveTemplateIcon"/>
 
-    <com.tokopedia.iconunify.IconUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/talkMoveTemplateIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/talkEditTemplateIcon"
-        app:icon_name="EDIT"/>
+        app:srcCompat="@drawable/ic_talk_template_list_move_item"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/talkEditTemplateIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:icon_name="EDIT"/>
 
