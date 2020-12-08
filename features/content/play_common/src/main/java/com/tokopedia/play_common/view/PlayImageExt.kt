@@ -40,8 +40,8 @@ fun View.setGradientBackground(colorArray: List<String>) {
         val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
         gradient.cornerRadius = 0f
         this.background = gradient
-    } else {
-        this.setBackgroundColor(parseColor(colorArray.firstOrNull().orEmpty()))
+    } else if (colorArray.isNotEmpty()) {
+        this.setBackgroundColor(parseColor(colorArray.first()))
     }
 }
 
