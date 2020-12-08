@@ -3,6 +3,4 @@
     <declare-styleable name="ConvenientBanner">
         <attr name="canLoop" format="boolean" />
     </declare-styleable>
-    <attr name="toolbarTheme" format="reference" />
-    <attr name="tabTheme" format="reference" />
 </resources>
