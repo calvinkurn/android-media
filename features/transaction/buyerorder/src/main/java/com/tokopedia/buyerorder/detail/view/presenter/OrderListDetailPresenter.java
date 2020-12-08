@@ -132,7 +132,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     variables.put(ORDER_ID, orderId);
                     graphqlRequest = new
                             GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                            R.raw.orderdetail_marketplace), DetailsData.class, variables);
+                            R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
 
                 } else {
                     variables.put("orderCategory", orderCategory);
@@ -140,7 +140,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     variables.put(CART_STRING, cartString);
                     graphqlRequest = new
                             GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                            R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables);
+                            R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
                 }
 
             } else {
@@ -151,7 +151,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 variables.put(UPSTREAM, upstream != null ? upstream : "");
                 graphqlRequest = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.orderdetails), DetailsData.class, variables);
+                        R.raw.orderdetails), DetailsData.class, variables, false);
             }
 
 
@@ -163,7 +163,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (getView() != null && getView().getActivity() != null) {
                 requestRecomm = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+                        R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget, false);
             }
 
             if (requestRecomm != null) {
