@@ -42,6 +42,13 @@
 
     <fragment
         android:id="@+id/talkTemplateListFragment"
-        android:name="com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateListFragment" />
+        android:name="com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateListFragment">
+
+        <argument
+            android:name="isSeller"
+            app:argType="boolean"
+            android:defaultValue='false' />
+
+    </fragment>
 
 </navigation>

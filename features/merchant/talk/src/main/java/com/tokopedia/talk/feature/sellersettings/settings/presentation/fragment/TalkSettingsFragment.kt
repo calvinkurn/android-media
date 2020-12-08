@@ -37,6 +37,7 @@ class TalkSettingsFragment : Fragment() {
 
     private fun goToTemplate() {
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkTemplateListFragment()
+        destination.isSeller = true
         NavigationController.navigate(this@TalkSettingsFragment, destination)
     }
 
