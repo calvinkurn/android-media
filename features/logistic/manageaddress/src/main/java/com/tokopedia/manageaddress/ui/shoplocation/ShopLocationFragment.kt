@@ -48,7 +48,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private var globalErrorLayout: GlobalError? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shipment_address_list, container, false)
+        return inflater.inflate(R.layout.fragment_shop_location, container, false)
     }
 
     override fun getScreenName(): String = ""

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.address.view
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,7 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.DaggerShopLocationComponent
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
+import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 
 class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
     override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(

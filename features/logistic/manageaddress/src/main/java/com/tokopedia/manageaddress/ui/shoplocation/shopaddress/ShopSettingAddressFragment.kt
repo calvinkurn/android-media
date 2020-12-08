@@ -18,6 +18,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressAddEditActivity
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
