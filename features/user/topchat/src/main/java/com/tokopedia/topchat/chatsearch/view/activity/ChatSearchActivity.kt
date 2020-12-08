@@ -36,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
  * @author by steven on 14/08/19.
  * For navigate: use {@link ApplinkConstInternalMarketplace.CHAT_SEARCH}
  */
-class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
+open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
         CoroutineScope, ChatSearchFragmentListener, ContactLoadMoreChatListener {
 
     private val textDebounce = 500L
