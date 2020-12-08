@@ -21,7 +21,8 @@
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="@dimen/dp_8"/>
 
     <FrameLayout
         android:layout_width="match_parent"
