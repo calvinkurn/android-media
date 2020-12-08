@@ -227,6 +227,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshBuListdata()
     }
 
+    override fun onErrorTransactionListClicked(position: Int) {
+        viewModel.refreshTransactionListData()
+    }
+
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
         view?.let {
             if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {

@@ -204,10 +204,11 @@ class MainNavViewModel @Inject constructor(
 
     private fun setInitialState() {
         val initialList = mutableListOf<Visitable<*>>(
-                InitialShimmerProfileDataModel(),
-                InitialShimmerDataModel()
+                InitialShimmerProfileDataModel()
         )
         initialList.addHomeBackButtonMenu()
+        initialList.add(InitialShimmerDataModel())
+        initialList.add(InitialShimmerTransactionDataModel())
         initialList.addTransactionMenu()
         initialList.addUserMenu()
         addWidgetList(initialList)
@@ -299,10 +300,24 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    fun refreshTransactionListData() {
+        val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateOngoingTransactionModel
+        }
+        transactionPlaceHolder?.let {
+            updateWidget(InitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
+        }
+        launchCatchError(coroutineContext, block = {
+            getOngoingTransaction()
+        }) {
+
+        }
+    }
+
     private suspend fun getOngoingTransaction() {
         launchCatchError(coroutineContext, block = {
-            val paymentList = async { getPaymentOrdersNavUseCase.get().executeOnBackground() }.await()
-            val orderList = async { getUohOrdersNavUseCase.get().executeOnBackground() }.await()
+            val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
+            val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - 6
@@ -310,14 +325,21 @@ class MainNavViewModel @Inject constructor(
                 val transactionListItemViewModel = TransactionListItemViewModel(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
-                val firstTransactionMenu = _mainNavListVisitable.find {
-                    it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
+                val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
+                    it.value is InitialShimmerTransactionDataModel
                 }
-                val indexOfFirstTransactionMenu = _mainNavListVisitable.indexOf(firstTransactionMenu)
-                addWidget(transactionListItemViewModel, indexOfFirstTransactionMenu)
+                transactionPlaceHolder?.let {
+                    updateWidget(transactionListItemViewModel, it.index)
+                }
             }
         }){
             it.printStackTrace()
+            val transactionPlaceHolder = _mainNavListVisitable.withIndex().find { placeholder ->
+                placeholder.value is InitialShimmerTransactionDataModel
+            }
+            transactionPlaceHolder?.let {placeholder ->
+                updateWidget(ErrorStateOngoingTransactionModel(), placeholder.index)
+            }
         }
     }
 
