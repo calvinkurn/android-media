@@ -198,7 +198,6 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_product_qty"
@@ -212,4 +211,102 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tv_quantity_stock_available,qty_editor_product" />
+
+    <Space
+        android:id="@+id/space_purchase_protection"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tf_note" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_purchase_protection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_protection_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_protection_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_protection_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
+        app:layout_constraintTop_toBottomOf="@+id/space_purchase_protection"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Proteksi di luar cakupan garansi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_protection_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@+id/tv_protection_unit"
+        app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
+        app:layout_constraintTop_toBottomOf="@+id/tv_protection_title"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="12 bulan proteksi dari pencurian/kerusakan" />
+
+    <com.tokopedia.unifycomponents.UnifyImageButton
+        android:id="@+id/btn_protection_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:translationX="-8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_protection_title"
+        app:layout_constraintStart_toEndOf="@+id/tv_protection_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_protection_title"
+        app:srcCompat="@drawable/ic_info"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_protection_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space_purchase_protection"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Rp80.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_protection_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_protection_price"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Per Barang" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_purchase_protection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="cb_purchase_protection,tv_protection_title,tv_protection_description,btn_protection_info,tv_protection_price,tv_protection_unit,space_purchase_protection" />
+
+    <Space
+        android:id="@+id/space_note"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
+
 </merge>
