@@ -1543,10 +1543,15 @@ class ShopPageFragment :
     }
 
     fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
-        return if (viewPagerAdapter.isFragmentObjectExists(tabFragmentClass)) {
-            viewPagerAdapter.getFragmentPosition(tabFragmentClass) == selectedPosition
-        } else {
+        return if(::viewPagerAdapter.isInitialized){
+            if (viewPagerAdapter.isFragmentObjectExists(tabFragmentClass)) {
+                viewPagerAdapter.getFragmentPosition(tabFragmentClass) == selectedPosition
+            } else {
+                false
+            }
+        }else{
             false
         }
+
     }
 }

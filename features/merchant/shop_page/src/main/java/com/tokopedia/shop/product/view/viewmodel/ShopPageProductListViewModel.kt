@@ -125,7 +125,7 @@ class ShopPageProductListViewModel @Inject constructor(
                                 shopProductFilterParameter.getSortId().toIntOrZero(),
                                 shopProductFilterParameter.getRating(),
                                 shopProductFilterParameter.getPmax(),
-                                shopProductFilterParameter.getPmax()
+                                shopProductFilterParameter.getPmin()
                         )
                     } else {
                         null

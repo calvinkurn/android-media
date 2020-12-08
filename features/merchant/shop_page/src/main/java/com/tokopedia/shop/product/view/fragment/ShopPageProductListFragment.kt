@@ -216,7 +216,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
         }
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
-
+    private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     override fun chooseProductClicked() {
         context?.let {
             RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
@@ -992,6 +992,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopProductAdapter.isLoading) {
+                gridType = it
                 changeProductListGridView(it)
             }
         })
@@ -1221,7 +1222,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun addShopPageProductChangeGridSection(totalProductData: Int) {
         if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
         }
     }
 
@@ -1395,7 +1396,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
     }
 
@@ -1432,6 +1433,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopProductFilterParameter?.getMapData()
         ))
         shopProductAdapter.refreshSticky()
+        initialProductListData = null
+        shopProductAdapter.clearProductList()
         loadNewProductData()
     }
 

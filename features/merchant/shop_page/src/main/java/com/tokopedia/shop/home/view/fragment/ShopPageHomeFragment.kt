@@ -249,6 +249,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             get() = viewJob + dispatcher.main
     }
     private var isLoadInitialData = false
+    private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -342,6 +343,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
+                gridType = it
                 changeProductListGridView(it)
             }
         })
@@ -588,7 +590,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
-        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -1586,7 +1588,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopHomeAdapter.changeProductCardGridType(gridType)
     }
 
