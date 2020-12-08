@@ -185,7 +185,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
             iconImage.notificationRef.visible()
         }
-        iconImage.setNotifXY(1f,-0.4f)
+        iconImage.setNotifXY(1f,-0.8f)
     }
 
     private fun constructCounterTagById(id: Int) =
