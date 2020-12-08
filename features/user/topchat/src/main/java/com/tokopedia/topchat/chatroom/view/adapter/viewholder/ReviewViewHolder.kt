@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -13,15 +14,19 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BackgroundGenerator
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewViewHolder(
-        itemView: View?
+class ReviewViewHolder constructor(
+        itemView: View?,
+        private val deferredAttachment: DeferredViewHolderAttachment
 ) : BaseChatViewHolder<ReviewUiModel>(itemView) {
 
     private val thumbnail: ImageUnify? = itemView?.findViewById(R.id.iv_product_thumbnail)
@@ -29,6 +34,7 @@ class ReviewViewHolder(
     private val buyerLabelStatus: Label? = itemView?.findViewById(R.id.lb_review_buyer_status)
     private val name: Typography? = itemView?.findViewById(R.id.tv_product_name)
     private val container: ConstraintLayout? = itemView?.findViewById(R.id.cl_container)
+    private val loader: LoaderUnify? = itemView?.findViewById(R.id.loader_review)
     private val reputation: AnimatedReputationView? = itemView?.findViewById(
             R.id.ar_review_reminder
     )
@@ -41,17 +47,29 @@ class ReviewViewHolder(
 
     override fun alwaysShowTime(): Boolean = true
 
+
+    override fun bind(element: ReviewUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads[0]) {
+            DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
+        }
+    }
+
     override fun bind(element: ReviewUiModel) {
         super.bind(element)
-        bindChatReadStatus(element)
         bindGravity(element)
-        bindImage(element)
-        bindBackground(element)
-        bindLabel(element)
-        bindName(element)
-        bindBuyerLabel(element)
-        bindStar(element)
-        bindStarClick(element)
+        bindSyncReview(element)
+        bindLoading(element)
+        if (!element.isLoading || element.isError) {
+            bindChatReadStatus(element)
+            bindImage(element)
+            bindBackground(element)
+            bindLabel(element)
+            bindName(element)
+            bindBuyerLabel(element)
+            bindStar(element)
+            bindStarClick(element)
+        }
     }
 
     private fun bindGravity(element: ReviewUiModel) {
@@ -59,6 +77,25 @@ class ReviewViewHolder(
             setGravity(Gravity.END)
         } else {
             setGravity(Gravity.START)
+        }
+    }
+
+    private fun bindSyncReview(element: ReviewUiModel) {
+        if (!element.isLoading) return
+        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
+        val attachment = chatAttachments[element.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            element.syncError()
+        } else {
+            element.updateData(attachment.parsedAttributes)
+        }
+    }
+
+    private fun bindLoading(element: ReviewUiModel) {
+        if (element.isLoading) {
+            loader?.show()
+        } else {
+            loader?.hide()
         }
     }
 

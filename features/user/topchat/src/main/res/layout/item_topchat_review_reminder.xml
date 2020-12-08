@@ -8,8 +8,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_container"
         android:layout_width="@dimen/dp_topchat_288"
-        android:layout_gravity="start"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:layout_marginStart="@dimen/dp_topchat_12"
         android:layout_marginEnd="@dimen/dp_topchat_12">
 
@@ -105,5 +105,17 @@
 
             <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
         </LinearLayout>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_review"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:minHeight="@dimen/dp_topchat_80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"
+            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

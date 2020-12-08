@@ -204,7 +204,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent)
+            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, deferredAttachment)
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)
