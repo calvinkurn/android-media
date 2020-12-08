@@ -63,14 +63,14 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 }
                             }
                             else -> {
-                                layoutParams?.width = Utils.convertDpToPixel(160f, context)
-                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                layoutParams?.width = Utils.convertDpToPixel(BUTTON_CHOOSE_PAYMENT_WIDTH, context)
+                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
                                 isLoading = true
                             }
                         }
                     }
                     OccButtonType.PAY -> {
-                        layoutParams?.width = Utils.convertDpToPixel(140f, context)
+                        layoutParams?.width = Utils.convertDpToPixel(BUTTON_PAY_WIDTH, context)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -87,14 +87,14 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 setText(R.string.pay)
                             }
                             else -> {
-                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
                                 setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                                 isLoading = true
                             }
                         }
                     }
                     OccButtonType.CONTINUE -> {
-                        layoutParams?.width = Utils.convertDpToPixel(160f, context)
+                        layoutParams?.width = Utils.convertDpToPixel(BUTTON_CHOOSE_PAYMENT_WIDTH, context)
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
@@ -110,7 +110,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                                 setText(R.string.continue_pay)
                             }
                             else -> {
-                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                layoutParams?.height = Utils.convertDpToPixel(BUTTON_LOADING_HEIGHT, context)
                                 isLoading = true
                             }
                         }
@@ -150,5 +150,11 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
         fun onOrderDetailClicked(orderCost: OrderCost)
 
         fun onPayClicked()
+    }
+
+    companion object {
+        private const val BUTTON_LOADING_HEIGHT = 48f
+        private const val BUTTON_CHOOSE_PAYMENT_WIDTH = 160f
+        private const val BUTTON_PAY_WIDTH = 140f
     }
 }
