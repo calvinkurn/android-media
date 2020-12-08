@@ -33,7 +33,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topupbills_recent_client_number"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:gravity="center_horizontal"
