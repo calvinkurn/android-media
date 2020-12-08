@@ -5,9 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public interface InboxReputationDetail {
 
         void onErrorGetInboxDetail(Throwable throwable);
 
-        void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
+        void onSuccessGetInboxDetail(InboxReputationItemUiModel inboxReputationItemUiModel,
                                      List<Visitable> visitables);
 
         void finishLoading();
@@ -40,7 +40,7 @@ public interface InboxReputationDetail {
 
         void onErrorRefreshInboxDetail(Throwable throwable);
 
-        void onSuccessRefreshGetInboxDetail(InboxReputationItemViewModel inboxReputationViewModel,
+        void onSuccessRefreshGetInboxDetail(InboxReputationItemUiModel inboxReputationViewModel,
                                             List<Visitable> visitables);
 
         void finishRefresh();
@@ -59,19 +59,19 @@ public interface InboxReputationDetail {
 
         void onSuccessFavoriteShop();
 
-        void onDeleteReviewResponse(InboxReputationDetailItemViewModel element);
+        void onDeleteReviewResponse(InboxReputationDetailItemUiModel element);
 
         void onErrorDeleteReviewResponse(String errorMessage);
 
         void onSuccessDeleteReviewResponse();
 
-        void onSendReplyReview(InboxReputationDetailItemViewModel element, String replyReview);
+        void onSendReplyReview(InboxReputationDetailItemUiModel element, String replyReview);
 
         void onErrorReplyReview(String errorMessage);
 
         void onSuccessReplyReview();
 
-        void onShareReview(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel, int adapterPosition);
+        void onShareReview(InboxReputationDetailItemUiModel inboxReputationDetailItemUiModel, int adapterPosition);
 
         void onGoToProductDetail(String productId, String productAvatar, String productName);
 
@@ -83,11 +83,11 @@ public interface InboxReputationDetail {
 
         UserSessionInterface getUserSession();
 
-        void onClickReviewOverflowMenu(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
+        void onClickReviewOverflowMenu(InboxReputationDetailItemUiModel inboxReputationDetailItemUiModel,
                                        int adapterPosition);
 
-        void onClickToggleReply(InboxReputationDetailItemViewModel inboxReputationDetailItemViewModel,
-                                       int adapterPosition);
+        void onClickToggleReply(InboxReputationDetailItemUiModel inboxReputationDetailItemUiModel,
+                                int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {

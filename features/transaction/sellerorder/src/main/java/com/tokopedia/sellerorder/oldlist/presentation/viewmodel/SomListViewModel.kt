@@ -105,7 +105,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadTopAdsShopInfo(shopId: Int) {
-        if (getTopAdsGetShopInfoJob == null || getTopAdsGetShopInfoJob?.isCompleted != false) {
+        if (getTopAdsGetShopInfoJob?.isCompleted != false) {
             getTopAdsGetShopInfoJob = launchCatchError(block = {
                 topAdsGetShopInfo = topAdsGetShopInfoUseCase.execute(shopId)
             }, onError = {
