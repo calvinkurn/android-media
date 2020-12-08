@@ -29,7 +29,14 @@ class GetProfileDataUseCase @Inject constructor(
         @ApplicationContext private val context: Context
 ): UseCase<AccountHeaderViewModel>() {
 
+    private var isCallCacheData = false
+
     override suspend fun executeOnBackground(): AccountHeaderViewModel {
+        if (isCallCacheData) {
+            getUserInfoUseCase.setStrategyCache()
+        } else {
+            getUserInfoUseCase.setStrategyCloudThenCache()
+        }
         return withContext(coroutineContext){
 
             val getUserInfoCall = async {
@@ -89,5 +96,9 @@ class GetProfileDataUseCase @Inject constructor(
 
     private fun getSharedPreference(): SharedPreferences {
         return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+    }
+
+    fun setCallCacheData() {
+        isCallCacheData = true
     }
 }

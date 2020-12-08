@@ -60,7 +60,8 @@ class MainNavViewModel @Inject constructor(
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
-        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>
+        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
+        private val getProfileDataCacheUseCase: Lazy<GetProfileDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
     companion object {
@@ -225,7 +226,7 @@ class MainNavViewModel @Inject constructor(
         _networkProcessLiveData.value = false
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
-                getProfileData()
+                getProfileDataCached()
                 getBuListMenu()
             }) {
                 Timber.d("P1 error")
@@ -244,6 +245,9 @@ class MainNavViewModel @Inject constructor(
             }
             p2DataJob.join()
             _onboardingListLiveData.postValue(_mainNavListVisitable)
+
+            //update cached data with cloud data
+            updateProfileData()
         }
     }
 
@@ -285,7 +289,13 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getProfileData() {
+    suspend fun getProfileDataCached() {
+        getProfileDataCacheUseCase.get().setCallCacheData()
+        val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
+        updateWidget(accountHeaderModel, 0)
+    }
+
+    suspend fun updateProfileData() {
         val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
         updateWidget(accountHeaderModel, 0)
     }
