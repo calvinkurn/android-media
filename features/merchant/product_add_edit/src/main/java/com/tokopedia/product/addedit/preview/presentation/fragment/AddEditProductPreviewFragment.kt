@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -91,6 +90,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
@@ -134,6 +134,7 @@ class AddEditProductPreviewFragment:
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
+    private var hasLocation: Boolean = false
 
     private var toolbar: Toolbar? = null
 
@@ -328,24 +329,14 @@ class AddEditProductPreviewFragment:
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+                moveToImagePicker()
             } else if (addEditProductPhotoButton?.text == buttonTextStart){
                 ProductAddStepperTracking.trackStart(shopId)
                 // validate whether shop has location
-                viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
-            }
-
-            productPhotoAdapter?.run {
-                // show error message when maximum product image is reached
-                val productPhotoSize = this.getProductPhotoPaths().size
-                if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
-                else {
-                    val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                        if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                                ?: urlOrPath
-                        else urlOrPath
-                    }.orEmpty()
-                    val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing(), viewModel.isAdding)
-                    startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                if (hasLocation) {
+                    moveToImagePicker()
+                } else {
+                    viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
                 }
             }
         }
@@ -473,7 +464,9 @@ class AddEditProductPreviewFragment:
         observeGetShopInfoLocation()
 
         // validate whether shop has location
-        viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+        if (isAdding()) {
+            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+        }
 
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
@@ -1008,6 +1001,7 @@ class AddEditProductPreviewFragment:
                     if (!it.data) {
                         showDialogLocationValidation()
                     }
+                    hasLocation = it.data
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -1175,6 +1169,23 @@ class AddEditProductPreviewFragment:
                 true,
                 imagePickerEditorBuilder,
                 imagePickerMultipleSelectionBuilder)
+    }
+
+    private fun moveToImagePicker() {
+        productPhotoAdapter?.run {
+            // show error message when maximum product image is reached
+            val productPhotoSize = this.getProductPhotoPaths().size
+            if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+            else {
+                val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                    if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                            ?: urlOrPath
+                    else urlOrPath
+                }.orEmpty()
+                val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing(), viewModel.isAdding)
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            }
+        }
     }
 
     private fun moveToDetailFragment(productInputModel: ProductInputModel, isFirstMoved: Boolean) {
@@ -1363,8 +1374,10 @@ class AddEditProductPreviewFragment:
             setPrimaryCTAClickListener {
                 RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
                     putExtra(EXTRA_IS_FULL_FLOW, false)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
                     startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
                 }
+                dismiss()
             }
         }.show()
     }
