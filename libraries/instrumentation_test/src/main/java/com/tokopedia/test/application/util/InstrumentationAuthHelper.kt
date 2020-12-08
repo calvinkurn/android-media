@@ -19,9 +19,9 @@ object InstrumentationAuthHelper {
 
     fun loginInstrumentationTestUser1() {
         userSession {
-            userId = "108956738"
-            email = "erick.samuel+testingtokenandroid1@tokopedia.com"
-            accessTokenBearer = "ghSZU8GxoVSK3qkEqgFUrlHt3pFSS+Xtmb5peuCDaca/R0LwyqhTqwTJVcupIX78E5xicw3oliW9AdyRWr4Apg=="
+            userId = "17211378"
+            email = "hefdy.elprama+h5@tokopedia.com"
+            accessTokenBearer = "y0HPxLt0BuBI5YkkawwuEqzZPeYdxcai2J/KBX966D7YvFjXMpv4TmruPtMuWn2K"
         }
     }
 

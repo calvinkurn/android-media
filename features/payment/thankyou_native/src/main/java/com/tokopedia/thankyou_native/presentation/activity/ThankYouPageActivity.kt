@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
@@ -28,6 +29,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
+
     lateinit var thanksPageData: ThanksPageData
 
     fun getHeader(): HeaderUnify = thank_header
@@ -40,6 +42,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -49,6 +52,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     override fun getParentViewResourceID(): Int = R.id.thank_parent_view
 
     override fun getNewFragment(): Fragment? {
+        var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
+        idlingResourceProvider?.increment()
         val bundle = Bundle()
         intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))

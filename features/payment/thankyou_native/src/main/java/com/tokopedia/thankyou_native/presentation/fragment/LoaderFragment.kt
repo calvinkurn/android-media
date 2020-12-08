@@ -44,7 +44,7 @@ class LoaderFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
-    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
+
     private val handler = Handler()
 
     var callback: ThankYouPageDataLoadCallback? = null
@@ -63,7 +63,6 @@ class LoaderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         showLoaderView()
-        idlingResourceProvider?.increment()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -93,7 +92,7 @@ class LoaderFragment : BaseDaggerFragment() {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
-            idlingResourceProvider?.decrement()
+
         })
     }
 
