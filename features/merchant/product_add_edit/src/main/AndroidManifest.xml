@@ -80,6 +80,10 @@
             android:label="@string/action_edit_photo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".specification.presentation.activity.AddEditProductSpecificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".category.presentation.activity.AddEditProductCategoryActivity"

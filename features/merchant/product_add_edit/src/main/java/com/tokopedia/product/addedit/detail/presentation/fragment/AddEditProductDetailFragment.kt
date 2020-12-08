@@ -81,6 +81,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragmentArgs
+import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -645,6 +646,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+
+        showSpecificationPicker()
     }
 
     override fun onDestroyView() {
@@ -1347,6 +1350,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun showSpecificationPicker(){
+        val intent = AddEditProductSpecificationActivity.createInstance(context, "")
+        startActivity(intent)
     }
 
     private fun showMaxProductImageErrorToast(errorMessage: String) {
