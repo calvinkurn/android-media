@@ -51,8 +51,12 @@ class CategoryGqlPageRepository(private val departmentName: String,
             components.add(ComponentsItem(name = ComponentNames.BannedView.componentName, id = "1", renderByDefault = true, title = bannedData.bannedMsgHeader, description = bannedData.bannedMessage))
             return components
         }
-        components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = "1", renderByDefault = true))
-        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3")))
+        val navigationChipsItems = arrayListOf<DataItem>()
+        bannedData.child?.forEachIndexed { index, item ->
+            navigationChipsItems.add(DataItem(title = item?.name, id = item?.id?.toString(), applinks = item?.applinks, positionForParentItem = index))
+        }
+        components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = "1", renderByDefault = true, data = navigationChipsItems))
+        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3"), isSticky = true))
         components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true, pagePath = bannedData.url ?: ""))
         return components
     }
