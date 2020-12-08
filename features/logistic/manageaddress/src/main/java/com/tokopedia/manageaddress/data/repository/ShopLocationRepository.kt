@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class ShopLocationRepository @Inject constructor(private val gql: GraphqlRepository) {
 
-    suspend fun getShopLocation(shopId: Int): GetShopLocationResponse {
+    suspend fun getShopLocation(shopId: Int?): GetShopLocationResponse {
         val param = mapOf("param" to shopId)
         val request = GraphqlRequest(ShopLocationQuery.getShopLocation,
                 GetShopLocationResponse::class.java, param)

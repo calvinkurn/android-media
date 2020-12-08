@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.manageaddress.data.repository.ShopLocationRepository
+import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -12,9 +13,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopLocationViewModel @Inject constructor(
-        private val repo: ShopLocationRepository) : ViewModel() {
+        private val repo: ShopLocationRepository,
+        private val mapper: ShopLocationMapper) : ViewModel() {
 
-    val shop: List<Warehouse> = emptyList()
+    var shopLocationStateStatus: Boolean = false
 
     private val _shopLocation = MutableLiveData<ShopLocationState<List<Warehouse>>>()
     val shopLocation: LiveData<ShopLocationState<List<Warehouse>>>
@@ -24,17 +26,19 @@ class ShopLocationViewModel @Inject constructor(
     val result: LiveData<ShopLocationState<String>>
         get() = _result
 
-    fun getShopLocationList(shopId: Int) {
+    fun getShopLocationList(shopId: Int?) {
+        _shopLocation.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetShopLocation) {
             val getShopLocation = repo.getShopLocation(shopId)
-            // put mapper here, change shop here
-             _shopLocation.value = ShopLocationState.Success(shop)
+             _shopLocation.value = ShopLocationState.Success(mapper.mapShopLocation(getShopLocation))
         }
     }
 
     fun setShopLocationState(warehouseId: Int, status: Int) {
+        _result.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorSetShopLocation) {
             val setShopLocationStatus = repo.setShopLocationStatus()
+            shopLocationStateStatus = true
             _result.value = ShopLocationState.Success("success")
         }
     }
@@ -44,6 +48,7 @@ class ShopLocationViewModel @Inject constructor(
     }
 
     private val onErrorSetShopLocation = CoroutineExceptionHandler { _, e ->
+        shopLocationStateStatus = false
         _result.value = ShopLocationState.Fail(e, "")
     }
 

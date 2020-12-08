@@ -4,21 +4,47 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
+import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
+import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_action_shop_address.view.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.inject.Inject
 
 class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopLocationItemAdapterListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val adapter = ShopLocationItemAdapter(this)
+
+    private val viewModel: ShopLocationViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopLocationViewModel::class.java)
+    }
+
     private var addressList: RecyclerView? = null
     private var bottomSheetAddressType: BottomSheetUnify? = null
-
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,28 +60,65 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        initViewModel()
+        fetchData()
     }
 
     private fun initViews() {
         addressList = view?.findViewById(R.id.address_list)
         globalErrorLayout = view?.findViewById(R.id.global_error)
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+
+        addressList?.adapter = adapter
+        addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    /* activate/deactivate shop location */
-    private fun openBottomSheetAddressType() {
-        val addressActiveState = true
+    private fun initViewModel() {
+        viewModel.shopLocation.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShopLocationState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    globalErrorLayout?.gone()
+                    updateData(it.data)
+                }
+
+                is ShopLocationState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
+                }
+
+                else -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        })
+    }
+
+    private fun fetchData() {
+        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
+    }
+
+    private fun updateData(data: List<Warehouse>) {
+        adapter.addList(data)
+    }
+
+    private fun openBottomSheetAddressType(shopLocation: Warehouse) {
         bottomSheetAddressType = BottomSheetUnify()
         val viewBottomSheetAddressType = View.inflate(context, R.layout.bottomsheet_deactivate_location, null).apply {
-            if (addressActiveState) {
-                btn_set_location_status.text = "Nonaktifkan Lokasi"
+            if (shopLocation.status == 1) {
+                btn_set_location_status.text = getString(R.string.deactivate_location)
                 btn_set_location_status.setOnClickListener {
-                    Toast.makeText(context, "Deactivate Location", Toast.LENGTH_SHORT).show()
+                    viewModel.setShopLocationState(shopLocation.warehouseId, shopLocation.status)
+                    if (viewModel.shopLocationStateStatus) view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, shopLocation.warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     bottomSheetAddressType?.dismiss()
                 }
-            } else {
-                btn_set_location_status.text = "Aktifkan Lokasi"
+            } else if (shopLocation.status == 2)   {
+                btn_set_location_status.text = getString(R.string.activate_location)
                 btn_set_location_status.setOnClickListener {
-                    Toast.makeText(context, "Activate Location", Toast.LENGTH_SHORT).show()
+                    viewModel.setShopLocationState(shopLocation.warehouseId, shopLocation.status)
+                    if (viewModel.shopLocationStateStatus) view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, shopLocation.warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     bottomSheetAddressType?.dismiss()
                 }
             }
@@ -73,8 +136,48 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
     }
 
-    override fun onShopLocationStateStatusClicked() {
-        openBottomSheetAddressType()
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.build(it, ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.build(it, throwable.message
+                            ?: ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        globalErrorLayout?.setType(type)
+        globalErrorLayout?.setActionClickListener {
+            viewModel.getShopLocationList(userSession.shopId.toInt())
+        }
+        addressList?.gone()
+        globalErrorLayout?.visible()
+    }
+
+    override fun onShopLocationStateStatusClicked(data: Warehouse) {
+        openBottomSheetAddressType(data)
     }
 
 }

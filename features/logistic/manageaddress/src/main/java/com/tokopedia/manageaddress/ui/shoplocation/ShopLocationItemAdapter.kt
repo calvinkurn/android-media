@@ -3,25 +3,24 @@ package com.tokopedia.manageaddress.ui.shoplocation
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_shop_location_address.view.*
+import kotlinx.android.synthetic.main.bottomsheet_action_shop_address.view.*
+import kotlinx.android.synthetic.main.card_shop_location_address.view.*
 
 class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListener) : RecyclerView.Adapter<ShopLocationItemAdapter.ShopLocationViewHolder>() {
 
     var shopLocationList = mutableListOf<Warehouse>()
 
     interface ShopLocationItemAdapterListener {
-        fun onShopLocationStateStatusClicked()
+        fun onShopLocationStateStatusClicked(data: Warehouse)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopLocationViewHolder {
-        return ShopLocationViewHolder(parent.inflateLayout(R.layout.item_shop_location_address), listener)
+        return ShopLocationViewHolder(parent.inflateLayout(R.layout.card_shop_location_address), listener)
     }
 
     override fun getItemCount(): Int {
@@ -32,16 +31,17 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         holder.bindData(shopLocationList[position])
     }
 
-    inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
+    fun addList(data: List<Warehouse>) {
+        shopLocationList.addAll(data)
+    }
 
-        private val pinPointImage = itemView.findViewById<ImageView>(R.id.img_location_state)
-        private val pinPointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        private val setLocationStateStatus = itemView.findViewById<Typography>(R.id.btn_set_location_status)
+    inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: Warehouse) {
             with(itemView) {
                 setPinpointStatus(data)
+                setHeadquarter(data)
                 tv_shop_name.text = data.warehouseName
                 tv_address_detail.text = data.addressDetail
                 tv_address_city.text = "${data.cityName}, ${data.districtName}"
@@ -52,24 +52,28 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         }
 
         private fun setHeadquarter(shopLocation: Warehouse) {
-
+            if (shopLocation.warehouseType == 1) {
+                itemView.lbl_main_shop.visibility = View.VISIBLE
+            } else {
+                itemView.lbl_main_shop.visibility = View.GONE
+            }
         }
 
         private fun setPinpointStatus(shopLocation: Warehouse) {
             if (shopLocation.latLon.isNullOrEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
-                pinPointImage.setImageDrawable(icon)
-                pinPointText.text = itemView.context.getString(R.string.no_pinpoint)
+                itemView.img_location_state.setImageDrawable(icon)
+                itemView.tv_pinpoint_state.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
-                pinPointImage.setImageDrawable(icon)
-                pinPointText.text = itemView.context.getString(R.string.pinpoint)
+                itemView.img_location_state.setImageDrawable(icon)
+                itemView.tv_pinpoint_state.text = itemView.context.getString(R.string.pinpoint)
             }
         }
 
-        private fun setListener(shopLoaction: Warehouse) {
-            setLocationStateStatus.setOnClickListener {
-                listener.onShopLocationStateStatusClicked()
+        private fun setListener(shopLocation: Warehouse) {
+            itemView.btn_set_location_status.setOnClickListener {
+                listener.onShopLocationStateStatusClicked(shopLocation)
             }
         }
     }
