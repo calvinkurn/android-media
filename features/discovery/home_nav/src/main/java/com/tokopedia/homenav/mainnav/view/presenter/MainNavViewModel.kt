@@ -60,7 +60,8 @@ class MainNavViewModel @Inject constructor(
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
-        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>
+        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
+        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
     companion object {
@@ -289,13 +290,11 @@ class MainNavViewModel @Inject constructor(
     }
 
     suspend fun getProfileDataCached() {
-        getProfileDataUseCase.get().setCallCacheData(true)
-        val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
+        val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
         updateWidget(accountHeaderModel, 0)
     }
 
     suspend fun updateProfileData() {
-        getProfileDataUseCase.get().setCallCacheData(false)
         val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
         updateWidget(accountHeaderModel, 0)
     }

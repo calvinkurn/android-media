@@ -8,8 +8,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -69,11 +71,17 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideUserMembershipUseCase(graphqlRepository: GraphqlRepository) = GetUserMembershipUseCase(graphqlRepository)
+    fun provideUserMembershipUseCase(graphqlRepository: GraphqlRepository) : GetUserMembershipUseCase{
+        val useCase = GraphqlUseCase<MembershipPojo>(graphqlRepository)
+        return GetUserMembershipUseCase(useCase)
+    }
 
     @MainNavScope
     @Provides
-    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) = GetShopInfoUseCase(graphqlRepository)
+    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
+        val useCase = GraphqlUseCase<ShopInfoPojo.Response>(graphqlRepository)
+        return GetShopInfoUseCase(useCase)
+    }
 
     @MainNavScope
     @Provides
@@ -111,7 +119,7 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideGetAccountHeaderUseCase(
+    fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
             getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
@@ -126,6 +134,25 @@ class MainNavUseCaseModule {
                 getUserInfoUseCase = userInfoUseCase,
                 getOvoUseCase = getWalletBalanceUseCase,
                 getSaldoUseCase = getSaldoUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase,
+                getShopInfoUseCase = getShopInfoUseCase,
+                userSession = userSession,
+                context = context
+        )
+    }
+    @MainNavScope
+    @Provides
+    fun provideGetAccountHeaderCachedUseCase(
+            accountHeaderMapper: AccountHeaderMapper,
+            userInfoUseCase: GetUserInfoUseCase,
+            getUserMembershipUseCase: GetUserMembershipUseCase,
+            getShopInfoUseCase: GetShopInfoUseCase,
+            userSession: UserSessionInterface,
+            @ApplicationContext context: Context
+    ): GetProfileDataCacheUseCase {
+        return GetProfileDataCacheUseCase(
+                accountHeaderMapper = accountHeaderMapper,
+                getUserInfoUseCase = userInfoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getShopInfoUseCase = getShopInfoUseCase,
                 userSession = userSession,

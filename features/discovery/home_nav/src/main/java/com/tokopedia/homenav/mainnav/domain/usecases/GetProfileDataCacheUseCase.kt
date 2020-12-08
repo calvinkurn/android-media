@@ -18,22 +18,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
-class GetProfileDataUseCase @Inject constructor(
+class GetProfileDataCacheUseCase @Inject constructor(
         private val accountHeaderMapper: AccountHeaderMapper,
         private val getUserInfoUseCase: GetUserInfoUseCase,
-        private val getOvoUseCase: GetCoroutineWalletBalanceUseCase,
-        private val getSaldoUseCase: GetSaldoUseCase,
         private val getUserMembershipUseCase: GetUserMembershipUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
         private val userSession: UserSessionInterface,
         @ApplicationContext private val context: Context
 ): UseCase<AccountHeaderViewModel>() {
 
-
     override suspend fun executeOnBackground(): AccountHeaderViewModel {
-        getUserInfoUseCase.setStrategyCloudThenCache()
-        getUserMembershipUseCase.setStrategyCloudThenCache()
-        getShopInfoUseCase.setStrategyCloudThenCache()
+        getUserInfoUseCase.setStrategyCache()
+        getUserMembershipUseCase.setStrategyCache()
+        getShopInfoUseCase.setStrategyCache()
         return withContext(coroutineContext){
 
             val getUserInfoCall = async {
@@ -41,20 +38,11 @@ class GetProfileDataUseCase @Inject constructor(
             }
 
             val userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-
-            var ovoData: WalletBalanceModel? = null
-            var saldoData: SaldoPojo? = null
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopInfoPojo? = null
 
             if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
 
-                val getOvoCall = async {
-                    getOvoUseCase.executeOnBackground()
-                }
-                val getSaldoCall = async {
-                    getSaldoUseCase.executeOnBackground()
-                }
                 val getUserMembershipCall = async {
                     getUserMembershipUseCase.executeOnBackground()
                 }
@@ -62,16 +50,14 @@ class GetProfileDataUseCase @Inject constructor(
                     getShopInfoUseCase.executeOnBackground()
 
                 }
-                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
                 userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
                 shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
             }
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
-                    ovoData,
-                    saldoData,
+                    null,
+                    null,
                     userMembershipData,
                     shopData
             )
@@ -94,5 +80,4 @@ class GetProfileDataUseCase @Inject constructor(
     private fun getSharedPreference(): SharedPreferences {
         return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
-
 }
