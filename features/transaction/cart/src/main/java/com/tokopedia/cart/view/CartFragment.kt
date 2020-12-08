@@ -3281,6 +3281,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = true
     }
 
+    override fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData) {
+        val productId = productModel.id
+        val productName = productModel.name
+        val imageUrl = productModel.imageUrl
+        val url = "${productModel.clickUrl}&click_source=ATC_direct_click"
+        activity?.let {
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName, url, productId, productName, imageUrl)
+        }
+    }
+
     override fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name

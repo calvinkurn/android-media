@@ -1212,6 +1212,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
+            val clickUrl = productModel.clickUrl
+            if(clickUrl.isNotEmpty() && productModel.isTopAds ) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
             val (_, recommendationItem) = productModel
             productId = recommendationItem.productId

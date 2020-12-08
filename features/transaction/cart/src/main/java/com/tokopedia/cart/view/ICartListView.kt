@@ -7,6 +7,7 @@ import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
@@ -142,6 +143,8 @@ interface ICartListView : CustomerView {
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
     fun reCollapseExpandedDeletedUnavailableItems()
+
+    fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
 
 }
