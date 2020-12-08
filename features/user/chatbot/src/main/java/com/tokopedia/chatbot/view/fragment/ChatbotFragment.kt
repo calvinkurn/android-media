@@ -75,6 +75,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -301,6 +302,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         val adapter = TickerPagerAdapter(activity, mockData)
         ticker.addPagerView(adapter, mockData)
+        adapter.setPagerDescriptionClickEvent(object :TickerPagerCallback{
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                RouteManager.route(view?.context,linkUrl.toString())
+            }
+        })
     }
 
     private fun getTickerType(tickerType: String): Int {
