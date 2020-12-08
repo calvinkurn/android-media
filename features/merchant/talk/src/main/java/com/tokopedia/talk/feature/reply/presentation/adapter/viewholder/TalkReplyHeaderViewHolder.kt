@@ -132,7 +132,7 @@ class TalkReplyHeaderViewHolder(view: View,
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 if(!allowUnmask) {
                     setType(Typography.BODY_2)
                     setWeight(Typography.REGULAR)
