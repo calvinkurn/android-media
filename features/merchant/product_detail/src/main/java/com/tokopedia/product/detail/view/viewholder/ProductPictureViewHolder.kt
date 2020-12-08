@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.product.detail.R
@@ -26,11 +25,10 @@ class ProductPictureViewHolder(private val view: View,
         view.setOnClickListener {
             listener?.onMainImageClicked(componentTrackDataModel, adapterPosition)
         }
-        view.pdp_main_img.scaleType = ImageView.ScaleType.CENTER_CROP
         Glide.with(view.context)
                 .load(data.urlOriginal)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .centerCrop()
+                .fitCenter()
                 .into(view.pdp_main_img)
     }
 }
