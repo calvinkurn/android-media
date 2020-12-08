@@ -323,7 +323,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
-        Toaster.make(findViewById(parentViewResourceID), getString(stringResourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay))
+        Toaster.build(findViewById(parentViewResourceID), getString(stringResourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay))
         NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
     }
 

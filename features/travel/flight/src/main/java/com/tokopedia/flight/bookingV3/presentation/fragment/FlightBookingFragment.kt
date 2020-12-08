@@ -355,7 +355,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.make(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay), View.OnClickListener { /* do nothing */ })
+            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay), View.OnClickListener { /* do nothing */ })
         }
     }
 

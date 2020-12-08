@@ -303,7 +303,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showCancellationError(t: Throwable) {
-        Toaster.make(requireView(),
+        Toaster.build(requireView(),
                 FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR)
