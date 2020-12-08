@@ -40,7 +40,7 @@ class GetShopInfoLocationUseCase @Inject constructor(
 
         private fun getQuery() = """
             query shopInfoByID (${'$'}shopID: Int!){
-                shopInfoByID(input:{shopIDs: ${'$'}shopID, fields:["other-shiploc"]}) {
+                shopInfoByID(input:{shopIDs: [${'$'}shopID], fields:["other-shiploc"]}) {
                     result {
                         shippingLoc {
                             provinceID
