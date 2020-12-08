@@ -133,6 +133,13 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
     }
 
+    fun updateWidgetList(visitables: List<Visitable<*>>, position: Int) {
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.removeAt(position)
+        newMainNavList.addAll(position, visitables)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+    }
+
     fun addWidget(visitable: Visitable<*>, position: Int? = null) {
         val newMainNavList = _mainNavListVisitable
         if (position == null) {
@@ -184,10 +191,6 @@ class MainNavViewModel @Inject constructor(
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
-            _mainNavListVisitable.addHomeBackButtonMenu()
-            _mainNavListVisitable.addTransactionMenu()
-            _mainNavListVisitable.addUserMenu()
-
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
             Timber.d("Update nav data failed")
@@ -200,10 +203,14 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun setInitialState() {
-        addWidgetList(listOf(
+        val initialList = mutableListOf<Visitable<*>>(
                 InitialShimmerProfileDataModel(),
                 InitialShimmerDataModel()
-        ))
+        )
+        initialList.addHomeBackButtonMenu()
+        initialList.addTransactionMenu()
+        initialList.addUserMenu()
+        addWidgetList(initialList)
     }
 
     private fun removeInitialStateData() {
@@ -271,14 +278,10 @@ class MainNavViewModel @Inject constructor(
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
 
-            val mainNavList = _mainNavListVisitable.toMutableList()
-            mainNavList.removeFirst { it is InitialShimmerDataModel }
-            mainNavList.addAll(1, result)
-
-            updateNavData(MainNavigationDataModel(dataList = mainNavList))
+            updateWidgetList(result, INDEX_START_BU_MENU)
         }) {
             it.printStackTrace()
-            addWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
+            updateWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
         }
     }
 

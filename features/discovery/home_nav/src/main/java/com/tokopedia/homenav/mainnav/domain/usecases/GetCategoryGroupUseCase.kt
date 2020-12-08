@@ -51,13 +51,9 @@ class GetCategoryGroupUseCase (
     }
 
     override suspend fun executeOnBackground(): List<Visitable<*>> {
-        return try {
-            graphqlUseCase.setRequestParams(params)
-            val data = graphqlUseCase.executeOnBackground()
-            buListMapper.mapToBuListModel(data.dynamicHomeIcon.categoryGroup)
-        } catch (e: Throwable){
-            listOf<Visitable<*>>()
-        }
+        graphqlUseCase.setRequestParams(params)
+        val data = graphqlUseCase.executeOnBackground()
+        return buListMapper.mapToBuListModel(data.dynamicHomeIcon.categoryGroup)
     }
 
     companion object{
