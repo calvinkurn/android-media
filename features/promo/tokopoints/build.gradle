@@ -26,7 +26,6 @@ dependencies {
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.tokopointsNotification)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.features.topAdsSdk)
 
