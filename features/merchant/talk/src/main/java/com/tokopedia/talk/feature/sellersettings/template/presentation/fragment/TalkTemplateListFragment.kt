@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -15,6 +16,7 @@ import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateC
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
+import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel.TalkTemplateViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -106,10 +108,13 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun initRecyclerView() {
+        val touchHelperCallback = TalkTemplateListItemTouchHelperCallback(adapter)
+        val itemTouchHelper = ItemTouchHelper(touchHelperCallback)
         talkTemplateListRecyclerView.apply {
             adapter = this@TalkTemplateListFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
+        itemTouchHelper.attachToRecyclerView(talkTemplateListRecyclerView)
     }
 
     private fun initSwitch() {
