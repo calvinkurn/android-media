@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/name"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/chatcommon_3dp"
         app:cardElevation="@dimen/layout_lvl0"
         app:cardPreventCornerOverlap="false"

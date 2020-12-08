@@ -3,7 +3,7 @@
     android:id="@+id/talkWriteScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true"
     android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -82,7 +82,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_32"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintTop_toBottomOf="@id/empty_view"
             app:typographyType="small"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"

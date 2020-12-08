@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -66,7 +66,7 @@
         android:layout_marginBottom="@dimen/layout_lvl3"
         app:maxImageSize="@dimen/layout_lvl3"
         app:elevation="@dimen/layout_lvl0"
-        app:backgroundTint="@color/Green_G500"
+        app:backgroundTint="@color/Unify_G500"
         app:srcCompat="@drawable/talk_reading_ic_plus" />
 
     <include
