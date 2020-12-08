@@ -11,14 +11,12 @@ import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
-import javax.inject.Inject
 
 private const val TAB_START_PADDING = 20
 private const val SHOULD_HIDE_L1 = false
@@ -30,9 +28,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
     private var selectedTab: TabLayout.Tab? = null
-
-    @Inject
-    lateinit var productCardItemUseCase: ProductCardItemUseCase
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
