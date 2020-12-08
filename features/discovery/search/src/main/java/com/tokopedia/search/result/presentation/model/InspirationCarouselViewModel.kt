@@ -49,10 +49,6 @@ class InspirationCarouselViewModel(
             val labelGroupList: List<LabelGroupViewModel> = listOf()
         ): ImpressHolder() {
 
-            fun willShowSalesAndRating(): Boolean{
-                return ratingAverage.isNotEmpty() && getLabelIntegrity() != null
-            }
-
             fun getLabelIntegrity(): LabelGroupViewModel? {
                 return findLabelGroup(LABEL_INTEGRITY)
             }

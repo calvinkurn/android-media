@@ -175,6 +175,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_68"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/optionListCardImageSalesRatingFloatLine"
             app:layout_constraintTop_toTopOf="@id/optionListCardSalesRatingFloat"
             app:layout_constraintBottom_toBottomOf="@id/optionListCardSalesRatingFloat"

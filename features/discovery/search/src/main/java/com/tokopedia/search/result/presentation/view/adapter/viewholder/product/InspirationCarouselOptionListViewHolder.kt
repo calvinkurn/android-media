@@ -1,17 +1,22 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.content.Context
+import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
 
 class InspirationCarouselOptionListViewHolder(
@@ -109,16 +114,37 @@ class InspirationCarouselOptionListViewHolder(
     }
 
     private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselViewModel.Option.Product) {
-        val willShowSalesAndRating = product.willShowSalesAndRating()
+        val labelGroupViewModel = product.getLabelIntegrity()
 
-        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
+        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(labelGroupViewModel != null)
 
-        itemView.optionListCardTextViewSales?.shouldShowWithAction(willShowSalesAndRating) {
-            it.text = MethodChecker.fromHtml(product.getLabelIntegrity()?.title)
+        itemView.optionListCardTextViewSales?.initLabelGroup(labelGroupViewModel)
+    }
+
+    private fun Typography.initLabelGroup(labelGroup: LabelGroupViewModel?) {
+        if (labelGroup == null) hide()
+        else showTypography(labelGroup)
+    }
+
+    private fun Typography.showTypography(labelGroupViewModel: LabelGroupViewModel) {
+        shouldShowWithAction(labelGroupViewModel.title.isNotEmpty()) {
+            it.text = MethodChecker.fromHtml(labelGroupViewModel.title)
+            it.setTextColor(labelGroupViewModel.type.toUnifyTextColor(context))
         }
     }
 
-    private fun LabelGroupViewModel.toProductCardModelLabelGroup(): ProductCardModel.LabelGroup {
-        return ProductCardModel.LabelGroup(position = position, title = title, type = type, imageUrl = imageUrl)
+    private fun String?.toUnifyTextColor(context: Context): Int {
+        return try{
+            when(this) {
+                SearchConstant.ProductCardLabel.TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                SearchConstant.ProductCardLabel.TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                SearchConstant.ProductCardLabel.LABEL_INTEGRITY_TYPE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                SearchConstant.ProductCardLabel.TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                else -> Color.parseColor(this)
+            }
+        } catch (throwable: Throwable){
+            throwable.printStackTrace()
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        }
     }
 }
