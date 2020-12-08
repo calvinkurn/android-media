@@ -10,6 +10,8 @@ data class ProductMediaDataModel(
         var shouldRefreshViewPagger: Boolean = true,
         var shouldRenderImageVariant: Boolean = true
 ) : DynamicPdpDataModel {
+    fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == "video" }
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
@@ -22,7 +24,7 @@ data class ProductMediaDataModel(
 }
 
 data class MediaDataModel(
-        val id:String = "",
+        val id: String = "",
         val type: String = "",
         val url300: String = "",
         val urlOriginal: String = "",

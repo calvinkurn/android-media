@@ -34,23 +34,23 @@ class VideoPictureView @JvmOverloads constructor(
         pdp_view_pager.offscreenPageLimit = 3
     }
 
-    fun setup(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator,
-              listener: DynamicProductDetailListener?, componentTrackDataModel: ComponentTrackDataModel?) {
+    fun setup(media: List<MediaDataModel>, listener: DynamicProductDetailListener?,
+              componentTrackDataModel: ComponentTrackDataModel?) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
         if (videoPictureAdapter == null) {
-            setupViewPagerCallback(productVideoCoordinator)
+            setupViewPagerCallback()
         }
 
         if (videoPictureAdapter == null || shouldRenderViewPager) {
-            setupViewPager(media, productVideoCoordinator)
-            renderVideoAtFirstPosition(productVideoCoordinator)
+            setupViewPager(media)
+            renderVideoAtFirstPosition()
             setPageControl(media)
         }
     }
 
-    fun updateImage(listOfImage: List<MediaDataModel>?, productVideoCoordinator: ProductVideoCoordinator?) {
+    fun updateImage(listOfImage: List<MediaDataModel>?, listener: DynamicProductDetailListener?) {
         val shouldNotifyItemInserted = videoPictureAdapter?.mediaData?.size != listOfImage?.size
         videoPictureAdapter?.mediaData = listOfImage ?: listOf()
 
@@ -62,12 +62,12 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         resetViewPagerToFirstPosition()
-        productVideoCoordinator?.pauseVideoAndSaveLastPosition()
+        listener?.getProductVideoCoordinator()?.pauseVideoAndSaveLastPosition()
     }
 
-    private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
+    private fun setupViewPager(media: List<MediaDataModel>) {
         val mediaList = processMedia(media)
-        videoPictureAdapter = VideoPictureAdapter(productVideoCoordinator, mListener, componentTrackDataModel)
+        videoPictureAdapter = VideoPictureAdapter(mListener?.getProductVideoCoordinator(), mListener, componentTrackDataModel)
 
         pdp_view_pager?.adapter = videoPictureAdapter
         videoPictureAdapter?.mediaData = mediaList
@@ -76,15 +76,15 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    private fun renderVideoAtFirstPosition(productVideoCoordinator: ProductVideoCoordinator) {
+    private fun renderVideoAtFirstPosition() {
         pdp_view_pager?.addOneTimeGlobalLayoutListener {
             pdp_view_pager?.let {
-                productVideoCoordinator.onScrollChangedListener(it, 0)
+                mListener?.getProductVideoCoordinator()?.onScrollChangedListener(it, 0)
             }
         }
     }
 
-    private fun setupViewPagerCallback(productVideoCoordinator: ProductVideoCoordinator) {
+    private fun setupViewPagerCallback() {
         pdp_view_pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
@@ -99,7 +99,7 @@ class VideoPictureView @JvmOverloads constructor(
 
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    productVideoCoordinator.onScrollChangedListener(pdp_view_pager, lastPosition)
+                    mListener?.getProductVideoCoordinator()?.onScrollChangedListener(pdp_view_pager, lastPosition)
                 }
             }
 

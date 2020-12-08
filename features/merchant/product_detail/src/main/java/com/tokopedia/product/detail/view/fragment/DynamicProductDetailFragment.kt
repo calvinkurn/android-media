@@ -259,10 +259,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var stickyLoginView: StickyLoginView? = null
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
-    private val productVideoCoordinator by lazy {
-        ProductVideoCoordinator()
-    }
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, productVideoCoordinator) }
+    private var productVideoCoordinator: ProductVideoCoordinator? = null
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var navToolbar: NavToolbar? = null
@@ -308,7 +306,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        productVideoCoordinator.onDestroy()
+        productVideoCoordinator?.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         isLoadingInitialData = true
@@ -361,7 +359,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onPause() {
         super.onPause()
-        productVideoCoordinator.onPause()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
@@ -592,7 +589,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDestroy() {
-        productVideoCoordinator.onDestroy()
         hideProgressDialog()
         viewModel.p2Data.removeObservers(this)
         viewModel.p2Other.removeObservers(this)
@@ -977,11 +973,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onVideoFullScreenClicked() {
-        activity?.let {
-            productVideoCoordinator.pauseVideoAndSaveLastPosition()
-            sharedViewModel?.updateVideoDetailData(productVideoCoordinator.getVideoDataModel())
-            (it as ProductDetailActivity).addNewFragment(ProductVideoDetailFragment())
+        activity?.let { activity ->
+            productVideoCoordinator?.let {
+                it.pauseVideoAndSaveLastPosition()
+                sharedViewModel?.updateVideoDetailData(it.getVideoDataModel())
+                (activity as ProductDetailActivity).addNewFragment(ProductVideoDetailFragment())
+            }
         }
+    }
+
+    override fun getProductVideoCoordinator(): ProductVideoCoordinator? {
+        return productVideoCoordinator
     }
 
     /**
@@ -1067,7 +1069,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
-                        toasterWishlistText = if(isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.msg_success_add_wishlist)
+                        toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.msg_success_add_wishlist)
                         addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -1174,7 +1176,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeVideoDetail() {
         sharedViewModel?.productVideoData?.observe(requireActivity(), {
             if (it.isEmpty()) return@observe
-            productVideoCoordinator.updateAndResume(it)
+            productVideoCoordinator?.updateAndResume(it)
         })
     }
 
@@ -1587,8 +1589,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
             }
 
+            setupProductVideoCoordinator()
+
             activity?.invalidateOptionsMenu()
             renderList(data)
+        }
+    }
+
+    private fun setupProductVideoCoordinator() {
+        if (pdpUiUpdater?.mediaMap?.isMediaContainsVideo() == true) {
+            if (productVideoCoordinator == null) {
+                productVideoCoordinator = ProductVideoCoordinator(viewLifecycleOwner)
+            }
+        } else {
+            productVideoCoordinator = null
         }
     }
 
