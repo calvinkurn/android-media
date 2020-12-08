@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -43,8 +44,27 @@ class InspirationCarouselViewModel(
             val applink: String = "",
             val description: List<String> = listOf(),
             val optionPosition: Int = 0,
-            val inspirationCarouselType: String = ""
+            val inspirationCarouselType: String = "",
+            val ratingAverage: String = "",
+            val labelGroupList: List<LabelGroupViewModel> = listOf()
         ): ImpressHolder() {
+
+            fun willShowSalesAndRating(): Boolean{
+                return ratingAverage.isNotEmpty() && getLabelIntegrity() != null
+            }
+
+            fun getLabelIntegrity(): LabelGroupViewModel? {
+                return findLabelGroup(LABEL_INTEGRITY)
+            }
+
+            private fun findLabelGroup(position: String): LabelGroupViewModel? {
+                return labelGroupList.find { it.position == position }
+            }
+
+            fun willShowRating(): Boolean{
+                return ratingAverage.isNotEmpty()
+            }
+
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
                         "name", name,

@@ -381,7 +381,9 @@ public class ProductViewModelMapper {
                     product.getApplink(),
                     product.getDescription(),
                     position,
-                    inspirationCarouselType
+                    inspirationCarouselType,
+                    product.getRatingAverage(),
+                    convertToLabelGroupList(product.getLabelGroupList())
             ));
         }
 
