@@ -327,6 +327,8 @@ class AddEditProductPreviewFragment:
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
             } else if (addEditProductPhotoButton?.text == buttonTextStart){
                 ProductAddStepperTracking.trackStart(shopId)
+                // validate whether shop has location
+                viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
             }
 
             productPhotoAdapter?.run {
@@ -465,6 +467,10 @@ class AddEditProductPreviewFragment:
         observeIsLoading()
         observeValidationMessage()
         observeSaveProductDraft()
+        observeGetShopInfoLocation()
+
+        // validate whether shop has location
+        viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
 
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
@@ -985,6 +991,23 @@ class AddEditProductPreviewFragment:
                 }
             }
         })
+    }
+
+    private fun observeGetShopInfoLocation() {
+        viewModel.locationValidation.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data) {
+                        Toast.makeText(context, "True", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "False", Toast.LENGTH_LONG).show()
+                    }
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
+            }
+        }
     }
 
     private fun removeObservers() {

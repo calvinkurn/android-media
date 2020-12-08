@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -43,6 +44,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val validateProductNameUseCase: ValidateProductNameUseCase,
+        private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -88,6 +90,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mValidationResult = MutableLiveData<ValidationResultModel>()
     val validationResult: LiveData<ValidationResultModel> get() = mValidationResult
+
+    private val mLocationValidation = MutableLiveData<Result<Boolean>>()
+    val locationValidation: LiveData<Result<Boolean>> get() = mLocationValidation
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -316,6 +321,18 @@ class AddEditProductPreviewViewModel @Inject constructor(
             mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
                     resourceProvider.getGqlErrorMessage().orEmpty())
             mIsLoading.value = false
+        })
+    }
+
+    fun validateShopLocation(shopId: Int) {
+        launchCatchError(block = {
+            getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
+            val shopLocation = withContext(Dispatchers.IO) {
+                getShopInfoLocationUseCase.executeOnBackground()
+            }
+            mLocationValidation.value = Success(shopLocation)
+        }, onError = {
+            mLocationValidation.value = Fail(it)
         })
     }
 
