@@ -73,7 +73,8 @@ class GetProfileDataUseCase @Inject constructor(
                     ovoData,
                     saldoData,
                     userMembershipData,
-                    shopData
+                    shopData,
+                    false
             )
         }
     }

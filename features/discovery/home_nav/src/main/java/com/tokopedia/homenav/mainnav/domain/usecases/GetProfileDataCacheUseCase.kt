@@ -59,7 +59,8 @@ class GetProfileDataCacheUseCase @Inject constructor(
                     null,
                     null,
                     userMembershipData,
-                    shopData
+                    shopData,
+                    true
             )
         }
     }
