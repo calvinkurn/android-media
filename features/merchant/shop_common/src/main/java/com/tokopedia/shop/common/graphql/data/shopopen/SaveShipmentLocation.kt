@@ -1,4 +1,4 @@
-package com.tokopedia.shop.open.data.model
+package com.tokopedia.shop.common.graphql.data.shopopen
 
 
 import com.google.gson.annotations.SerializedName
