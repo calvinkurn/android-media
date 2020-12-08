@@ -116,7 +116,7 @@ class InspirationCarouselOptionListViewHolder(
     private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselViewModel.Option.Product) {
         val labelGroupViewModel = product.getLabelIntegrity()
 
-        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(labelGroupViewModel != null)
+        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(product.willShowSalesAndRating())
 
         itemView.optionListCardTextViewSales?.initLabelGroup(labelGroupViewModel)
     }
