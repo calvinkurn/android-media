@@ -1,5 +1,8 @@
 package com.tokopedia.product.addedit.tracking
 
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CAT_EDIT_PRODUCT_PAGE
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.EVENT_CLICK_EDIT_PRODUCT
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
@@ -254,6 +257,27 @@ object ProductDraftTracking {
                 "",
                 mapOf(KEY_SHOP_ID to shopId)
         )
+    }
+}
+
+object ProductCategoryTracking {
+    private const val ACTION_BACK_CHOOSE_OTHER = "click back choose other categories"
+    var gtmTracker: ContextAnalytics? = null
+
+    fun getTracker(): ContextAnalytics {
+        if (gtmTracker == null) {
+            gtmTracker = TrackApp.getInstance().gtm
+        }
+        return gtmTracker as ContextAnalytics
+    }
+
+    fun clickBackOtherCategory(shopId: String) {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_EDIT_PRODUCT,
+                CAT_EDIT_PRODUCT_PAGE,
+                ACTION_BACK_CHOOSE_OTHER,
+                "",
+                mapOf(KEY_SHOP_ID to shopId))
     }
 }
 

@@ -1643,9 +1643,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        if (newList.size > rowNumber) {
-            val (_, _, _, _, footer) = newList[rowNumber]
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
@@ -1665,8 +1665,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-
-            adapter.updateList(newList)
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 

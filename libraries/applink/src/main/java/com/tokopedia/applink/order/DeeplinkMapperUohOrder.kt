@@ -36,6 +36,26 @@ object DeeplinkMapperUohOrder {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER
             else getInternalDeeplink(context, deeplink)
 
+        } else if (deeplink.equals(PURCHASE_CONFIRMED, true)
+                || deeplink.equals(MARKETPLACE_WAITING_CONFIRMATION, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_WAITING_CONFIRMATION
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_PROCESSED, true)
+                || deeplink.equals(MARKETPLACE_ORDER_PROCESSED, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PROCESSED
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_SHIPPED, true)
+                || deeplink.equals(MARKETPLACE_SENT, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_SENT
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_DELIVERED, true)
+                || deeplink.equals(MARKETPLACE_DELIVERED, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_DELIVERED
+            else getInternalDeeplink(context, deeplink)
+
         } else if (deeplink.startsWith(MARKETPLACE_ORDER_SUB) || deeplink.equals(PURCHASE_CONFIRMED, true)
                 || deeplink.startsWith(PURCHASE_HISTORY) || deeplink.equals(PURCHASE_PROCESSED, true)
                 || deeplink.equals(PURCHASE_SHIPPING_CONFIRM, true) || deeplink.equals(PURCHASE_SHIPPED, true)
