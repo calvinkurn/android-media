@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:clipToPadding="false"
         android:paddingStart="@dimen/unify_space_16"
         android:paddingEnd="@dimen/unify_space_16"

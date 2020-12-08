@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
 import com.tokopedia.paylater.presentation.widget.PayLaterSignupBottomSheet
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_simulation.*
 
 class SimulationFragment : Fragment() {
@@ -31,7 +32,7 @@ class SimulationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         populateRowHeaders()
-        populateSimulationTable(context!!)
+        populateSimulationTable(context)
     }
 
     private fun computeSimulationData(): ArrayList<SimulationTableResponse> {
@@ -114,31 +115,34 @@ class SimulationFragment : Fragment() {
         return rowHeaderRecom
     }
 
-    private fun populateSimulationTable(context: Context) {
-        val data = computeSimulationData()
-        val rowCount = data.size + 1
-        val colCount = data.getOrNull(0)?.installmentData?.size ?: 0
-        val contentLayoutParam = TableRow.LayoutParams(context.dpToPx(110).toInt(), context.dpToPx(54).toInt())
-        val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
-        for (i in 0 until rowCount) {
-            val contentRow = TableRow(context)
-            for (j in 0 until colCount) {
-                when (i) {
-                    0 -> contentRow.addView(getColumnHeader(contentLayoutParam, context, j), contentLayoutParam)
-                    else -> contentRow.addView(getInstallmentView(contentLayoutParam, context, data[i-1].installmentData[j], i % 2 == 0), contentLayoutParam)
+    private fun populateSimulationTable(context: Context?) {
+        context?.let {
+            val data = computeSimulationData()
+            val rowCount = data.size + 1
+            val colCount = data.getOrNull(0)?.installmentData?.size ?: 0
+            val contentLayoutParam = TableRow.LayoutParams(it.dpToPx(110).toInt(), it.dpToPx(54).toInt())
+            val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
+            for (i in 0 until rowCount) {
+                val contentRow = TableRow(it)
+                for (j in 0 until colCount) {
+                    when (i) {
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, it, j), contentLayoutParam)
+                        else -> contentRow.addView(getInstallmentView(contentLayoutParam, it, data[i-1].installmentData[j], i), contentLayoutParam)
+                    }
                 }
+                tlInstallmentTable.addView(contentRow, tableLayoutParams)
             }
-            tlInstallmentTable.addView(contentRow, tableLayoutParams)
         }
     }
 
-    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, context: Context, priceText: String, showBackGround: Boolean): View {
+    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, context: Context, priceText: String, row: Int): View {
         val installmentView = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_content, null)
         installmentView.layoutParams = contentLayoutParam
-        if (showBackGround)
+        if (row%2 ==0)
             installmentView.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
-        val tvInstallmentPrice = installmentView.findViewById<TextView>(R.id.tvInstallmentPrice)
+        val tvInstallmentPrice = installmentView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tvInstallmentPrice)
         tvInstallmentPrice.text = priceText
+        if(row == 1) tvInstallmentPrice.setWeight(Typography.BOLD)
         return installmentView
     }
 

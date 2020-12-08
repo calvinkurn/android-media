@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
-import kotlinx.android.synthetic.main.paylater_register_card_bottomsheet_item.view.*
+import kotlinx.android.synthetic.main.paylater_action_step_bottomsheet_item.view.*
 
-class PayLaterPaymentRegisterViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class PayLaterActionStepViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
     fun bindData(partnerStep: String, showDivider: Boolean, position: Int) {
         if(showDivider)  view.dividerVertical.gone()
@@ -18,10 +18,10 @@ class PayLaterPaymentRegisterViewHolder(val view: View): RecyclerView.ViewHolder
     }
 
     companion object {
-        private val LAYOUT_ID = R.layout.paylater_register_card_bottomsheet_item
+        private val LAYOUT_ID = R.layout.paylater_action_step_bottomsheet_item
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterPaymentRegisterViewHolder(
-                inflater.inflate(PayLaterPaymentRegisterViewHolder.LAYOUT_ID, parent, false)
+        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterActionStepViewHolder(
+                inflater.inflate(PayLaterActionStepViewHolder.LAYOUT_ID, parent, false)
         )
     }
 }

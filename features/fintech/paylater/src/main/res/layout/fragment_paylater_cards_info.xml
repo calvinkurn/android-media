@@ -46,7 +46,7 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
-            android:text="Yuk, daftar sekarang!"
+            tools:text="Yuk, daftar sekarang!"
             android:visibility="gone"
             android:textSize="@dimen/unify_font_14"
             app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
@@ -59,21 +59,21 @@
             android:id="@+id/tvPaylaterPartnerStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="Aktif"
+            app:labelTitle="Aktif"
             android:textSize="@dimen/unify_font_10"
-            app:labelType="general_dark_blue"
+            app:labelType="general_light_blue"
             app:layout_constraintBottom_toBottomOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
             app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
             tools:text="Aktif" />
 
-       <!-- <androidx.constraintlayout.widget.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierPayLater"
             app:barrierDirection="bottom"
+            app:barrierAllowsGoneWidgets="false"
             app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>-->
+            android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/borderGrey"
@@ -82,7 +82,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivPaylaterPartner" />
+            app:layout_constraintTop_toBottomOf="@+id/barrierPayLater" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -117,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginBottom="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_16"
             android:text="@string/sp_see_more"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toBottomOf="parent"

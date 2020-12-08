@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeSwitcher" />
@@ -43,6 +43,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
         />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/daftarGroup"
+        app:constraint_referenced_ids="paylaterDaftarWidget,payLaterBorder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/paylaterTabLayout"

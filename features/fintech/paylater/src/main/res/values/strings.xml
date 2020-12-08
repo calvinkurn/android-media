@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">paylater</string>
 
+    <string name="payLater_simulation_tab_title">Simulasi</string>
+    <string name="payLater_offer_details_tab_title">Detail Penawaran</string>
+
     <string name="paylater_register">Daftar PayLater</string>
     <string name="sp_more_choices">Makin banyak pilihan, makin bebas belanja.</string>
 

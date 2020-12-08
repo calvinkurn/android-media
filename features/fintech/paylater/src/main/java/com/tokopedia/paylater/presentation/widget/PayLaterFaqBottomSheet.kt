@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterPartnerFaq
-import com.tokopedia.paylater.domain.model.PayLaterPartnerUsageDetails
 import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp

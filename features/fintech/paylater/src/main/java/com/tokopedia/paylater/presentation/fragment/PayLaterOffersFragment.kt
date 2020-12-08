@@ -77,7 +77,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
         for (productData in productList) {
             val bundle = Bundle().apply {
-                putParcelable("payLaterData", productData)
+                putParcelable(PaymentOptionsFragment.PAY_LATER_DATA, productData)
             }
             list.add(PaymentOptionsFragment.newInstance(bundle))
         }
