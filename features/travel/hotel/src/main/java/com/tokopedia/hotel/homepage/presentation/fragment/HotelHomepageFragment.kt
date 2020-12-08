@@ -139,12 +139,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
+        measureBannerWidth()
     }
 
     private fun measureBannerWidth() {
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels = (displayMetrics.widthPixels / 1.1).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
     }
 
