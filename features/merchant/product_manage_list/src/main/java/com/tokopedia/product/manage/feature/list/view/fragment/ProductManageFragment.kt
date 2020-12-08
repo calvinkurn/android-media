@@ -62,6 +62,9 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
+import com.tokopedia.product.manage.common.session.ProductManageSession
+import com.tokopedia.product.manage.common.session.ProductManageSession.Companion.HAS_DATE_TICKER_BC
+import com.tokopedia.product.manage.common.session.ProductManageSession.Companion.HAS_TICKER_BROADCAST_CHAT
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -84,8 +87,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_DATE_TICKER_BC
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_TICKER_BROADCAST_CHAT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
@@ -122,7 +123,6 @@ import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMana
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
-import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel.Companion.REQUEST_DELAY
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
@@ -131,6 +131,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
@@ -214,8 +215,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    // these variables only use from seller migration (entry point broadcast chat)
+    private var productId = ""
+    private var productStock = 0
+    private var isProductVariant = false
+    private var isProductActive = false
+
     private val prefKey = this.javaClass.name + ".pref"
-    private var prefsTicker: SharedPreferences? = null
+    private var sharedPreferences: ProductManageSession? = null
     private var progressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -231,8 +238,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
             extraCacheManagerId = this.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
             sellerMigrationFeatureName = this.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()
+            productId = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ID).orEmpty()
+            productStock = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_STOCK).toIntOrZero()
+            isProductVariant = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT).toBoolean()
+            isProductActive = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ACTIVE).toBoolean()
         }
-        prefsTicker = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
+        sharedPreferences = ProductManageSession(requireContext())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -320,23 +331,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setupTickerBroadcast() {
-        prefsTicker?.let {
-            if (!it.getBoolean(HAS_TICKER_BROADCAST_CHAT, false)) {
+        sharedPreferences?.let {
+            if (!it.getBoolean(HAS_TICKER_BROADCAST_CHAT)) {
                 tickerBroadcastChat?.apply {
                     setTextDescription(getString(R.string.ticker_broadcast_chat))
                     show()
-                    if (it.getString(HAS_DATE_TICKER_BC, "").isNullOrBlank())
-                        it.edit().putString(HAS_DATE_TICKER_BC, getTimeNow())
+                    if (it.getString(HAS_DATE_TICKER_BC).isBlank())
+                        it.putString(HAS_DATE_TICKER_BC, getTimeNow())
 
-                    if (it.getString(HAS_DATE_TICKER_BC, "")?.isNotEmpty() == true)
-                        if (it.getString(HAS_DATE_TICKER_BC, "").orEmpty().isMoreOneMonth) hide()
+                    if (it.getString(HAS_DATE_TICKER_BC).isNotEmpty())
+                        if (it.getString(HAS_DATE_TICKER_BC).isMoreOneMonth) hide()
 
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
                             hide()
-                            it.edit().putBoolean(HAS_TICKER_BROADCAST_CHAT, true).apply()
+                            it.putBoolean(HAS_TICKER_BROADCAST_CHAT, true)
                         }
                     })
                 }
@@ -492,25 +503,44 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val mainProduct = data.getOtherVariant()
             redirectToBroadcastChat(mainProduct?.id.orEmpty())
         } else {
-            val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-            val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
-            errorStateBroadcastChat(message, action)
+            showErrorStateEmptyProductBroadcastChat()
         }
     }
 
     private fun goToCreateBroadCastChat(product: ProductViewModel?) {
-        if (product?.stock.isZero() || product?.isActive() != true) {
-            val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-            val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
-            errorStateBroadcastChat(message, action)
+        if (isSellerMigrationEnabled(context)) {
+            goToSellerAppProductManageBroadcastChat(product)
         } else {
-            //request variant
-            if (product.isVariant()) {
-                viewModel.getProductVariants(product.id)
+            if (product?.stock.isZero() || product?.isActive() != true) {
+                showErrorStateEmptyProductBroadcastChat()
             } else {
-                redirectToBroadcastChat(product.id)
+                //request variant
+                if (product.isVariant()) {
+                    viewModel.getProductVariants(product.id)
+                } else {
+                    redirectToBroadcastChat(product.id)
+                }
             }
         }
+    }
+
+    private fun goToCreateBroadcastFromSellerMigration(stock: Int, isActive: Boolean, isVariant: Boolean, productId: String) {
+        if (stock.isZero() || !isActive) {
+            showErrorStateEmptyProductBroadcastChat()
+        } else {
+            //request variant
+            if (isVariant) {
+                viewModel.getProductVariants(productId)
+            } else {
+                redirectToBroadcastChat(productId)
+            }
+        }
+    }
+
+    private fun showErrorStateEmptyProductBroadcastChat() {
+        val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+        val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
+        errorStateBroadcastChat(message, action)
     }
 
     private fun redirectToBroadcastChat(productId: String) {
@@ -527,6 +557,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 return@OnClickListener
             }
         }).show()
+    }
+
+    private fun goToSellerAppProductManageBroadcastChat(product: ProductViewModel?) {
+        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                .buildUpon()
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ID, product?.id)
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_STOCK, product?.stock?.toString())
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ACTIVE, product?.isActive()?.toString())
+                .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT, product?.isVariant()?.toString())
+                .build()
+                .toString()
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT, arrayListOf(firstAppLink))
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
@@ -828,6 +870,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
                     val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
                     onSetStockReminderResult(threshold, productName)
+                } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
+                    goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
                 }
             }
         }
