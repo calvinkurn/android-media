@@ -814,7 +814,8 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    fun trackCategoryOptionClick(isLogin: Boolean, childCatID : String = "", childCatName : String = "") {
+    fun trackCategoryOptionClick(isLogin: Boolean, childCatID : String = "", applink : String? = "",
+                                 catDepth : Int, childCatName : String = "") {
         val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
                 eventAction = CATEGORY_TREE_OPTION_SELECTED,
                 eventLabel = "$childCatID - $childCatName")

@@ -56,6 +56,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsHolder.apply {
+                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
+            }
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 tabMode = TabLayout.MODE_SCROLLABLE
@@ -142,8 +145,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         }
     }
 
-    override fun onCategorySelected(catId: String, appLink: String?, depth: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryOptionClick(tabsViewModel.isUserLoggedIn(), catId)
+    override fun onCategorySelected(catId: String, appLink: String?, depth: Int, catName: String) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryOptionClick(tabsViewModel.isUserLoggedIn(), catId, appLink, depth, catName)
         updateComponentsQueryParams(catId)
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
