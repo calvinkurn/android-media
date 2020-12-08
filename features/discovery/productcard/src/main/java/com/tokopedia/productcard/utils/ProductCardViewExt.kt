@@ -244,7 +244,7 @@ private fun String?.toUnifyLabelColor(): Int {
     }
 }
 
-fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
+internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
     else showTypography(labelGroup)
 }

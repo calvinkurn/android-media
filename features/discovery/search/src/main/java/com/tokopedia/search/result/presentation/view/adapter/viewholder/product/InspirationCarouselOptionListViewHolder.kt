@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
@@ -115,7 +114,7 @@ class InspirationCarouselOptionListViewHolder(
         itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
 
         itemView.optionListCardTextViewSales?.shouldShowWithAction(willShowSalesAndRating) {
-            it.initLabelGroup(product.getLabelIntegrity()?.toProductCardModelLabelGroup())
+            it.text = MethodChecker.fromHtml(product.getLabelIntegrity()?.title)
         }
     }
 
