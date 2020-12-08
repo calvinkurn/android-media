@@ -29,9 +29,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 class SellerOnboardingFragment : Fragment() {
 
     companion object {
-        const val SELLER_ONBOARDING_URL_1 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_1.png"
-        const val SELLER_ONBOARDING_URL_2 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_2.png"
-        const val SELLER_ONBOARDING_URL_3 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_3.png"
+        const val SELLER_ONBOARDING_URL_1 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_1_webp.webp"
+        const val SELLER_ONBOARDING_URL_2 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_2_webp.webp"
+        const val SELLER_ONBOARDING_URL_3 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_3_webp.webp"
         fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 
