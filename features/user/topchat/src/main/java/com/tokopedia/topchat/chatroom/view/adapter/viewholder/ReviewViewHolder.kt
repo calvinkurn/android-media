@@ -74,15 +74,25 @@ class ReviewViewHolder(
     }
 
     private fun bindLabel(element: ReviewUiModel) {
-        // TODO("Handle for sender")
-        if (!element.isSender && element.hasExpired()) {
-            label?.apply {
-                show()
-                setLabelType(Label.GENERAL_LIGHT_RED)
-                setText(R.string.title_topchat_review_expire)
+        label?.apply {
+            when {
+                (!element.isSender || element.isSender) && element.hasExpired() -> {
+                    show()
+                    setLabelType(Label.GENERAL_LIGHT_RED)
+                    setText(R.string.title_topchat_review_expire)
+                }
+                element.isSender && element.waitingForReview() -> {
+                    show()
+                    setLabelType(Label.GENERAL_LIGHT_GREEN)
+                    setText(R.string.title_topchat_review_waiting)
+                }
+                element.isSender && element.isReviewed -> {
+                    show()
+                    setLabelType(Label.GENERAL_LIGHT_GREY)
+                    setText(R.string.title_topchat_reviewed)
+                }
+                else -> hide()
             }
-        } else {
-            label?.hide()
         }
     }
 
