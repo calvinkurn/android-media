@@ -22,8 +22,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottomsheet_action_shop_address.view.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -46,6 +46,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private var bottomSheetAddressType: BottomSheetUnify? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
+    private var buttonSetLocationStatus: Typography? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_location, container, false)
@@ -68,6 +69,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         addressList = view?.findViewById(R.id.address_list)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+        buttonSetLocationStatus = view?.findViewById(R.id.btn_set_location_status)
 
         addressList?.adapter = adapter
         addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -106,17 +108,17 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openBottomSheetAddressType(shopLocation: Warehouse) {
         bottomSheetAddressType = BottomSheetUnify()
-        val viewBottomSheetAddressType = View.inflate(context, R.layout.bottomsheet_deactivate_location, null).apply {
+        val viewBottomSheetAddressType = View.inflate(context, R.layout.bottomsheet_action_shop_address, null).apply {
             if (shopLocation.status == 1) {
-                btn_set_location_status.text = getString(R.string.deactivate_location)
-                btn_set_location_status.setOnClickListener {
+                buttonSetLocationStatus?.text = getString(R.string.deactivate_location)
+                buttonSetLocationStatus?.setOnClickListener {
                     viewModel.setShopLocationState(shopLocation.warehouseId, shopLocation.status)
                     if (viewModel.shopLocationStateStatus) view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, shopLocation.warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     bottomSheetAddressType?.dismiss()
                 }
             } else if (shopLocation.status == 2)   {
-                btn_set_location_status.text = getString(R.string.activate_location)
-                btn_set_location_status.setOnClickListener {
+                buttonSetLocationStatus?.text = getString(R.string.activate_location)
+                buttonSetLocationStatus?.setOnClickListener {
                     viewModel.setShopLocationState(shopLocation.warehouseId, shopLocation.status)
                     if (viewModel.shopLocationStateStatus) view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, shopLocation.warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     bottomSheetAddressType?.dismiss()

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
@@ -34,6 +35,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
     fun addList(data: List<Warehouse>) {
         shopLocationList.addAll(data)
+        notifyDataSetChanged()
     }
 
     inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
@@ -45,7 +47,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         private val labelMainShop = itemView.findViewById<Label>(R.id.lbl_main_shop)
         private val imgPinpointState = itemView.findViewById<ImageView>(R.id.img_location_state)
         private val tvPinpointState = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        private val btnSetLocation = itemView.findViewById<Typography>(R.id.btn_set_location_status)
+        private val btnSetLocation = itemView.findViewById<IconUnify>(R.id.icon_kebab)
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: Warehouse) {

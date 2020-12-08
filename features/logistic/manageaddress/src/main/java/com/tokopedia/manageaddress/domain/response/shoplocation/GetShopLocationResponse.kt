@@ -26,7 +26,7 @@ data class Error(
 )
 
 data class Data(
-		@SerializedName("warehouse")
+		@SerializedName("warehouses")
 		var warehouse: List<Warehouse> = listOf()
 )
 
