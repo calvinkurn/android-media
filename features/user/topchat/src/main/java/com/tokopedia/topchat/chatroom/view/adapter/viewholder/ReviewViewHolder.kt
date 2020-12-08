@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BackgroundGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -27,6 +28,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ReviewViewHolder constructor(
         itemView: View?,
+        private val listener: Listener?,
         private val deferredAttachment: DeferredViewHolderAttachment,
         private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<ReviewUiModel>(itemView) {
@@ -42,6 +44,10 @@ class ReviewViewHolder constructor(
     )
 
     private val leftBg = BackgroundGenerator.generateLeftBackgroundReviewReminder(container)
+
+    interface Listener {
+        fun startReview(starCount: Int, review: ReviewCard)
+    }
 
     override fun getChatStatusId(): Int {
         return R.id.chat_status
@@ -178,6 +184,11 @@ class ReviewViewHolder constructor(
 
     private fun bindStarClick(element: ReviewUiModel) {
         reputation?.reviewable = element.waitingForReview()
+        reputation?.setListener(object : AnimatedReputationView.AnimatedReputationListener {
+            override fun onClick(position: Int) {
+                listener?.startReview(position, element.reviewCard)
+            }
+        })
     }
 
     private fun ReviewUiModel.waitingForReview(): Boolean {

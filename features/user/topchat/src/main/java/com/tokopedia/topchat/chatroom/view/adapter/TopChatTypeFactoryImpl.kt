@@ -50,7 +50,8 @@ open class TopChatTypeFactoryImpl constructor(
         private val commonListener: CommonViewHolderListener,
         private val searchListener: SearchListener,
         private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener,
-        private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener
+        private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
+        private val reviewListener: ReviewViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -198,7 +199,7 @@ open class TopChatTypeFactoryImpl constructor(
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
-            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, deferredAttachment, adapterListener)
+            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, reviewListener, deferredAttachment, adapterListener)
             else -> createViewHolder(parent, type)
         }
     }
