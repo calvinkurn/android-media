@@ -82,7 +82,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingEnd="@dimen/layout_lvl2"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_N700_32"
             app:layout_constraintTop_toBottomOf="@id/empty_view"
             app:typographyType="small"
             app:layout_constraintEnd_toEndOf="@id/write_category_header"

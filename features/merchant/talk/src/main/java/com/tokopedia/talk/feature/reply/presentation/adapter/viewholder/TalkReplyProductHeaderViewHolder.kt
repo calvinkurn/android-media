@@ -51,7 +51,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
                 return
             }
             text = getString(R.string.reply_product_deleted)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             setOnClickListener(null)
         }
     }
