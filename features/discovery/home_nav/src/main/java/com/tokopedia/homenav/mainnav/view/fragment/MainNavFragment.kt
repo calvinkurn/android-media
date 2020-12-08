@@ -224,7 +224,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.
+        viewModel.refreshBuListdata()
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {

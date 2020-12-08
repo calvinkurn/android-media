@@ -9,9 +9,6 @@ import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactoryImpl
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
-import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
-import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -39,8 +36,7 @@ class MainNavModule {
 
     @MainNavScope
     @Provides
-    fun provideAccountHeaderMapper(accountHeaderMapper: AccountHeaderMapper,
-                                   @ApplicationContext context: Context,
+    fun provideAccountHeaderMapper(@ApplicationContext context: Context,
                                    userSession: UserSessionInterface
     ) = AccountHeaderMapper(
             context, userSession

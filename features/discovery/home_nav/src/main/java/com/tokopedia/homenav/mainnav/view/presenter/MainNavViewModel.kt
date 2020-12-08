@@ -34,6 +34,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,16 +55,18 @@ class MainNavViewModel @Inject constructor(
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val getSaldoUseCase: Lazy<GetSaldoUseCase>,
-        private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>,
+        private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
-        private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>
+        private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
+        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
+        private const val INDEX_START_BU_MENU = 1
     }
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
@@ -181,6 +184,10 @@ class MainNavViewModel @Inject constructor(
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
+            _mainNavListVisitable.addHomeBackButtonMenu()
+            _mainNavListVisitable.addTransactionMenu()
+            _mainNavListVisitable.addUserMenu()
+
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
             Timber.d("Update nav data failed")
@@ -194,6 +201,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun setInitialState() {
         addWidgetList(listOf(
+                InitialShimmerProfileDataModel(),
                 InitialShimmerDataModel()
         ))
     }
@@ -210,7 +218,8 @@ class MainNavViewModel @Inject constructor(
         _networkProcessLiveData.value = false
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
-                getMainNavContent()
+                getProfileData()
+                getBuListMenu()
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -254,17 +263,37 @@ class MainNavViewModel @Inject constructor(
         deleteWidgetList(listOfHomeMenuSection)
     }
 
-    private suspend fun getMainNavContent() {
-        val result = getMainNavDataUseCase.get().executeOnBackground()
-        _mainNavListVisitable = result.dataList.toMutableList()
-        _mainNavListVisitable.addHomeBackButtonMenu()
-        _mainNavListVisitable.addTransactionMenu()
-        _mainNavListVisitable.addUserMenu()
-        val resultWithUpdatedList = result.copy(dataList = _mainNavListVisitable)
+    private suspend fun getBuListMenu() {
+        launchCatchError(coroutineContext, block = {
+            getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+            val result = getCategoryGroupUseCase.get().executeOnBackground()
 
-        //PLT network process is finished
-        _networkProcessLiveData.postValue(true)
-        updateNavData(resultWithUpdatedList)
+            //PLT network process is finished
+            _networkProcessLiveData.postValue(true)
+
+            val mainNavList = _mainNavListVisitable.toMutableList()
+            mainNavList.removeFirst { it is InitialShimmerDataModel }
+            mainNavList.addAll(1, result)
+
+            updateNavData(MainNavigationDataModel(dataList = mainNavList))
+        }) {
+            it.printStackTrace()
+            addWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
+        }
+    }
+
+    suspend fun getProfileData() {
+        val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
+        updateWidget(accountHeaderModel, 0)
+    }
+
+    fun refreshBuListdata() {
+        updateWidget(InitialShimmerDataModel(), INDEX_START_BU_MENU)
+        launchCatchError(coroutineContext, block = {
+            getBuListMenu()
+        }) {
+
+        }
     }
 
     private suspend fun getOngoingTransaction() {

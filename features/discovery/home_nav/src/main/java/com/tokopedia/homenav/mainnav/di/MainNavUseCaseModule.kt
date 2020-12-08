@@ -98,6 +98,15 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetCategoryGroupUseCase(
+            buListMapper: BuListMapper,
+            graphqlRepository: GraphqlRepository): GetCategoryGroupUseCase {
+        val useCase = GraphqlUseCase<DynamicHomeIconEntity>(graphqlRepository)
+        return GetCategoryGroupUseCase(buListMapper, useCase)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetAccountHeaderUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
