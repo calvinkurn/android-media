@@ -9,10 +9,10 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewModel> {
     @LayoutRes
@@ -111,14 +111,11 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
 
     private void renderPriceLabel(DealProductViewModel element) {
         if (element.getSalesPriceNumeric() > 0) {
-            priceTextView.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) element.getSalesPriceNumeric()));
+            priceTextView.setText(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormatNoSpace((int) element.getSalesPriceNumeric()));
             if (element.getBeforePrice() > 0) {
                 long slashedPrice = element.getBeforePrice();
                 slashedPriceTextView.setText(
-                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                                (int) slashedPrice
-                        )
-                );
+                        CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormatNoSpace((int) slashedPrice));
                 slashedPriceTextView.setVisibility(View.VISIBLE);
             } else {
                 slashedPriceTextView.setVisibility(View.GONE);

@@ -173,12 +173,12 @@ public class CategoryProductStyle1View extends
             cbInstantCheckout.setChecked(false);
             layoutCheckout.setVisibility(GONE);
         }
-        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomSheetView.show();
-            }
-        });
+//        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                bottomSheetView.show();
+//            }
+//        });
     }
 
     private void renderClientNumberInputForm() {

@@ -22,21 +22,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                app:fontSize="title"
+                app:typographyType="heading_3"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@+id/ic_more_info"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:textViewTheme="lightPrimary"
-                app:weight="regular"
                 tools:text="Bayar Otomatis" />
 
             <ImageView
@@ -57,14 +55,12 @@
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
-            app:weight="regular"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:typographyType="body_2"
             tools:text="Pembayaran akan dilakukan secara otomatis pada 2 November 2018 dengan OvoCash." />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

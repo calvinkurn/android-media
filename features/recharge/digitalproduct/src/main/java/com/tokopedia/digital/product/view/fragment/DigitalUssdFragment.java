@@ -36,7 +36,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalEventTracking;
@@ -238,12 +237,12 @@ public class DigitalUssdFragment extends BaseDaggerFragment
             }
         });
 
-        tooltipInstantCheckout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBottomSheetDialog();
-            }
-        });
+//        tooltipInstantCheckout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                setBottomSheetDialog();
+//            }
+//        });
     }
 
     private void renderAdditionalInfoProduct() {
@@ -507,17 +506,17 @@ public class DigitalUssdFragment extends BaseDaggerFragment
         RouteManager.route(getActivity(), url);
     }
 
-    private void setBottomSheetDialog() {
-        BottomSheetView bottomSheetView;
-        bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(getString(R.string.title_tooltip_instan_payment))
-                .setBody(getString(R.string.body_tooltip_instan_payment))
-                .setImg(R.drawable.digital_ic_digital_instant_payment)
-                .build());
-        bottomSheetView.show();
-    }
+//    private void setBottomSheetDialog() {
+//        BottomSheetView bottomSheetView;
+//        bottomSheetView = new BottomSheetView(getActivity());
+//        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+//                .BottomSheetFieldBuilder()
+//                .setTitle(getString(R.string.title_tooltip_instan_payment))
+//                .setBody(getString(R.string.body_tooltip_instan_payment))
+//                .setImg(R.drawable.digital_ic_digital_instant_payment)
+//                .build());
+//        bottomSheetView.show();
+//    }
 
     @Override
     protected void initInjector() {

@@ -53,7 +53,6 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -1376,29 +1375,29 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private View getTickerCouponApplied() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.view_digital_ticker_coupon_applied, null);
 
-        TickerView tickerView = view.findViewById(R.id.ticker_view);
-        setupTickerCouponApplied(tickerView);
+//        TickerView tickerView = view.findViewById(R.id.ticker_view);
+//        setupTickerCouponApplied(tickerView);
 
         return view;
     }
 
-    private void setupTickerCouponApplied(TickerView tickerView) {
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(getString(R.string.digital_coupon_applied_ticker_message));
-        tickerView.setVisibility(View.INVISIBLE);
-        tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
-        tickerView.buildView();
-
-        tickerView.postDelayed(() -> {
-            tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
-            );
-            tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
-        }, DEFAULT_POST_DELAYED_VALUE);
-    }
+//    private void setupTickerCouponApplied(TickerView tickerView) {
+//        ArrayList<String> messages = new ArrayList<>();
+//        messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+//        tickerView.setVisibility(View.INVISIBLE);
+//        tickerView.setListMessage(messages);
+//        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.green_200));
+//        tickerView.buildView();
+//
+//        tickerView.postDelayed(() -> {
+//            tickerView.setItemPadding(
+//                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+//                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
+//                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
+//                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
+//            );
+//            tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
+//        }, DEFAULT_POST_DELAYED_VALUE);
+//    }
 
 }

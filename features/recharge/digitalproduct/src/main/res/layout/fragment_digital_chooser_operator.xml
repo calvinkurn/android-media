@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.tokopedia.design.component.EditTextCompat
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/field_search_operator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
@@ -21,8 +21,7 @@
         android:paddingLeft="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:visibility="gone"
-        app:drawableLeftCompat="@drawable/digital_search_operator" />
+        android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list_chooser_operator"

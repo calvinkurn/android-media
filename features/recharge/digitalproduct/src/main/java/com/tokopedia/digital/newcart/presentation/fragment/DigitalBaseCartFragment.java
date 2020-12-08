@@ -27,7 +27,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -61,6 +61,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -562,20 +563,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                                    String content,
                                    String confirmButtonTitle) {
         try {
-            Dialog dialog = new Dialog(
-                    getActivity(),
-                    Dialog.Type.RETORIC
-            );
-            dialog.setTitle(title);
-            dialog.setDesc(MethodChecker.fromHtml(content));
-            dialog.setBtnOk(confirmButtonTitle);
-            dialog.setOnOkClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
+            DialogUnify dialogUnify = new DialogUnify(getActivity(),
+                    DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            dialogUnify.setTitle(title);
+            dialogUnify.setDescription(MethodChecker.fromHtml(content));
+            dialogUnify.setPrimaryCTAText(confirmButtonTitle);
+            dialogUnify.setPrimaryCTAClickListener(() -> {
+                dialogUnify.dismiss();
+                return Unit.INSTANCE;
             });
-            dialog.show();
+            dialogUnify.show();
         } catch (Throwable e) {
 
         }
