@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -25,6 +24,8 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
@@ -134,6 +135,11 @@ class DiscoveryModule {
     @Provides
     fun provideQuickFilterRestRepository(): QuickFilterRepository {
         return QuickFilterRestRepository()
+    }
+
+    @Provides
+    fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
+        return QuickFilterGQLRepository()
     }
 
     @DiscoveryScope

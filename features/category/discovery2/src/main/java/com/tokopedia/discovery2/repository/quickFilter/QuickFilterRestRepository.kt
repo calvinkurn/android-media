@@ -7,7 +7,6 @@ import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.network.data.model.response.DataResponse
 import javax.inject.Inject
 

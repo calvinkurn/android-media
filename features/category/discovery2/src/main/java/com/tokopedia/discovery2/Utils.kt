@@ -55,6 +55,10 @@ class Utils {
         private const val DEVICE = "device"
         private const val DEVICE_VALUE = "Android"
         private const val FILTERS = "filters"
+        private const val COUNT_ONLY = "count_only"
+        private const val RPC_USER_ID = "rpc_UserID"
+        private const val RPC_PAGE_NUMBER = "rpc_page_number"
+        private const val RPC_PAGE__SIZE = "rpc_page_size"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -92,13 +96,23 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?, userId: String? = "0", addCountFilters: Boolean  = false): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
+            val filtersMap =  rpcDiscoQuery as? MutableMap<String, String?>
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
+            if(addCountFilters){
+                filtersMap?.let {
+                    it[COUNT_ONLY] = "true"
+                    it[RPC_PAGE__SIZE] = "10"
+                    it[RPC_PAGE_NUMBER] = "1"
+                    it[RPC_USER_ID] = if(userId.isNullOrEmpty()) "0" else userId
 
-            rpcDiscoQuery?.let { map ->
+                }
+            }
+
+            filtersMap?.let { map ->
                 val queryString = StringBuilder()
                 map.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {

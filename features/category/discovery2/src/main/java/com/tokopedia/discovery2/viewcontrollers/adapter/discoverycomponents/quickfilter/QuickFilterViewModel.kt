@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -14,6 +15,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.*
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,7 +27,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     @Inject
     lateinit var quickFilterRepository: QuickFilterRepository
-
+    @Inject
+    lateinit var quickFilterGQLRepository: IQuickFilterGqlRepository
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
 
@@ -172,5 +175,17 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
         setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
         reloadData()
+    }
+
+    private fun getUserId(): String? {
+        return UserSession(application).userId
+    }
+
+    fun filterProductsCount(mapParameter: Map<String, String>) {
+        launchCatchError(block = {
+            quickFilterGQLRepository.getQuickFilterProductCountData(components.id, components.pageEndPoint, mapParameter, getUserId())
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 }

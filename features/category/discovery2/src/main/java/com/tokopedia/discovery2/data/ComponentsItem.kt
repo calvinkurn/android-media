@@ -35,6 +35,9 @@ data class ComponentsItem(
         @SerializedName("properties")
         var properties: Properties? = null,
 
+        @SerializedName("additional_info")
+        var compAdditionalInfo: ComponentAdditionalInfo? = null,
+
         @SerializedName("creative_name")
         var creativeName: String? = "",
 
