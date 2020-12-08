@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.StrictMode
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat.createWithBitmap
@@ -29,6 +30,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.recharge_slice.util.SliceTracking
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
@@ -38,6 +40,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -47,6 +51,7 @@ import java.util.*
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
     private lateinit var userSession: UserSession
+    private lateinit var sliceTracking: SliceTracking
     private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @Inject
@@ -59,7 +64,10 @@ class MainSliceProvider : SliceProvider() {
     var isError: Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        userSession = UserSession(contextNonNull)
+        allowReads {
+            userSession = UserSession(contextNonNull)
+            sliceTracking = SliceTracking(userSession)
+        }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             createGetInvoiceSlice(sliceUri)
         } else {
@@ -72,8 +80,10 @@ class MainSliceProvider : SliceProvider() {
             PendingIntent.getActivity(
                     contextNonNull,
                     it,
-                    RouteManager.getIntent(contextNonNull, applink)
-                            .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick),
+                    allowReads {
+                        RouteManager.getIntent(contextNonNull, applink)
+                                .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick)
+                    },
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
@@ -82,14 +92,18 @@ class MainSliceProvider : SliceProvider() {
     private fun createPendingIntentLogin() = PendingIntent.getActivity(
             contextNonNull,
             0,
-            RouteManager.getIntent(contextNonNull, ApplinkConst.LOGIN),
+            allowReads {
+                RouteManager.getIntent(contextNonNull, ApplinkConst.LOGIN)
+            },
             0
     )
 
     private fun createPendingIntentNoAccess() = PendingIntent.getActivity(
             contextNonNull,
             0,
-            RouteManager.getIntent(contextNonNull, ApplinkConst.HOME),
+            allowReads {
+                RouteManager.getIntent(contextNonNull, ApplinkConst.HOME)
+            },
             0
     )
 
@@ -99,12 +113,14 @@ class MainSliceProvider : SliceProvider() {
             val mainPendingIntent = PendingIntent.getActivity(
                     contextNonNull,
                     0,
-                    RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
-                            .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
+                    allowReads {
+                        RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                                .putExtra(RECHARGE_HOME_PAGE_EXTRA, true)
+                    },
                     0
             )
             try {
-                if (userSession.isLoggedIn) {
+                if (allowReads {userSession.isLoggedIn}) {
                     if (!alreadyLoadData)
                         getData(sliceUri)
                     if(alreadyLoadData  && isError){
@@ -114,9 +130,16 @@ class MainSliceProvider : SliceProvider() {
                         setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                            if (recommendationModel.isNullOrEmpty() && !alreadyLoadData)
+                            if (recommendationModel.isNullOrEmpty() && !alreadyLoadData){
                                 subtitle = contextNonNull.resources.getString(R.string.slice_loading)
+                                 allowReads {
+                                     sliceTracking.onLoadingState()
+                                 }
+                            }
                             else if (recommendationModel.isNullOrEmpty() && alreadyLoadData) {
+                                allowReads {
+                                    sliceTracking.onEmptyState()
+                                }
                                 title = contextNonNull.resources.getString(R.string.slice_empty_data)
                                 primaryAction = createPendingIntentNoAccess()?.let {
                                     SliceAction.create(
@@ -133,14 +156,16 @@ class MainSliceProvider : SliceProvider() {
                             if (!recommendationModel.isNullOrEmpty()) {
                                 var listProduct: MutableList<Product> = mutableListOf()
                                 for (i in recomRange) {
-                                    if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
-                                            && recommendationModel?.get(i)?.productPrice != 0) {
+                                    if (!recommendationModel?.get(i)?.title.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()) {
+                                        allowReads {
+                                            sliceTracking.onImpressionSliceRecharge(recommendationModel?.get(i), getDate())
+                                        }
                                         var product = Product()
                                         row {
                                             setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                             recommendationModel.let {
                                                 it?.let {
-                                                    product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
+                                                    product = Product(it.get(i).productId.toString(), it.get(i).title, rupiahFormatter(it.get(i).productPrice))
                                                     listProduct.add(i, product)
                                                 }
                                                 it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
@@ -157,20 +182,25 @@ class MainSliceProvider : SliceProvider() {
                                         }
                                     }
                                 }
-                                if (alreadyLoadData && listProduct.isNotEmpty()) {
-                                    val trackingImpression = TrackingData(listProduct)
-                                    Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
-                                }
                             }
                         }
                     }
                 } else {
+                    allowReads {
+                        sliceTracking.onNonLoginState()
+                    }
                     return sliceNotLogin(sliceUri)
                 }
             } catch (e: Exception) {
+                allowReads {
+                    sliceTracking.onErrorState()
+                }
                 return sliceNoAccess(sliceUri)
             }
         } else {
+            allowReads {
+                sliceTracking.onErrorState()
+            }
             return sliceNoAccess(sliceUri)
         }
     }
@@ -269,8 +299,25 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-        remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
+//        remoteConfig = FirebaseRemoteConfigImpl(context)
+//        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
+        return true
+    }
+
+    fun <T> allowReads(block: () -> T): T {
+        val oldPolicy = StrictMode.allowThreadDiskReads()
+        try {
+            return block()
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy)
+        }
+    }
+
+    fun getDate(): String {
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat.getDateTimeInstance() //or use getDateInstance()
+        val formatedDate = formatter.format(date)
+        return formatedDate
     }
 
     companion object {
