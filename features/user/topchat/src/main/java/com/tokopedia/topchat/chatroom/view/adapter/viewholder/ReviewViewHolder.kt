@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.os.Handler
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -186,7 +187,9 @@ class ReviewViewHolder constructor(
         reputation?.reviewable = element.waitingForReview()
         reputation?.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
-                listener?.startReview(position, element.reviewCard)
+                Handler().postDelayed({
+                    listener?.startReview(position, element.reviewCard)
+                }, 200)
             }
         })
     }
