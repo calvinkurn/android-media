@@ -63,8 +63,6 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
-import com.tokopedia.product.manage.common.session.ProductManageSession.Companion.HAS_DATE_TICKER_BC
-import com.tokopedia.product.manage.common.session.ProductManageSession.Companion.HAS_TICKER_BROADCAST_CHAT
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -98,7 +96,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.extension.getTimeNow
 import com.tokopedia.product.manage.feature.list.extension.isMoreOneMonth
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
@@ -151,9 +148,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
@@ -221,8 +215,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var isProductVariant = false
     private var isProductActive = false
 
-    private val prefKey = this.javaClass.name + ".pref"
-    private var sharedPreferences: ProductManageSession? = null
+    private var productManageSession: ProductManageSession? = null
     private var progressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -243,7 +236,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isProductVariant = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT).toBoolean()
             isProductActive = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ACTIVE).toBoolean()
         }
-        sharedPreferences = ProductManageSession(requireContext())
+        productManageSession = ProductManageSession(requireContext())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -331,23 +324,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setupTickerBroadcast() {
-        sharedPreferences?.let {
-            if (!it.getBoolean(HAS_TICKER_BROADCAST_CHAT)) {
+        productManageSession?.run {
+            if (!getHasTickerBroadcastChat()) {
                 tickerBroadcastChat?.apply {
                     setTextDescription(getString(R.string.ticker_broadcast_chat))
                     show()
-                    if (it.getString(HAS_DATE_TICKER_BC).isBlank())
-                        it.putString(HAS_DATE_TICKER_BC, getTimeNow())
+                    if (getHasTickerDateBC().isBlank())
+                        setHasTickerDateBC(getHasTickerDateBC())
 
-                    if (it.getString(HAS_DATE_TICKER_BC).isNotEmpty())
-                        if (it.getString(HAS_DATE_TICKER_BC).isMoreOneMonth) hide()
+                    if (getHasTickerDateBC().isNotEmpty())
+                        if (getHasTickerDateBC().isMoreOneMonth) hide()
 
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
                             hide()
-                            it.putBoolean(HAS_TICKER_BROADCAST_CHAT, true)
+                            setHasTickerBroadcastChat(true)
                         }
                     })
                 }

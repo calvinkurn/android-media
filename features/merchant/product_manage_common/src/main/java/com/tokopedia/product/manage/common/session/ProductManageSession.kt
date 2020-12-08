@@ -6,31 +6,43 @@ class ProductManageSession(private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "product_manage_session_shared_pref"
-        const val HAS_TICKER_BROADCAST_CHAT = "hasTickerBroadcastChat"
-        const val HAS_DATE_TICKER_BC = "hasDateTickerBC"
+        private const val HAS_TICKER_BROADCAST_CHAT = "hasTickerBroadcastChat"
+        private const val HAS_TICKER_DATE_BC = "hasTickerDateBC"
     }
 
     private val sharedPref by lazy {
         context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
+    private fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
         return sharedPref.getBoolean(key, defaultValue)
     }
 
-    fun getString(key: String, defaultValue: String = ""): String {
+    private fun getString(key: String, defaultValue: String = ""): String {
         return sharedPref.getString(key, defaultValue).orEmpty()
     }
 
-    fun putBoolean(key: String, value: Boolean) {
+    private fun putBoolean(key: String, value: Boolean) {
         val editor = sharedPref.edit()
         editor.putBoolean(key, value)
         editor.apply()
     }
 
-    fun putString(key: String, value: String) {
+    private fun putString(key: String, value: String) {
         val editor = sharedPref.edit()
         editor.putString(key, value)
         editor.apply()
     }
+
+    fun setHasTickerBroadcastChat(value: Boolean) {
+        putBoolean(HAS_TICKER_BROADCAST_CHAT, value)
+    }
+
+    fun getHasTickerBroadcastChat() = getBoolean(HAS_TICKER_BROADCAST_CHAT)
+
+    fun setHasTickerDateBC(value: String) {
+        putString(HAS_TICKER_DATE_BC, value)
+    }
+
+    fun getHasTickerDateBC() = getString(HAS_TICKER_DATE_BC)
 }
