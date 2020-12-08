@@ -169,7 +169,7 @@ class AccountHeaderViewHolder(itemView: View,
 
         btnSettings.visible()
         btnTryAgain.gone()
-        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError)) {
+        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) {
             btnSettings.gone()
             btnTryAgain.visible()
             if (element.isGetUserNameError && (element.isGetOvoError && element.isGetSaldoError)) {
