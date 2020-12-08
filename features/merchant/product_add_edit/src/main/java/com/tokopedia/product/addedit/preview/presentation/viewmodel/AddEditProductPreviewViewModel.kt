@@ -44,11 +44,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val adminPermissionUseCase: AdminPermissionUseCase,
         private val userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatchers
+        private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
+
+    // TODO: Change to userSession value
+    private val isShopAdmin = true
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
@@ -58,9 +61,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            // TODO: Change to userSession value
-            val isShopAdmin = true
-            if (!productId.value.isNullOrBlank()) getProductData(it)
+            if (!productId.value.isNullOrBlank()) {
+                getProductData(it)
+            } else if (isShopAdmin) {
+                getAdminPermission()
+            }
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -89,9 +94,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
-    private val shouldRequestAdminPermission = MutableLiveData<Boolean>().apply {
-        value = false
-    }
+    private val mIsManageProductAdmin = MutableLiveData<Result<Boolean>>()
+    val isManageProductAdmin: LiveData<Result<Boolean>>
+        get() = mIsManageProductAdmin
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -215,14 +220,19 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
+        if (isShopAdmin && mIsManageProductAdmin.value !is Success) {
+            getAdminPermission()
+        }
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             }
+            getAdminPermissionJob?.join()
             mGetProductResult.value = Success(data)
             mIsLoading.value = false
         }, onError = {
+            getAdminPermissionJob?.cancel()
             mGetProductResult.value = Fail(it)
         })
     }
@@ -295,24 +305,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
 
-    fun setShouldRequestAdminPermission(shouldRequest: Boolean) {
-        shouldRequestAdminPermission.value = shouldRequest
-    }
-
-    private fun getAdminInfo() {
+    private fun getAdminPermission() {
         mIsLoading.value = true
-        getAdminPermissionJob =
-                launchCatchError(
-                    block = {
-                        val requestParams =
-                                AdminPermissionUseCase.createRequestParams(
-                                        userSession.shopId.toIntOrZero())
-                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.PRODUCT)
-                    },
-                    onError = {
-
-                    }
-        )
+        if (getAdminPermissionJob?.isCompleted != true) {
+            getAdminPermissionJob =
+                    launchCatchError(
+                            block = {
+                                val requestParams =
+                                        AdminPermissionUseCase.createRequestParams(
+                                                userSession.shopId.toIntOrZero())
+                                mIsManageProductAdmin.value = Success(withContext(dispatcher.io) {
+                                    adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.PRODUCT) ?: false
+                                })
+                            },
+                            onError = {
+                                mIsManageProductAdmin.value = Fail(it)
+                                getAdminPermissionJob?.cancel()
+                            }
+                    )
+        }
     }
 
 }

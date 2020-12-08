@@ -181,6 +181,11 @@ class AddEditProductPreviewFragment:
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
+    // TODO: Change to usersession value
+    private val isMultiLocationShop = false
+    private val isShopAdmin = true
+    private val isShopOwner = false
+
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
@@ -467,8 +472,7 @@ class AddEditProductPreviewFragment:
         }
 
         val shouldShowMultiLocationTicker =
-                isAdding() && userSession.isMultiLocationShop &&
-                        (userSession.isShopOwner || userSession.isShopAdmin)
+                isAdding() && isMultiLocationShop && (isShopOwner || isShopAdmin)
         multiLocationTicker?.showWithCondition(shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
@@ -480,6 +484,7 @@ class AddEditProductPreviewFragment:
         observeImageUrlOrPathList()
         observeIsLoading()
         observeSaveProductDraft()
+        observeAdminPermission()
 
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
@@ -966,6 +971,24 @@ class AddEditProductPreviewFragment:
                 }
             }
         })
+    }
+
+    private fun observeAdminPermission() {
+        viewModel.isManageProductAdmin.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (!isEligible) {
+                            // TODO: Show not eligible page
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetProductErrorToast(viewModel.getProductId())
+                }
+            }
+
+        }
     }
 
     private fun removeObservers() {
