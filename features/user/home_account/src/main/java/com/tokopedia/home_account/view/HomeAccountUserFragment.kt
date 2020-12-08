@@ -190,11 +190,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     saldo.addAll(mappedMember)
                     financialAdapter?.addItems(saldo)
                     financialAdapter?.notifyDataSetChanged()
-                    adapter?.notifyDataSetChanged()
+                    adapter?.notifyItemChanged(0)
                 }
 
                 is Fail -> {
-
+                    financialAdapter?.addItems(listOf(CommonDataView(
+                            type = CommonViewHolder.TYPE_ERROR
+                    )))
+                    financialAdapter?.notifyDataSetChanged()
+                    adapter?.notifyItemChanged(0)
                 }
             }
         })
@@ -205,7 +209,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     val mappedMember = mapper.mapMemberItemDataView(it.data)
                     memberAdapter?.addItems(mappedMember)
                     memberAdapter?.notifyDataSetChanged()
-                    adapter?.notifyDataSetChanged()
+                    adapter?.notifyItemChanged(0)
                 }
 
                 is Fail -> {
@@ -215,17 +219,31 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         })
     }
 
-    private fun onSuccessGetWallet(wallet: WalletModel){
-//        val mappedWallet = mapper.mapToFinancialData(wallet)
+    override fun onFinancialErrorClicked() {
+        viewModel.getWalletBalance()
     }
 
     private fun onFailGetData(throwable: Throwable) {
-        val message = throwable.message?: ""
-        if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
-            showErrorNoConnection()
-        } else {
-            showError(throwable)
+        adapter?.run {
+            if(adapter?.getItem(0) is ProfileDataView) {
+                adapter?.removeItemAt(0)
+            }
+            addItem(0, ProfileDataView(
+                    name = userSession.name,
+                    phone = userSession.phoneNumber,
+                    email = userSession.email,
+                    avatar = userSession.profilePicture
+            ))
+            adapter?.notifyDataSetChanged()
         }
+        hideLoading()
+
+//        val message = throwable.message?: ""
+//        if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
+//            showErrorNoConnection()
+//        } else {
+//            showError(throwable)
+//        }
     }
 
     private fun setStatusBarAlpha(alpha: Float) {

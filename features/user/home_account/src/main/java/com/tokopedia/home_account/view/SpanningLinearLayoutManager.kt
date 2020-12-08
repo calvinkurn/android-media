@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.roundToInt
 
 
 /**
@@ -21,11 +20,19 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
     private val verticalSpace: Int
         get() = height - paddingBottom - paddingTop
     private var itemSpacing: Int = 0
+    private var minWidth = 0
 
-    constructor(context: Context?, itemSpacing: Int = 0) : super(context) { this.itemSpacing = itemSpacing }
+    private var context: Context? = null
 
-    constructor(context: Context?, orientation: Int, reverseLayout: Boolean, itemSpacing: Int = 0) : super(context, orientation, reverseLayout) {
+    constructor(context: Context?, itemSpacing: Int = 0) : super(context) {
         this.itemSpacing = itemSpacing
+        this.context = context
+    }
+
+    constructor(context: Context?, orientation: Int, reverseLayout: Boolean, itemSpacing: Int = 0, minWidth: Int = 0) : super(context, orientation, reverseLayout) {
+        this.itemSpacing = itemSpacing
+        this.context = context
+        this.minWidth = minWidth
     }
 
     constructor(context: Context?, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
@@ -42,9 +49,22 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
         return spanLayoutSize(super.generateLayoutParams(lp))
     }
 
+    private fun dpFromPx(context: Context, px: Float): Float {
+        return px / context.resources.displayMetrics.density
+    }
+
     private fun spanLayoutSize(layoutParams: RecyclerView.LayoutParams): RecyclerView.LayoutParams {
         if (orientation == HORIZONTAL) {
-            layoutParams.width = Math.round(horizontalSpace / itemCount.toDouble()).toInt() - itemSpacing
+            val width = Math.round(horizontalSpace / itemCount.toDouble()).toInt() - itemSpacing
+            if(minWidth > 0) {
+                context?.run {
+                    if (dpFromPx(this, width.toFloat()) >= minWidth) {
+                        layoutParams.width = width
+                    }
+                }
+            }else {
+                layoutParams.width = width
+            }
         } else if (orientation == VERTICAL) {
             layoutParams.height = Math.round(verticalSpace / itemCount.toDouble()).toInt() - itemSpacing
         }

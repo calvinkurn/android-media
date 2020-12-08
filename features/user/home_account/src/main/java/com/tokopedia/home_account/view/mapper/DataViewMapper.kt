@@ -62,7 +62,6 @@ class DataViewMapper @Inject constructor(
     fun mapToFinancialData(wallet: WalletModel): List<CommonDataView> {
         val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
 
-//        val saldo = mapSaldo(accountDataModel)
         val items = arrayListOf<CommonDataView>()
         if(wallet.walletType != null && wallet.walletType == OVO) {
             if(!wallet.isLinked) {

@@ -20,6 +20,8 @@ interface HomeAccountUserListener {
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
 
+    fun onFinancialErrorClicked()
+
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)

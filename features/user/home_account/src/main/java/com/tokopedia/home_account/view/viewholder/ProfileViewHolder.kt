@@ -74,7 +74,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
         itemView?.home_account_financial_layout_title?.text = profile.financial?.title
         financialAdapter?.list = profile.financial?.items ?: mutableListOf()
         itemView.home_account_financial_layout_rv?.adapter = financialAdapter
-        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
+        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
     }
 
     private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
@@ -93,7 +93,9 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             dividerItemDecoration.setDrawable(this)
         }
 
-        itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
+        if(itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
+            itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
+        }
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true

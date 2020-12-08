@@ -92,11 +92,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getShortcutData(){
         launchCatchError(block = {
             val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
-//            withContext(dispatcher){
-                internalBuyerData?.shortcutResponse = shortcutResponse
-//                _buyerAccountData.value = Success(internalBuyerData!!)
-                _shortcutData.value = Success(shortcutResponse)
-//            }
+            _shortcutData.value = Success(shortcutResponse)
         }, onError = {
             _shortcutData.postValue(Fail(it))
         })
@@ -105,11 +101,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getWalletBalance(){
         launchCatchError(block = {
             val wallet = getBuyerWalletBalance()
-//            withContext(dispatcher){
-                internalBuyerData?.wallet = wallet
-//                _buyerAccountData.value = Success(internalBuyerData!!)
                 _walletData.value = Success(wallet)
-//            }
         }, onError = {
             _walletData.postValue(Fail(it))
         })
@@ -118,12 +110,8 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
-            internalBuyerData = accountModel
-//            val walletModel = getBuyerWalletBalance()
-//            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
             withContext(dispatcher) {
-//                accountModel.wallet = walletModel
-//                accountModel.shortcutResponse = shortcutResponse
+                internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.value = Success(accountModel)
             }
