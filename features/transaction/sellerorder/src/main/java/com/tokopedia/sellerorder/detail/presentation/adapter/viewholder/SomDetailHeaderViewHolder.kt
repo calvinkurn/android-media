@@ -110,6 +110,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 // labels
+                rvSomDetailLabels.isNestedScrollingEnabled = false
                 rvSomDetailLabels.layoutManager = FlexboxLayoutManager(context).apply {
                     alignItems = AlignItems.FLEX_START
                 }
