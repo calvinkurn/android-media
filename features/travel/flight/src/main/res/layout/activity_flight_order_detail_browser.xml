@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
 
-    <WebView
+    <com.tokopedia.webview.TkpdWebView
         android:id="@+id/wvFlightOrderDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

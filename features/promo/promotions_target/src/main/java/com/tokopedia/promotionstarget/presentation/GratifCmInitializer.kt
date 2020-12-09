@@ -20,6 +20,9 @@ object GratifCmInitializer {
 
     fun start(appContext: Application) {
         try {
+
+            if(CMInAppManager.getInstance() == null || CMInAppManager.getInstance().dataConsumer == null) return
+
             val activityProvider = ActivityProviderImpl()
             appContext.registerActivityLifecycleCallbacks(activityProvider)
 
