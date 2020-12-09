@@ -18,12 +18,6 @@ import org.junit.Test
 class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopEditBasicInfoViewModel.detachView()
-        verifyUnsubscribeUseCase()
-    }
-
-    @Test
     fun `when get shop basic data should return success`() {
         runBlocking {
             _onGetShopBasicData_thenReturn()
@@ -194,23 +188,5 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
-    }
-
-    @Test
-    fun `when validate shop name should activate job and call validation again to cancel job then completion validation it will be active again`() {
-        coroutineTestRule.runBlockingTest {
-            shopEditBasicInfoViewModel.validateShopName("shop")
-            shopEditBasicInfoViewModel.validateShopName("shopName")
-            assertTrue(shopEditBasicInfoViewModel.validateShopNameJob?.isActive == true)
-        }
-    }
-
-    @Test
-    fun `when validate shop domain should activate job and call validation again to cancel job then completion validation it will be active again`() {
-       coroutineTestRule.runBlockingTest {
-           shopEditBasicInfoViewModel.validateShopDomain("domain")
-           shopEditBasicInfoViewModel.validateShopDomain("shopDomain")
-           assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob?.isActive == true)
-       }
     }
 }

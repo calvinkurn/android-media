@@ -38,10 +38,13 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _gatewayCode = ""
     private var _paymentQuery = ""
     private var _paymentProfile = ""
+    private var _paymentAmount = 0.0
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
     private var _fromFlow = FROM_FLOW_PREF
+    private var _directPaymentStep = false
+    private var _isNewFlow = false
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -75,10 +78,13 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         _paymentProfile = intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: ""
+        _paymentAmount = intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0)
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
+        _directPaymentStep = intent.getBooleanExtra(EXTRA_DIRECT_PAYMENT_STEP, false)
+        _isNewFlow = intent.getBooleanExtra(EXTRA_IS_NEW_FLOW, false)
 
         val ft = supportFragmentManager.beginTransaction()
         val fragments = supportFragmentManager.fragments
@@ -87,7 +93,9 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
                 ft.remove(fragment)
             }
         }
-        if (_profileId == 0) {
+        if (_directPaymentStep) {
+            ft.replace(R.id.container, PaymentMethodFragment.newInstance(true)).commit()
+        } else if (_profileId == 0) {
             ft.replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             ft.replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
@@ -274,6 +282,18 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _paymentProfile
     }
 
+    override fun getPaymentAmount(): Double {
+        return _paymentAmount
+    }
+
+    override fun isDirectPaymentStep(): Boolean {
+        return _directPaymentStep
+    }
+
+    override fun isNewFlow(): Boolean {
+        return _isNewFlow
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -282,6 +302,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
         const val EXTRA_PAYMENT_PROFILE = "payment_profile"
+        const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
@@ -291,6 +312,13 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val FROM_FLOW_OSP = 1
         const val FROM_FLOW_PREF = 0
 
+        const val EXTRA_DIRECT_PAYMENT_STEP = "direct_payment_step"
+
+        const val EXTRA_IS_NEW_FLOW = "is_new_flow"
+
         const val EXTRA_RESULT_MESSAGE = "RESULT_MESSAGE"
+
+        const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
+        const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
     }
 }
