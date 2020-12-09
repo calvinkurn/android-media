@@ -24,7 +24,7 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        Thread.sleep(2000L)
+        Thread.sleep(5000)
     }
 
     fun closeKeyboard() {
