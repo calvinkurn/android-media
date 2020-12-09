@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.adapter.cart
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
@@ -1387,13 +1388,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     }
 
-    // Getter to minimize direct global var access to make functions patch-able using hansel
-    private fun getCartDataList(): ArrayList<Any> {
-        return cartDataList
-    }
-
     fun hasAvailableItemLeft(): Boolean {
-        val cartDataList = getCartDataList()
         cartDataList.forEach {
             if (it is CartShopHolderData) {
                 if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
@@ -1405,4 +1400,42 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return false
     }
 
+    fun setAllAvailableItemCheck(cheked: Boolean) {
+        val indices = ArraySet<Int>()
+        cartDataList.forEachIndexed { index, data ->
+            if (data is CartShopHolderData) {
+                var changeShopLevelCheckboxState = false
+                data.shopGroupAvailableData.cartItemDataList?.forEach {
+                    if (it.isSelected != cheked) {
+                        it.isSelected = cheked
+                        indices.add(index)
+                        changeShopLevelCheckboxState = true
+                    }
+                }
+
+                if (changeShopLevelCheckboxState) {
+                    data.isAllSelected = cheked
+                    data.isPartialSelected = false
+                }
+            }
+        }
+
+        indices.forEach {
+            notifyItemChanged(it)
+        }
+    }
+
+    fun isAllAvailableItemCheked(): Boolean {
+        cartDataList.forEach {
+            if (it is CartShopHolderData) {
+                it.shopGroupAvailableData.cartItemDataList?.forEach {
+                    if (!it.isSelected) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return true
+    }
 }

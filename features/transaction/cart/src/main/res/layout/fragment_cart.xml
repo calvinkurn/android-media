@@ -78,7 +78,7 @@
                     tools:visibility="visible">
 
                     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-                        android:id="@+id/checkboxUnify"
+                        android:id="@+id/checkbox_global"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
@@ -88,9 +88,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_select_all_product"
-                        app:layout_constraintBottom_toBottomOf="@+id/checkboxUnify"
-                        app:layout_constraintStart_toEndOf="@+id/checkboxUnify"
-                        app:layout_constraintTop_toTopOf="@+id/checkboxUnify"
+                        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global"
+                        app:layout_constraintStart_toEndOf="@+id/checkbox_global"
+                        app:layout_constraintTop_toTopOf="@+id/checkbox_global"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler" />
 
@@ -99,9 +99,9 @@
                         android:layout_height="wrap_content"
                         android:text="Hapus"
                         android:textColor="@color/Unify_G500"
-                        app:layout_constraintBottom_toBottomOf="@+id/checkboxUnify"
+                        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/checkboxUnify"
+                        app:layout_constraintTop_toTopOf="@+id/checkbox_global"
                         app:typographyType="heading_5"
                         app:typographyWeight="bold" />
 

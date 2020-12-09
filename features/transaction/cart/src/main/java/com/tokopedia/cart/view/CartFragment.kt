@@ -17,7 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -38,9 +41,9 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -115,6 +118,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -123,15 +127,17 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMEND
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
+import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -165,6 +171,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var tmpAnimatedImage: ImageUnify
     lateinit var topLayout: ConstraintLayout
     lateinit var topLayoutShadow: View
+    lateinit var checkboxGlobal: CheckboxUnify
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -533,6 +540,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
         topLayout = view.findViewById(R.id.top_layout)
         topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
+        checkboxGlobal = view.findViewById(R.id.checkbox_global)
 
         initToolbar(view)
 
@@ -546,6 +554,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         initViewListener()
         initRecyclerView()
+        initCheckboxGlobal()
     }
 
     private fun initViewListener() {
@@ -952,6 +961,25 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         return null
+    }
+
+    private fun initCheckboxGlobal() {
+        checkboxGlobal.let {
+            compositeSubscription.add(
+                    rxCompoundButtonCheckDebounce(it, 500L).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            cartAdapter.setAllAvailableItemCheck(isChecked)
+                            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+                        }
+
+                        override fun onCompleted() {
+                        }
+
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
+        }
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -1563,6 +1591,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
+
+        setCheckboxGlobalState()
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -1596,6 +1626,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+        setCheckboxGlobalState()
 
         cartAdapter.checkForShipmentForm()
         cartAdapter.setItemSelected(position, parentPosition, checked)
@@ -1607,6 +1638,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+    }
+
+    private fun setCheckboxGlobalState() {
+        val isAllAvailableItemCheked = cartAdapter.isAllAvailableItemCheked()
+        checkboxGlobal.isChecked = isAllAvailableItemCheked
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
@@ -1764,9 +1800,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
+            setInitialCheckboxGlobalState(cartListData)
             setTopLayoutVisibility()
+
             cartAdapter.checkForShipmentForm()
         }
+    }
+
+    private fun setInitialCheckboxGlobalState(cartListData: CartListData) {
+        checkboxGlobal.isChecked = cartListData.isAllSelected
     }
 
     private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
@@ -2727,10 +2769,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setTopLayoutVisibility() {
-        val isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
+        var isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
 
         if (cartAdapter.hasAvailableItemLeft()) {
             topLayout.show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (appBarLayout.elevation == HAS_ELEVATION.toFloat()) {
+                    isShowToolbarShadow = true
+                }
+            }
         } else {
             topLayout.gone()
         }
