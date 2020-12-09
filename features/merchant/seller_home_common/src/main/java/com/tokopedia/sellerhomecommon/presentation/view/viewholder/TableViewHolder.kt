@@ -110,6 +110,7 @@ class TableViewHolder(
                     }
                 }
             }
+            tvShcTableOnEmpty.gone()
         } else {
             tvShcTableOnEmpty.visible()
         }
