@@ -19,10 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 object GratifCmInitializer {
 
     fun start(appContext: Application) {
-        try{
-            //exit case
-            if(CMInAppManager.getInstance() == null || CMInAppManager.getInstance().dataConsumer == null) return
-
+        try {
             val activityProvider = ActivityProviderImpl()
             appContext.registerActivityLifecycleCallbacks(activityProvider)
 
@@ -30,7 +27,6 @@ object GratifCmInitializer {
             val mapOfPendingInApp = ConcurrentHashMap<Int, PendingData>()
 
             val gratificationPresenter = GratificationPresenter(appContext)
-
             val dataConsumer = CMInAppManager.getInstance().dataConsumer
             gratificationPresenter.dialogVisibilityContract = CMInAppManager.getInstance()
             gratificationPresenter.dataConsumer = dataConsumer
