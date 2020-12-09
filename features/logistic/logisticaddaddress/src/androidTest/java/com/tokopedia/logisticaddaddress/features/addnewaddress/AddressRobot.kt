@@ -30,6 +30,11 @@ class AddressRobot {
     fun searchWithKeyword(keyword: String) {
         onView(withId(R.id.et_search_logistic))
                 .check(matches(withText("")))
+        // delay for text field debounce
+    }
+
+    fun search2(keyword: String) {
+        onView(withId(R.id.et_search_logistic))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
         Thread.sleep(2000L)

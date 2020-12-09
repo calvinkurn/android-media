@@ -62,6 +62,7 @@ class AddNewAddressNegativeTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
             selectFirstCityItem()
@@ -83,6 +84,7 @@ class AddNewAddressNegativeTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
             selectFirstCityItem()
@@ -104,6 +106,7 @@ class AddNewAddressNegativeTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             clickCity()
             searchCityWithKeyword(JAK_KEYWORD)
             selectFirstCityItem()

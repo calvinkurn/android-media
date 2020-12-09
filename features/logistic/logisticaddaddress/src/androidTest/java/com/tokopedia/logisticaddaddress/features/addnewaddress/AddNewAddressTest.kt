@@ -62,6 +62,7 @@ class AddNewAddressTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
@@ -79,6 +80,7 @@ class AddNewAddressTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
@@ -96,6 +98,7 @@ class AddNewAddressTest {
         addAddress {
             launchFrom(mActivityTestRule, screenName)
             searchWithKeyword(JAK_KEYWORD)
+            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
