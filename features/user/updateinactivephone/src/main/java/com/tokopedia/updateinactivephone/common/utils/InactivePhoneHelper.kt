@@ -11,7 +11,8 @@ import java.io.IOException
 
 
 fun convertToBitmap(path: String): Bitmap {
-    return modifyOrientation(BitmapFactory.decodeFile(path), path)
+    val bitmap: Bitmap = BitmapFactory.decodeFile(path)
+    return modifyOrientation(bitmap, path)
 }
 
 @Throws(IOException::class)
