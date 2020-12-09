@@ -36,6 +36,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
             it.renderByDefault
         })
     }
+    discoveryResponse.component?.setComponentsItem(discoveryResponse.components)
     return discoveryPageData
 }
 
@@ -173,11 +174,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     id = targetedComponentId
                     this.tabName = tabName
                     dynamicOriginalId = originalComponentId
-//                    this.properties = tabComponent.properties
-
                     properties = component1.properties
                     properties?.dynamic = tabComponent.properties?.dynamic ?: false
-//                    this.properties = properties
                     setComponent(targetedComponentId, pageIdentity, this)
                     tabChildComponentsItem = this
                 }

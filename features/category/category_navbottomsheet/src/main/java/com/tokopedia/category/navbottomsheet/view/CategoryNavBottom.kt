@@ -47,6 +47,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
         isDragable = true
         isHideable = true
         clearContentPadding = true
+        isFullpage = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

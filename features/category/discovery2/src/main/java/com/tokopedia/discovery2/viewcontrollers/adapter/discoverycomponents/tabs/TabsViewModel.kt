@@ -26,11 +26,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     lateinit var dynamicTabsUseCase: DynamicTabsUseCase
 
 
-    init {
-        initDaggerInject()
-    }
-
-    override fun onAttachToViewHolder() {
+   override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchDynamicTabData()
         updateTabItems()
