@@ -26,7 +26,7 @@ class AddressRobot {
         val i = Intent(InstrumentationRegistry.getInstrumentation().targetContext, PinpointMapActivity::class.java).also {
             it.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         }
-        rule.launchActivity(i)
+        rule.launchActivity(null)
         Thread.sleep(5000)
     }
 
@@ -36,7 +36,6 @@ class AddressRobot {
     }
 
     fun searchWithKeyword(keyword: String) {
-        closeSoftKeyboard()
         onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
