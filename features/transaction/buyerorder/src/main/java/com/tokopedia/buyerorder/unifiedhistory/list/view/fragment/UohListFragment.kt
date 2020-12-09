@@ -240,9 +240,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
         if (userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        } else {
             initialLoad()
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
     }
 
