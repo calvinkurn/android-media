@@ -56,11 +56,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            tabsHolder.apply {
-                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
-            }
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
                 tabMode = TabLayout.MODE_SCROLLABLE
                 removeAllTabs()
                 setBackgroundResource(0)
