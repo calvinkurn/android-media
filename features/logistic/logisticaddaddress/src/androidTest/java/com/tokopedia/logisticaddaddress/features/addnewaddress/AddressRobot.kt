@@ -7,6 +7,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -22,8 +23,9 @@ fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
 class AddressRobot {
 
     fun launchFrom(rule: ActivityTestRule<PinpointMapActivity>, screenName: String) {
-        val i = Intent()
-        i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
+        val i = Intent(InstrumentationRegistry.getInstrumentation().targetContext, PinpointMapActivity::class.java).also {
+            it.putExtra(CheckoutConstant.EXTRA_REF, screenName)
+        }
         rule.launchActivity(i)
         Thread.sleep(5000)
     }
