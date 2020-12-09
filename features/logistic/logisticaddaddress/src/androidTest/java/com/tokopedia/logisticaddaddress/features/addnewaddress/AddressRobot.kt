@@ -29,7 +29,7 @@ class AddressRobot {
     }
 
     fun closeKeyboard() {
-        onView(withId(R.id.et_search_logistic))
+        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
                 .perform(closeSoftKeyboard())
     }
 
