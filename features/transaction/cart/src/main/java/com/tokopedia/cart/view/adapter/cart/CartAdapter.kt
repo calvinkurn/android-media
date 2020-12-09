@@ -1386,4 +1386,23 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
     }
+
+    // Getter to minimize direct global var access to make functions patch-able using hansel
+    private fun getCartDataList(): ArrayList<Any> {
+        return cartDataList
+    }
+
+    fun hasAvailableItemLeft(): Boolean {
+        val cartDataList = getCartDataList()
+        cartDataList.forEach {
+            if (it is CartShopHolderData) {
+                if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
 }

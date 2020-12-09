@@ -36,16 +36,16 @@
             android:id="@+id/nav_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:minHeight="?attr/actionBarSize"
             android:gravity="top"
+            android:minHeight="?attr/actionBarSize"
             android:visibility="gone"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarAlwaysShowShadow="false"
+            app:toolbarContentType="typeTitle"
             app:toolbarInitialTheme="light"
-            app:toolbarTitle="@string/cart"
             app:toolbarPageName="@string/toolbar_page_name_cart"
-            app:toolbarContentType="typeTitle" />
+            app:toolbarTitle="@string/cart" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -65,19 +65,68 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/top_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/Unify_N0"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                        android:id="@+id/checkboxUnify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_select_all_product"
+                        app:layout_constraintBottom_toBottomOf="@+id/checkboxUnify"
+                        app:layout_constraintStart_toEndOf="@+id/checkboxUnify"
+                        app:layout_constraintTop_toTopOf="@+id/checkboxUnify"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hapus"
+                        android:textColor="@color/Unify_G500"
+                        app:layout_constraintBottom_toBottomOf="@+id/checkboxUnify"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/checkboxUnify"
+                        app:typographyType="heading_5"
+                        app:typographyWeight="bold" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/bottom_layout"
-                    android:layout_alignParentTop="true" />
+                    android:layout_below="@+id/top_layout" />
+
+                <View
+                    android:id="@+id/top_layout_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_below="@+id/top_layout"
+                    android:background="@drawable/shadow_bottom" />
 
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_4"
                     android:layout_above="@+id/bottom_layout"
-                    android:background="@drawable/bottom_sheet_shadow" />
+                    android:background="@drawable/shadow_top" />
 
                 <LinearLayout
                     android:id="@+id/ll_promo_checkout"
@@ -92,7 +141,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_4"
-                        android:background="@drawable/bottom_sheet_shadow" />
+                        android:background="@drawable/shadow_top" />
 
                     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                         android:id="@+id/promo_checkout_btn_cart"
@@ -188,7 +237,7 @@
                             <View
                                 android:id="@+id/v_disabled_go_to_courier_page_button"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"/>
+                                android:layout_height="match_parent" />
 
                         </FrameLayout>
 

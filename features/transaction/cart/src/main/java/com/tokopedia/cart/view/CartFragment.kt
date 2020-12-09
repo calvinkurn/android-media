@@ -21,6 +21,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -162,6 +163,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var imgChevronSummary: UnifyImageButton
     lateinit var textTotalPaymentLabel: Typography
     lateinit var tmpAnimatedImage: ImageUnify
+    lateinit var topLayout: ConstraintLayout
+    lateinit var topLayoutShadow: View
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -528,6 +531,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
         textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
         tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
+        topLayout = view.findViewById(R.id.top_layout)
+        topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
 
         initToolbar(view)
 
@@ -673,11 +678,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setToolbarShadowVisibility(show: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (topLayout.visibility == View.VISIBLE) {
             if (show) {
-                appBarLayout.elevation = HAS_ELEVATION.toFloat()
+                topLayoutShadow.show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    appBarLayout.elevation = NO_ELEVATION.toFloat()
+                }
             } else {
-                appBarLayout.elevation = NO_ELEVATION.toFloat()
+                topLayoutShadow.gone()
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (show) {
+                    appBarLayout.elevation = HAS_ELEVATION.toFloat()
+                    topLayoutShadow.gone()
+                } else {
+                    appBarLayout.elevation = NO_ELEVATION.toFloat()
+                }
             }
         }
     }
@@ -817,6 +834,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             navToolbar.gone()
             basicToolbar.show()
         }
+        setToolbarShadowVisibility(false)
     }
 
     private fun initNavigationToolbar(view: View) {
@@ -1746,6 +1764,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
+            setTopLayoutVisibility()
             cartAdapter.checkForShipmentForm()
         }
     }
@@ -2697,11 +2716,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         hideProgressLoading()
 
+        setTopLayoutVisibility()
+
         if (removeAllItems) {
             refreshCart()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
         }
+
+    }
+
+    private fun setTopLayoutVisibility() {
+        val isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
+
+        if (cartAdapter.hasAvailableItemLeft()) {
+            topLayout.show()
+        } else {
+            topLayout.gone()
+        }
+
+        setToolbarShadowVisibility(isShowToolbarShadow)
     }
 
     private fun onUndoDeleteClicked(cartIds: List<String>) {
@@ -2727,6 +2761,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
+        setTopLayoutVisibility()
 
         if (isLastItem) {
             refreshCart()
