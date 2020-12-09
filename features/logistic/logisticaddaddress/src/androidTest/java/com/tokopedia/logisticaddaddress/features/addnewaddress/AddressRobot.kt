@@ -24,17 +24,18 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        Thread.sleep(5000L)
+        Thread.sleep(2000L)
+    }
+
+    fun closeKeyboard() {
+        onView(withId(R.id.et_search_logistic))
+                .perform(closeSoftKeyboard())
     }
 
     fun searchWithKeyword(keyword: String) {
+        closeSoftKeyboard()
         onView(withId(R.id.et_search_logistic))
                 .check(matches(withText("")))
-        // delay for text field debounce
-    }
-
-    fun search2(keyword: String) {
-        onView(withId(R.id.et_search_logistic))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
         Thread.sleep(2000L)

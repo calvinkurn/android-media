@@ -61,8 +61,8 @@ class AddNewAddressTest {
         val screenName = "/user/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
+            closeKeyboard()
             searchWithKeyword(JAK_KEYWORD)
-            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
@@ -79,8 +79,8 @@ class AddNewAddressTest {
         val screenName = "/cart/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
+            closeKeyboard()
             searchWithKeyword(JAK_KEYWORD)
-            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
@@ -97,8 +97,8 @@ class AddNewAddressTest {
         val screenName = "/user/address/create/cart"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
+            closeKeyboard()
             searchWithKeyword(JAK_KEYWORD)
-            search2(JAK_KEYWORD)
             selectFirstItem()
             addressDetail(TEST_DETAILS)
             receiver(TEST_RECEIVER)
