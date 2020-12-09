@@ -25,12 +25,7 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        Thread.sleep(5000)
-    }
-
-    fun closeKeyboard() {
-        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
-                .perform(closeSoftKeyboard())
+        waitForData()
     }
 
     fun searchWithKeyword(keyword: String) {
@@ -38,7 +33,7 @@ class AddressRobot {
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        Thread.sleep(2000L)
+        waitForData()
     }
 
     fun selectFirstItem() {
@@ -60,7 +55,7 @@ class AddressRobot {
         onView(withId(R.id.et_search_district_recommendation))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
-        Thread.sleep(2000L)
+        waitForData()
     }
 
     fun selectFirstCityItem() {
@@ -90,6 +85,10 @@ class AddressRobot {
     fun phoneNumber(phone: String) {
         onView(withId(R.id.et_phone))
                 .perform(scrollTo(), click(), typeText(phone), closeSoftKeyboard())
+    }
+
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
