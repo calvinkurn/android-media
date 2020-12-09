@@ -68,7 +68,7 @@ class SimulationFragment : Fragment() {
                 for (i in 0..4) {
                     when (i) {
                         0 -> addView(getBlankView(layoutParam, it))
-                        1 -> addView(getRecomView(layoutParam))
+                        1 -> addView(getRecomView(layoutParam, it))
                         else -> addView(getNoRecomView(layoutParam, it, i%2 ==0))
                     }
                 }
@@ -104,9 +104,10 @@ class SimulationFragment : Fragment() {
 
     }
 
-    private fun getRecomView(layoutParam: ViewGroup.LayoutParams): View? {
+    private fun getRecomView(layoutParam: ViewGroup.LayoutParams, context: Context): View? {
         val rowHeaderRecom = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
         rowHeaderRecom.layoutParams = layoutParam
+        rowHeaderRecom.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_green_border)
         val ivPayLaterPartner = rowHeaderRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
         ImageHandler.loadImage(context,
                 ivPayLaterPartner,
@@ -127,6 +128,10 @@ class SimulationFragment : Fragment() {
                 for (j in 0 until colCount) {
                     when (i) {
                         0 -> contentRow.addView(getColumnHeader(contentLayoutParam, it, j), contentLayoutParam)
+                        1 -> {
+                            contentRow.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_installment_green_border)
+                            contentRow.addView(getInstallmentView(contentLayoutParam, it, data[i-1].installmentData[j], i), contentLayoutParam)
+                        }
                         else -> contentRow.addView(getInstallmentView(contentLayoutParam, it, data[i-1].installmentData[j], i), contentLayoutParam)
                     }
                 }
