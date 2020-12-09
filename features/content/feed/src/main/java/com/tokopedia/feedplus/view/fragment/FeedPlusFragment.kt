@@ -43,6 +43,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
@@ -58,6 +59,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
@@ -71,6 +73,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -162,7 +165,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
-        PlayWidgetListener {
+        PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -641,6 +644,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed.visibility = View.GONE
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
+        TopAdsHeadlineActivityCounter.page = 0
     }
 
     override fun onDestroyView() {
@@ -1761,6 +1765,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
             adapter.notifyItemChanged(rowNumber, adapterPosition)
         }
+        if (adapter.getlist()[rowNumber] is TopadsHeadlineUiModel) {
+            val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadlineUiModel
+            topadsHeadlineUiModel.cpmModel?.data?.first()?.cpm?.cpmShop?.isFollowed?.let {
+                topadsHeadlineUiModel.cpmModel?.data?.first()?.cpm?.cpmShop?.isFollowed = !it
+            }
+            adapter.notifyItemChanged(rowNumber)
+        }
     }
 
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
@@ -2110,5 +2121,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
+    }
+
+    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+        feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 }
