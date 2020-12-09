@@ -207,14 +207,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
     }
 
-    private fun checkTokenValidaity(token: String): Boolean {
-        if (token.length <= 36) {
-            //ignore temporary fcm token
-            return true
-        }
-        return false
-    }
-
     private fun getRandomDelay(randomDelaySeconds: Long): Long {
         val rand = Random()
         val millis = rand.nextInt(1000) + 1 //in millis delay
