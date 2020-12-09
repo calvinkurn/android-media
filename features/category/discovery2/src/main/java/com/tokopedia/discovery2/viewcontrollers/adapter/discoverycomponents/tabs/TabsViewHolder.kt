@@ -10,8 +10,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
-import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -146,7 +146,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onCategorySelected(catId: String, appLink: String?, depth: Int, catName: String) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryOptionClick(tabsViewModel.isUserLoggedIn(), catId, appLink, depth, catName)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryOptionClick(
+                tabsViewModel.isUserLoggedIn(), catId, appLink, depth, catName)
         updateComponentsQueryParams(catId)
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
