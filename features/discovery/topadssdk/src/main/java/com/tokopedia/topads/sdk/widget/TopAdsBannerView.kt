@@ -24,10 +24,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
@@ -38,10 +35,7 @@ import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.listener.CustomScrollListner
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.listener.TopAdsListener
+import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -52,14 +46,17 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
+import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
+import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.shop_name
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.*
@@ -73,12 +70,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var adsListener: TopAdsListener? = null
     private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
     private var impressionListener: TopAdsItemImpressionListener? = null
+    private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
     private var bannerAdsAdapter: BannerAdsAdapter? = null
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
     private val LAYOUT_2 = 2
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
+    private var showProductShimmer: Boolean = false
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -156,6 +155,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
                 shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
                 description?.text = cpmData?.cpm?.cpmShop?.slogan
+                if (cpmData?.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
+                    bindFavorite(cpmData.cpm.cpmShop.isFollowed)
+                    btnFollow.setOnClickListener {
+                        cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1) }
+                    }
+                    btnFollow.show()
+                } else {
+                    btnFollow.hide()
+                }
 
                 val shopdetail = findViewById<View>(R.id.shop_detail)
 
@@ -183,17 +191,35 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 val items = ArrayList<Item<*>>()
                 items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
-                for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
-                    if (i < 3) {
-                        items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
-                                appLink, adsClickUrl))
+                if (cpmData?.cpm?.cpmShop?.products?.isNotEmpty() == true) {
+                    for (i in 0 until cpmData.cpm.cpmShop.products.size) {
+                        if (i < 3) {
+                            items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
+                                    appLink, adsClickUrl))
+                        }
                     }
-                }
-                if (cpmData.cpm.cpmShop.products.size < 3) {
-                    items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
+                    if (cpmData.cpm.cpmShop.products.size < 3) {
+                        items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
+                    }
+                } else {
+                    items.add(BannerProductShimmerViewModel())
+                    items.add(BannerProductShimmerViewModel())
+                    items.add(BannerProductShimmerViewModel())
                 }
                 bannerAdsAdapter!!.setList(items)
             }
+        }
+    }
+
+    private fun bindFavorite(isFollowed: Boolean) {
+        if (isFollowed) {
+            btnFollow.buttonVariant = UnifyButton.Variant.GHOST
+            btnFollow.buttonType = UnifyButton.Type.ALTERNATE
+            btnFollow.text = btnFollow.context.getString(R.string.topads_following)
+        } else {
+            btnFollow.buttonVariant = UnifyButton.Variant.FILLED
+            btnFollow.buttonType = UnifyButton.Type.MAIN
+            btnFollow.text = btnFollow.context.getString(R.string.topads_follow)
         }
     }
 
@@ -295,7 +321,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun isEligible(cpmData: CpmData?) =
             cpmData != null
                     && cpmData.cpm.cpmShop != null
-                    && cpmData.cpm.cpmShop.products.size > 1
+                    && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
 
     private fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
@@ -352,12 +378,21 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         this.topAdsBannerClickListener = topAdsBannerClickListener
     }
 
+    fun setTopAdsShopFollowClickListener(topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener) {
+        this.topAdsShopFollowBtnClickListener = topAdsShopFollowBtnClickListener
+    }
+
     fun setTopAdsImpressionListener(adsImpressionListener: TopAdsItemImpressionListener) {
         this.impressionListener = adsImpressionListener
     }
 
     override fun showLoading() {
 
+    }
+
+    fun displayAdsWithProductShimmer(cpmModel: CpmModel?, showProductShimmer: Boolean = false) {
+        this.showProductShimmer = showProductShimmer
+        displayAds(cpmModel)
     }
 
     override fun displayAds(cpmModel: CpmModel?) {
