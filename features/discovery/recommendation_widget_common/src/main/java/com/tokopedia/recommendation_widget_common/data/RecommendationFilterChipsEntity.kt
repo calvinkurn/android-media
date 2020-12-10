@@ -36,6 +36,8 @@ data class RecommendationFilterChipsEntity (
     data class RecommendationFilterChip(
             @SerializedName("title")
             val title: String = "",
+            @SerializedName("name")
+            val name: String = "",
             @SerializedName("value")
             val value: String = "",
             @SerializedName("inputType")
