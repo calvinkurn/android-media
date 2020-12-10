@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="visible"
                 app:tickerType="information"
-                app:tickerShapeType="loose" />
+                app:tickerShapeType="full" />
 
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
                 android:id="@+id/topAdsWidgetFreeClaim"
