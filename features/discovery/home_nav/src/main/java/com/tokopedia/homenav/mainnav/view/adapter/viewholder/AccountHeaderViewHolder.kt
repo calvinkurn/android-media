@@ -118,19 +118,30 @@ class AccountHeaderViewHolder(itemView: View,
 
         tvOvo.isClickable = false
         usrOvoBadge.visible()
-
-        if (element.isGetOvoError && element.isGetSaldoError) {
-            tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
-            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-        } else if (element.isGetOvoError && !element.isGetSaldoError) {
-            tvOvo.text = element.saldo
-            usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+        if (element.isCacheData) {
+            tvOvoShimmer.visible()
+            usrOvoBadgeShimmer.visible()
+            tvOvo.gone()
+            usrOvoBadge.gone()
         } else {
-            tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
-            if (element.ovoSaldo.isNotEmpty()) {
+            tvOvoShimmer.gone()
+            usrOvoBadgeShimmer.gone()
+            tvOvo.visible()
+            usrOvoBadge.visible()
+            if (element.isGetOvoError && element.isGetSaldoError) {
+                tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-            } else if (element.saldo.isNotEmpty()) {
+            } else if (element.isGetOvoError && !element.isGetSaldoError) {
+                tvOvo.text = element.saldo
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+            } else {
+                tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
+                if (element.ovoSaldo.isNotEmpty()) {
+                    usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                } else if (element.saldo.isNotEmpty()) {
+                    usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                }
+
             }
         }
         if (element.shopName.isNotEmpty()) {
