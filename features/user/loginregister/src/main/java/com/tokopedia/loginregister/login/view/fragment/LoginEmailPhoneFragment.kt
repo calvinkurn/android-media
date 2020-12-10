@@ -1451,11 +1451,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
 
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                 if (it.isExist) {
                     if (!it.isPending) {
-                        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                         userSession.setTempLoginEmail(partialRegisterInputView.textValue)
-                        userSession.userId = it.userID
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
