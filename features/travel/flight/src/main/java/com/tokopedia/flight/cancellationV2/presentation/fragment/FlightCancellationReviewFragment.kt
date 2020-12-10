@@ -306,7 +306,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         Toaster.build(requireView(),
                 FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR)
+                Toaster.TYPE_ERROR).show()
     }
 
     companion object {

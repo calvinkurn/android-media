@@ -487,7 +487,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     getString(resourceId),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.flight_booking_action_okay))
+                    getString(R.string.flight_booking_action_okay)).show()
         }
     }
 

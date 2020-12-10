@@ -228,7 +228,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
 
     private fun showShouldChooseAtLeastOnePassengerError() {
         Toaster.build(requireView(), getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error),
-                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun closeCancellationPage() {
