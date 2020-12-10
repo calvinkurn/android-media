@@ -50,11 +50,6 @@ import javax.inject.Inject
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
-        private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
-        private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
-        private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
-        private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val getSaldoUseCase: Lazy<GetSaldoUseCase>,
         private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
         private val getNavNotification: Lazy<GetNavNotification>,
@@ -67,7 +62,7 @@ class MainNavViewModel @Inject constructor(
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
-        private const val INDEX_START_BU_MENU = 1
+        private const val INDEX_DEFAULT_BU_POSITION = 1
     }
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
@@ -308,10 +303,10 @@ class MainNavViewModel @Inject constructor(
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
 
-            updateWidgetList(result, INDEX_START_BU_MENU)
+            updateWidgetList(result, findBuIndexPosittion())
         }) {
             it.printStackTrace()
-            updateWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
+            updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
         }
     }
 
@@ -326,7 +321,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun refreshBuListdata() {
-        updateWidget(InitialShimmerDataModel(), INDEX_START_BU_MENU)
+        updateWidget(InitialShimmerDataModel(), findBuIndexPosittion())
         launchCatchError(coroutineContext, block = {
             getBuListMenu()
         }) {
@@ -420,129 +415,6 @@ class MainNavViewModel @Inject constructor(
         return listOf()
     }
 
-    private suspend fun getUserSection(){
-        launchCatchError(coroutineContext, block = {
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is AccountHeaderViewModel }?.let {
-                val accountHeader = (it as? AccountHeaderViewModel ?: AccountHeaderViewModel()).copy()
-                if (accountHeader.loginState == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-                    getUserBadgeImage(accountHeader)
-                    getOvoData(accountHeader)
-                    getSaldoData(accountHeader)
-                    getShopData(accountHeader.shopId.toInt(), accountHeader)
-                }
-            }
-        }) {
-            it.printStackTrace()
-        }
-    }
-
-    private suspend fun getShopData(shopId: Int, accountData: AccountHeaderViewModel) {
-        launchCatchError(coroutineContext, block = {
-            val call = async {
-                withContext(baseDispatcher.get().io()) {
-                    getShopInfoUseCase.get().executeOnBackground()
-                }
-            }
-            val newData = accountData.copy()
-            val result = (call.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
-            result?.let {
-                newData.setUserShopName(it.info.shopName, it.info.shopId)
-            }
-            updateWidget(newData, INDEX_MODEL_ACCOUNT)
-        }){
-            _shopResultListener.postValue(Fail(it))
-        }
-    }
-
-    private suspend fun getUserBadgeImage(accountData: AccountHeaderViewModel) {
-        launchCatchError(coroutineContext, block = {
-            val call = async {
-                withContext(baseDispatcher.get().io()) {
-                    getUserMembershipUseCase.get().executeOnBackground()
-                }
-            }
-            val newData = accountData.copy()
-            val result = (call.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-            result?.let {
-                newData.setUserBadge(it.tokopoints.status.tier.imageUrl)
-            }
-            updateWidget(newData, INDEX_MODEL_ACCOUNT)
-        }){
-            _membershipResultListener.postValue(Fail(it))
-        }
-    }
-
-    private suspend fun getUserData(accountData: AccountHeaderViewModel) {
-        launchCatchError(coroutineContext, block = {
-            val call = async {
-                withContext(baseDispatcher.get().io()) {
-                    getUserInfoUseCase.get().executeOnBackground()
-                }
-            }
-            val newData = accountData.copy()
-            val result = (call.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-            result?.let {
-                newData.setProfileData(it.profile.name, it.profile.profilePicture, AccountHeaderViewModel.LOGIN_STATE_LOGIN)
-            }
-            updateWidget(newData, INDEX_MODEL_ACCOUNT)
-        }){
-            //post error get ovo with new livedata
-
-            val newAccountData = accountData.copy(
-                    ovoSaldo = AccountHeaderViewModel.ERROR_TEXT,
-                    ovoPoint = AccountHeaderViewModel.ERROR_TEXT
-            )
-            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
-        }
-    }
-
-    private suspend fun getOvoData(accountData: AccountHeaderViewModel) {
-        launchCatchError(coroutineContext, block = {
-            val call = async {
-                withContext(baseDispatcher.get().io()) {
-                    getWalletUseCase.get().executeOnBackground()
-                }
-            }
-            val newData = accountData.copy()
-            val result = (call.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-            result?.let {
-                newData.setWalletData(it.cashBalance, it.pointBalance)
-            }
-            updateWidget(newData, INDEX_MODEL_ACCOUNT)
-        }){
-            //post error get ovo with new livedata
-
-            val newAccountData = accountData.copy(
-                    ovoSaldo = AccountHeaderViewModel.ERROR_TEXT,
-                    ovoPoint = AccountHeaderViewModel.ERROR_TEXT
-            )
-            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
-        }
-    }
-
-    private suspend fun getSaldoData(accountData: AccountHeaderViewModel) {
-        launchCatchError(coroutineContext, block = {
-            val call =  async {
-                withContext(baseDispatcher.get().io()) {
-                    getSaldoUseCase.get().executeOnBackground()
-                }
-            }
-            val newData = accountData.copy()
-            val result = (call.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-            result?.let {
-                newData.setSaldoData(
-                        convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: "")
-            }
-            updateWidget(newData, INDEX_MODEL_ACCOUNT)
-        }){
-            val newAccountData = accountData.copy(
-                    saldo = AccountHeaderViewModel.ERROR_TEXT
-            )
-            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
-        }
-    }
-
     private fun getNotification() {
         launchCatchError(coroutineContext, block = {
             val result = getNavNotification.get().executeOnBackground()
@@ -576,6 +448,17 @@ class MainNavViewModel @Inject constructor(
         if (userSession.get().isLoggedIn) function.invoke()
     }
 
+    private fun findBuIndexPosittion(): Int {
+        val findHomeMenu = _mainNavListVisitable.find {
+            it is HomeNavMenuViewModel && it.id == ClientMenuGenerator.ID_HOME
+        }
+        findHomeMenu?.let{
+            //if home menu is exist, then the position of bu menu is after home menu
+            return _mainNavListVisitable.indexOf(it)+1
+        }
+        return INDEX_DEFAULT_BU_POSITION
+    }
+
     private fun List<Visitable<*>>.findMenu(menuId: Int): HomeNavMenuViewModel? {
         val findExistingMenu = _mainNavListVisitable.find {
             it is HomeNavVisitable && it.id() == menuId
@@ -588,5 +471,9 @@ class MainNavViewModel @Inject constructor(
         val indexOfMenu = _mainNavListVisitable.indexOf(this)
         this.notifCount = counter
         updateWidget(this, indexOfMenu)
+    }
+
+    private fun isFromHomePage(): Boolean {
+        return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME
     }
 }
