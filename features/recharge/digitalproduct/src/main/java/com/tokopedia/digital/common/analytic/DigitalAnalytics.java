@@ -416,7 +416,7 @@ public class DigitalAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 DigitalEventTracking.Event.EVENT_KEY, "viewGAMainIris",
                 DigitalEventTracking.Event. EVENT_CATEGORY, "ga main app",
-                DigitalEventTracking.Event.EVENT_ACTION, "lick item transaction",
+                DigitalEventTracking.Event.EVENT_ACTION, "click item transaction",
                 DigitalEventTracking.Event.EVENT_LABEL, rechargeProductFromSlice,
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
                 DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
