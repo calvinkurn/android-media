@@ -61,7 +61,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         observeEditVariant()
         observeViewState()
 
-        getProductVariants(productId)
+        getData(productId)
     }
 
     override fun onAttach(context: Context) {
@@ -107,14 +107,15 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupBottomSheet() {
-        val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        bottomSheetHeader.setPadding(padding, padding, padding, padding)
+        val verticalPadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val horizontalpadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        bottomSheetHeader.setPadding(horizontalpadding, verticalPadding, horizontalpadding, verticalPadding)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
     private fun setupErrorView(productId: String) {
         errorView.setType(GlobalError.NO_CONNECTION)
-        errorView.setActionClickListener { getProductVariants(productId) }
+        errorView.setActionClickListener { getData(productId) }
         errorView.errorDescription.text = getString(R.string.product_manage_error_description)
         errorView.errorTitle.hide()
     }
@@ -125,8 +126,8 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         }
     }
 
-    private fun getProductVariants(productId: String) {
-        viewModel.getProductVariants(productId)
+    private fun getData(productId: String) {
+        viewModel.getData(productId)
     }
 
     private fun observeGetVariant() {

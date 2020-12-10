@@ -14,8 +14,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
@@ -24,11 +27,13 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewMo
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import java.util.*
 import javax.inject.Inject
@@ -263,9 +268,20 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
 
         observeStatus()
         observeStock()
+        observeStockTicker()
+        getStockTicker()
+
+        setupBottomSheet()
         quickEditStockQuantityEditor.editText.requestFocus()
         setAddButtonClickListener()
         setSubtractButtonClickListener()
+    }
+
+    private fun setupBottomSheet() {
+        val verticalPadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val horizontalpadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        bottomSheetHeader.setPadding(horizontalpadding, verticalPadding, horizontalpadding, verticalPadding)
+        bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
     private fun observeStock() {
@@ -288,6 +304,28 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
                 quickEditStockActivateSwitch.isChecked = productStatus == ProductStatus.ACTIVE
             }
         })
+    }
+
+    private fun observeStockTicker() {
+        observe(viewModel.stockTicker) {
+            if(it.shouldShowTicker()) {
+                val resourceId = when(it) {
+                    is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
+                    is EmptyStockTicker -> R.string.product_manage_multi_location_stock_no_access_description
+                    else -> R.string.product_manage_stock_ticker_description
+                }
+                val description = context?.getString(resourceId).orEmpty()
+                (tickerStockLayout as? Ticker)?.setTextDescription(description)
+                tickerStockLayout.show()
+            } else {
+                tickerStockLayout.hide()
+            }
+        }
+    }
+
+    private fun getStockTicker() {
+        val access = product?.access
+        viewModel.getStockTicker(access)
     }
     
     private fun setZeroStockBehavior() {
