@@ -6,21 +6,75 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clSimulationContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:background="@color/Neutral_N0"
         android:orientation="vertical">
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/payLaterSimulationProgress"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            app:loader_type="circular"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <com.tokopedia.unifycomponents.EmptyState
+            android:id="@+id/payLaterTermsEmptyView"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            app:unifyEmptyStateTitle="@string/paylater_simulation_empty_view_title"
+            app:unifyEmptyStateDescription="@string/paylater_simulation_empty_view_description"
+            app:unifyEmptyStateOrientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_connection" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerVertical"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/payLaterTermsEmptyView" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/payLaterTermsGroup"
+            app:constraint_referenced_ids="dividerVertical, payLaterTermsEmptyView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/payLaterSimulationTableGroup"
+            app:constraint_referenced_ids="llPayLaterPartner, tvTitleSimulation, hsvInstallment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/payLaterSimulationGroup"
+            app:constraint_referenced_ids="payLaterTermsGroup,payLaterSimulationTableGroup,tickerSimulation,paylaterDaftarWidget,tvPartnerRegistration, ivSupervisor, btnDaftarPayLater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTitlePenawaran"
+            android:id="@+id/tvTitleSimulation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:text="@string/paylater_title_simalisi"
+            android:text="@string/paylater_simulation_header_title"
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
@@ -31,14 +85,7 @@
             android:layout_marginTop="@dimen/unify_space_16"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitlePenawaran" />
-
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:layout_width="@dimen/unify_space_2"
-            android:layout_height="@dimen/unify_space_0"
-            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
-            app:layout_constraintStart_toEndOf="@id/llPayLaterPartner"
-            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner" />
+            app:layout_constraintTop_toBottomOf="@id/tvTitleSimulation" />
 
 
         <HorizontalScrollView
@@ -62,15 +109,16 @@
 
         </HorizontalScrollView>
 
+
         <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/tickerSimulasi"
+            android:id="@+id/tickerSimulation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_32"
+            android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
             app:closeButtonVisibility="gone"
-            app:descriptionText="@string/paylater_simulasi_ticker_text"
+            app:descriptionText="@string/paylater_simulation_ticker_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/llPayLaterPartner"
@@ -103,7 +151,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tickerSimulasi"
+            app:layout_constraintTop_toBottomOf="@+id/tickerSimulation"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -113,16 +161,16 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_32"
             android:layout_marginBottom="@dimen/unify_space_32"
-            android:text="@string/paylater_simulasi_supervised_text"
+            android:text="@string/paylater_simulation_supervised_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/ivSupervisor"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imageView"
+            android:id="@+id/ivSupervisor"
             android:layout_width="@dimen/unify_space_64"
             android:layout_height="@dimen/unify_space_24"
             android:layout_marginStart="@dimen/unify_space_8"
