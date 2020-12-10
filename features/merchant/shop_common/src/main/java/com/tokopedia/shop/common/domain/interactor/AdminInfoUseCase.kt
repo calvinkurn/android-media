@@ -37,7 +37,7 @@ class AdminInfoUseCase @Inject constructor(
         setTypeClass(AdminInfoResponse::class.java)
     }
 
-    suspend fun execute(requestParams: RequestParams): AdminInfoResult? {
+    suspend fun execute(requestParams: RequestParams): AdminInfoResult {
         setRequestParams(requestParams.parameters)
         try {
             val response = executeOnBackground()

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -110,12 +111,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        observeIsRoleAligible()
     }
 
     override fun onResume() {
         super.onResume()
         clearNotification()
         homeViewModel.getNotifications()
+        homeViewModel.getAdminInfo()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -353,6 +356,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             }
         })
         homeViewModel.getShopInfo()
+    }
+
+    private fun observeIsRoleAligible() {
+        homeViewModel.isRoleEligible.observe(this) { result ->
+            if (result is Success) {
+                result.data.let { shouldLogout ->
+                    if (shouldLogout) {
+                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
+                        finish()
+                    }
+                }
+            }
+        }
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {
