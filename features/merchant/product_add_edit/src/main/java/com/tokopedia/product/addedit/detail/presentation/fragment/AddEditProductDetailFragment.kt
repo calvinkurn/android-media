@@ -98,7 +98,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -170,11 +169,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product stock
     private var productStockField: TextFieldUnify? = null
     private var productMinOrderField: TextFieldUnify? = null
-    private var productStockHeaderStar: Typography? = null
-    private var uneditableStockHeader: Typography? = null
-    private var uneditableMinOrderHeader: Typography? = null
-    private var uneditableStockDesc: Typography? = null
-    private var uneditableMinOrderDesc: Typography? = null
 
     // product pre order
     private var preOrderSwitch: SwitchUnify? = null
@@ -201,9 +195,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var submitTextView: AppCompatTextView? = null
     private var submitLoadingIndicator: LoaderUnify? = null
 
-    private val canModifyStockTextField by lazy {
-        (userSession.isShopOwner || userSession.isShopAdmin) && userSession.isManageStockAdmin
-    }
+    // TODO: Change to usersession value
+    private val isMultiLocationShop = true
+    private val isShopAdmin = true
+    private val isShopOwner = false
 
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -372,11 +367,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product stock views
         productStockField = view.findViewById(R.id.tfu_available_stock)
         productMinOrderField = view.findViewById(R.id.tfu_minimum_order)
-        productStockHeaderStar = view.findViewById(R.id.tv_product_stock_star)
-        uneditableStockHeader = view.findViewById(R.id.tv_available_stock_header)
-        uneditableMinOrderHeader = view.findViewById(R.id.tv_minimum_order_header)
-        uneditableStockDesc = view.findViewById(R.id.tv_available_stock_desc)
-        uneditableMinOrderDesc = view.findViewById(R.id.tv_minimum_order_desc)
 
         // add edit product pre order state views
         preOrderSwitch = view.findViewById(R.id.switch_preorder)
@@ -547,37 +537,35 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
 
-        if (canModifyStockTextField) {
-            // product stock text change listener
-            productStockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        // product stock text change listener
+        productStockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
-                override fun afterTextChanged(p0: Editable?) {}
+            override fun afterTextChanged(p0: Editable?) {}
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    val productStockInput = charSequence?.toString()
-                    productStockInput?.let { viewModel.validateProductStockInput(it) }
-                    val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
-                    orderQuantityInput.let { productStockInput?.let { stockInput -> viewModel.validateProductMinOrderInput(stockInput, it) } }
-                }
-            })
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val productStockInput = charSequence?.toString()
+                productStockInput?.let { viewModel.validateProductStockInput(it) }
+                val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
+                orderQuantityInput.let { productStockInput?.let { stockInput -> viewModel.validateProductMinOrderInput(stockInput, it) } }
+            }
+        })
 
-            // product minimum order text change listener
-            productMinOrderField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        // product minimum order text change listener
+        productMinOrderField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
-                override fun afterTextChanged(p0: Editable?) {}
+            override fun afterTextChanged(p0: Editable?) {}
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    val productStockInput = productStockField?.textFieldInput?.editableText.toString()
-                    val orderQuantityInput = charSequence?.toString()
-                    orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
-                    productStockInput.let { viewModel.validateProductStockInput(it) }
-                }
-            })
-        }
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val productStockInput = productStockField?.textFieldInput?.editableText.toString()
+                val orderQuantityInput = charSequence?.toString()
+                orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
+                productStockInput.let { viewModel.validateProductStockInput(it) }
+            }
+        })
 
         // product pre order duration text change listener
         preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -635,23 +623,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             submitTextView?.show()
             submitLoadingIndicator?.hide()
-        }
-
-        // Add admin info ticker if cannot edit stock
-        val shouldShowAdminInfoTicker =
-                viewModel.isEditing && !userSession.isShopOwner && userSession.isShopAdmin
-                        && userSession.isManageProductAdmin && !userSession.isManageStockAdmin
-        if (shouldShowAdminInfoTicker) {
-            view.findViewById<Ticker>(R.id.ticker_add_edit_admin_info)?.run {
-                val description =
-                        if (userSession.isLocationAdmin) {
-                            context.getString(R.string.ticker_edit_product_main_location_status)
-                        } else {
-                            context.getString(R.string.ticker_edit_variant_cant_edit_stock)
-                        }
-                setTextDescription(description)
-                show()
-            }
         }
 
         enableProductNameField()
@@ -782,25 +753,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
         }
 
-        if (canModifyStockTextField) {
-            // product stock validation
-            val productStockInput = productStockField?.getEditableValue().toString()
-            viewModel.validateProductStockInput(productStockInput)
-            viewModel.isProductStockInputError.value?.run {
-                if (this && !requestedFocus) {
-                    productStockField?.requestFocus()
-                    requestedFocus = true
-                }
+        // product stock validation
+        val productStockInput = productStockField?.getEditableValue().toString()
+        viewModel.validateProductStockInput(productStockInput)
+        viewModel.isProductStockInputError.value?.run {
+            if (this && !requestedFocus) {
+                productStockField?.requestFocus()
+                requestedFocus = true
             }
+        }
 
-            // product minimum order validation
-            val orderQuantityInput = productMinOrderField?.getEditableValue().toString()
-            viewModel.validateProductMinOrderInput(productStockInput, orderQuantityInput)
-            viewModel.isOrderQuantityInputError.value?.run {
-                if (this && !requestedFocus) {
-                    productMinOrderField?.requestFocus()
-                    requestedFocus = true
-                }
+        // product minimum order validation
+        val orderQuantityInput = productMinOrderField?.getEditableValue().toString()
+        viewModel.validateProductMinOrderInput(productStockInput, orderQuantityInput)
+        viewModel.isOrderQuantityInputError.value?.run {
+            if (this && !requestedFocus) {
+                productMinOrderField?.requestFocus()
+                requestedFocus = true
             }
         }
 
@@ -1017,17 +986,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productInputModel.detailInputModel.apply {
             productName = productNameField.getText()
             price = productPriceField.getTextBigIntegerOrZero()
-            stock = if (canModifyStockTextField) {
-                productStockField.getTextIntOrZero()
-            } else {
-                uneditableStockHeader?.text?.toString().toIntOrZero()
-            }
+            stock = productStockField.getTextIntOrZero()
             condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
-            minOrder = if (canModifyStockTextField) {
-                productMinOrderField.getTextIntOrZero()
-            } else {
-                uneditableMinOrderHeader?.text?.toString().toIntOrZero()
-            }
+            minOrder = productMinOrderField.getTextIntOrZero()
             sku = productSkuField.getText()
             imageUrlOrPathList = viewModel.productPhotoPaths
             if (!productPictureList.isNullOrEmpty()) pictureList = productPictureList ?: listOf()
@@ -1167,28 +1128,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.isPreOrderActivated.value = true
         }
 
-        if (canModifyStockTextField) {
-            // product stock
-            productStockField?.textFieldInput?.setText(detailInputModel.stock.toString())
-            if (viewModel.hasVariants) productStockField?.textFieldInput?.isEnabled = false
+        // product stock
+        productStockField?.textFieldInput?.setText(detailInputModel.stock.toString())
+        if (viewModel.hasVariants) productStockField?.textFieldInput?.isEnabled = false
 
-            // product min order
-            productMinOrderField?.textFieldInput?.setText(detailInputModel.minOrder.toString())
-        } else {
-            productStockField?.gone()
-            productMinOrderField?.gone()
-            productStockHeaderStar?.gone()
-            uneditableStockHeader?.show()
-            uneditableMinOrderHeader?.show()
-            uneditableStockDesc?.run {
-                text = detailInputModel.stock.toString()
-                show()
-            }
-            uneditableMinOrderDesc?.run {
-                text = detailInputModel.minOrder.toString()
-                show()
-            }
-        }
+        // product min order
+        productMinOrderField?.textFieldInput?.setText(detailInputModel.minOrder.toString())
 
         // product condition
         productConditionListView?.onLoadFinish {
@@ -1273,17 +1218,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductStockInputStatus() {
         viewModel.isProductStockInputError.observe(viewLifecycleOwner, Observer { isError ->
-            if (canModifyStockTextField) {
-                productStockField?.setError(isError)
-                val textFieldMessage = viewModel.productStockMessage.let { message ->
-                    if (!isError && message.isEmpty()) {
+            productStockField?.setError(isError)
+            val textFieldMessage = viewModel.productStockMessage.let { message ->
+                (!isError && message.isEmpty() && (isShopAdmin || isShopOwner)).let { shouldDisplayDifferentMessage ->
+                    if (shouldDisplayDifferentMessage) {
                         getStockAllocationMessage()
                     } else {
                         message
                     }
                 }
-                productStockField?.setMessage(textFieldMessage)
             }
+            productStockField?.setMessage(textFieldMessage)
         })
     }
 
@@ -1720,8 +1665,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun getStockAllocationMessage(): String =
             when {
-                userSession.isLocationAdmin && viewModel.isEditing -> context?.getString(R.string.message_edit_product_stock_only_main_location).orEmpty()
-                userSession.isLocationAdmin && viewModel.isAdding -> context?.getString(R.string.message_add_product_stock_only_main_location).orEmpty()
+                isMultiLocationShop && viewModel.isEditing -> context?.getString(R.string.message_edit_product_stock_only_main_location).orEmpty()
+                isMultiLocationShop && viewModel.isAdding -> context?.getString(R.string.message_add_product_stock_only_main_location).orEmpty()
                 else -> ""
             }
 

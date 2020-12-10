@@ -290,16 +290,11 @@
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     
     <!-- Admin Revamp -->
-    <string name="ticker_admin_no_access_stock">Kamu tidak punya akses untuk ubah stok produk.</string>
-    <string name="ticker_admin_change_all_location">Perubahan status berlaku untuk semua lokasi.</string>
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
     <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
     <string name="ticker_add_product_variant_main_location">Stok akan berlaku untuk di lokasi utamamu. Kamu dapat atur alokasi stok setelah tambah produk.</string>
-    <string name="ticker_edit_product_main_location_status"><b>1.</b> Kamu tidak punya akses untuk ubah stok produk. \n <b>2.</b> Perubahan status berlaku untuk semua lokasi.</string>
     <string name="ticker_edit_variant_main_location">Hanya mengubah stok varian di lokasi utama. Atur stok varian lokasi lain lewat desktop, ya.</string>
     <string name="ticker_edit_variant_show_location_status"><b>1.</b> Hanya menampilkan stok di lokasi utama. Atur alokasi stok di lokasi lain lewat desktop. \n <b>2.</b> Perubahan status berlaku untuk semua lokasi.</string>
-    <string name="ticker_edit_variant_edit_location_status"><b>1.</b> Hanya mengubah stok varian di lokasi utama. Atur stok varian lokasi lain lewat desktop, ya. \n <b>2.</b> Perubahan status berlaku untuk semua lokasi.</string>
-    <string name="ticker_edit_variant_cant_edit_stock">Kamu tidak punya akses untuk ubah stok produk.</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

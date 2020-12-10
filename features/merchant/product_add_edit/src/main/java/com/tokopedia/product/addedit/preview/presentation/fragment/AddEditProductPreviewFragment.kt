@@ -182,7 +182,7 @@ class AddEditProductPreviewFragment:
     private lateinit var shopId: String
 
     // TODO: Change to usersession value
-    private val isMultiLocationShop = false
+    private val isMultiLocationShop = true
     private val isShopAdmin = true
     private val isShopOwner = false
 

@@ -15,7 +15,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_stock_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_asterisk"
@@ -47,12 +46,5 @@
         app:text_field_input_type="number"
         app:text_field_label="@string/label_minimum_order"
         app:text_field_label_static="true" />
-
-    <include
-        layout="@layout/add_edit_product_stock_uneditable_layout_partial"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_stock_header"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

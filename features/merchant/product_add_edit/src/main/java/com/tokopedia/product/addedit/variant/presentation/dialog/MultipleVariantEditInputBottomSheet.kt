@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
@@ -45,6 +44,11 @@ class MultipleVariantEditInputBottomSheet(
     private var isStockError = false
     private var trackerShopId = ""
     private var trackerIsEditMode = false
+
+    // TODO: Change to usersession value
+    private val isMultiLocationShop = true
+    private val isShopAdmin = true
+    private val isShopOwner = false
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -110,15 +114,9 @@ class MultipleVariantEditInputBottomSheet(
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
 
         contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.run {
-            val couldShowTicker =
-                    (userSession.isShopOwner || userSession.isShopAdmin) &&
-                            userSession.isLocationAdmin && userSession.isManageProductAdmin
+            val couldShowTicker = (isShopOwner || isShopAdmin) && isMultiLocationShop
             if (couldShowTicker) {
-                if (userSession.isManageStockAdmin) {
-                    setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
-                } else {
-                    setTextDescription(context?.getString(R.string.ticker_edit_variant_cant_edit_stock).orEmpty())
-                }
+                setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
                 show()
             } else {
                 hide()
@@ -134,15 +132,10 @@ class MultipleVariantEditInputBottomSheet(
                 updateSubmitButtonInput()
             }
         }
-        val canEditStock = userSession.isManageStockAdmin || userSession.isShopOwner
-        if (canEditStock) {
-            contentView?.tfuStock.setModeToNumberInput()
-            contentView?.tfuStock?.textFieldInput?.afterTextChanged {
-                validateStock()
-                updateSubmitButtonInput()
-            }
-        } else {
-            contentView?.tfuStock?.gone()
+        contentView?.tfuStock.setModeToNumberInput()
+        contentView?.tfuStock?.textFieldInput?.afterTextChanged {
+            validateStock()
+            updateSubmitButtonInput()
         }
         contentView?.tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()

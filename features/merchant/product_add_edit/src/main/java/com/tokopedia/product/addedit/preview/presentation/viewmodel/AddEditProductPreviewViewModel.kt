@@ -317,6 +317,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                                 mIsManageProductAdmin.value = Success(withContext(dispatcher.io) {
                                     adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.PRODUCT) ?: false
                                 })
+                                mIsLoading.value = false
                             },
                             onError = {
                                 mIsManageProductAdmin.value = Fail(it)

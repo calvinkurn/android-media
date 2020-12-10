@@ -81,6 +81,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    // TODO: Change to usersession value
+    private val isMultiLocationShop = true
+    private val isShopAdmin = true
+    private val isShopOwner = false
+
     override fun getScreenName(): String {
         return ""
     }
@@ -124,13 +129,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
-        val shouldDisableEditStock = !userSession.isShopOwner && userSession.isShopAdmin && !userSession.isManageStockAdmin && userSession.isManageProductAdmin
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
                 this,
                 this,
                 this,
                 this,
-                this), shouldDisableEditStock)
+                this))
         recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
 
@@ -464,40 +468,25 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun Ticker.configAdminDescription(isEdit: Boolean) {
         when {
-            userSession.isShopOwner -> {
+            isShopOwner -> {
                 if (isEdit) {
                     setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
                     show()
                 } else {
-                    if (userSession.isLocationAdmin) {
+                    if (isMultiLocationShop) {
                         setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
                         show()
                     }
                 }
             }
-            userSession.isShopAdmin && userSession.isManageProductAdmin && userSession.isManageStockAdmin -> {
-                if (userSession.isLocationAdmin) {
+            isShopAdmin -> {
+                if (isMultiLocationShop) {
                     if (isEdit) {
-                        setTextDescription(context?.getString(R.string.ticker_edit_variant_edit_location_status).orEmpty())
+                        setTextDescription(context?.getString(R.string.ticker_edit_variant_show_location_status).orEmpty())
                     } else {
                         setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
                     }
                     show()
-                }
-            }
-            userSession.isShopAdmin && userSession.isManageProductAdmin -> {
-                if (isEdit) {
-                    if (userSession.isLocationAdmin) {
-                        setTextDescription(context?.getString(R.string.ticker_edit_product_main_location_status).orEmpty())
-                    } else {
-                        setTextDescription(context?.getString(R.string.ticker_edit_variant_cant_edit_stock).orEmpty())
-                    }
-                    show()
-                } else {
-                    if (userSession.isLocationAdmin) {
-                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
-                        show()
-                    }
                 }
             }
             else -> {}
