@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -74,6 +75,7 @@ public class PushNotification {
                         .getInstance(context)
                         .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
             }
+            fetchSellerAppWidgetData(context, notificationId);
         } else {
             UserSessionInterface userSession = new UserSession(context);
             String loginId = userSession.getUserId();
@@ -88,6 +90,25 @@ public class PushNotification {
                     .getInstance(context)
                     .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
         }
+    }
+
+    private static void fetchSellerAppWidgetData(Context context, int notificationId) {
+        if (!GlobalConfig.isSellerApp()) return;
+
+        if (notificationId == Constant.NotificationId.CHAT) {
+            String getChatAction = "com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_CHAT_APP_WIDGET_DATA";
+            startIntentService(context, getChatAction);
+        } else if (notificationId == Constant.NotificationId.SELLER) {
+            String getOrderAction = "com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_ORDER_APP_WIDGET_DATA";
+            startIntentService(context, getOrderAction);
+        }
+    }
+
+    private static void startIntentService(Context context, String actionName) {
+        Intent intent = new Intent();
+        intent.setAction(actionName);
+        intent.setPackage(context.getPackageName());
+        context.startService(intent);
     }
 
     private static boolean isAllowToRender(Context context, ApplinkNotificationModel applinkNotificationModel) {
