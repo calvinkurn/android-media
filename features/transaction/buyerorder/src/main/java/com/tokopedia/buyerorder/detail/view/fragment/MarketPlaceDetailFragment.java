@@ -389,7 +389,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
                 if (getContext() != null) {
                     Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
-                        getString(R.string.title_invoice));
+                            invoiceNum, boughtDate, getString(R.string.title_invoice));
                 startActivity(intent);
                 }
             });
