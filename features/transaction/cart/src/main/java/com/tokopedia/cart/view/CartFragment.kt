@@ -988,6 +988,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             if (isCheckUncheckDirectAction) {
                                 cartAdapter.setAllAvailableItemCheck(it.isChecked)
                                 dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+                                dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
                             }
                             cartAdapter.setCheckboxGlobalItemState(it.isChecked, isCheckUncheckDirectAction)
                             isCheckUncheckDirectAction = true
