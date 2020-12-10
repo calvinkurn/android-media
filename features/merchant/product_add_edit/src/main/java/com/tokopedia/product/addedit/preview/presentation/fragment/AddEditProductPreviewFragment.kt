@@ -1035,7 +1035,6 @@ class AddEditProductPreviewFragment:
 
     private fun observeGetShopInfoLocation() {
         viewModel.locationValidation.observe(viewLifecycleOwner) {
-            hideLoading()
             when (it) {
                 is Success -> {
                     if (!it.data) {
@@ -1052,13 +1051,13 @@ class AddEditProductPreviewFragment:
 
     private fun observeSaveShipmentLocationData() {
         viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner) {
-            hideLoading()
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showToasterSuccessSetLocation()
                     }
+                    hasLocation = isSuccess
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -1471,7 +1470,6 @@ class AddEditProductPreviewFragment:
 
     private fun validateShopLocation() {
         if (isAdding()) {
-            showLoading()
             viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
         }
     }
