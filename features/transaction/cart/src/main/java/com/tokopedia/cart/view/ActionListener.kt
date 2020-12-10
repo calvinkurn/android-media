@@ -79,4 +79,8 @@ interface ActionListener {
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
+
+    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
+
+    fun onGlobalDeleteClicked()
 }

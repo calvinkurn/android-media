@@ -26,10 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -235,6 +232,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var accordionCollapseState = true
     private var refreshCartAfterBackFromPdp = true
     private var hasCalledOnSaveInstanceState = false
+    private var isCheckUncheckDirectAction = true
     private var toolbarType = ""
 
     companion object {
@@ -554,7 +552,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         initViewListener()
         initRecyclerView()
-        initCheckboxGlobal()
+        initTopLayout()
     }
 
     private fun initViewListener() {
@@ -569,6 +567,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter
+            itemAnimator = object: DefaultItemAnimator() {
+                override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                    return true
+                }
+            }
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             addItemDecoration(cartItemDecoration)
             setSpanSize(gridLayoutManager)
@@ -754,8 +757,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 handlePromoButtonVisibilityOnScroll(dy)
+                handleStickyCheckboxGlobalVisibility(recyclerView)
             }
         })
+    }
+
+    private fun handleStickyCheckboxGlobalVisibility(recyclerView: RecyclerView) {
+        val topItemPosition = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+        if (topItemPosition == RecyclerView.NO_POSITION) return
+        val adapterData = cartAdapter.getData()
+        if (topItemPosition >= adapterData.size) return
+        val lastData = adapterData[topItemPosition]
+        if (lastData is CartShopHolderData || lastData is CartSelectAllHolderData) {
+            if (topLayout.visibility == View.GONE) setTopLayoutVisibility(true)
+        } else {
+            if (topLayout.visibility == View.VISIBLE) setTopLayoutVisibility(false)
+        }
     }
 
     private fun setSpanSize(gridLayoutManager: GridLayoutManager) {
@@ -963,13 +980,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
-    private fun initCheckboxGlobal() {
+    private fun initTopLayout() {
         checkboxGlobal.let {
             compositeSubscription.add(
                     rxCompoundButtonCheckDebounce(it, 500L).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
-                            cartAdapter.setAllAvailableItemCheck(isChecked)
-                            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+                            if (isCheckUncheckDirectAction) {
+                                cartAdapter.setAllAvailableItemCheck(it.isChecked)
+                                dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+                            }
+                            cartAdapter.setCheckboxGlobalItemState(it.isChecked, isCheckUncheckDirectAction)
+                            isCheckUncheckDirectAction = true
                         }
 
                         override fun onCompleted() {
@@ -980,6 +1001,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     })
             )
         }
+
+        val dp16 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
+        val dp14 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
+        topLayout.setPadding(dp16, 0, dp16, dp14)
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -1171,6 +1196,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
+    }
+
+    override fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean) {
+        this.isCheckUncheckDirectAction = isCheckUncheckDirectAction
+        checkboxGlobal.isChecked = isChecked
+    }
+
+    override fun onGlobalDeleteClicked() {
+        // Todo : Implement this
     }
 
     override fun onClickShopNow() {
@@ -1641,8 +1675,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setCheckboxGlobalState() {
+        isCheckUncheckDirectAction = false
         val isAllAvailableItemCheked = cartAdapter.isAllAvailableItemCheked()
         checkboxGlobal.isChecked = isAllAvailableItemCheked
+//        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
@@ -1730,6 +1766,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
+//            setTopLayoutVisibility(false)
+
             if (it.outOfServiceData.id != 0) {
                 renderCartOutOfService(it.outOfServiceData)
                 return@let
@@ -1801,7 +1839,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             setInitialCheckboxGlobalState(cartListData)
-            setTopLayoutVisibility()
+            setTopLayoutVisibility(false)
 
             cartAdapter.checkForShipmentForm()
         }
@@ -1851,6 +1889,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.removeCartEmptyData()
 
         renderTickerError(cartListData)
+        renderCheckboxGlobal(cartListData)
         renderCartAvailableItems(cartListData)
         renderCartUnavailableItems(cartListData)
         loadMacroInsurance(cartListData)
@@ -2330,6 +2369,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun renderCheckboxGlobal(cartListData: CartListData) {
+        if (cartListData.shopGroupAvailableDataList.isNotEmpty()) {
+            cartAdapter.addSelectAll(CartSelectAllHolderData(cartListData.isAllSelected))
+        }
+    }
+
     private fun renderCartAvailableItems(cartListData: CartListData) {
         cartAdapter.addAvailableDataList(cartListData.shopGroupAvailableDataList)
     }
@@ -2615,7 +2660,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                           selectAllItem: Boolean,
                                           unselectAllItem: Boolean,
                                           noAvailableItems: Boolean) {
-        dPresenter.getCartListData()?.isAllSelected = selectAllItem
         if (noAvailableItems) {
             llPromoCheckout.gone()
             cartAdapter.removeCartSelectAll()
@@ -2662,6 +2706,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
+    private fun setToasterPosition() {
+        if (activity is CartActivity) {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_150)
+        } else {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_200)
+        }
+    }
+
     override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
         view?.let {
 
@@ -2676,6 +2728,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 tmpCtaClickListener = ctaClickListener
             }
 
+            setToasterPosition()
             if (ctaText.isNotBlank()) {
                 Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener).show()
             } else {
@@ -2705,6 +2758,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageGreen(message: String, showDefaultAction: Boolean) {
         view?.let {
+            setToasterPosition()
             if (showDefaultAction) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
                         ?: "", View.OnClickListener { })
@@ -2772,6 +2826,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
 
         if (cartAdapter.hasAvailableItemLeft()) {
+            topLayout.show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (appBarLayout.elevation == HAS_ELEVATION.toFloat()) {
+                    isShowToolbarShadow = true
+                }
+            }
+        } else {
+            topLayout.gone()
+        }
+
+        setToolbarShadowVisibility(isShowToolbarShadow)
+    }
+
+    private fun setTopLayoutVisibility(isShow: Boolean) {
+        var isShowToolbarShadow = topLayoutShadow.visibility == View.VISIBLE
+
+        if (isShow) {
             topLayout.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (appBarLayout.elevation == HAS_ELEVATION.toFloat()) {

@@ -311,6 +311,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     override fun getItemViewType(position: Int): Int {
         val data = cartDataList[position]
         return when (data) {
+            is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
@@ -332,11 +333,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (compositeSubscription.isUnsubscribed) {
+            compositeSubscription = CompositeSubscription()
+        }
         when (viewType) {
+            CartSelectAllViewHolder.LAYOUT -> {
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
+                return CartSelectAllViewHolder(view, actionListener, compositeSubscription)
+            }
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
-                if (compositeSubscription.isUnsubscribed) {
-                    compositeSubscription = CompositeSubscription()
-                }
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false)
                 return CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription)
@@ -425,6 +431,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
         when {
+            viewType == CartSelectAllViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartSelectAllHolderData
+                (holder as CartSelectAllViewHolder).bind(data)
+            }
             viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
@@ -1241,6 +1251,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(0, tickerAnnouncementHolderData)
     }
 
+    fun addSelectAll(data: CartSelectAllHolderData) {
+        cartDataList.add(data)
+    }
+
     fun removeCartSelectAll() {
         if (cartDataList.size > 0) {
             if (cartDataList[0] is Boolean) {
@@ -1403,25 +1417,44 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun setAllAvailableItemCheck(cheked: Boolean) {
         val indices = ArraySet<Int>()
         cartDataList.forEachIndexed { index, data ->
-            if (data is CartShopHolderData) {
-                var changeShopLevelCheckboxState = false
-                data.shopGroupAvailableData.cartItemDataList?.forEach {
-                    if (it.isSelected != cheked) {
-                        it.isSelected = cheked
-                        indices.add(index)
-                        changeShopLevelCheckboxState = true
+            when (data) {
+                is CartShopHolderData -> {
+                    var changeShopLevelCheckboxState = false
+                    data.shopGroupAvailableData.cartItemDataList?.forEach {
+                        if (it.isSelected != cheked) {
+                            it.isSelected = cheked
+                            indices.add(index)
+                            changeShopLevelCheckboxState = true
+                        }
                     }
-                }
 
-                if (changeShopLevelCheckboxState) {
-                    data.isAllSelected = cheked
-                    data.isPartialSelected = false
+                    if (changeShopLevelCheckboxState) {
+                        data.isAllSelected = cheked
+                        data.isPartialSelected = false
+                    }
                 }
             }
         }
 
         indices.forEach {
             notifyItemChanged(it)
+        }
+    }
+
+    fun setCheckboxGlobalItemState(cheked: Boolean, isCheckUncheckDirectAction: Boolean) {
+        var tmpIndex = -1
+        cartDataList.forEachIndexed { index, data ->
+            when (data) {
+                is CartSelectAllHolderData -> {
+                    data.isCheked = cheked
+                    data.isCheckUncheckDirectAction = isCheckUncheckDirectAction
+                    tmpIndex = index
+                }
+            }
+        }
+
+        if (tmpIndex != -1) {
+            notifyItemChanged(tmpIndex)
         }
     }
 
@@ -1437,5 +1470,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         return true
+    }
+
+    fun getData(): ArrayList<Any> {
+        return cartDataList
     }
 }
