@@ -304,7 +304,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyType="small"
-                android:text="@string/label_per_insurance_price"
+                android:text="@string/checkout_label_per_insurance_price"
                 android:layout_gravity="end"
                 android:textColor="@color/Unify_N700_68" />
 

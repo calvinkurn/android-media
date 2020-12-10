@@ -1,21 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_N0"
     android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <ViewFlipper
+        android:id="@+id/container_webview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <com.tokopedia.webview.TkpdWebView
-            android:id="@+id/proteksi_webview"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:scrollbars="none" />
-    </androidx.core.widget.NestedScrollView>
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="@dimen/dp_240"
+                android:layout_height="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_8"
+                app:loader_type="rect" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_weight="1"
+                    app:layout_constraintCircleRadius="@dimen/dp_8"
+                    app:loader_type="rect" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_weight="1"
+                    app:layout_constraintCircleRadius="@dimen/dp_8"
+                    app:loader_type="rect" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_weight="1"
+                    app:layout_constraintCircleRadius="@dimen/dp_8"
+                    app:loader_type="rect" />
+
+            </LinearLayout>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintCircleRadius="@dimen/dp_8"
+                app:loader_type="rect" />
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:scrollbars="none">
+
+            <com.tokopedia.webview.TkpdWebView
+                android:id="@+id/proteksi_webview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:scrollbars="none" />
+        </androidx.core.widget.NestedScrollView>
+    </ViewFlipper>
 </LinearLayout>
