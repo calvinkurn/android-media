@@ -5,12 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:background="@color/Unify_N0"
-    android:padding="@dimen/dp_16">
+    android:paddingStart="@dimen/dp_16">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkbox_global"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,13 +26,15 @@
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_action_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
         android:text="@string/label_menu_cart_remove"
         android:textColor="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_global"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
 

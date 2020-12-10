@@ -76,7 +76,7 @@ interface ICartListView : CustomerView {
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
 
     fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 

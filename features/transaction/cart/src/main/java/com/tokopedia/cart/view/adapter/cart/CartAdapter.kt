@@ -1078,6 +1078,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val toBeRemovedData = ArrayList<Any>()
         val toBeRemovedIndex = ArrayList<Int>()
         val toBeUpdatedIndex = ArrayList<Int>()
+        var selectAllHolderData: CartSelectAllHolderData? = null
         var disabledItemHeaderHolderData: DisabledItemHeaderHolderData? = null
         var cartItemTickerErrorHolderData: CartItemTickerErrorHolderData? = null
         var disabledAccordionHolderData: DisabledAccordionHolderData? = null
@@ -1160,6 +1161,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
                     deletedDisabledItemCount++
                 }
+                is CartSelectAllHolderData -> selectAllHolderData = obj
                 is DisabledItemHeaderHolderData -> disabledItemHeaderHolderData = obj
                 is CartItemTickerErrorHolderData -> cartItemTickerErrorHolderData = obj
                 is DisabledAccordionHolderData -> disabledAccordionHolderData = obj
@@ -1170,6 +1172,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         // Remove all collected items from previous loop
         for (cartShopHolderData in toBeRemovedData) {
             cartDataList.remove(cartShopHolderData)
+        }
+
+        // Remove select all item if all available item removed
+        if (selectAllHolderData != null && allAvailableCartItemData.isEmpty()) {
+            toBeRemovedIndex.add(cartDataList.indexOf(selectAllHolderData))
+            cartDataList.remove(selectAllHolderData)
         }
 
         // Check if delete action is bulk delete on unavailable section. If true, remove accordion
@@ -1371,15 +1379,17 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return Pair(firstIndex, count)
     }
 
-    fun setLastItemAlwaysSelected() {
+    fun setLastItemAlwaysSelected(): Boolean {
         var cartItemCount = 0
         cartDataList.forEach outer@{ any ->
-            if (any is CartShopHolderData) {
-                any.shopGroupAvailableData.cartItemDataList?.forEach {
-                    cartItemCount++
+            when (any) {
+                is CartShopHolderData -> {
+                    any.shopGroupAvailableData.cartItemDataList?.forEach {
+                        cartItemCount++
 
-                    if (cartItemCount > 1) {
-                        return@outer
+                        if (cartItemCount > 1) {
+                            return@outer
+                        }
                     }
                 }
             }
@@ -1388,25 +1398,38 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         if (cartItemCount == 1) {
             var tmpIndex = 0
             cartDataList.forEachIndexed { index, any ->
-                if (any is CartShopHolderData) {
-                    tmpIndex = index
-                    any.isAllSelected = true
-                    any.shopGroupAvailableData.cartItemDataList?.forEach {
-                        it.isSelected = true
+                when (any) {
+                    is CartShopHolderData -> {
+                        tmpIndex = index
+                        any.isAllSelected = true
+                        any.shopGroupAvailableData.cartItemDataList?.forEach {
+                            it.isSelected = true
+                        }
+                    }
+                    is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                        return@forEachIndexed
                     }
                 }
             }
 
             notifyItemChanged(tmpIndex)
+
+            return true
         }
 
+        return false
     }
 
     fun hasAvailableItemLeft(): Boolean {
         cartDataList.forEach {
-            if (it is CartShopHolderData) {
-                if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
-                    return true
+            when (it) {
+                is CartShopHolderData -> {
+                    if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
+                        return true
+                    }
+                }
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return false
                 }
             }
         }
@@ -1433,6 +1456,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         data.isPartialSelected = false
                     }
                 }
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return@forEachIndexed
+                }
             }
         }
 
@@ -1449,6 +1475,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     data.isCheked = cheked
                     data.isCheckUncheckDirectAction = isCheckUncheckDirectAction
                     tmpIndex = index
+                    return@forEachIndexed
                 }
             }
         }
@@ -1463,6 +1490,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             when (data) {
                 is CartSelectAllHolderData -> {
                     data.isCheckUncheckDirectAction = true
+                    return@forEach
                 }
             }
         }
@@ -1470,11 +1498,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun isAllAvailableItemCheked(): Boolean {
         cartDataList.forEach {
-            if (it is CartShopHolderData) {
-                it.shopGroupAvailableData.cartItemDataList?.forEach {
-                    if (!it.isSelected) {
-                        return false
+            when (it) {
+                is CartShopHolderData -> {
+                    it.shopGroupAvailableData.cartItemDataList?.forEach {
+                        if (!it.isSelected) {
+                            return false
+                        }
                     }
+                }
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return true
                 }
             }
         }
@@ -1484,5 +1517,39 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun getData(): ArrayList<Any> {
         return cartDataList
+    }
+
+    fun hasSelectedCartItem(): Boolean {
+        cartDataList.forEach {
+            when (it) {
+                is CartShopHolderData -> {
+                    it.shopGroupAvailableData.cartItemDataList?.forEach {
+                        if (it.isSelected) return true
+                    }
+                }
+                is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
+                    return false
+                }
+            }
+        }
+
+        return false
+    }
+
+    fun setGlobalDeleteVisibility(isShow: Boolean) {
+        var tmpIndex = -1
+        cartDataList.forEachIndexed { index, data ->
+            when (data) {
+                is CartSelectAllHolderData -> {
+                    data.isShowDeleteButton = isShow
+                    tmpIndex = index
+                    return@forEachIndexed
+                }
+            }
+        }
+
+        if (tmpIndex != -1) {
+            notifyItemChanged(tmpIndex)
+        }
     }
 }

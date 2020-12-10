@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import kotlinx.android.synthetic.main.item_select_all.view.*
 import rx.Subscriber
@@ -37,6 +39,16 @@ class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val
         }
 
         itemView.checkbox_global.isChecked = data.isCheked
+
+        itemView.text_action_delete?.setOnClickListener {
+            listener?.onGlobalDeleteClicked()
+        }
+
+        if (data.isShowDeleteButton) {
+            itemView.text_action_delete?.show()
+        } else {
+            itemView.text_action_delete?.invisible()
+        }
     }
 
 }

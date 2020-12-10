@@ -169,6 +169,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var topLayout: ConstraintLayout
     lateinit var topLayoutShadow: View
     lateinit var checkboxGlobal: CheckboxUnify
+    lateinit var textActionDelete: Typography
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -539,6 +540,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         topLayout = view.findViewById(R.id.top_layout)
         topLayoutShadow = view.findViewById(R.id.top_layout_shadow)
         checkboxGlobal = view.findViewById(R.id.checkbox_global)
+        textActionDelete = view.findViewById(R.id.text_action_delete)
 
         initToolbar(view)
 
@@ -976,31 +978,35 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initTopLayout() {
-        checkboxGlobal.let {
-            compositeSubscription.add(
-                    rxCompoundButtonCheckDebounce(it, 500L).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            if (isCheckUncheckDirectAction) {
-                                cartAdapter.setAllAvailableItemCheck(it.isChecked)
-                                dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-                                dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
-                            }
-                            cartAdapter.setCheckboxGlobalItemState(it.isChecked, isCheckUncheckDirectAction)
-                            isCheckUncheckDirectAction = true
+        compositeSubscription.add(
+                rxCompoundButtonCheckDebounce(checkboxGlobal, 500L).subscribe(object : Subscriber<Boolean>() {
+                    override fun onNext(isChecked: Boolean) {
+                        if (isCheckUncheckDirectAction) {
+                            cartAdapter.setAllAvailableItemCheck(checkboxGlobal.isChecked)
+                            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+                            dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+                            setGlobalDeleteVisibility()
                         }
+                        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
+                        isCheckUncheckDirectAction = true
+                    }
 
-                        override fun onCompleted() {
-                        }
+                    override fun onCompleted() {
+                    }
 
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
-            )
+                    override fun onError(e: Throwable?) {
+                    }
+                })
+        )
+
+        textActionDelete.setOnClickListener {
+            onGlobalDeleteClicked()
         }
 
         val dp16 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
         val dp14 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
-        topLayout.setPadding(dp16, 0, dp16, dp14)
+        topLayout.setPadding(dp16, 0, 0, dp14)
+        textActionDelete.setPadding(dp16, 0, dp16, 0)
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -1200,7 +1206,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onGlobalDeleteClicked() {
-        // Todo : Implement this
+        val allCartItemDataList = cartAdapter.allCartItemData
+        val deletedCartItems = cartAdapter.selectedCartItemData
+        val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
+        dialog?.setPrimaryCTAClickListener {
+            dPresenter.processDeleteCartItem(
+                    allCartItemData = allCartItemDataList,
+                    removedCartItems = deletedCartItems,
+                    addWishList = false,
+                    removeInsurance = false,
+                    isFromGlobalCheckbox = true
+            )
+            dialog.dismiss()
+        }
+        dialog?.setSecondaryCTAClickListener {
+            dPresenter.processDeleteCartItem(
+                    allCartItemData = allCartItemDataList,
+                    removedCartItems = deletedCartItems,
+                    addWishList = true,
+                    removeInsurance = false,
+                    isFromGlobalCheckbox = true
+            )
+            dialog.dismiss()
+        }
+        dialog?.show()
     }
 
     override fun onClickShopNow() {
@@ -1623,6 +1652,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         setCheckboxGlobalState()
+        setGlobalDeleteVisibility()
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -1657,6 +1687,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         setCheckboxGlobalState()
+        setGlobalDeleteVisibility()
 
         cartAdapter.checkForShipmentForm()
         cartAdapter.setItemSelected(position, parentPosition, checked)
@@ -1678,6 +1709,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetGlobalItemLock()
         }
         checkboxGlobal.isChecked = isAllAvailableItemCheked
+    }
+
+    private fun setGlobalDeleteVisibility() {
+        if (cartAdapter.hasSelectedCartItem()) {
+            textActionDelete.show()
+            cartAdapter.setGlobalDeleteVisibility(true)
+        } else {
+            textActionDelete.invisible()
+            cartAdapter.setGlobalDeleteVisibility(false)
+        }
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
@@ -1765,8 +1806,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
-//            setTopLayoutVisibility(false)
-
             if (it.outOfServiceData.id != 0) {
                 renderCartOutOfService(it.outOfServiceData)
                 return@let
@@ -1838,6 +1877,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             setInitialCheckboxGlobalState(cartListData)
+            setGlobalDeleteVisibility()
             setTopLayoutVisibility(false)
 
             cartAdapter.checkForShipmentForm()
@@ -2705,14 +2745,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
-    private fun setToasterPosition() {
-        if (activity is CartActivity) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_150)
-        } else {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_200)
-        }
-    }
-
     override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
         view?.let {
 
@@ -2727,7 +2759,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 tmpCtaClickListener = ctaClickListener
             }
 
-            setToasterPosition()
             if (ctaText.isNotBlank()) {
                 Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener).show()
             } else {
@@ -2757,7 +2788,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageGreen(message: String, showDefaultAction: Boolean) {
         view?.let {
-            setToasterPosition()
             if (showDefaultAction) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
                         ?: "", View.OnClickListener { })
@@ -2798,9 +2828,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showMainContainer()
     }
 
-    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean) {
-        val message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
-        if (deletedCartIds.size > 1) {
+    override fun onDeleteCartDataSuccess(deletedCartIds: List<String>,
+                                         removeAllItems: Boolean,
+                                         forceExpandCollapsedUnavailableItems: Boolean,
+                                         isMoveToWishlist: Boolean,
+                                         isFromGlobalCheckbox: Boolean) {
+        var message = String.format(getString(R.string.message_product_already_deleted), deletedCartIds.size)
+
+        if (isMoveToWishlist) {
+            message = String.format(getString(R.string.message_product_already_moved_to_wishlist), deletedCartIds.size)
+            dPresenter.processGetWishlistData()
+        }
+
+        if (isFromGlobalCheckbox || deletedCartIds.size > 1) {
             showToastMessageGreen(message)
         } else {
             showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
@@ -2816,7 +2856,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (removeAllItems) {
             refreshCart()
         } else {
-            cartAdapter.setLastItemAlwaysSelected()
+            val isLastItem = cartAdapter.setLastItemAlwaysSelected()
+            if (isLastItem) {
+                checkboxGlobal.isChecked = true
+            }
         }
 
     }
@@ -2884,7 +2927,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isLastItem) {
             refreshCart()
         } else {
-            cartAdapter.setLastItemAlwaysSelected()
+            val tmpIsLastItem = cartAdapter.setLastItemAlwaysSelected()
+            if (tmpIsLastItem) {
+                checkboxGlobal.isChecked = true
+            }
         }
     }
 
@@ -3484,6 +3530,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_disabled_item))
                 setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
                 setSecondaryCTAText(getString(R.string.label_dialog_action_cancel))
+            }
+        }
+
+        return null
+    }
+
+    private fun getMultipleItemsDialogDeleteConfirmation(count: Int): DialogUnify? {
+        activity?.let {
+            return DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.label_dialog_title_delete_multiple_item, count))
+                setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item))
+                setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
+                setSecondaryCTAText(getString(R.string.label_move_to_wishlist))
             }
         }
 
