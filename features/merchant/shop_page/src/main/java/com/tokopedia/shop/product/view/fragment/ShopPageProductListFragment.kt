@@ -49,6 +49,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
+import com.tokopedia.shop.common.constant.ShopPageConstant.START_PAGE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
@@ -252,8 +253,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllNonDataElement()
         shopProductAdapter.clearProductList()
         showLoading()
-        viewModel.getNewProductListData(
+        viewModel.getProductListData(
                 shopId,
+                START_PAGE,
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter()
         )
@@ -831,10 +833,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun loadData(page: Int) {
-        viewModel.getNextProductListData(
+        viewModel.getProductListData(
                 shopId,
-                selectedEtalaseId,
                 page,
+                selectedEtalaseId,
                 shopProductFilterParameter?: ShopProductFilterParameter()
         )
     }
@@ -1023,8 +1025,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.claimMembershipResp.removeObservers(this)
         viewModel.newMembershipData.removeObservers(this)
         viewModel.newMerchantVoucherData.removeObservers(this)
-        viewModel.shopProductEtalaseTitleData.removeObservers(this)
-        viewModel.shopProductChangeProductGridSectionData.removeObservers(this)
         viewModel.bottomSheetFilterLiveData.removeObservers(this)
         viewModel.shopProductFilterCountLiveData.removeObservers(this)
         viewModel.flush()
@@ -1077,30 +1077,19 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         })
 
-        viewModel.shopProductEtalaseTitleData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetShopProductEtalaseTitleData(it.data)
-                }
-            }
-        })
-
-        viewModel.shopProductChangeProductGridSectionData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    addShopPageProductChangeGridSection(it.data)
-                }
-            }
-        })
-
         viewModel.productListData.observe(viewLifecycleOwner, Observer {
             stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
             startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
             startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
+                    val totalProduct = it.data.totalProductData
+                    if (shopProductAdapter.shopProductUiModelList.isEmpty() && totalProduct != 0) {
+                        updateEtalaseTitleSection()
+                    }
+                    updateProductChangeGridSection(totalProduct)
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
-                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
+                    productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
@@ -1163,6 +1152,21 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     }
 
+    private fun updateProductChangeGridSection(totalProduct: Int) {
+        if (ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
+        }
+    }
+
+    private fun updateEtalaseTitleSection() {
+        if (!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            shopProductAdapter.setShopProductEtalaseTitleData(ShopProductEtalaseTitleUiModel(
+                    getSelectedEtalaseChip(),
+                    ""
+            ))
+        }
+    }
+
     private fun onSuccessGetShopProductFilterCount(count: Int) {
         val countText = String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
@@ -1211,18 +1215,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             isLoadingNewProductData = false
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
-        }
-    }
-
-    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
-        if(!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.setShopProductEtalaseTitleData(data)
-        }
-    }
-
-    private fun addShopPageProductChangeGridSection(totalProductData: Int) {
-        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
         }
     }
 
@@ -1276,13 +1268,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 )
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
+        if (initialProductListData?.listShopProductUiModel?.isNotEmpty() == true) {
+            updateEtalaseTitleSection()
+        }
         if (!viewModel.isMyShop(shopId)) {
-            viewModel.getBuyerShopPageProductTabData(
+            viewModel.getBuyerViewContentData(shopId, data, isShowNewShopHomeTab())
+        }
+        if (initialProductListData == null){
+            viewModel.getProductListData(
                     shopId,
-                    data,
-                    etalaseItemDataModel,
-                    isShowNewShopHomeTab(),
-                    initialProductListData,
+                    START_PAGE,
+                    etalaseItemDataModel.etalaseId,
                     shopProductFilterParameter ?: ShopProductFilterParameter()
             )
         }

@@ -388,8 +388,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
-            visitables.add(listWithoutProductListData.size, data)
+            visitables.add(lastIndex, data)
             notifyDataSetChanged()
         } else {
             val indexObject = visitables.indexOf(mapOfDataModel[KEY_ETALASE_TITLE_DATA_MODEL])
@@ -571,6 +570,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                     it::class.java != ShopProductAddUiModel::class.java &&
                     it::class.java != ShopSellerEmptyProductAllEtalaseUiModel::class.java &&
                     it::class.java != ShopEmptyProductUiModel::class.java &&
+                    it::class.java != ShopProductEtalaseTitleUiModel::class.java &&
+                    it::class.java != ShopProductChangeGridSectionUiModel::class.java &&
                     it::class.java != LoadingMoreModel::class.java
         }
     }
