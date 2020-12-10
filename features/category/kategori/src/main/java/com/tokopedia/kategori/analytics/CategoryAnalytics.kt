@@ -1,7 +1,7 @@
 package com.tokopedia.kategori.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.common_category.data.kategorymodel.CategoriesItem
 import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics

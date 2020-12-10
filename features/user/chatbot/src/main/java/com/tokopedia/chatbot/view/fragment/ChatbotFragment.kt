@@ -128,6 +128,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var attribute: Attributes
     private var isBackAllowed = true
     private lateinit var ticker:Ticker
+    private var csatOptionsViewModel: CsatOptionsViewModel? = null
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -388,9 +389,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         sendEventForWelcomeMessage(visitable)
+        privateManageActionBubble(visitable)
         mapMessageToList(visitable)
         getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
+    }
+
+    private fun privateManageActionBubble(visitable: Visitable<*>) {
+        if (visitable is MessageViewModel && visitable.isSender) {
+            getViewState().hideActionBubbleOnSenderMsg()
+        }
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
@@ -480,6 +488,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
         view?.let {
+            csatOptionsViewModel?.let { it -> getViewState().hideCsatOptionList(it) }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
         }
     }
@@ -781,7 +790,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
-        model?.let { getViewState().hideCsatOptionList(it) }
+        csatOptionsViewModel = model
         startActivityForResult(context?.let {
             ChatBotCsatActivity
                     .getInstance(it, selected.value, model)

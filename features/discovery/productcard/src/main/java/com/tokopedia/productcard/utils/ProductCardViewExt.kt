@@ -206,7 +206,7 @@ private fun Label.determineLabelType(labelGroupType: String) {
     else setCustomLabelType(labelGroupType)
 }
 
-private fun String?.toUnifyLabelType(): Int {
+internal fun String?.toUnifyLabelType(): Int {
     return when (this) {
         LIGHT_GREY -> Label.GENERAL_LIGHT_GREY
         LIGHT_BLUE -> Label.GENERAL_LIGHT_BLUE

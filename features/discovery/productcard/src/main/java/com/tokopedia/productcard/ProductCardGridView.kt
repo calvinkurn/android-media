@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
@@ -52,6 +53,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
 
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                 getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
@@ -72,6 +75,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -117,4 +124,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
+
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 }

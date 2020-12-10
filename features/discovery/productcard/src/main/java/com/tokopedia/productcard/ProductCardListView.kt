@@ -55,6 +55,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
 
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
+
         setAddToCartButtonText(productCardModel)
 
         constraintLayoutProductCard?.post {
@@ -85,6 +87,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -134,8 +140,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getThreeDotsButton(): View? = imageThreeDots
 
-
-
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     /**
      * Special cases for specific pages

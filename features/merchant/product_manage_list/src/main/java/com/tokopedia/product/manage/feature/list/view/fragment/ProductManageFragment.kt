@@ -76,10 +76,12 @@ import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerA
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
@@ -484,7 +486,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val filterOptionsWrapper = FilterOptionWrapper(
                     sortOption = null,
                     filterOptions = defaultFilterOptions,
-                    filterShownState = listOf(true, true, false, true)
+                    filterShownState = listOf(true, true, false, true),
+                    selectedFilterCount = ProductManageFilterMapper.countSelectedFilter(defaultFilterOptions)
             )
             viewModel.setFilterOptionWrapper(filterOptionsWrapper)
 
@@ -656,7 +659,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private val addProductReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT &&
+            if (intent.action == BROADCAST_ADD_PRODUCT &&
                 intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                 intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
                 activity?.run {
@@ -1488,7 +1491,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         super.onResume()
         context?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+            intentFilter.addAction(BROADCAST_ADD_PRODUCT)
             LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
         }
     }
@@ -2023,7 +2026,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
             intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
             intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
             startActivity(intent)

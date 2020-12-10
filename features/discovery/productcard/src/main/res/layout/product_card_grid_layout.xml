@@ -221,6 +221,32 @@
             app:typographyType="heading_6"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonNotify"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/product_card_button_notify_me_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_button_notify_me_margin_top"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:textColor="@color/light_G500"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:contentDescription="@string/content_desc_notifyMe"
+            android:text="@string/product_card_text_notify_me"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonAddToCart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            tools:text="@string/product_card_text_notify_me"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

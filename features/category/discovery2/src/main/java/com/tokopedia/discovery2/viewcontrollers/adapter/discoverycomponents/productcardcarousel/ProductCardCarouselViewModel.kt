@@ -47,7 +47,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
 
     init {
-        initDaggerInject()
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
             val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
@@ -56,12 +55,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -97,7 +90,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
-                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem))
+                productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
