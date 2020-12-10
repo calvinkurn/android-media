@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.net.Uri
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
@@ -7,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -79,6 +83,7 @@ class ReviewViewHolder constructor(
             bindBuyerLabel(element)
             bindStar(element)
             bindStarClick(element)
+            bindItemClick(element)
         }
     }
 
@@ -92,6 +97,24 @@ class ReviewViewHolder constructor(
     private fun bindNotReviewed(element: ReviewUiModel) {
         bindStar(element)
         bindStarClick(element)
+    }
+
+    private fun bindItemClick(element: ReviewUiModel) {
+        container?.setOnClickListener {
+            if (element.isReviewed) {
+                val uriBuild = UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.REVIEW_DETAIL,
+                        element.reviewCard.reputationId.toString()
+                )
+                val uri = Uri.parse(uriBuild)
+                        .buildUpon()
+                        .appendQueryParameter(
+                                PARAM_FEEDBACK_ID,
+                                element.reviewCard.feedBackId.toString()
+                        ).toString()
+                RouteManager.route(itemView.context, uri)
+            }
+        }
     }
 
     private fun bindGravity(element: ReviewUiModel) {
@@ -218,6 +241,7 @@ class ReviewViewHolder constructor(
     companion object {
         const val PAYLOAD_REVIEWED = "payload_reviewed"
         const val PAYLOAD_NOT_REVIEWED = "payload_not_reviewed"
+        const val PARAM_FEEDBACK_ID = "feedbackId"
         val LAYOUT = R.layout.item_topchat_review_reminder
     }
 }
