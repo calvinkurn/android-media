@@ -25,7 +25,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.bottom_sheet_product_manage
-        val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
+        private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         fun createInstance(): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
@@ -148,5 +148,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         this.product = product
         this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
         show(fm, TAG)
+    }
+
+    fun dismiss(fm: FragmentManager) {
+        (fm.findFragmentByTag(TAG) as? BottomSheetUnify)?.dismissAllowingStateLoss()
     }
 }
