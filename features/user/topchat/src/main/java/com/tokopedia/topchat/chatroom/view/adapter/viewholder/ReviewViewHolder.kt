@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
-import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BackgroundGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
@@ -48,10 +47,6 @@ class ReviewViewHolder constructor(
 
     interface Listener {
         fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int)
-    }
-
-    override fun getChatStatusId(): Int {
-        return R.id.chat_status
     }
 
     override fun alwaysShowTime(): Boolean = true
