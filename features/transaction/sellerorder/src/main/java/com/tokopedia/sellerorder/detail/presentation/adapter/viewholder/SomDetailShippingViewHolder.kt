@@ -143,17 +143,21 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 // dropshipper
-                if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
-                    rl_drop_shipper.visibility = View.VISIBLE
+                if (item.dataObject.dropshipperName.isNotEmpty() || item.dataObject.dropshipperPhone.isNotEmpty()) {
+                    tv_som_dropshipper_label.visibility = View.VISIBLE
                     tv_som_dropshipper_name?.show()
                     val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                         item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                     } else {
                         item.dataObject.dropshipperPhone
                     }
-                    tv_som_dropshipper_name.text = StringBuilder("${item.dataObject.dropshipperName} (${numberPhoneDropShipper})")
+                    if(numberPhoneDropShipper.isNotBlank()) {
+                        tv_som_dropshipper_name.text = StringBuilder("${item.dataObject.dropshipperName} (${numberPhoneDropShipper})")
+                    } else {
+                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                    }
                 } else {
-                    rl_drop_shipper.visibility = View.GONE
+                    tv_som_dropshipper_label.visibility = View.GONE
                     tv_som_dropshipper_name?.hide()
                 }
             }

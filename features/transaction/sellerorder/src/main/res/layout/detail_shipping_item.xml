@@ -57,10 +57,10 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/kurir_label"
         android:text="@string/kode_booking"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kurir_label"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="@string/kode_booking" />
@@ -74,9 +74,9 @@
         android:inputType="none"
         android:textColor="@color/Unify_G500"
         android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/booking_code_title"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/tv_shipping_name"
-        app:layout_constraintBottom_toBottomOf="@+id/booking_code_title"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="ABCDEFHIJK >" />
@@ -206,12 +206,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/card_driver"
-        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
-        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         android:inputType="none"
         android:textColor="@color/Unify_N700"
         android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
+        app:layout_constraintTop_toBottomOf="@id/card_driver"
         app:typographyType="body_3"
         tools:text="TJNE-8K4LFVPNMT6 >" />
 
@@ -253,10 +253,8 @@
         android:id="@+id/barrierShippingPrinted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="shippingPrintedLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
 
@@ -271,6 +269,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/barrierShippingPrinted"
+        app:layout_constraintBottom_toTopOf="@+id/tv_receiver_street"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="AS Misbeh (0812345678)" />
@@ -305,7 +304,6 @@
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tv_receiver_street"
         app:layout_constraintTop_toBottomOf="@+id/tv_receiver_street"
         app:typographyType="body_3"
@@ -314,7 +312,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_province"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
@@ -323,42 +321,31 @@
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_receiver_district"
+        app:layout_constraintStart_toStartOf="@+id/tv_receiver_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Slipi, Jakarta Barat 14410" />
+        tools:text="DKI Jakarta" />
 
-    <RelativeLayout
-        android:id="@+id/rl_drop_shipper"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_som_dropshipper_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/som_dropshipper_label"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_receiver_province">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_som_dropshipper_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:text="@string/som_dropshipper_label"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
-
-    </RelativeLayout>
+        app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_som_dropshipper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/tv_som_dropshipper_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
-        app:layout_constraintBottom_toBottomOf="@id/rl_drop_shipper"
         app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
         app:typographyType="body_3"
         app:typographyWeight="bold"
