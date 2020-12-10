@@ -166,7 +166,7 @@ class MainSliceProvider : SliceProvider() {
                                                 it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                                 it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                             }
-                                            primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
+                                            primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, getClickProduct(recommendationModel?.get(i)))?.let {
                                                 SliceAction.create(
                                                         it,
                                                         createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -284,6 +284,10 @@ class MainSliceProvider : SliceProvider() {
 
     private fun getOnlyThreeData(recommendations: List<Recommendation>): List<Recommendation> {
         return recommendations.subList(0, 3)
+    }
+
+    private fun getClickProduct(recommendation: Recommendation?): String {
+        return "${recommendation?.categoryName} - ${recommendation?.operatorName} - ${recommendation?.productName}"
     }
 
     private fun rupiahFormatter(nonRupiah: Int): String {

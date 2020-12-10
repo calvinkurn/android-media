@@ -45,7 +45,9 @@ import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingA
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
+import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home.*
 import javax.inject.Inject
 
@@ -61,8 +63,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
+    private var sliceOpenApp: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.view_recharge_home, container, false)
@@ -75,6 +81,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
+        }
+
+        arguments?.let {
+            sliceOpenApp = it.getBoolean(RechargeHomepageFragment.RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
         searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
@@ -99,6 +109,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
         digital_homepage_order_list.setOnClickListener {
             onClickOrderList()
+        }
+
+        if(sliceOpenApp){
+            trackingUtil.sliceOpenApp(userSession.userId)
         }
     }
 
@@ -303,6 +317,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         val initialImpressionTrackingConst = mapOf(
                 DYNAMIC_ICON_IMPRESSION to true,
@@ -313,6 +328,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 SUBHOME_WIDGET_IMPRESSION to true
         )
 
-        fun getInstance() = DigitalHomePageFragment()
+        fun getInstance(sliceOpenApp: Boolean = false): DigitalHomePageFragment {
+            val bundle = Bundle()
+            val fragment = DigitalHomePageFragment()
+            bundle.putBoolean(RECHARGE_HOME_PAGE_EXTRA, sliceOpenApp)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

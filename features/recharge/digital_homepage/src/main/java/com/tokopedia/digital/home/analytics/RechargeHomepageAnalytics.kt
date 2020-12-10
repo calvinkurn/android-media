@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.analytics
 import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.ALL_BANNERS_CLICK
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.BACK_BUTTON_CLICK
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
@@ -154,6 +155,18 @@ class RechargeHomepageAnalytics {
                 SCREEN_NAME to SCREEN_NAME_TOPUP_BILLS,
                 USER_ID to userId
         )
+    }
+
+    fun sliceOpenApp(userId: String){
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, "viewGAMainIris",
+                TrackAppUtils.EVENT_CATEGORY, "ga main app",
+                TrackAppUtils.EVENT_ACTION, "click open app button",
+                TrackAppUtils.EVENT_LABEL, "",
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ))
     }
 
     companion object {
