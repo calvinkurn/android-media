@@ -87,10 +87,6 @@ data class RecommendationFilterChipsEntity (
             val icon: String = "",
             @SerializedName("inputType")
             val inputType: String = "",
-            @SerializedName("key")
-            val key: String = "",
-            @SerializedName("icon")
-            val icon: String = "",
             @SerializedName("isPopular")
             val isPopular: Boolean = false,
             @SerializedName("isActivated")
