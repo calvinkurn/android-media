@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Toolbar.White" parent="Base.Toolbar.Theme">
+        <item name="android:statusBarColor" >@color/Unify_G600</item>
+    </style>
+</resources>
