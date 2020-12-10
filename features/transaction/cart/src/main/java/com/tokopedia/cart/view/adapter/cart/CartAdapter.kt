@@ -1458,6 +1458,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    fun resetGlobalItemLock() {
+        cartDataList.forEach { data ->
+            when (data) {
+                is CartSelectAllHolderData -> {
+                    data.isCheckUncheckDirectAction = true
+                }
+            }
+        }
+    }
+
     fun isAllAvailableItemCheked(): Boolean {
         cartDataList.forEach {
             if (it is CartShopHolderData) {

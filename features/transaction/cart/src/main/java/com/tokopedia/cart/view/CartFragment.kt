@@ -567,11 +567,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter
-            itemAnimator = object: DefaultItemAnimator() {
-                override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
-                    return true
-                }
-            }
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             addItemDecoration(cartItemDecoration)
             setSpanSize(gridLayoutManager)
@@ -1678,8 +1673,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setCheckboxGlobalState() {
         isCheckUncheckDirectAction = false
         val isAllAvailableItemCheked = cartAdapter.isAllAvailableItemCheked()
+        if (checkboxGlobal.isChecked == isAllAvailableItemCheked) {
+            isCheckUncheckDirectAction = true
+            cartAdapter.resetGlobalItemLock()
+        }
         checkboxGlobal.isChecked = isAllAvailableItemCheked
-//        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
