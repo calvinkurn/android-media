@@ -170,7 +170,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.NORMAL)
-                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points_new, homeHeaderWalletAction.pointBalance)
                         }
                     } else {
                         tvTitleTokocash.text = TITLE
