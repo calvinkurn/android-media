@@ -1729,6 +1729,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         val uriString = Uri.parse(uri).buildUpon()
                 .appendQueryParameter(PARAM_RATING, starCount.toString())
+                .appendQueryParameter(PARAM_UTM_SOURCE, REVIEW_SOURCE_TOPCHAT)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(context, uriString)
@@ -1741,6 +1742,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     companion object {
         const val PARAM_RATING = "rating"
+        const val PARAM_UTM_SOURCE = "utmSource"
+        const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
