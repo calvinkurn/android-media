@@ -116,6 +116,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
         addCartToWishlistUseCase?.unsubscribe()
+        getRecentViewUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
