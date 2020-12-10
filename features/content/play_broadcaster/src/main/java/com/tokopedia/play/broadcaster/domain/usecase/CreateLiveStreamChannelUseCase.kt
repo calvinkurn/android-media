@@ -4,7 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -13,7 +14,7 @@ import javax.inject.Inject
  */
 class CreateLiveStreamChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<CreateLiveStreamChannelResponse.GetMedia>() {
+) : UseCase<CreateLiveStreamChannelResponse.GetMedia>() {
 
     private val query = """
             mutation createLivestream(${'$'}channelId: String!, ${'$'}title: String!, ${'$'}thumbnail: String!) {
@@ -33,13 +34,15 @@ class CreateLiveStreamChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): CreateLiveStreamChannelResponse.GetMedia {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateLiveStreamChannelResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = CreateLiveStreamChannelResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<CreateLiveStreamChannelResponse>(CreateLiveStreamChannelResponse::class.java)
-        response?.media?.let {
-            return it
-        }
-        throw DefaultErrorThrowable()
+        return response.media
     }
 
     companion object {

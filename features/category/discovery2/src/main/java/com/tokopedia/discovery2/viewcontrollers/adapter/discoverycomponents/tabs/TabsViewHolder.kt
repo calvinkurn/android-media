@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -24,7 +25,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
-
+        getSubComponent().inject(tabsViewModel)
     }
 
     override fun onViewAttachedToWindow() {

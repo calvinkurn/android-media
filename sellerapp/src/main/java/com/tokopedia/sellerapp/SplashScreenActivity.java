@@ -79,6 +79,11 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                 if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
+                    Intent intent = RouteManager.getIntent(this, uri.toString());
+                    if (intent!= null &&intent.resolveActivity(this.getPackageManager()) != null) {
+                        startActivity(intent);
+                        return true;
+                    }
                     return false;
                 }
                 new SellerMigrationRedirectionUtil().startRedirectionActivities(this, remainingAppLinks);

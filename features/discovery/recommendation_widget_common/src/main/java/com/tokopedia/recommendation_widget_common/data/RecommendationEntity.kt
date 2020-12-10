@@ -102,6 +102,8 @@ class RecommendationEntity {
             var city: String? =""
             @SerializedName("isGold")
             var isGold: Boolean ?= false
+            @SerializedName("isOfficial")
+            var isOfficial: Boolean ?= false
         }
 
         class Badges {
