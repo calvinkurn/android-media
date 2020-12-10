@@ -11,7 +11,7 @@ internal open class SearchLogger {
 
     companion object {
         private const val DISCOVERY_SEARCH_ERROR_TAG = "P2#DISCOVERY_SEARCH_ERROR#%s;error=%s"
-        private const val DISCOVERY_SEARCH_ANOMALY_TAG = "P2#DISCOVERY_SEARCH_ANOMALY%s"
+        private const val DISCOVERY_SEARCH_ANOMALY_TAG = "P2#DISCOVERY_SEARCH_ANOMALY#%s"
     }
 
     fun logWarning(message: String?, throwable: Throwable?) {
