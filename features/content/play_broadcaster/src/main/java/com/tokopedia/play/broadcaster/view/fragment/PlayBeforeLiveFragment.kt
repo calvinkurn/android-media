@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
+import com.tokopedia.play.broadcaster.util.extension.setLoading
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -36,9 +37,9 @@ import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
+import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -46,6 +47,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -118,6 +120,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             return parentViewModel.getChannelDetail()
         }
     }
+
+    private var isDeleting: Boolean = false
 
     override fun getScreenName(): String = "Play Before Live Page"
 
@@ -214,6 +218,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeLiveInfo()
         observeBroadcastSchedule()
         observeDeleteBroadcastSchedule()
+        observeChannelInfo()
     }
 
     private fun setupInsets(view: View) {
@@ -281,9 +286,47 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun observeDeleteBroadcastSchedule() {
         scheduleViewModel.observableDeleteBroadcastSchedule.observe(viewLifecycleOwner) {
-            scope.launch {
-                parentViewModel.getChannelDetail()
+            when (it) {
+                NetworkResult.Loading -> {
+                    setDeleteScheduleDialogLoading(isLoading = true)
+                }
+                is NetworkResult.Fail -> {
+                    getDeleteScheduleDialog().dismiss()
+                    it.error.localizedMessage?.let { err ->
+                        showToaster(message = err, type = Toaster.TYPE_ERROR)
+                    }
+                }
+                is NetworkResult.Success -> {
+                    scope.launch {
+                        isDeleting = true
+                        parentViewModel.getChannelDetail()
+                    }
+                }
             }
+        }
+    }
+
+    private fun observeChannelInfo() {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
+            setDeleteScheduleDialogLoading(isLoading = false)
+
+            if (isDeleting && it != NetworkResult.Loading) {
+                getDeleteScheduleDialog()
+                        .dismiss()
+
+                if (it is NetworkResult.Fail) {
+                    it.error.localizedMessage?.let { err ->
+                        showToaster(message = err, type = Toaster.TYPE_ERROR)
+                    }
+                } else if (it is NetworkResult.Success) {
+                    showToaster(
+                            message = getString(R.string.play_broadcast_schedule_deleted)
+                    )
+                }
+
+                isDeleting = false
+            }
+
         }
     }
     //endregion
@@ -385,17 +428,31 @@ class PlayBeforeLiveFragment @Inject constructor(
         if (!::deleteScheduleDialog.isInitialized) {
             deleteScheduleDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setPrimaryCTAText(getString(R.string.play_broadcast_delete_schedule_action))
-                setPrimaryCTAClickListener {
-                    deleteBroadcastSchedule()
-                    dismiss()
-                }
                 setSecondaryCTAText(getString(R.string.play_broadcast_exit))
-                setSecondaryCTAClickListener { dismiss() }
                 setTitle(getString(R.string.play_broadcast_delete_schedule_dialog_title))
                 setDescription(getString(R.string.play_broadcast_delete_schedule_dialog_desc))
+
+                setOnShowListener {
+                    setDeleteScheduleDialogLoading(false)
+                }
+                dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
             }
         }
+
         return deleteScheduleDialog
+    }
+
+    private fun setDeleteScheduleDialogLoading(isLoading: Boolean) {
+        getDeleteScheduleDialog().apply {
+            setLoading(isLoading)
+
+            setPrimaryCTAClickListener {
+                if (!isLoading) deleteBroadcastSchedule()
+            }
+            setSecondaryCTAClickListener {
+                if (!isLoading) dismiss()
+            }
+        }
     }
 
     private fun createLiveStream() {
