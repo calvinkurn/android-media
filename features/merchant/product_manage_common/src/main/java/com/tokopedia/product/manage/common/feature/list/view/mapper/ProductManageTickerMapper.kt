@@ -1,0 +1,58 @@
+package com.tokopedia.product.manage.common.feature.list.view.mapper
+
+import android.content.Context
+import com.tokopedia.product.manage.common.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+
+object ProductManageTickerMapper {
+
+    fun mapToTickerData(context: Context?, tickerList: List<ProductManageTicker>): List<TickerData> {
+        return tickerList.map {
+            val descriptionResId = when (it) {
+                is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
+                is MultiLocationNoAccessTicker -> R.string.product_manage_multi_location_stock_no_access_description
+                is EmptyStockTicker -> R.string.power_merchant_stock_warning_ticker_description
+                is CampaignStockTicker -> R.string.product_manage_campaign_stock_open_campaign
+                else -> R.string.product_manage_stock_ticker_description
+            }
+            val description = context?.getString(descriptionResId).orEmpty()
+            TickerData(description, Ticker.TYPE_ANNOUNCEMENT)
+        }
+    }
+
+    fun mapToTickerList(
+        multiLocationShop: Boolean,
+        canEditStock: Boolean,
+        isAllStockEmpty: Boolean
+    ): List<ProductManageTicker> {
+        val tickerList = mutableListOf<ProductManageTicker>()
+
+        val adminTicker = when {
+            multiLocationShop && canEditStock -> MultiLocationTicker
+            !multiLocationShop && !canEditStock -> SingleLocationNoAccessTicker
+            multiLocationShop && !canEditStock -> MultiLocationNoAccessTicker
+            else -> NoTicker
+        }
+        tickerList.add(adminTicker)
+
+        if (isAllStockEmpty) {
+            tickerList.add(EmptyStockTicker)
+        }
+
+        return tickerList.filter { it !is NoTicker }
+    }
+
+    fun mapToCampaignStockTickerList(multiLocationShop: Boolean): List<ProductManageTicker> {
+        val tickerList = mutableListOf<ProductManageTicker>()
+
+        if(multiLocationShop) {
+            tickerList.add(MultiLocationTicker)
+        }
+
+        tickerList.add(CampaignStockTicker)
+        return tickerList
+    }
+}
