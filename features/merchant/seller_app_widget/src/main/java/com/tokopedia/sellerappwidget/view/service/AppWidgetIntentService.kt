@@ -16,7 +16,6 @@ class AppWidgetIntentService : IntentService("AppWidgetIntentService") {
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        println("AppWidget : AppWidgetIntentService -> ${intent?.action}")
         when (intent?.action) {
             ACTION_GET_CHAT_APP_WIDGET_DATA -> GetChatService.startService(applicationContext)
             ACTION_GET_ORDER_APP_WIDGET_DATA -> GetOrderService.startService(applicationContext, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
