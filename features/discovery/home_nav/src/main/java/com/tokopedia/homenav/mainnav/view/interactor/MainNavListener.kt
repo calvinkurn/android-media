@@ -18,4 +18,6 @@ interface MainNavListener : HomeNavListener{
     fun onErrorProfileShopClicked(element: AccountHeaderViewModel)
 
     fun onErrorBuListClicked(position: Int)
+
+    fun onErrorTransactionListClicked(position: Int)
 }

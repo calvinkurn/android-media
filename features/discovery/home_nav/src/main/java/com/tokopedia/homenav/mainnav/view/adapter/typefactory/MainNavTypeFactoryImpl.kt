@@ -60,8 +60,16 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringProfileDataViewHolder.LAYOUT
     }
 
+    override fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel): Int {
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
+    }
+
     override fun type(errorStateBuViewModel: ErrorStateBuViewModel): Int {
         return ErrorStateBuViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
@@ -72,8 +80,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
             ErrorStateBuViewHolder.LAYOUT -> ErrorStateBuViewHolder(view, mainNavListener)
+            ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
+            InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }
