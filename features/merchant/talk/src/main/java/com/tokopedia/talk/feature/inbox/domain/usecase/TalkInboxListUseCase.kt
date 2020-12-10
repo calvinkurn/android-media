@@ -42,6 +42,10 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                       productName
                       productThumbnail
                       productURL
+                      state {
+                        isUnresponded
+                        hasProblem
+                      }
                     }
                   }
                 }
