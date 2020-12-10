@@ -229,6 +229,7 @@
             android:layout_below="@+id/icSawOrderMoreOrder"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:divider="@null"
+            android:scrollbars="none"
             tools:itemCount="4"
             tools:listitem="@layout/saw_app_widget_order_item" />
 

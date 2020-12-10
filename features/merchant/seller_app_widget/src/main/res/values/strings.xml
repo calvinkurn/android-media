@@ -29,4 +29,5 @@
     <string name="saw_chat_empty_state_description">Biar nggak sepi, promosikan produkmu pake Broadcast Chat!</string>
     <string name="saw_login_now">Masuk Sekarang</string>
     <string name="saw_new_chat">Chat Baru</string>
+    <string name="saw_response_limit">Batas respons %1$s!</string>
 </resources>

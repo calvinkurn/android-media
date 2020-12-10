@@ -44,8 +44,9 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
         override fun getViewAt(position: Int): RemoteViews {
             val item = items[position]
             return RemoteViews(context.packageName, R.layout.saw_app_widget_order_item).apply {
+                val deadLineText = context.getString(R.string.saw_response_limit, item.deadLineText)
                 setTextViewText(R.id.tvSawOrderItemProductName, item.product?.productName.orEmpty())
-                setTextViewText(R.id.tvSawOrderItemDeadlineText, item.deadLineText)
+                setTextViewText(R.id.tvSawOrderItemDeadlineText, deadLineText)
 
                 //handle on item click
                 val fillIntent = Intent().apply {
