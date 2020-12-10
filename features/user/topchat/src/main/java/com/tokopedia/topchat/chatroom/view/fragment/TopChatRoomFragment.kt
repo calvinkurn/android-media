@@ -70,14 +70,15 @@ import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
-import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.REQUEST_CODE_CHAT_IMAGE
@@ -98,6 +99,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -113,7 +115,10 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 import kotlin.math.abs
 
 /**
@@ -172,6 +177,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
+    private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
@@ -960,6 +966,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
+            REQUEST_REVIEW -> onReturnFromReview(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromReview(data: Intent?, resultCode: Int) {
+        val reviewRequestResult = if (!reviewRequest.empty())
+            reviewRequest.pop() else null
+        reviewRequestResult ?: return
+        if (resultCode == RESULT_OK && data != null) {
+            val reviewClickAt = data.getIntExtra(
+                    ReputationCommonConstants.ARGS_RATING, -1
+            )
+            val state = data.getIntExtra(
+                    ReputationCommonConstants.ARGS_REVIEW_STATE, -1
+            )
+            adapter.updateReviewState(
+                    reviewRequestResult.review, reviewRequestResult.lastKnownPosition,
+                    reviewClickAt, state
+            )
+        } else {
+            adapter.resetReviewState(
+                    reviewRequestResult.review, reviewRequestResult.lastKnownPosition
+            )
         }
     }
 
@@ -1693,17 +1722,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.addAttachmentPreview(sendableVoucher)
     }
 
-    override fun startReview(starCount: Int, review: ReviewCard) {
+    override fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int) {
         val uri = UriUtil.buildUri(
                 ApplinkConstInternalMarketplace.CREATE_REVIEW,
-                review.reputationId.toString(), review.productId.toString()
+                review.reputationId.toString(), review.reviewCard.productId.toString()
         )
         val uriString = Uri.parse(uri).buildUpon()
                 .appendQueryParameter(PARAM_RATING, starCount.toString())
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(context, uriString)
-        activity?.startActivityForResult(intent, REQUEST_REVIEW)
+        val reviewRequestResult = ReviewRequestResult(
+                review, lastKnownPosition
+        )
+        reviewRequest.push(reviewRequestResult)
+        startActivityForResult(intent, REQUEST_REVIEW)
     }
 
     companion object {

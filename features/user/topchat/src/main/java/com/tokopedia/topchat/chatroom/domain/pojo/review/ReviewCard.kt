@@ -16,9 +16,9 @@ data class ReviewCard(
         @SerializedName("allow_review")
         val allowReview: Boolean = false,
         @SerializedName("is_reviewed")
-        val isReviewed: Boolean = false,
+        var isReviewed: Boolean = false,
         @SerializedName("rating")
-        val rating: Float = 0f,
+        var rating: Float = 0f,
         @SerializedName("review_url")
         val reviewUrl: String = "",
         @SerializedName("feedback_id")

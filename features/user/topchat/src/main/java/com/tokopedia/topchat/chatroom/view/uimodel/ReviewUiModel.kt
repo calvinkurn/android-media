@@ -35,6 +35,7 @@ class ReviewUiModel constructor(
 
     val isReviewed: Boolean get() = reviewCard.isReviewed
     val allowReview: Boolean get() = reviewCard.allowReview
+    val reputationId: Int get() = reviewCard.reputationId
     val ratingInt: Int
         get() {
             var rate = reviewCard.rating.toInt()

@@ -47,7 +47,7 @@ class ReviewViewHolder constructor(
     private val leftBg = BackgroundGenerator.generateLeftBackgroundReviewReminder(container)
 
     interface Listener {
-        fun startReview(starCount: Int, review: ReviewCard)
+        fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int)
     }
 
     override fun getChatStatusId(): Int {
@@ -61,6 +61,8 @@ class ReviewViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads[0]) {
             DeferredAttachment.PAYLOAD_DEFERRED -> bind(element)
+            PAYLOAD_REVIEWED -> bindReviewed(element)
+            PAYLOAD_NOT_REVIEWED -> bindNotReviewed(element)
         }
     }
 
@@ -83,6 +85,18 @@ class ReviewViewHolder constructor(
             bindStar(element)
             bindStarClick(element)
         }
+    }
+
+    private fun bindReviewed(element: ReviewUiModel) {
+        bindBuyerLabel(element)
+        bindLabel(element)
+        bindStar(element)
+        bindStarClick(element)
+    }
+
+    private fun bindNotReviewed(element: ReviewUiModel) {
+        bindStar(element)
+        bindStarClick(element)
     }
 
     private fun bindGravity(element: ReviewUiModel) {
@@ -188,7 +202,7 @@ class ReviewViewHolder constructor(
         reputation?.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 Handler().postDelayed({
-                    listener?.startReview(position, element.reviewCard)
+                    listener?.startReview(position, element, adapterPosition)
                 }, 200)
             }
         })
@@ -207,6 +221,8 @@ class ReviewViewHolder constructor(
     }
 
     companion object {
+        const val PAYLOAD_REVIEWED = "payload_reviewed"
+        const val PAYLOAD_NOT_REVIEWED = "payload_not_reviewed"
         val LAYOUT = R.layout.item_topchat_review_reminder
     }
 }

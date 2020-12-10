@@ -13,11 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
@@ -279,6 +281,43 @@ class TopChatRoomAdapter constructor(
             return visitables[bcHandlerPost] as BroadcastSpamHandlerUiModel
         }
         return null
+    }
+
+
+    fun updateReviewState(
+            review: ReviewUiModel,
+            lastKnownPosition: Int,
+            reviewClickAt: Int,
+            state: Int
+    ) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            val item = itemPair.second ?: return@post
+            when (state) {
+                ReputationCommonConstants.REVIEWED -> {
+                    item.reviewCard.apply {
+                        isReviewed = true
+                        rating = reviewClickAt.toFloat()
+                    }
+                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+                }
+                else -> {
+                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+                }
+            }
+        }
+    }
+
+    fun resetReviewState(review: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            val item = itemPair.second ?: return@post
+            notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+        }
     }
 
     private fun removeBroadcastHandler(index: Int) {
