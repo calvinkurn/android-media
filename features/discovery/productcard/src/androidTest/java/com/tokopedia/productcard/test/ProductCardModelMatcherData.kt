@@ -1737,8 +1737,7 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingCount = 4,
-            reviewCount = 60,
+            countSoldRating = "4.5",
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
             hasThreeDots = true,
@@ -1755,12 +1754,8 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
