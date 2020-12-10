@@ -331,18 +331,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun validateShopLocation(shopId: Int) {
+        mIsLoading.value = true
         launchCatchError(block = {
             getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
             val shopLocation = withContext(Dispatchers.IO) {
                 getShopInfoLocationUseCase.executeOnBackground()
             }
             mLocationValidation.value = Success(shopLocation)
+            mIsLoading.value = false
         }, onError = {
             mLocationValidation.value = Fail(it)
+            mIsLoading.value = false
         })
     }
 
     fun saveShippingLocation(dataParam: MutableMap<String, Any>) {
+        mIsLoading.value = true
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
@@ -351,8 +355,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     mSaveShopShipmentLocationResponse.postValue(Success(it))
                 }
             }
+            mIsLoading.value = false
         }) {
             mSaveShopShipmentLocationResponse.value = Fail(it)
+            mIsLoading.value = false
         }
     }
 
