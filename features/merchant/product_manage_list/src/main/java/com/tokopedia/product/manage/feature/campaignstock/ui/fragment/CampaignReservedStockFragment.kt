@@ -11,7 +11,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToCampaignStockTickerList
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
@@ -20,7 +19,6 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.CampaignStockTickerUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockRedirectionUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
 import javax.inject.Inject
