@@ -181,7 +181,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel): Int {
         return if (rechargeBUWidgetDataModel.data.option1 == RechargeBUWidgetMixTopViewHolder.BU_WIDGET_TYPE_TOP)
-        RechargeBUWidgetMixLeftViewHolder.LAYOUT else RechargeBUWidgetMixTopViewHolder.LAYOUT
+        RechargeBUWidgetMixTopViewHolder.LAYOUT else RechargeBUWidgetMixLeftViewHolder.LAYOUT
     }
 
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
