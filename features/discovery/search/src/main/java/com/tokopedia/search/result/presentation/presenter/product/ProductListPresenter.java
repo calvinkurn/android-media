@@ -1533,12 +1533,15 @@ final class ProductListPresenter
     }
 
     private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
+        String query = getView().getQueryKey();
+
+        if (textIsEmpty(query)) return;
+
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
         Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
-        String query = getView().getQueryKey();
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
