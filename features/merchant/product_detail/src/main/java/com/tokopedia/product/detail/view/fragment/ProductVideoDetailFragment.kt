@@ -51,6 +51,10 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
         initView(view)
 
         closeBtn?.setOnClickListener {
+            val videoDetailData = sharedViewModel?.productVideoDetailData?.value
+            videoDetailData?.let {
+                ProductVideoDetailTracking.eventCLickMinimizeVideo(it.productId, it.shopTypeString, it.shopId, it.userId)
+            }
             onBackButtonClicked()
             activityListener?.onBackPressed()
         }

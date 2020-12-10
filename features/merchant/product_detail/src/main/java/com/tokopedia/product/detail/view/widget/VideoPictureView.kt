@@ -90,7 +90,7 @@ class VideoPictureView @JvmOverloads constructor(
             override fun onPageSelected(position: Int) {
                 if (lastPosition != position) {
                     videoPictureAdapter?.mediaData?.getOrNull(position)?.run {
-                        mListener?.onSwipePicture(type, urlOriginal, position, componentTrackDataModel)
+                        mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
                     }
                     imageSliderPageControl?.setCurrentIndicator(position)
                     lastPosition = position

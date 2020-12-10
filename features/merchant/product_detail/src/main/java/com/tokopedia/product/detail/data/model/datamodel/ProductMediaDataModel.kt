@@ -10,7 +10,11 @@ data class ProductMediaDataModel(
         var shouldRefreshViewPagger: Boolean = true,
         var shouldRenderImageVariant: Boolean = true
 ) : DynamicPdpDataModel {
-    fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == "video" }
+    companion object{
+        const val VIDEO_TYPE = "video"
+    }
+
+    fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -32,4 +36,6 @@ data class MediaDataModel(
         val mediaDescription: String = "",
         val videoUrl: String = "",
         val isAutoPlay: Boolean = false
-)
+) {
+    fun isVideoType():Boolean = type == ProductMediaDataModel.VIDEO_TYPE
+}
