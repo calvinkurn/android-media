@@ -291,7 +291,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openOrderList(Uri uriData) {
         String category = uriData.getQueryParameter("category");
-        if (category != null && category == "train") {
+        if (category != null && category.equals("train")) {
             Intent intent = RouteManager.getIntent(context, ApplinkConst.TRAIN_ORDER);
             viewListener.goToPage(intent);
         } else {
