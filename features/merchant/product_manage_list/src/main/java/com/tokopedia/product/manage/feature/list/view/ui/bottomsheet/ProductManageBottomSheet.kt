@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -25,7 +25,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.bottom_sheet_product_manage
-        private val TAG: String = ProductManageBottomSheet::class.java.simpleName
+        private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         fun createInstance(): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
@@ -148,5 +148,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         this.product = product
         this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
         show(fm, TAG)
+    }
+
+    fun dismiss(fm: FragmentManager) {
+        (fm.findFragmentByTag(TAG) as? BottomSheetUnify)?.dismissAllowingStateLoss()
     }
 }
