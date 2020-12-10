@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.CampaignStockTickerUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import kotlinx.android.synthetic.main.item_product_manage_announcement_ticker.view.*
 
 class CampaignStockTickerViewHolder(
     itemView: View?
@@ -24,7 +24,7 @@ class CampaignStockTickerViewHolder(
     }
 
     private fun setupTicker(data: CampaignStockTickerUiModel) {
-        itemView.ticker.apply {
+        itemView.findViewById<Ticker>(R.id.ticker).apply {
             val tickerList = data.tickerList
             val adapter = TickerPagerAdapter(context, tickerList)
             addPagerView(adapter, tickerList)
