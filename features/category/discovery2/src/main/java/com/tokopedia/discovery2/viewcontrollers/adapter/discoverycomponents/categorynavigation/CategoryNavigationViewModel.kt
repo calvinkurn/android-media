@@ -33,9 +33,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
-        initDaggerInject()
-    }
+
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -57,12 +55,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
         )
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 
     fun getListData(): LiveData<Result<ArrayList<ComponentsItem>>> = listData
 
