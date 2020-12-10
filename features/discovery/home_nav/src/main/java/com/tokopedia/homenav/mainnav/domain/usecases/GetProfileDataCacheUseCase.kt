@@ -37,21 +37,19 @@ class GetProfileDataCacheUseCase @Inject constructor(
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopInfoPojo? = null
 
-            if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-                val getUserInfoCall = async {
-                    getUserInfoUseCase.executeOnBackground()
-                }
-                val getUserMembershipCall = async {
-                    getUserMembershipUseCase.executeOnBackground()
-                }
-                val getShopInfoCall = async {
-                    getShopInfoUseCase.executeOnBackground()
-
-                }
-                userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-                userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-                shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            val getUserInfoCall = async {
+                getUserInfoUseCase.executeOnBackground()
             }
+            val getUserMembershipCall = async {
+                getUserMembershipUseCase.executeOnBackground()
+            }
+            val getShopInfoCall = async {
+                getShopInfoUseCase.executeOnBackground()
+
+            }
+            userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
+            userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
