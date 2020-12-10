@@ -199,4 +199,6 @@ yang ditemukan</string>
     <string name="title_topchat_reviewed">Sudah Diulas</string>
     <string name="title_topchat_review_expire">Tidak Bisa Diulas</string>
     <string name="title_topchat_review_waiting">Menunggu Diulas</string>
+    <string name="title_topchat_review_other">Ulasan Lain</string>
+    <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
 </resources>

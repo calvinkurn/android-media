@@ -112,6 +112,7 @@ import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -985,10 +986,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     reviewRequestResult.review, reviewRequestResult.lastKnownPosition,
                     reviewClickAt, state
             )
+            if (state == ReputationCommonConstants.REVIEWED) {
+                showSnackBarSuccessReview()
+            }
         } else {
             adapter.resetReviewState(
                     reviewRequestResult.review, reviewRequestResult.lastKnownPosition
             )
+        }
+    }
+
+    private fun showSnackBarSuccessReview() {
+        view?.let { view ->
+            Toaster.toasterCustomCtaWidth = 116.toPx()
+            Toaster.build(
+                    view,
+                    getString(R.string.title_topchat_review_success),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.title_topchat_review_other),
+                    View.OnClickListener {
+                        RouteManager.route(it.context, ApplinkConst.REPUTATION)
+                    }
+            ).show()
         }
     }
 
