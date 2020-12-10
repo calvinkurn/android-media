@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -61,12 +62,18 @@ class GetCategoryGroupUseCase (
     }
 
     fun setStrategyCache() {
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        graphqlUseCase.setCacheStrategy(
+                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setSessionIncluded(true)
+                        .build())
     }
 
     fun setStrategyCloudThenCache() {
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
+        graphqlUseCase.setCacheStrategy(
+                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setSessionIncluded(true)
+                        .build())
     }
-
-
 }
