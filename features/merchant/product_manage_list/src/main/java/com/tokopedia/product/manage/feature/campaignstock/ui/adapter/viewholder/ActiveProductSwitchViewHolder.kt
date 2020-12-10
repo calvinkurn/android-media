@@ -23,6 +23,7 @@ class ActiveProductSwitchViewHolder(itemView: View?,
                 onActiveStockChanged(isChecked)
                 ProductManageTracking.eventClickAllocationProductStatus(isVariant = false, isOn = isChecked)
             }
+            isEnabled = element.access?.editProduct == true
         }
     }
 }
