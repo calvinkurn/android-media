@@ -171,7 +171,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     fun showNonLoggedInUi(activityContext: Context,
                           data: GetPopGratificationResponse,
-                          couponDetailResponse: GetCouponDetailResponse,
+                          couponDetailResponse: GetCouponDetailResponse?,
                           gratificationData: GratificationData): Dialog? {
 
         DestroyedActivity.couponDetailResponse = couponDetailResponse
@@ -180,14 +180,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return nonLoggedInUiUi(activityContext, data, couponDetailResponse, gratificationData)
     }
 
-    private fun nonLoggedInUiUi(activityContext: Context, getPopGratificationResponse: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData): Dialog? {
+    private fun nonLoggedInUiUi(activityContext: Context, getPopGratificationResponse: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse?, gratificationData: GratificationData): Dialog? {
         popUpVersion = AUTO_CLAIM
 
         val pair = prepareBottomSheet(activityContext, TargetPromotionsCouponType.SINGLE_COUPON)
         val view = pair.first
 
         initViews(view, activityContext, getPopGratificationResponse, couponDetailResponse, gratificationData)
-        setUiData(couponDetailResponse)
+
         setNonLoggedInListeners()
 
         prePareCatalogId(getPopGratificationResponse)
@@ -246,6 +246,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
 
             showErrorUIForClaimGratificationLoggedIn()
+            expandBottomSheet()
         } else {
             setLoggedInUiForSuccessClaimGratificationVersionAutoClaim(claimPopGratificationResponse, couponDetailResponse)
         }
@@ -614,6 +615,17 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                                 TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                             }
                         } else {
+                            if(data is GetPopGratificationResponse){
+                                val gratifResponse = (data as GetPopGratificationResponse)
+                                val benefits = gratifResponse?.popGratification?.popGratificationBenefits
+                                if(!benefits.isNullOrEmpty() && (benefits[0]?.referenceID!=null || benefits[0]?.referenceID!=0) ){
+                                    if(gratifResponse?.popGratification?.popGratificationActionButton!=null){
+                                        performActionBasedOnClaim(gratifResponse.popGratification.popGratificationActionButton)
+                                        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
+                                        return@setOnClickListener
+                                    }
+                                }
+                            }
                             routeToLogin(activity)
                             TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                         }
