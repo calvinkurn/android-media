@@ -102,7 +102,8 @@ class MainSliceProvider : SliceProvider() {
             contextNonNull,
             0,
             allowReads {
-                RouteManager.getIntent(contextNonNull, ApplinkConst.HOME)
+                RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                        .putExtra(RECHARGE_HOME_PAGE_EXTRA, true)
             },
             0
     )
@@ -110,15 +111,6 @@ class MainSliceProvider : SliceProvider() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
         if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
-            val mainPendingIntent = PendingIntent.getActivity(
-                    contextNonNull,
-                    0,
-                    allowReads {
-                        RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
-                                .putExtra(RECHARGE_HOME_PAGE_EXTRA, true)
-                    },
-                    0
-            )
             try {
                 if (allowReads {userSession.isLoggedIn}) {
                     if (!alreadyLoadData)
@@ -141,16 +133,19 @@ class MainSliceProvider : SliceProvider() {
                                     sliceTracking.onEmptyState()
                                 }
                                 title = contextNonNull.resources.getString(R.string.slice_empty_data)
-                                primaryAction = createPendingIntentNoAccess()?.let {
-                                    SliceAction.create(
-                                            it,
-                                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
-                                            SMALL_IMAGE,
-                                            ""
-                                    )
-                                }
                             }
-                            else subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
+                            else {
+                                subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
+                            }
+
+                            primaryAction = createPendingIntentNoAccess()?.let {
+                                SliceAction.create(
+                                        it,
+                                        createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
+                                        SMALL_IMAGE,
+                                        ""
+                                )
+                            }
                         }
                         recommendationModel?.indices?.let { recomRange ->
                             if (!recommendationModel.isNullOrEmpty()) {
