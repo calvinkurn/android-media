@@ -79,7 +79,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
             styledAttributes.recycle()
 
-            val layoutParams = fragment_container?.layoutParams as FrameLayout.LayoutParams
+            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
                     resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
@@ -87,7 +87,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
                     layoutParams.bottomMargin
             )
         } catch (e: Exception) {
-            val layoutParams = fragment_container?.layoutParams as FrameLayout.LayoutParams
+            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
                     resources.getDimensionPixelOffset(R.dimen.dp_200),
