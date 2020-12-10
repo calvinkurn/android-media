@@ -217,7 +217,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSortFilter()
         initErrorPage()
     }
 
@@ -269,6 +268,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                 return@Observer
                             }
                         }
+                        setFilterCounter()
                         if (isOldView()) {
                             renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox, isSellerView()) }, it.data.hasNext)
                         } else {
@@ -407,7 +407,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
-            if (isSellerView()) {
+            if (isSellerView() && !isOldView()) {
                 addItem(getSellerFilterList())
                 return
             }
@@ -441,7 +441,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         } else {
             SortFilterItem(getString(R.string.inbox_unresponded))
         }
-        val problemFilter =  if (getUnrespondedCount() != 0) {
+        val problemFilter = if (getUnrespondedCount() != 0) {
             SortFilterItem(getString(R.string.inbox_problem) + " (${getProblemCount()})")
         } else {
             SortFilterItem(getString(R.string.inbox_problem))
@@ -504,5 +504,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun getUnrespondedCount(): Int {
         return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.unrespondedTotal
                 ?: 0
+    }
+
+    private fun setFilterCounter() {
+        if (getUnrespondedCount() != 0) {
+            talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})"
+        }
+        if (getProblemCount() != 0) {
+            talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem) + " (${getProblemCount()})"
+        }
     }
 }
