@@ -39,6 +39,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
@@ -81,10 +82,13 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.ADDRESS_STREET
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.COURIER_ORIGIN
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_ADDRESS_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
@@ -92,9 +96,13 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -336,7 +344,7 @@ class AddEditProductPreviewFragment:
                 if (hasLocation) {
                     moveToImagePicker()
                 } else {
-                    viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+                    validateShopLocation()
                 }
             }
         }
@@ -462,12 +470,10 @@ class AddEditProductPreviewFragment:
         observeValidationMessage()
         observeSaveProductDraft()
         observeGetShopInfoLocation()
+        observeSaveShipmentLocationData()
 
         // validate whether shop has location
-        if (isAdding()) {
-            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
-        }
-
+        validateShopLocation()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
     }
@@ -519,8 +525,41 @@ class AddEditProductPreviewFragment:
                     onSetCashbackResult(cacheManager)
                 }
                 REQUEST_CODE_SHOP_LOCATION -> {
-                    view?.let {
-                        showToasterSuccessSetLocation()
+                    showLoading()
+                    data.let { intent ->
+                        val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                        var latitude = ""
+                        var longitude = ""
+                        var postalCode = ""
+                        var districtId = 0
+                        var formattedAddress = ""
+                        val shopId = userSession.shopId.toIntOrZero()
+
+                        saveAddressDataModel?.let { model ->
+                            latitude = model.latitude
+                            longitude = model.longitude
+                            postalCode = model.postalCode
+                            districtId = model.districtId
+                            formattedAddress = model.formattedAddress
+                        }
+
+                        if (shopId != 0 &&
+                                postalCode.isNotBlank() &&
+                                latitude.isNotBlank() &&
+                                longitude.isNotBlank() &&
+                                districtId != 0 &&
+                                formattedAddress.isNotBlank()) {
+
+                            val params = getSaveShopShippingLocationData(
+                                    shopId = shopId,
+                                    postCode = postalCode,
+                                    courierOrigin = districtId,
+                                    addrStreet = formattedAddress,
+                                    lat = latitude,
+                                    long = longitude
+                            )
+                            viewModel.saveShippingLocation(params)
+                        }
                     }
                 }
             }
@@ -996,12 +1035,30 @@ class AddEditProductPreviewFragment:
 
     private fun observeGetShopInfoLocation() {
         viewModel.locationValidation.observe(viewLifecycleOwner) {
+            hideLoading()
             when (it) {
                 is Success -> {
                     if (!it.data) {
                         showDialogLocationValidation()
                     }
                     hasLocation = it.data
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeSaveShipmentLocationData() {
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                    if (isSuccess) {
+                        showToasterSuccessSetLocation()
+                    }
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -1391,6 +1448,31 @@ class AddEditProductPreviewFragment:
                     Toaster.TYPE_NORMAL,
                     getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ) { /*no op*/ }.show()
+        }
+    }
+
+    private fun getSaveShopShippingLocationData(
+            shopId: Int,
+            postCode: String,
+            courierOrigin: Int,
+            addrStreet: String,
+            lat: String,
+            long: String
+    ): MutableMap<String, Any> {
+        val shipmentPayload = mutableMapOf<String, Any>()
+        shipmentPayload[SHOP_ID] = shopId
+        shipmentPayload[POSTAL_CODE] = postCode
+        shipmentPayload[COURIER_ORIGIN] = courierOrigin
+        shipmentPayload[ADDRESS_STREET] = addrStreet
+        shipmentPayload[LATITUDE] = lat
+        shipmentPayload[LONGITUDE] = long
+        return shipmentPayload
+    }
+
+    private fun validateShopLocation() {
+        if (isAdding()) {
+            showLoading()
+            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
         }
     }
 
