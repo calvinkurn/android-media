@@ -288,7 +288,7 @@ class MainNavViewModel @Inject constructor(
 
     suspend fun getProfileData() {
         val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
-        updateWidget(accountHeaderModel, 0)
+        updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
     }
 
     fun refreshBuListdata() {
@@ -529,28 +529,13 @@ class MainNavViewModel @Inject constructor(
         getMainNavData()
     }
 
-    fun reloadOvoData(accountData: AccountHeaderViewModel) {
-        launch(coroutineContext, block = {
-            getOvoData(accountData)
-        })
-    }
+    fun refreshProfileData() {
+        updateWidget(InitialShimmerProfileDataModel(), INDEX_MODEL_ACCOUNT)
+        launchCatchError(coroutineContext, block = {
+            getProfileData()
+        }) {
 
-    fun reloadSaldoData(accountData: AccountHeaderViewModel) {
-        launch(coroutineContext, block = {
-            getSaldoData(accountData)
-        })
-    }
-
-    fun reloadShopData(shopId: Int,accountData: AccountHeaderViewModel) {
-        launch(coroutineContext, block = {
-            getShopData(shopId, accountData)
-        })
-    }
-
-    fun reloadUserData(accountData: AccountHeaderViewModel) {
-        launch(coroutineContext, block = {
-            getUserData(accountData)
-        })
+        }
     }
 
     private suspend fun onlyForLoggedInUser(function: suspend ()-> Unit) {

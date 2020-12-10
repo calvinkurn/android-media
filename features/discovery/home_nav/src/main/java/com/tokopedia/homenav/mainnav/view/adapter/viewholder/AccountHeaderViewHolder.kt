@@ -10,8 +10,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -23,8 +23,11 @@ import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -87,22 +90,23 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun renderLoginState(element: AccountHeaderViewModel) {
         layoutLogin.visibility = View.VISIBLE
-        val userImage: AppCompatImageView = layoutLogin.findViewById(R.id.img_user_login)
-        val usrBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_badge)
-        val usrOvoBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
+        val userImage: ImageUnify = layoutLogin.findViewById(R.id.img_user_login)
+        val usrBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_badge)
+        val usrOvoBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
-        val btnTryAgain: UnifyButton = layoutLogin.findViewById(R.id.btn_try_again)
+        val btnTryAgain: ImageView = layoutLogin.findViewById(R.id.btn_try_again)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+
+        btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
 
         userImage.loadImageCircle(element.userImage)
         userImage.isClickable = false
         tvName.isClickable = false
         if (element.isGetUserNameError) {
             tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_PROFILE)
-            btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
         }
@@ -111,11 +115,10 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         tvOvo.isClickable = false
+        usrOvoBadge.visible()
+
         if (element.isGetOvoError && element.isGetSaldoError) {
             tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
-            btnTryAgain.setOnClickListener{
-                mainNavListener.onErrorProfileOVOClicked(element)
-            }
             usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
         } else if (element.isGetOvoError && !element.isGetSaldoError) {
             tvOvo.text = element.saldo
@@ -135,7 +138,6 @@ class AccountHeaderViewHolder(itemView: View,
             if (element.isGetShopError) {
                 subtext = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_SHOP_TRY).toString()
                 fulltext = String.format(AccountHeaderViewModel.ERROR_TEXT_SHOP, subtext)
-                tvShopInfo.setOnClickListener{mainNavListener.onErrorProfileShopClicked(element)}
             } else {
                 subtext = MethodChecker.fromHtml(element.shopName).toString()
                 fulltext = String.format(TEXT_TOKO_SAYA, subtext)
@@ -157,12 +159,15 @@ class AccountHeaderViewHolder(itemView: View,
         btnSettings.visible()
         btnTryAgain.gone()
         if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError)) {
-            btnSettings.gone()
+            btnTryAgain.setImageDrawable(
+                    getIconUnifyDrawable(
+                            itemView.context,
+                            IconUnify.REPLAY,
+                            ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
+                    )
+            )
+            usrOvoBadge.gone()
             btnTryAgain.visible()
-            if (element.isGetUserNameError && (element.isGetOvoError && element.isGetSaldoError)) {
-                //all error, reload section
-                btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
-            }
         }
     }
 

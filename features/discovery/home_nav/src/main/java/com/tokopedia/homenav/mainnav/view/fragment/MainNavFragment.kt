@@ -51,7 +51,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -210,17 +209,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.REGISTER), REQUEST_REGISTER)
     }
 
-    override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadUserData(element)
-    }
-
-    override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadOvoData(element)
-        viewModel.reloadSaldoData(element)
-    }
-
-    override fun onErrorProfileShopClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadShopData(getUserSession().shopId.toInt(), element)
+    override fun onErrorProfileRefreshClicked(position: Int) {
+        viewModel.refreshProfileData()
     }
 
     override fun onErrorBuListClicked(position: Int) {

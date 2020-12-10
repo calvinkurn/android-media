@@ -97,14 +97,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_user_login"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
+            app:unify_image_type="circle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/usr_badge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
@@ -119,18 +120,17 @@
             app:layout_constraintTop_toTopOf="@id/img_user_login"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/usr_ovo_badge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:scaleType="fitCenter"
-
-
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/img_user_login"
             app:layout_constraintLeft_toRightOf="@id/img_user_login"
-            app:layout_constraintTop_toBottomOf="@id/usr_badge"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -165,26 +165,26 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_8"
             app:icon_name="SETTING"
             app:layout_constraintTop_toTopOf="@id/img_user_login"
             app:layout_constraintBottom_toBottomOf="@id/img_user_login"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_try_again"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintVertical_chainStyle="packed"/>
 
-        <com.tokopedia.unifycomponents.UnifyButton
+        <ImageView
             android:id="@+id/btn_try_again"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:text="@string/btn_try_again"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:padding="5dp"
+            android:background="@drawable/ic_oval_bg"
             app:layout_constraintTop_toTopOf="@id/img_user_login"
             app:layout_constraintBottom_toBottomOf="@id/img_user_login"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:visibility="gone"/>
-
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"
+            android:visibility="gone"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_info"
