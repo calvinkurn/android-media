@@ -44,29 +44,23 @@ class GetProfileDataUseCase @Inject constructor(
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopInfoPojo? = null
 
-            if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-                val getUserInfoCall = async {
-                    getUserInfoUseCase.executeOnBackground()
-                }
-                val getOvoCall = async {
-                    getOvoUseCase.executeOnBackground()
-                }
-                val getSaldoCall = async {
-                    getSaldoUseCase.executeOnBackground()
-                }
-                val getUserMembershipCall = async {
-                    getUserMembershipUseCase.executeOnBackground()
-                }
-                val getShopInfoCall = async {
-                    getShopInfoUseCase.executeOnBackground()
-
-                }
-                userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-                userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-                shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            val getOvoCall = async {
+                getOvoUseCase.executeOnBackground()
             }
+            val getSaldoCall = async {
+                getSaldoUseCase.executeOnBackground()
+            }
+            val getUserMembershipCall = async {
+                getUserMembershipUseCase.executeOnBackground()
+            }
+            val getShopInfoCall = async {
+                getShopInfoUseCase.executeOnBackground()
+            }
+            ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+            userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
