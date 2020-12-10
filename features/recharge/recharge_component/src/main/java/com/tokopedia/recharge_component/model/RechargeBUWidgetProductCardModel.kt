@@ -7,17 +7,15 @@ import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetPro
 
 class RechargeBUWidgetProductCardModel(
         val imageUrl: String,
-        val backgroundTintColor: String,
+        val backgroundColor: String,
         val imageType: String,
         val categoryName: String,
         val categoryNameColor: String,
         val productName: String,
-        val priceLabel: String,
-        val discountPercentage: String,
-        val slashedPrice: String,
         val price: String,
+        val slashedPrice: String,
+        val discountPercentage: String,
         val applink: String,
-        val impressHolder: ImpressHolder = ImpressHolder(),
         val listener: CommonProductCardCarouselListener
 ): ImpressHolder(), Visitable<RechargeBUWidgetProductCardTypeFactory> {
     override fun type(typeFactory: RechargeBUWidgetProductCardTypeFactory): Int {

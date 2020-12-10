@@ -14,8 +14,17 @@ data class RechargePersoItem(
         @SerializedName("media_url")
         val mediaUrl: String = "",
         @Expose
+        @SerializedName("media_url_type")
+        val mediaUrlType: String = "",
+        @Expose
+        @SerializedName("background_color")
+        val backgroundColor: String = "",
+        @Expose
         @SerializedName("subtitle")
         val subtitle: String = "",
+        @Expose
+        @SerializedName("subtitle_mode")
+        val subtitleMode: String = "",
         @Expose
         @SerializedName("label_1")
         val label1: String = "",

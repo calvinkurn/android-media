@@ -210,18 +210,17 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         val list: MutableList<RechargeBUWidgetProductCardModel> = mutableListOf()
         for (element in data.items) {
             list.add(RechargeBUWidgetProductCardModel(
-                    data.mediaUrl,
-                    "",
-                    element.label1Mode,
+                    element.mediaUrl,
+                    element.backgroundColor,
+                    element.mediaUrlType,
                     element.title.toUpperCase(),
                     data.option2,
                     element.subtitle,
-                    "",
-                    element.label1,
                     element.label2,
+                    element.label1,
                     element.label3,
                     element.applink,
-                    listener = this
+                    this
             ))
         }
         return list

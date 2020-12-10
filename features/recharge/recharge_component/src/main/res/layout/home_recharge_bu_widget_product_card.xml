@@ -79,7 +79,6 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Pulsa"
-            tools:textColor="@color/Unify_Y400"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

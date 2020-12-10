@@ -29,6 +29,9 @@ class RechargeBUWidgetProductCardViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_product_card
+
+        const val IMAGE_TYPE_FULL = "full"
+        const val IMAGE_TYPE_FRAME = "frame"
     }
 
     override fun bind(element: RechargeBUWidgetProductCardModel) {
@@ -42,7 +45,7 @@ class RechargeBUWidgetProductCardViewHolder(
             applyCarousel()
 
             // Product Image
-            if (element.imageType == "full") {
+            if (element.imageType == IMAGE_TYPE_FULL) {
                 imageProduct.loadImage(element.imageUrl)
                 imageProduct.show()
                 imageProductIconContainer.hide()
@@ -51,9 +54,11 @@ class RechargeBUWidgetProductCardViewHolder(
                 imageProductIcon.loadImage(element.imageUrl)
                 imageProductIconContainer.show()
                 imageProduct.invisible()
-//            imageProductBackground.setColorFilter(Color.parseColor(element.backgroundTintColor))
-//            imageProductBackground.setColorFilter(Color.parseColor(element.categoryNameColor))
-                (imageProductBackground.background as? GradientDrawable)?.setColor(Color.parseColor(element.categoryNameColor))
+                try {
+                    (imageProductBackground.background as? GradientDrawable)?.setColor(Color.parseColor(element.backgroundColor))
+                } catch (throwable: Throwable) {
+                    throwable.printStackTrace()
+                }
                 imageProductBackground.show()
             }
 
@@ -62,15 +67,11 @@ class RechargeBUWidgetProductCardViewHolder(
                 val productName = MethodChecker.fromHtml(element.categoryName)
                 if (productName.isNotEmpty()) {
                     text = productName
-
-                    val textColor = try {
-                        Color.parseColor(element.categoryNameColor)
+                    try {
+                        setTextColor(Color.parseColor(element.categoryNameColor))
                     } catch (throwable: Throwable) {
                         throwable.printStackTrace()
-                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                     }
-                    setTextColor(textColor)
-
                     show()
                 } else {
                     hide()

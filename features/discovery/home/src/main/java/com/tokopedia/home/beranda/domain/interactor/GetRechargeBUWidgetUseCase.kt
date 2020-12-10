@@ -54,8 +54,12 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
                     id
                     title
                     media_url
+                    media_url_type
+                    background_color
                     subtitle
+                    subtitle_mode
                     label_1
+                    label_1_mode
                     label_2
                     label_3
                     app_link
