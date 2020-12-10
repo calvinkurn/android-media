@@ -11,6 +11,7 @@ internal open class SearchLogger {
 
     companion object {
         private const val DISCOVERY_SEARCH_ERROR_TAG = "P2#DISCOVERY_SEARCH_ERROR#%s;error=%s"
+        private const val DISCOVERY_SEARCH_ANOMALY_TAG = "P2#DISCOVERY_SEARCH_ANOMALY%s"
     }
 
     fun logWarning(message: String?, throwable: Throwable?) {
@@ -30,5 +31,11 @@ internal open class SearchLogger {
 
     protected open fun timberLogWarning(message: String, stackTrace: String) {
         Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
+    }
+
+    fun logAnomalyNoKeyword(message: String?) {
+        if (message == null) return
+
+        Timber.w(DISCOVERY_SEARCH_ANOMALY_TAG, "No keyword to search result. $message")
     }
 }

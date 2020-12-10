@@ -53,6 +53,7 @@ import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
+import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.searchbar.data.HintData;
 import com.tokopedia.searchbar.navigation_component.NavToolbar;
@@ -182,6 +183,10 @@ public class SearchActivity extends BaseActivity
 
     private void getExtrasFromIntent(Intent intent) {
         searchParameter = getSearchParameterFromIntentUri(intent);
+
+        if (TextUtils.isEmpty(searchParameter.getSearchQuery())) {
+            new SearchLogger().logAnomalyNoKeyword(UrlParamUtils.generateUrlParamString(searchParameter.getSearchParameterMap()));
+        }
     }
 
     private void initActivityOnCreate() {
