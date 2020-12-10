@@ -282,6 +282,9 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuListMenu() {
+        val buListData = _mainNavListVisitable.firstOrNull {
+            it is HomeNavMenuViewModel && it.id == MainNavConst.Section.BU_ICON
+        }
         launchCatchError(coroutineContext, block = {
             getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
             getCategoryGroupUseCase.get().setStrategyCloudThenCache()
@@ -289,8 +292,9 @@ class MainNavViewModel @Inject constructor(
 
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
-
-            updateWidgetList(result, findBuIndexPosittion())
+            if (buListData == null) {
+                updateWidgetList(result, findBuIndexPosittion())
+            }
         }) {
             it.printStackTrace()
             updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
