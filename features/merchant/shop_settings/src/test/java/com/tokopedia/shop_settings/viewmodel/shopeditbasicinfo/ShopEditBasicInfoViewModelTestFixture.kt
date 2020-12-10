@@ -75,11 +75,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         }
     }
 
-    protected fun verifyUnsubscribeUseCase() {
-        coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { uploadShopImageUseCase.unsubscribe() }
-    }
-
     protected fun onCheckAllowShopNameDomainChanges_thenReturn() {
         coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } returns AllowShopNameDomainChanges()
     }

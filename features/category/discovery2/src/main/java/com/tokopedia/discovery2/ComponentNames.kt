@@ -65,4 +65,11 @@ enum class ComponentNames(val componentName: String) {
     //Quick Filter
     QuickFilter("chips_filter_v2"),
 
+    //Navigation Chips
+    NavigationChips("navigation_chips"),
+    NavigationChipsItem("navigation_chips_item"),
+
+    //Banned View
+    BannedView("banned_view")
+
 }
