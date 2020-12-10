@@ -101,7 +101,7 @@ class ReviewViewHolder constructor(
 
     private fun bindItemClick(element: ReviewUiModel) {
         container?.setOnClickListener {
-            if (element.isReviewed) {
+            if (element.isReviewed && !element.isSender) {
                 val uriBuild = UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.REVIEW_DETAIL,
                         element.reviewCard.reputationId.toString()
