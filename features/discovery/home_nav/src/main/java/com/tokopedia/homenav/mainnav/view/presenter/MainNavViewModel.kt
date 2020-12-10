@@ -287,10 +287,10 @@ class MainNavViewModel @Inject constructor(
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
 
-            updateWidgetList(result, INDEX_START_BU_MENU)
+            updateWidgetList(result, findBuIndexPosittion())
         }) {
             it.printStackTrace()
-            updateWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
+            updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
         }
     }
 
@@ -438,7 +438,7 @@ class MainNavViewModel @Inject constructor(
     fun refreshProfileData() {
         updateWidget(InitialShimmerProfileDataModel(), INDEX_MODEL_ACCOUNT)
         launchCatchError(coroutineContext, block = {
-            getProfileData()
+            updateProfileData()
         }) {
 
         }
