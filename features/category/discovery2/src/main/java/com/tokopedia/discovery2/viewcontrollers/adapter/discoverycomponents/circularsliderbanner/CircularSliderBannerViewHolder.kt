@@ -41,7 +41,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     }
 
     private fun setSlideProperties(item: ArrayList<CircularModel>) {
-        bannerCircularAdapter.setIsInfinite(item.size != 1)
+        bannerCircularAdapter.setIsInfinite(item.size > 1)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
