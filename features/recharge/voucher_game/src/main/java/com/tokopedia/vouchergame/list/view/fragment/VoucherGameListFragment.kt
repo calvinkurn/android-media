@@ -265,7 +265,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                 RouteManager.route(context, ApplinkConst.PROMO_LIST)
             }
             context?.let {
-                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 

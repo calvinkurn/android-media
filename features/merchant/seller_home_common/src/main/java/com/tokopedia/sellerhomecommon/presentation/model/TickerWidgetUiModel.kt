@@ -20,7 +20,8 @@ data class TickerWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean = false,
         override var isLoading: Boolean = false,
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<TickerDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
