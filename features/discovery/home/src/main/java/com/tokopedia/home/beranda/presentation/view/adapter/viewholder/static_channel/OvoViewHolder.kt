@@ -399,7 +399,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             //Initializing to default value to prevent stale data in case of onresume
             tokopointsTextView.background = null
             tokopointsTextView.text = null
-            tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_12))
+            tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_10))
 
             if (sectionContentItem.tagAttributes != null && !TextUtils.isEmpty(sectionContentItem.tagAttributes.text)) {
                 if (!TextUtils.isEmpty(sectionContentItem.tagAttributes.backgroundColour) && HexValidator.validate(sectionContentItem.tagAttributes.backgroundColour)) {
