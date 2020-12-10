@@ -23,18 +23,16 @@ class SellerAppWidgetPreferencesImpl(context: Context) : SellerAppWidgetPreferen
         )
     }
 
-    @SuppressLint("ApplySharedPref")
     override fun putString(key: String, value: String) {
-        sharedPreferences.edit().putString(key, value).commit()
+        sharedPreferences.edit().putString(key, value).apply()
     }
 
     override fun getString(key: String, defValue: String): String {
         return sharedPreferences.getString(key, defValue).orEmpty()
     }
 
-    @SuppressLint("ApplySharedPref")
     override fun putLong(key: String, value: Long) {
-        sharedPreferences.edit().putLong(key, value).commit()
+        sharedPreferences.edit().putLong(key, value).apply()
     }
 
     override fun getLong(key: String, defValue: Long): Long {
