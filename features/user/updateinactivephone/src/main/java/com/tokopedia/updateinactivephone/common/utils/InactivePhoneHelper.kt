@@ -16,7 +16,8 @@ fun convertToBitmap(path: String): Bitmap? {
         val bmOptions = BitmapFactory.Options()
         bmOptions.inSampleSize = 2
         bmOptions.inJustDecodeBounds = false
-        return BitmapFactory.decodeFile(file.absolutePath, bmOptions)
+        val bitmap =  BitmapFactory.decodeFile(file.absolutePath, bmOptions)
+        return modifyOrientation(bitmap, file.absolutePath)
     }
 
     return null
