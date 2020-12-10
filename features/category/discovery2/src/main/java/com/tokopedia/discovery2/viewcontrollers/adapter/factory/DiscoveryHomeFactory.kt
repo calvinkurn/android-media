@@ -25,6 +25,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
@@ -155,6 +160,13 @@ class DiscoveryHomeFactory {
 
             //Quick Filter
             initializeComponent(ComponentsList.QuickFilter, ::QuickFilterViewHolder, ::QuickFilterViewModel)
+
+            //Navigation Chips
+            initializeComponent(ComponentsList.NavigationChips, ::NavigationChipsViewHolder, ::NavigationChipsViewModel)
+            initializeComponent(ComponentsList.NavigationCHipsItem, ::NavigationChipsItemViewHolder, ::DefaultComponentViewModel)
+
+            //Banned View
+            initializeComponent(ComponentsList.BannedView, ::BannedViewViewHolder, ::DefaultComponentViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder:(v: View, fragment: Fragment) -> E,

@@ -11,18 +11,19 @@ import androidx.slice.SliceManager
 
 object SlicePermission {
 
-    const val RECHARGE_SLICE_PERMISSION = "com.tokopedia.tkpd.recharge_slice"
+    const val RECHARGE_SLICE_AUTHORITY = "com.tokopedia.tkpd.recharge_slice"
+    const val SELLER_ORDER_AUTHORITY = "com.tokopedia.seller.action.slices"
 
     @JvmStatic
-    fun initPermission(context: Context){
-        grantAssistantPermissions(context)
+    fun initPermission(context: Context, authority: String){
+        grantAssistantPermissions(context, authority)
     }
 
-    private fun grantAssistantPermissions(context: Context) {
+    private fun grantAssistantPermissions(context: Context, authority: String) {
         getAssistantPackage(context)?.let { assistantPackage ->
             val sliceProviderUri = Uri.Builder()
                     .scheme(ContentResolver.SCHEME_CONTENT)
-                    .authority(RECHARGE_SLICE_PERMISSION)
+                    .authority(authority)
                     .build()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
