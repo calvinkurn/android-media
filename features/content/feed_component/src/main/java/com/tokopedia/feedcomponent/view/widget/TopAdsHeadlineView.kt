@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,6 +30,9 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     init {
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
+        topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { _, appLink, _ ->
+            RouteManager.route(context, appLink)
+        })
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {

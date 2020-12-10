@@ -47,6 +47,7 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
           product {
             id
             name
+            applinks
             image_product {
               image_url
               image_click_url
