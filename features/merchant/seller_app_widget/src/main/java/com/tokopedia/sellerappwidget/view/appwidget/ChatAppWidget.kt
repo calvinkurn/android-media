@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
@@ -49,6 +50,21 @@ class ChatAppWidget : AppWidgetProvider() {
             Const.Action.OPEN_APPLINK -> AppWidgetHelper.openAppLink(context, intent)
         }
         super.onReceive(context, intent)
+    }
+
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+        initUserSession(context)
+        userSession?.let {
+            if (!it.isLoggedIn) {
+                val awm = AppWidgetManager.getInstance(context)
+                val ids = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
+                ChatWidgetNoLoginState.setupNoLoginState(context, awm, ids)
+                super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+                return
+            }
+        }
+        GetChatService.startService(context)
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
     private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {

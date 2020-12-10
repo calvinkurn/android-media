@@ -67,9 +67,7 @@ class OrderAppWidget : AppWidgetProvider() {
                 return
             }
         }
-
         GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
-
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
