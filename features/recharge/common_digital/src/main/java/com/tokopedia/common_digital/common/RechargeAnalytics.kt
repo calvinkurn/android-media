@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.common
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -87,6 +88,25 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         }
     }
 
+    fun onClickSliceRecharge(userId: String, rechargeProductFromSlice: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_KEY, "viewGAMainIris",
+                EVENT_CATEGORY, "ga main app",
+                EVENT_ACTION, "click item transaction",
+                EVENT_LABEL, rechargeProductFromSlice,
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ))
+    }
+
+    fun onOpenPageFromSlice(page: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_KEY, "openScreen",
+                EVENT_SCREEN_NAME, "${page} - from voice search - mainapp"
+        ))
+    }
+
     companion object {
         const val ACTION_VISIT = "VISIT"
         const val ACTION_ATC = "ATC"
@@ -107,5 +127,11 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val BUSINESS_UNIT_RECHARGE = "recharge"
         const val CURRENT_SITE_RECHARGE = "tokopediadigital"
         const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
+
+        const val EVENT_KEY = "event"
+        const val EVENT_CATEGORY = "eventCategory"
+        const val EVENT_ACTION = "eventAction"
+        const val EVENT_LABEL = "eventLabel"
+        const val EVENT_SCREEN_NAME = "screenName"
     }
 }
