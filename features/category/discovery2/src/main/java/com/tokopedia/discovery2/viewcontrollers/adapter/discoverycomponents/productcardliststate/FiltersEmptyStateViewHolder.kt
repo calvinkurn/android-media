@@ -1,0 +1,44 @@
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate
+
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
+
+class FiltersEmptyStateViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+    private lateinit var emptyStateViewModel: FiltersEmptyStateViewModel
+//    private val horizontalView: ConstraintLayout = itemView.findViewById(R.id.horizontal_view)
+//    private val verticalView: ConstraintLayout = itemView.findViewById(R.id.vertical_view)
+//    private val verticalTitle: Typography = itemView.findViewById(R.id.vertical_title_tv)
+//    private val verticalDecription: Typography = itemView.findViewById(R.id.vertical_decription_tv)
+//    private val horizontalTitle: Typography = itemView.findViewById(R.id.horizontal_title_tv)
+//    private val horizontalDecription: Typography = itemView.findViewById(R.id.horizontal_decription_tv)
+
+    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        emptyStateViewModel = discoveryBaseViewModel as FiltersEmptyStateViewModel
+//        init()
+    }
+
+//    private fun init() {
+//        emptyStateViewModel.getEmptyStateData().let {
+//            if(it.isHorizontal){
+//                horizontalView.show()
+//                verticalView.hide()
+//                horizontalTitle.text = it.title
+//                horizontalDecription.text = it.description
+//            } else {
+//                horizontalView.hide()
+//                verticalView.show()
+//                verticalTitle.text = it.title
+//                verticalDecription.text = it.description
+//            }
+//
+//        }
+//    }
+}

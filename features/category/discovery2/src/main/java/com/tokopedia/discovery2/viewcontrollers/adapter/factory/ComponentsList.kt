@@ -76,4 +76,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     //Banned View
     BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
+    // Filters Empty State View
+    FilterSProductListEmptyState(R.layout.filter_product_list_state, ComponentNames.FiltersProductListEmptyState.componentName),
 }

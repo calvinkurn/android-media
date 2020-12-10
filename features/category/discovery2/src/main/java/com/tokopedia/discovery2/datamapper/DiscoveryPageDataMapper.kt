@@ -235,7 +235,17 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
                 listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
             } else if (component.getComponentsItem()?.size == 0) {
-                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+                if ((component.selectedSort != null && component.selectedFilters != null) &&
+                        (component.selectedSort?.isNotEmpty() == true ||
+                                component.selectedFilters?.isNotEmpty() == true)) {
+                    listComponents.addAll(handleProductState(component,
+                            ComponentNames.FiltersProductListEmptyState.componentName,
+                            queryParameterMap))
+                }else{
+                    listComponents.addAll(handleProductState(component,
+                            ComponentNames.ProductListEmptyState.componentName,
+                            queryParameterMap))
+                }
             }
         }
         return listComponents
