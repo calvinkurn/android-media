@@ -5,6 +5,6 @@
     <solid android:color="@color/Unify_N50" />
 
     <size
-        android:width="@dimen/dimen_dp_40"
-        android:height="@dimen/dimen_dp_40" />
+        android:width="@dimen/layout_lvl5"
+        android:height="@dimen/layout_lvl5" />
 </shape>
