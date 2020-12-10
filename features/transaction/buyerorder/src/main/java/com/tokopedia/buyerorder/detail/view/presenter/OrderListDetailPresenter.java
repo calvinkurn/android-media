@@ -70,7 +70,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final int DEFAULT_DEVICE_ID = 5;
 
     private final UserSessionInterface userSessionInterface;
-    GraphqlUseCase orderDetailsUseCase;
+    GraphqlUseCase orderDetailUseCase;
     List<ActionButton> actionButtonList;
     @Inject
     PostCancelReasonUseCase postCancelReasonUseCase;
@@ -86,8 +86,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     SendEventNotificationUseCase sendEventNotificationUseCase;
     @Inject
     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
-    /*@Inject
-    GetOrderDetailUseCase getOrderDetailUseCase;*/
     @Inject
     FinishOrderGqlUseCase finishOrderGqlUseCase;
     @Inject
@@ -101,14 +99,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String category;
 
     @Inject
-    public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase,
+    public OrderListDetailPresenter(GraphqlUseCase orderDetailUseCase,
                                     FinishOrderGqlUseCase finishOrderGqlUseCase,
                                     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase,
                                     UserSessionInterface userSessionInterface,
                                     SetActionButtonUseCase setActionButtonUseCase,
                                     SendEventNotificationUseCase sendEventNotificationUseCase,
                                     BuyerGetRecommendationUseCase buyerGetRecommendationUseCase) {
-        this.orderDetailsUseCase = orderDetailsUseCase;
+        this.orderDetailUseCase = orderDetailUseCase;
         this.finishOrderGqlUseCase = finishOrderGqlUseCase;
         this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
         this.userSessionInterface = userSessionInterface;
@@ -155,7 +153,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
 
 
-            orderDetailsUseCase.addRequest(graphqlRequest);
+            orderDetailUseCase.addRequest(graphqlRequest);
 
             GraphqlRequest requestRecomm = null;
             Map<String, Object> variablesWidget = new HashMap<>();
@@ -167,8 +165,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
 
             if (requestRecomm != null) {
-                orderDetailsUseCase.addRequest(requestRecomm);
-                orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                orderDetailUseCase.addRequest(requestRecomm);
+                orderDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -421,7 +419,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void detachView() {
-        orderDetailsUseCase.unsubscribe();
+        orderDetailUseCase.unsubscribe();
         if (postCancelReasonUseCase != null) {
             postCancelReasonUseCase.unsubscribe();
         }

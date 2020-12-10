@@ -1,7 +1,8 @@
 package com.tokopedia.buyerorder.detail.domain
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder
+import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -24,7 +25,7 @@ class SetActionButtonUseCase @Inject constructor(private val graphqlUseCase: Gra
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<ActionButtonList> {
-        val graphqlRequest = GraphqlRequest(query, ActionButtonList::class.java)
+        val graphqlRequest = GraphqlRequest(query, ActionButtonList::class.java, params, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
