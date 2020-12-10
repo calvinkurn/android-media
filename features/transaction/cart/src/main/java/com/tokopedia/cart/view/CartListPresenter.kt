@@ -1153,7 +1153,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processGetRecentViewData(allProductIds: List<String>) {
         view?.showItemLoading()
-        val requestParam = getRecommendationUseCase?.getRecomParams(
+        val requestParam = getRecentViewUseCase?.getRecomParams(
                 1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
         getRecentViewUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
                 ?.subscribeOn(schedulers.io)

@@ -48,7 +48,7 @@ object CartListPresenterRecentViewTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -99,11 +99,11 @@ object CartListPresenterRecentViewTest : Spek({
             }
 
             Given("success response") {
-                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             Given("request params") {
-                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
             When("process get recent view") {
@@ -140,11 +140,11 @@ object CartListPresenterRecentViewTest : Spek({
             }
 
             Given("success response") {
-                every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
+                every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
             }
 
             Given("request params") {
-                every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
             When("process get recent view") {
@@ -172,8 +172,8 @@ object CartListPresenterRecentViewTest : Spek({
                 every { getRecentViewUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
             }
 
-            Given("user session") {
-                every { userSessionInterface.userId } returns "1"
+            Given("request params") {
+                every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
             }
 
             When("process get recent view") {

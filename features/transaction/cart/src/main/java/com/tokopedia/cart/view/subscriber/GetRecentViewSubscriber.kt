@@ -23,7 +23,7 @@ class GetRecentViewSubscriber(private val view: ICartListView?) : Subscriber<Lis
     override fun onNext(recommendationModels: List<RecommendationWidget>) {
         view?.let {
             it.hideItemLoading()
-            if (recommendationModels[0].recommendationItemList.isNotEmpty()) {
+            if (recommendationModels.firstOrNull()?.recommendationItemList?.isNotEmpty() == true) {
                 it.renderRecentView(recommendationModels[0])
             }
             it.setHasTriedToLoadRecentView()

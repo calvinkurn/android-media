@@ -33,7 +33,7 @@ class RecentViewMapper @Inject constructor() {
         cartRecentViewItemHolderData.clickUrl = recentView.clickUrl
         cartRecentViewItemHolderData.trackerImageUrl = recentView.trackerImageUrl
 
-        if (recentView.badgesUrl.size > 0) {
+        if (recentView.badgesUrl.isNotEmpty()) {
             cartRecentViewItemHolderData.badgesUrl = recentView.badgesUrl
             if (recentView.badgesUrl[0].equals("Official Store", ignoreCase = true)) {
                 cartRecentViewItemHolderData.shopType = "official_store"
