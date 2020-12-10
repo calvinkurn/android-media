@@ -143,7 +143,7 @@ class AddEditProductPreviewFragment:
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
     private var hasLocation: Boolean = false
-    private var isFirstHittingLocation: Boolean = false
+    private var isStartButtonClicked: Boolean = false
 
     private var toolbar: Toolbar? = null
 
@@ -342,6 +342,7 @@ class AddEditProductPreviewFragment:
             } else if (addEditProductPhotoButton?.text == buttonTextStart){
                 ProductAddStepperTracking.trackStart(shopId)
                 // validate whether shop has location
+                isStartButtonClicked = true
                 if (hasLocation) {
                     moveToImagePicker()
                 } else {
@@ -1042,10 +1043,9 @@ class AddEditProductPreviewFragment:
                         showDialogLocationValidation()
                     }
                     hasLocation = it.data
-                    if (isFirstHittingLocation && hasLocation) {
+                    if (isStartButtonClicked && hasLocation) {
                         moveToImagePicker()
                     }
-                    isFirstHittingLocation = true
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
