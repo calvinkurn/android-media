@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -295,6 +296,70 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertFalse(viewModel.getIsDataChanged())
     }
 
+    @Test
+    fun `When is shop admin should get admin permission`() {
+        viewModel.isShopAdmin = true
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled()
+    }
+
+    @Test
+    fun `When is not shop Admin should not get admin permission`() {
+        viewModel.isShopAdmin = false
+
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionNotCalled()
+    }
+
+    @Test
+    fun `When product id is not blank, is shop admin, and admin permission is not yet known, should get admin permission`() {
+        viewModel.isShopAdmin = true
+
+        viewModel.setProductId("123")
+
+        verifyGetAdminProductPermissionCalled()
+    }
+
+    @Test
+    fun `When product id is not blank, is shop admin, and admin permission result is already known, should not get admin permission`() {
+        viewModel.isShopAdmin = true
+
+        val isManageProductAdminField = viewModel::class.java.getDeclaredField("mIsManageProductAdmin").apply {
+            isAccessible = true
+        }
+        isManageProductAdminField.set(viewModel, Success(true))
+
+        viewModel.setProductId("123")
+
+        verifyGetAdminProductPermissionNotCalled()
+    }
+
+    @Test
+    fun `When get admin permission use case success Expect isManageProductAdmin value changed`() = runBlocking {
+        viewModel.isShopAdmin = true
+        val isEligible = true
+
+        onGetAdminProductPermission_thenReturn(isEligible)
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled()
+        verifyGetAdminProductPermissionResult(Success((isEligible)))
+    }
+
+    @Test
+    fun `When get admin permission use case failed should return error object`() = runBlocking {
+        viewModel.isShopAdmin = true
+
+        onGetAdminProductPermission_thenFailed()
+        viewModel.setProductId("")
+
+        verifyGetAdminProductPermissionCalled()
+        verifyGetAdminProductPermissionFailed()
+    }
+
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
         coEvery { getProductDraftUseCase.executeOnBackground() } returns draft
     }
@@ -307,6 +372,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { getProductUseCase.executeOnBackground() } returns product
     }
 
+    private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
+        coEvery { adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT) } returns isEligible
+    }
+
     private fun onSaveProductDraft_thenFailed() {
         coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
     }
@@ -317,6 +386,22 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenFailed() {
         coEvery { getProductUseCase.executeOnBackground() } throws MessageErrorException("")
+    }
+
+    private fun onGetAdminProductPermission_thenFailed() {
+        coEvery { adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT) } throws MessageErrorException("")
+    }
+
+    private fun verifyGetAdminProductPermissionCalled() {
+        coVerify {
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+        }
+    }
+
+    private fun verifyGetAdminProductPermissionNotCalled() {
+        coVerify(exactly = 0) {
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+        }
     }
 
     private fun verifyGetProductDraftResult(expectedResult: Success<ProductDraft>) {
@@ -339,6 +424,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(false, viewModel.isLoading.value)
     }
 
+    private fun verifyGetAdminProductPermissionResult(expectedResult: Success<Boolean>) {
+        val actualResult = viewModel.isManageProductAdmin.value as Success<Boolean>
+        assertEquals(expectedResult, actualResult)
+    }
+
     private fun verifySaveProductDraftFailed() {
         val result = viewModel.saveProductDraftResultLiveData.value
         assertTrue(result is Fail)
@@ -355,5 +445,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
+    }
+
+    private fun verifyGetAdminProductPermissionFailed() {
+        val result = viewModel.isManageProductAdmin.value
+        assertTrue(result is Fail)
     }
 }

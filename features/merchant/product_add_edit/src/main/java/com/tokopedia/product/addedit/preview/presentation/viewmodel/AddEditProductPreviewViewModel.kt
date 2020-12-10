@@ -50,8 +50,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
 
-    // TODO: Change to userSession value
-    private val isShopAdmin = true
+    // TODO: Change to userSession value and private value
+    var isShopAdmin = true
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
