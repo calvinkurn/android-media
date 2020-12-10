@@ -63,7 +63,6 @@ import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -92,6 +91,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     var adapter: HomeAccountUserAdapter? = null
     var financialAdapter: HomeAccountFinancialAdapter? = null
     var memberAdapter: HomeAccountMemberAdapter? = null
+
+    var isProfileSectionBinded = false
 
     val coachMarkItem = ArrayList<CoachMark2Item>()
 
@@ -185,19 +186,20 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.walletData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
-                    val mappedMember = mapper.mapToFinancialData(it.data)
-                    val saldo = mapper.mapSaldo(viewModel.internalBuyerData!!).items
-                    saldo.addAll(mappedMember)
-                    financialAdapter?.addItems(saldo)
+                    val mappedMember = mapper.mapToFinancialData(it.data).toMutableList()
+                    viewModel.internalBuyerData?.run {
+                        val saldo = mapper.mapSaldo(this).items
+                        mappedMember.addAll(saldo)
+                    }
+                    financialAdapter?.addItems(mappedMember)
                     financialAdapter?.notifyDataSetChanged()
                     adapter?.notifyItemChanged(0)
                 }
 
                 is Fail -> {
-                    financialAdapter?.addItems(listOf(CommonDataView(
-                            type = CommonViewHolder.TYPE_ERROR
-                    )))
-                    financialAdapter?.notifyDataSetChanged()
+                    financialAdapter?.addSingleItem(CommonDataView(
+                        type = AccountConstants.LAYOUT.TYPE_ERROR
+                    ))
                     adapter?.notifyItemChanged(0)
                 }
             }
@@ -213,10 +215,17 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
 
                 is Fail -> {
-
+                    memberAdapter?.addItems(listOf(MemberItemDataView(
+                            type = AccountConstants.LAYOUT.TYPE_ERROR
+                    )))
+                    adapter?.notifyItemChanged(0)
                 }
             }
         })
+    }
+
+    override fun onMemberErrorClicked() {
+        viewModel.getShortcutData()
     }
 
     override fun onFinancialErrorClicked() {
@@ -237,13 +246,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             adapter?.notifyDataSetChanged()
         }
         hideLoading()
-
-//        val message = throwable.message?: ""
-//        if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
-//            showErrorNoConnection()
-//        } else {
-//            showError(throwable)
-//        }
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
@@ -361,6 +363,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun getData(){
+        coachMarkItem.clear()
         home_account_user_fragment_rv?.scrollToPosition(0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
@@ -712,32 +715,35 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         if(accountPref.isShowCoachmark()) {
-            if (position == 0 && data is ProfileDataView) {
-                coachMarkItem.add(
-                    CoachMark2Item(
-                        itemView.findViewById(R.id.home_account_profile_member_section),
-                        "Info tentang akunmu ada di sini",
-                        "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
-                        CoachMark2.POSITION_BOTTOM
+            if(!isProfileSectionBinded) {
+                if (position == 0 && data is ProfileDataView) {
+                    coachMarkItem.add(
+                            CoachMark2Item(
+                                    itemView.findViewById(R.id.home_account_profile_member_section),
+                                    "Info tentang akunmu ada di sini",
+                                    "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
+                                    CoachMark2.POSITION_BOTTOM
+                            )
                     )
-                )
-            }
-            if (position == 1 && data is SettingDataView) {
-                coachMarkItem.add(
-                    CoachMark2Item(
-                        itemView.findViewById(R.id.home_account_expandable_layout_title),
-                        "Ubah pengaturan dan cek info lainnya",
-                        "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
-                        CoachMark2.POSITION_TOP
+                }
+                if (position == 1 && data is SettingDataView) {
+                    coachMarkItem.add(
+                            CoachMark2Item(
+                                    itemView.findViewById(R.id.home_account_expandable_layout_title),
+                                    "Ubah pengaturan dan cek info lainnya",
+                                    "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
+                                    CoachMark2.POSITION_TOP
+                            )
                     )
-                )
 
-                context?.run {
-                    val coachMark = CoachMark2(this)
-                    coachMark.onFinishListener = {
-                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                    context?.run {
+                        val coachMark = CoachMark2(this)
+                        coachMark.onFinishListener = {
+                            accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                        }
+                        coachMark.showCoachMark(coachMarkItem)
+                        isProfileSectionBinded = true
                     }
-                    coachMark.showCoachMark(coachMarkItem)
                 }
             }
         }

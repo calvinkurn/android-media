@@ -6,7 +6,7 @@
     android:paddingTop="@dimen/home_account_dp_10"
     android:paddingBottom="@dimen/home_account_dp_10"
     android:paddingLeft="@dimen/unify_space_8"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     xmlns:tools="http://schemas.android.com/tools"
     app:card_type="shadow">
 

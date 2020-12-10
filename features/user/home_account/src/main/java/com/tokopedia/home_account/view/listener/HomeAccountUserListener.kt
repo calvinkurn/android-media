@@ -21,6 +21,7 @@ interface HomeAccountUserListener {
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
 
     fun onFinancialErrorClicked()
+    fun onMemberErrorClicked()
 
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)

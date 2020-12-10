@@ -66,8 +66,6 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
         val TYPE_DEFAULT = 1
         val TYPE_SWITCH = 2
         val TYPE_WITHOUT_BODY = 3
-        val TYPE_ERROR = -1
-
     }
 
 }

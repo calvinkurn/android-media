@@ -302,4 +302,7 @@ object AccountConstants {
         const val REQUEST_ADD_PASSWORD = 100
     }
 
+    object LAYOUT {
+        const val TYPE_ERROR = -1
+    }
 }

@@ -1,13 +1,12 @@
 package com.tokopedia.home_account.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 
@@ -31,9 +30,6 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener): Recycl
             is FinancialItemViewHolder -> {
                 holder.bind(list[position])
             }
-            is ErrorItemViewHolder -> {
-                holder.bind(list[position])
-            }
         }
     }
 
@@ -42,10 +38,16 @@ class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener): Recycl
         this.list.addAll(itemList)
     }
 
+    fun addSingleItem(item: CommonDataView){
+        this.list.add(item)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         return when(viewType){
-            CommonViewHolder.TYPE_ERROR -> {
+            AccountConstants.LAYOUT.TYPE_ERROR -> {
                 val view = LayoutInflater.from(parent.context).inflate(ErrorItemViewHolder.LAYOUT, parent, false)
+                view.setOnClickListener { listener.onFinancialErrorClicked() }
                 ErrorItemViewHolder(view, listener)
             }
             else -> {

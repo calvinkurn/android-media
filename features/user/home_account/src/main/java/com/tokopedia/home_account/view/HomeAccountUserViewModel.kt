@@ -101,7 +101,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getWalletBalance(){
         launchCatchError(block = {
             val wallet = getBuyerWalletBalance()
-                _walletData.value = Success(wallet)
+            _walletData.value = Success(wallet)
         }, onError = {
             _walletData.postValue(Fail(it))
         })
