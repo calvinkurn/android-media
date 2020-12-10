@@ -1,5 +1,6 @@
 ext {
 
+    // Sort and categorize alphabetically by folder name
     features = [
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
@@ -8,6 +9,7 @@ ext {
             developerOptions                : ":features:common:developer_options",
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
+            feedbackForm                    : ":features:common:feedback_form",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
@@ -20,6 +22,7 @@ ext {
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
+            categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
 
@@ -51,7 +54,6 @@ ext {
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
-            rechargeComponent               : ":features:recharge:recharge_component",
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",
@@ -246,5 +248,4 @@ ext {
             logintestapp                    : ":testapp-features:user:logintestapp",
             customer_mid_app                : ":customer_mid_app"
     ]
-    // Sort and categorize alphabetically by folder name
 }
