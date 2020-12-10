@@ -41,7 +41,6 @@ class GetCategoryGroupUseCase (
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(DynamicHomeIconEntity::class.java)
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
     }
 
     fun createParams(page: String){
@@ -60,5 +59,14 @@ class GetCategoryGroupUseCase (
         private const val PAGE = "page"
         const val GLOBAL_MENU = "global-menu"
     }
+
+    fun setStrategyCache() {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+    }
+
+    fun setStrategyCloudThenCache() {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
+    }
+
 
 }

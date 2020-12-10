@@ -121,7 +121,7 @@ class MainNavViewModel @Inject constructor(
 
     init {
         setInitialState()
-        getMainNavData()
+        getMainNavData(true)
     }
 
     // ============================================================================================
@@ -222,12 +222,17 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getMainNavData() {
+    private fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
-                getProfileDataCached()
-                getBuListMenu()
+                if (useCacheData) {
+                    getProfileDataCached()
+                    getBuListMenuCached()
+                } else {
+                    updateProfileData()
+                    getBuListMenu()
+                }
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -239,6 +244,11 @@ class MainNavViewModel @Inject constructor(
                     getOngoingTransaction()
                     getNotification()
                 }
+                if (useCacheData) {
+                    //update cached data with cloud data
+                    updateProfileData()
+                    getBuListMenu()
+                }
             }) {
                 Timber.d("P2 error")
                 it.printStackTrace()
@@ -246,8 +256,6 @@ class MainNavViewModel @Inject constructor(
             p2DataJob.join()
             _onboardingListLiveData.postValue(_mainNavListVisitable)
 
-            //update cached data with cloud data
-            updateProfileData()
         }
     }
 
@@ -274,9 +282,26 @@ class MainNavViewModel @Inject constructor(
         deleteWidgetList(listOfHomeMenuSection)
     }
 
+    private suspend fun getBuListMenuCached() {
+        launchCatchError(coroutineContext, block = {
+            getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+            getCategoryGroupUseCase.get().setStrategyCache()
+            val result = getCategoryGroupUseCase.get().executeOnBackground()
+
+            //PLT network process is finished
+            _networkProcessLiveData.postValue(true)
+
+            updateWidgetList(result, INDEX_START_BU_MENU)
+        }) {
+            it.printStackTrace()
+            updateWidget(ErrorStateBuViewModel(), INDEX_START_BU_MENU)
+        }
+    }
+
     private suspend fun getBuListMenu() {
         launchCatchError(coroutineContext, block = {
             getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+            getCategoryGroupUseCase.get().setStrategyCloudThenCache()
             val result = getCategoryGroupUseCase.get().executeOnBackground()
 
             //PLT network process is finished
@@ -513,7 +538,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun reloadMainNavAfterLogin() {
-        getMainNavData()
+        getMainNavData(false)
     }
 
     fun reloadOvoData(accountData: AccountHeaderViewModel) {

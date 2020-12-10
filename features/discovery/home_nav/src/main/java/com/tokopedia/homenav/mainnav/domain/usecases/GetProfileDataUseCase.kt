@@ -36,11 +36,8 @@ class GetProfileDataUseCase @Inject constructor(
         getShopInfoUseCase.setStrategyCloudThenCache()
         return withContext(coroutineContext){
 
-            val getUserInfoCall = async {
-                getUserInfoUseCase.executeOnBackground()
-            }
 
-            val userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
+            var userInfoData: UserPojo? = null
 
             var ovoData: WalletBalanceModel? = null
             var saldoData: SaldoPojo? = null
@@ -48,7 +45,9 @@ class GetProfileDataUseCase @Inject constructor(
             var shopData: ShopInfoPojo? = null
 
             if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-
+                val getUserInfoCall = async {
+                    getUserInfoUseCase.executeOnBackground()
+                }
                 val getOvoCall = async {
                     getOvoUseCase.executeOnBackground()
                 }
@@ -62,6 +61,7 @@ class GetProfileDataUseCase @Inject constructor(
                     getShopInfoUseCase.executeOnBackground()
 
                 }
+                userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
                 ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
                 saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
                 userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
