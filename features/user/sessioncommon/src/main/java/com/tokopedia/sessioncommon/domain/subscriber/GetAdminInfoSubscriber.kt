@@ -33,10 +33,10 @@ class GetAdminInfoSubscriber(
             val isMultiLocationShop = data?.locations.orEmpty().count() > 1
 
             userSession.apply {
-                setIsShopOwner(isShopOwner)
-                setIsLocationAdmin(isLocationAdmin)
-                setIsShopAdmin(isShopAdmin)
-                setIsMultiLocationShop(isMultiLocationShop)
+//                setIsShopOwner(isShopOwner)
+//                setIsLocationAdmin(isLocationAdmin)
+//                setIsShopAdmin(isShopAdmin)
+//                setIsMultiLocationShop(isMultiLocationShop)
             }
 
             if (isLocationAdmin) {

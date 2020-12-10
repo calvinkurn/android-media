@@ -5,8 +5,8 @@ internal object AdminInfo {
     val QUERY = "query AdminInfo(\$source: String!, \$shopId: Int!) {\n" +
             "  getAdminInfo(source: \$source, shop_id: \$shopId) {\n" +
             "    admin_data {\n" +
-            "      permission_list {\n" +
-            "        permission_id\n" +
+            "      location_list {\n" +
+            "        location_id\n" +
             "      }\n" +
             "      detail_information {\n" +
             "        admin_role_type {\n" +

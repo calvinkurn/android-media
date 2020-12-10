@@ -16,15 +16,24 @@ data class GetAdminInfo(
 )
 
 data class AdminInfoData(
-        @SerializedName("permission_list")
         @Expose
-        val permissionList: List<AdminPermission>? = listOf(),
+        @SerializedName("location_list")
+        val locations: List<AdminInfoShopLocation>? = listOf(),
         @SerializedName("detail_information")
         @Expose
         val detailInfo: AdminInfoDetailInformation? = AdminInfoDetailInformation(),
         @SerializedName("response_detail")
         @Expose
-        val responseDetail: AdminResponseDetail? = AdminResponseDetail()
+        val responseDetail: AdminResponseDetail? = AdminResponseDetail()) {
+
+        fun getIsMultiLocationShop() = !locations.isNullOrEmpty()
+}
+
+
+data class AdminInfoShopLocation(
+        @Expose
+        @SerializedName("location_id")
+        val id: String
 )
 
 sealed class AdminInfoResult {
