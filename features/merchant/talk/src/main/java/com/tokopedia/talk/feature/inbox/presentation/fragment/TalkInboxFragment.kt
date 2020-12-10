@@ -218,6 +218,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initErrorPage()
+        initSortFilter()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
