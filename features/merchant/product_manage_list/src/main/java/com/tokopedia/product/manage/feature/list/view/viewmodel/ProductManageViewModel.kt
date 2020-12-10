@@ -238,7 +238,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList

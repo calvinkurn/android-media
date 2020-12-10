@@ -14,11 +14,11 @@ class GetProductManageAccessUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
         private const val shopID = "\$shopID"
-        private const val extraInfo = "access"
+        private const val extraInfo = "[\"access\",\"rbac\"]"
 
         private val QUERY = """
             query ProductListMeta($shopID:String!){
-                ProductListMeta(shopID:$shopID, extraInfo:["$extraInfo"]){
+                ProductListMeta(shopID:$shopID, extraInfo:$extraInfo){
                     header{
                         processTime
                         messages
