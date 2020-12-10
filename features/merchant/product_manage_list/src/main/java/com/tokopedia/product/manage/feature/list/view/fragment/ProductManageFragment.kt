@@ -138,6 +138,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_M
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1277,8 +1278,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventSettingsFeatured(productId)
             }
         }
-
-        productManageBottomSheet?.dismiss()
+        (childFragmentManager.findFragmentByTag(ProductManageBottomSheet.TAG) as? BottomSheetUnify)?.run {
+            dismissAllowingStateLoss()
+        }
     }
 
     private fun goToProductViolationHelpPage() {
