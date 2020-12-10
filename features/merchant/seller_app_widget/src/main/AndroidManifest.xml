@@ -43,14 +43,14 @@
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service
-            android:name=".view.service.AppWidgetIntentService"
+        <receiver
+            android:name=".view.service.AppWidgetBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_CHAT_APP_WIDGET_DATA" />
                 <action android:name="com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_ORDER_APP_WIDGET_DATA" />
             </intent-filter>
-        </service>
+        </receiver>
     </application>
 </manifest>

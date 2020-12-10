@@ -97,18 +97,22 @@ public class PushNotification {
 
         if (notificationId == Constant.NotificationId.CHAT) {
             String getChatAction = "com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_CHAT_APP_WIDGET_DATA";
-            startIntentService(context, getChatAction);
+            sendBroadcast(context, getChatAction);
         } else if (notificationId == Constant.NotificationId.SELLER) {
             String getOrderAction = "com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_ORDER_APP_WIDGET_DATA";
-            startIntentService(context, getOrderAction);
+            sendBroadcast(context, getOrderAction);
         }
     }
 
-    private static void startIntentService(Context context, String actionName) {
-        Intent intent = new Intent();
-        intent.setAction(actionName);
-        intent.setPackage(context.getPackageName());
-        context.startService(intent);
+    private static void sendBroadcast(Context context, String actionName) {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(actionName);
+            intent.setPackage(context.getPackageName());
+            context.sendBroadcast(intent);
+        } catch (Exception e) {
+            Timber.i(e);
+        }
     }
 
     private static boolean isAllowToRender(Context context, ApplinkNotificationModel applinkNotificationModel) {
