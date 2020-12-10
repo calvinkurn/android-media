@@ -89,19 +89,19 @@ class TableViewHolder(
         if (element.emptyState.imageUrl.isNotBlank() && element.emptyState.title.isNotBlank() &&
                 element.emptyState.description.isNotBlank() && element.emptyState.ctaText.isNotBlank() &&
                 element.emptyState.appLink.isNotBlank()) {
-            imgShcTableEmpty.apply {
+            imgShcTableEmpty.run {
                 visible()
                 ImageHandler.loadImageWithoutPlaceholderAndError(this, element.emptyState.imageUrl.takeIf { it.isNotBlank() })
             }
-            tvShcTableEmptyTitle.apply {
+            tvShcTableEmptyTitle.run {
                 text = element.emptyState.title
                 visible()
             }
-            tvShcTableEmptyDescription.apply {
+            tvShcTableEmptyDescription.run {
                 text = element.emptyState.description
                 visible()
             }
-            btnShcTableEmpty.apply {
+            btnShcTableEmpty.run {
                 text = element.emptyState.ctaText
                 visible()
                 setOnClickListener {

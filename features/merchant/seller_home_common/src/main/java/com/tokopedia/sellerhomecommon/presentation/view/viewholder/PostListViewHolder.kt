@@ -87,15 +87,15 @@ class PostListViewHolder(
             tvPostListSeeDetails.gone()
             icPostListSeeDetails.gone()
             imgShcPostEmpty.visible()
-            tvShcPostEmptyTitle.apply {
+            tvShcPostEmptyTitle.run {
                 text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title_post_list)
                 visible()
             }
-            tvShcPostEmptyDescription.apply {
+            tvShcPostEmptyDescription.run {
                 text = element.emptyState.description
                 showWithCondition(element.emptyState.description.isNotBlank())
             }
-            btnShcPostEmpty.apply {
+            btnShcPostEmpty.run {
                 text = element.emptyState.ctaText
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
