@@ -33,6 +33,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
             it.renderByDefault
         })
     }
+    discoveryResponse.component?.setComponentsItem(discoveryResponse.components)
     return discoveryPageData
 }
 

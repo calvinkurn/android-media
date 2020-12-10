@@ -30,7 +30,6 @@ class ProductCardRevampViewModel(val application: Application, val components: C
 
 
     init {
-        initDaggerInject()
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
             val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
@@ -48,12 +47,6 @@ class ProductCardRevampViewModel(val application: Application, val components: C
         })
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
 }
