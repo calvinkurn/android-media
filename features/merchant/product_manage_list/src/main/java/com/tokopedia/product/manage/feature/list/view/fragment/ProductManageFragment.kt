@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -62,6 +63,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.Ed
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
+import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -99,6 +101,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
@@ -112,6 +115,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageMoreMenuBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageStockLocationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
@@ -160,6 +164,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     lateinit var viewModel: ProductManageViewModel
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var productManageSession: ProductManageSession
 
     private var shopDomain: String = ""
     private var goldMerchant: Boolean = false
@@ -195,6 +201,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
         }
     }
+    private var optionsMenu: Menu? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -228,9 +235,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initView()
-        loadInitialData()
     }
 
     override fun clearAllData() {
@@ -243,7 +248,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupSearchBar()
         setupProductList()
         setupFiltersTab()
-        setupBottomSheet()
         setupMultiSelect()
         setupSelectAll()
         renderCheckedView()
@@ -268,13 +272,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observeEditVariantPrice()
         observeEditVariantStock()
         observeClickTopAdsMenu()
+        observeProductManageAccess()
+        observeDeleteProductDialog()
 
-        getFiltersTab()
-        getProductListFeaturedOnlySize()
-        getTopAdsFreeClaim()
-        getGoldMerchantStatus()
-        getTopAdsInfo()
-
+        getProductManageAccess()
         setupDialogFeaturedProduct()
 
         context?.let { UpdateShopActiveService.startService(it) }
@@ -288,6 +289,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
         menu.clear()
         inflater.inflate(menuViewId, menu)
+        optionsMenu = menu
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -366,7 +368,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun deleteMultipleProducts() {
-        showDeleteProductsConfirmationDialog()
+        viewModel.onDeleteMultipleProducts()
         ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
 
@@ -551,8 +553,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun setupBottomSheet() {
-        productManageBottomSheet = ProductManageBottomSheet.createInstance().apply {
+    private fun setupBottomSheet(access: ProductManageAccess) {
+        productManageBottomSheet = ProductManageBottomSheet.createInstance(access).apply {
             init(this@ProductManageFragment, sellerFeatureCarouselClickListener)
         }
         multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
@@ -1092,6 +1094,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
+
+        stockTicker.hide()
     }
 
     private fun clearFilterAndKeywordIfEmpty() {
@@ -1287,7 +1291,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun clickDeleteProductMenu(productName: String, productId: String) {
-        showDialogDeleteProduct(productName, productId)
+        viewModel.onDeleteSingleProduct(productName, productId)
     }
 
     private fun hideSoftKeyboard() {
@@ -1412,22 +1416,34 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         viewModel.setFeaturedProduct(id, type)
     }
 
-    private fun showDialogDeleteProduct(productName: String, productId: String) {
+    private fun showDialogDeleteProduct(data: SingleProduct) {
         context?.let {
-            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(it.resources.getString(R.string.product_manage_delete_product_title))
-            dialog.setDescription(it.resources.getString(R.string.product_manage_delete_product_description))
-            dialog.setPrimaryCTAText(it.resources.getString(R.string.product_manage_delete_product_delete_button))
-            dialog.setSecondaryCTAText(it.resources.getString(R.string.product_manage_delete_product_cancel_button))
-            dialog.setPrimaryCTAClickListener {
-                viewModel.deleteSingleProduct(productName, productId)
-                dialog.dismiss()
-                ProductManageTracking.eventDeleteProduct(productId)
-            }
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
+           DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+               val title = if(data.isMultiLocationShop) {
+                   getString(R.string.product_manage_multi_location_delete_product_title)
+               } else {
+                   getString(R.string.product_manage_delete_product_title)
+               }
+
+               val description = if(data.isMultiLocationShop) {
+                   getString(R.string.product_manage_multi_location_delete_product_description)
+               } else {
+                   getString(R.string.product_manage_delete_product_description)
+               }
+
+               setTitle(title)
+               setDescription(description)
+               setPrimaryCTAText(it.resources.getString(R.string.product_manage_delete_product_delete_button))
+               setSecondaryCTAText(it.resources.getString(R.string.product_manage_delete_product_cancel_button))
+               setPrimaryCTAClickListener {
+                   viewModel.deleteSingleProduct(data.productName, data.productId)
+                   ProductManageTracking.eventDeleteProduct(data.productId)
+                   dismiss()
+               }
+               setSecondaryCTAClickListener {
+                   dismiss()
+               }
+           }.show()
         }
     }
 
@@ -1639,6 +1655,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         viewModel.getTopAdsInfo()
     }
 
+    private fun getProductManageAccess() {
+        viewModel.getProductManageAccess()
+    }
+
     private fun getFiltersTab(withDelay: Boolean = false) {
         viewModel.getFiltersTab(withDelay)
     }
@@ -1724,11 +1744,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun showDeleteProductsConfirmationDialog() {
+    private fun showDeleteProductsConfirmationDialog(data: MultipleProduct) {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.product_manage_dialog_delete_products_title, itemsChecked.count()))
-                setDescription(getString(R.string.product_manage_delete_product_description))
+                val title = if(data.isMultiLocationShop) {
+                    getString(R.string.product_manage_multi_location_delete_product_title)
+                } else {
+                    getString(R.string.product_manage_dialog_delete_products_title, itemsChecked.count())
+                }
+
+                val description = if(data.isMultiLocationShop) {
+                    getString(R.string.product_manage_multi_location_delete_product_description)
+                } else {
+                    getString(R.string.product_manage_delete_product_description)
+                }
+
+                setTitle(title)
+                setDescription(description)
                 setPrimaryCTAText(getString(R.string.product_manage_delete_product_delete_button))
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
@@ -1947,7 +1979,65 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
         }
     }
+
+    private fun observeProductManageAccess() {
+        observe(viewModel.productManageAccess) {
+           when(it) {
+               is Success -> {
+                   val access = it.data
+                   loadInitialData()
+
+                   getFiltersTab()
+                   getProductListFeaturedOnlySize()
+                   getTopAdsFreeClaim()
+                   getGoldMerchantStatus()
+                   getTopAdsInfo()
+
+                   setupBottomSheet(access)
+                   showHideMultiSelect(access)
+                   showHideOptionsMenu(access)
+
+                   renderStockLocationTicker()
+                   renderStockLocationBottomSheet()
+               }
+           }
+        }
+    }
+
+    private fun observeDeleteProductDialog() {
+        observe(viewModel.deleteProductDialog) {
+            when(it) {
+                is SingleProduct -> showDialogDeleteProduct(it)
+                is MultipleProduct -> showDeleteProductsConfirmationDialog(it)
+            }
+        }
+    }
     // endregion
+
+    private fun showHideMultiSelect(access: ProductManageAccess) {
+        textMultipleSelect.showWithCondition(access.multiSelect)
+    }
+
+    private fun showHideOptionsMenu(access: ProductManageAccess) {
+        val addProductMenu = optionsMenu?.findItem(R.id.add_product_menu)
+        val moreMenu = optionsMenu?.findItem(R.id.action_more_menu)
+        addProductMenu?.isVisible = access.addProduct
+        moreMenu?.isVisible = access.changeEtalase
+    }
+
+    private fun renderStockLocationTicker() {
+        stockTicker.showWithCondition(userSession.isMultiLocationShop)
+    }
+
+    private fun renderStockLocationBottomSheet() {
+        val multiLocationShop = userSession.isMultiLocationShop
+        val showStockLocationBottomSheet = productManageSession.getShowStockLocationBottomSheet()
+
+        if(multiLocationShop && showStockLocationBottomSheet) {
+            ProductManageStockLocationBottomSheet.newInstance().show(childFragmentManager)
+            productManageSession.setShowStockLocationBottomSheet(false)
+        }
+    }
 
     private fun goToTopAdsOnBoarding() {
         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD)
