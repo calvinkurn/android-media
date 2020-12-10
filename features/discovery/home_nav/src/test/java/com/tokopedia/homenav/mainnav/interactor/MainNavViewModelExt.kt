@@ -19,26 +19,15 @@ import io.mockk.every
 import io.mockk.mockk
 
 fun createViewModel (
-        getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase? = null,
-        getUserMembershipUseCase: GetUserMembershipUseCase? = null,
-        getShopInfoUseCase: GetShopInfoUseCase? = null,
-        getMainNavDataUseCase: GetMainNavDataUseCase? = null,
+        getProfileDataUseCase: GetProfileDataUseCase? = null,
+        getBuListUseCase: GetCategoryGroupUseCase? = null,
         dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
         userSession: UserSessionInterface? = null,
         clientMenuGenerator: ClientMenuGenerator? = null,
-        getSaldoUseCase: GetSaldoUseCase? = null,
         getNavNotification: GetNavNotification? = null,
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
-        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
-        getUserInfoUseCase: GetUserInfoUseCase? = null
+        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null
 ): MainNavViewModel {
-    val getUserInfoUseCaseMock = getOrUseDefault(getUserInfoUseCase) {}
-    val getWalletBalanceUseCaseMock = getOrUseDefault(getWalletBalanceUseCase) {}
-    val getUserMembershipUseCaseMock = getOrUseDefault(getUserMembershipUseCase) {}
-    val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {}
-    val getMainNavDataUseCaseMock = getOrUseDefault(getMainNavDataUseCase) {
-        coEvery { it.executeOnBackground() }.answers { MainNavigationDataModel() }
-    }
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
         every { it.hasShop() } returns true
@@ -49,7 +38,6 @@ fun createViewModel (
         every { it.getTicker(menuId = any()) }
                 .answers { HomeNavTickerViewModel() }
     }
-    val getSaldoUseCaseMock = getOrUseDefault(getSaldoUseCase) {}
     val getNavNotificationMock = getOrUseDefault(getNavNotification) {
         coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }
     }
@@ -59,20 +47,22 @@ fun createViewModel (
     val getPaymentOrdersNavUseCaseMock = getOrUseDefault(getPaymentOrdersNavUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
+    val getProfileDataUseCaseMock = getOrUseDefault(getProfileDataUseCase) {
+        coEvery { it.executeOnBackground() }.answers { AccountHeaderViewModel() }
+    }
+    val getBuListDataUseCaseMock = getOrUseDefault(getBuListUseCase) {
+        coEvery { it.executeOnBackground() }.answers { listOf() }
+    }
 
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
-            getShopInfoUseCase = getShopInfoUseCaseMock,
-            getUserMembershipUseCase = getUserMembershipUseCaseMock,
-            getWalletUseCase = getWalletBalanceUseCaseMock,
-            getSaldoUseCase = getSaldoUseCaseMock,
             clientMenuGenerator = clientMenuGeneratorMock,
             userSession = userSessionMock,
-            getMainNavDataUseCase = getMainNavDataUseCaseMock,
             getNavNotification = getNavNotificationMock,
             getUohOrdersNavUseCase = getUohOrdersNavUseCaseMock,
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
-            getUserInfoUseCase = getUserInfoUseCaseMock
+            getProfileDataUseCase = getProfileDataUseCaseMock,
+            getCategoryGroupUseCase = getBuListDataUseCaseMock
     )
 }
 
@@ -84,16 +74,4 @@ inline fun <reified T : Any> getOrUseDefault(any: T?, runObjectMockSetup: (obj: 
     } else {
         Lazy { any!! }
     }
-}
-
-fun GetUserInfoUseCase.getBasicData() {
-    coEvery {
-        executeOnBackground()
-    } returns Success(UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir")))
-}
-
-fun GetMainNavDataUseCase.getBasicData() {
-    coEvery {
-        executeOnBackground()
-    } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")))
 }
