@@ -143,6 +143,7 @@ class AddEditProductPreviewFragment:
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
     private var hasLocation: Boolean = false
+    private var isFirstHittingLocation: Boolean = false
 
     private var toolbar: Toolbar? = null
 
@@ -1041,6 +1042,10 @@ class AddEditProductPreviewFragment:
                         showDialogLocationValidation()
                     }
                     hasLocation = it.data
+                    if (isFirstHittingLocation && hasLocation) {
+                        moveToImagePicker()
+                    }
+                    isFirstHittingLocation = true
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
