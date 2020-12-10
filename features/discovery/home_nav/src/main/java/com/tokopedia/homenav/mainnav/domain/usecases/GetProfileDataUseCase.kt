@@ -43,26 +43,23 @@ class GetProfileDataUseCase @Inject constructor(
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopInfoPojo? = null
 
-            if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-
-                val getOvoCall = async {
-                    getOvoUseCase.executeOnBackground()
-                }
-                val getSaldoCall = async {
-                    getSaldoUseCase.executeOnBackground()
-                }
-                val getUserMembershipCall = async {
-                    getUserMembershipUseCase.executeOnBackground()
-                }
-                val getShopInfoCall = async {
-                    getShopInfoUseCase.executeOnBackground()
-
-                }
-                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-                userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-                shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            val getOvoCall = async {
+                getOvoUseCase.executeOnBackground()
             }
+            val getSaldoCall = async {
+                getSaldoUseCase.executeOnBackground()
+            }
+            val getUserMembershipCall = async {
+                getUserMembershipUseCase.executeOnBackground()
+            }
+            val getShopInfoCall = async {
+                getShopInfoUseCase.executeOnBackground()
+
+            }
+            ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+            userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
 
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
@@ -72,22 +69,5 @@ class GetProfileDataUseCase @Inject constructor(
                     shopData
             )
         }
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            userSession.isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
-    }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

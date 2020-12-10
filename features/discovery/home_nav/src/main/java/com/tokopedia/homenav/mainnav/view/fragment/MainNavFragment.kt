@@ -100,6 +100,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
+        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -145,39 +146,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         observeCategoryListData()
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
             populateAdapterData(it)
-        })
-
-        viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-
-        })
-
-        viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.membershipResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.ovoResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.shopResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
         })
 
         viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
@@ -481,5 +449,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun Int.getViewForThisPosition(): View? {
         if (this != -1) return recyclerView.findViewHolderForAdapterPosition(this)?.itemView
         return null
+    }
+
+    private fun haveUserLogoutData(): Boolean {
+        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        return name.isNotEmpty()
+    }
+
+    private fun getSharedPreference(): SharedPreferences {
+        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

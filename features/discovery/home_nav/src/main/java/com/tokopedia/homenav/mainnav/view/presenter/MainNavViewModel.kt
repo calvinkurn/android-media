@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -64,6 +66,7 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_DEFAULT_BU_POSITION = 1
     }
 
+    private var haveLogoutData: Boolean? = false
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
@@ -76,30 +79,6 @@ class MainNavViewModel @Inject constructor(
     val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
         get() = _businessListLiveData
     private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
-
-    val accountLiveData: LiveData<Result<AccountHeaderViewModel>>
-        get() = _accountLiveData
-    private val _accountLiveData: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
-    val profileResultListener: LiveData<Result<AccountHeaderViewModel>>
-        get() = _profileResultListener
-    private val _profileResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
-    val membershipResultListener: LiveData<Result<AccountHeaderViewModel>>
-        get() = _membershipResultListener
-    private val _membershipResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
-    val ovoResultListener: LiveData<Result<AccountHeaderViewModel>>
-        get() = _ovoResultListener
-    private val _ovoResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
-    val saldoResultListener: LiveData<Result<AccountHeaderViewModel>>
-        get() = _saldoResultListener
-    private val _saldoResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
-    val shopResultListener: LiveData<Result<AccountHeaderViewModel>>
-        get() = _shopResultListener
-    private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
     //network process live data, false if it is processing and true if it is finished
     val networkProcessLiveData: LiveData<Boolean>
@@ -151,7 +130,7 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
-    fun deleteWidget(visitable: Visitable<*>, position: Int) {
+    fun deleteWidget(position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAt(position)
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
@@ -183,6 +162,10 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    fun setUserHaveLogoutData(haveLogoutData: Boolean) {
+        this.haveLogoutData = haveLogoutData
+    }
+
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
@@ -198,22 +181,26 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun setInitialState() {
-        val initialList = mutableListOf<Visitable<*>>(
-                InitialShimmerProfileDataModel()
-        )
+        val initialList = mutableListOf<Visitable<*>>()
+        if (userSession.get().isLoggedIn) {
+            initialList.add(InitialShimmerProfileDataModel())
+        } else {
+            initialList.add(AccountHeaderViewModel(loginState = getLoginState()))
+        }
+
         initialList.addHomeBackButtonMenu()
         initialList.add(InitialShimmerDataModel())
-        initialList.add(InitialShimmerTransactionDataModel())
+        onlyForLoggedInUserUi { initialList.add(InitialShimmerTransactionDataModel()) }
         initialList.addTransactionMenu()
         initialList.addUserMenu()
         addWidgetList(initialList)
     }
 
-    private fun removeInitialStateData() {
-        launch{
-            _mainNavListVisitable.find { it is InitialShimmerDataModel }?.let {
-                deleteWidget(it)
-            }
+    private fun getLoginState(): Int {
+        return when {
+            userSession.get().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
+            haveLogoutData?:false -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
+            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
         }
     }
 
@@ -326,6 +313,13 @@ class MainNavViewModel @Inject constructor(
                 transactionPlaceHolder?.let {
                     updateWidget(transactionListItemViewModel, it.index)
                 }
+            } else {
+                val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
+                    it.value is InitialShimmerTransactionDataModel
+                }
+                transactionPlaceHolder?.index?.let {
+                    deleteWidget(it)
+                }
             }
         }){
             it.printStackTrace()
@@ -411,6 +405,10 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun onlyForLoggedInUser(function: suspend ()-> Unit) {
+        if (userSession.get().isLoggedIn) function.invoke()
+    }
+
+    private fun onlyForLoggedInUserUi(function: ()-> Unit) {
         if (userSession.get().isLoggedIn) function.invoke()
     }
 
