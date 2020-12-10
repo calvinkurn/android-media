@@ -65,7 +65,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase?,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase?,
-                                            private val getRecentViewUseCase: GetRecentViewUseCase?,
+                                            private val getRecentViewUseCase: GetRecommendationUseCase?,
                                             private val getWishlistUseCase: GetWishlistUseCase?,
                                             private val getRecommendationUseCase: GetRecommendationUseCase?,
                                             private val addToCartUseCase: AddToCartUseCase?,
@@ -101,6 +101,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val ITEM_CHECKED_PARTIAL_SHOP = 3
         val ITEM_CHECKED_PARTIAL_ITEM = 4
         val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
+        private const val RECENT_VIEW_XSOURCE = "recentview"
+        private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
 
         private val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
@@ -114,6 +116,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
         addCartToWishlistUseCase?.unsubscribe()
+        getRecentViewUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
@@ -1150,18 +1153,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processGetRecentViewData(allProductIds: List<String>) {
-        try {
-            val userId = Integer.parseInt(userSessionInterface.userId)
-            val requestParams = RequestParams.create()
-            requestParams.putInt(GetRecentViewUseCase.PARAM_USER_ID, userId)
-            requestParams.putString(GetRecentViewUseCase.PARAM_PRODUCT_IDS, allProductIds.joinToString(separator = ","))
-            compositeSubscription.add(
-                    getRecentViewUseCase?.createObservable(requestParams)
-                            ?.subscribe(GetRecentViewSubscriber(view))
-            )
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
+        view?.showItemLoading()
+        val requestParam = getRecentViewUseCase?.getRecomParams(
+                1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
+        getRecentViewUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
+                ?.subscribeOn(schedulers.io)
+                ?.observeOn(schedulers.main)
+                ?.subscribe(GetRecentViewSubscriber(view))
     }
 
     override fun processGetWishlistData() {
@@ -1216,6 +1214,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
+            val clickUrl = productModel.clickUrl
+            if(clickUrl.isNotEmpty() && productModel.isTopAds ) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
             val (_, recommendationItem) = productModel
             productId = recommendationItem.productId

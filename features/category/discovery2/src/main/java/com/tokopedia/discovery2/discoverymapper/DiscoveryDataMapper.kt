@@ -194,7 +194,17 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                countSoldRating = dataItem.averageRating,
+                countSoldRating = if (dataItem.isOldRating) {
+                    ""
+                } else {
+                    dataItem.averageRating
+                },
+                ratingCount = if (dataItem.isOldRating) {
+                    dataItem.rating.toIntOrZero()
+                } else 0,
+                reviewCount = if (dataItem.isOldRating) {
+                    dataItem.countReview.toIntOrZero()
+                } else 0,
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
@@ -207,7 +217,8 @@ class DiscoveryDataMapper {
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton =  dataItem.hasNotifyMe
+                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasThreeDots = dataItem.hasThreeDots
         )
     }
 
@@ -250,9 +261,9 @@ class DiscoveryDataMapper {
 
     private fun getShopLocation(dataItem: DataItem): String {
         return if (!dataItem.shopLocation.isNullOrEmpty()) {
-            dataItem.shopLocation
+            dataItem.shopLocation!!
         } else if (!dataItem.shopName.isNullOrEmpty()) {
-            dataItem.shopName
+            dataItem.shopName!!
         } else {
             ""
         }

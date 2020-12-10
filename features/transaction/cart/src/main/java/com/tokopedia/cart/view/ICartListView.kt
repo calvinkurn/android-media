@@ -3,14 +3,14 @@ package com.tokopedia.cart.view
 import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -86,7 +86,7 @@ interface ICartListView : CustomerView {
 
     fun stopAllCartPerformanceTrace()
 
-    fun renderRecentView(recentViewList: List<RecentView>?)
+    fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
     fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
@@ -143,6 +143,8 @@ interface ICartListView : CustomerView {
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
     fun reCollapseExpandedDeletedUnavailableItems()
+
+    fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
 
 }
