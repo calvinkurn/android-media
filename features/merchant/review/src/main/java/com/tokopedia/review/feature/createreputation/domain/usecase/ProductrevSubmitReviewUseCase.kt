@@ -52,9 +52,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
             if(attachmentIds.isNotEmpty()) {
                 putObject(PARAM_ATTACHMENT_ID, attachmentIds)
             }
-            if(utmSource.isNotBlank()) {
-                putString(PARAM_UTM_SOURCE, utmSource)
-            }
+            putString(PARAM_UTM_SOURCE, utmSource)
         }.parameters)
     }
 }
