@@ -54,7 +54,7 @@ class TravelDestinationSummaryViewHolder(itemView: View, private val onViewHolde
     }
 
     fun disableAnimation() {
-        itemView.arrow_up.animation = null
+        itemView.arrow_up.animation.cancel()
     }
 
     companion object {
