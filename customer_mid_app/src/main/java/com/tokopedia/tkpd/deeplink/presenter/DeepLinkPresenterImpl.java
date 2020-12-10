@@ -290,11 +290,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openOrderList(Uri uriData) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", uriData.toString());
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.ORDER_LIST_WEBVIEW);
-        intent.putExtras(bundle);
-        viewListener.goToPage(intent);
+        String category = uriData.getQueryParameter("category");
+        if (category != null && category == "train") {
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.TRAIN_ORDER);
+            viewListener.goToPage(intent);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putString("url", uriData.toString());
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.ORDER_LIST_WEBVIEW);
+            intent.putExtras(bundle);
+            viewListener.goToPage(intent);
+        }
     }
 
     private void openReview(String uriData, Bundle defaultBundle) {

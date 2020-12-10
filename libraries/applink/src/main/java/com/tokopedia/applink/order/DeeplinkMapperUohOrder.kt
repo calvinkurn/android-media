@@ -85,7 +85,7 @@ object DeeplinkMapperUohOrder {
             else getInternalDeeplink(context, deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
-                || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(TRAIN_ORDER)
+                || deeplink.startsWith(FLIGHT_ORDER)
                 || deeplink.startsWith(HOTEL_ORDER) || deeplink.startsWith(OMS_ORDER_DETAIL)) {
             returnedDeeplink = getInternalDeeplink(context, deeplink)
 
