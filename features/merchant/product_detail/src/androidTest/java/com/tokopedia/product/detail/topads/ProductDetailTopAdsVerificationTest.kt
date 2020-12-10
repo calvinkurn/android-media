@@ -40,7 +40,7 @@ class ProductDetailTopAdsVerificationTest {
 
         override fun getActivityIntent(): Intent {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "1061061424")
+            return ProductDetailActivity.createIntent(context, "596843822")
         }
     }
 
