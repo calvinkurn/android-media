@@ -2,11 +2,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -24,6 +23,9 @@ import kotlin.coroutines.CoroutineContext
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
+    lateinit var filterRepository: FilterRepository
+
+    @Inject
     lateinit var quickFilterRepository: QuickFilterRepository
 
     @Inject
@@ -34,39 +36,32 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
 
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
+    private val quickFiltersLiveData: MutableLiveData<ArrayList<Option>> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
-        initDaggerInject()
-        addFilterOptions()
+        fetchQuickFilters()
     }
 
-    private fun addFilterOptions() {
-        for (item in components.data?.firstOrNull()?.filter ?: ArrayList()) {
+    private fun addFilterOptions(filters: ArrayList<Filter>) {
+        quickFilterOptionList.clear()
+        for (item in filters) {
             if (!item.options.isNullOrEmpty()) {
                 quickFilterOptionList.addAll(item.options)
             }
         }
+        quickFiltersLiveData.value = quickFilterOptionList
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
     }
 
-    fun getQuickFiltersList(): ArrayList<Option> {
-        return quickFilterOptionList
-    }
-
     fun getDynamicFilterModelLiveData() = dynamicFilterModel
+    fun getQuickFilterLiveData() = quickFiltersLiveData
 
     private fun onFilterApplied(selectedFilter: HashMap<String, String>?, selectedSort: HashMap<String, String>?) {
         getTargetComponent()?.let { component ->
@@ -84,8 +79,17 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun fetchDynamicFilterModel() {
         launchCatchError(block = {
-            dynamicFilterModel.value = quickFilterRepository.getQuickFilterData(components.id, mutableMapOf(), components.pageEndPoint)
+            dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun fetchQuickFilters() {
+        launchCatchError(block = {
+            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
+            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
         }, onError = {
             it.printStackTrace()
         })
@@ -123,6 +127,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             if (option.uniqueId == selectedFilter) return true
         }
         return false
+    }
+
+    fun clearQuickFilters(){
+        for (option in quickFilterOptionList)
+            components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        applyFilterToSearchParameter(components.filterController.getParameter())
+        reloadData()
     }
 
     fun onQuickFilterSelected(option: Option) {

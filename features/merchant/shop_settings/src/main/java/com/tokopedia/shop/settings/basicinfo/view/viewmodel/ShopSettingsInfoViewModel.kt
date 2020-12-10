@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -47,17 +48,10 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val updateScheduleResult: LiveData<Result<String>>
         get() = _updateScheduleResult
 
-
-    fun detachView() {
-        getShopBasicDataUseCase.unsubscribe()
-        getShopStatusUseCase.unsubscribe()
-        updateShopScheduleUseCase.unsubscribe()
-    }
-
     fun getShopData(shopId: String, includeOS: Boolean) {
-        launchCatchError(block = {
-            _shopBasicData.postValue(Success(getShopBasicData().await()))
-            _shopStatusData.postValue(Success(getShopStatus(shopId, includeOS).await()))
+        launchCatchError(dispatchers.io, block = {
+            _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))
+            _shopStatusData.postValue(Success(getShopStatusAsync(shopId, includeOS).await()))
         }, onError = {})
     }
 
@@ -68,27 +62,23 @@ class ShopSettingsInfoViewModel @Inject constructor (
             closeEnd: String,
             closeNote: String
     ) {
-        updateShopScheduleUseCase.unsubscribe()
-
-        launchCatchError(block = {
-            val updateScheduleResponse: String = withContext(dispatchers.io) {
-                val requestParams = UpdateShopScheduleUseCase.createRequestParams(
-                        action = action,
-                        closeNow = closeNow,
-                        closeStart = closeStart,
-                        closeEnd = closeEnd,
-                        closeNote = closeNote
-                )
-                updateShopScheduleUseCase.getData(requestParams)
-            }
+        launchCatchError(dispatchers.io, block = {
+            val requestParams = UpdateShopScheduleUseCase.createRequestParams(
+                    action = action,
+                    closeNow = closeNow,
+                    closeStart = closeStart,
+                    closeEnd = closeEnd,
+                    closeNote = closeNote
+            )
+            val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
             _updateScheduleResult.postValue(Success(updateScheduleResponse))
         }) {
             _updateScheduleResult.postValue(Fail(it))
         }
     }
 
-    private fun getShopBasicData(): Deferred<ShopBasicDataModel> {
-        return async(dispatchers.io) {
+    private fun getShopBasicDataAsync(): Deferred<ShopBasicDataModel> {
+        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
             var shopBasicData = ShopBasicDataModel()
             try {
                 shopBasicData = getShopBasicDataUseCase.getData(RequestParams.EMPTY) // getShopBasicDataUseCase.executeOnBackground()
@@ -99,8 +89,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         }
     }
 
-    private fun getShopStatus(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
-        return async(dispatchers.io) {
+    private fun getShopStatusAsync(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
+        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
             var shopStatusData = GoldGetPmOsStatus()
             try {
                 val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)

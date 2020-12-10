@@ -5,6 +5,7 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
@@ -13,6 +14,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
@@ -41,7 +43,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val showNotifyToast: MutableLiveData<Pair<Boolean, String?>> = MutableLiveData()
 
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
+    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
@@ -50,7 +52,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
     lateinit var productCardItemUseCase: ProductCardItemUseCase
 
     init {
-        initDaggerInject()
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -110,12 +111,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+    fun getProductCardOptionsModel(): ProductCardOptionsModel {
+        return components.data?.firstOrNull()?.let {
+             ProductCardOptionsModel(
+                    hasWishlist = true,
+                    isWishlisted = it.isWishList,
+                    productId = it.id.toString(),
+                    isTopAds = it.isTopads ?: false,
+                    topAdsWishlistUrl = it.wishlistUrl ?: "",
+                    productPosition = position
+            )
+        } ?: ProductCardOptionsModel()
     }
+
 
     fun getTemplateType() = components.properties?.template ?: GRID
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData

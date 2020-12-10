@@ -17,7 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -37,14 +40,13 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
@@ -122,8 +124,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMEND
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -1358,11 +1360,32 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onRecentViewProductClicked(productId: String) {
-        var position = 0
+    override fun onRecentViewProductImpression(element: CartRecentViewItemHolderData) {
+        recentViewList?.let {
+            if (element.isTopAds) {
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        this::class.java.simpleName,
+                        element.trackerImageUrl,
+                        element.id,
+                        element.name,
+                        element.imageUrl
+                )
+            }
+        }
+    }
 
-        for (recentView in recentViewList as List<CartRecentViewItemHolderData>) {
+    override fun onRecentViewProductClicked(productId: String) {
+        (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
+                if (recentView.isTopAds) {
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            this::class.java.simpleName,
+                            recentView.clickUrl,
+                            recentView.id,
+                            recentView.name,
+                            recentView.imageUrl
+                    )
+                }
                 if (FLAG_IS_CART_EMPTY) {
                     cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
                             position.toString(),
@@ -1375,9 +1398,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     )
                 }
             }
-            position++
         }
-
         onProductClicked(productId)
     }
 
@@ -2963,12 +2984,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
     }
 
-    override fun renderRecentView(recentViewList: List<RecentView>?) {
+    override fun renderRecentView(recommendationWidget: RecommendationWidget?) {
         var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> = ArrayList()
-        if (recentViewList != null) {
-            cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recentViewList)
-        } else if (this.recentViewList != null) {
-            cartRecentViewItemHolderDataList.addAll(this.recentViewList!!)
+        if (recommendationWidget != null) {
+            cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recommendationWidget)
+        } else {
+            this.recentViewList?.let {
+                cartRecentViewItemHolderDataList.addAll(it)
+            }
         }
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
         cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recent_view)
@@ -3256,6 +3279,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun resetRecentViewList() {
         shouldReloadRecentViewList = true
+    }
+
+    override fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData) {
+        val productId = productModel.id
+        val productName = productModel.name
+        val imageUrl = productModel.imageUrl
+        val url = "${productModel.clickUrl}&click_source=ATC_direct_click"
+        activity?.let {
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName, url, productId, productName, imageUrl)
+        }
     }
 
     override fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
