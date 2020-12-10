@@ -20,6 +20,7 @@ class GetRecommendationFilterChips (
             "    data {\n" +
             "      filter {\n" +
             "        title\n" +
+            "        name\n" +
             "        templateName\n" +
             "        isActivated\n" +
             "        options {\n" +
