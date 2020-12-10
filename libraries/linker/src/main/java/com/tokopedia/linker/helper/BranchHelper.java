@@ -113,7 +113,7 @@ public class BranchHelper {
     }
 
     public static void sendLoginEvent(Context context, UserData userData) {
-        BranchEvent branchEvent = new BranchEvent(LinkerConstants.EVENT_LOGIN_LABLE)
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.LOGIN)
                 .addCustomDataProperty(LinkerConstants.USER_ID, userData.getUserId())
                 .addCustomDataProperty(LinkerConstants.MEDIUM, userData.getMedium());
         branchEvent.logEvent(context);
