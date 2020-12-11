@@ -985,6 +985,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
                             dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
                             setGlobalDeleteVisibility()
+                            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(checkboxGlobal.isChecked)
                         }
                         cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
                         isCheckUncheckDirectAction = true
@@ -1205,6 +1206,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onGlobalDeleteClicked() {
+        cartPageAnalytics.eventClickGlobalDelete()
         val allCartItemDataList = cartAdapter.allCartItemData
         val deletedCartItems = cartAdapter.selectedCartItemData
         val dialog = getMultipleItemsDialogDeleteConfirmation(deletedCartItems.size)
