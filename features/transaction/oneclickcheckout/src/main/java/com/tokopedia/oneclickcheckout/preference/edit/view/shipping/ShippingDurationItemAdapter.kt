@@ -102,29 +102,29 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
-                    itemShippingError.visible()
                     itemList.alpha = 0.5f
                     itemShippingRadio.gone()
                     itemShippingDesc.gone()
+                    itemShippingError.visible()
                     itemShippingError.text = data.errorMessage
                 }
                 data.texts?.textsServiceDesc?.isNotEmpty() == true -> {
-                    itemShippingError.gone()
                     itemList.alpha = 1f
+                    itemShippingError.gone()
                     itemShippingRadio.visible()
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
                 isCourierInstantOrSameday(data.servicesId) -> {
-                    itemShippingError.gone()
                     itemList.alpha = 1f
+                    itemShippingError.gone()
                     itemShippingRadio.visible()
                     itemShippingDesc.visible()
                     itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
                 }
                 else -> {
-                    itemShippingRadio.visible()
                     itemList.alpha = 1f
+                    itemShippingRadio.visible()
                     itemShippingError.gone()
                     itemShippingDesc.gone()
                 }
