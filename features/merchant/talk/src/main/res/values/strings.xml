@@ -61,6 +61,7 @@
     <string name="reply_total_answer">Jawaban (%d)</string>
     <string name="delete_question_bottom_sheet">Hapus Pertanyaan</string>
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
+    <string name="edit_product_bottom_sheet">Ubah Deskripsi Produk</string>
     <string name="report_bottom_sheet_text">Laporkan</string>
     <string name="reply_header_follow_button">Follow</string>
     <string name="reply_header_following_button">Following</string>

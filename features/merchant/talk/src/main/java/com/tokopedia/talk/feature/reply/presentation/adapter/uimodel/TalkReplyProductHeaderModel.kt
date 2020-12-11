@@ -5,7 +5,9 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAd
 
 class TalkReplyProductHeaderModel(
         val productName: String,
-        val thumbnail: String
+        val thumbnail: String,
+        val stock: String,
+        val isSellerView: Boolean
 ) : Visitable<TalkReplyAdapterTypeFactory> {
 
     override fun type(typeFactory: TalkReplyAdapterTypeFactory): Int {

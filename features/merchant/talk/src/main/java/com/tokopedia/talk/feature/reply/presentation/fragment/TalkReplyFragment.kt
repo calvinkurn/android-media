@@ -182,8 +182,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showDeleteDialog(commentId)
     }
 
+    override fun onEditProductOptionClicked() {
+        goToEditProduct()
+    }
+
     override fun onKebabClicked(commentId: String, allowReport: Boolean, allowDelete: Boolean) {
-        showBottomSheet(commentId, allowReport, allowDelete)
+        showBottomSheet(commentId, allowReport, allowDelete, false)
     }
 
     override fun onClickAttachedProduct(productId: String) {
@@ -305,7 +309,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onKebabClicked() {
-        // Open bottom sheet to edit product
+        showBottomSheet(commentId = "", allowReport = false, allowDelete = false, allowEdit = true)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -373,9 +377,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         pageError.visibility = View.GONE
     }
 
-    private fun showBottomSheet(commentId: String, allowReport: Boolean, allowDelete: Boolean) {
+    private fun showBottomSheet(commentId: String, allowReport: Boolean, allowDelete: Boolean, allowEdit: Boolean) {
         val reportBottomSheet = context?.let { context ->
-            TalkReplyReportBottomSheet.createInstance(context, commentId, this, allowReport, allowDelete)
+            TalkReplyReportBottomSheet.createInstance(context, commentId, this, allowReport, allowDelete, allowEdit)
         }
         this.childFragmentManager.let { reportBottomSheet?.show(it,"") }
     }
@@ -543,7 +547,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
                         if(isFromInbox() || isFromNotif()) {
-                            adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
+                            adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail, discussionDataByQuestionID.productStockMessage, discussionDataByQuestionID.isSellerView))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
@@ -821,6 +825,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun setProductId(productId: String) {
         this.productId = productId
+    }
+
+    private fun goToEditProduct() {
+        RouteManager.route(context, ApplinkConst.PRODUCT_EDIT, productId)
     }
 
     fun getDidUserWriteQuestion(): Boolean {

@@ -25,6 +25,9 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                     thumbnail
                     url
                     maxAnswerLength
+                    productStock
+                    productStockMessage
+                    isSellerView
                     question {
                       questionID
                       content

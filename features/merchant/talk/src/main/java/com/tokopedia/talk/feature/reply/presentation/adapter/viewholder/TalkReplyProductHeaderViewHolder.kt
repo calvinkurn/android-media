@@ -1,10 +1,13 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
@@ -28,15 +31,34 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
                 }
             }
             setImage(thumbnail)
-            setProductName(productName)
-            setKebabClickListener()
+            setProductName(productName, isSellerView)
+            setKebabClickListener(isSellerView)
+            setStock(isSellerView, stock)
         }
     }
 
-    private fun setKebabClickListener() {
-        itemView.replyProductHeaderKebab.setOnClickListener {
-            talkReplyProductHeaderListener.onKebabClicked()
+    private fun setKebabClickListener(isSellerView: Boolean) {
+        if(isSellerView) {
+            itemView.replyProductHeaderKebab.apply {
+                setOnClickListener {
+                    talkReplyProductHeaderListener.onKebabClicked()
+                }
+                show()
+            }
+            return
         }
+        itemView.replyProductHeaderKebab.hide()
+    }
+
+    private fun setStock(isSellerView: Boolean, stock: String) {
+        if(isSellerView) {
+            itemView.replyProductStock.apply {
+                text = stock
+                show()
+            }
+            return
+        }
+        itemView.replyProductStock.hide()
     }
 
     private fun setImage(imageUrl: String) {
@@ -50,7 +72,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
         }
     }
 
-    private fun setProductName(productName: String) {
+    private fun setProductName(productName: String, isSellerView: Boolean) {
         itemView.replyProductHeaderName.apply {
             if(productName.isNotBlank()) {
                 text = productName
@@ -60,6 +82,12 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             text = getString(R.string.reply_product_deleted)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
             setOnClickListener(null)
+            if(isSellerView) {
+                val constraintSet = ConstraintSet()
+                val constraintLayout = talkReplyProductHeaderConstraintLayout
+                constraintSet.clear(replyProductHeaderName.id, ConstraintSet.BOTTOM)
+                constraintSet.applyTo(constraintLayout)
+            }
         }
     }
 }
