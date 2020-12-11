@@ -1049,6 +1049,7 @@ class AddEditProductPreviewFragment:
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage(it.throwable.message ?: "")
                 }
             }
         }
@@ -1061,11 +1062,14 @@ class AddEditProductPreviewFragment:
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showToasterSuccessSetLocation()
+                    } else {
+                        moveToLocationPicker()
                     }
                     hasLocation = isSuccess
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage(it.throwable.message ?: "")
                 }
             }
         }
@@ -1433,14 +1437,18 @@ class AddEditProductPreviewFragment:
             setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
             setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
             setPrimaryCTAClickListener {
-                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, false)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
-                }
+                moveToLocationPicker()
                 dismiss()
             }
         }.show()
+    }
+
+    private fun moveToLocationPicker() {
+        RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+            putExtra(EXTRA_IS_FULL_FLOW, false)
+            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+            startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+        }
     }
 
     private fun showToasterSuccessSetLocation() {
