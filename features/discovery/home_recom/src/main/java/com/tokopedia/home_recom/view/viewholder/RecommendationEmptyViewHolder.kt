@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.view.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,6 +16,7 @@ class RecommendationEmptyViewHolder(view: View) : AbstractViewHolder<Recommendat
 
     override fun bind(element: RecommendationEmptyDataModel) {
         itemView.empty_state?.run {
+            ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)?.let { setImageDrawable(it) }
             setPrimaryCTAText("")
         }
         itemView.sort_filter_empty?.run {
