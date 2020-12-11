@@ -34,9 +34,9 @@ object Const {
 
     object Images {
         const val ORDER_ON_EMPTY = "https://ecs7.tokopedia.net/android/others/saw_order_on_empty.png"
-        const val COMMON_ON_EMPTY = "https://ecs7.tokopedia.net/android/others/saw_order_on_empty.png"
-        const val COMMON_ON_ERROR = "https://ecs7.tokopedia.net/android/others/saw_order_on_empty.png"
-        const val COMMON_NO_LOGIN = "https://ecs7.tokopedia.net/android/others/saw_order_on_empty.png"
+        const val COMMON_ON_EMPTY = "https://ecs7.tokopedia.net/android/others/saw_empty_state.webp"
+        const val COMMON_ON_ERROR = "https://ecs7.tokopedia.net/android/others/saw_no_internet.webp"
+        const val COMMON_NO_LOGIN = "https://ecs7.tokopedia.net/android/others/saw_no_login.webp"
     }
 
     object SharedPrefKey {
