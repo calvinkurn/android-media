@@ -1126,7 +1126,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         hideNoAccessPage()
         hideErrorPage()
-        stockTicker.hide()
+        hideStockTicker()
     }
 
     private fun clearFilterAndKeywordIfEmpty() {
@@ -1668,9 +1668,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun showGetListError(throwable: Throwable?) {
+        if(isLoadingInitialData) {
+            showErrorPage()
+        } else {
+            updateStateScrollListener()
+            showRetryToast()
+        }
+        hideStockTicker()
         hideLoading()
-        updateStateScrollListener()
-        showRetryToast()
     }
 
     private fun getTopAdsFreeClaim() {
@@ -2092,6 +2097,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideErrorPage() {
         errorPage.hide()
+    }
+
+    private fun hideStockTicker() {
+        stockTicker.hide()
     }
 
     private fun goToTopAdsOnBoarding() {
