@@ -107,12 +107,16 @@ object OrderWidgetSuccessState {
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_VISIBILITY, View.VISIBLE)
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_arrow_right)
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_ready_to_ship))
+                    registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
+                    registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
                 }
                 else -> {
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_VISIBILITY, View.GONE)
                     setInt(R.id.imgSawOrderSwitchLeft, Const.Method.SET_VISIBILITY, View.VISIBLE)
                     setInt(R.id.imgSawOrderSwitchLeft, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_arrow_left)
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_new_order))
+                    registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
+                    registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
                 }
             }
 
@@ -122,8 +126,6 @@ object OrderWidgetSuccessState {
             }
 
             registerAppLinkIntent(context, R.id.imgSawOrderAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)
-            registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
-            registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
         }
     }
 
