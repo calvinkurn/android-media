@@ -72,14 +72,14 @@ class GetRecommendationFilterChips (
         return recommendationFilterChipsEntity.recommendationFilterChips.data
     }
 
-    fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String=FULL_FILTER){
+    fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String=""){
         params.parameters.clear()
-        params.putInt(PARAM_USER_ID, userId)
-        params.putString(PARAM_PRODUCT_IDS, productIDs)
-        params.putString(PARAM_PAGE_NAME, pageName)
-        params.putString(PARAM_X_SOURCE, xSource)
-        params.putString(PARAM_QUERY_PARAM, queryParam)
-        params.putString(PARAM_FILTER_TYPE, type)
+        if (userId != 0 ) params.putInt(PARAM_USER_ID, userId)
+        if (productIDs.isNotEmpty()) params.putString(PARAM_PRODUCT_IDS, productIDs)
+        if (pageName.isNotEmpty()) params.putString(PARAM_PAGE_NAME, pageName)
+        if (xSource.isNotEmpty()) params.putString(PARAM_X_SOURCE, xSource)
+        if (queryParam.isNotEmpty()) params.putString(PARAM_QUERY_PARAM, queryParam)
+        if (type.isNotEmpty()) params.putString(PARAM_FILTER_TYPE, type)
 //        params.putString("injectionID", "01EGFJGX3076CT8K1607XESK16")
     }
 
