@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.usecase
 
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
@@ -15,9 +14,11 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
         } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
             discoveryPageData[pageIdentifier] = this
             componentMap = HashMap()
-            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
-                componentMap[id] = this
-            }
+
+             /***Chip Filter Require parent ID to function. Need to check on this later.***/
+//            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
+//                componentMap[id] = this
+//            }
         }, queryParameterMap)
     }
 
