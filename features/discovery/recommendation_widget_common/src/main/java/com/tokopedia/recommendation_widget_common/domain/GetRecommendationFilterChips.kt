@@ -15,8 +15,8 @@ class GetRecommendationFilterChips (
         private val graphqlUseCase: GraphqlUseCase<RecommendationFilterChipsEntity>
 ): UseCase<RecommendationFilterChipsEntity.FilterAndSort>() {
 
-    private val query = "query RecommendationFilterChipsQuery(${'$'}productIDs: String!, ${'$'}pageName: String!, ${'$'}xSource: String, ${'$'}queryParam: String, ${'$'}filterType: String, ${'$'}injectionID: String) {\n" +
-            "  recommendationFilterChips(productIDs: ${'$'}productIDs, pageName: ${'$'}pageName, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, filterType: ${'$'}filterType, injectionID: ${'$'}injectionID) {\n" +
+    private val query = "query RecommendationFilterChipsQuery(${'$'}productIDs: String!, ${'$'}pageName: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}filterType: String!, ${'$'}injectionID: String!, ${'$'}userID: Int) {\n" +
+            "  recommendationFilterChips(productIDs: ${'$'}productIDs, pageName: ${'$'}pageName, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, filterType: ${'$'}filterType, injectionID: ${'$'}injectionID, userID: ${'$'}userID) {\n" +
             "    data {\n" +
             "      filter {\n" +
             "        title\n" +
@@ -74,13 +74,13 @@ class GetRecommendationFilterChips (
 
     fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String=FULL_FILTER){
         params.parameters.clear()
-//        params.putInt(PARAM_USER_ID, userId)
-//        params.putString(PARAM_PRODUCT_IDS, productIDs)
+        params.putInt(PARAM_USER_ID, userId)
+        params.putString(PARAM_PRODUCT_IDS, productIDs)
         params.putString(PARAM_PAGE_NAME, pageName)
         params.putString(PARAM_X_SOURCE, xSource)
         params.putString(PARAM_QUERY_PARAM, queryParam)
         params.putString(PARAM_FILTER_TYPE, type)
-        params.putString("injectionID", "01EGFJGX3076CT8K1607XESK16")
+//        params.putString("injectionID", "01EGFJGX3076CT8K1607XESK16")
     }
 
     companion object{
