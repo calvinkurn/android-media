@@ -37,7 +37,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -81,6 +80,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -615,7 +615,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (view != null) {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -1035,8 +1037,11 @@ public class DigitalProductFragment extends BaseDaggerFragment
             );
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    getString(R.string.error_message_contact_not_found));
+
+            View view = getView();
+            if (view != null) {
+                Toaster.build(view, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+            }
         }
     }
 

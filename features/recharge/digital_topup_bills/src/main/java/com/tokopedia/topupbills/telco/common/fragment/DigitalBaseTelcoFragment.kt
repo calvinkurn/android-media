@@ -156,8 +156,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
+            view?.let {
+                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 
@@ -297,14 +298,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

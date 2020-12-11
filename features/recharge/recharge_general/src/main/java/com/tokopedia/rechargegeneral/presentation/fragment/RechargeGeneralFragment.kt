@@ -20,7 +20,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -62,6 +61,7 @@ import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -901,7 +901,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onEnquiryError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -920,14 +920,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
