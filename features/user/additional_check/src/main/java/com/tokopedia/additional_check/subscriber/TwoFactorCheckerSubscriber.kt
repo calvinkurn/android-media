@@ -46,15 +46,17 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig(activity) == true) {
-            DaggerAdditionalCheckComponents
-                    .builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .additionalCheckModules(AdditionalCheckModules(activity))
-                    .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
-                    .build()
-                    .inject(this)
-            doChecking(activity)
+        if (activity != null) {
+            if(!exceptionPage.contains(activity.javaClass.simpleName)) {
+                DaggerAdditionalCheckComponents
+                        .builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .additionalCheckModules(AdditionalCheckModules(activity))
+                        .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
+                        .build()
+                        .inject(this)
+                doChecking(activity)
+            }
         }
     }
 
@@ -78,7 +80,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkMainApp(activity: Activity) {
-        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig() == true) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig(activity) == true) {
             checking(activity)
         }
     }
