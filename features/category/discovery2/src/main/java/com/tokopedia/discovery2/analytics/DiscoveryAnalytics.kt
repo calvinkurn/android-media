@@ -788,4 +788,35 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
                 eventLabel = "$loginValue - ${componentsItems.name} - $headerValue - $creativeName - $unifyTabValue")
         getTracker().sendGeneralEvent(map)
     }
+
+    override fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CLOSE_CATEGORY_TREE,
+                eventLabel = "")
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CATEGORY_TREE_ARROW,
+                eventLabel = "")
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID : String, applink : String?,
+                                 catDepth : Int, childCatName : String) {
+        val map = createGeneralEvent(eventName = EVENT_CLICK_DISCOVERY,
+                eventAction = CATEGORY_TREE_OPTION_SELECTED,
+                eventLabel = "$childCatID - $childCatName")
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
+        getTracker().sendGeneralEvent(map)
+    }
 }

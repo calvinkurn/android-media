@@ -137,4 +137,7 @@ const val PAGE_TYPE = "pageType"
 const val PAGE_PATH = "pagePath"
 const val PRODUCT_NOTIFY_CLICK = "click notify me in product card"
 const val PRODUCT_NOTIFY_CANCEL_CLICK = "click cancel notification in product card"
+const val CLOSE_CATEGORY_TREE = "click close category tree"
+const val CATEGORY_TREE_ARROW = "click arrow to category directory"
+const val CATEGORY_TREE_OPTION_SELECTED = "click category inside category tree"
 

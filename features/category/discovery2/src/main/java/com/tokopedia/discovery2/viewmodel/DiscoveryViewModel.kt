@@ -71,7 +71,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: Map<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
@@ -190,8 +190,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return PINNED_COMPONENT_FAIL_STATUS
     }
 
-    fun getQueryParameterMapFromBundle(bundle: Bundle?): Map<String, String?> {
-        return mapOf(
+    fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
+        return mutableMapOf(
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),

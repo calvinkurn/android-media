@@ -63,7 +63,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)
+            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
             productLoadError.value = true
@@ -100,7 +100,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)) {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
                     productCarouselList.value = addLoadMore(it)
