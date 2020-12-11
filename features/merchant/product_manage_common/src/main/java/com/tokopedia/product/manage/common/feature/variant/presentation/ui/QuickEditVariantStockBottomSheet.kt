@@ -14,6 +14,7 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.factory.Produ
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 class QuickEditVariantStockBottomSheet(
     private val onSaveVariantsStock: (EditVariantResult) -> Unit = {}
@@ -42,6 +43,12 @@ class QuickEditVariantStockBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewState()
+        initView()
+    }
+
+    private fun initView() {
+        val emptyTicker = listOf<TickerData>()
+        variantStockAdapter.showTicker(emptyTicker)
     }
 
     override fun getTitle(): String {
