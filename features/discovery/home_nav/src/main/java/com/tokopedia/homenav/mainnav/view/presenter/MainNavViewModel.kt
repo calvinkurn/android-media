@@ -199,7 +199,7 @@ class MainNavViewModel @Inject constructor(
         initialList.add(SeparatorViewModel(sectionId = MainNavConst.Section.HOME))
         initialList.addHomeBackButtonMenu()
         initialList.add(InitialShimmerDataModel())
-        initialList.add(InitialShimmerTransactionDataModel())
+        onlyForLoggedInUserUi { initialList.add(InitialShimmerTransactionDataModel()) }
         initialList.addTransactionMenu()
         initialList.addUserMenu()
         return initialList
