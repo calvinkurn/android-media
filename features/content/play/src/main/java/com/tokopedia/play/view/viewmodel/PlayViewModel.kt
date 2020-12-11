@@ -437,7 +437,6 @@ class PlayViewModel @Inject constructor(
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
-                        partnerName = _observablePartnerInfo.value?.name.orEmpty(),
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
                 )
