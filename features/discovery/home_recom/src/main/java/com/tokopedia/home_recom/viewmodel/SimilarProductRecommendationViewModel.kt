@@ -50,7 +50,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     private val _filterSortChip = MutableLiveData<Response<FilterSortChip>>()
     val filterSortChip: LiveData<Response<FilterSortChip>> get() = _filterSortChip
 
-    fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
+    fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String, pageName: String){
         launch(dispatcher.getIODispatcher()){
             try{
                 if(page == 1 && _recommendationItem.value != null) _recommendationItem.postValue(null)
@@ -59,10 +59,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 val userId: Int = userSessionInterface.userId.toIntOrZero()
 
                 if(page == 1){
-                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = QUICK_FILTER, pageName = "discopage", xSource = "recom-infinite")
+                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = QUICK_FILTER, pageName = pageName)
                     val quickFilter = getRecommendationFilterChips.executeOnBackground()
 
-                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = FULL_FILTER, pageName = "discopage", xSource = "recom-infinite")
+                    getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = FULL_FILTER, pageName = pageName)
                     val fullFilter = getRecommendationFilterChips.executeOnBackground()
 
                     _filterSortChip.postValue(Response.success(FilterSortChip(fullFilter, quickFilter.filterChip)))
@@ -86,7 +86,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationFromQuickFilter(title: String, queryParam: String, productId: String){
+    fun getRecommendationFromQuickFilter(title: String, pageName: String, queryParam: String, productId: String){
         launchCatchError(dispatcher.getIODispatcher(), block = {
             val filterAndSort = _filterSortChip.value?.data?.filterAndSort
 
@@ -101,10 +101,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 "${opt.key}=${opt.value}"
             }
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = QUICK_FILTER, pageName = "discopage", xSource = "recom-infinite")
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = QUICK_FILTER, pageName = pageName)
             val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = FULL_FILTER, pageName = "discopage", xSource = "recom-infinite")
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = FULL_FILTER, pageName = pageName)
             val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
             _filterSortChip.postValue(Response.loading())
@@ -125,7 +125,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationFromFullFilter(sort: Map<String, String>, filter: Map<String, String>, queryParam: String, productId: String){
+    fun getRecommendationFromFullFilter(sort: Map<String, String>, filter: Map<String, String>, pageName: String, queryParam: String, productId: String){
         launchCatchError(dispatcher.getIODispatcher(), block = {
             _filterSortChip.value?.data?.let { filterSort ->
                 var resultQuery = queryParam
@@ -140,10 +140,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                     if (isActivated) resultQuery += "&${it.key}=${it.value}"
                 }
 
-                getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = "", queryParam = resultQuery, type = QUICK_FILTER, pageName = "discopage", xSource = "recom-infinite")
+                getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = "", queryParam = resultQuery, type = QUICK_FILTER, pageName = pageName)
                 val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
-                getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = "", queryParam = resultQuery, type = FULL_FILTER, pageName = "discopage", xSource = "recom-infinite")
+                getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = "", queryParam = resultQuery, type = FULL_FILTER, pageName = pageName)
                 val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
                 _filterSortChip.postValue(Response.loading())
@@ -165,7 +165,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationFromEmptyFilter(option: RecommendationFilterChipsEntity.Option, queryParam: String, productId: String){
+    fun getRecommendationFromEmptyFilter(option: RecommendationFilterChipsEntity.Option, pageName: String, queryParam: String, productId: String){
         launchCatchError(dispatcher.getIODispatcher(), block = {
 
             // update select / deselect to full filter
@@ -179,10 +179,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 "${opt.key}=${opt.value}"
             }
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = QUICK_FILTER, pageName = "discopage", xSource = "recom-infinite")
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = QUICK_FILTER, pageName = pageName)
             val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = FULL_FILTER, pageName = "discopage", xSource = "recom-infinite")
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = FULL_FILTER, pageName = pageName)
             val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
             _filterSortChip.postValue(Response.loading())

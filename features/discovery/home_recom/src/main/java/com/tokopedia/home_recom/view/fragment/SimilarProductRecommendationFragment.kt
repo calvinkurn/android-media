@@ -153,7 +153,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             ).apply {
                 listener = {
                     toggleSelected()
-                    recommendationViewModel.getRecommendationFromEmptyFilter(it, source, productId)
+                    recommendationViewModel.getRecommendationFromEmptyFilter(it, ref, source, productId)
                 }
             }
         } ?: listOf()
@@ -312,7 +312,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, source, productId, ref)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -372,7 +372,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun onQuickFilterClick(item: SortFilterItem){
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), source, productId)
+        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
         item.toggleSelected()
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId())
     }
@@ -452,7 +452,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         adapter.clearAllElements()
-        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, source, productId)
+        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
         filterSortBottomSheet = null
         repeat(applySortFilterModel.mapParameter.count()) { SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId()) }
         SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId())
