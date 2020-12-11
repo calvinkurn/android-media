@@ -50,7 +50,7 @@ class MainNavViewModel @Inject constructor(
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
-        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>
+        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 

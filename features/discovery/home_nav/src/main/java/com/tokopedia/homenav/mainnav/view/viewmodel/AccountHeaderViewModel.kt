@@ -21,7 +21,7 @@ data class AccountHeaderViewModel(
         var isGetSaldoError: Boolean = true,
         var isGetUserMembershipError: Boolean = true,
         var isGetShopError: Boolean = true,
-        var isCacheData: Boolean = false
+        var isCacheData: Boolean = false,
         var isGetShopLoading: Boolean = false
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
