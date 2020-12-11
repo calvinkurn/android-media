@@ -2087,12 +2087,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun showErrorPage() {
-        mainContainer.hide()
         errorPage.show()
     }
 
     private fun hideErrorPage() {
-        mainContainer.show()
         errorPage.hide()
     }
 
