@@ -27,6 +27,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 private const val PRODUCT_PER_PAGE = 10
+private const val RESET_HEIGHT = 0
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -81,6 +82,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 productCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
+                maxHeightProductCard.value = RESET_HEIGHT
                 productLoadError.value = true
             }
         }

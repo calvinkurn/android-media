@@ -140,4 +140,5 @@ const val PRODUCT_NOTIFY_CANCEL_CLICK = "click cancel notification in product ca
 const val CLOSE_CATEGORY_TREE = "click close category tree"
 const val CATEGORY_TREE_ARROW = "click arrow to category directory"
 const val CATEGORY_TREE_OPTION_SELECTED = "click category inside category tree"
+const val BOTTOM_NAV  = "bottom nav"
 

@@ -70,5 +70,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {}
     open fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID: String, applink: String?, catDepth: Int, childCatName: String) {}
     open fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {}
+    open fun trackBottomNavBarClick(buttonName: String, userID: String?) {}
 
 }

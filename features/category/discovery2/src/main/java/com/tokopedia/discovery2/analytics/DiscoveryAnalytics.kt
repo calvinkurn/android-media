@@ -819,4 +819,19 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
         map[USER_ID] = if (userLoggedIn) LOGIN else NON_LOGIN
         getTracker().sendGeneralEvent(map)
     }
+
+    override fun trackBottomNavBarClick(buttonName : String, userID : String?) {
+        val eventCategory = "$BOTTOM_NAV - $VALUE_DISCOVERY_PAGE"
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to CLICK_NAV_DRAWER,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "click $buttonName nav",
+                KEY_EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                USER_ID to (userID ?: ""),
+                BUSINESS_UNIT to HOME_BROWSE,
+                PAGE_TYPE to pageType,
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier))
+        getTracker().sendGeneralEvent(map)
+    }
 }
