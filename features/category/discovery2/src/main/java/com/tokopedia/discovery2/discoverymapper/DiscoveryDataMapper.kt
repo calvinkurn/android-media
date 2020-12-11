@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
@@ -93,6 +94,15 @@ class DiscoveryDataMapper {
         }
     }
 
+    fun mapProductListToCircularModel(listItem: List<DataItem>) : ArrayList<CircularModel> {
+        val bannerList = ArrayList<CircularModel>()
+        listItem.forEachIndexed { index, it ->
+            val circularModel = CircularModel(index, it.imageUrlDynamicMobile ?: "")
+            bannerList.add(circularModel)
+        }
+        return bannerList
+    }
+
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
                                               categoryHeaderPosition: Int): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
@@ -184,7 +194,17 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                countSoldRating = dataItem.averageRating,
+                countSoldRating = if (dataItem.isOldRating) {
+                    ""
+                } else {
+                    dataItem.averageRating
+                },
+                ratingCount = if (dataItem.isOldRating) {
+                    dataItem.rating.toIntOrZero()
+                } else 0,
+                reviewCount = if (dataItem.isOldRating) {
+                    dataItem.countReview.toIntOrZero()
+                } else 0,
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
@@ -197,7 +217,8 @@ class DiscoveryDataMapper {
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton =  dataItem.hasNotifyMe
+                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasThreeDots = dataItem.hasThreeDots
         )
     }
 
@@ -240,9 +261,9 @@ class DiscoveryDataMapper {
 
     private fun getShopLocation(dataItem: DataItem): String {
         return if (!dataItem.shopLocation.isNullOrEmpty()) {
-            dataItem.shopLocation
+            dataItem.shopLocation!!
         } else if (!dataItem.shopName.isNullOrEmpty()) {
-            dataItem.shopName
+            dataItem.shopName!!
         } else {
             ""
         }

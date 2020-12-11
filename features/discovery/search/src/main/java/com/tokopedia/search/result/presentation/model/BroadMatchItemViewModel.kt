@@ -8,8 +8,6 @@ data class BroadMatchItemViewModel(
         val name: String = "",
         val price: Int = 0,
         val imageUrl: String = "",
-        val rating: Int = 0,
-        val countReview: Int = 0,
         val url: String = "",
         val applink: String = "",
         val priceString: String = "",
@@ -22,7 +20,9 @@ data class BroadMatchItemViewModel(
         val isOrganicAds: Boolean = false,
         val topAdsViewUrl: String = "",
         val topAdsClickUrl: String = "",
-        val topAdsWishlistUrl: String = ""
+        val topAdsWishlistUrl: String = "",
+        val ratingAverage: String = "",
+        val labelGroupList: List<LabelGroupViewModel> = listOf()
 ): ImpressHolder() {
 
     fun asImpressionObjectDataLayer(): Any {

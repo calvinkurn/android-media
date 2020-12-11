@@ -9,6 +9,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -25,6 +26,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
+import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
+import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,6 +45,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
+private const val IS_ADULT = 1
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val userSession: UserSessionInterface,
@@ -49,6 +55,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
+    private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
+    private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
@@ -66,7 +74,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: Map<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
@@ -75,6 +83,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
+                        setDiscoveryLiveState(it.pageInfo)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
                             findBottomTabNavDataComponentsIfAny(it.components)
@@ -86,6 +95,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoveryPageInfo.value = Fail(it)
                 }
         )
+    }
+
+    private fun setDiscoveryLiveState(pageInfo: PageInfo) {
+        if(!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(pageInfo.redirectionUrl ?: "")){
+            discoveryLiveStateData.value = RouteToApplink(pageInfo.redirectionUrl ?: "")
+        } else if(pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)){
+            discoveryLiveStateData.value = GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)
+        }
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
@@ -112,6 +129,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
+    fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
@@ -177,8 +195,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return PINNED_COMPONENT_FAIL_STATUS
     }
 
-    fun getQueryParameterMapFromBundle(bundle: Bundle?): Map<String, String?> {
-        return mapOf(
+    fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
+        return mutableMapOf(
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
@@ -209,4 +227,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
         return null
     }
+
+    fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel){
+        WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
+    }
+
+    fun getWishListLiveData() = wishlistUpdateLiveData
 }

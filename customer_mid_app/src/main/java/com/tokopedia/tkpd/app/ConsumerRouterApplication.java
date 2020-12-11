@@ -65,7 +65,6 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -127,7 +126,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         NetworkRouter,
         OmsModuleRouter,
-        PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter,
         KYCRouter {

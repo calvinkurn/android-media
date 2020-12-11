@@ -53,5 +53,9 @@
     <string name="discovery_default_search_title">Cari di Tokopedia</string>
     <string name="discovery_tokopedia">Tokopedia</string>
     <string name="discovery_page_name">discovery page</string>
+    <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
+    <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="discovery_top_to_bottom">Top to bottom</string>
 </resources>
