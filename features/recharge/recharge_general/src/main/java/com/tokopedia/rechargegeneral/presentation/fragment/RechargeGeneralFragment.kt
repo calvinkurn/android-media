@@ -221,7 +221,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     } else {
                         hideLoading()
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
@@ -897,7 +900,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onEnquiryError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onMenuDetailError(error: Throwable) {
@@ -913,11 +919,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
