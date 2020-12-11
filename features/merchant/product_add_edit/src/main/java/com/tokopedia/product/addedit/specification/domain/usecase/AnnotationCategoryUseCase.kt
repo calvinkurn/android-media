@@ -18,29 +18,29 @@ class AnnotationCategoryUseCase @Inject constructor(
         const val DEFAULT_VALUE_EXCLUDE_SENSITIVE = "true"
         private val query =
                 """
-                {
-                 drogonAnnotationCategoryV2(categoryID:"2751", productID:"13312131", vendorName:"merchant", excludeSensitive: "true"){
-                    header {
-                      processTime
-                      messages
-                      reason
-                      errorCode
-                    }
-                    categoryID
-                    productID
-                    vendorName
-                    data {
-                        variant
-                        sortOrder
-                        values {
-                            id
-                            name
-                            selected
-                            data
-                            isAgg
+                query getAnotationCategoryV2(${'$'}categoryID: String!, ${'$'}productID: String, ${'$'}vendorName: String, ${'$'}excludeSensitive: String) {
+                    drogonAnnotationCategoryV2(categoryID: ${'$'}categoryID, productID: ${'$'}productID, vendorName: ${'$'}vendorName, excludeSensitive: ${'$'}excludeSensitive){
+                        header {
+                          processTime
+                          messages
+                          reason
+                          errorCode
+                        }
+                        categoryID
+                        productID
+                        vendorName
+                        data {
+                            variant
+                            sortOrder
+                            values {
+                                id
+                                name
+                                selected
+                                data
+                                isAgg
+                            }
                         }
                     }
-                  }
                 }
                 """.trimIndent()
     }
