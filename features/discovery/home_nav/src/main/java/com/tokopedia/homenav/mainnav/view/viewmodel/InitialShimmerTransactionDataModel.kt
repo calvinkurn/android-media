@@ -4,7 +4,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class InitialShimmerTransactionDataModel(
-        val id: Int = 124
+        val id: Int = 125
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 

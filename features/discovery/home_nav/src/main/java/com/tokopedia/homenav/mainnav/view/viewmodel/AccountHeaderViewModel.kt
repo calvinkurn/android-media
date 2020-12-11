@@ -22,7 +22,8 @@ data class AccountHeaderViewModel(
         var isGetUserMembershipError: Boolean = true,
         var isGetShopError: Boolean = true,
         var isCacheData: Boolean = false,
-        var isGetShopLoading: Boolean = false
+        var isGetShopLoading: Boolean = false,
+        var isProfileLoading: Boolean = false
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -34,7 +35,8 @@ data class AccountHeaderViewModel(
                 shopName == visitable.shopName && shopId == visitable.shopId &&
                 shopNotifCount == visitable.shopNotifCount && shopApplink == visitable.shopApplink &&
                 isGetShopError == visitable.isGetShopError &&
-                isGetShopLoading == visitable.isGetShopLoading
+                isGetShopLoading == visitable.isGetShopLoading &&
+                isProfileLoading == visitable.isProfileLoading
     }
 
     override fun type(factory: MainNavTypeFactory): Int {

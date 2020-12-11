@@ -124,6 +124,12 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
+    fun addInitialWidgetList(visitables: List<Visitable<*>>) {
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.addAll(visitables)
+        _mainNavLiveData.value = _mainNavLiveData.value?.copy(dataList = newMainNavList)
+    }
+
     fun deleteWidget(position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAt(position)
@@ -184,10 +190,9 @@ class MainNavViewModel @Inject constructor(
 
         initialList.addHomeBackButtonMenu()
         initialList.add(InitialShimmerDataModel())
-        onlyForLoggedInUserUi { initialList.add(InitialShimmerTransactionDataModel()) }
         initialList.addTransactionMenu()
         initialList.addUserMenu()
-        addWidgetList(initialList)
+        addInitialWidgetList(initialList)
     }
 
     private fun getLoginState(): Int {
@@ -201,35 +206,23 @@ class MainNavViewModel @Inject constructor(
     private fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
-            val p1DataJob = launchCatchError(context = coroutineContext, block = {
+            launchCatchError(context = coroutineContext, block = {
                 if (useCacheData) {
-                    getProfileDataCached()
+                    onlyForLoggedInUser { getProfileDataCached() }
                     getBuListMenuCached()
-                } else {
-                    updateProfileData()
-                    getBuListMenu()
                 }
+
+                //update cached data with cloud data
+                onlyForLoggedInUser {
+                    getOngoingTransaction()
+                    getNotification()
+                    updateProfileData()
+                }
+                getBuListMenu()
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
             }
-            p1DataJob.join()
-
-            val p2DataJob = launchCatchError(context = coroutineContext, block = {
-                onlyForLoggedInUser {
-                    getOngoingTransaction()
-                    getNotification()
-                }
-                if (useCacheData) {
-                    //update cached data with cloud data
-                    updateProfileData()
-                    getBuListMenu()
-                }
-            }) {
-                Timber.d("P2 error")
-                it.printStackTrace()
-            }
-            p2DataJob.join()
             _onboardingListLiveData.postValue(_mainNavListVisitable)
 
         }
@@ -267,10 +260,10 @@ class MainNavViewModel @Inject constructor(
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
 
-            updateWidgetList(result, findBuIndexPosittion())
+            updateWidgetList(result, findBuStartIndexPosition())
         }) {
             it.printStackTrace()
-            updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
+            updateWidget(ErrorStateBuViewModel(), findBuStartIndexPosition())
         }
     }
 
@@ -286,26 +279,74 @@ class MainNavViewModel @Inject constructor(
             //PLT network process is finished
             _networkProcessLiveData.postValue(true)
             if (buListData == null) {
-                updateWidgetList(result, findBuIndexPosittion())
+                updateWidgetList(result, findBuStartIndexPosition())
             }
         }) {
             it.printStackTrace()
-            updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
+
+            //if bu cache is already exist in list
+            //then error state is not needed
+            val isBuExist = findExistingEndBuIndexPosittion()
+            if (isBuExist == null) {
+                updateWidget(ErrorStateBuViewModel(), findBuStartIndexPosition())
+            }
+
+            val buShimmering = _mainNavListVisitable.find {
+                it is InitialShimmerDataModel
+            }
+            buShimmering?.let {
+                updateWidget(ErrorStateBuViewModel(),
+                        _mainNavListVisitable.indexOf(it)
+                )
+            }
         }
     }
 
     suspend fun getProfileDataCached() {
-        val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
-        updateWidget(accountHeaderModel, 0)
+        launchCatchError(coroutineContext, block = {
+            val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
+            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        }) {
+            it.printStackTrace()
+            val accountHeaderModel = AccountHeaderViewModel(
+                    isGetShopError = true,
+                    isProfileLoading = false,
+                    isGetOvoError = true,
+                    isGetSaldoError = true,
+                    isGetUserMembershipError = true,
+                    isGetUserNameError = true
+            )
+            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        }
     }
 
     suspend fun updateProfileData() {
-        val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
-        updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        launchCatchError(coroutineContext, block = {
+            val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
+            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        }) {
+            val accountModel = _mainNavListVisitable.find {
+                it is AccountHeaderViewModel
+            } as? AccountHeaderViewModel
+
+            accountModel?.let { account ->
+                if (account.isProfileLoading) {
+                    updateWidget(account.copy(
+                            isGetShopError = true,
+                            isProfileLoading = false,
+                            isGetOvoError = true,
+                            isGetSaldoError = true,
+                            isGetUserMembershipError = true,
+                            isGetUserNameError = true
+                    ), INDEX_MODEL_ACCOUNT)
+                }
+            }
+            it.printStackTrace()
+        }
     }
 
     fun refreshBuListdata() {
-        updateWidget(InitialShimmerDataModel(), findBuIndexPosittion())
+        updateWidget(InitialShimmerDataModel(), findBuStartIndexPosition())
         launchCatchError(coroutineContext, block = {
             getBuListMenu()
         }) {
@@ -328,6 +369,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getOngoingTransaction() {
+        //find error state if available and change to shimmering
+        val transactionErrorState = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateOngoingTransactionModel
+        }
+        transactionErrorState?.let {
+            updateWidget(InitialShimmerTransactionDataModel(), it.index)
+        }
         launchCatchError(coroutineContext, block = {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
@@ -338,27 +386,36 @@ class MainNavViewModel @Inject constructor(
                 val transactionListItemViewModel = TransactionListItemViewModel(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
-                val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
+                //find shimmering and change with result value
+                val transactionShimmering = _mainNavListVisitable.withIndex().find {
                     it.value is InitialShimmerTransactionDataModel
                 }
-                transactionPlaceHolder?.let {
-                    updateWidget(transactionListItemViewModel, it.index)
-                }
-            } else {
-                val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
-                    it.value is InitialShimmerTransactionDataModel
-                }
-                transactionPlaceHolder?.index?.let {
-                    deleteWidget(it)
+                if (transactionShimmering != null) {
+                    transactionShimmering.let {
+                        updateWidget(transactionListItemViewModel, it.index)
+                    }
+                } else {
+                    //otherwise add widget
+                    findExistingEndBuIndexPosittion()?.let {
+                        addWidget(transactionListItemViewModel, it)
+                    }
                 }
             }
         }){
             it.printStackTrace()
-            val transactionPlaceHolder = _mainNavListVisitable.withIndex().find { placeholder ->
-                placeholder.value is InitialShimmerTransactionDataModel
+            //find shimmering and change with result value
+            val transactionShimmering = _mainNavListVisitable.withIndex().find {
+                it.value is InitialShimmerTransactionDataModel
             }
-            transactionPlaceHolder?.let {placeholder ->
-                updateWidget(ErrorStateOngoingTransactionModel(), placeholder.index)
+            if (transactionShimmering != null) {
+                transactionShimmering.let {
+                    updateWidget(ErrorStateOngoingTransactionModel(), it.index)
+                }
+            } else {
+                //otherwise add widget
+                findExistingEndBuIndexPosittion()?.let {index->
+                    addWidget(ErrorStateOngoingTransactionModel(), index)
+                }
             }
         }
     }
@@ -477,7 +534,8 @@ class MainNavViewModel @Inject constructor(
         if (userSession.get().isLoggedIn) function.invoke()
     }
 
-    private fun findBuIndexPosittion(): Int {
+    //bu menu start index should after back home button or position 1
+    private fun findBuStartIndexPosition(): Int {
         val findHomeMenu = _mainNavListVisitable.find {
             it is HomeNavMenuViewModel && it.id == ClientMenuGenerator.ID_HOME
         }
@@ -486,6 +544,17 @@ class MainNavViewModel @Inject constructor(
             return _mainNavListVisitable.indexOf(it)+1
         }
         return INDEX_DEFAULT_BU_POSITION
+    }
+
+    private fun findExistingEndBuIndexPosittion(): Int? {
+        val findHomeMenu = _mainNavListVisitable.findLast {
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.BU_ICON
+        }
+        findHomeMenu?.let{
+            //if home menu is exist, then the position of bu menu is after home menu
+            return _mainNavListVisitable.indexOf(it)+1
+        }
+        return null
     }
 
     private fun List<Visitable<*>>.findMenu(menuId: Int): HomeNavMenuViewModel? {

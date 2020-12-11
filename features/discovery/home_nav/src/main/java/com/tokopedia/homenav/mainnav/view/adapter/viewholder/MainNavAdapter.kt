@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavVisitable
+import java.lang.ClassCastException
 import java.lang.UnsupportedOperationException
 
 /**
@@ -25,7 +26,11 @@ class MainNavListAdapter(val mainNavTypeFactoryImpl: MainNavTypeFactoryImpl): Li
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
         if (position < itemCount) {
-            holder.bind(getItem(position))
+            try {
+                holder.bind(getItem(position))
+            } catch (castException: ClassCastException) {
+                castException.printStackTrace()
+            }
         }
     }
 
