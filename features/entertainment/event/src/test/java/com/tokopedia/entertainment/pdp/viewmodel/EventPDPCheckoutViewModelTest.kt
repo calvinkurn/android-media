@@ -160,7 +160,6 @@ class EventPDPCheckoutViewModelTest {
         val actual = eventCheckoutViewModel.errorGeneralValue.value
         assert(actual?.message.equals(error.message))
 
-
     }
 
 }
