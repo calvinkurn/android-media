@@ -65,6 +65,7 @@ internal class GetRecommendationUseCaseRequest {
                         }
                         rating
                         countReview
+                        ratingAverage
                         recommendationType
                         stock
                         isTopads
