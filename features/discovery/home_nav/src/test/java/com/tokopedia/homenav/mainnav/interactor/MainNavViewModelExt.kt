@@ -20,6 +20,7 @@ import io.mockk.mockk
 
 fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
+        getProfileDataCacheUseCase: GetProfileDataCacheUseCase? = null,
         getBuListUseCase: GetCategoryGroupUseCase? = null,
         dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
         userSession: UserSessionInterface? = null,
@@ -50,6 +51,9 @@ fun createViewModel (
     val getProfileDataUseCaseMock = getOrUseDefault(getProfileDataUseCase) {
         coEvery { it.executeOnBackground() }.answers { AccountHeaderViewModel() }
     }
+    val getProfileDataCacheUseCaseMock = getOrUseDefault(getProfileDataCacheUseCase) {
+        coEvery { it.executeOnBackground() }.answers { AccountHeaderViewModel() }
+    }
     val getBuListDataUseCaseMock = getOrUseDefault(getBuListUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
@@ -62,7 +66,8 @@ fun createViewModel (
             getUohOrdersNavUseCase = getUohOrdersNavUseCaseMock,
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
             getProfileDataUseCase = getProfileDataUseCaseMock,
-            getCategoryGroupUseCase = getBuListDataUseCaseMock
+            getCategoryGroupUseCase = getBuListDataUseCaseMock,
+            getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock
     )
 }
 
