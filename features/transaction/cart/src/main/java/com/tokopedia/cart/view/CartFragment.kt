@@ -980,15 +980,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         compositeSubscription.add(
                 rxCompoundButtonCheckDebounce(checkboxGlobal, 500L).subscribe(object : Subscriber<Boolean>() {
                     override fun onNext(isChecked: Boolean) {
-                        if (isCheckUncheckDirectAction) {
-                            cartAdapter.setAllAvailableItemCheck(checkboxGlobal.isChecked)
-                            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-                            dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
-                            setGlobalDeleteVisibility()
-                            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(checkboxGlobal.isChecked)
-                        }
-                        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
-                        isCheckUncheckDirectAction = true
+                        handleCheckboxGlobalChangeEvent()
                     }
 
                     override fun onCompleted() {
@@ -1007,6 +999,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val dp14 = topLayout.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14)
         topLayout.setPadding(dp16, 0, 0, dp14)
         textActionDelete.setPadding(dp16, 0, dp16, 0)
+    }
+
+    private fun handleCheckboxGlobalChangeEvent() {
+        if (isCheckUncheckDirectAction) {
+            cartAdapter.setAllAvailableItemCheck(checkboxGlobal.isChecked)
+            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
+            dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+            setGlobalDeleteVisibility()
+            cartPageAnalytics.eventCheckUncheckGlobalCheckbox(checkboxGlobal.isChecked)
+        }
+        cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
+        isCheckUncheckDirectAction = true
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -2721,7 +2725,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                           noAvailableItems: Boolean) {
         if (noAvailableItems) {
             llPromoCheckout.gone()
-            cartAdapter.removeCartSelectAll()
         } else {
             if (bottomLayout.visibility == View.VISIBLE) {
                 llPromoCheckout.show()
@@ -2857,7 +2860,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isMoveToWishlist) {
             message = String.format(getString(R.string.message_product_already_moved_to_wishlist), deletedCartIds.size)
-            dPresenter.processGetWishlistData()
+            refreshWishlistAfterItemRemoveAndMoveToWishlist()
         }
 
         if (isFromGlobalCheckbox || deletedCartIds.size > 1) {
@@ -2876,10 +2879,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (removeAllItems) {
             refreshCart()
         } else {
-            val isLastItem = cartAdapter.setLastItemAlwaysSelected()
-            if (isLastItem) {
-                checkboxGlobal.isChecked = true
-            }
+            setLastItemAlwaysSelected()
         }
 
     }
@@ -2947,10 +2947,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isLastItem) {
             refreshCart()
         } else {
-            val tmpIsLastItem = cartAdapter.setLastItemAlwaysSelected()
-            if (tmpIsLastItem) {
-                checkboxGlobal.isChecked = true
-            }
+            setLastItemAlwaysSelected()
+        }
+    }
+
+    private fun setLastItemAlwaysSelected() {
+        val tmpIsLastItem = cartAdapter.setLastItemAlwaysSelected()
+        if (tmpIsLastItem) {
+            checkboxGlobal.isChecked = true
         }
     }
 
@@ -3002,6 +3006,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             })
             it.start()
         }
+    }
+
+    private fun refreshWishlistAfterItemRemoveAndMoveToWishlist() {
+        dPresenter.processGetWishlistData()
     }
 
     private fun removeLocalCartItem(updateListResult: Pair<ArrayList<Int>, ArrayList<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
@@ -3574,7 +3582,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             return DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.label_dialog_title_delete_multiple_item, count))
                 setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item))
-                setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
+                setPrimaryCTAText(getString(R.string.label_dialog_action_delete_simple))
                 setSecondaryCTAText(getString(R.string.label_move_to_wishlist))
             }
         }

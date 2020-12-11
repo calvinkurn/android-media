@@ -333,9 +333,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (compositeSubscription.isUnsubscribed) {
-            compositeSubscription = CompositeSubscription()
-        }
+        initializeCompositeSubscription()
         when (viewType) {
             CartSelectAllViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
@@ -426,6 +424,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             else -> throw RuntimeException("No view holder type found")
         }
 
+    }
+
+    private fun initializeCompositeSubscription() {
+        if (compositeSubscription.isUnsubscribed) {
+            compositeSubscription = CompositeSubscription()
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -1263,15 +1267,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(data)
     }
 
-    fun removeCartSelectAll() {
-        if (cartDataList.size > 0) {
-            if (cartDataList[0] is Boolean) {
-                cartDataList.removeAt(0)
-                notifyItemRemoved(0)
-            }
-        }
-    }
-
     fun getItemCountBeforeCartItem(): Int {
         var count = 0
         cartDataList.forEach {
@@ -1381,7 +1376,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun setLastItemAlwaysSelected(): Boolean {
         var cartItemCount = 0
-        cartDataList.forEach outer@{ any ->
+        getData().forEach outer@{ any ->
             when (any) {
                 is CartShopHolderData -> {
                     any.shopGroupAvailableData.cartItemDataList?.forEach {
@@ -1397,7 +1392,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
         if (cartItemCount == 1) {
             var tmpIndex = 0
-            cartDataList.forEachIndexed { index, any ->
+            getData().forEachIndexed { index, any ->
                 when (any) {
                     is CartShopHolderData -> {
                         tmpIndex = index
@@ -1421,7 +1416,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun hasAvailableItemLeft(): Boolean {
-        cartDataList.forEach {
+        getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
                     if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
@@ -1439,7 +1434,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun setAllAvailableItemCheck(cheked: Boolean) {
         val indices = ArraySet<Int>()
-        cartDataList.forEachIndexed { index, data ->
+        getData().forEachIndexed { index, data ->
             when (data) {
                 is CartShopHolderData -> {
                     var changeShopLevelCheckboxState = false
@@ -1469,7 +1464,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun setCheckboxGlobalItemState(cheked: Boolean, isCheckUncheckDirectAction: Boolean) {
         var tmpIndex = -1
-        cartDataList.forEachIndexed { index, data ->
+        getData().forEachIndexed { index, data ->
             when (data) {
                 is CartSelectAllHolderData -> {
                     data.isCheked = cheked
@@ -1486,7 +1481,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun resetGlobalItemLock() {
-        cartDataList.forEach { data ->
+        getData().forEach { data ->
             when (data) {
                 is CartSelectAllHolderData -> {
                     data.isCheckUncheckDirectAction = true
@@ -1497,7 +1492,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun isAllAvailableItemCheked(): Boolean {
-        cartDataList.forEach {
+        getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
                     it.shopGroupAvailableData.cartItemDataList?.forEach {
@@ -1520,7 +1515,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun hasSelectedCartItem(): Boolean {
-        cartDataList.forEach {
+        getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
                     it.shopGroupAvailableData.cartItemDataList?.forEach {
@@ -1538,7 +1533,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun setGlobalDeleteVisibility(isShow: Boolean) {
         var tmpIndex = -1
-        cartDataList.forEachIndexed { index, data ->
+        getData().forEachIndexed { index, data ->
             when (data) {
                 is CartSelectAllHolderData -> {
                     data.isShowDeleteButton = isShow

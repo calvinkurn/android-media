@@ -19,14 +19,30 @@ class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val
     }
 
     fun bind(data: CartSelectAllHolderData) {
+        renderCheckbox(data)
+        renderDeleteAction(data)
+    }
+
+    private fun renderDeleteAction(data: CartSelectAllHolderData) {
+        itemView.text_action_delete?.let {
+            it.setOnClickListener {
+                listener?.onGlobalDeleteClicked()
+            }
+
+            if (data.isShowDeleteButton) {
+                it.show()
+            } else {
+                it.invisible()
+            }
+        }
+    }
+
+    private fun renderCheckbox(data: CartSelectAllHolderData) {
         itemView.checkbox_global?.let {
             compositeSubscription.add(
                     rxCompoundButtonCheckDebounce(it).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
-                            if (data.isCheckUncheckDirectAction) {
-                                listener?.onGlobalCheckboxCheckedChange(isChecked, data.isCheckUncheckDirectAction)
-                            }
-                            data.isCheckUncheckDirectAction = true
+                            handleCheckboxGlobalChangeEvent(data, isChecked)
                         }
 
                         override fun onCompleted() {
@@ -36,19 +52,16 @@ class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val
                         }
                     })
             )
-        }
 
-        itemView.checkbox_global.isChecked = data.isCheked
-
-        itemView.text_action_delete?.setOnClickListener {
-            listener?.onGlobalDeleteClicked()
+            it.isChecked = data.isCheked
         }
+    }
 
-        if (data.isShowDeleteButton) {
-            itemView.text_action_delete?.show()
-        } else {
-            itemView.text_action_delete?.invisible()
+    private fun handleCheckboxGlobalChangeEvent(data: CartSelectAllHolderData, isChecked: Boolean) {
+        if (data.isCheckUncheckDirectAction) {
+            listener?.onGlobalCheckboxCheckedChange(isChecked, data.isCheckUncheckDirectAction)
         }
+        data.isCheckUncheckDirectAction = true
     }
 
 }
