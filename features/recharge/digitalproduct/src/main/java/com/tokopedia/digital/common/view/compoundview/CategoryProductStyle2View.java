@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -40,7 +42,7 @@ public class CategoryProductStyle2View extends
     private LinearLayout holderChooserProduct;
     private LinearLayout holderAdditionalInfoProduct;
     private LinearLayout holderPriceInfoProduct;
-    private TextView btnBuyDigital;
+    private UnifyButton btnBuyDigital;
     private CheckBox cbInstantCheckout;
     private RelativeLayout layoutCheckout;
     private ImageView tooltipInstantCheckout;

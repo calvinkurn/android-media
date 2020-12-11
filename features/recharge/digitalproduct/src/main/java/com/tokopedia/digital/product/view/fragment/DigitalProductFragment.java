@@ -1121,10 +1121,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
             containerPromo.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
-            holderCheckBalance.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
+//            holderCheckBalance.setBackgroundResource(R.drawable.digital_bg_white_toolbar_drop_shadow);
+//            holderProductDetail.setBackgroundResource(R.drawable.digital_bg_white_toolbar_drop_shadow);
+//            checkETollBalanceView.setBackgroundResource(R.drawable.digital_bg_white_toolbar_drop_shadow);
+//            containerPromo.setBackgroundResource(R.drawable.digital_bg_white_toolbar_drop_shadow);
         }
     }
 

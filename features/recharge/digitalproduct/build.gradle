@@ -31,7 +31,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.common_promo)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.commonDigital)

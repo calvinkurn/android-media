@@ -6,12 +6,14 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewModel> {
@@ -19,13 +21,13 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     public static final int LAYOUT = R.layout.view_digital_item_deals;
 
     private AppCompatImageView dealImageView;
-    private AppCompatTextView brandTextView;
-    private AppCompatTextView titleTextView;
-    private AppCompatTextView slashedPriceTextView;
-    private AppCompatTextView priceTextView;
+    private TextView brandTextView;
+    private TextView titleTextView;
+    private TextView slashedPriceTextView;
+    private TextView priceTextView;
     private AppCompatImageView closeImageView;
     private AppCompatImageView checkImageView;
-    private AppCompatButton buyButton;
+    private UnifyButton buyButton;
     private LinearLayout infoContainer;
 
     private DigitalDealActionListener actionListener;

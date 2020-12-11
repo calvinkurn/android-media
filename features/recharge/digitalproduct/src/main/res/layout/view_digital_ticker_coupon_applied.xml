@@ -5,11 +5,11 @@
     android:id="@+id/container_ticker_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/dp_3"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_3"
+    android:background="@color/Unify_N0"
+    android:paddingBottom="@dimen/spacing_lvl2"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/spacing_lvl2"
     android:visibility="visible"
     tools:visibility="visible">
 
