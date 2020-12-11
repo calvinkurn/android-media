@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -31,12 +32,14 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     lateinit var quickFilterGQLRepository: IQuickFilterGqlRepository
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
-
     private var selectedSort: HashMap<String, String> = HashMap()
     private var sort: ArrayList<Sort> = ArrayList()
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
-
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
+
+    private val productCountMutableLiveData = MutableLiveData<Int?>()
+    val productCountLiveData: LiveData<Int?>
+        get() = productCountMutableLiveData
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -181,9 +184,10 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return UserSession(application).userId
     }
 
-    fun filterProductsCount(mapParameter: Map<String, String>) {
+    fun filterProductsCount(mapParameter: Map<String, String>){
         launchCatchError(block = {
-            quickFilterGQLRepository.getQuickFilterProductCountData(components.id, components.pageEndPoint, mapParameter, getUserId())
+            productCountMutableLiveData.value = quickFilterGQLRepository.getQuickFilterProductCountData(components.id,
+                    components.pageEndPoint, mapParameter, getUserId()).component?.compAdditionalInfo?.productCount
         }, onError = {
             it.printStackTrace()
         })
