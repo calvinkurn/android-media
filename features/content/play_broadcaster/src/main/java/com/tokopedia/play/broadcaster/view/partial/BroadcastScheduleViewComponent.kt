@@ -31,11 +31,11 @@ class BroadcastScheduleViewComponent(
 
     init {
         iconDescEdit.setOnClickListener {
-            listener.onAddEditBroadcastSchedule(this@BroadcastScheduleViewComponent)
+            listener.onEditBroadcastSchedule(this@BroadcastScheduleViewComponent)
         }
 
         iconHeaderEdit.setOnClickListener {
-            listener.onAddEditBroadcastSchedule(this@BroadcastScheduleViewComponent)
+            listener.onAddBroadcastSchedule(this@BroadcastScheduleViewComponent)
         }
 
         iconDescDelete.setOnClickListener {
@@ -67,7 +67,8 @@ class BroadcastScheduleViewComponent(
 
     interface Listener {
 
-        fun onAddEditBroadcastSchedule(view: BroadcastScheduleViewComponent)
+        fun onAddBroadcastSchedule(view: BroadcastScheduleViewComponent)
+        fun onEditBroadcastSchedule(view: BroadcastScheduleViewComponent)
         fun onDeleteBroadcastSchedule(view: BroadcastScheduleViewComponent)
     }
 }

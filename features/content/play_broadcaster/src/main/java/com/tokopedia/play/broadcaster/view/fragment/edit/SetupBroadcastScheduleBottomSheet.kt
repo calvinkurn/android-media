@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -38,6 +39,9 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var dispatcher: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var container: CoordinatorLayout
     private lateinit var dateTimePicker: DateTimePicker
@@ -82,6 +86,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+        analytic.viewBottomSheetScheduleOnFinalSetupPage()
     }
 
     fun setListener(listener: SetupResultListener) {
@@ -126,6 +131,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         btnSet?.text = getString(R.string.play_broadcast_set_schedule)
         btnSet?.setOnClickListener {
             viewModel.setBroadcastSchedule(dateTimePicker.selectedDate)
+            analytic.clickSaveScheduleOnFinalSetupPage()
         }
     }
 

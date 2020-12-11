@@ -88,13 +88,21 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private val broadcastScheduleView by viewComponent {
         BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule, object : BroadcastScheduleViewComponent.Listener {
-            override fun onAddEditBroadcastSchedule(view: BroadcastScheduleViewComponent) {
+            override fun onAddBroadcastSchedule(view: BroadcastScheduleViewComponent) {
+                analytic.clickAddEditScheduleOnFinalSetupPage(isEdit = false)
+                openSetupBroadcastSchedulePage()
+            }
+
+            override fun onEditBroadcastSchedule(view: BroadcastScheduleViewComponent) {
+                analytic.clickAddEditScheduleOnFinalSetupPage(isEdit = true)
                 openSetupBroadcastSchedulePage()
             }
 
             override fun onDeleteBroadcastSchedule(view: BroadcastScheduleViewComponent) {
+                analytic.clickDeleteScheduleOnFinalSetupPage()
                 getDeleteScheduleDialog()
                         .show()
+                analytic.viewDialogConfirmDeleteOnFinalSetupPage()
             }
         })
     }
@@ -400,6 +408,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             val currentTime = Date()
             if (currentTime.before(schedule.time)) {
                 getEarlyLiveStreamDialog().show()
+                analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
                 return
             }
         }
@@ -412,6 +421,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
                 setPrimaryCTAClickListener {
+                    analytic.clickStartLiveOnBeforeScheduledDialog()
                     createLiveStream()
                     dismiss()
                 }
@@ -462,6 +472,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun deleteBroadcastSchedule() {
         scheduleViewModel.deleteBroadcastSchedule()
+        analytic.clickDeleteScheduleOnConfirmDeleteDialog()
     }
 
     private fun showToaster(
