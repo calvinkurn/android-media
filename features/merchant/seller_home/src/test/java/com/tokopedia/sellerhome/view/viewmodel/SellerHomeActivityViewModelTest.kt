@@ -3,13 +3,18 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.shop.common.domain.interactor.AdminInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoData
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoDetailInformation
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResult
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminRoleType
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,19 +45,25 @@ class SellerHomeActivityViewModelTest {
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GetShopInfoUseCase
 
+    @RelaxedMockK
+    lateinit var adminInfoUseCase: AdminInfoUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
+    private lateinit var mViewModel: SellerHomeActivityViewModel
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mViewModel = createViewModel()
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, coroutineTestRule.dispatchers)
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, adminInfoUseCase, coroutineTestRule.dispatchers)
 
     @Test
     fun `get notifications then returns success result`() {
@@ -155,6 +166,139 @@ class SellerHomeActivityViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         assert(viewModel.shopInfo.value is Fail)
+    }
+
+    @Test
+    fun `get admin info then success return isEligible`() = coroutineTestRule.runBlockingTest {
+        val adminInfoResult = AdminInfoResult.Success(AdminInfoData())
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isRoleEligible.value is Success)
+    }
+
+    @Test
+    fun `get admin info then return failed result`() = coroutineTestRule.runBlockingTest {
+        val throwable = MessageErrorException("")
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } throws throwable
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isRoleEligible.value is Fail)
+    }
+
+    @Test
+    fun `when admin info is shop admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+        val isShopAdmin = true
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        detailInfo = AdminInfoDetailInformation(
+                                adminRoleType = AdminRoleType(
+                                        isShopAdmin = isShopAdmin
+                                )
+                        )
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == true)
+    }
+
+    @Test
+    fun `when admin info is not shop admin but is location admin, get admin info will return isEligible false result`() = coroutineTestRule.runBlockingTest {
+        val isShopAdmin = false
+        val isLocationAdmin = true
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        detailInfo = AdminInfoDetailInformation(
+                                adminRoleType = AdminRoleType(
+                                        isShopAdmin = isShopAdmin,
+                                        isLocationAdmin = isLocationAdmin
+                                )
+                        )
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == false)
+    }
+
+    @Test
+    fun `when admin info is not shop admin and not is location admin, get admin info will return isEligible true result`() = coroutineTestRule.runBlockingTest {
+        val isShopAdmin = false
+        val isLocationAdmin = false
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        detailInfo = AdminInfoDetailInformation(
+                                adminRoleType = AdminRoleType(
+                                        isShopAdmin = isShopAdmin,
+                                        isLocationAdmin = isLocationAdmin
+                                )
+                        )
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == true)
+    }
+
+    @Test
+    fun `when admin info returns fail result, will also make isEligible value true`() = coroutineTestRule.runBlockingTest {
+        val adminInfoResult = AdminInfoResult.Fail(MessageErrorException(""))
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == true)
     }
 
     @Test

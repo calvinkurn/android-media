@@ -50,19 +50,16 @@ class SellerHomeActivityViewModel @Inject constructor(
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
         val requestParams = AdminInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-        adminInfoUseCase.execute(requestParams).let { result ->
-            if (result is AdminInfoResult.Success) {
-                result.data?.let { data ->
-                    val roleType = data.detailInfo?.adminRoleType?.also { roleType ->
-                        with(userSession) {
-                            // TODO: Update user session value
-                        }
+        (adminInfoUseCase.execute(requestParams) as? AdminInfoResult.Success)?.let { result ->
+            result.data?.let { data ->
+                val roleType = data.detailInfo?.adminRoleType?.also { roleType ->
+                    with(userSession) {
+                        // TODO: Update user session value
                     }
-                    roleType?.isShopOwner == true || !data.getIsMultiLocationShop()
                 }
+                roleType?.isShopOwner == true || roleType?.isLocationAdmin == false
             }
-            // TODO: Add logic when admin info request fails
-        }
-        true
+            // TODO: Add logic when admin info request fails. Still asking PM
+        } ?: true
     }
 }
