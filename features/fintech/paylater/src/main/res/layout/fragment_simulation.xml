@@ -32,8 +32,11 @@
             app:unifyEmptyStateTitle="@string/paylater_simulation_empty_view_title"
             app:unifyEmptyStateDescription="@string/paylater_simulation_empty_view_description"
             app:unifyEmptyStateOrientation="vertical"
+            app:unifyEmptyStatePrimaryCTAText=""
+            app:unifyEmptyStateSecondaryCTAText=""
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/unify_space_16"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_connection" />
@@ -41,30 +44,12 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerVertical"
             android:layout_width="@dimen/unify_space_0"
-            android:layout_height="@dimen/unify_space_2"
+            android:layout_height="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_16"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/payLaterTermsEmptyView" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/payLaterTermsGroup"
-            app:constraint_referenced_ids="dividerVertical, payLaterTermsEmptyView"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/payLaterSimulationTableGroup"
-            app:constraint_referenced_ids="llPayLaterPartner, tvTitleSimulation, hsvInstallment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/payLaterSimulationGroup"
-            app:constraint_referenced_ids="payLaterTermsGroup,payLaterSimulationTableGroup,tickerSimulation,paylaterDaftarWidget,tvPartnerRegistration, ivSupervisor, btnDaftarPayLater"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleSimulation"

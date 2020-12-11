@@ -13,7 +13,7 @@ data class PayLaterActivityResponse(
 data class PayLaterProductData(
         @SerializedName("product")
         val productList: ArrayList<PayLaterItemProductData>
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PayLaterItemProductData(
@@ -29,8 +29,6 @@ data class PayLaterItemProductData(
         val partnerImgDarkUrl: String,
         @SerializedName("benefit")
         val partnerBenefitList: ArrayList<PayLaterPartnerBenefit>,
-        /*@SerializedName("detail")
-        val partnerDetailList: ArrayList<PayLaterPartnerDetails>,*/
         @SerializedName("faq")
         val partnerFaqList: ArrayList<PayLaterPartnerFaq>,
         @SerializedName("faq_url")
@@ -42,11 +40,8 @@ data class PayLaterItemProductData(
         @SerializedName("is_able_apply")
         val isAbleToApply: Boolean,
         @SerializedName("apply_url")
-        val applyWebUrl: String,
-        @SerializedName("tnc")
-        val payLaterTnc: ArrayList<String>
-
-): Parcelable
+        val applyWebUrl: String
+) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerBenefit(
@@ -54,7 +49,7 @@ data class PayLaterPartnerBenefit(
         val partnerBenefitContent: String,
         @SerializedName("is_highlight")
         val isHighlighted: Boolean
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerDetails(
@@ -62,16 +57,16 @@ data class PayLaterPartnerDetails(
         val partnerTitle: String,
         @SerializedName("content")
         val partnerDetailContentList: ArrayList<String>
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerFaq(
-     @SerializedName("question")
-     val faqQuestion: String,
-     @SerializedName("answer")
-     val faqAnswer: String,
-     var expandLayout: Boolean = false
-): Parcelable
+        @SerializedName("question")
+        val faqQuestion: String,
+        @SerializedName("answer")
+        val faqAnswer: String,
+        var expandLayout: Boolean = false
+) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerStepDetails(
@@ -79,7 +74,7 @@ data class PayLaterPartnerStepDetails(
         val partnerNotes: ArrayList<String>,
         @SerializedName("steps")
         val partnerSteps: ArrayList<String>
-): Parcelable
+) : Parcelable
 
 
 

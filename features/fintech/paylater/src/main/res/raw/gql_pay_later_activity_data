@@ -25,7 +25,6 @@ query {
       }
       is_able_apply
       apply_url
-      tnc
     }
   }
 }

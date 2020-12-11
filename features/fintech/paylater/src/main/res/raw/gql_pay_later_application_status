@@ -1,0 +1,12 @@
+query getUserApplicationStatus{
+  creditapplication_getUserApplicationStatus{
+    tkp_user_id
+    application_detail{
+      id
+      gateway_name
+      gateway_code
+      application_status
+      expiration_date
+    }
+  }
+}

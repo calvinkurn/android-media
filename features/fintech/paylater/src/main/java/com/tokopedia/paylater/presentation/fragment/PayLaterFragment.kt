@@ -52,6 +52,7 @@ class PayLaterFragment : BaseDaggerFragment() {
         renderTabAndViewPager()
         initListeners()
         payLaterViewModel.getPayLaterData()
+        payLaterViewModel.getPayLaterApplicationStatus()
     }
 
     private fun initListeners() {

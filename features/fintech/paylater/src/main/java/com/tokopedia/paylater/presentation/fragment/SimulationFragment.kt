@@ -9,19 +9,42 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
-import com.tokopedia.paylater.presentation.widget.PayLaterSignupBottomSheet
+import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.presentation.widget.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_simulation.*
+import javax.inject.Inject
 
-class SimulationFragment : Fragment() {
+class SimulationFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
+        viewModelProvider.get(PayLaterViewModel::class.java)
+    }
+
+    private val simulationViewFactory: SimulationTableViewFactory by lazy {
+        SimulationTableViewFactory(context)
+    }
+
+    override fun initInjector() {
+        getComponent(PayLaterComponent::class.java).inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,8 +54,30 @@ class SimulationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
+        observeViewModel()
         populateRowHeaders()
-        populateSimulationTable(context)
+        populateSimulationTable()
+    }
+
+    private fun observeViewModel() {
+        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onApplicationStatusLoaded(it.data)
+                is Fail -> onApplicationStatusLoadingFail(it.throwable)
+            }
+        })
+    }
+
+    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
+
+    }
+
+    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+
+    }
+
+    override fun getScreenName(): String {
+        return "Simulasi"
     }
 
     private fun computeSimulationData(): ArrayList<SimulationTableResponse> {
@@ -61,78 +106,38 @@ class SimulationFragment : Fragment() {
 
     private fun populateRowHeaders() {
         context?.let {
-            val layoutParam = ViewGroup.LayoutParams(it.dpToPx(84).toInt(), it.dpToPx(54).toInt())
+            val layoutParam = ViewGroup.LayoutParams(it.dpToPx(ROW_HEADER_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
 
 
             llPayLaterPartner.apply {
                 for (i in 0..4) {
                     when (i) {
-                        0 -> addView(getBlankView(layoutParam, it))
-                        1 -> addView(getRecomView(layoutParam, it))
-                        else -> addView(getNoRecomView(layoutParam, it, i%2 ==0))
+                        0 -> addView(getBlankView(layoutParam))
+                        1 -> addView(getRecomView(layoutParam))
+                        else -> addView(getNoRecomView(layoutParam, i % 2 == 0))
                     }
                 }
             }
         }
     }
 
-    private fun getBlankView(layoutParam: ViewGroup.LayoutParams, context: Context): View {
-        val rowHeaderBlank = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
-        val parent = rowHeaderBlank.findViewById<ConstraintLayout>(R.id.clSimulationTableRowHeader)
-        parent.setBackgroundColor(ContextCompat.getColor(context, R.color.Neutral_N50))
-        parent.layoutParams = layoutParam
-        val recomBadge = rowHeaderBlank.findViewById<ImageView>(R.id.ivRecommendationBadge)
-        val image = rowHeaderBlank.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        image.gone()
-        recomBadge.gone()
-        return rowHeaderBlank
-    }
-
-    private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, context: Context, showBackGround: Boolean): View? {
-        val rowHeaderNoRecom = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
-        rowHeaderNoRecom.layoutParams = layoutParam
-        val ivPayLaterPartner = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        ImageHandler.loadImage(context,
-                ivPayLaterPartner,
-                "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                R.drawable.ic_loading_image)
-        if (showBackGround)
-            rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
-        val recomBadge = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivRecommendationBadge)
-        recomBadge.gone()
-        return rowHeaderNoRecom
-
-    }
-
-    private fun getRecomView(layoutParam: ViewGroup.LayoutParams, context: Context): View? {
-        val rowHeaderRecom = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_row_header, null)
-        rowHeaderRecom.layoutParams = layoutParam
-        rowHeaderRecom.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_green_border)
-        val ivPayLaterPartner = rowHeaderRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        ImageHandler.loadImage(context,
-                ivPayLaterPartner,
-                "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                R.drawable.ic_loading_image)
-        return rowHeaderRecom
-    }
-
-    private fun populateSimulationTable(context: Context?) {
+    private fun populateSimulationTable() {
         context?.let {
             val data = computeSimulationData()
             val rowCount = data.size + 1
             val colCount = data.getOrNull(0)?.installmentData?.size ?: 0
-            val contentLayoutParam = TableRow.LayoutParams(it.dpToPx(110).toInt(), it.dpToPx(54).toInt())
+            val contentLayoutParam = TableRow.LayoutParams(it.dpToPx(CONTENT_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
             val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
             for (i in 0 until rowCount) {
                 val contentRow = TableRow(it)
                 for (j in 0 until colCount) {
                     when (i) {
-                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, it, j), contentLayoutParam)
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, j), contentLayoutParam)
                         1 -> {
-                            contentRow.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_installment_green_border)
-                            contentRow.addView(getInstallmentView(contentLayoutParam, it, data[i-1].installmentData[j], i), contentLayoutParam)
+                            contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
+                            contentRow.addView(getInstallmentView(contentLayoutParam, data[i - 1].installmentData[j], i), contentLayoutParam)
                         }
-                        else -> contentRow.addView(getInstallmentView(contentLayoutParam, it, data[i-1].installmentData[j], i), contentLayoutParam)
+                        else -> contentRow.addView(getInstallmentView(contentLayoutParam, data[i - 1].installmentData[j], i), contentLayoutParam)
                     }
                 }
                 tlInstallmentTable.addView(contentRow, tableLayoutParams)
@@ -140,29 +145,35 @@ class SimulationFragment : Fragment() {
         }
     }
 
-    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, context: Context, priceText: String, row: Int): View {
-        val installmentView = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_content, null)
-        installmentView.layoutParams = contentLayoutParam
-        if (row%2 ==0)
-            installmentView.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
-        val tvInstallmentPrice = installmentView.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tvInstallmentPrice)
-        tvInstallmentPrice.text = priceText
-        if(row == 1) tvInstallmentPrice.setWeight(Typography.BOLD)
-        return installmentView
+    private fun getBlankView(layoutParam: ViewGroup.LayoutParams): View {
+        val blankSimulationTableHeading = simulationViewFactory.create(BlankViewTableRowHeader::class.java, layoutParam)
+        return blankSimulationTableHeading.initUI()
     }
 
-    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, context: Context, position: Int): View {
-        val installmentColumnHeader = LayoutInflater.from(context).inflate(R.layout.paylater_simulation_table_column_header, null)
-        installmentColumnHeader.layoutParams = contentLayoutParam
-        if(position != 0) {
-            installmentColumnHeader.findViewById<TextView>(R.id.offerLabel).gone()
-            installmentColumnHeader.findViewById<TextView>(R.id.tableHeader).text = "Cicil ${position*3}x"
-        }
+    private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, showBackGround: Boolean): View? {
+        val noRecommendationViewSimulationTable = simulationViewFactory.create(NoRecommendationViewTableRowHeader::class.java, layoutParam)
+        return noRecommendationViewSimulationTable.initUI(showBackGround)
+    }
 
-        return installmentColumnHeader
+    private fun getRecomView(layoutParam: ViewGroup.LayoutParams): View {
+        val recommendationView = simulationViewFactory.create(RecommendationViewTableRowHeader::class.java, layoutParam)
+        return recommendationView.initUI()
+    }
+
+    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, priceText: String, row: Int): View {
+        val installmentView = simulationViewFactory.create(InstallmentViewTableContent::class.java, contentLayoutParam)
+        return installmentView.initUI(priceText, row % 2 == 0, row == 1)
+    }
+
+    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, position: Int): View {
+        val installmentColumnHeader = simulationViewFactory.create(InstallmentViewTableColumnHeader::class.java, contentLayoutParam)
+        return installmentColumnHeader.initUI(position == 0)
     }
 
     companion object {
+        const val ROW_HEADER_WIDTH = 84
+        const val TABLE_ITEM_HEIGHT = 54
+        const val CONTENT_WIDTH = 110
 
         @JvmStatic
         fun newInstance() =

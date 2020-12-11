@@ -44,7 +44,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //renderTabAndViewPager()
         observeViewModel()
     }
 

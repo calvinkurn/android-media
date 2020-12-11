@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
@@ -36,18 +38,20 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget
     private var partnerUsageData: PayLaterPartnerStepDetails? = null
     private var sheetTitle: String = ""
+    private var actionUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getArgumentData()
         setDefaultParams()
         initBottomSheet()
-        getArgumentData()
     }
 
     private fun getArgumentData() {
         arguments?.let {
             partnerUsageData = it.getParcelable(STEPS_DATA)
             sheetTitle = it.getString(ACTION_TITLE) ?: ""
+            actionUrl = it.getString(ACTION_URL) ?: ""
         }
     }
 
@@ -56,7 +60,17 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         if (!notesData.isNullOrEmpty())
             tickerPaylaterRegister.setTextDescription(MethodChecker.fromHtml(notesData))
         else tickerPaylaterRegister.gone()
+        initListeners()
         initAdapter()
+    }
+
+    private fun initListeners() {
+        btnRegister.setOnClickListener {
+            openUrlWebView(actionUrl)
+        }
+        btnFindMore.setOnClickListener {
+            openUrlWebView(actionUrl)
+        }
     }
 
     private fun initBottomSheet() {
@@ -75,8 +89,18 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(partnerUsageData?.partnerSteps ?: ArrayList())
-        rvPayLaterRegisterSteps.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        partnerUsageData?.partnerSteps?.let {
+            rvPayLaterRegisterSteps.adapter = PayLaterActionStepsAdapter(it)
+            rvPayLaterRegisterSteps.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        }
+    }
+
+    private fun openUrlWebView(urlString: String) {
+        if (urlString.isNotEmpty()) {
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+            RouteManager.route(context, webViewAppLink)
+        }
     }
 
     companion object {
@@ -84,6 +108,8 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         private const val TAG = "FT_TAG"
         const val STEPS_DATA = "stepsData"
         const val ACTION_TITLE = "actionTitle"
+        const val ACTION_URL = "actionUrl"
+
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val payLaterRegisterBottomSheet = PayLaterActionStepsBottomSheet().apply {
                 arguments = bundle
