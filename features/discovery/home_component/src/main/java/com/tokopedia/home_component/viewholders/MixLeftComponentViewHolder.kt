@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -140,7 +141,7 @@ class MixLeftComponentViewHolder (itemView: View,
         }
 
         if (channel.channelHeader.backColor.isEmpty()) {
-            val params = containerMixLeft.layoutParams as FrameLayout.LayoutParams
+            val params = containerMixLeft.layoutParams as ConstraintLayout.LayoutParams
             params.setMargins(params.leftMargin, convertDpToPixel(10f, itemView.context), params.rightMargin, params.bottomMargin)
             containerMixLeft.layoutParams = params
         }
