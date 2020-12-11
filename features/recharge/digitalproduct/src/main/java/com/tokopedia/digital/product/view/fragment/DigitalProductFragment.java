@@ -792,7 +792,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void onButtonContactPickerClicked() {
         permissionCheckerHelper.checkPermission(getActivity(),
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS, new PermissionCheckerHelper.PermissionCheckListener() {
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
                         permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);

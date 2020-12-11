@@ -427,7 +427,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         context?.run {
             if (value) {
                 input_field_label.text = getString(R.string.vg_input_field_error_message)
-                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Red_R600))
+                input_field_label.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             } else {
                 input_field_label.visibility = View.GONE
             }

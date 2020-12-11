@@ -53,8 +53,6 @@ import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -469,18 +467,6 @@ class ShopProductModule {
     @Provides
     fun provideGetWishListUseCase(wishListCommonRepository: WishListCommonRepository?): GetWishListUseCase {
         return GetWishListUseCase(wishListCommonRepository)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     // Product
