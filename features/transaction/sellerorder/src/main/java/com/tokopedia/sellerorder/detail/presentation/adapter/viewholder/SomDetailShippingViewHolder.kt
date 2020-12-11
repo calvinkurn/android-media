@@ -52,7 +52,8 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 } else {
                     item.dataObject.receiverPhone
                 }
-                tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} ($numberPhone)")
+                tv_receiver_name.text = item.dataObject.receiverName
+                tv_receiver_number.text = numberPhone
                 tv_receiver_street.text = item.dataObject.receiverStreet
                 tv_receiver_district.text = item.dataObject.receiverDistrict
                 tv_receiver_province.text = item.dataObject.receiverProvince
@@ -152,8 +153,10 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         item.dataObject.dropshipperPhone
                     }
                     if(numberPhoneDropShipper.isNotBlank()) {
-                        tv_som_dropshipper_name.text = StringBuilder("${item.dataObject.dropshipperName} (${numberPhoneDropShipper})")
+                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                        tv_dropshipper_number.text = numberPhoneDropShipper
                     } else {
+                        tv_dropshipper_number.hide()
                         tv_som_dropshipper_name.text = item.dataObject.dropshipperName
                     }
                 } else {

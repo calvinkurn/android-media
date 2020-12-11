@@ -29,22 +29,29 @@ class CarouselPlayWidgetViewHolder(
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {
-        if (element == null) return
-        setupAnalyticVariable(element)
-        playWidgetViewHolder.bind(element.widgetUiModel)
+        element?.let {
+            setupAnalyticVariable(element)
+            playWidgetViewHolder.bind(element.widgetUiModel)
+        }
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?, payloads: MutableList<Any>) {
-        if (element == null || payloads.size <= 0) return
-        val payload = payloads[0]
+        element?.let {
+            if (payloads.size > 0) {
+                val payload = payloads[0]
 
-        val widgetUiModel = element.widgetUiModel
-        if (widgetUiModel !is PlayWidgetUiModel.Medium) return
+                val widgetUiModel = element.widgetUiModel
 
-        if (payload is PlayWidgetReminderUiModel) {
-            playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
-        } else if (payload is PlayWidgetTotalViewUiModel) {
-            playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
+                if (payload is PlayWidgetReminderUiModel && widgetUiModel is PlayWidgetUiModel.Medium) {
+                    playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
+                } else if (payload is PlayWidgetTotalViewUiModel && widgetUiModel is PlayWidgetUiModel.Medium) {
+                    playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
+                } else {
+                    playWidgetViewHolder.bind(element.widgetUiModel)
+                }
+            } else {
+                playWidgetViewHolder.bind(element.widgetUiModel)
+            }
         }
     }
 

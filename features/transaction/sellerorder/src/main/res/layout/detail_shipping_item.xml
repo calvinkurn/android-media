@@ -267,12 +267,28 @@
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/barrierShippingPrinted"
         app:layout_constraintBottom_toTopOf="@+id/tv_receiver_street"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="AS Misbeh (0812345678)" />
+        tools:text="AS Misbeh beh beh beh beh beh beh beh beh beh beh" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_receiver_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1"
+        android:textColor="@color/Unify_N700_96"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_receiver_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_receiver_name"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_street"
@@ -286,8 +302,8 @@
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_receiver_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_receiver_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_receiver_number"
+        app:layout_constraintTop_toBottomOf="@+id/tv_receiver_number"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Wisma 77 Tower 2" />
@@ -350,5 +366,19 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="alibaba" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_dropshipper_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1"
+        android:textColor="@color/Unify_N700_96"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_som_dropshipper_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_som_dropshipper_name"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
