@@ -111,7 +111,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
-        observeIsRoleAligible()
+        observeIsRoleEligible()
     }
 
     override fun onResume() {
@@ -358,7 +358,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         homeViewModel.getShopInfo()
     }
 
-    private fun observeIsRoleAligible() {
+    private fun observeIsRoleEligible() {
         homeViewModel.isRoleEligible.observe(this) { result ->
             if (result is Success) {
                 result.data.let { isRoleEligible ->
