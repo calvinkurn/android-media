@@ -193,7 +193,8 @@ object ProductTrackingConstant {
         const val CLICK_BUTTON_OOS = "click - %s on pdp"
 
         const val CLICK_FULLSCREEN_VIDEO = "click - fullscreen on video"
-        const val CLICK_INTERACTION_VIDEO = "click - video on product manage"
+        const val CLICK_INTERACTION_VIDEO = "click - video on product image"
+        const val CLICK_MUTE_VIDEO = "click - mute on video"
     }
 
 

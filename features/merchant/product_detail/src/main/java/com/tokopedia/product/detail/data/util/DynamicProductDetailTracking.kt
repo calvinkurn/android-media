@@ -62,7 +62,7 @@ object DynamicProductDetailTracking {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_INTERACTION_VIDEO,
+                    ProductTrackingConstant.Action.CLICK_MUTE_VIDEO,
                     ProductTrackingConstant.Label.VIDEO_STATE + isMute.toString())
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
@@ -72,7 +72,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
                     ?: ""
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_FULLSCREEN_VIDEO)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_MUTE_VIDEO)
         }
 
         fun eventVideoStateChange(productInfo: DynamicProductInfoP1?, userId: String,
