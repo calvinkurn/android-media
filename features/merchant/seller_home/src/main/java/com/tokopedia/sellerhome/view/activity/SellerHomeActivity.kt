@@ -361,8 +361,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun observeIsRoleAligible() {
         homeViewModel.isRoleEligible.observe(this) { result ->
             if (result is Success) {
-                result.data.let { shouldLogout ->
-                    if (shouldLogout) {
+                result.data.let { isRoleEligible ->
+                    if (!isRoleEligible) {
                         RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
                         finish()
                     }

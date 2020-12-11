@@ -16,8 +16,11 @@ data class GetAdminInfo(
 )
 
 data class AdminInfoData(
+        @SerializedName("permission_list")
         @Expose
+        val permissionList: List<AdminPermission>? = listOf(),
         @SerializedName("location_list")
+        @Expose
         val locations: List<AdminInfoShopLocation>? = listOf(),
         @SerializedName("detail_information")
         @Expose
@@ -31,8 +34,8 @@ data class AdminInfoData(
 
 
 data class AdminInfoShopLocation(
-        @Expose
         @SerializedName("location_id")
+        @Expose
         val id: String
 )
 
