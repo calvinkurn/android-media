@@ -207,8 +207,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                                     (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
                                 }
                             }
+                            renderList(mapDataModel(it.data ?: emptyList()), true)
+                        }else{
+                            showGetListError(Throwable())
                         }
-                        renderList(mapDataModel(it.data ?: emptyList()), true)
                     }
                 }
             }

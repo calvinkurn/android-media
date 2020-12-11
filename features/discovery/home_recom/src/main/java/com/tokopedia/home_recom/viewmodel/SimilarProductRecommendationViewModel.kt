@@ -57,22 +57,27 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
                 else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
                 val userId: Int = userSessionInterface.userId.toIntOrZero()
-
+                var filterAndSort: FilterSortChip? = null
                 if(page == 1){
                     getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = QUICK_FILTER, pageName = pageName)
                     val quickFilter = getRecommendationFilterChips.executeOnBackground()
 
                     getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam, type = FULL_FILTER, pageName = pageName)
                     val fullFilter = getRecommendationFilterChips.executeOnBackground()
-
-                    _filterSortChip.postValue(Response.success(FilterSortChip(fullFilter, quickFilter.filterChip)))
+                    filterAndSort = FilterSortChip(fullFilter, quickFilter.filterChip)
+                    _filterSortChip.postValue(Response.success(filterAndSort))
                 }
                 val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
                 val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-                _recommendationItem.postValue(Response.success(recommendationItems.map {
-                    it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
-                }))
+                if(recommendationItems.isEmpty() && filterAndSort == null){
+                    _filterSortChip.postValue(Response.error(Exception()))
+                    _recommendationItem.postValue(Response.error(Exception()))
+                }else {
+                    _recommendationItem.postValue(Response.success(recommendationItems.map {
+                        it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
+                    }))
+                }
 
             } catch (e: Exception){
                 if(page == 1) _filterSortChip.postValue(Response.error(e))
