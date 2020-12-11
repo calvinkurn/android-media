@@ -103,6 +103,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -144,6 +145,11 @@ class AddEditProductPreviewFragment:
     private var dataBackPressed: Int? = null
     private var hasLocation: Boolean = false
     private var isStartButtonClicked: Boolean = false
+    private var latitude: String = ""
+    private var longitude: String = ""
+    private var postalCode: String = ""
+    private var districtId: Int = 0
+    private var formattedAddress: String = ""
 
     private var toolbar: Toolbar? = null
 
@@ -530,12 +536,6 @@ class AddEditProductPreviewFragment:
                     showLoading()
                     data.let { intent ->
                         val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-                        var latitude = ""
-                        var longitude = ""
-                        var postalCode = ""
-                        var districtId = 0
-                        var formattedAddress = ""
-                        val shopId = userSession.shopId.toIntOrZero()
 
                         saveAddressDataModel?.let { model ->
                             latitude = model.latitude
@@ -545,23 +545,7 @@ class AddEditProductPreviewFragment:
                             formattedAddress = model.formattedAddress
                         }
 
-                        if (shopId != 0 &&
-                                postalCode.isNotBlank() &&
-                                latitude.isNotBlank() &&
-                                longitude.isNotBlank() &&
-                                districtId != 0 &&
-                                formattedAddress.isNotBlank()) {
-
-                            val params = getSaveShopShippingLocationData(
-                                    shopId = shopId,
-                                    postCode = postalCode,
-                                    courierOrigin = districtId,
-                                    addrStreet = formattedAddress,
-                                    lat = latitude,
-                                    long = longitude
-                            )
-                            viewModel.saveShippingLocation(params)
-                        }
+                        saveShippingLocation()
                     }
                 }
             }
@@ -1049,7 +1033,7 @@ class AddEditProductPreviewFragment:
                 }
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    AddEditProductErrorHandler.logMessage(it.throwable.message ?: "")
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                     if (isStartButtonClicked) {
                         showToasterFailSetLocation()
                     }
@@ -1071,8 +1055,9 @@ class AddEditProductPreviewFragment:
                     hasLocation = isSuccess
                 }
                 is Fail -> {
+                    saveShippingLocation()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    AddEditProductErrorHandler.logMessage(it.throwable.message ?: "")
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                 }
             }
         }
@@ -1498,6 +1483,27 @@ class AddEditProductPreviewFragment:
     private fun validateShopLocation() {
         if (isAdding()) {
             viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+        }
+    }
+
+    private fun saveShippingLocation() {
+        val shopId = userSession.shopId.toIntOrZero()
+        if (shopId != 0 &&
+                postalCode.isNotBlank() &&
+                latitude.isNotBlank() &&
+                longitude.isNotBlank() &&
+                districtId != 0 &&
+                formattedAddress.isNotBlank()) {
+
+            val params = getSaveShopShippingLocationData(
+                    shopId = shopId,
+                    postCode = postalCode,
+                    courierOrigin = districtId,
+                    addrStreet = formattedAddress,
+                    lat = latitude,
+                    long = longitude
+            )
+            viewModel.saveShippingLocation(params)
         }
     }
 

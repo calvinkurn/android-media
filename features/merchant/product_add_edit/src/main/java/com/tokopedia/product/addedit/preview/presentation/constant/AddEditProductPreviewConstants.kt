@@ -19,6 +19,7 @@ class AddEditProductPreviewConstants {
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
         const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
+        const val TIMBER_PREFIX_LOCATION_VALIDATION = "SHOP_LOCATION_VALIDATOR"
         const val TYPE_ACTIVE = 1
         const val TYPE_ACTIVE_LIMITED = 2
         const val TYPE_WAREHOUSE = 3
