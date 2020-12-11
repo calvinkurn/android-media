@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage_stock_location.*
 
@@ -29,8 +30,11 @@ class ProductManageStockLocationBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stockLocationInfo.setPrimaryCTAClickListener {
-            dismiss()
+        stockLocationInfo.apply {
+            setImageUrl(ProductManageUrl.ILLUSTRATION_STOCK_LOCATION)
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
         }
     }
 
