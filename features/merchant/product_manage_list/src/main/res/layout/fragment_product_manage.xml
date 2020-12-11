@@ -166,6 +166,24 @@
         layout="@layout/layout_product_manage_shimmer"
         tools:visibility="gone" />
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/noAccessPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_NOT_FOUND"/>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/errorPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR" />
+
     <FrameLayout
         android:id="@+id/interceptor"
         android:layout_width="match_parent"

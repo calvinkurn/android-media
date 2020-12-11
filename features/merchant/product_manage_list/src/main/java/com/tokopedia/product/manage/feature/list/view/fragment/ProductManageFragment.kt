@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -250,6 +251,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupFiltersTab()
         setupMultiSelect()
         setupSelectAll()
+        setupErrorPage()
+        setupNoAccessPage()
         renderCheckedView()
 
         observeShopInfo()
@@ -590,6 +593,30 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 onClickProductCheckBox(isChecked, index)
             }
             productManageListAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun setupErrorPage() {
+        errorPage.apply {
+            errorAction.text = context?.getString(R.string.product_manage_refresh_page)
+
+            setActionClickListener {
+                onSwipeRefresh()
+            }
+        }
+    }
+
+    private fun setupNoAccessPage() {
+        noAccessPage.apply {
+            ImageHandler.loadImageAndCache(errorIllustration, ProductManageUrl.ILLUSTRATION_NO_ACCESS)
+            errorTitle.text = context?.getString(R.string.product_manage_no_access_title)
+            errorDescription.text = context?.getString(R.string.product_manage_no_access_description)
+            errorAction.text = context?.getString(R.string.product_manage_back_to_home)
+            setButtonFull(true)
+
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
+            }
         }
     }
 
@@ -1092,9 +1119,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         resetProductList()
         disableMultiSelect()
 
-        getFiltersTab(withDelay = true)
-        getProductList(withDelay = true)
+//        getFiltersTab(withDelay = true)
+//        getProductList(withDelay = true)
 
+        getProductManageAccess()
+
+        hideNoAccessPage()
+        hideErrorPage()
         stockTicker.hide()
     }
 
@@ -1985,21 +2016,29 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
            when(it) {
                is Success -> {
                    val access = it.data
-                   loadInitialData()
 
-                   getFiltersTab()
-                   getProductListFeaturedOnlySize()
-                   getTopAdsFreeClaim()
-                   getGoldMerchantStatus()
-                   getTopAdsInfo()
+                   if(access.productList) {
+                       loadInitialData()
 
-                   setupBottomSheet(access)
-                   showHideMultiSelect(access)
-                   showHideOptionsMenu(access)
+                       getFiltersTab()
+                       getProductListFeaturedOnlySize()
+                       getTopAdsFreeClaim()
+                       getGoldMerchantStatus()
+                       getTopAdsInfo()
 
-                   renderStockLocationTicker()
-                   renderStockLocationBottomSheet()
+                       setupBottomSheet(access)
+                       showHideMultiSelect(access)
+                       showHideOptionsMenu(access)
+
+                       renderStockLocationTicker()
+                       renderStockLocationBottomSheet()
+                       hideNoAccessPage()
+                       hideErrorPage()
+                   } else {
+                       showNoAccessPage()
+                   }
                }
+               is Fail -> showErrorPage()
            }
         }
     }
@@ -2037,6 +2076,24 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             ProductManageStockLocationBottomSheet.newInstance().show(childFragmentManager)
             productManageSession.setShowStockLocationBottomSheet(false)
         }
+    }
+
+    private fun showNoAccessPage() {
+        noAccessPage.show()
+    }
+
+    private fun hideNoAccessPage() {
+        noAccessPage.hide()
+    }
+
+    private fun showErrorPage() {
+        mainContainer.hide()
+        errorPage.show()
+    }
+
+    private fun hideErrorPage() {
+        mainContainer.show()
+        errorPage.hide()
     }
 
     private fun goToTopAdsOnBoarding() {
