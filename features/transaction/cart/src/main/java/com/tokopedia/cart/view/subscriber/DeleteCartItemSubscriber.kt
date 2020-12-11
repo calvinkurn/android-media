@@ -14,7 +14,9 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
                                private val removeInsurance: Boolean,
-                               private val forceExpandCollapsedUnavailableItems: Boolean) : Subscriber<DeleteCartData>() {
+                               private val forceExpandCollapsedUnavailableItems: Boolean,
+                               private val isMoveToWishlist: Boolean,
+                               private val isFromGlobalCheckbox: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
@@ -41,7 +43,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                     }
                 }
 
-                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems)
+                view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, isMoveToWishlist, isFromGlobalCheckbox)
 
                 val params = view.generateGeneralParamValidateUse()
                 if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
