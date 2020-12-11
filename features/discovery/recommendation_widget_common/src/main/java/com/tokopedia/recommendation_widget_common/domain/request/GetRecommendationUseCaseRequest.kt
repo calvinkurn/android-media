@@ -130,6 +130,7 @@ internal class GetRecommendationUseCaseRequest {
                               priceString
                           }
                           rating
+                          ratingAverage
                           countReview
                           recommendationType
                           stock
