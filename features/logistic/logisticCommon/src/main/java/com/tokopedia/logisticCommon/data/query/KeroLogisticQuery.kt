@@ -2,7 +2,7 @@ package com.tokopedia.logisticCommon.data.query
 
 object KeroLogisticQuery {
 
-    val autoCompleteGeocode = """
+    val autoComplete = """
         query KeroMapsAutoComplete(${'$'}param: String!) {
           kero_maps_autocomplete(input: ${'$'}param) {
             error_code
@@ -95,6 +95,86 @@ object KeroLogisticQuery {
             }
             status
             message_error
+          }
+        }
+    """.trimIndent()
+
+    val autoCompleteGeocode = """
+        {
+          keroAutocompleteGeocode(${'$'}lat: Float!, {'$'}long: Float!) {
+            status
+            config
+            server_process_time
+            data {
+              Results {
+                formatted_address
+                geometry {
+                  location {
+                    lat
+                    lng
+                  }
+                  location_type
+                  bounds {
+                    northeast {
+                      lat
+                      lng
+                    }
+                    southwest {
+                      lat
+                      lng
+                    }
+                  }
+                  viewport {
+                    northeast {
+                      lat
+                      lng
+                    }
+                    southwest {
+                      lat
+                      lng
+                    }
+                  }
+                  types
+                }
+                name
+                icon
+                place_id
+                scope
+                rating
+                types
+                opening_hours {
+                  open_now
+                  periods {
+                    open {
+                      day
+                      time
+                    }
+                    close {
+                      day
+                      time
+                    }
+                  }
+                  weekday_text
+                  permanently_closed
+                }
+                photos {
+                  photo_reference
+                  height
+                  width
+                  html_attributions
+                }
+                alt_ids {
+                  place_id
+                  scope
+                }
+                price_level
+                vicinity
+                permanently_closed
+                id
+              }
+              HTMLAttributions
+              NextPageToken
+            }
           }
         }
     """.trimIndent()

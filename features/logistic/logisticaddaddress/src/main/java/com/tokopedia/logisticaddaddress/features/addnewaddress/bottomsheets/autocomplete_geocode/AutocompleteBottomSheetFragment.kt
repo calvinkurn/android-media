@@ -230,6 +230,19 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 }
             }
         })
+
+        viewModel.autoCompleteGeocodeList.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetAutocompleteGeocode(it.data.data)
+                }
+
+                is Fail -> {
+                    it.throwable.printStackTrace()
+                    hideListPointOfInterest()
+                }
+            }
+        })
     }
 
     private fun setListenerClearBtn() {
@@ -244,7 +257,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         showLoadingList()
 
         presenter.clearCacheAutocompleteGeocode()
-        presenter.getAutocompleteGeocode(currentLat, currentLong)
+//        presenter.getAutocompleteGeocode(currentLat, currentLong)
+        viewModel.getAutoCompleteGeocodeList(currentLat, currentLong)
     }
 
     override fun configView(parentView: View?) {

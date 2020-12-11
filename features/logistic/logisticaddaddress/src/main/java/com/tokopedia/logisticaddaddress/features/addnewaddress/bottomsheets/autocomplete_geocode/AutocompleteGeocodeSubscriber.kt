@@ -12,10 +12,10 @@ class AutocompleteGeocodeSubscriber(val view: AutocompleteBottomSheetListener,
     private val statusOK = "OK"
 
     override fun onNext(t: GraphqlResponse?) {
-        val responseAutoCompleteGeocode = mapper.map(t)
+        /*val responseAutoCompleteGeocode = mapper.map(t)
         if (responseAutoCompleteGeocode.status.equals(statusOK, true)) {
             view.onSuccessGetAutocompleteGeocode(responseAutoCompleteGeocode.data)
-        }
+        }*/
     }
 
     override fun onCompleted() {

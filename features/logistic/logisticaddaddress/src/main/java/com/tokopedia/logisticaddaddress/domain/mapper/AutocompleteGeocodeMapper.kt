@@ -1,12 +1,11 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete_geocode.AutocompleteGeocodeResponse
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete_geocode.Data
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete_geocode.ResultsItem
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResultUiModel
+import com.tokopedia.logisticCommon.data.response.AutoCompleteGeocodeResponse
+import com.tokopedia.logisticCommon.data.response.GeoData
+import com.tokopedia.logisticCommon.data.response.ResultsItem
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResponseUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResultUiModel
 import javax.inject.Inject
 
 /**
@@ -15,21 +14,18 @@ import javax.inject.Inject
 open class AutocompleteGeocodeMapper @Inject constructor() {
     private val STATUS_OK = "OK"
 
-    fun map(response: GraphqlResponse?): AutocompleteGeocodeResponseUiModel {
-        var status = ""
+    fun map(response: AutoCompleteGeocodeResponse): AutocompleteGeocodeResponseUiModel {
+        val status = response.keroAutocompleteGeocode.status
         var dataUiModel = AutocompleteGeocodeDataUiModel()
-        val responseAutoComplete: AutocompleteGeocodeResponse? = response?.getData(AutocompleteGeocodeResponse::class.java)
-        responseAutoComplete?.let { it ->
-            status = it.keroAutocompleteGeocode.status
-            when (status) {
-                STATUS_OK -> dataUiModel = mapData(it.keroAutocompleteGeocode.data)
+        if (status == STATUS_OK) {
+            return AutocompleteGeocodeResponseUiModel().apply {
+                data = mapData(response.keroAutocompleteGeocode.data)
             }
         }
-
         return AutocompleteGeocodeResponseUiModel(status, dataUiModel)
     }
 
-    private fun mapData(data: Data): AutocompleteGeocodeDataUiModel {
+    private fun mapData(data: GeoData): AutocompleteGeocodeDataUiModel {
         return AutocompleteGeocodeDataUiModel(
                 results = data.results.map {
                     mapResult(it)
