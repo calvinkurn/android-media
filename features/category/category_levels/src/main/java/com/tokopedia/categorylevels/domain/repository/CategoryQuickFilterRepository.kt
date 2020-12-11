@@ -19,7 +19,7 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
 
     override suspend fun getQuickFilterData(componentId: String, pageEndPoint: String): ArrayList<Filter>? {
         getRecommendationFilterChips.setParams(pageName = "clp_quick_filter", xSource = "discopage")
-        return mapFilters(getRecommendationFilterChips.executeOnBackground())
+        return mapFilters(getRecommendationFilterChips.executeOnBackground().filterChip)
     }
 
     private fun mapFilters(recommendationFilters: List<RecommendationFilterChipsEntity.RecommendationFilterChip>): ArrayList<Filter>? {
