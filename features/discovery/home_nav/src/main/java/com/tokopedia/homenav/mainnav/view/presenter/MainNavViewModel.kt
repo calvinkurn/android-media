@@ -88,7 +88,6 @@ class MainNavViewModel @Inject constructor(
     ))
 
     init {
-        setInitialState()
         getMainNavData(true)
     }
 
@@ -103,9 +102,8 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
     }
 
-    fun updateWidgetList(visitables: List<Visitable<*>>, position: Int) {
+    fun addWidgetList(visitables: List<Visitable<*>>, position: Int) {
         val newMainNavList = _mainNavListVisitable
-        newMainNavList.removeAt(position)
         newMainNavList.addAll(position, visitables)
         _mainNavListVisitable = newMainNavList
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
@@ -122,7 +120,7 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
-    fun updateWidgetList(visitables: List<Visitable<*>>) {
+    fun addWidgetList(visitables: List<Visitable<*>>) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.addAll(visitables)
         _mainNavListVisitable = newMainNavList
@@ -261,7 +259,11 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
 
-                updateWidgetList(result, findBuStartIndexPosition())
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
+                addWidgetList(result, findBuStartIndexPosition())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -277,8 +279,12 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
+                val shimmeringDataModel = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
                 if (findExistingEndBuIndexPosition() == null) {
-                    updateWidgetList(result, findBuStartIndexPosition())
+                    addWidgetList(result, findBuStartIndexPosition())
                 }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
@@ -527,7 +533,7 @@ class MainNavViewModel @Inject constructor(
         }
         findHomeMenu?.let{
             //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)
+            return _mainNavListVisitable.indexOf(it)+1
         }
         return INDEX_DEFAULT_BU_POSITION
     }
