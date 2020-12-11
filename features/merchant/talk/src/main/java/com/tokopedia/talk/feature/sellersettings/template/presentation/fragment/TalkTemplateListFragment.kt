@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.TalkInstance
@@ -78,6 +80,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         observeTemplateList()
+        setupOnBackPressed()
     }
 
     private fun getTemplateList() {
@@ -119,12 +122,20 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     private fun initSwitch() {
         talkTemplateListSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.enableTemplateUseCase(isChecked)
+            viewModel.enableTemplate(isChecked)
             if(isChecked) {
                 talkTemplateListRecyclerView.show()
                 return@setOnCheckedChangeListener
             }
             talkTemplateListRecyclerView.hide()
         }
+    }
+
+    private fun setupOnBackPressed() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
     }
 }

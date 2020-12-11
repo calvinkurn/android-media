@@ -42,6 +42,9 @@ class TalkTemplateViewModel @Inject constructor(
     }
 
     fun arrangeTemplate(originalIndex: Int, moveTo: Int, isSeller: Boolean) {
+        if(originalIndex == moveTo) {
+            return
+        }
         launchCatchError(block = {
             arrangeTemplateUseCase.setParams(originalIndex, moveTo, isSeller)
             val response = arrangeTemplateUseCase.executeOnBackground()
@@ -61,7 +64,7 @@ class TalkTemplateViewModel @Inject constructor(
         }
     }
 
-    fun enableTemplateUseCase(isEnable: Boolean) {
+    fun enableTemplate(isEnable: Boolean) {
         launchCatchError(block = {
             enableTemplateUseCase.setParams(isEnable)
             val response = enableTemplateUseCase.executeOnBackground()

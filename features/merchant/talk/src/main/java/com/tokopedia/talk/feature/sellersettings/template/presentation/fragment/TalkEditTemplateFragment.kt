@@ -1,4 +1,8 @@
 package com.tokopedia.talk.feature.sellersettings.template.presentation.fragment
 
-class TalkEditTemplateFragment {
+import androidx.fragment.app.Fragment
+
+class TalkEditTemplateFragment : Fragment() {
+
+
 }
