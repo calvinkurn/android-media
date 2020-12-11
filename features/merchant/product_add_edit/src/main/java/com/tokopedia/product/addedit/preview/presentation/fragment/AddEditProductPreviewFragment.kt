@@ -1050,6 +1050,9 @@ class AddEditProductPreviewFragment:
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage(it.throwable.message ?: "")
+                    if (isStartButtonClicked) {
+                        showToasterFailSetLocation()
+                    }
                 }
             }
         }
@@ -1460,6 +1463,17 @@ class AddEditProductPreviewFragment:
                     Toaster.TYPE_NORMAL,
                     getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ) { /*no op*/ }.show()
+        }
+    }
+
+    private fun showToasterFailSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_fail_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
