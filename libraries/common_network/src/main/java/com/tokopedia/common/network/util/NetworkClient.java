@@ -45,7 +45,6 @@ public class NetworkClient {
                     .baseUrl(RestConstant.BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
 
             sRestDatabase = RestDatabase.getInstance(context);
