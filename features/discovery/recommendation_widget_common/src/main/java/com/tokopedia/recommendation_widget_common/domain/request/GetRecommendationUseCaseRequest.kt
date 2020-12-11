@@ -49,6 +49,11 @@ internal class GetRecommendationUseCaseRequest {
                           title
                           color
                         }
+                        labelgroup{
+                            position
+                            title
+                            type
+                        }
                         badges {
                           title
                           imageUrl
