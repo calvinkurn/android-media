@@ -292,4 +292,8 @@
     <string name="bottom_sheet_stock_location_primary_cta">Saya Mengerti</string>
     <string name="product_manage_multi_location_delete_product_description">Produk akan dihapus di semua lokasi dan  kamu harus mendaftarkannya lagi jika ingin  ditampilkan kembali.</string>
     <string name="product_manage_multi_location_delete_product_title">Yakin hapus produk?</string>
+    <string name="product_manage_no_access_title">Kamu tidak punya izin untuk mengakses halaman Produk</string>
+    <string name="product_manage_back_to_home">Kembali ke Home</string>
+    <string name="product_manage_no_access_description">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
+    <string name="product_manage_refresh_page">Refresh Halaman</string>
 </resources>
