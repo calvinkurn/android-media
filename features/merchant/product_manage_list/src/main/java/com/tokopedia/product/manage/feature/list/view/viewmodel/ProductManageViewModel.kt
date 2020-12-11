@@ -256,7 +256,11 @@ class ProductManageViewModel @Inject constructor(
                 productListResponse?.data
             }
 
-            if(isRefresh) { refreshList() }
+            if(isRefresh) {
+                refreshList()
+            }
+
+            showStockTicker()
             showProductList(productList)
             hideProgressDialog()
         }, onError = {
@@ -568,6 +572,15 @@ class ProductManageViewModel @Inject constructor(
         val productManageAccess = (_productManageAccess.value as? Success)?.data
         val productList = mapToViewModels(products, productManageAccess, isMultiSelectActive)
         _productListResult.value = Success(productList)
+    }
+
+    private fun showStockTicker() {
+        val isInitialLoad = _productListResult.value == null
+        val isMultiLocationShop = userSessionInterface.isMultiLocationShop
+
+        if(isInitialLoad && isMultiLocationShop) {
+            _viewState.value = ShowStockTicker
+        }
     }
 
     private fun setProductListFeaturedOnly(productsSize: Int){

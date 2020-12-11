@@ -1961,6 +1961,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeViewState() {
         observe(viewModel.viewState) {
             when(it) {
+                is ShowStockTicker -> showStockTicker()
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
                 is RefreshList -> resetProductList()
@@ -2035,7 +2036,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                        showHideMultiSelect(access)
                        showHideOptionsMenu(access)
 
-                       renderStockLocationTicker()
                        renderStockLocationBottomSheet()
                        hideNoAccessPage()
                        hideErrorPage()
@@ -2069,10 +2069,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         moreMenu?.isVisible = access.changeEtalase
     }
 
-    private fun renderStockLocationTicker() {
-        stockTicker.showWithCondition(userSession.isMultiLocationShop)
-    }
-
     private fun renderStockLocationBottomSheet() {
         val multiLocationShop = userSession.isMultiLocationShop
         val showStockLocationBottomSheet = productManageSession.getShowStockLocationBottomSheet()
@@ -2097,6 +2093,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideErrorPage() {
         errorPage.hide()
+    }
+
+    private fun showStockTicker() {
+        stockTicker.show()
     }
 
     private fun hideStockTicker() {
