@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -113,7 +113,7 @@
         android:id="@+id/checkout_loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/spacing_lvl2"
         android:visibility="gone">
 

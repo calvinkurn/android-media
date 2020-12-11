@@ -309,7 +309,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
                 finishFilter.setName(entry.getFilterName());
                 finishFilter.setType(entry.getFilterLabel());
-                finishFilter.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green);
+                finishFilter.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400);
                 if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                     isAnyItemSelected = true;
                     finishFilter.setSelected(true);
