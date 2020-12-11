@@ -257,7 +257,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
 
         if(rechargeProductFromSlice.isNotEmpty()){
-            rechargeGeneralAnalytics.onClickSliceRecharge(rechargeProductFromSlice, userSession.userId)
+            rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeGeneralAnalytics.onOpenPageFromSlice()
 
         }
