@@ -279,7 +279,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 ticker.show()
                 if (it.items.size > 1) {
                     showMultiTicker(it)
-                } else {
+                } else if (it.items.size == 1) {
                     showSingleTicker(it)
                 }
             }
