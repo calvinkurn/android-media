@@ -29,10 +29,10 @@
             android:layout_weight="5"
             android:layout_marginRight="@dimen/dp_5"
             android:layout_marginEnd="@dimen/dp_5"
-            app:rcBackgroundColor="@color/grey_200"
+            app:rcBackgroundColor="@color/Unify_N50"
             app:rcMax="100"
             app:rcProgress="0"
-            app:rcProgressColor="@color/background_star_review"
+            app:rcProgressColor="@color/Unify_Y300"
             app:rcRadius="6.5dp" />
 
         <TextView
