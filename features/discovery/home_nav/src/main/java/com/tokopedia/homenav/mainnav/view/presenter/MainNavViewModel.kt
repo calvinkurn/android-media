@@ -50,6 +50,7 @@ class MainNavViewModel @Inject constructor(
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
+        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
@@ -87,7 +88,7 @@ class MainNavViewModel @Inject constructor(
 
     init {
         setInitialState()
-        getMainNavData()
+        getMainNavData(true)
     }
 
     // ============================================================================================
@@ -197,12 +198,17 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getMainNavData() {
+    private fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
-                getProfileData()
-                getBuListMenu()
+                if (useCacheData) {
+                    getProfileDataCached()
+                    getBuListMenuCached()
+                } else {
+                    updateProfileData()
+                    getBuListMenu()
+                }
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -214,12 +220,18 @@ class MainNavViewModel @Inject constructor(
                     getOngoingTransaction()
                     getNotification()
                 }
+                if (useCacheData) {
+                    //update cached data with cloud data
+                    updateProfileData()
+                    getBuListMenu()
+                }
             }) {
                 Timber.d("P2 error")
                 it.printStackTrace()
             }
             p2DataJob.join()
             _onboardingListLiveData.postValue(_mainNavListVisitable)
+
         }
     }
 
@@ -246,9 +258,10 @@ class MainNavViewModel @Inject constructor(
         deleteWidgetList(listOfHomeMenuSection)
     }
 
-    private suspend fun getBuListMenu() {
+    private suspend fun getBuListMenuCached() {
         launchCatchError(coroutineContext, block = {
             getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+            getCategoryGroupUseCase.get().setStrategyCache()
             val result = getCategoryGroupUseCase.get().executeOnBackground()
 
             //PLT network process is finished
@@ -261,7 +274,32 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getProfileData() {
+    private suspend fun getBuListMenu() {
+        val buListData = _mainNavListVisitable.firstOrNull {
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.BU_ICON
+        }
+        launchCatchError(coroutineContext, block = {
+            getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+            getCategoryGroupUseCase.get().setStrategyCloudThenCache()
+            val result = getCategoryGroupUseCase.get().executeOnBackground()
+
+            //PLT network process is finished
+            _networkProcessLiveData.postValue(true)
+            if (buListData == null) {
+                updateWidgetList(result, findBuIndexPosittion())
+            }
+        }) {
+            it.printStackTrace()
+            updateWidget(ErrorStateBuViewModel(), findBuIndexPosittion())
+        }
+    }
+
+    suspend fun getProfileDataCached() {
+        val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
+        updateWidget(accountHeaderModel, 0)
+    }
+
+    suspend fun updateProfileData() {
         val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
         updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
     }
@@ -419,13 +457,13 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun reloadMainNavAfterLogin() {
-        getMainNavData()
+        getMainNavData(false)
     }
 
     fun refreshProfileData() {
         updateWidget(InitialShimmerProfileDataModel(), INDEX_MODEL_ACCOUNT)
         launchCatchError(coroutineContext, block = {
-            getProfileData()
+            updateProfileData()
         }) {
 
         }

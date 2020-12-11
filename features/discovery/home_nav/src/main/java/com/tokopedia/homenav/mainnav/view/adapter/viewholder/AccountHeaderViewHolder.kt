@@ -98,6 +98,8 @@ class AccountHeaderViewHolder(itemView: View,
         val btnTryAgain: ImageView = layoutLogin.findViewById(R.id.btn_try_again)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
+        val tvOvoShimmer: View = layoutLogin.findViewById(R.id.tv_ovo_shimmer)
+        val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
@@ -139,19 +141,30 @@ class AccountHeaderViewHolder(itemView: View,
 
         tvOvo.isClickable = false
         usrOvoBadge.visible()
-
-        if (element.isGetOvoError && element.isGetSaldoError) {
-            tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
-            usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-        } else if (element.isGetOvoError && !element.isGetSaldoError) {
-            tvOvo.text = element.saldo
-            usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+        if (element.isCacheData) {
+            tvOvoShimmer.visible()
+            usrOvoBadgeShimmer.visible()
+            tvOvo.gone()
+            usrOvoBadge.gone()
         } else {
-            tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
-            if (element.ovoSaldo.isNotEmpty()) {
+            tvOvoShimmer.gone()
+            usrOvoBadgeShimmer.gone()
+            tvOvo.visible()
+            usrOvoBadge.visible()
+            if (element.isGetOvoError && element.isGetSaldoError) {
+                tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
-            } else if (element.saldo.isNotEmpty()) {
+            } else if (element.isGetOvoError && !element.isGetSaldoError) {
+                tvOvo.text = element.saldo
                 usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+            } else {
+                tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
+                if (element.ovoSaldo.isNotEmpty()) {
+                    usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
+                } else if (element.saldo.isNotEmpty()) {
+                    usrOvoBadge.setImageResource(R.drawable.ic_saldo)
+                }
+
             }
         }
 
@@ -193,7 +206,7 @@ class AccountHeaderViewHolder(itemView: View,
 
         btnSettings.visible()
         btnTryAgain.gone()
-        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError)) {
+        if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) {
             usrOvoBadge.gone()
             btnTryAgain.visible()
         }

@@ -18,10 +18,11 @@ class AccountHeaderMapper (
 ) {
 
     fun mapToHeaderModel(userPojo: UserPojo?,
-                       walletBalanceModel: WalletBalanceModel?,
-                       saldoPojo: SaldoPojo?,
-                       userMembershipPojo: MembershipPojo?,
-                       shopInfoPojo: ShopInfoPojo?): AccountHeaderViewModel {
+                         walletBalanceModel: WalletBalanceModel?,
+                         saldoPojo: SaldoPojo?,
+                         userMembershipPojo: MembershipPojo?,
+                         shopInfoPojo: ShopInfoPojo?,
+                         isCache: Boolean): AccountHeaderViewModel {
         var accountModel = AccountHeaderViewModel()
 
         when (val loginState = getLoginState()) {
@@ -57,8 +58,9 @@ class AccountHeaderMapper (
                             isLoading = false
                     )
                 }
-
+                data.isCacheData = isCache
                 accountModel = data
+
             }
             AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
             AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {
