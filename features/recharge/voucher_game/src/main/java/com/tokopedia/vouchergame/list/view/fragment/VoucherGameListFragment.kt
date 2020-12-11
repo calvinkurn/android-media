@@ -146,6 +146,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
+        loadInitialData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -340,13 +341,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         getComponent(VoucherGameListComponent::class.java).inject(this)
     }
 
-
     override fun loadInitialData() {
-        searchVoucherGame("", true)
+        search_input_view.searchBarTextField.setText("")
     }
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     override fun onItemClicked(item: Visitable<VoucherGameListAdapterFactory>) {
