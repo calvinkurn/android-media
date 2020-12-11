@@ -1008,9 +1008,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
             setGlobalDeleteVisibility()
             cartPageAnalytics.eventCheckUncheckGlobalCheckbox(checkboxGlobal.isChecked)
+
+            reloadAppliedPromoFromGlobalCheck()
         }
         cartAdapter.setCheckboxGlobalItemState(checkboxGlobal.isChecked, isCheckUncheckDirectAction)
         isCheckUncheckDirectAction = true
+    }
+
+    private fun reloadAppliedPromoFromGlobalCheck() {
+        val params = generateParamValidateUsePromoRevamp(checkboxGlobal.isChecked, -1, -1, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
     }
 
     private fun checkGoToShipment(message: String?) {
