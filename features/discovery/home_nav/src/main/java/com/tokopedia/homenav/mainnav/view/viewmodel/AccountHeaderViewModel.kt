@@ -20,7 +20,8 @@ data class AccountHeaderViewModel(
         var isGetOvoError: Boolean = true,
         var isGetSaldoError: Boolean = true,
         var isGetUserMembershipError: Boolean = true,
-        var isGetShopError: Boolean = true
+        var isGetShopError: Boolean = true,
+        var isGetShopLoading: Boolean = false
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -30,7 +31,9 @@ data class AccountHeaderViewModel(
                 badge == visitable.badge && ovoSaldo == visitable.ovoSaldo &&
                 ovoPoint == visitable.ovoPoint && saldo == visitable.saldo &&
                 shopName == visitable.shopName && shopId == visitable.shopId &&
-                shopNotifCount == visitable.shopNotifCount && shopApplink == visitable.shopApplink
+                shopNotifCount == visitable.shopNotifCount && shopApplink == visitable.shopApplink &&
+                isGetShopError == visitable.isGetShopError &&
+                isGetShopLoading == visitable.isGetShopLoading
     }
 
     override fun type(factory: MainNavTypeFactory): Int {
@@ -92,10 +95,11 @@ data class AccountHeaderViewModel(
         this.isGetUserMembershipError = false
     }
 
-    fun setUserShopName(shopName: String, shopId: String) {
+    fun setUserShopName(shopName: String = "", shopId: String = "", isError: Boolean = false, isLoading: Boolean = false) {
         this.shopName = shopName
         this.shopId = shopId
-        this.isGetShopError = false
+        this.isGetShopError = isError
+        this.isGetShopLoading = isLoading
     }
 
 }

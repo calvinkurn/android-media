@@ -80,4 +80,6 @@
 
     <string name="error_state_transaction_title">Gagal memuat transaksi</string>
     <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+
+    <string name="error_state_shop_info">Gagal memuat toko</string>
 </resources>

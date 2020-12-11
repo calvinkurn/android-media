@@ -114,7 +114,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:clickable="false"
-            tools:visibility="gone"
+            tools:visibility="visible"
             app:layout_goneMarginStart="@dimen/dp_10"
 
             app:layout_constraintBottom_toTopOf="@id/usr_ovo_badge"
@@ -126,20 +126,20 @@
             android:id="@+id/usr_ovo_badge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:scaleType="fitCenter"
-            tools:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/img_user_login"
-            app:layout_constraintLeft_toRightOf="@id/img_user_login"
+            app:layout_constraintLeft_toLeftOf="@id/usr_badge"
             app:layout_constraintTop_toBottomOf="@id/tv_name"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_name"
             android:layout_width="0dp"
+            app:layout_goneMarginStart="@dimen/dp_10"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6"
             android:textSize="@dimen/sp_16"
             android:clickable="false"
             android:focusable="false"
@@ -154,8 +154,9 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_ovo"
             android:layout_width="0dp"
+            android:layout_marginStart="@dimen/dp_6"
+            app:layout_goneMarginStart="@dimen/dp_10"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_6"
             app:layout_constraintLeft_toRightOf="@id/usr_ovo_badge"
             app:layout_constraintTop_toTopOf="@id/usr_ovo_badge"
             app:layout_constraintBottom_toBottomOf="@id/usr_ovo_badge"
@@ -195,6 +196,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:visibility="gone"
             app:typographyType="body_3"
+            app:layout_goneMarginStart="@dimen/dp_10"
             app:layout_constraintTop_toBottomOf="@id/img_user_login"
             app:layout_constraintLeft_toLeftOf="@id/usr_badge"
             tools:visibility="visible"
@@ -211,6 +213,31 @@
             app:layout_constraintLeft_toRightOf="@id/usr_shop_info"
             tools:visibility="visible"
             tools:text=" 5 "/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/shimmer_shop_info"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/sp_12"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_12"
+            app:loader_type="line"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/img_user_login"
+            app:layout_constraintLeft_toLeftOf="@id/usr_badge" />
+
+        <ImageView
+            android:id="@+id/btn_try_again_shop_info"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:padding="5dp"
+            android:background="@drawable/ic_oval_bg"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
+            app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
+            app:layout_constraintLeft_toRightOf="@id/usr_shop_info"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

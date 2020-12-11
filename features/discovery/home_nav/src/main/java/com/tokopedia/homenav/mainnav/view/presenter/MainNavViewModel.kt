@@ -1,17 +1,13 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
-import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
@@ -28,15 +24,11 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_SUBSCR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
-import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
-import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -57,7 +49,8 @@ class MainNavViewModel @Inject constructor(
         private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
-        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>
+        private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
+        private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
     companion object {
@@ -388,6 +381,40 @@ class MainNavViewModel @Inject constructor(
             if (inboxTicketNotification.isMoreThanZero()) _mainNavListVisitable.findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
         }) {
             it.printStackTrace()
+        }
+    }
+
+    fun refreshUserShopData() {
+        val newAccountData = _mainNavListVisitable.find {
+            it is AccountHeaderViewModel
+        } as? AccountHeaderViewModel
+        newAccountData?.let { accountModel ->
+            //set shimmering before getting the data
+            updateWidget(accountModel.copy(isGetShopLoading = true, isGetShopError = true), INDEX_MODEL_ACCOUNT)
+
+            launchCatchError(coroutineContext, block = {
+                val call = async {
+                    withContext(baseDispatcher.get().io()) {
+                        getShopInfoUseCase.get().executeOnBackground()
+                    }
+                }
+                val response = call.await()
+                val result = (response.takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+                result?.let {
+                    accountModel.setUserShopName(it.info.shopName, it.info.shopId)
+                    updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
+                    return@launchCatchError
+                }
+
+                val fail = (response.takeIf { it is Fail } )
+                fail?.let {
+                    updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+                    return@launchCatchError
+                }
+
+            }){
+                updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+            }
         }
     }
 
