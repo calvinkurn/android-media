@@ -53,7 +53,9 @@ class AccountHeaderMapper (
                 shopInfoPojo?.let {
                     data.setUserShopName(
                             shopName = it.info.shopName,
-                            shopId =  it.info.shopId
+                            shopId =  it.info.shopId,
+                            isError = false,
+                            isLoading = false
                     )
                 }
                 data.isCacheData = isCache

@@ -13,6 +13,8 @@ interface MainNavListener : HomeNavListener{
 
     fun onErrorProfileRefreshClicked(position: Int)
 
+    fun onErrorShopInfoRefreshClicked(position: Int)
+
     fun onErrorBuListClicked(position: Int)
 
     fun onErrorTransactionListClicked(position: Int)

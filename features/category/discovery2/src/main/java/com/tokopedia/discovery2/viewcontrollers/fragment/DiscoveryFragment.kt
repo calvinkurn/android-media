@@ -14,15 +14,16 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -42,11 +43,14 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -62,7 +66,6 @@ import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import javax.inject.Inject
 
 
 private const val LOGIN_REQUEST_CODE = 35769
@@ -70,9 +73,9 @@ private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
 const val PAGE_REFRESH_LOGIN = 35771
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
-private const val EXP_NAME = "Navigation Revamp"
-private const val VARIANT_OLD = "Existing Navigation"
-private const val VARIANT_REVAMP = "Navigation Revamp"
+private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
 class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
 
@@ -86,10 +89,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
-    private val analytics: DiscoveryAnalytics by lazy {
-        DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE, "")
-                ?: "")
+
+    private val analytics: BaseDiscoveryAnalytics by lazy {
+        (context as DiscoveryActivity).getAnalytics()
+    }
+    private val trackingQueue: TrackingQueue by lazy {
+        (context as DiscoveryActivity).trackingQueue
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
@@ -100,8 +105,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
+
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -139,11 +143,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun initInjector() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((context?.applicationContext
-                        as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        with(context) {
+            if(this is DiscoveryActivity) {
+                this.discoveryComponent
+                        .inject(this@DiscoveryFragment)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -271,6 +276,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 is Fail -> {
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
+                }
+            }
+        })
+
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is RouteToApplink -> {
+                    RouteManager.route(context, it.applink)
+                    activity?.finish()
+                }
+                is GoToAgeRestriction -> {
+                    AdultManager.showAdultPopUp(this, it.origin, it.departmentId)
                 }
             }
         })
@@ -437,7 +454,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+    fun getDiscoveryAnalytics(): BaseDiscoveryAnalytics {
         return analytics
     }
 
@@ -449,7 +466,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(false)
     }
 
     override fun onRefresh() {
@@ -458,10 +475,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun refreshPage() {
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -499,6 +516,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         }
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+            }
+
+            override fun onLoginPreverified() {
+            }
+
+        })
     }
 
     private fun showVerificationBottomSheet() {

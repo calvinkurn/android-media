@@ -181,6 +181,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshProfileData()
     }
 
+    override fun onErrorShopInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserShopData()
+    }
+
     override fun onErrorBuListClicked(position: Int) {
         viewModel.refreshBuListdata()
     }

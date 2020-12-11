@@ -219,9 +219,9 @@ class StaticBuyerModelGenerator private constructor() {
 
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_belanja,
-                    accountDataModel?.uohOrderCount?.onProcessText.toString(),
+                    accountDataModel?.uohOrderCount?.sedangBerlangsungText.toString(),
                     UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_DALAM_PROSES),
-                    accountDataModel?.uohOrderCount?.onProcess.toIntOrZero(),
+                    accountDataModel?.uohOrderCount?.sedangBerlangsung.toIntOrZero(),
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))

@@ -46,6 +46,7 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),
     ProductCardRevampItem("product_card_revamp_item"),
+    MasterProductCardItemList("master_product_card_item_list"),
 
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
@@ -63,5 +64,12 @@ enum class ComponentNames(val componentName: String) {
 
     //Quick Filter
     QuickFilter("chips_filter_v2"),
+
+    //Navigation Chips
+    NavigationChips("navigation_chips"),
+    NavigationChipsItem("navigation_chips_item"),
+
+    //Banned View
+    BannedView("banned_view")
 
 }

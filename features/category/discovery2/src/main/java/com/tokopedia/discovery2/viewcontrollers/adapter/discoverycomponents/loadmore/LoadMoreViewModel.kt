@@ -20,9 +20,7 @@ class LoadMoreViewModel(val application: Application, private val components: Co
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
-        initDaggerInject()
-    }
+
 
     fun getViewOrientation() = components.loadForHorizontal
 
@@ -33,13 +31,5 @@ class LoadMoreViewModel(val application: Application, private val components: Co
         }, onError = {
             it.printStackTrace()
         })
-    }
-
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
     }
 }

@@ -2,15 +2,14 @@ package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
-import com.tokopedia.homenav.mainnav.data.pojo.user.ProfilePojo
-import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.rule.TestDispatcherProvider
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -27,7 +26,8 @@ fun createViewModel (
         clientMenuGenerator: ClientMenuGenerator? = null,
         getNavNotification: GetNavNotification? = null,
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
-        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null
+        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
+        getShopInfoUseCase: GetShopInfoUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -57,6 +57,9 @@ fun createViewModel (
     val getBuListDataUseCaseMock = getOrUseDefault(getBuListUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
+    val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success((ShopInfoPojo.Response()).userShopInfo) }
+    }
 
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
@@ -68,6 +71,7 @@ fun createViewModel (
             getProfileDataUseCase = getProfileDataUseCaseMock,
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
             getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock
+            getShopInfoUseCase = getShopInfoUseCaseMock
     )
 }
 

@@ -28,6 +28,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,8 +102,30 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+        val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
+        val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
 
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
+        btnTryAgain.setImageDrawable(
+                getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.REPLAY,
+                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
+                )
+        )
+
+        btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
+        btnTryAgainShopInfo.setImageDrawable(
+                getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.REPLAY,
+                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
+                )
+        )
+
+        btnTryAgainShopInfo.gone()
+        btnTryAgain.gone()
+        shimmerShopInfo.gone()
 
         userImage.loadImageCircle(element.userImage)
         userImage.isClickable = false
@@ -144,8 +167,10 @@ class AccountHeaderViewHolder(itemView: View,
 
             }
         }
-        if (element.shopName.isNotEmpty()) {
-            tvShopInfo.visibility = View.VISIBLE
+
+        //shop info error state
+        if (!element.isGetShopError && element.shopName.isNotEmpty()) {
+            tvShopInfo.visible()
             var subtext = ""
             var fulltext = ""
             if (element.isGetShopError) {
@@ -162,6 +187,16 @@ class AccountHeaderViewHolder(itemView: View,
             val i = fulltext.indexOf(subtext)
             str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else if (element.isGetShopLoading) {
+            tvShopInfo.gone()
+            btnTryAgainShopInfo.gone()
+            shimmerShopInfo.visible()
+        } else if (element.isGetShopError) {
+            btnTryAgainShopInfo.visible()
+            tvShopInfo.visible()
+            shimmerShopInfo.gone()
+
+            tvShopInfo.text = getString(R.string.error_state_shop_info)
         }
 
         layoutLogin.setOnClickListener {
@@ -172,13 +207,6 @@ class AccountHeaderViewHolder(itemView: View,
         btnSettings.visible()
         btnTryAgain.gone()
         if (element.isGetUserNameError || (element.isGetOvoError && element.isGetSaldoError && !element.isCacheData)) {
-            btnTryAgain.setImageDrawable(
-                    getIconUnifyDrawable(
-                            itemView.context,
-                            IconUnify.REPLAY,
-                            ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
-                    )
-            )
             usrOvoBadge.gone()
             btnTryAgain.visible()
         }
