@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -186,6 +187,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initSortFilter()
         initEmptyState()
         initErrorPage()
@@ -368,4 +370,13 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         }
     }
 
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkInbox)
+                headerTalkInbox?.title = getString(R.string.title_talk_discuss)
+            }
+        }
+    }
 }

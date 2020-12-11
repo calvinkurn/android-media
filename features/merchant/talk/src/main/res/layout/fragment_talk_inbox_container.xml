@@ -14,6 +14,13 @@
         android:background="@color/Unify_N0"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/headerTalkInboxContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="false" />
+
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/talkInboxTabs"
             android:layout_width="match_parent"

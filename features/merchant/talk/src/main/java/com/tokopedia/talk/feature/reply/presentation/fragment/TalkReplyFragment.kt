@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -56,6 +57,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
@@ -649,6 +651,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         initRecyclerView()
         initAttachedProductRecyclerView()
         initSwipeRefresh()
+        initToolbar()
     }
 
     private fun initAdapter() {
@@ -832,5 +835,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkReply)
+                headerTalkReply?.title = getString(R.string.title_reply_page)
+            }
+        }
     }
 }

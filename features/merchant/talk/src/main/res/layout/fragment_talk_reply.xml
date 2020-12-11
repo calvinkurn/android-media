@@ -7,11 +7,19 @@
     android:focusableInTouchMode="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerTalkReply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/replySwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         app:layout_constraintBottom_toTopOf="@id/replyAttachedProductContainer">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,11 +64,13 @@
     <include
         android:id="@+id/pageLoading"
         layout="@layout/partial_talk_reply_shimmering"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         android:visibility="gone"/>
 
     <include
         android:id="@+id/pageError"
         layout="@layout/partial_talk_connection_error"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkReply"
         android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
