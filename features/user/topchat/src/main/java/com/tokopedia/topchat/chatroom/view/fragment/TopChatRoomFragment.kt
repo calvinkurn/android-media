@@ -51,6 +51,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
@@ -1049,8 +1050,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
 
-        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-        if (imagePathList == null || imagePathList.size <= 0) {
+        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+        if (imagePathList.size <= 0) {
             return null
         }
         val imagePath = imagePathList[0]

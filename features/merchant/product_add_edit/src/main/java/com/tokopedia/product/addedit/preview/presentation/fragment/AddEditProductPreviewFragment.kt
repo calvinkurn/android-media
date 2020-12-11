@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -34,10 +33,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
@@ -75,7 +73,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
-import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
@@ -321,6 +319,7 @@ class AddEditProductPreviewFragment:
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
+            val ctx = context ?: return@setOnClickListener
             // tracking
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
@@ -329,19 +328,18 @@ class AddEditProductPreviewFragment:
                 ProductAddStepperTracking.trackStart(shopId)
             }
 
-            productPhotoAdapter?.run {
-                // show error message when maximum product image is reached
-                val productPhotoSize = this.getProductPhotoPaths().size
-                if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
-                else {
-                    val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                        if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                                ?: urlOrPath
-                        else urlOrPath
-                    }.orEmpty()
-                    val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing(), viewModel.isAdding)
-                    startActivityForResult(intent, REQUEST_CODE_IMAGE)
-                }
+            val adapter = productPhotoAdapter ?: return@setOnClickListener
+            // show error message when maximum product image is reached
+            val productPhotoSize = adapter.getProductPhotoPaths().size
+            if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+            else {
+                val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                    if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                            ?: urlOrPath
+                    else urlOrPath
+                }.orEmpty()
+                val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
             }
         }
 
@@ -480,10 +478,11 @@ class AddEditProductPreviewFragment:
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
-                    val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
-                    val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-                    if (imagePickerResult != null && imagePickerResult.size > 0) {
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val imagePickerResult = result.imageUrlOrPathList as ArrayList
+                    val originalImageUrl = result.originalImageUrl as ArrayList
+                    val isEditted = result.isEditted as ArrayList
+                    if (imagePickerResult.size > 0) {
                         val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                                 viewModel.isDuplicate ||
                                 viewModel.productInputModel.value != null

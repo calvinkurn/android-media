@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
@@ -453,10 +454,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
-                    val isEdited = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val selectedImage = result.imageUrlOrPathList
+                    val originalImageUrl = result.originalImageUrl
+                    val isEdited = result.isEditted
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(

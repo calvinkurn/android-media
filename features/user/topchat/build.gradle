@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCore)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.websocket)

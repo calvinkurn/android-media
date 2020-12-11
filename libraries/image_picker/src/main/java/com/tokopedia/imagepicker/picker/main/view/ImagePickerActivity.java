@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
@@ -45,19 +45,16 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED;
-import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
 
-public class ImagePickerActivity extends BaseSimpleActivity
+public final class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
         ImagePickerInstagramFragment.ListenerImagePickerInstagram, ImagePickerPresenter.ImagePickerView,
         ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener, VideoRecorderFragment.VideoPickerCallback {
-
-    public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
-
-    public static final String PICKER_RESULT_PATHS = "result_paths";
-    public static final String RESULT_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
@@ -306,30 +303,26 @@ public class ImagePickerActivity extends BaseSimpleActivity
             finish();
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
-            String[] permissions;
-            if (cameraIndex > -1) {
-                permissions = new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            } else {
-                permissions = new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
+        String[] permissions;
+        if (cameraIndex > -1) {
+            permissions = new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        }
+        permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
-            permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
-            }
-            if (!permissionsToRequest.isEmpty()) {
-                ActivityCompat.requestPermissions(this,
-                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            } else {
-                refreshViewPager();
-            }
-        } else { // under jellybean, no need to check runtime permission
+        }
+        if (!permissionsToRequest.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+        } else {
             refreshViewPager();
         }
     }
@@ -579,11 +572,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
-        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
 
         trackContinue();
+        ImagePickerGlobalSettings.clearAllGlobalSettings();
         finish();
     }
 
@@ -652,7 +645,6 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(PICKER_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     ArrayList<String> originalImageList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
-                    ArrayList<String> imageDescriptionList = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
                     ArrayList<Boolean> isEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
                     onFinishWithMultipleFinalImage(finalPathList, originalImageList, imageDescriptionList, isEdittedList);
                     isFinishEditting = true;
@@ -697,14 +689,20 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     public void trackOpen() {
-        //to be overridden
+        if (ImagePickerGlobalSettings.onImagePickerOpen != null){
+            ImagePickerGlobalSettings.onImagePickerOpen.invoke();
+        }
     }
 
     public void trackBack() {
-        //to be overridden
+        if (ImagePickerGlobalSettings.onImagePickerBack != null){
+            ImagePickerGlobalSettings.onImagePickerBack.invoke();
+        }
     }
 
     public void trackContinue() {
-        //to be overridden
+        if (ImagePickerGlobalSettings.onImagePickerContinue != null){
+            ImagePickerGlobalSettings.onImagePickerContinue.invoke();
+        }
     }
 }

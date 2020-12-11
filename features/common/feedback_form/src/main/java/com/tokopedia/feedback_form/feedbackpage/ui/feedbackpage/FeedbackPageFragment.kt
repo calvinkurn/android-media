@@ -47,6 +47,7 @@ import com.tokopedia.feedback_form.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
@@ -140,7 +141,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == RESULT_OK && data != null) {
-                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    selectedImage = ImagePickerResultExtractor.extract(data).imageUrlOrPathList as ArrayList<String>
                     feedbackPagePresenter.initImageData()
 
                     val imageListData = feedbackPagePresenter.getImageList(selectedImage)

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -177,8 +178,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_CODE_IMAGE){
             if (resultCode == Activity.RESULT_OK && data != null){
                 tracking.eventReportAddPhotoOK(adapter.trackingReasonLabel)
-                val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+                if (imageUrlOrPathList.size > 0) {
                     photoTypeSelected?.let {
                         adapter.updatePhotoForType(it, imageUrlOrPathList)
                     }

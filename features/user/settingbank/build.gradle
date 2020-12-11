@@ -57,6 +57,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCore)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 

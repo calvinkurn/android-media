@@ -35,6 +35,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -341,8 +342,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
+            List<String> imagePathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imagePathList.size() <= 0) {
                 return;
             }
             String imagePath = imagePathList.get(0);

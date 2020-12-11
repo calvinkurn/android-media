@@ -21,7 +21,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 public class ImagePickerBuilder implements Parcelable {
 
     public static final int DEFAULT_MIN_RESOLUTION = 300;
-    public static final int IMAGE_SEARCH_MIN_RESOLUTION = 200;
     public static final int DEFAULT_MAX_IMAGE_SIZE_IN_KB = 15360; // 15 * 1024KB
 
     private String title;

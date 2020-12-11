@@ -36,12 +36,14 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -264,8 +266,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
+            List<String> imagePathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imagePathList.size() <= 0) {
                 return;
             }
             String imagePath = imagePathList.get(0);

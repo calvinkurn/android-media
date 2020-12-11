@@ -24,6 +24,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -129,8 +130,8 @@ class ShopEditBasicInfoFragment: Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 savedLocalImageUrl = imageUrlOrPathList[0]
             }
             needUpdatePhotoUI = true

@@ -34,6 +34,7 @@ import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -44,6 +45,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -378,8 +380,8 @@ public class CreateTicketFormFragment extends TkpdBaseV4Fragment
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
+            List<String> imagePathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imagePathList.size() <= 0) {
                 return;
             }
             String imagePath = imagePathList.get(0);

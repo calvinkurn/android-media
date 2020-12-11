@@ -41,6 +41,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -292,8 +293,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == InboxBaseView.REQUEST_IMAGE_PICKER
                 && resultCode == Activity.RESULT_OK) {
-            val imagePathList = data?.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imagePathList == null || imagePathList.size <= 0) {
+            val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imagePathList.size <= 0) {
                 return
             }
             val imagePath = imagePathList[0]

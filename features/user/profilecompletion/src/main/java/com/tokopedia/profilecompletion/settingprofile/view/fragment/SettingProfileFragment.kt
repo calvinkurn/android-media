@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.exception.MessageErrorException
@@ -291,8 +292,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfilePhoto(data: Intent?) {
         if (data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
 

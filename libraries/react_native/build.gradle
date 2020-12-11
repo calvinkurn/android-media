@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCore)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.unifyDependencies.principles

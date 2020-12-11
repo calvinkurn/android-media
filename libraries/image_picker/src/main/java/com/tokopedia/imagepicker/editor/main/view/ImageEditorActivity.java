@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -26,6 +25,7 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -41,20 +41,21 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.core.ResultConstantKt.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImagePickerView,
+public final class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImagePickerView,
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener,
         ImageEditActionMainWidget.OnImageEditActionMainWidgetListener,
         ImageEditCropListWidget.OnImageEditCropWidgetListener, ImageRatioCropPresenter.ImageRatioCropView {
@@ -76,9 +77,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     public static final String SAVED_CURRENT_STEP_INDEX = "SAVED_STEP_INDEX";
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
-
-    public static final String RESULT_IS_EDITTED = "is_editted";
-    public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
@@ -137,7 +135,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private ImageRatioTypeDef defaultRatio;
     private ArrayList<ImageRatioTypeDef> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
-    protected ArrayList<String> imageDescriptionList;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls,
                                    ArrayList<String> imageDescription,
@@ -212,6 +209,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             finish();
             return;
         }
+        if (!checkImagePathsExist(extraImageUrls)) {
+            Toast.makeText(getContext(), R.string.error_message_invalid_photos, Toast.LENGTH_LONG).show();
+            finish();
+        }
         minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
         belowMinResolutionErrorMessage = intent.getStringExtra(EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE);
         imageTooLargeErrorMessage = intent.getStringExtra(EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE);
@@ -220,7 +221,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         maxFileSize = intent.getLongExtra(EXTRA_MAX_FILE_SIZE, DEFAULT_MAX_IMAGE_SIZE_IN_KB);
         defaultRatio = (ImageRatioTypeDef) intent.getSerializableExtra(EXTRA_RATIO);
         imageRatioOptionList = (ArrayList<ImageRatioTypeDef>) intent.getSerializableExtra(EXTRA_RATIO_OPTION_LIST);
-        imageDescriptionList = intent.getStringArrayListExtra(EXTRA_IMAGE_DESCRIPTION_LIST);
         recheckSizeAfterResize = intent.getBooleanExtra(EXTRA_RECHECK_SIZE_AFTER_RESIZE, false);
 
         if (belowMinResolutionErrorMessage == null || belowMinResolutionErrorMessage.isEmpty()) {
@@ -238,7 +238,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             currentEditStepIndexList = new ArrayList<>();
 
             imageRatioTypeDefStepList = new ArrayList<>();
-            for (int i = 0, sizei = extraImageUrls.size(); i<sizei; i++) {
+            for (int i = 0, sizei = extraImageUrls.size(); i < sizei; i++) {
                 ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
                 imageRatioTypeDefArrayList.add(defaultRatio);
                 imageRatioTypeDefStepList.add(imageRatioTypeDefArrayList);
@@ -340,6 +340,19 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
+    private boolean checkImagePathsExist(ArrayList<String> selectedImagePaths) {
+        boolean imagePathsExist = true;
+        for (String selectedImagePath : selectedImagePaths) {
+            if (!URLUtil.isNetworkUrl(selectedImagePath)) {
+                File file = new File(selectedImagePath);
+                if (!file.exists()) {
+                    imagePathsExist = false;
+                }
+            }
+        }
+        return imagePathsExist;
+    }
+
     private void onSaveEditClicked() {
         if (isInEditMode) {
             showEditLoading();
@@ -407,7 +420,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
         //getselectedRatio from view
         ImageRatioTypeDef imageRatioTypeDef;
-        if (imageEditCropListWidget!= null) {
+        if (imageEditCropListWidget != null) {
             imageRatioTypeDef = imageEditCropListWidget.getSelectedImageRatio();
             if (imageRatioTypeDef == null) {
                 imageRatioTypeDef = defaultRatio;
@@ -876,14 +889,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         Intent intent = getFinishIntent(imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
         trackContinue();
+        ImagePickerGlobalSettings.clearAllGlobalSettings();
         finish();
     }
 
-    protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList){
+    protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
-        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         return intent;
     }
@@ -907,15 +920,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             finish();
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
-            } else {
-                onResumeAfterCheckPermission();
-            }
-        } else { // under jellybean, no need to check runtime permission
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
+        } else {
             onResumeAfterCheckPermission();
         }
     }
@@ -973,7 +982,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         if (imageRatioCropPresenter == null) {
             imageRatioCropPresenter = new ImageRatioCropPresenter();
             imageRatioCropPresenter.attachView(this);
-        } else if(!imageRatioCropPresenter.isViewAttached()) {
+        } else if (!imageRatioCropPresenter.isViewAttached()) {
             imageRatioCropPresenter.attachView(this);
         }
     }
@@ -1108,16 +1117,22 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 || currentEditActionType == ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
-    public void trackOpen(){
-        //to be overridden
+    public void trackOpen() {
+        if (ImagePickerGlobalSettings.onImageEditorOpen != null){
+            ImagePickerGlobalSettings.onImageEditorOpen.invoke();
+        }
     }
 
-    public void trackBack(){
-        //to be overridden
+    public void trackBack() {
+        if (ImagePickerGlobalSettings.onImageEditorBack != null){
+            ImagePickerGlobalSettings.onImageEditorBack.invoke();
+        }
     }
 
-    public void trackContinue(){
-        //to be overridden
+    public void trackContinue() {
+        if (ImagePickerGlobalSettings.onImageEditorContinue != null){
+            ImagePickerGlobalSettings.onImageEditorContinue.invoke();
+        }
     }
 
 }

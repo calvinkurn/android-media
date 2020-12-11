@@ -51,9 +51,6 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.imagecropper){
-        exclude group: "com.android.support"
-    }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

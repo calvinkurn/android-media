@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCore)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)

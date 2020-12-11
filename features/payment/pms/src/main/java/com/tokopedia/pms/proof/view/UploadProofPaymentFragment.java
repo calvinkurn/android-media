@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -34,13 +35,13 @@ import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Toaster;
@@ -190,8 +191,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMAGE_PROOF && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+            List<String> imageUrlOrPathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imageUrlOrPathList.size() > 0) {
                 imageUrl = imageUrlOrPathList.get(0);
             }
             isUploaded = false;

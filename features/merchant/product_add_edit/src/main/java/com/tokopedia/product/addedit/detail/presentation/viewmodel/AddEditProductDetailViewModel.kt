@@ -405,7 +405,7 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param originalImageUrl is the list of product photo paths that returned from the image picker which contains all the original image path (it doesn't contain image path of any added or edited image)
      * @param editted is the list of image edit status any image added and edited will have true value
      **/
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>): DetailInputModel {
+    fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>, editted: MutableList<Boolean>): DetailInputModel {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
         }.filterIndexed { index, _ -> !editted[index] }

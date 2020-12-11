@@ -59,6 +59,7 @@ ext {
             fingerprint             : ":libraries:fingerprint",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
+            imagePickerCore         : ":libraries:image_picker_core",
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",

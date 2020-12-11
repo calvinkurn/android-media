@@ -15,12 +15,6 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
 
-        <activity android:name=".picker.main.view.VideoPickerActivity"
-            android:theme="@style/Theme.White"
-            android:label="@string/choose_image"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
-
         <activity android:name=".picker.album.AlbumPickerActivity"
             android:theme="@style/Theme.White"
             android:label="@string/album"
