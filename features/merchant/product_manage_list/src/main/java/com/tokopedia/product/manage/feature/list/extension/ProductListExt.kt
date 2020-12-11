@@ -18,14 +18,8 @@ val String.isMoreOneMonth: Boolean
         val simpleDateFormat = SimpleDateFormat(PATTERN_DATE, Locale.getDefault())
         val pastDate = simpleDateFormat.parse(this)
         val oneMonth = 1
-        val dateNow = simpleDateFormat.parse(getTimeNow())
-        val diffInLong = abs(dateNow?.time.orZero() - pastDate?.time.orZero())
+        val dateNow = System.currentTimeMillis()
+        val diffInLong = abs(dateNow - pastDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInLong, TimeUnit.MILLISECONDS)
         return (diff / 30) > oneMonth
     }
-
-fun getTimeNow(): String {
-    val time = Calendar.getInstance().time
-    val df = SimpleDateFormat(PATTERN_DATE, Locale.getDefault())
-    return df.format(time)
-}
