@@ -692,9 +692,6 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         if (recyclerView.canScrollVertically(1)) {
             navAbTestCondition(
-                    ifNavRevamp = {
-                        navToolbar?.let { it.showShadow() }
-                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
@@ -704,9 +701,6 @@ open class HomeFragment : BaseDaggerFragment(),
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             navAbTestCondition(
-                    ifNavRevamp = {
-                        navToolbar?.let { it.hideShadow() }
-                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()

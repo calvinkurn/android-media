@@ -5,11 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.voucherlist.model.ui.EmptyStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list_empty_state.view.*
-import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -33,6 +33,7 @@ class EmptyStateViewHolder(itemView: View?,
             } else {
                 context.getString(R.string.mvc_no_voucher_history_yet)
             }
+            imgMvcEmptyState.loadImage(VoucherUrl.NO_VOUCHER_RESULT_URL)
             tvMvcEmptyStateTitle.text = title
             tvMvcEmptyStateViewHistory.isVisible = element.isActiveVoucher
 

@@ -4,7 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.AddProductTagChannelResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -13,7 +14,7 @@ import javax.inject.Inject
  */
 class AddProductTagUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<AddProductTagChannelResponse.GetProductId>() {
+) : UseCase<AddProductTagChannelResponse.GetProductId>() {
 
     private val query = """
             mutation setProductTag(${'$'}channelId: String!, ${'$'}productIds: [String]!){
@@ -29,13 +30,15 @@ class AddProductTagUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): AddProductTagChannelResponse.GetProductId {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, AddProductTagChannelResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = AddProductTagChannelResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<AddProductTagChannelResponse>(AddProductTagChannelResponse::class.java)
-        response?.productId?.let {
-            return it
-        }
-        throw DefaultErrorThrowable()
+        return response.productId
     }
 
     companion object {

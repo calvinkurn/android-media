@@ -603,6 +603,18 @@ data class SearchProductModel(
             @Expose
             val applink: String = "",
 
+            @SerializedName("banner_image_url")
+            @Expose
+            val bannerImageUrl: String = "",
+
+            @SerializedName("banner_link_url")
+            @Expose
+            val bannerLinkUrl: String = "",
+
+            @SerializedName("banner_applink_url")
+            @Expose
+            val bannerApplinkUrl: String = "",
+
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
@@ -659,7 +671,15 @@ data class SearchProductModel(
 
             @SerializedName("label_groups")
             @Expose
-            val labelGroupList: List<ProductLabelGroup> = listOf()
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("original_price")
+            @Expose
+            val originalPrice: String = "",
+
+            @SerializedName("discount_percentage")
+            @Expose
+            val discountPercentage: Int = 0
     )
 
     data class SearchInspirationWidget(

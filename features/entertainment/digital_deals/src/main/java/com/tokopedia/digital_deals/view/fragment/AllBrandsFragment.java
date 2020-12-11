@@ -106,8 +106,8 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void showErrorMessage() {
-        Toaster.INSTANCE.showNormalWithAction(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-        });
+        Toaster.INSTANCE.build(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        }).show();
     }
 
     public void getLocations(String selectedLocation) {
