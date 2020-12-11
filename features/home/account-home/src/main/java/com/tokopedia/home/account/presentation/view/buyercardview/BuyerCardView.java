@@ -255,7 +255,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void showSellerAccountCard(String shopName) {
+    public void showSellerAccountCard(String shopName, String roleName) {
         Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
         FrameLayout iconContainer = sellerAccountCard.findViewById(R.id.iconContainer);
         shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));

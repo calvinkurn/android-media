@@ -68,6 +68,8 @@ class BuyerAccountMapper @Inject constructor(
 
             shopName = userSession.shopName.toEmptyStringIfNull()
             isHasShop = userSession.hasShop()
+            // TODO: Set roleName based on userSession value
+            roleName = "Admin Toko"
 
             setShortcutResponse(accountDataModel, this)
 
