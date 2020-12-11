@@ -80,7 +80,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             hideLoading()
             showCameraView()
             rechargeCameraAnalytics.scanIdCard(it)
-            Toaster.make(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.build(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         })
     }
 

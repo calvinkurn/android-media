@@ -337,7 +337,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
         view?.run {
             errorEnquiry.throwable?.let {
-                Toaster.make(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.build(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
     }
@@ -459,7 +459,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun showErrorCartDigital(message: String) {
         view?.run {
-            Toaster.make(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

@@ -221,7 +221,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun onErrorCustomData() {
         val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
         view?.run {
-            Toaster.make(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
