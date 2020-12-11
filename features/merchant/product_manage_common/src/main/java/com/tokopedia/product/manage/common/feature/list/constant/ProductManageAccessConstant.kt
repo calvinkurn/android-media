@@ -15,4 +15,5 @@ object ProductManageAccessConstant {
     const val SET_TOP_ADS = "114"
     const val SET_CASHBACK = "116"
     const val SET_FEATURED = "113"
+    const val PRODUCT_LIST = "100"
 }

@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAc
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_STOCK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MOVE_ETALASE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MULTI_SELECT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.PRODUCT_LIST
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_CASHBACK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_FEATURED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_TOP_ADS
@@ -34,7 +35,8 @@ object ProductManageAccessMapper {
             accessIds.contains(DELETE_PRODUCT),
             accessIds.contains(SET_TOP_ADS),
             accessIds.contains(SET_CASHBACK),
-            accessIds.contains(SET_FEATURED)
+            accessIds.contains(SET_FEATURED),
+            accessIds.contains(PRODUCT_LIST)
         )
     }
 
@@ -52,7 +54,8 @@ object ProductManageAccessMapper {
             deleteProduct = true,
             setTopAds = true,
             setCashBack = true,
-            setFeatured = true
+            setFeatured = true,
+            productList = true
         )
     }
 }
