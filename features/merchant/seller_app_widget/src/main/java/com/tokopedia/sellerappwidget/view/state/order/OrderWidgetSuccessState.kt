@@ -139,6 +139,7 @@ object OrderWidgetSuccessState {
                 })
             }
             setRemoteAdapter(R.id.lvSawOrderList, intent)
+            setEmptyView(R.id.lvSawOrderList, R.id.containerSawOrderListEmpty)
 
             //setup list view item click event
             val itemIntent = Intent(context, OrderAppWidget::class.java).apply {
