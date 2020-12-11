@@ -83,6 +83,8 @@ dependencies {
     //-------------------------------------------------------------------//
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection

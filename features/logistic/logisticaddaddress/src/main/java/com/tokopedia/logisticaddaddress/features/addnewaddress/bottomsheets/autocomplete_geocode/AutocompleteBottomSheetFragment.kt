@@ -256,7 +256,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private fun doLoadAutocompleteGeocode() {
         showLoadingList()
 
-        presenter.clearCacheAutocompleteGeocode()
+//        presenter.clearCacheAutocompleteGeocode()
 //        presenter.getAutocompleteGeocode(currentLat, currentLong)
         viewModel.getAutoCompleteGeocodeList(currentLat, currentLong)
     }
