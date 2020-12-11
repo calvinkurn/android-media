@@ -74,6 +74,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         private var itemShippingText = itemView.findViewById<Typography>(R.id.text_shipping_item)
         private var itemShippingPrice = itemView.findViewById<Typography>(R.id.item_shipping_price)
         private var itemShippingDesc = itemView.findViewById<Typography>(R.id.item_shipping_desc)
+        private var itemShippingError = itemView.findViewById<Typography>(R.id.item_shipping_error)
         private var itemShippingRadio = itemView.findViewById<RadioButtonUnify>(R.id.item_shipping_radio)
         private var itemList = itemView.findViewById<ConstraintLayout>(R.id.item_shipping_list)
 
@@ -82,6 +83,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingText.text = data.servicesDuration
             itemShippingPrice.gone()
             itemShippingDesc.gone()
+            itemShippingError.gone()
+            itemList.alpha = 1f
             itemShippingRadio.isChecked = data.isSelected
             itemShippingRadio.skipAnimation()
             itemList.setOnClickListener {
@@ -99,18 +102,30 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
-                    itemShippingDesc.visible()
-                    itemShippingDesc.text = data.errorMessage
+                    itemShippingError.visible()
+                    itemList.alpha = 0.5f
+                    itemShippingRadio.gone()
+                    itemShippingDesc.gone()
+                    itemShippingError.text = data.errorMessage
                 }
                 data.texts?.textsServiceDesc?.isNotEmpty() == true -> {
+                    itemShippingError.gone()
+                    itemList.alpha = 1f
+                    itemShippingRadio.visible()
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
                 isCourierInstantOrSameday(data.servicesId) -> {
-                    itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
+                    itemShippingError.gone()
+                    itemList.alpha = 1f
+                    itemShippingRadio.visible()
                     itemShippingDesc.visible()
+                    itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
                 }
                 else -> {
+                    itemShippingRadio.visible()
+                    itemList.alpha = 1f
+                    itemShippingError.gone()
                     itemShippingDesc.gone()
                 }
             }
@@ -118,7 +133,9 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingRadio.skipAnimation()
 
             itemList.setOnClickListener {
-                listener.onSelect(data.servicesId)
+                if (itemShippingRadio.visibility == View.VISIBLE) {
+                    listener.onSelect(data.servicesId)
+                }
             }
         }
 
