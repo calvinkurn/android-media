@@ -33,6 +33,7 @@ class AutoCompleteBottomSheetViewModel @Inject constructor(private val repo: Ker
         viewModelScope.launch(onErrorAutoComplete) {
             val autoComplete = repo.getAutoComplete(keyword)
             _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
+
         }
     }
 
