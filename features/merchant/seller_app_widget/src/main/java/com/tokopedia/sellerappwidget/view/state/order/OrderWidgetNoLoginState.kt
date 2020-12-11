@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
@@ -34,6 +35,9 @@ object OrderWidgetNoLoginState {
                 awm.updateAppWidget(it, this)
             }
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventImpressionNoLoginStateOrderWidget()
     }
 
     private fun setupViewSmallWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {

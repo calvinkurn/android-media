@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
@@ -35,5 +36,8 @@ object ChatWidgetEmptyState {
             WidgetSize.NORMAL -> ChatWidgetStateHelper.setupNormalWidget(context, remoteViews, data)
             else -> ChatWidgetStateHelper.setupLargeWidget(context, remoteViews, data)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventImpressionEmptyStateChatWidget()
     }
 }

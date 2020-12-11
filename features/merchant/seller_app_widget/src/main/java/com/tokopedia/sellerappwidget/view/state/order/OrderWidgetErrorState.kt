@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
@@ -25,6 +26,9 @@ object OrderWidgetErrorState {
             WidgetSize.NORMAL -> showNormalWidgetErrorState(context, remoteViews, widgetId)
             else -> showLargeWidgetErrorState(context, remoteViews, widgetId)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventImpressionErrorStateOrderWidget()
     }
 
     private fun showSmallWidgetErrorState(context: Context, remoteViews: RemoteViews, widgetId: Int) {

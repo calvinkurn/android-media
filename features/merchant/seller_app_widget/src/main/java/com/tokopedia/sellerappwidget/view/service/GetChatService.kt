@@ -84,7 +84,7 @@ class GetChatService : JobIntentService(), AppWidgetView<List<ChatUiModel>> {
         val ids = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(applicationContext, awm)
         ids.forEach {
             ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
-            ChatWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            ChatWidgetLoadingState.setupLoadingState(applicationContext, awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
     }

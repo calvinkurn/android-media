@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -109,6 +110,9 @@ object OrderWidgetSuccessState {
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_ready_to_ship))
                     registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
                     registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
+
+                    AppWidgetTracking.getInstance(context)
+                            .sendEventImpressionNewOrderOrderWidget()
                 }
                 else -> {
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_VISIBILITY, View.GONE)
@@ -117,6 +121,9 @@ object OrderWidgetSuccessState {
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_new_order))
                     registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
                     registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
+
+                    AppWidgetTracking.getInstance(context)
+                            .sendEventImpressionReadyShippingOrderWidget()
                 }
             }
 

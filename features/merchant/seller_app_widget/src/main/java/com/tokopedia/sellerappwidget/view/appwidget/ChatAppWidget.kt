@@ -7,6 +7,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
@@ -47,7 +49,7 @@ class ChatAppWidget : AppWidgetProvider() {
             }
             Const.Action.REFRESH -> refreshWidget(context)
             Const.Action.ITEM_CLICK -> onChatItemClick(context, intent)
-            Const.Action.OPEN_APPLINK -> AppWidgetHelper.openAppLink(context, intent)
+            Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
         }
         super.onReceive(context, intent)
     }
@@ -67,11 +69,31 @@ class ChatAppWidget : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
+    private fun openAppLink(context: Context, intent: Intent) {
+        val applink = intent.data.toString()
+        val appWidgetTracking = AppWidgetTracking.getInstance(context)
+        when (applink) {
+            ApplinkConst.SellerApp.CENTRALIZED_PROMO -> {
+                appWidgetTracking.sendEventClickCheckNowChatWidget()
+            }
+            ApplinkConst.LOGIN -> {
+                appWidgetTracking.sendEventClickLoginNowChatWidget()
+            }
+            ApplinkConst.SellerApp.SELLER_APP_HOME -> {
+                appWidgetTracking.sendEventClickSellerIconChatWidget()
+            }
+            ApplinkConstInternalSellerapp.SELLER_HOME_CHAT -> {
+                appWidgetTracking.sendEventClickShopNameChatWidget()
+            }
+        }
+        AppWidgetHelper.openAppLink(context, intent)
+    }
+
     private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {
         val remoteViews = AppWidgetHelper.getChatWidgetRemoteView(context)
         ids.forEach {
             ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
-            ChatWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            ChatWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
     }
@@ -83,6 +105,10 @@ class ChatAppWidget : AppWidgetProvider() {
         val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, chatId.toString()).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventClickItemChatWidget()
+
         context.startActivity(chatRoomIntent)
     }
 
@@ -96,6 +122,10 @@ class ChatAppWidget : AppWidgetProvider() {
                 return
             }
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventClickRefreshButtonChatWidget()
+
         GetChatService.startService(context)
     }
 

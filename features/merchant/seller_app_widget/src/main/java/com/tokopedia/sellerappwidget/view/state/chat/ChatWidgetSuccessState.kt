@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
@@ -28,10 +29,7 @@ object ChatWidgetSuccessState {
 
     fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, chats: List<ChatUiModel>, widgetId: Int) {
         val awm = AppWidgetManager.getInstance(context)
-        val option = awm.getAppWidgetOptions(widgetId)
         ChatWidgetStateHelper.updateViewOnSuccess(remoteViews)
-
-        val widgetSize = AppWidgetHelper.getAppWidgetSize(option)
 
         val totalChats = "${chats.size} " + context.getString(R.string.saw_new_chat)
         with(remoteViews) {
@@ -72,5 +70,8 @@ object ChatWidgetSuccessState {
             registerAppLinkIntent(context, R.id.tvSawChatTotalChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
             registerAppLinkIntent(context, R.id.imgSawChatAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventImpressionSuccessStateChatWidget()
     }
 }

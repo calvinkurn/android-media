@@ -6,10 +6,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.RemoteViews
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.sellerappwidget.R
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -83,7 +84,7 @@ class OrderAppWidget : AppWidgetProvider() {
         val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
         ids.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
-            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            OrderWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
     }
@@ -96,16 +97,34 @@ class OrderAppWidget : AppWidgetProvider() {
 
     private fun openAppLink(context: Context, intent: Intent) {
         val appLink = intent.data?.toString().orEmpty()
-        val appLinkIntent = RouteManager.getIntent(context, appLink).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val appWidgetTracking = AppWidgetTracking.getInstance(context)
+
+        when (appLink) {
+            ApplinkConstInternalSellerapp.SELLER_HOME -> {
+                appWidgetTracking.sendEventClickSellerIconOrderWidget()
+            }
+            ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP,
+            ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER -> {
+                appWidgetTracking.sendEventClickShopNameOrderWidget()
+            }
+            ApplinkConst.LOGIN -> {
+                appWidgetTracking.sendEventClickLoginNowOrderWidget()
+            }
+            ApplinkConst.SellerApp.CENTRALIZED_PROMO -> {
+                appWidgetTracking.sendEventClickCheckNowOrderWidget()
+            }
         }
-        context.startActivity(appLinkIntent)
+
+        AppWidgetHelper.openAppLink(context, intent)
     }
 
     private fun switchOrder(context: Context, intent: Intent) {
         val orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, DEFAULT_ORDER_STATUS_ID)
         val widgetItems: List<OrderUiModel> = intent.getParcelableArrayListExtra<OrderUiModel>(Const.Extra.ORDER_ITEMS).orEmpty()
         setOnSuccess(context, ArrayList(widgetItems), orderStatusId)
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventClickSwitchButtonOrderWidget()
     }
 
     private fun refreshWidget(context: Context, intent: Intent) {
@@ -121,9 +140,13 @@ class OrderAppWidget : AppWidgetProvider() {
         }
         appWidgetIds.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
-            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            OrderWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventClickRefreshButtonOrderWidget()
+
         GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
     }
 
@@ -134,6 +157,10 @@ class OrderAppWidget : AppWidgetProvider() {
         val orderDetailIntent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+
+        AppWidgetTracking.getInstance(context)
+                .sendEventClickItemOrderWidget()
+
         context.startActivity(orderDetailIntent)
     }
 

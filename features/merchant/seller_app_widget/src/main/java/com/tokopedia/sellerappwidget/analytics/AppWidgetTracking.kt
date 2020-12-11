@@ -17,6 +17,17 @@ import java.util.concurrent.TimeUnit
 
 class AppWidgetTracking(context: Context) {
 
+    companion object {
+        private var appWidgetTracking: AppWidgetTracking? = null
+
+        fun getInstance(context: Context): AppWidgetTracking {
+            if (appWidgetTracking == null) {
+                appWidgetTracking = AppWidgetTracking(context)
+            }
+            return appWidgetTracking!!
+        }
+    }
+
     private val userSession: UserSessionInterface by lazy {
         UserSession(context)
     }
@@ -42,14 +53,6 @@ class AppWidgetTracking(context: Context) {
 
     fun sendEventImpressionLoadingStateChatWidget() {
         val action = TrackingConstant.Action.IMPRESSION_LOADING_STATE
-        sendEventOnceADayChat(action) {
-            val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
-        }
-    }
-
-    fun sendEventImpressionNoAccessStateChatWidget() {
-        val action = TrackingConstant.Action.IMPRESSION_NO_ACCESS_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
             sendEvent(eventMap)
@@ -134,15 +137,7 @@ class AppWidgetTracking(context: Context) {
         }
     }
 
-    fun sendEventImpressionNoAccessStateOrderWidget() {
-        val action = TrackingConstant.Action.IMPRESSION_NO_ACCESS_STATE
-        sendEventOnceADayOrder(action) {
-            val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
-        }
-    }
-
-    fun sendEventImpressionNoConnectionStateOrderWidget() {
+    fun sendEventImpressionErrorStateOrderWidget() {
         val action = TrackingConstant.Action.IMPRESSION_NO_CONNECTION_STATE
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)

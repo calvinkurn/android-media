@@ -102,7 +102,7 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         val ids = awm.getAppWidgetIds(ComponentName(applicationContext, OrderAppWidget::class.java))
         ids.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
-            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
+            OrderWidgetLoadingState.setupLoadingState(applicationContext, awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
     }
