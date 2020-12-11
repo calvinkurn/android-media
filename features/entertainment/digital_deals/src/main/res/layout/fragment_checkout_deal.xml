@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
 
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/divider_color"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
 
 
@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/divider_color"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintTop_toBottomOf="@+id/iv_map" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -187,7 +187,7 @@
                         android:layout_below="@id/tv1"
                         android:layout_marginTop="@dimen/dp_16"
                         android:text="@string/email"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/Unify_N500"
                         style="@style/TextView.Micro"
                         app:layout_constraintLeft_toLeftOf="@+id/tv1"
                         app:layout_constraintTop_toBottomOf="@+id/ticker_info" />
@@ -203,7 +203,7 @@
                         android:focusableInTouchMode="false"
                         android:maxLines="1"
                         android:paddingLeft="@dimen/dp_0"
-                        android:textColorHint="@color/grey_300"
+                        android:textColorHint="@color/Unify_N100"
                         style="@style/TextView.Title.BlackPrimary"
                         app:layout_constraintLeft_toLeftOf="@+id/tv2"
                         app:layout_constraintRight_toLeftOf="@+id/update_email"
@@ -235,7 +235,7 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:text="@string/phone_number"
                         style="@style/TextView.Micro"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/Unify_N500"
                         app:layout_constraintLeft_toLeftOf="@+id/tv1"
                         app:layout_constraintTop_toBottomOf="@+id/tv_email" />
 
@@ -251,7 +251,7 @@
                         android:focusableInTouchMode="false"
                         android:maxLines="1"
                         android:paddingLeft="@dimen/dp_0"
-                        android:textColorHint="@color/grey_300"
+                        android:textColorHint="@color/Unify_N100"
                         style="@style/TextView.Title.BlackPrimary"
                         app:layout_constraintLeft_toLeftOf="@+id/tv3"
                         app:layout_constraintTop_toBottomOf="@+id/tv3" />
@@ -265,7 +265,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/divider_color"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintTop_toBottomOf="@+id/cl_contact_info" />
 
                 <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -282,7 +282,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/divider_color"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintTop_toBottomOf="@+id/ticker_promocode" />
 
                 <TextView
@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     style="@style/TextView.Micro"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers"
@@ -362,7 +362,7 @@
                         android:layout_marginTop="@dimen/dp_16"
                         android:fontFamily="sans-serif"
                         android:text="@string/text_discount_promo"
-                        android:textColor="@color/black_39"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="normal"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -410,7 +410,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/divider_color"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintTop_toBottomOf="@+id/tv_service_fee" />
 
                 <TextView
@@ -431,7 +431,7 @@
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_2"
                     android:includeFontPadding="false"
-                    android:textColor="@color/red_800"
+                    android:textColor="@color/Unify_Y500"
                     style="@style/TextView.Medium.FontMedium"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment"
                     app:layout_constraintRight_toRightOf="parent"
@@ -448,7 +448,7 @@
             android:layout_height="@dimen/bottom_view_height"
             android:layout_gravity="bottom"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="@color/Unify_N0">
 
 
             <TextView
@@ -473,7 +473,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

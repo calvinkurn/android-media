@@ -225,7 +225,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
         coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(com.tokopedia.digital_deals.R.string.coachicon_title_location), getString(com.tokopedia.digital_deals.R.string.coachicon_description_location)));
         coachItems.add(new CoachMarkItem(searchInputView, getString(com.tokopedia.digital_deals.R.string.coachicon_title_searchbar), getString(com.tokopedia.digital_deals.R.string.coachicon_description_searchbar)));
-        coachItems.add(new CoachMarkItem(cvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
+        coachItems.add(new CoachMarkItem(cvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.unifyprinciples.R.color.Unify_N0, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
         coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
             @Override
@@ -361,7 +361,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setDrawableTint(Drawable img) {
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
         Drawable mutableDrawable = wrappedDrawable.mutate();
-        DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), com.tokopedia.digital_deals.R.color.color_search_icon));
+        DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N150));
     }
 
     public void hideSearchButton() {
@@ -441,7 +441,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 imageViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_category);
                 textViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.tv_category);
                 textViewCatItem.setText(categoryList.get(position).getTitle());
-                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 final int position1 = position;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override

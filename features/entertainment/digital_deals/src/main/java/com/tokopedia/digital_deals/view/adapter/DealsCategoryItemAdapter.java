@@ -52,7 +52,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
         public void bindData(final CategoryItem categoryItem) {
             textViewCatItem.setText(categoryItem.getTitle());
             itemView.setOnClickListener(this);
-            ImageHandler.loadImage(context, imageViewCatItem, categoryItem.getMediaUrl(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, imageViewCatItem, categoryItem.getMediaUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
         }
 
         public void setIndex(int position) {

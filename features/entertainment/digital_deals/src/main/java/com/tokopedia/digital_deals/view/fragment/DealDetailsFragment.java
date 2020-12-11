@@ -317,7 +317,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             tvBrandAddress.setText(outlet.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(com.tokopedia.digital_deals.R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
-            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             if (dealDetail.getBrand().getUrl() != null) {
                 ivBrandLogo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -363,7 +363,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         {
             buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_disable_buy_now));
             buyDealNow.setClickable(false);
-            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.digital_deals.R.color.search_divider_color));
+            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75));
         } else {
             buyDealNow.setClickable(true);
             buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.buy_now));
@@ -488,12 +488,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 if (tvDealDetails.getText() != null) {
                     collapsingToolbarLayout.setTitle(tvDealDetails.getText());
                 }
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
             } else {
                 collapsingToolbarLayout.setTitle(" ");
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
         });
     }
