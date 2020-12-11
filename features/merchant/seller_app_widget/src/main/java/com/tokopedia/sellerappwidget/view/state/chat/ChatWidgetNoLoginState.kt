@@ -39,7 +39,7 @@ object ChatWidgetNoLoginState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_login_tokopedia_seller_large),
                 description = context.getString(R.string.saw_no_login_check_chat_description),
-                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                imgUrl = Const.Images.COMMON_NO_LOGIN,
                 ctaText = context.getString(R.string.saw_login_now),
                 appLink = ApplinkConst.LOGIN
         )
@@ -51,7 +51,7 @@ object ChatWidgetNoLoginState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_login_tokopedia_seller_large),
                 description = context.getString(R.string.saw_no_login_check_chat_description),
-                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                imgUrl = Const.Images.COMMON_NO_LOGIN,
                 ctaText = context.getString(R.string.saw_login_now),
                 appLink = ApplinkConst.LOGIN
         )

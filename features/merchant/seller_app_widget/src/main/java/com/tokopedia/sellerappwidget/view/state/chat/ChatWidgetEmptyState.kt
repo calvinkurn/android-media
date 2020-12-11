@@ -27,7 +27,7 @@ object ChatWidgetEmptyState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_chat_empty_state_title),
                 description = context.getString(R.string.saw_chat_empty_state_description),
-                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                imgUrl = Const.Images.COMMON_ON_EMPTY,
                 ctaText = context.getString(R.string.saw_check_now),
                 appLink = ApplinkConst.SellerApp.CENTRALIZED_PROMO
         )

@@ -31,7 +31,7 @@ object ChatWidgetErrorState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_order_small_error_state_title_normal),
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
-                imgUrl = Const.Images.ORDER_ON_EMPTY
+                imgUrl = Const.Images.COMMON_ON_ERROR
         )
         ChatWidgetStateHelper.setupNormalCommonWidget<ChatAppWidget>(context, remoteViews, data)
     }
@@ -41,7 +41,7 @@ object ChatWidgetErrorState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_order_small_error_state_title_normal),
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
-                imgUrl = Const.Images.ORDER_ON_EMPTY
+                imgUrl = Const.Images.COMMON_ON_ERROR
         )
         ChatWidgetStateHelper.setupLargeCommonWidget<ChatAppWidget>(context, remoteViews, data)
     }

@@ -41,7 +41,7 @@ abstract class AppWidgetStateHelper {
             setupRefreshIntent<T>(context, this, R.id.btnSawNormalRefreshCommon, data.widgetId)
             registerAppLinkIntent(context, R.id.tvSawNormalCommonCta, data.appLink, data.widgetId)
 
-            Utils.loadImageIntoAppWidget(context, this, R.id.imgSawNormalCommon, Const.Images.ORDER_ON_EMPTY, data.widgetId)
+            Utils.loadImageIntoAppWidget(context, this, R.id.imgSawNormalCommon, data.imgUrl, data.widgetId)
         }
     }
 

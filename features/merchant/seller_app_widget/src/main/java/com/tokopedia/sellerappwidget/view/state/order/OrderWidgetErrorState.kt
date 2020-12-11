@@ -32,7 +32,7 @@ object OrderWidgetErrorState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_order_small_error_state_title_small),
                 description = context.getString(R.string.saw_order_small_error_state_description_small),
-                imgUrl = Const.Images.ORDER_ON_EMPTY
+                imgUrl = Const.Images.COMMON_ON_ERROR
         )
         OrderWidgetStateHelper.setupSmallCommonWidget(context, remoteViews, data)
     }
@@ -42,7 +42,7 @@ object OrderWidgetErrorState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_order_small_error_state_title_normal),
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
-                imgUrl = Const.Images.ORDER_ON_EMPTY
+                imgUrl = Const.Images.COMMON_ON_ERROR
         )
         OrderWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteViews, data)
     }
@@ -52,7 +52,7 @@ object OrderWidgetErrorState {
                 widgetId = widgetId,
                 title = context.getString(R.string.saw_order_small_error_state_title_normal),
                 description = context.getString(R.string.saw_order_small_error_state_description_normal),
-                imgUrl = Const.Images.ORDER_ON_EMPTY
+                imgUrl = Const.Images.COMMON_ON_ERROR
         )
         OrderWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteViews, data)
     }
