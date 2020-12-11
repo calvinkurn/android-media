@@ -72,7 +72,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()

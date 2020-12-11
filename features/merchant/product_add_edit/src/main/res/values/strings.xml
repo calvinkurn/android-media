@@ -5,6 +5,7 @@
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
     <string name="label_title_draft_product">Draft Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, isi informasi produkmu</string>

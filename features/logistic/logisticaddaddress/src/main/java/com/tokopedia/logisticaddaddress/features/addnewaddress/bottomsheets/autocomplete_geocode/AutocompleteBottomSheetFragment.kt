@@ -140,7 +140,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
         mDisabledGps = view.findViewById(R.id.layout_gps_disabled)
-        etSearch = view.findViewById(R.id.et_search)
+        etSearch = view.findViewById(R.id.et_search_logistic)
         icCloseBtn = view.findViewById(R.id.ic_close)
 
         adapter = AutocompleteBottomSheetAdapter(this)

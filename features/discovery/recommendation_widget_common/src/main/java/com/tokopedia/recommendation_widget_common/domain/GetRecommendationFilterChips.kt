@@ -29,6 +29,8 @@ class GetRecommendationFilterChips (
             "                data { \n" +
             "                   filter {\n" +
             "                       name\n" +
+            "                       title\n" +
+            "                       templateName\n" +
             "                       icon\n" +
             "                        value\n" +
             "                        inputType\n" +
@@ -36,6 +38,7 @@ class GetRecommendationFilterChips (
             "                        options {\n" +
             "                           name\n" +
             "                           icon\n" +
+            "                           key\n" +
             "                           value\n" +
             "                           inputType\n" +
             "                           isActivated\n" +
