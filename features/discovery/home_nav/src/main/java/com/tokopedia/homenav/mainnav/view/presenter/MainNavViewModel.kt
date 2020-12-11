@@ -283,7 +283,7 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getBuListMenu() {
         val buListData = _mainNavListVisitable.firstOrNull {
-            it is HomeNavMenuViewModel && it.id == MainNavConst.Section.BU_ICON
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.BU_ICON
         }
         launchCatchError(coroutineContext, block = {
             getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
