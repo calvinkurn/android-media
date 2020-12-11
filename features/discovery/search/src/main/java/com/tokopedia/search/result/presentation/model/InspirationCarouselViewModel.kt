@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -22,6 +23,9 @@ class InspirationCarouselViewModel(
             val title: String = "",
             val url: String = "",
             val applink: String = "",
+            val bannerImageUrl: String = "",
+            val bannerLinkUrl: String = "",
+            val bannerApplinkUrl: String = "",
             val product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
             val layout: String = ""
@@ -43,8 +47,18 @@ class InspirationCarouselViewModel(
             val applink: String = "",
             val description: List<String> = listOf(),
             val optionPosition: Int = 0,
-            val inspirationCarouselType: String = ""
-        ): ImpressHolder() {
+            val inspirationCarouselType: String = "",
+            val ratingAverage: String = "",
+            val labelGroupList: List<LabelGroupViewModel> = listOf(),
+            val layout: String = "",
+            val originalPrice: String = "",
+            val discountPercentage: Int = 0
+        ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
+
+            override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
+                return typeFactory.type(layout)
+            }
+
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
                         "name", name,

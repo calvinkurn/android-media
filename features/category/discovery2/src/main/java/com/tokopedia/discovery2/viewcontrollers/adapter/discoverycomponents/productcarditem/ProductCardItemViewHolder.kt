@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -68,6 +69,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
+        getSubComponent().inject(productCardItemViewModel)
         initView()
     }
 
@@ -361,8 +363,15 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                 productCardItemViewModel.handleNavigation()
                 sendClickEvent()
             }
-            notifyMeView -> productCardItemViewModel.subscribeUser()
+            notifyMeView -> {
+                sentNotifyButtonEvent()
+                productCardItemViewModel.subscribeUser()
+            }
         }
+    }
+
+    private fun sentNotifyButtonEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(productCardItemViewModel.components, productCardItemViewModel.isUserLoggedIn())
     }
 
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {

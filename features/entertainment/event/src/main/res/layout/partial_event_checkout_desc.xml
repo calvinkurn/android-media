@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,7 +26,7 @@
         tools:text="Legoland Malaysia in Johor Bahru Admissnistration"
         app:typographyWeight="bold"
         app:typographyType="body_1"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_date"
         app:layout_constraintLeft_toLeftOf="parent"

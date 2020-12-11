@@ -142,9 +142,6 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
         String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
         String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
-        String AB_TEST_NAVIGATION_REVAMP = "Navigation Revamp";
-        String AB_TEST_OLD_NAV = "existing navigation";
-        String AB_TEST_NAV_REVAMP = "Navigation Revamp";
     }
 
     interface ProductCardLabel {
@@ -161,6 +158,8 @@ public interface SearchConstant {
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
     }
 
     interface TopAdsComponent {

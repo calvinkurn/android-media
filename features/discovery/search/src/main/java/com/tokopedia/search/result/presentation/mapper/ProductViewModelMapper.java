@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupVariantViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
@@ -21,6 +22,9 @@ import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.functions.Function1;
 
 public class ProductViewModelMapper {
 
@@ -249,6 +253,7 @@ public class ProductViewModelMapper {
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
+        productItem.setLabelGroupVariantList(convertToLabelGroupVariantList(productModel.getLabelGroupVariantList()));
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         productItem.setBoosterList(productModel.getBoosterList());
         productItem.setSourceEngine(productModel.getSourceEngine());
@@ -299,6 +304,23 @@ public class ProductViewModelMapper {
                 labelGroupModel.getType(),
                 labelGroupModel.getTitle(),
                 labelGroupModel.getUrl()
+        );
+    }
+
+    private List<LabelGroupVariantViewModel> convertToLabelGroupVariantList(
+            List<SearchProductModel.ProductLabelGroupVariant> labelGroupVariantList
+    ) {
+        return CollectionsKt.map(labelGroupVariantList, this::convertToLabelGroupVariantViewModel);
+    }
+
+    private LabelGroupVariantViewModel convertToLabelGroupVariantViewModel(
+            SearchProductModel.ProductLabelGroupVariant labelGroupVariant
+    ) {
+        return new LabelGroupVariantViewModel(
+                labelGroupVariant.getTitle(),
+                labelGroupVariant.getType(),
+                labelGroupVariant.getTypeVariant(),
+                labelGroupVariant.getHexColor()
         );
     }
 
@@ -353,7 +375,10 @@ public class ProductViewModelMapper {
                     opt.getTitle(),
                     opt.getUrl(),
                     opt.getApplink(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
+                    opt.getBannerImageUrl(),
+                    opt.getBannerLinkUrl(),
+                    opt.getBannerApplinkUrl(),
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType, layout),
                     inspirationCarouselType,
                     layout
             ));
@@ -362,7 +387,12 @@ public class ProductViewModelMapper {
         return options;
     }
 
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position, String inspirationCarouselType) {
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(
+            List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct,
+            int position,
+            String inspirationCarouselType,
+            String layout
+    ) {
         List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
@@ -378,7 +408,12 @@ public class ProductViewModelMapper {
                     product.getApplink(),
                     product.getDescription(),
                     position,
-                    inspirationCarouselType
+                    inspirationCarouselType,
+                    product.getRatingAverage(),
+                    convertToLabelGroupList(product.getLabelGroupList()),
+                    layout,
+                    product.getOriginalPrice(),
+                    product.getDiscountPercentage()
             ));
         }
 
