@@ -19,12 +19,14 @@ class EmptyStateViewHolder(itemView: View?,
                            private val onImpressionListener: (dataKey: String) -> Unit) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
 
     companion object {
+        const val EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/mvc_empty_state.png"
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_empty_state
     }
 
     override fun bind(element: EmptyStateUiModel) {
         with(itemView) {
+            imgMvcEmptyState.loadImage(EMPTY_IMAGE_URL)
             addOnImpressionListener(element.impressHolder) {
                 onImpressionListener(EmptyStateUiModel.DATA_KEY)
             }

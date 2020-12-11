@@ -94,11 +94,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun setMaxHeight(height: Int) {
-        if (height > 0) {
-            val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
-            carouselLayoutParams?.height = height
-            mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
-        }
+        val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
+        carouselLayoutParams?.height = height
+        mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
