@@ -49,7 +49,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/layout_lvl1"
-            app:srcCompat="@drawable/digital_arrow"
+            app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24"
             android:tint="@color/Unify_N700_44"
             tools:ignore="ContentDescription"/>
 
