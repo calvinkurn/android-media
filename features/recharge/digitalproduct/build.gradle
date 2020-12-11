@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.common_promo)

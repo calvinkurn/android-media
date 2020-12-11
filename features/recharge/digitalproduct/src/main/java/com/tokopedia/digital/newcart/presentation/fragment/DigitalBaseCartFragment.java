@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -45,7 +44,6 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -61,7 +59,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -74,9 +71,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
-    public static final int PAYMENT_SUCCESS = 5;
-
-    private static final int DELAY_ERROR_SHOWING = 3000;
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -375,18 +369,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
                 case PaymentConstant.PAYMENT_SUCCESS:
-                    if (getActivity() != null) {
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-
-                        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                        rating.setDialogDismissListener(() -> {
-                            if (getActivity() != null) {
-                                getActivity().setResult(PAYMENT_SUCCESS);
-                                closeView();
-                            }
-                        });
-                        rating.showDialog(manager, getContext());
-                    }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;
                 case PaymentConstant.PAYMENT_FAILED:
