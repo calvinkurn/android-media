@@ -24,6 +24,8 @@ class OrderListMapper @Inject constructor() {
                     destinationProvince = it.destinationProvince,
                     courierName = it.courierName.replace("Kurir", "", false).replace(Regex("\\s{2,}"), " "),
                     courierProductName = it.courierProductName,
+                    preOrderType = it.preOrderType,
+                    buyerName = it.buyerName.capitalize(),
                     tickerInfo = it.tickerInfo,
                     buttons = mapButtons(it.buttons),
                     searchParam = keyword

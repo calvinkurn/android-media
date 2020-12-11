@@ -52,31 +52,31 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductListEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopEmptyProductViewModel: ShopEmptyProductViewModel): Int {
+    fun type(shopEmptyProductUiModel: ShopEmptyProductUiModel): Int {
         return ShopProductsEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel): Int {
+    fun type(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel): Int {
         return ShopProductEtalaseHighlightViewHolder.LAYOUT
     }
 
-    fun type(etalaseHighlightCarouselViewModel: EtalaseHighlightCarouselViewModel): Int {
+    fun type(etalaseHighlightCarouselUiModel: EtalaseHighlightCarouselUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
-    fun type(membershipStampProgressViewModel: MembershipStampProgressViewModel): Int {
+    fun type(membershipStampProgressUiModel: MembershipStampProgressUiModel): Int {
         return MembershipStampProgressViewHolder.LAYOUT
     }
 
-    fun type(shopProductFeaturedViewModel: ShopProductFeaturedViewModel): Int {
+    fun type(shopProductFeaturedUiModel: ShopProductFeaturedUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
-    fun type(shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel): Int {
+    fun type(shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel): Int {
         return ShopMerchantVoucherViewHolder.LAYOUT
     }
 
-    fun type(shopProductViewModel: ShopProductViewModel): Int {
+    fun type(shopProductUiModel: ShopProductUiModel): Int {
         return when(productCardType) {
             ShopProductViewGridType.SMALL_GRID -> {
                 ShopProductViewHolder.GRID_LAYOUT
@@ -98,11 +98,11 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductSortFilterViewHolder.LAYOUT
     }
 
-    fun type(viewModel: HideViewModel): Int {
+    fun type(uiModel: HideUiModel): Int {
         return HideViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseTitleViewModel: ShopProductEtalaseTitleViewModel): Int {
+    fun type(shopProductEtalaseTitleUiModel: ShopProductEtalaseTitleUiModel): Int {
         return ShopProductEtalaseTitleViewHolder.LAYOUT
     }
 
@@ -110,11 +110,11 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductChangeGridSectionViewHolder.LAYOUT
     }
 
-    fun type(shopProductAddViewModel: ShopProductAddViewModel): Int {
+    fun type(shopProductAddUiModel: ShopProductAddUiModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
 
-    fun type(shopSellerEmptyProductAllEtalaseViewModel: ShopSellerEmptyProductAllEtalaseViewModel): Int {
+    fun type(shopSellerEmptyProductAllEtalaseUiModel: ShopSellerEmptyProductAllEtalaseUiModel): Int {
         return ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT
     }
 
