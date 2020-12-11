@@ -7,7 +7,7 @@ data class SeparatorViewModel(
         val isSeparator: Boolean = true,
         val sectionId: Int? = null
 ): MainNavVisitable, ImpressHolder() {
-    override fun id(): Any = "separator"
+    override fun id(): Any = sectionId.toString()
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean = id() == visitable.id()
 

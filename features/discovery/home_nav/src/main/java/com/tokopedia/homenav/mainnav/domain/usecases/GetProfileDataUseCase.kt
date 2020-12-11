@@ -64,7 +64,6 @@ class GetProfileDataUseCase @Inject constructor(
             userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
             shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
 
-
             accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
                     ovoData,

@@ -28,15 +28,7 @@ data class AccountHeaderViewModel(
     override fun id(): Any = id
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean {
-        return visitable is AccountHeaderViewModel &&
-                loginState == visitable.loginState && userName == visitable.userImage &&
-                badge == visitable.badge && ovoSaldo == visitable.ovoSaldo &&
-                ovoPoint == visitable.ovoPoint && saldo == visitable.saldo &&
-                shopName == visitable.shopName && shopId == visitable.shopId &&
-                shopNotifCount == visitable.shopNotifCount && shopApplink == visitable.shopApplink &&
-                isGetShopError == visitable.isGetShopError &&
-                isGetShopLoading == visitable.isGetShopLoading &&
-                isProfileLoading == visitable.isProfileLoading
+        return this == visitable
     }
 
     override fun type(factory: MainNavTypeFactory): Int {

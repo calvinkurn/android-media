@@ -28,7 +28,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return AccountHeaderViewHolder.LAYOUT
     }
 
-    override fun type(homeNavMenuViewModel: HomeNavMenuViewModel): Int {
+    override fun type(visitable: HomeNavMenuViewModel): Int {
         return HomeNavMenuViewHolder.LAYOUT
     }
 

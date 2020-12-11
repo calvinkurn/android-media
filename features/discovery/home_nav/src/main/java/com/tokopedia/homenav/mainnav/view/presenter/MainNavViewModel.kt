@@ -34,10 +34,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,18 +58,6 @@ class MainNavViewModel @Inject constructor(
     }
 
     private var haveLogoutData: Boolean? = false
-    val mainNavLiveData: LiveData<MainNavigationDataModel>
-        get() = _mainNavLiveData
-    private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
-    private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
-
-    val onboardingListLiveData: LiveData<List<Visitable<*>>>
-        get() = _onboardingListLiveData
-    private val _onboardingListLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
-
-    val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
-        get() = _businessListLiveData
-    private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
 
     //network process live data, false if it is processing and true if it is finished
     val networkProcessLiveData: LiveData<Boolean>
@@ -86,6 +71,22 @@ class MainNavViewModel @Inject constructor(
 
     private var pageSource: String = ""
 
+    private var _mainNavListVisitable = setInitialState()
+
+    val onboardingListLiveData: LiveData<List<Visitable<*>>>
+        get() = _onboardingListLiveData
+    private val _onboardingListLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
+
+    val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
+        get() = _businessListLiveData
+    private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
+
+    val mainNavLiveData: LiveData<MainNavigationDataModel>
+        get() = _mainNavLiveData
+    private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel(
+            dataList = _mainNavListVisitable
+    ))
+
     init {
         setInitialState()
         getMainNavData(true)
@@ -98,6 +99,7 @@ class MainNavViewModel @Inject constructor(
     fun updateWidget(visitable: Visitable<*>, position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList[position] = visitable
+        _mainNavListVisitable = newMainNavList
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
     }
 
@@ -105,6 +107,7 @@ class MainNavViewModel @Inject constructor(
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAt(position)
         newMainNavList.addAll(position, visitables)
+        _mainNavListVisitable = newMainNavList
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
     }
 
@@ -115,37 +118,43 @@ class MainNavViewModel @Inject constructor(
         } else {
             newMainNavList.add(position, visitable)
         }
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
-    fun addWidgetList(visitables: List<Visitable<*>>) {
+    fun updateWidgetList(visitables: List<Visitable<*>>) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.addAll(visitables)
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
     fun addInitialWidgetList(visitables: List<Visitable<*>>) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.addAll(visitables)
-        _mainNavLiveData.value = _mainNavLiveData.value?.copy(dataList = newMainNavList)
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
     fun deleteWidget(position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAt(position)
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
     fun deleteWidget(visitable: Visitable<*>) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.remove(visitable)
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
     fun deleteWidgetList(visitables: List<Visitable<*>>) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAll(visitables)
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavListVisitable = newMainNavList
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
     }
 
     fun setPageSource(pageSource: String = "") {
@@ -180,19 +189,20 @@ class MainNavViewModel @Inject constructor(
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
-    private fun setInitialState() {
+    private fun setInitialState(): MutableList<Visitable<*>> {
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
             initialList.add(InitialShimmerProfileDataModel())
         } else {
             initialList.add(AccountHeaderViewModel(loginState = getLoginState()))
         }
-
+        initialList.add(SeparatorViewModel(sectionId = MainNavConst.Section.HOME))
         initialList.addHomeBackButtonMenu()
         initialList.add(InitialShimmerDataModel())
+        initialList.add(InitialShimmerTransactionDataModel())
         initialList.addTransactionMenu()
         initialList.addUserMenu()
-        addInitialWidgetList(initialList)
+        return initialList
     }
 
     private fun getLoginState(): Int {
@@ -206,32 +216,22 @@ class MainNavViewModel @Inject constructor(
     private fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
-            launchCatchError(context = coroutineContext, block = {
-                if (useCacheData) {
-                    onlyForLoggedInUser { getProfileDataCached() }
-                    getBuListMenuCached()
-                }
-
-                //update cached data with cloud data
-                onlyForLoggedInUser {
-                    getOngoingTransaction()
-                    getNotification()
-                    updateProfileData()
-                }
-                getBuListMenu()
-            }) {
-                Timber.d("P1 error")
-                it.printStackTrace()
+            if (useCacheData) {
+                onlyForLoggedInUser { getProfileDataCached() }
+                getBuListMenuCached()
             }
+            //update cached data with cloud data
+            getBuListMenu()
+            onlyForLoggedInUser { getNotification() }
+            onlyForLoggedInUser { updateProfileData() }
+            onlyForLoggedInUser { getOngoingTransaction() }
             _onboardingListLiveData.postValue(_mainNavListVisitable)
-
         }
     }
 
     private fun MutableList<Visitable<*>>.addHomeBackButtonMenu() {
         if (pageSource != ApplinkConsInternalNavigation.SOURCE_HOME) {
-            this.add(1, SeparatorViewModel(sectionId = MainNavConst.Section.HOME))
-            this.add(2, clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
+            this.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         }
     }
 
@@ -252,79 +252,69 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuListMenuCached() {
-        launchCatchError(coroutineContext, block = {
-            getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-            getCategoryGroupUseCase.get().setStrategyCache()
-            val result = getCategoryGroupUseCase.get().executeOnBackground()
+        withContext(coroutineContext, block = {
+            try {
+                getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+                getCategoryGroupUseCase.get().setStrategyCache()
+                val result = getCategoryGroupUseCase.get().executeOnBackground()
 
-            //PLT network process is finished
-            _networkProcessLiveData.postValue(true)
+                //PLT network process is finished
+                _networkProcessLiveData.postValue(true)
 
-            updateWidgetList(result, findBuStartIndexPosition())
-        }) {
-            it.printStackTrace()
-            updateWidget(ErrorStateBuViewModel(), findBuStartIndexPosition())
-        }
+                updateWidgetList(result, findBuStartIndexPosition())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
     }
 
     private suspend fun getBuListMenu() {
-        val buListData = _mainNavListVisitable.firstOrNull {
-            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.BU_ICON
-        }
-        launchCatchError(coroutineContext, block = {
-            getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-            getCategoryGroupUseCase.get().setStrategyCloudThenCache()
-            val result = getCategoryGroupUseCase.get().executeOnBackground()
+        withContext(coroutineContext, block = {
+            try {
+                getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+                getCategoryGroupUseCase.get().setStrategyCloudThenCache()
+                val result = getCategoryGroupUseCase.get().executeOnBackground()
 
-            //PLT network process is finished
-            _networkProcessLiveData.postValue(true)
-            if (buListData == null) {
-                updateWidgetList(result, findBuStartIndexPosition())
-            }
-        }) {
-            it.printStackTrace()
+                //PLT network process is finished
+                _networkProcessLiveData.postValue(true)
+                if (findExistingEndBuIndexPosition() == null) {
+                    updateWidgetList(result, findBuStartIndexPosition())
+                }
+            } catch (e: Exception) {
+                //if bu cache is already exist in list
+                //then error state is not needed
+                val isBuExist = findExistingEndBuIndexPosition()
+                if (isBuExist == null) {
+                    updateWidget(ErrorStateBuViewModel(), findBuStartIndexPosition())
+                }
 
-            //if bu cache is already exist in list
-            //then error state is not needed
-            val isBuExist = findExistingEndBuIndexPosittion()
-            if (isBuExist == null) {
-                updateWidget(ErrorStateBuViewModel(), findBuStartIndexPosition())
+                val buShimmering = _mainNavListVisitable.find {
+                    it is InitialShimmerDataModel
+                }
+                buShimmering?.let {
+                    updateWidget(ErrorStateBuViewModel(),
+                            _mainNavListVisitable.indexOf(it)
+                    )
+                }
+                e.printStackTrace()
             }
-
-            val buShimmering = _mainNavListVisitable.find {
-                it is InitialShimmerDataModel
-            }
-            buShimmering?.let {
-                updateWidget(ErrorStateBuViewModel(),
-                        _mainNavListVisitable.indexOf(it)
-                )
-            }
-        }
+        })
     }
 
     suspend fun getProfileDataCached() {
-        launchCatchError(coroutineContext, block = {
+        try {
             val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
             updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
-        }) {
-            it.printStackTrace()
-            val accountHeaderModel = AccountHeaderViewModel(
-                    isGetShopError = true,
-                    isProfileLoading = false,
-                    isGetOvoError = true,
-                    isGetSaldoError = true,
-                    isGetUserMembershipError = true,
-                    isGetUserNameError = true
-            )
-            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     suspend fun updateProfileData() {
-        launchCatchError(coroutineContext, block = {
+        try {
             val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
             updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
-        }) {
+        } catch (e: Exception) {
             val accountModel = _mainNavListVisitable.find {
                 it is AccountHeaderViewModel
             } as? AccountHeaderViewModel
@@ -341,7 +331,7 @@ class MainNavViewModel @Inject constructor(
                     ), INDEX_MODEL_ACCOUNT)
                 }
             }
-            it.printStackTrace()
+            e.printStackTrace()
         }
     }
 
@@ -376,7 +366,7 @@ class MainNavViewModel @Inject constructor(
         transactionErrorState?.let {
             updateWidget(InitialShimmerTransactionDataModel(), it.index)
         }
-        launchCatchError(coroutineContext, block = {
+        try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
@@ -390,19 +380,19 @@ class MainNavViewModel @Inject constructor(
                 val transactionShimmering = _mainNavListVisitable.withIndex().find {
                     it.value is InitialShimmerTransactionDataModel
                 }
-                if (transactionShimmering != null) {
-                    transactionShimmering.let {
-                        updateWidget(transactionListItemViewModel, it.index)
-                    }
-                } else {
-                    //otherwise add widget
-                    findExistingEndBuIndexPosittion()?.let {
-                        addWidget(transactionListItemViewModel, it)
-                    }
+                transactionShimmering?.let {
+                    updateWidget(transactionListItemViewModel, it.index)
+                }
+            } else {
+                //find shimmering and remove widget when empty response
+                val transactionShimmering = _mainNavListVisitable.withIndex().find {
+                    it.value is InitialShimmerTransactionDataModel
+                }
+                transactionShimmering?.let {
+                    deleteWidget(transactionShimmering.value)
                 }
             }
-        }){
-            it.printStackTrace()
+        } catch (e: Exception) {
             //find shimmering and change with result value
             val transactionShimmering = _mainNavListVisitable.withIndex().find {
                 it.value is InitialShimmerTransactionDataModel
@@ -411,12 +401,8 @@ class MainNavViewModel @Inject constructor(
                 transactionShimmering.let {
                     updateWidget(ErrorStateOngoingTransactionModel(), it.index)
                 }
-            } else {
-                //otherwise add widget
-                findExistingEndBuIndexPosittion()?.let {index->
-                    addWidget(ErrorStateOngoingTransactionModel(), index)
-                }
             }
+            e.printStackTrace()
         }
     }
 
@@ -463,8 +449,8 @@ class MainNavViewModel @Inject constructor(
         return listOf()
     }
 
-    private fun getNotification() {
-        launchCatchError(coroutineContext, block = {
+    private suspend fun getNotification() {
+        try {
             val result = getNavNotification.get().executeOnBackground()
             val complainNotification = result.unreadCountComplain
             val inboxTicketNotification = result.unreadCountInboxTicket
@@ -474,8 +460,8 @@ class MainNavViewModel @Inject constructor(
             )
             if (complainNotification.isMoreThanZero()) _mainNavListVisitable.findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
             if (inboxTicketNotification.isMoreThanZero()) _mainNavListVisitable.findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
-        }) {
-            it.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -541,12 +527,12 @@ class MainNavViewModel @Inject constructor(
         }
         findHomeMenu?.let{
             //if home menu is exist, then the position of bu menu is after home menu
-            return _mainNavListVisitable.indexOf(it)+1
+            return _mainNavListVisitable.indexOf(it)
         }
         return INDEX_DEFAULT_BU_POSITION
     }
 
-    private fun findExistingEndBuIndexPosittion(): Int? {
+    private fun findExistingEndBuIndexPosition(): Int? {
         val findHomeMenu = _mainNavListVisitable.findLast {
             it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.BU_ICON
         }

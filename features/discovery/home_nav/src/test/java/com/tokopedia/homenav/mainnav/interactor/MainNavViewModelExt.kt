@@ -70,7 +70,7 @@ fun createViewModel (
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
             getProfileDataUseCase = getProfileDataUseCaseMock,
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
-            getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock
+            getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock
     )
 }
