@@ -312,7 +312,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
                     }
                     PARAM_TRAIN -> {
-                        status = SEMUA_TRANSAKSI
+                        status = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAIN
                     }
                     PARAM_GIFTCARDS -> {
