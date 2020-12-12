@@ -3,6 +3,8 @@ package com.tokopedia.autocomplete.initialstate
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewHolder
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewHolder
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
@@ -56,6 +58,10 @@ class InitialStateAdapterTypeFactory(
         return DynamicInitialStateTitleViewHolder.LAYOUT
     }
 
+    override fun type(curatedCampaignViewModel: CuratedCampaignViewModel): Int {
+        return CuratedCampaignViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
@@ -67,6 +73,7 @@ class InitialStateAdapterTypeFactory(
             RecentSearchSeeMoreViewHolder.LAYOUT -> RecentSearchSeeMoreViewHolder(parent, clickListener)
             DynamicInitialStateTitleViewHolder.LAYOUT -> DynamicInitialStateTitleViewHolder(parent, clickListener)
             DynamicInitialStateViewHolder.LAYOUT -> DynamicInitialStateViewHolder(parent, clickListener)
+            CuratedCampaignViewHolder.LAYOUT -> CuratedCampaignViewHolder(parent, clickListener)
             else -> super.createViewHolder(parent, type)
         }
     }

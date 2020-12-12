@@ -147,6 +147,9 @@ public interface SearchConstant {
     interface ProductCardLabel {
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
+        String TEXT_DARK_ORANGE = "textDarkOrange";
+        String TEXT_DARK_RED = "textDarkRed";
+        String TEXT_LIGHT_GREY = "textLightGrey";
     }
 
     interface OnBoarding {
