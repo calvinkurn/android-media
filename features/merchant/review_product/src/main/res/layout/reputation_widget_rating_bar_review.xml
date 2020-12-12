@@ -42,6 +42,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:id="@+id/counter_review"
+            android:textColor="@color/Unify_N700_68"
             style="@style/TextView.Micro.BlackSecondary"
             tools:text="49"/>
 
