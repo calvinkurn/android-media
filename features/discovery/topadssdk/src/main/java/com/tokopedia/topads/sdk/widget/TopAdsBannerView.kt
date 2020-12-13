@@ -205,9 +205,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
                     }
                 } else {
-                    items.add(BannerProductShimmerViewModel())
-                    items.add(BannerProductShimmerViewModel())
-                    items.add(BannerProductShimmerViewModel())
+                    repeat(3) {items.add(BannerProductShimmerViewModel())}
                 }
                 bannerAdsAdapter!!.setList(items)
             }

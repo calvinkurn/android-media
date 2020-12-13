@@ -1748,29 +1748,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
-
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
-
-        if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-            val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
-            dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
-        if (adapter.getlist()[rowNumber] is TopadsHeadlineUiModel) {
-            val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadlineUiModel
-            topadsHeadlineUiModel.cpmModel?.data?.first()?.cpm?.cpmShop?.isFollowed?.let {
-                topadsHeadlineUiModel.cpmModel?.data?.first()?.cpm?.cpmShop?.isFollowed = !it
+        if(rowNumber < adapter.getlist().size) {
+            if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+                val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+                header.followCta.isFollow = !header.followCta.isFollow
+                adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
             }
-            adapter.notifyItemChanged(rowNumber)
+
+            if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
+                val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
+                cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
+
+            if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
+                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+                dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
+            if (adapter.getlist()[rowNumber] is TopadsHeadlineUiModel) {
+                val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadlineUiModel
+                topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
+                    topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed = !it
+                }
+                adapter.notifyItemChanged(rowNumber)
+            }
         }
     }
 
