@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker;
@@ -263,7 +262,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void showSellerAccountCard(String shopName, String roleName, boolean canGoToSellerAccount) {
+    public void showSellerAccountCard(String shopName, String roleName) {
         Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
         FrameLayout iconContainer = sellerAccountCard.findViewById(R.id.iconContainer);
         ImageView sellerCardImageView = sellerAccountCard.findViewById(R.id.iv_seller_card_icon);
@@ -282,15 +281,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         shopNameTxt.setText(cardNameText);
         sellerCardImageView.setBackground(sellerCardDrawable);
         iconContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_open_shop_ellipse));
-
-        sellerAccountCard.setOnClickListener(v -> {
-            if (canGoToSellerAccount) {
-                RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
-            } else {
-
-            }
-            sellerMenuTracker.sendEventClickMyShop();
-        });
 
         sellerAccountCard.setVisibility(View.VISIBLE);
         sellerOpenShopCard.setVisibility(View.GONE);
