@@ -176,14 +176,6 @@ data class SearchProductModel(
             @Expose
             val imageUrl: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
-
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -207,6 +199,14 @@ data class SearchProductModel(
             @SerializedName("badges")
             @Expose
             val badgeList: List<OtherRelatedProductBadge> = listOf(),
+
+            @SerializedName("ratingAverage")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("labelGroups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
 
             @SerializedName("freeOngkir")
             @Expose
@@ -316,17 +316,9 @@ data class SearchProductModel(
             @Expose
             val categoryName: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
             @SerializedName("ratingAverage")
             @Expose
             val ratingAverage: String = "",
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
 
             @SerializedName("originalPrice")
             @Expose
@@ -363,10 +355,6 @@ data class SearchProductModel(
             @SerializedName("wishlist")
             @Expose
             val isWishlist: Boolean = false,
-
-            @SerializedName("count_sold")
-            @Expose
-            val countSold: String = "",
 
             @SerializedName("minOrder")
             @Expose

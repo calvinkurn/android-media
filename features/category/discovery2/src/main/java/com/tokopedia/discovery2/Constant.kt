@@ -32,4 +32,8 @@ object Constant {
         const val GRID =  "grid"
         const val LIST = "list"
     }
+
+    object StaticFontColor{
+        const val FONT_COLOR =  "#03AC0E"
+    }
 }

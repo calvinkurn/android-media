@@ -74,7 +74,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -277,7 +279,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 ticker.show()
                 if (it.items.size > 1) {
                     showMultiTicker(it)
-                } else {
+                } else if (it.items.size == 1) {
                     showSingleTicker(it)
                 }
             }
@@ -286,8 +288,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun showSingleTicker(tickerData: TickerData) {
         ticker.tickerTitle = tickerData.items?.get(0)?.title
-        ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.setHtmlDescription(tickerData.items?.get(0)?.text?:"")
         ticker.tickerType = getTickerType(tickerData.type ?: "")
+        ticker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(view?.context,linkUrl.toString())
+            }
+
+            override fun onDismiss() {
+            }
+
+        })
     }
 
     private fun showMultiTicker(tickerData: TickerData) {
@@ -301,6 +312,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         val adapter = TickerPagerAdapter(activity, mockData)
         ticker.addPagerView(adapter, mockData)
+        adapter.setPagerDescriptionClickEvent(object :TickerPagerCallback{
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                RouteManager.route(view?.context,linkUrl.toString())
+            }
+        })
     }
 
     private fun getTickerType(tickerType: String): Int {
