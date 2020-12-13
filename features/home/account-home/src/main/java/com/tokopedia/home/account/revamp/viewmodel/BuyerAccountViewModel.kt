@@ -15,6 +15,7 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +37,7 @@ class BuyerAccountViewModel @Inject constructor (
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val shortcutDataUseCase: GetShortcutDataUseCase,
+        private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
         private val dispatcher: DispatcherProvider
@@ -61,17 +63,24 @@ class BuyerAccountViewModel @Inject constructor (
     val firstRecommendation : LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendation
 
+    private val _canGoToSellerAccount = MutableLiveData<Boolean>()
+    val canGoToSellerAccount: LiveData<Boolean>
+        get() = _canGoToSellerAccount
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
+            val (canGoToShopAccount, adminTypeText) = accountAdminInfoUseCase.executeOnBackground()
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
+                accountModel.adminTypeText = adminTypeText
                 saveLocallyAttributes(accountModel)
+                _canGoToSellerAccount.postValue(canGoToShopAccount)
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {

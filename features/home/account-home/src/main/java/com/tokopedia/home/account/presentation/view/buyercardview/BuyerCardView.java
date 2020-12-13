@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -190,6 +191,13 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         ivMemberBadge.setOnClickListener(listener);
     }
 
+    public void setOnClickSellerAccount(View.OnClickListener listener) {
+        sellerAccountCard.setOnClickListener(v -> {
+            listener.onClick(v);
+            sellerMenuTracker.sendEventClickMyShop();
+        });
+    }
+
     @Override
     public void setTokoMemberAmount(String tokoMemberAmount) {
         textTokoMemberAmount.setText(tokoMemberAmount);
@@ -255,14 +263,32 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void showSellerAccountCard(String shopName, String roleName) {
+    public void showSellerAccountCard(String shopName, String roleName, boolean canGoToSellerAccount) {
         Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
         FrameLayout iconContainer = sellerAccountCard.findViewById(R.id.iconContainer);
-        shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));
+        ImageView sellerCardImageView = sellerAccountCard.findViewById(R.id.iv_seller_card_icon);
+
+        CharSequence cardNameText;
+        Drawable sellerCardDrawable;
+
+        if (roleName == null || roleName.isEmpty()) {
+            cardNameText = MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName));
+            sellerCardDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_shop_account);
+        } else {
+            cardNameText = MethodChecker.fromHtml(getContext().getString(R.string.account_home_role_name_card, shopName));
+            sellerCardDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_role_account);
+        }
+
+        shopNameTxt.setText(cardNameText);
+        sellerCardImageView.setBackground(sellerCardDrawable);
         iconContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_open_shop_ellipse));
 
         sellerAccountCard.setOnClickListener(v -> {
-            RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
+            if (canGoToSellerAccount) {
+                RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
+            } else {
+
+            }
             sellerMenuTracker.sendEventClickMyShop();
         });
 

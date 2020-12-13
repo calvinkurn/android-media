@@ -11,9 +11,9 @@ import javax.inject.Inject
 class GetAdminInfoUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
 
     companion object {
-        private const val shopID = "shop_id"
+        const val shopID = "shop_id"
 
-        private val QUERY = """
+        val QUERY = """
             query getAdminInfo(${'$'}$shopID: Int!){
               getAdminInfo(source: "akw-testing", shop_id: ${'$'}$shopID) {
                 admin_data {

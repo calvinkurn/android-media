@@ -31,14 +31,12 @@ class GetAdminInfoSubscriber(
             val isLocationAdmin = data?.detail?.roleType?.isLocationAdmin == true
             val isShopAdmin = data?.detail?.roleType?.isShopAdmin == true
             val isMultiLocationShop = data?.locations.orEmpty().count() > 1
-            val adminTypeText = data?.adminTypeText
 
             userSession.apply {
                 setIsShopOwner(isShopOwner)
                 setIsLocationAdmin(isLocationAdmin)
                 setIsShopAdmin(isShopAdmin)
                 setIsMultiLocationShop(isMultiLocationShop)
-                // TODO: Set admin type text in userSession
             }
 
             if (isLocationAdmin) {
