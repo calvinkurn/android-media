@@ -311,6 +311,12 @@
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
 
+    <!--RECOMMENDATION DAILY BUDGET  -->
+    <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>
+    <string name="topads_dash_recom_daily_budget_desc">Yuk, tambah anggaran harian untuk %d iklanmu supaya bisa dapat +%d klik/hari!</string>
+    <string name="topads_dash_potential_click">Potensi Klik</string>
+    <string name="topads_dash_recom_product_title">Rekomendasi produk untuk diiklankan</string>
+    <string name="topads_dash_recom_product_desc">Iklankan 2 produk terbaikmu ke dalam satu grup untuk bisa berpotensi +3000 klik/hari</string>
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>

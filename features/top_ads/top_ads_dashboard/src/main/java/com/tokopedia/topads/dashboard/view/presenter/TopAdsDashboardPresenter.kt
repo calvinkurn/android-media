@@ -35,11 +35,13 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
+import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.headline.data.ShopAdInfo
+import com.tokopedia.topads.recommendation.data.ProductRecommendationModel
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
@@ -66,6 +68,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
             private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
             private val topAdsInsightUseCase: TopAdsInsightUseCase,
             private val getStatisticUseCase: GetStatisticUseCase,
+            private val productRecom: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductRecommendationModel>,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -352,28 +355,33 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     }
 
     fun getInsight(resources: Resources, onSuccess: ((InsightKeyData) -> Unit)) {
-        topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
-        val requestParams = topAdsInsightUseCase.setParams()
-        topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
+        try {
+            topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
+            val requestParams = topAdsInsightUseCase.setParams()
+            topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+                override fun onCompleted() {
 
-            }
+                }
 
 
-            override fun onError(e: Throwable?) {
+                override fun onError(e: Throwable?) {
 
-            }
+                }
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<JsonObject>
-                val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
-                val type = object : TypeToken<InsightKeyData>() {}.type
-                val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
-                onSuccess(data)
-            }
-        })
+                override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                    val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
+                    val restResponse: RestResponse? = typeResponse[token]
+                    val response = restResponse?.getData() as DataResponse<JsonObject>
+                    val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
+                    val type = object : TypeToken<InsightKeyData>() {}.type
+                    val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
+                    onSuccess(data)
+                }
+            })
+        }
+        catch (e:Exception){
+
+        }
     }
 
     @GqlQuery("ShopInfo", TopAdsDashboardPresenter.SHOP_AD_INFO)
@@ -527,6 +535,22 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
             }
         })
     }
+
+
+    @GqlQuery("ProductRecommend", PRODUCT_RECOMMENDATION)
+    fun getProductRecommendation(onSuccess: ((ProductRecommendationModel)) -> Unit) {
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero())
+        productRecom.setTypeClass(ProductRecommendationModel::class.java)
+        productRecom.setRequestParams(params)
+        productRecom.setGraphqlQuery(ProductRecommend.GQL_QUERY)
+        productRecom.execute({
+            onSuccess(it)
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
+        }
+        )
+    }
+
 
     override fun detachView() {
         super.detachView()

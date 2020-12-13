@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapt
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -62,12 +63,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetInsightData(response: InsightKeyData) {
         val data: HashMap<String, KeywordInsightDataMain> = response.data
-        if (data.isEmpty()) {
-            setEmptyView()
-        } else {
+//        if (data.isEmpty()) {
+//            setEmptyView()
+//        } else {
             initInsightTabAdapter()
             renderViewPager()
-        }
+        //}
     }
 
     private fun setEmptyView() {
@@ -108,9 +109,11 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
-        list.add(TopadsInsightBaseKeywordFragment.createInstance())
-        val pagerAdapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
-        pagerAdapter.setList(list)
-        return pagerAdapter
-    }
+            list.add(TopadsInsightBaseKeywordFragment.createInstance())
+            list.add(TopAdsInsightBaseProductFragment())
+            list.add(TopAdsInsightBaseBidFragment())
+            val pagerAdapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
+            pagerAdapter.setList(list)
+            return pagerAdapter
+        }
 }

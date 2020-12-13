@@ -26,6 +26,7 @@
     <string name="error_max_length">Maksimum 70 karakter</string>
     <string name="format_selected_keyword">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
+    <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
@@ -121,6 +122,10 @@
     <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
     <string name="topads_common_headline_klik">/1000 kali tampil</string>
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
+    <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
+    <string name="topads_common_potential_text">Potensi Tampil</string>
+    <string name="topads_common_klik_">/klik</string>
+    <string name="topads_biaya_iklan">Biaya Iklan</string>
 
 
 

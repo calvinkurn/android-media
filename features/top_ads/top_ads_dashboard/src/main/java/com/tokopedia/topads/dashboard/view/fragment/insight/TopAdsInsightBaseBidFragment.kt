@@ -4,21 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.image_empty
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.text_desc
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.text_title
-import kotlinx.android.synthetic.main.topads_dash_insight_empty_state.*
+
 
 /**
  * Created by Pika on 20/7/20.
  */
 
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
+
+
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
+    private var currentPageNum = 1
+
     override fun getScreenName(): String {
         return TopAdsInsightBaseBidFragment::class.java.name
     }
@@ -28,14 +35,11 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_dash_insight_empty_state, container, false)
+        return inflater.inflate(R.layout.topads_dash_recon_daily_budget_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_empty_insight_img))
-        text_title.text = resources.getString(R.string.topads_insight_empty_bid_title)
-        text_desc.text = resources.getString(R.string.topads_insight_empty_bid_desc)
     }
 
 }

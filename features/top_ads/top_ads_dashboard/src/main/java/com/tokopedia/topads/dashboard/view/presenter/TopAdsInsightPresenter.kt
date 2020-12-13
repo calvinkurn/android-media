@@ -81,6 +81,7 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
     override fun detachView() {
         super.detachView()
         topAdsInsightUseCase.unsubscribe()
+        topAdsEditKeywordUseCase.unsubscribe()
     }
 
 }
