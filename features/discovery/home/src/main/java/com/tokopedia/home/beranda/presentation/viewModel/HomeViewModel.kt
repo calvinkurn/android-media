@@ -282,7 +282,7 @@ open class HomeViewModel @Inject constructor(
                         pageName = bestSellerDataModel.pageName,
                         queryParam = bestSellerDataModel.widgetParam
                 )
-                recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground())
+                recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
 
 
                 val recomData = getRecommendationUseCase.get().getData(
