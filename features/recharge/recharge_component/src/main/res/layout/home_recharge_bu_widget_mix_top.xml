@@ -30,14 +30,12 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="@dimen/sp_18"
         android:textColor="@color/Unify_N0"
+        android:textSize="@dimen/sp_18"
         app:layout_constraintBottom_toTopOf="@+id/recharge_bu_widget_banner_description"
         app:layout_constraintEnd_toStartOf="@+id/recharge_bu_widget_banner_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,10 +50,8 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N0"
@@ -75,7 +71,6 @@
         android:layout_height="@dimen/spacing_lvl6"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
@@ -84,9 +79,9 @@
         app:layout_constraintBottom_toTopOf="@+id/recharge_bu_widget_dc_banner_rv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recharge_bu_widget_background"
+        app:unifyButtonInvers="true"
         app:unifyButtonSize="small"
         app:unifyButtonVariant="ghost"
-        app:unifyButtonInvers="true"
         tools:text="Cek Sekarang" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -104,7 +99,7 @@
 
     <include
         android:id="@+id/recharge_bu_content_shimmering"
-        android:visibility="gone"
-        layout="@layout/home_recharge_bu_widget_mix_top_shimmering"/>
+        layout="@layout/home_recharge_bu_widget_mix_top_shimmering"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,6 +36,7 @@ import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_top.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.util.*
 
 class RechargeBUWidgetMixTopViewHolder(
         itemView: View,
@@ -225,7 +226,7 @@ class RechargeBUWidgetMixTopViewHolder(
                     element.mediaUrl,
                     element.backgroundColor,
                     element.mediaUrlType,
-                    element.title.toUpperCase(),
+                    element.title.toUpperCase(Locale.getDefault()),
                     data.option2,
                     element.subtitle,
                     element.label2,

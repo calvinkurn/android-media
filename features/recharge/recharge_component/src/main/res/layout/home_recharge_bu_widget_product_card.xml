@@ -19,19 +19,19 @@
             android:id="@+id/imageProductBackground"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="88dp"
-            android:visibility="gone"
             android:background="@drawable/bg_product_card"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" >
+            tools:visibility="visible">
 
             <ImageView
                 android:id="@+id/imageProductBackgroundOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_product_card"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_product_card" />
 
         </FrameLayout>
 
@@ -70,8 +70,9 @@
             android:id="@+id/textViewGimmick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:gravity="center_vertical"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,8 +86,9 @@
             android:id="@+id/textViewProductName"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
@@ -131,8 +133,6 @@
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:layout_goneMarginLeft="@dimen/spacing_lvl3"
-            app:layout_goneMarginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -141,6 +141,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
             app:layout_constraintTop_toTopOf="@id/labelDiscount"
+            app:layout_goneMarginLeft="@dimen/spacing_lvl3"
+            app:layout_goneMarginTop="@dimen/spacing_lvl2"
             app:typographyType="small"
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
@@ -149,8 +151,9 @@
             android:id="@+id/textViewPrice"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"

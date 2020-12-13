@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.util.*
 import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
@@ -213,7 +214,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     element.mediaUrl,
                     element.backgroundColor,
                     element.mediaUrlType,
-                    element.title.toUpperCase(),
+                    element.title.toUpperCase(Locale.getDefault()),
                     data.option2,
                     element.subtitle,
                     element.label2,
