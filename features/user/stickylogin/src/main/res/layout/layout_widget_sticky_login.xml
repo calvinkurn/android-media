@@ -2,7 +2,6 @@
 <merge
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
     
@@ -13,6 +12,7 @@
       android:gravity="center"
       android:clickable="true"
       android:focusable="true"
+      android:visibility="gone"
       android:background="@color/Unify_G100"
       android:orientation="horizontal">
         
@@ -20,7 +20,6 @@
           android:id="@+id/layout_sticky_image_left"
           android:layout_width="@dimen/layout_lvl4"
           android:layout_height="@dimen/layout_lvl4"
-          android:layout_marginLeft="@dimen/layout_lvl2"
           android:layout_marginStart="@dimen/layout_lvl2"
           android:layout_marginTop="@dimen/layout_lvl1"
           android:layout_marginBottom="@dimen/layout_lvl1"

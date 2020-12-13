@@ -18,7 +18,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.R
@@ -184,6 +186,12 @@ class StickyLoginView : FrameLayout, CoroutineScope {
             when(it) {
                 is Success -> {
                     setContent(it.data.tickerDataModels[0])
+                    if (isOnDelay(page)) {
+                        hide()
+                    } else {
+                        tracker.viewOnPage(page)
+                        show()
+                    }
                 }
                 is Fail -> {
                     hide()
@@ -241,12 +249,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     private fun setContent(content: String, highlight: String) {
         textContent.setContent(content, highlight)
-        if (isOnDelay(page)) {
-            hide()
-        } else {
-            tracker.viewOnPage(page)
-            show()
-        }
     }
 
     fun dismiss() {
@@ -356,11 +358,13 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     private fun show() {
         this.visibility = View.VISIBLE
+        layoutContainer.show()
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
     }
 
     private fun hide() {
         this.visibility = View.GONE
+        layoutContainer.hide()
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
     }
 
