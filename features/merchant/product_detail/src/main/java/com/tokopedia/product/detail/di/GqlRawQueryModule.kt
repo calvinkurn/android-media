@@ -85,7 +85,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_TICKER)
     fun provideQueryTicker(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_sticky_login_query)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_general_ticker_query)
 
     @ProductDetailScope
     @Provides

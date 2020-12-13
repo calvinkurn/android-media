@@ -139,8 +139,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -225,7 +225,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var initToolBarMethod: (() -> Unit)? = null
 
     //Data
-    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     private lateinit var remoteConfig: RemoteConfig
 
@@ -526,7 +525,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-                updateStickyState()
+                stickyLoginView?.loadContent()
                 updateActionButtonShadow()
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
@@ -555,7 +554,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
                     if (isUserLoginFromShopPage) {
-                        updateStickyState()
+                        stickyLoginView?.loadContent()
                         updateActionButtonShadow()
                     }
                     if (isFavoriteFromShopPage != wasFavorite) {
@@ -1705,7 +1704,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
         }
 
-        updateStickyContent(it.tickerStickyLogin)
+        stickyLoginView?.loadContent()
 
         pdpUiUpdater?.updateDataP3(context, it)
         dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
@@ -2336,67 +2335,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
-        updateStickyState()
-        updateActionButtonShadow()
-        stickyLoginView?.setOnClickListener {
-            goToLogin()
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnLogin(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnLogin(StickyLoginConstant.Page.PDP)
+        stickyLoginView?.page = StickyLoginConstant.Page.PDP
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                goToLogin()
             }
-        }
-        stickyLoginView?.setOnDismissListener(View.OnClickListener {
-            stickyLoginView?.dismiss(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isLoginReminder() == true) {
-                stickyLoginView?.trackerLoginReminder?.clickOnDismiss(StickyLoginConstant.Page.PDP)
-            } else {
-                stickyLoginView?.tracker?.clickOnDismiss(StickyLoginConstant.Page.PDP)
+
+            override fun onDismiss() {
+
             }
-            updateStickyState()
+
+            override fun onViewChange(isShowing: Boolean) {
+                updateActionButtonShadow()
+            }
         })
-    }
 
-    private fun updateStickyState() {
-        if (tickerDetail == null) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        if (viewModel.isUserSessionActive) {
-            stickyLoginView?.hide()
-            return
-        }
-
-        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
-        if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
-            stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        } else {
-            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
-            if (!isCanShowing) {
-                stickyLoginView?.visibility = View.GONE
-                return
-            }
-
-            this.tickerDetail?.let { stickyLoginView?.setContent(it) }
-            stickyLoginView?.show(StickyLoginConstant.Page.PDP)
-            if (stickyLoginView?.isShowing() == true) {
-                stickyLoginView?.tracker?.viewOnPage(StickyLoginConstant.Page.PDP)
-            }
-        }
-    }
-
-    private fun updateStickyContent(stickyData: StickyLoginTickerPojo.TickerDetail?) {
-        if (stickyData == null) {
-            stickyLoginView?.hide()
-        } else {
-            this.tickerDetail = stickyData
-            updateStickyState()
-            updateActionButtonShadow()
-        }
+        stickyLoginView?.hide()
     }
 
     private fun goToPdpSellerApp() {

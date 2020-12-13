@@ -187,4 +187,9 @@ object ProductDetailConstant {
 
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
+
+    //General Ticker
+    const val LAYOUT_FLOATING = "floating"
+    const val PARAMS_PAGE = "page"
+    const val PARAMS_PAGE_PDP = "pdp"
 }

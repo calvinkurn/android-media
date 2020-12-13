@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.variant_common.model.*
 
 object DynamicProductDetailMapper {
@@ -258,16 +258,12 @@ object DynamicProductDetailMapper {
      * Ticker is used for show general message like : corona, shipping delay,  etc
      * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
      * LAYOUT_FLOATING should be sticky login
+     * *
+     * update : now it's not used class from sticky login module anymore
      */
-    fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
-        return tickerData.response.tickers.filter {
-            it.layout != StickyLoginConstant.LAYOUT_FLOATING
-        }
-    }
-
-    fun getStickyLoginData(tickerData: StickyLoginTickerPojo.TickerResponse): StickyLoginTickerPojo.TickerDetail? {
-        return tickerData.response.tickers.find {
-            it.layout == StickyLoginConstant.LAYOUT_FLOATING
+    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
+        return tickerData.response.tickerDataModels.filter {
+            it.layout != LAYOUT_FLOATING
         }
     }
 

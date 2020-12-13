@@ -2,9 +2,9 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
+import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 
 /**
  * Created by Yehezkiel on 08/06/20
@@ -12,7 +12,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 data class ProductTickerInfoDataModel(
         val type: String = "",
         val name: String = "",
-        var generalTickerInfo: List<StickyLoginTickerPojo.TickerDetail>? = null,
+        var generalTickerInfoDataModel: List<GeneralTickerDataModel.TickerDetailDataModel>? = null,
         var statusInfo: ShopInfo.StatusInfo? = null,
         var closedInfo: ShopInfo.ClosedInfo? = ShopInfo.ClosedInfo(),
         var isProductWarehouse: Boolean = false,
@@ -31,8 +31,8 @@ data class ProductTickerInfoDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     fun shouldRemoveComponent(): Boolean {
-        return generalTickerInfo?.isNullOrEmpty() == true &&
-                (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
+        return generalTickerInfoDataModel?.isNullOrEmpty() == true &&
+        return (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
                 !isOutOfStock && !isProductWarehouse
     }
 
