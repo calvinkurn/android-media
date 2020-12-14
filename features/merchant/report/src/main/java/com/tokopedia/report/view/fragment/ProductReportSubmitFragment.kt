@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible

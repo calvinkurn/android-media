@@ -76,7 +76,6 @@ import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
-import com.tokopedia.imagepicker.picker.instagram.data.model.User;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
