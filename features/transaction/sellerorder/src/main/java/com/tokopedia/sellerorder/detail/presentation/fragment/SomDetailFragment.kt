@@ -65,6 +65,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
@@ -81,6 +82,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
+import com.tokopedia.sellerorder.common.util.SomConsts.PATH_PRINT_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -120,6 +123,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -138,6 +142,7 @@ import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
@@ -179,6 +184,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
+    private val REQUEST_PRINT_AWB = 994
     private var reasonCourierProblemText: String = ""
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
@@ -629,6 +635,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> goToPrintAwb()
                         }
                     }
                 }
@@ -705,6 +712,22 @@ class SomDetailFragment : BaseDaggerFragment(),
                 setChild(dialogView)
                 show()
             }
+        }
+    }
+
+    private fun goToPrintAwb() {
+        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB)
+                .buildUpon()
+                .appendPath(PATH_PRINT_AWB)
+                .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
+                .build()
+                .toString()
+        val appLink = Uri.parse(ApplinkConst.WEBVIEW)
+                .buildUpon()
+                .appendQueryParameter("url", url)
+                .build().toString()
+        RouteManager.getIntent(context, appLink)?.run {
+            startActivityForResult(this, REQUEST_PRINT_AWB)
         }
     }
 
@@ -819,6 +842,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_PRINT_AWB, true) -> goToPrintAwb()
                 }
             }
         }
@@ -899,7 +923,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionUbahNoResi() {
         SomOrderEditAwbBottomSheet().apply {
-            setListener(object: SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+            setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
                 override fun onEditAwbButtonClicked(cancelNotes: String) {
                     doEditAwb(cancelNotes)
                 }
@@ -1416,6 +1440,8 @@ class SomDetailFragment : BaseDaggerFragment(),
                     activity?.finish()
                 }
             }
+        } else if (requestCode == REQUEST_PRINT_AWB) {
+            refreshHandler?.startRefresh()
         }
     }
 

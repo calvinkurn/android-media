@@ -76,6 +76,7 @@ object SomConsts {
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
+    const val KEY_PRINT_AWB = "print"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -221,4 +222,8 @@ object SomConsts {
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
     const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+
+    // Som print awb
+    const val PATH_PRINT_AWB = "shipping-label"
+    const val PRINT_AWB_ORDER_ID_QUERY_PARAM = "order_id"
 }
