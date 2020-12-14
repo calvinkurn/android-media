@@ -25,7 +25,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder

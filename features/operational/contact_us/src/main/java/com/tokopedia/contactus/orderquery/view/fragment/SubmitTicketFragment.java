@@ -37,7 +37,6 @@ import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;

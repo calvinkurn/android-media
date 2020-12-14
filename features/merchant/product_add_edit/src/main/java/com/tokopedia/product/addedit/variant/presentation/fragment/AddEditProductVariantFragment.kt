@@ -29,7 +29,6 @@ import com.tokopedia.imagepicker.core.ImagePickerCallback
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.core.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*

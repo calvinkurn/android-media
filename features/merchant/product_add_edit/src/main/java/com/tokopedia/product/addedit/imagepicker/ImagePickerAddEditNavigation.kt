@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.imagepicker.core.ImagePickerCallback
 import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R

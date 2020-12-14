@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +35,6 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReason
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;

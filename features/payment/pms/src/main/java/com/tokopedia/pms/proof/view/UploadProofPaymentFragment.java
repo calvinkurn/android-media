@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
@@ -34,7 +33,6 @@ import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent;
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

@@ -42,7 +42,6 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity

@@ -35,7 +35,6 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;

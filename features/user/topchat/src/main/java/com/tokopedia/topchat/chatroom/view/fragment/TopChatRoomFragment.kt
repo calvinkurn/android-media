@@ -52,7 +52,6 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef

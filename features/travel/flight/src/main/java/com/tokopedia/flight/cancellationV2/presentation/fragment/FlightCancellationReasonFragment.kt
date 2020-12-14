@@ -25,7 +25,6 @@ import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellation
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity

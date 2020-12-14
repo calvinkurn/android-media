@@ -5,7 +5,6 @@ import android.content.Intent
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.MediaType
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB

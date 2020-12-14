@@ -1,0 +1,6 @@
+package com.tokopedia.imagepicker.core
+
+const val DEFAULT_MIN_RESOLUTION = 300
+const val DEFAULT_MAX_IMAGE_SIZE_IN_KB = 15360L
+
+const val DEFAULT_MAXIMUM_NO_PICK = 5

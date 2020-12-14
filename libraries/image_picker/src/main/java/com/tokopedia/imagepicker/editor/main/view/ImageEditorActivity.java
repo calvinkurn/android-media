@@ -41,6 +41,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.core.BuilderConstantKt.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.core.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
@@ -49,7 +50,6 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RAN
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 
 /**
  * Created by Hendry on 9/25/2017.

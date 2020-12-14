@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
@@ -30,16 +29,13 @@ import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.showToaster
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
-import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.view.*
 import java.io.File
 import javax.inject.Inject
 

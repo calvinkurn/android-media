@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.core.GalleryType;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
@@ -33,7 +34,6 @@ import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
@@ -75,8 +75,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private AlbumItem selectedAlbumItem;
     private int selectedAlbumPosition;
-    private @GalleryType
-    int galleryType;
+    private
+    GalleryType galleryType;
     private boolean supportMultipleSelection;
     private int minImageResolution;
     private String belowMinImageResolutionErrorMessage = "";
@@ -96,14 +96,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @SuppressLint("MissingPermission")
     @RequiresPermission("android.permission.CAMERA")
-    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+    public static ImagePickerGalleryFragment newInstance(GalleryType galleryType,
                                                          boolean supportMultipleSelection,
                                                          int minImageResolution,
                                                          String imageBelowMinresolutionErrorMessage,
                                                          String imageTooLargeErrorMessage) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
+        bundle.putInt(ARGS_GALLERY_TYPE, galleryType.getValue());
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
         bundle.putString(ARGS_ERROR_MIN_RESOLUTION, imageBelowMinresolutionErrorMessage);
@@ -114,7 +114,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @SuppressLint("MissingPermission")
     @RequiresPermission("android.permission.CAMERA")
-    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+    public static ImagePickerGalleryFragment newInstance(GalleryType galleryType,
                                                          boolean supportMultipleSelection,
                                                          int minImageResolution) {
         return newInstance(galleryType, supportMultipleSelection, minImageResolution, "", "");
@@ -125,7 +125,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
+        galleryType = GalleryType.Companion.fromInt(bundle.getInt(ARGS_GALLERY_TYPE));
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
         belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");

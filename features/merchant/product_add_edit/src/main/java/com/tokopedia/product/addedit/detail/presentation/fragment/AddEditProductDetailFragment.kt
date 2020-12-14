@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.detail.presentation.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -29,12 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.core.ImagePickerCallback
-import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS

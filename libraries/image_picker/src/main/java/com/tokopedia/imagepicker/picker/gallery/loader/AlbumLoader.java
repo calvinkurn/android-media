@@ -11,9 +11,9 @@ import android.provider.MediaStore;
 
 import androidx.loader.content.CursorLoader;
 
+import com.tokopedia.imagepicker.core.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
 import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,7 +123,7 @@ public class AlbumLoader extends CursorLoader {
         );
     }
 
-    public static CursorLoader newInstance(Context context, int galleryType) {
+    public static CursorLoader newInstance(Context context, GalleryType galleryType) {
         String selection;
         String[] selectionArgs;
         if (galleryType == GalleryType.GIF_ONLY) {

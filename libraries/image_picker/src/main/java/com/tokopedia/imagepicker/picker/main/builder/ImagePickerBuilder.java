@@ -6,13 +6,11 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_INSTAGRAM;
 
 /**
  * Created by hendry on 19/04/18.
@@ -20,13 +18,10 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 
 public class ImagePickerBuilder implements Parcelable {
 
-    public static final int DEFAULT_MIN_RESOLUTION = 300;
-    public static final int DEFAULT_MAX_IMAGE_SIZE_IN_KB = 15360; // 15 * 1024KB
-
     private String title;
     private @ImagePickerTabTypeDef
     int[] tabTypeDef;
-    private @GalleryType
+    private
     int galleryType;
     private int minResolution;
 
@@ -40,7 +35,7 @@ public class ImagePickerBuilder implements Parcelable {
 
     public static ImagePickerBuilder getDefaultBuilder(Context context) {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY,
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY,
                 DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 ImagePickerEditorBuilder.getDefaultBuilder(),
@@ -49,7 +44,7 @@ public class ImagePickerBuilder implements Parcelable {
 
     public ImagePickerBuilder(String title,
                               @ImagePickerTabTypeDef int[] imagePickerTabTypeDef,
-                              @GalleryType int galleryType,
+                              int galleryType,
                               int maxFileSizeInKB,
                               int minResolution,
                               ImageRatioTypeDef imageRatioTypeDef,
