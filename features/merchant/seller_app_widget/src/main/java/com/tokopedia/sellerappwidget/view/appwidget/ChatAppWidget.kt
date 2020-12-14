@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.service.GetChatService
 import com.tokopedia.sellerappwidget.view.state.chat.*
@@ -100,8 +101,8 @@ class ChatAppWidget : AppWidgetProvider() {
 
     private fun onChatItemClick(context: Context, intent: Intent) {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
-        val chatItem: ChatUiModel? = bundle?.getParcelable(Const.Extra.CHAT_ITEM)
-        val chatId = chatItem?.messageId ?: 0
+        val chatItemItem: ChatItemUiModel? = bundle?.getParcelable(Const.Extra.CHAT_ITEM)
+        val chatId = chatItemItem?.messageId ?: 0
         val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, chatId.toString()).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
@@ -137,7 +138,7 @@ class ChatAppWidget : AppWidgetProvider() {
 
     companion object {
 
-        fun setOnSuccess(context: Context, chats: List<ChatUiModel>) {
+        fun setOnSuccess(context: Context, chat: ChatUiModel) {
             val awm = AppWidgetManager.getInstance(context)
             val widgetIds = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
 
@@ -151,9 +152,9 @@ class ChatAppWidget : AppWidgetProvider() {
 
             widgetIds.forEach { widgetId ->
                 when {
-                    chats.isEmpty() -> ChatWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
+                    chat.chats.isEmpty() -> ChatWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
                     else -> {
-                        ChatWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, chats, widgetId)
+                        ChatWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, chat, widgetId)
                     }
                 }
 

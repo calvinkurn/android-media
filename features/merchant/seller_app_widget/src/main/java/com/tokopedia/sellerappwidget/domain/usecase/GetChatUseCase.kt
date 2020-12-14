@@ -18,16 +18,15 @@ import javax.inject.Inject
 class GetChatUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: ChatMapper
-) : BaseUseCase<List<ChatUiModel>>() {
+) : BaseUseCase<ChatUiModel>() {
 
-    override suspend fun executeOnBackground(): List<ChatUiModel> {
+    override suspend fun executeOnBackground(): ChatUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GetChatResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetChatResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetChatResponse>()
-            val chatList = data.chatListMessage?.list.orEmpty()
-            return mapper.mapRemoteModelToUiModel(chatList)
+            return mapper.mapRemoteModelToUiModel(data)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
@@ -50,9 +49,9 @@ class GetChatUseCase @Inject constructor(
         }
 
         private val QUERY = """
-            query getUserChatListMessage(${'$'}paramPage: Int!, ${'$'}paramFilter: String!, ${'$'}paramTab: String!) {
+            query getUserChatListMessage(${'$'}page: Int!, ${'$'}filter: String!, ${'$'}tab: String!) {
               status
-              chatListMessage(page: ${'$'}paramPage, filter:${'$'}paramFilter, tab:${'$'}paramTab) {
+              chatListMessage(page: ${'$'}page, filter:${'$'}filter, tab:${'$'}tab) {
                 list {
                   msgID
                   messageKey
@@ -63,6 +62,11 @@ class GetChatUseCase @Inject constructor(
                     lastReplyMessage
                     lastReplyTimeStr
                   }
+                }
+              }
+              notifications {
+                chat {
+                  unreadsSeller
                 }
               }
             }

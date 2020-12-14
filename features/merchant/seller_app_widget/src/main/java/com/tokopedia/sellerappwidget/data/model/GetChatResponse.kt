@@ -7,13 +7,28 @@ import com.google.gson.annotations.SerializedName
 data class GetChatResponse(
         @Expose
         @SerializedName("chatListMessage")
-        val chatListMessage: GetChatListMessageModel? = GetChatListMessageModel()
+        val chatListMessage: GetChatListMessageModel? = GetChatListMessageModel(),
+        @Expose
+        @SerializedName("notifications")
+        val notifications: NotificationsModel? = NotificationsModel()
 )
 
 data class GetChatListMessageModel(
         @Expose
         @SerializedName("list")
         val list: List<ChatListModel> = emptyList()
+)
+
+data class NotificationsModel(
+        @Expose
+        @SerializedName("chat")
+        val chat: ChatModel? = ChatModel()
+)
+
+data class ChatModel(
+        @Expose
+        @SerializedName("unreadsSeller")
+        val unreadsSeller: Int? = 0
 )
 
 data class ChatListModel(

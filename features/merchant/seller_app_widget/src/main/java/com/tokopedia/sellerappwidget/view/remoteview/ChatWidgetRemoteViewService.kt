@@ -8,7 +8,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.view.model.ChatUiModel
+import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 
 /**
  * Created By @ilhamsuaib on 01/12/20
@@ -25,11 +25,11 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
             intent: Intent
     ) : RemoteViewsFactory {
 
-        private var chats: ArrayList<ChatUiModel> = arrayListOf()
+        private var chatItems: ArrayList<ChatItemUiModel> = arrayListOf()
 
         init {
             val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
-            chats = bundle?.getParcelableArrayList(Const.Extra.CHAT_ITEMS) ?: arrayListOf()
+            chatItems = bundle?.getParcelableArrayList(Const.Extra.CHAT_ITEMS) ?: arrayListOf()
         }
 
         override fun onCreate() {
@@ -45,16 +45,16 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
         override fun hasStableIds(): Boolean = true
 
         override fun getViewAt(position: Int): RemoteViews {
-            val chat = chats.getOrNull(position) ?: ChatUiModel()
+            val chat = chatItems.getOrNull(position) ?: ChatItemUiModel()
             return RemoteViews(context.packageName, R.layout.saw_app_widget_chat_item).apply {
                 setTextViewText(R.id.tvSawChatItemUserName, chat.userDisplayName)
                 setTextViewText(R.id.tvSawChatItemMessage, chat.lastMessage)
                 setTextViewText(R.id.tvSawChatItemTime, chat.lastReplyTime)
 
-                val horLineVisibility = if (position != chats.size.minus(1) && chats.size != 1) {
-                    View.VISIBLE
-                } else {
+                val horLineVisibility = if (position == chatItems.size.minus(1) && chatItems.size != 1) {
                     View.INVISIBLE
+                } else {
+                    View.VISIBLE
                 }
                 setInt(R.id.horLineSawChatListItem, Const.Method.SET_VISIBILITY, horLineVisibility)
 
@@ -68,7 +68,7 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
             }
         }
 
-        override fun getCount(): Int = chats.size
+        override fun getCount(): Int = chatItems.size
 
         override fun getViewTypeCount(): Int = 1
 

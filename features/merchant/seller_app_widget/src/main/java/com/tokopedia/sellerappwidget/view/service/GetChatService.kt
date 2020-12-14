@@ -10,6 +10,7 @@ import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.di.DaggerAppWidgetComponent
 import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
+import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.state.chat.ChatWidgetLoadingState
 import com.tokopedia.sellerappwidget.view.state.chat.ChatWidgetStateHelper
@@ -25,7 +26,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 04/12/20
  */
 
-class GetChatService : JobIntentService(), AppWidgetView<List<ChatUiModel>> {
+class GetChatService : JobIntentService(), AppWidgetView<ChatUiModel> {
 
     companion object {
         private const val JOB_ID = 1411
@@ -59,7 +60,7 @@ class GetChatService : JobIntentService(), AppWidgetView<List<ChatUiModel>> {
         viewModel.getChatList()
     }
 
-    override fun onSuccessGetOrderList(result: Success<List<ChatUiModel>>) {
+    override fun onSuccessGetOrderList(result: Success<ChatUiModel>) {
         sharedPref.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
         ChatAppWidget.setOnSuccess(applicationContext, result.data)
         GetChatWorker.runWorkerPeriodically(applicationContext)

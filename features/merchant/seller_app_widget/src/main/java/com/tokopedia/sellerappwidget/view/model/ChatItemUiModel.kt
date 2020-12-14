@@ -9,6 +9,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChatUiModel(
+        val chats: List<ChatItemUiModel> = emptyList(),
+        val unreads: Int = 0
+): Parcelable
+
+@Parcelize
+data class ChatItemUiModel(
         val messageId: Int = 0,
         val messageKey: String = "",
         val userDisplayName: String = "",

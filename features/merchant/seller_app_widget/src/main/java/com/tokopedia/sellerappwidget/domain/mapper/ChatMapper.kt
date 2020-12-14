@@ -2,8 +2,9 @@ package com.tokopedia.sellerappwidget.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerappwidget.common.Utils
-import com.tokopedia.sellerappwidget.data.model.ChatListModel
+import com.tokopedia.sellerappwidget.data.model.GetChatResponse
 import com.tokopedia.sellerappwidget.di.AppWidgetScope
+import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -16,16 +17,19 @@ import javax.inject.Inject
 @AppWidgetScope
 class ChatMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(chatList: List<ChatListModel>): List<ChatUiModel> {
-        return chatList.map {
-            ChatUiModel(
-                    messageId = it.msgID.orZero(),
-                    messageKey = it.messageKey.orEmpty(),
-                    userDisplayName = it.attributes?.contact?.name.orEmpty(),
-                    lastMessage = it.attributes?.lastReplyMessage.orEmpty(),
-                    lastReplyTime = getLastReplyTimeStr(it.attributes?.lastReplyTimeStr.orEmpty())
-            )
-        }
+    fun mapRemoteModelToUiModel(chatResponse: GetChatResponse): ChatUiModel {
+        return ChatUiModel(
+                chats = chatResponse.chatListMessage?.list?.map {
+                    ChatItemUiModel(
+                            messageId = it.msgID.orZero(),
+                            messageKey = it.messageKey.orEmpty(),
+                            userDisplayName = it.attributes?.contact?.name.orEmpty(),
+                            lastMessage = it.attributes?.lastReplyMessage.orEmpty(),
+                            lastReplyTime = getLastReplyTimeStr(it.attributes?.lastReplyTimeStr.orEmpty())
+                    )
+                }.orEmpty(),
+                unreads = chatResponse.notifications?.chat?.unreadsSeller ?: 0
+        )
     }
 
     private fun getLastReplyTimeStr(lastReplyTime: String): String {

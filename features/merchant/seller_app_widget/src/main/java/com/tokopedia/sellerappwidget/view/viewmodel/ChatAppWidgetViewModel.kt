@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ChatAppWidgetViewModel @Inject constructor(
         private val getChatUseCase: Lazy<GetChatUseCase>,
         private val dispatchers: CoroutineDispatchers
-) : BaseAppWidgetVM<AppWidgetView<List<ChatUiModel>>>(dispatchers) {
+) : BaseAppWidgetVM<AppWidgetView<ChatUiModel>>(dispatchers) {
 
     fun getChatList() {
         launchCatchError(block = {

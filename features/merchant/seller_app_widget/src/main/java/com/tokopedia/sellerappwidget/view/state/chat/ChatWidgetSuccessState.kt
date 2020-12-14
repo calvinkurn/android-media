@@ -16,6 +16,7 @@ import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
 import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
+import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.ChatWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,11 +27,11 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object ChatWidgetSuccessState {
 
-    fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, chats: List<ChatUiModel>, widgetId: Int) {
+    fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, chat: ChatUiModel, widgetId: Int) {
         val awm = AppWidgetManager.getInstance(context)
         ChatWidgetStateHelper.updateViewOnSuccess(remoteViews)
 
-        val totalChats = "${chats.size} " + context.getString(R.string.saw_new_chat)
+        val totalChats = "${chat.unreads} " + context.getString(R.string.saw_new_chat)
         with(remoteViews) {
             setTextViewText(R.id.tvSawChatTotalChat, totalChats)
             setTextViewText(R.id.tvSawChatShopName, userSession.shopName)
@@ -41,7 +42,7 @@ object ChatWidgetSuccessState {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
                 putExtra(Const.Extra.BUNDLE, Bundle().also {
-                    it.putParcelableArrayList(Const.Extra.CHAT_ITEMS, ArrayList(chats))
+                    it.putParcelableArrayList(Const.Extra.CHAT_ITEMS, ArrayList(chat.chats))
                 })
             }
             setRemoteAdapter(R.id.lvSawChatList, intent)
