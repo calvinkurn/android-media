@@ -460,7 +460,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(HomeTopAdsBannerDataModel(null, channel = channel))
+        if (!isCache) visitableList.add(HomeTopAdsBannerDataModel(null, channel = channel))
     }
 
     private fun createReminderWidget(source: ReminderEnum){
@@ -486,6 +486,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     setPosition(position)
                 }
         )
-        if (!visitableList.contains(dataModel)) visitableList.add(dataModel)
+        val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
+        if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
     }
 }
