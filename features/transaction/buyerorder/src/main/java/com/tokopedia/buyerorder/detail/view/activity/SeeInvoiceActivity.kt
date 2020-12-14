@@ -73,7 +73,9 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
             val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
             if (invoiceRefNum.isNotEmpty()) {
                 val splitInvoice = invoiceRefNum.split("/")
-                lastNoInvoice = splitInvoice[splitInvoice.size-1]
+                if (splitInvoice.isNotEmpty()) {
+                    lastNoInvoice = splitInvoice[splitInvoice.size-1]
+                }
             }
             val boughtDate = intent?.getStringExtra(BOUGHT_DATE) ?: ""
             val jobName = "Invoice $lastNoInvoice - $boughtDate"
