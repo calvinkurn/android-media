@@ -34,6 +34,7 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REM
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.LAYOUT_FLOATING
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel

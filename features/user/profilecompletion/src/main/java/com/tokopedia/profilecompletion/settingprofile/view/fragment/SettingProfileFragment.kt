@@ -118,28 +118,28 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.setTitle(getString(R.string.add_and_verify_phone))
         dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
         dialog.setOk(getString(R.string.title_verify_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
+        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
         dialog.setSecondary(getString(R.string.label_cancel))
         dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
 
     private fun initObserver() {
-        profileInfoViewModel.userProfileInfo.observe(this, Observer {
+        profileInfoViewModel.userProfileInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetUserProfileInfo(it.data)
                 is Fail -> onErrorGetProfileInfo(it.throwable)
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
+        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
 
-        profileRoleViewModel.userProfileRole.observe(this, Observer {
+        profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
@@ -439,7 +439,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         if (profileCompletionData.isMsisdnVerified) {
                             goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
-                            goToVerifyPhone()
+                            goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                         }
                     }
             )
@@ -453,7 +453,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        goToVerifyPhone()
+                        goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                     }
 
                     override fun onDismiss() {
@@ -499,9 +499,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
-    private fun goToVerifyPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    private fun goToAddPhoneBy(phone: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToChangePhone(phone: String, email: String) {

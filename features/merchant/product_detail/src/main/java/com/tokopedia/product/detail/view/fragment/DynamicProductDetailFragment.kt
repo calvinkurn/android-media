@@ -766,18 +766,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            return it.data[1].applink
-        }
-        return ""
+        return pdpUiUpdater?.productProtectionMap?.let {
+            return it.data.getOrNull(1)?.applink ?: ""
+        } ?: ""
     }
 
     private fun getPPTitleName(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            if (it.title.isNotEmpty()) return it.title
-            else return ""
-        }
-        return ""
+        return pdpUiUpdater?.productProtectionMap?.title ?: ""
     }
 
     /**
@@ -1051,7 +1046,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
-                        toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_fab)
+                        toasterWishlistText = if(isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.msg_success_add_wishlist)
                         addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -2522,8 +2517,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
-                addWishList()
                 toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_button)
+                addWishList()
                 return@let
             }
 
@@ -2845,6 +2840,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             val localCacheHandler = LocalCacheHandler(context, "CART")
             val cartCount = localCacheHandler.getInt("CACHE_TOTAL_CART", 0)
+
+            if (cartImageView.tag as? Int == null) {
+                return@run
+            }
 
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
@@ -3204,7 +3203,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun isNavOld(): Boolean {
         getAbTestPlatform()?.let {
-            return it.getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_OLD || GlobalConfig.isSellerApp()
+            return it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
         }
         return true
     }

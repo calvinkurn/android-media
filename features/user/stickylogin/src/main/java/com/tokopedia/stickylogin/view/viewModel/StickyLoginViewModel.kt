@@ -27,7 +27,7 @@ class StickyLoginViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             stickyLoginUseCase.setParam(generateParams(page))
             stickyLoginUseCase.execute(onSuccess = {
-                if (it.response.tickerDataModels.isNotEmpty()) {
+                if (it.response.tickerDataModels.isNotEmpty() && it.response.tickerDataModels[0].layout == StickyLoginConstant.LAYOUT_FLOATING) {
                     _stickyContent.postValue(Success(it.response))
                 } else {
                     _stickyContent.postValue(Fail(Throwable(ERROR_DATA_NOT_FOUND)))
