@@ -17,7 +17,7 @@ data class ShopGroup(
     val errors: List<String> = ArrayList(),
     @SerializedName("sort_key")
     @Expose
-    val sortKey: Int = 0,
+    val sortKey: Long = 0,
     @SerializedName("shop")
     @Expose
     val shop: Shop = Shop(),
