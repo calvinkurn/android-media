@@ -615,17 +615,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                                 TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                             }
                         } else {
-                            if(data is GetPopGratificationResponse){
-                                val gratifResponse = (data as GetPopGratificationResponse)
-                                val benefits = gratifResponse?.popGratification?.popGratificationBenefits
-                                if(!benefits.isNullOrEmpty() && (benefits[0]?.referenceID!=null || benefits[0]?.referenceID!=0) ){
-                                    if(gratifResponse?.popGratification?.popGratificationActionButton!=null){
-                                        performActionBasedOnClaim(gratifResponse.popGratification.popGratificationActionButton)
-                                        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
-                                        return@setOnClickListener
-                                    }
-                                }
-                            }
                             routeToLogin(activity)
                             TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                         }
