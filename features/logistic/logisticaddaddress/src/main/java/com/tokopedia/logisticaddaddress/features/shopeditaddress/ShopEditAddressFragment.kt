@@ -12,10 +12,13 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressComponent
+import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
+class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
+        DiscomBottomSheetFragment.ActionListener{
 
     private var etShopLocationWrapper: TextInputLayout? = null
     private var etShopLocation: TextInputLayout? = null
@@ -32,6 +35,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
+    private var isLogisticLabel: Boolean = true
 
     override fun getScreenName(): String = ""
 
@@ -50,6 +54,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
         initViews()
         prepareMap()
+        prepareLayout()
+        setViewListener()
     }
 
     private fun initViews() {
@@ -79,6 +85,28 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
         activity?.let { MapsInitializer.initialize(activity) }
 //        moveMap(getLatLng(currentLat, currentLong))
+    }
+
+    private fun prepareLayout() {
+        /*here isi semua edit text with data dr model*/
+    }
+
+    private fun setViewListener() {
+        /*here text wrapper dsb*/
+    }
+
+    private fun showDistrictRecommendationBottomSheet() {
+        val districtRecommendationBottomSheetFragment =
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
+        districtRecommendationBottomSheetFragment.setActionListener(this)
+        fragmentManager?.run {
+            districtRecommendationBottomSheetFragment.show(this, "")
+        }
+    }
+
+    override fun onGetDistrict(districtAddress: Address) {
+        /*see AddEditAddressFragment*/
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }
