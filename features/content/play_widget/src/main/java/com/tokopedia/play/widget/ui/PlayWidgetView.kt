@@ -92,7 +92,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
-        if (model.items.isNullOrEmpty()) {
+        val isWidgetEmpty = model.items.size <= 1 // because, for medium we have 'overlay' type card
+        if (isWidgetEmpty) {
             widgetView.hide()
         } else {
             widgetView.show()
