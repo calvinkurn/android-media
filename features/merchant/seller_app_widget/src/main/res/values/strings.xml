@@ -19,7 +19,7 @@
     <string name="saw_order_new_order_on_empty_message">Belum ada pesanan baru</string>
     <string name="saw_order_new_order_on_empty_sub_message">Yuk, respons pesanan siap dikirim.</string>
     <string name="saw_order_ready_to_ship_on_empty_message">Belum ada pesanan siap dikirim</string>
-    <string name="saw_order_ready_to_ship_on_empty_sub_message">Response pesanan baru mu, ya.</string>
+    <string name="saw_order_ready_to_ship_on_empty_sub_message">Response pesanan barumu, ya.</string>
     <string name="saw_login_tokopedia_seller_new_line">Masuk ke \nTokopedia Seller</string>
     <string name="saw_login_tokopedia_seller_large">Masuk ke Tokopedia Seller</string>
     <string name="saw_no_login_check_order_small">Cek pesanan yang kamu terima di sini.</string>
