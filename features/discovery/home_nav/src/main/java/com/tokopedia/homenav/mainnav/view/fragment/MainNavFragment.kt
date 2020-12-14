@@ -266,6 +266,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
+        if (adapter.currentList.isEmpty()) {
+            recyclerView.addOneTimeGlobalLayoutListener {
+                viewModel.getMainNavData(true)
+            }
+        }
         adapter.submitList(data.dataList)
     }
 

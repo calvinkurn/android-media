@@ -87,10 +87,6 @@ class MainNavViewModel @Inject constructor(
             dataList = _mainNavListVisitable
     ))
 
-    init {
-        getMainNavData(true)
-    }
-
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
@@ -211,7 +207,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getMainNavData(useCacheData: Boolean) {
+    fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
             if (useCacheData) {
