@@ -16,7 +16,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,6 +46,8 @@ class HomeVisitableFactoryImpl(
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val LAYOUT_FLOATING = "floating"
     }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
@@ -82,7 +83,7 @@ class HomeVisitableFactoryImpl(
         if (!isCache) {
             homeData?.ticker?.tickers?.let { ticker ->
                 if (!HomeFragment.HIDE_TICKER) {
-                    ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                    ticker.filter { it.layout != LAYOUT_FLOATING }.let {
                         if (it.isNotEmpty()) {
                             visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
                         }
