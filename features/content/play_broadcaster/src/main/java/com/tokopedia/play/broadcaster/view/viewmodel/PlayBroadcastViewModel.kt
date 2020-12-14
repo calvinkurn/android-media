@@ -391,6 +391,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 playPusher.stopPush()
                 playPusher.stopPreview()
                 updateChannelStatus(PlayChannelStatusType.Stop)
+                playPusher.destroy()
             }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }) {
