@@ -183,8 +183,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 
     fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                      startDate: String, endDate: String, groupType: Int, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
-        topAdsGetGroupDataUseCase.setQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
         val requestParams = topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate, groupType)
         topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
@@ -227,8 +225,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 
     fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                                startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
-        topAdsGetGroupStatisticsUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_group_statistics))
         val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
         topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,6 +10,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.SINGLE_ROW
+import com.tokopedia.topads.common.domain.interactor.TOP_ADS_GET_GROUP_LIST_QUERY
 import com.tokopedia.topads.dashboard.data.model.DashGroupListResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -17,9 +19,12 @@ import javax.inject.Inject
  * Created by Pika on 29/5/20.
  */
 
-
+@GqlQuery("GetTopadsGroupListQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
 class TopAdsGetGroupListUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<DashGroupListResponse>(graphqlRepository) {
 
+    init {
+        setGraphqlQuery(GetTopadsGroupListQuery.GQL_QUERY)
+    }
 
     fun setParams(search: String) {
         val queryMap = HashMap<String, Any?>()
