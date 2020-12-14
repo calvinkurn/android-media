@@ -55,6 +55,7 @@ class QuickEditVariantViewModel @Inject constructor(
     fun getData(productId: String) {
         hideErrorView()
         showProgressBar()
+        getTickerList()
 
         launchCatchError(block = {
             val access = getProductManageAccess()
