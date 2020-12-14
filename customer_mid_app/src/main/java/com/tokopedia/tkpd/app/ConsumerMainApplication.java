@@ -13,6 +13,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,7 +50,9 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -130,7 +133,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
-        createAndCallPostSeqAbTesting();
+        initializeAbTestVariant();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
@@ -315,18 +318,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
 
-    private void createAndCallPostSeqAbTesting() {
-        //don't convert to lambda does not work in kit kat
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                return executePostCreateSequenceAbTesting();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
-    }
-
     private void createAndCallFontLoad() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface fontWeave = new WeaveInterface() {
@@ -407,12 +398,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return true;
     }
 
-    @NotNull
-    private Boolean executePostCreateSequenceAbTesting() {
-        initializeAbTestVariant();
-        return true;
-    }
-
     private void getAmplificationPushData() {
         /*
          * Amplification of push notification.
@@ -424,7 +409,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
             } catch (Exception e) {
-                e.printStackTrace();
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
             }
         }
     }
@@ -609,6 +595,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (gratificationSubscriber != null) {
             if (context instanceof Activity) {
                 gratificationSubscriber.onNewIntent((Activity) context, intent);
+                if (CMInAppManager.getInstance() != null) {
+                    CMInAppManager.getInstance().activityLifecycleHandler.onNewIntent((Activity) context, intent);
+                }
             }
         }
     }

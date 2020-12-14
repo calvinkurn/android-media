@@ -5,6 +5,7 @@
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
     <string name="label_title_draft_product">Draft Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, isi informasi produkmu</string>
@@ -15,6 +16,8 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
+    <string name="label_edit_product_notification_title">Mau atur Spesifikasi produkmu?</string>
+    <string name="label_edit_product_notification_description">Saat ini pengaturan untuk Spesifikasi baru tersedia di Tokopedia versi desktop.</string>
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
@@ -340,6 +343,5 @@
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

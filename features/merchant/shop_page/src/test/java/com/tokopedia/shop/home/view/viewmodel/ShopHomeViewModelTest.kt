@@ -526,7 +526,7 @@ class ShopHomeViewModelTest {
                 "title",
                 "action title",
                 "applink",
-                "weblink",
+                true,
                 PlayWidgetConfigUiModel(
                         true,
                         1000,
