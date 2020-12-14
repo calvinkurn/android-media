@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.inbox.presentation.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -61,6 +64,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
+        const val KEY_SHOW_COACH_MARK = "showCoachMark"
+        private const val DISCUSSION_PREF = "discussion.pref"
+        const val COACH_MARK_INITIAL_VALUE = true
+        const val COACH_MARK_SHOWN = false
+        const val COACH_MARK_LAST_INDEX = 2
 
         fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -85,6 +93,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private var talkInboxListener: TalkInboxListener? = null
     private var inboxType = ""
     private var containerListener: InboxFragmentContainer? = null
+    private var sharedPrefs: SharedPreferences? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -410,6 +419,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             sortFilterPrefix.removeAllViews()
             if (isSellerView() && !isOldView()) {
                 addItem(getSellerFilterList())
+                initCoachmark()
                 return
             }
             addItem(getFilterList())
@@ -433,13 +443,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 readFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
-        if(isSellerView()) {
-            val settingsChip = SortFilterItem("Settings")
-            settingsChip.listener = {
-                gotoSellerSettings()
-            }
-            return arrayListOf(unreadFilter, readFilter, settingsChip)
-        }
         return arrayListOf(unreadFilter, readFilter)
     }
 
@@ -454,11 +457,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         } else {
             SortFilterItem(getString(R.string.inbox_problem))
         }
+        val autoRepliedFilter = SortFilterItem(getString(R.string.inbox_auto_replied))
+        val settingsChip = SortFilterItem("Settings")
         unrespondedFilter.listener = {
             unrespondedFilter.toggle()
             selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter())
             if (unrespondedFilter.type == ChipsUnify.TYPE_SELECTED) {
                 problemFilter.type = ChipsUnify.TYPE_NORMAL
+                autoRepliedFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
         problemFilter.listener = {
@@ -466,9 +472,21 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             selectFilter(TalkInboxFilter.TalkInboxProblemFilter())
             if (problemFilter.type == ChipsUnify.TYPE_SELECTED) {
                 unrespondedFilter.type = ChipsUnify.TYPE_NORMAL
+                autoRepliedFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
-        return arrayListOf(unrespondedFilter, problemFilter)
+        autoRepliedFilter.listener = {
+            autoRepliedFilter.toggle()
+//            selectFilter(TalkInboxFilter.TalkInboxProblemFilter())
+            if (autoRepliedFilter.type == ChipsUnify.TYPE_SELECTED) {
+                unrespondedFilter.type = ChipsUnify.TYPE_NORMAL
+                problemFilter.type = ChipsUnify.TYPE_NORMAL
+            }
+        }
+        settingsChip.listener = {
+            gotoSellerSettings()
+        }
+        return arrayListOf(unrespondedFilter, problemFilter, settingsChip)
     }
 
     private fun gotoSellerSettings() {
@@ -525,5 +543,53 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if (getProblemCount() != 0) {
             talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem) + " (${getProblemCount()})"
         }
+    }
+
+    private fun updateSharedPrefs(flag: Boolean) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(DISCUSSION_PREF, Context.MODE_PRIVATE)
+            sharedPrefs?.run {
+                edit().putBoolean(KEY_SHOW_COACH_MARK, flag).apply()
+            }
+        }
+    }
+
+    private fun isShowCoachMark(): Boolean {
+        return context?.let {
+            sharedPrefs = it.getSharedPreferences(DISCUSSION_PREF, Context.MODE_PRIVATE)
+            val result = sharedPrefs?.getBoolean(KEY_SHOW_COACH_MARK, COACH_MARK_INITIAL_VALUE) ?: false
+            result
+        } ?: false
+    }
+
+    private fun initCoachmark() {
+        if(isShowCoachMark()) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = context?.let { CoachMark2(it) }
+            if(talkInboxSortFilter?.chipItems !=  null) {
+                coachMarkItem.addAll(listOf(
+                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
+                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
+                        getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(2)?.refChipUnify, getString(R.string.inbox_coach_mark_smart_reply_title), getString(R.string.inbox_coach_mark_smart_reply_subtitle))
+                ))
+            }
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    if (currentIndex == COACH_MARK_LAST_INDEX) {
+                        coachMark.stepNext?.text = getString(R.string.inbox_coach_mark_finish)
+                    }
+                }
+            })
+            coachMark?.showCoachMark(coachMarkItem)
+            updateSharedPrefs(COACH_MARK_SHOWN)
+        }
+    }
+
+    private fun getCoachMarkItem(anchorView: View?, title: String, subtitle: String): CoachMark2Item {
+        return CoachMark2Item(
+                anchorView ?: talkInboxSortFilter,
+                title,
+                subtitle
+        )
     }
 }

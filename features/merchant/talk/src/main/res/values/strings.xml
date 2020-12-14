@@ -105,6 +105,14 @@
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
     <string name="inbox_unresponded">Belum Direspon</string>
     <string name="inbox_problem">Bermasalah</string>
+    <string name="inbox_auto_replied">Dibalas Otomatis</string>
+    <string name="inbox_coach_mark_filter_title">Cek filter baru diskusi di sini</string>
+    <string name="inbox_coach_mark_filter_subtitle">Ada diskusi yang belum dibalas dan terlewat? Nggak perlu khawatir, kamu bisa langsung cari dengan filter Belum Direspon.</string>
+    <string name="inbox_coach_mark_reported_title">Bisa cari diskusi yang dilaporkan juga</string>
+    <string name="inbox_coach_mark_reported_subtitle">Temukan diskusi yang pernah kamu laporkan dan diskusi yang terdeteksi melanggar S&amp;K Tokopedia dengan filter ini. </string>
+    <string name="inbox_coach_mark_smart_reply_title">Balasan otomatis dari Smart Reply</string>
+    <string name="inbox_coach_mark_smart_reply_subtitle">Sekarang diskusi tentang stok bisa dibalas otomatis oleh Smart Reply. Yuk, atur pesan balasannya di halaman Pengaturan!</string>
+    <string name="inbox_coach_mark_finish">Selesai</string>
 
     <string name="settings_toolbar">Pengaturan Diskusi</string>
     <string name="settings_template_item">Template Balasan</string>
