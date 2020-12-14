@@ -99,7 +99,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-
+import com.tokopedia.applink.RouteManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -645,7 +645,7 @@ public class MainParentActivity extends BaseActivity implements
         List<Fragment> fragmentList = new ArrayList<>();
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(FeedPlusContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(RouteManager.instantiateFragment(this, "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment", getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
