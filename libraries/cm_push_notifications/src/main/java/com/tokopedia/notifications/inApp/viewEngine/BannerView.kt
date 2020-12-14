@@ -31,6 +31,7 @@ internal open class BannerView(activity: Activity) {
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
+    private var isClickedAppLink : Boolean = false
 
     private val alertDialog = AlertDialog.Builder(
             mActivity.get(),
@@ -40,6 +41,7 @@ internal open class BannerView(activity: Activity) {
     private val dialog by lazy { alertDialog.create() }
 
     fun dialog(data: CMInApp) {
+        isClickedAppLink = false
         alertDialog.setView(createView(data)).setOnDismissListener { dismissInteractionTracking(data) }
 
         // set transparent background only for interstitial_img
@@ -155,6 +157,8 @@ internal open class BannerView(activity: Activity) {
     }
 
     private fun dismissInteractionTracking(data: CMInApp) {
+        if(isClickedAppLink)
+            return
         listener?.let {
             it.onCMInAppClosed(data)
             it.onCMinAppDismiss(data)
@@ -170,7 +174,7 @@ internal open class BannerView(activity: Activity) {
         if (appLink.equals(CLOSE, true)) {
             return
         }
-
+        isClickedAppLink = true
         listener?.let {
             it.onCMInAppLinkClick(appLink, data, elementType)
             it.onCMinAppDismiss(data)
