@@ -3,7 +3,6 @@ includeDynamicFeatureIfEnabled("customerapp")
 
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
-include "features:common:image_picker"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"

@@ -8,7 +8,6 @@ ext {
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
             developerOptionsNoop            : ":features:common:developer_options_noop",
-            imagePickerFeature              : ":features:common:image_picker_common",
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
 
