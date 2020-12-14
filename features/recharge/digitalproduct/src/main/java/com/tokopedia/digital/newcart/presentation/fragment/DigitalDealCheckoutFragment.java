@@ -333,7 +333,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToExpand() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_system_action_arrow_up_gray_24)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24)
             );
         }
     }
@@ -342,7 +342,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToCollapse() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_system_action_arrow_down_gray_24)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24)
             );
         }
     }
