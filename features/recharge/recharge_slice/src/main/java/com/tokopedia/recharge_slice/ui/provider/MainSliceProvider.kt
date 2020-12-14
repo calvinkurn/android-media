@@ -23,6 +23,7 @@ import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
@@ -93,7 +94,7 @@ class MainSliceProvider : SliceProvider() {
             contextNonNull,
             0,
             allowReads {
-                RouteManager.getIntent(contextNonNull, ApplinkConst.LOGIN)
+                RouteManager.getIntent(contextNonNull, ApplinkConsInternalDigital.APPLINK_RECHARGE_SLICE)
             },
             0
     )
@@ -324,5 +325,7 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
+
+
     }
 }

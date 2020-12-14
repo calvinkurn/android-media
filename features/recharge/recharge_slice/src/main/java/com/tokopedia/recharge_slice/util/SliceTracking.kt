@@ -16,6 +16,7 @@ class SliceTracking (private val userSession: UserSession){
         val BUSINESS_UNIT = "businessUnit"
         val CURRENT_SITE = "currentSite"
         val USER_ID = "userId"
+        val SCREEN_NAME = "screenName"
     }
 
     fun onImpressionSliceRecharge(recommendation : Recommendation?, date : String){
@@ -75,6 +76,26 @@ class SliceTracking (private val userSession: UserSession){
                 Event.BUSINESS_UNIT, "recharge",
                 Event.CURRENT_SITE, "tokopediadigital",
                 Event.USER_ID, userSession.userId
+        ))
+    }
+
+
+    fun clickLoginPage(){
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "clickGAMain",
+                Event.CATEGORY, "ga main app",
+                Event.ACTION, "click open app button",
+                Event.LABEL, "",
+                Event.BUSINESS_UNIT, "recharge",
+                Event.CURRENT_SITE, "tokopediadigital",
+                Event.USER_ID, ""
+        ))
+    }
+
+    fun openLoginPage() {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                Event.KEY, "openScreen",
+                Event.SCREEN_NAME, "login homepage - from voice search - mainapp"
         ))
     }
 
