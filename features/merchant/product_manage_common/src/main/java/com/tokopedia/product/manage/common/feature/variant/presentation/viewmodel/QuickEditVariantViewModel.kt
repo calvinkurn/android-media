@@ -42,6 +42,9 @@ class QuickEditVariantViewModel @Inject constructor(
     val showErrorView: LiveData<Boolean>
         get() = _showErrorView
 
+    val showSaveBtn: LiveData<Boolean>
+        get() = _showSaveBtn
+
     val tickerList: LiveData<List<ProductManageTicker>>
         get() = _tickerList
 
@@ -50,6 +53,7 @@ class QuickEditVariantViewModel @Inject constructor(
     private val _productManageAccess = MutableLiveData<ProductManageAccess>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showErrorView = MutableLiveData<Boolean>()
+    private val _showSaveBtn = MutableLiveData<Boolean>()
     private val _tickerList = MutableLiveData<List<ProductManageTicker>>()
 
     fun getData(productId: String) {
@@ -77,8 +81,11 @@ class QuickEditVariantViewModel @Inject constructor(
                 val variant = response.getProductV3
                 mapToVariantsResult(variant, access)
             }
+            val variants = result.variants
+            val variantNotEmpty = variants.isNotEmpty()
+            setShowSaveButton(access, variantNotEmpty)
 
-            if (result.variants.isNotEmpty()) {
+            if (variantNotEmpty) {
                 _getProductVariantsResult.value = result
                 setEditVariantResult(productId, result)
                 getTickerList()
@@ -102,6 +109,14 @@ class QuickEditVariantViewModel @Inject constructor(
                 ProductManageAccessMapper.mapToProductManageAccess(response)
             }
         }
+    }
+
+    private fun setShowSaveButton(access: ProductManageAccess, variantNotEmpty: Boolean) {
+        val hasEditStockAccess = access.editStock
+        val hasEditProductAccess = access.editProduct
+        val shouldShow = (hasEditStockAccess || hasEditProductAccess) && variantNotEmpty
+
+        _showSaveBtn.value = shouldShow
     }
 
     fun setVariantPrice(variantId: String, price: Int) {

@@ -19,7 +19,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
-import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.common.feature.variant.di.QuickEditVariantComponent
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -134,7 +133,6 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         observe(viewModel.getProductVariantsResult) {
             val variants = it.variants
             adapter?.addElement(variants)
-            showHideSaveBtn(variants)
             collapseBottomSheet()
         }
     }
@@ -158,6 +156,10 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
                 errorViewContainer.hide()
             }
         }
+
+        observe(viewModel.showSaveBtn) {
+            btnSave.showWithCondition(it)
+        }
     }
 
     private fun expandBottomSheet() {
@@ -175,9 +177,5 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
             }
             layoutParams = params
         }
-    }
-
-    private fun showHideSaveBtn(variants: List<ProductVariant>) {
-        btnSave.showWithCondition(variants.isNotEmpty())
     }
 }
