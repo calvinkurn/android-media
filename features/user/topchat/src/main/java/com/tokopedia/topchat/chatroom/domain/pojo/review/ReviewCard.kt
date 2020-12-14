@@ -20,7 +20,7 @@ data class ReviewCard(
         @SerializedName("rating")
         var rating: Float = 0f,
         @SerializedName("review_url")
-        val reviewUrl: String = "",
+        var reviewUrl: String = "",
         @SerializedName("feedback_id")
-        val feedBackId: Int = 0
+        val feedBackId: String = ""
 )

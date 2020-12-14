@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.net.Uri
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
@@ -9,8 +8,6 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -102,17 +99,7 @@ class ReviewViewHolder constructor(
     private fun bindItemClick(element: ReviewUiModel) {
         container?.setOnClickListener {
             if (element.isReviewed && !element.isSender) {
-                val uriBuild = UriUtil.buildUri(
-                        ApplinkConstInternalMarketplace.REVIEW_DETAIL,
-                        element.reviewCard.reputationId.toString()
-                )
-                val uri = Uri.parse(uriBuild)
-                        .buildUpon()
-                        .appendQueryParameter(
-                                PARAM_FEEDBACK_ID,
-                                element.reviewCard.feedBackId.toString()
-                        ).toString()
-                RouteManager.route(itemView.context, uri)
+                RouteManager.route(itemView.context, element.reviewCard.reviewUrl)
             }
         }
     }

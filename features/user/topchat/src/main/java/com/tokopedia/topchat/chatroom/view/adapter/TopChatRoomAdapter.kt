@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -300,6 +302,7 @@ class TopChatRoomAdapter constructor(
                     item.reviewCard.apply {
                         isReviewed = true
                         rating = reviewClickAt.toFloat()
+                        reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
                     }
                     notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
                 }

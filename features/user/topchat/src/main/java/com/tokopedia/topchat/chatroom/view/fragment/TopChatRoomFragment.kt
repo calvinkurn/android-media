@@ -1743,13 +1743,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int) {
-        val uri = UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.CREATE_REVIEW,
-                review.reputationId.toString(), review.reviewCard.productId.toString()
-        )
-        val uriString = Uri.parse(uri).buildUpon()
+        val uriString = Uri.parse(review.reviewCard.reviewUrl).buildUpon()
                 .appendQueryParameter(PARAM_RATING, starCount.toString())
-                .appendQueryParameter(PARAM_UTM_SOURCE, REVIEW_SOURCE_TOPCHAT)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(context, uriString)
