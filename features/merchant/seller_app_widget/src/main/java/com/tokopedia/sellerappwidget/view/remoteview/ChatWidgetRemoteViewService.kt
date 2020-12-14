@@ -51,7 +51,7 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
                 setTextViewText(R.id.tvSawChatItemMessage, chat.lastMessage)
                 setTextViewText(R.id.tvSawChatItemTime, chat.lastReplyTime)
 
-                val horLineVisibility = if (position != chats.size.minus(1)) {
+                val horLineVisibility = if (position != chats.size.minus(1) && chats.size != 1) {
                     View.VISIBLE
                 } else {
                     View.INVISIBLE
