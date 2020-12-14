@@ -6,12 +6,12 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.query.AdminPermissionList
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResponse
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminPermissionResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class AdminPermissionUseCase @Inject constructor(
-        gqlRepository: GraphqlRepository): GraphqlUseCase<AdminInfoResponse>(gqlRepository) {
+        gqlRepository: GraphqlRepository): GraphqlUseCase<AdminPermissionResponse>(gqlRepository) {
 
     companion object {
 
@@ -29,7 +29,7 @@ class AdminPermissionUseCase @Inject constructor(
         setCacheStrategy(cacheStrategy)
 
         setGraphqlQuery(AdminPermissionList.QUERY)
-        setTypeClass(AdminInfoResponse::class.java)
+        setTypeClass(AdminPermissionResponse::class.java)
     }
 
     suspend fun execute(requestParams: RequestParams,

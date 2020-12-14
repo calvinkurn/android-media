@@ -8,6 +8,9 @@ internal object AdminInfo {
             "      permission_list {\n" +
             "        permission_id\n" +
             "      }\n" +
+            "      location_list {\n" +
+            "        location_id\n" +
+            "      }\n" +
             "      detail_information {\n" +
             "        admin_role_type {\n" +
             "          is_shop_admin\n" +
