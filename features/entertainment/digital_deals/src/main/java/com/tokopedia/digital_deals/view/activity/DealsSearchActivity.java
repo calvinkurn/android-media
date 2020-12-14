@@ -118,8 +118,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-            });
+            Toaster.INSTANCE.build(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke),v1 -> {
+            }).show();
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
         dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
@@ -515,8 +515,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-            });
+            Toaster.INSTANCE.build(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL ,this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke),v1 -> {
+            }).show();
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }

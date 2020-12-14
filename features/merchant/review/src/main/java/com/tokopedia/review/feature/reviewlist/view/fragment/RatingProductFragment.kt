@@ -34,6 +34,7 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
+import com.tokopedia.review.feature.inboxreview.presentation.viewholder.InboxReviewEmptyViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.review.feature.reviewlist.analytics.ProductReviewTracking
@@ -184,6 +185,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         initViewBottomSheet()
         initChipsSort(view)
         initChipsFilter(view)
+        initEmptyState()
     }
 
     override fun onDestroy() {
@@ -595,6 +597,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
             }
         }
+    }
+
+    private fun initEmptyState() {
+        icEmptyStateRatingProduct.loadImage(InboxReviewEmptyViewHolder.EMPTY_STATE_IMAGE_URL)
     }
 
     private fun populateFilterDate(): ArrayList<ListItemUnify> {

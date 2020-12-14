@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/img_banned_product"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_250"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
+        app:layout_constraintBottom_toTopOf="@+id/txt_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:remoteFileName="cat_ic_banned_item.png" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:gravity="center_horizontal"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintBottom_toTopOf="@id/txt_sub_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_banned_product"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Produk dibatasi di Android" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_sub_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_6"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_header"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Pencarian ’Paket Vaporizer' dibatasi. Coba cari dengan browser." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

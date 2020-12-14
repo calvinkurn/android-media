@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -13,15 +12,9 @@ import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
-import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TierPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointStatusPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointsPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.homenav.rule.CoroutinesTestRule
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -211,6 +204,8 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSession>()
 
         every { userSession.isLoggedIn() } returns true
+        every { userSession.hasShop() } returns true
+
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
 
@@ -242,6 +237,7 @@ class TestMainNavViewModel {
         coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
         every { userSession.isLoggedIn() } returns true
+        every { userSession.hasShop() } returns true
 
         viewModel = createViewModel(
                 getUohOrdersNavUseCase = getUohOrdersNavUseCase,
@@ -263,18 +259,18 @@ class TestMainNavViewModel {
 
     @Test
     fun `Success getProfileFullData`(){
-        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
-            getMainNavDataUseCase.executeOnBackground()
-        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderViewModel(
                 userName = "Joko",
                 userImage = "Tingkir",
                 ovoSaldo = "Rp 100",
                 ovoPoint = "Rp 100",
                 badge = "kucing",
                 shopName = "binatang",
-                shopId = "1234")))
-        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+                shopId = "1234")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -292,11 +288,11 @@ class TestMainNavViewModel {
 
     @Test
     fun `Success getUserNameAndPictureData`(){
-        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
-            getMainNavDataUseCase.executeOnBackground()
-        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")))
-        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -308,11 +304,11 @@ class TestMainNavViewModel {
 
     @Test
     fun `Error getUserNameAndPictureData missing name`(){
-        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
-            getMainNavDataUseCase.executeOnBackground()
-        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "", userImage = "Tingkir")))
-        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderViewModel(userName = "", userImage = "Tingkir")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -324,11 +320,11 @@ class TestMainNavViewModel {
 
     @Test
     fun `Error getUserNameAndPictureData missing profile picture`(){
-        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
-            getMainNavDataUseCase.executeOnBackground()
-        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "")))
-        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderViewModel(userName = "Joko", userImage = "")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -340,11 +336,11 @@ class TestMainNavViewModel {
 
     @Test
     fun `Error getUserNameAndPictureData missing all`(){
-        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
-            getMainNavDataUseCase.executeOnBackground()
-        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "", userImage = "")))
-        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderViewModel(userName = "", userImage = "")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel

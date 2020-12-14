@@ -39,6 +39,7 @@ class BestSellerMapper (
                     discountPercentage = recommendationItem.discountPercentage,
                     reviewCount = recommendationItem.countReview,
                     ratingCount = recommendationItem.rating,
+                    countSoldRating = recommendationItem.ratingAverage,
                     shopLocation = recommendationItem.location,
                     isWishlistVisible = false,
                     isWishlisted = recommendationItem.isWishlist,
