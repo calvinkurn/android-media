@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiModel
 
 

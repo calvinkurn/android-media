@@ -7,20 +7,24 @@ object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
     const val ALL_STATUS = "Semua Status"
     const val SEMUA_TRANSAKSI = "Semua Transaksi"
-    const val ALL_CATEGORIES = "Semua Kategori"
+    const val TRANSAKSI_BERLANGSUNG = "Transaksi Berlangsung"
+    const val DIKIRIM = "Dikirim"
+    const val TIBA_DI_TUJUAN = "Tiba Di Tujuan"
+    const val MENUNGGU_KONFIRMASI = "Menunggu Konfirmasi"
+    const val DIPROSES = "Diproses"
+    const val SEMUA_TRANSAKSI_BERLANGSUNG = "Semua Transaksi Berlangsung"
+    const val ALL_PRODUCTS = "Semua Produk"
     const val CHOOSE_DATE = "Pilih Tanggal"
     const val OTHERS = "Lainnya"
-    const val CHOOSE_FILTERS = "Pilih Status"
-    const val CHOOSE_CATEGORIES = "Pilih Kategori"
+    const val CHOOSE_FILTERS = "Mau lihat status apa?"
+    const val CHOOSE_CATEGORIES = "Mau lihat produk apa?"
     const val TYPE_FILTER_DATE = 0
     const val TYPE_FILTER_STATUS = 1
     const val TYPE_FILTER_CATEGORY = 2
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
     const val CATEGORY_BELANJA = "marketplace"
-
     const val ALL_STATUS_TRANSACTION = "Semua Status Transaksi"
-    const val ALL_CATEGORIES_TRANSACTION = "Semua Kategori Transaksi"
 
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
     const val TICKER_TYPE_ERROR = "error"
@@ -130,4 +134,11 @@ object UohConsts {
     const val PRODUCT_PRICE = "product_price"
     const val PRODUCT_NAME = "product_name"
     const val CATEGORY = "category"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val STATUS_MENUNGGU_KONFIRMASI = "menunggu_konfirmasi"
+    const val STATUS_DIPROSES = "diproses"
+    const val STATUS_DIKIRIM = "dikirim"
+    const val STATUS_TIBA_DI_TUJUAN = "tiba_di_tujuan"
 }

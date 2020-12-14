@@ -81,6 +81,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
@@ -658,7 +659,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private val addProductReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT &&
+            if (intent.action == BROADCAST_ADD_PRODUCT &&
                 intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                 intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
                 activity?.run {
@@ -1276,8 +1277,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventSettingsFeatured(productId)
             }
         }
-
-        productManageBottomSheet?.dismiss()
+        productManageBottomSheet?.dismiss(childFragmentManager)
     }
 
     private fun goToProductViolationHelpPage() {
@@ -1482,7 +1482,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             productManageAddEditMenuBottomSheet.dismiss()
         }
         if (productManageBottomSheet?.isVisible == true) {
-            productManageBottomSheet?.dismiss()
+            productManageBottomSheet?.dismiss(childFragmentManager)
         }
     }
 
@@ -1490,7 +1490,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         super.onResume()
         context?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+            intentFilter.addAction(BROADCAST_ADD_PRODUCT)
             LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
         }
     }
@@ -2025,7 +2025,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
             intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
             intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
             startActivity(intent)
