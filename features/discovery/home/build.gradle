@@ -73,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.features.homeNav)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.rechargeComponent)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)

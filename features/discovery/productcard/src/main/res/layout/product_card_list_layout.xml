@@ -101,6 +101,23 @@
             app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelBestSeller"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:background="@drawable/product_card_best_seller_background"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintStart_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="# 1"
+            tools:visibility="visible" />
+
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
@@ -112,7 +129,7 @@
             android:layout_marginTop="@dimen/product_card_content_margin_top"
             app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
+            app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
             app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
 

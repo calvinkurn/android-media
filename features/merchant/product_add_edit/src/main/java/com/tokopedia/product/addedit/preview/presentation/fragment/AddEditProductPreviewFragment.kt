@@ -27,6 +27,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -35,6 +36,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_PLT_NETWORK_METRICS
@@ -60,6 +62,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
@@ -76,18 +79,28 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.ADDRESS_STREET
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.COURIER_ORIGIN
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_ADDRESS_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FIRST_MOVED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_FULL_FLOW
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LATITUDE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -127,6 +140,13 @@ class AddEditProductPreviewFragment:
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
+    private var hasLocation: Boolean = false
+    private var isStartButtonClicked: Boolean = false
+    private var latitude: String = ""
+    private var longitude: String = ""
+    private var postalCode: String = ""
+    private var districtId: Int = 0
+    private var formattedAddress: String = ""
 
     private var toolbar: Toolbar? = null
 
@@ -322,22 +342,16 @@ class AddEditProductPreviewFragment:
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+                moveToImagePicker()
             } else if (addEditProductPhotoButton?.text == buttonTextStart){
                 ProductAddStepperTracking.trackStart(shopId)
-            }
-
-            val adapter = productPhotoAdapter ?: return@setOnClickListener
-            // show error message when maximum product image is reached
-            val productPhotoSize = adapter.getProductPhotoPaths().size
-            if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
-            else {
-                val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                    if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                            ?: urlOrPath
-                    else urlOrPath
-                }.orEmpty()
-                val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
-                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                // validate whether shop has location
+                isStartButtonClicked = true
+                if (hasLocation) {
+                    moveToImagePicker()
+                } else {
+                    validateShopLocation()
+                }
             }
         }
 
@@ -461,7 +475,11 @@ class AddEditProductPreviewFragment:
         observeIsLoading()
         observeValidationMessage()
         observeSaveProductDraft()
+        observeGetShopInfoLocation()
+        observeSaveShipmentLocationData()
 
+        // validate whether shop has location
+        validateShopLocation()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
     }
@@ -512,6 +530,22 @@ class AddEditProductPreviewFragment:
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
                     onSetCashbackResult(cacheManager)
+                }
+                REQUEST_CODE_SHOP_LOCATION -> {
+                    showLoading()
+                    data.let { intent ->
+                        val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+
+                        saveAddressDataModel?.let { model ->
+                            latitude = model.latitude
+                            longitude = model.longitude
+                            postalCode = model.postalCode
+                            districtId = model.districtId
+                            formattedAddress = model.formattedAddress
+                        }
+
+                        saveShippingLocation()
+                    }
                 }
             }
         }
@@ -984,6 +1018,50 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun observeGetShopInfoLocation() {
+        viewModel.locationValidation.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (!it.data) {
+                        showDialogLocationValidation()
+                    }
+                    hasLocation = it.data
+                    if (isStartButtonClicked && hasLocation) {
+                        moveToImagePicker()
+                    }
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                    if (isStartButtonClicked) {
+                        showToasterFailSetLocation()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeSaveShipmentLocationData() {
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                    if (isSuccess) {
+                        showToasterSuccessSetLocation()
+                    } else {
+                        moveToLocationPicker()
+                    }
+                    hasLocation = isSuccess
+                }
+                is Fail -> {
+                    saveShippingLocation()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                }
+            }
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1100,6 +1178,22 @@ class AddEditProductPreviewFragment:
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun moveToImagePicker() {
+        val adapter = productPhotoAdapter ?: return
+        // show error message when maximum product image is reached
+        val productPhotoSize = adapter.getProductPhotoPaths().size
+        if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+        else {
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                        ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
+            val intent = ImagePickerAddEditNavigation.getIntent(requireContext(), ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
 
@@ -1274,6 +1368,98 @@ class AddEditProductPreviewFragment:
             val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
             startActivity(intent)
             activity?.finish()
+        }
+    }
+
+    private fun showDialogLocationValidation() {
+        DialogUnify(
+                requireContext(),
+                DialogUnify.SINGLE_ACTION,
+                DialogUnify.NO_IMAGE
+        ).apply {
+            setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
+            setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
+            setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
+            setPrimaryCTAClickListener {
+                moveToLocationPicker()
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun moveToLocationPicker() {
+        RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+            putExtra(EXTRA_IS_FULL_FLOW, false)
+            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+            startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+        }
+    }
+
+    private fun showToasterSuccessSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_success_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ) { /*no op*/ }.show()
+        }
+    }
+
+    private fun showToasterFailSetLocation() {
+        view?.let {
+            Toaster.build(
+                    it,
+                    getString(R.string.label_for_toaster_fail_set_shop_location),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
+    private fun getSaveShopShippingLocationData(
+            shopId: Int,
+            postCode: String,
+            courierOrigin: Int,
+            addrStreet: String,
+            lat: String,
+            long: String
+    ): MutableMap<String, Any> {
+        val shipmentPayload = mutableMapOf<String, Any>()
+        shipmentPayload[SHOP_ID] = shopId
+        shipmentPayload[POSTAL_CODE] = postCode
+        shipmentPayload[COURIER_ORIGIN] = courierOrigin
+        shipmentPayload[ADDRESS_STREET] = addrStreet
+        shipmentPayload[LATITUDE] = lat
+        shipmentPayload[LONGITUDE] = long
+        return shipmentPayload
+    }
+
+    private fun validateShopLocation() {
+        if (isAdding()) {
+            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+        }
+    }
+
+    private fun saveShippingLocation() {
+        val shopId = userSession.shopId.toIntOrZero()
+        if (shopId != 0 &&
+                postalCode.isNotBlank() &&
+                latitude.isNotBlank() &&
+                longitude.isNotBlank() &&
+                districtId != 0 &&
+                formattedAddress.isNotBlank()) {
+
+            val params = getSaveShopShippingLocationData(
+                    shopId = shopId,
+                    postCode = postalCode,
+                    courierOrigin = districtId,
+                    addrStreet = formattedAddress,
+                    lat = latitude,
+                    long = longitude
+            )
+            viewModel.saveShippingLocation(params)
         }
     }
 

@@ -14,5 +14,13 @@ interface MainNavTypeFactory {
 
     fun type(initialShimmerDataModel: InitialShimmerDataModel) : Int
 
+    fun type(initialShimmerProfileDataModel: InitialShimmerProfileDataModel) : Int
+
+    fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel) : Int
+
+    fun type(errorStateBuViewModel: ErrorStateBuViewModel): Int
+
+    fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int
+
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }
