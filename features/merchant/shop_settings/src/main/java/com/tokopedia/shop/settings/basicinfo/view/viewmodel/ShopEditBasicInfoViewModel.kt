@@ -1,7 +1,7 @@
 package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -22,8 +22,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import java.lang.Exception
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -38,27 +40,27 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 ): BaseViewModel(dispatchers.main) {
 
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
-        get() = _shopBasicData
+        get() = _shopBasicData.asLiveData()
     val uploadShopImage: LiveData<Result<UploadShopEditImageModel>>
-        get() = _uploadShopImage
+        get() = _uploadShopImage.asLiveData()
     val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>>
-        get() = _updateShopBasicData
+        get() = _updateShopBasicData.asLiveData()
     val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
-        get() = _allowShopNameDomainChanges
+        get() = _allowShopNameDomainChanges.asLiveData()
     val validateShopName: LiveData<Result<ValidateShopDomainNameResult>>
-        get() = _validateShopName
+        get() = _validateShopName.asLiveData()
     val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>>
-        get() = _validateShopDomain
+        get() = _validateShopDomain.asLiveData()
     val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>>
-        get() = _shopDomainSuggestion
+        get() = _shopDomainSuggestion.asLiveData()
 
-    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
-    private val _uploadShopImage = MutableLiveData<Result<UploadShopEditImageModel>>()
-    private val _updateShopBasicData = MutableLiveData<Result<ShopBasicDataMutation>>()
-    private val _allowShopNameDomainChanges = MutableLiveData<Result<AllowShopNameDomainChangesData>>()
-    private val _validateShopName = MutableLiveData<Result<ValidateShopDomainNameResult>>()
-    private val _validateShopDomain = MutableLiveData<Result<ValidateShopDomainNameResult>>()
-    private val _shopDomainSuggestion = MutableLiveData<Result<ShopDomainSuggestionData>>()
+    private val _shopBasicData = MutableStateFlow<Result<ShopBasicDataModel>>(Fail(Exception()))
+    private val _uploadShopImage = MutableStateFlow<Result<UploadShopEditImageModel>>(Fail(Exception()))
+    private val _updateShopBasicData = MutableStateFlow<Result<ShopBasicDataMutation>>(Fail(Exception()))
+    private val _allowShopNameDomainChanges = MutableStateFlow<Result<AllowShopNameDomainChangesData>>(Fail(Exception()))
+    private val _validateShopName = MutableStateFlow<Result<ValidateShopDomainNameResult>>(Fail(Exception()))
+    private val _validateShopDomain = MutableStateFlow<Result<ValidateShopDomainNameResult>>(Fail(Exception()))
+    private val _shopDomainSuggestion = MutableStateFlow<Result<ShopDomainSuggestionData>>(Fail(Exception()))
 
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
@@ -132,7 +134,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         imagePath: String,
         name: String,
         domain: String,
-        tagline: String,
+        tagLine: String,
         description: String
     ) {
         launchCatchError(block = {
@@ -142,7 +144,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             }.flowOn(dispatchers.io)
                     .collectLatest {
                         it.data?.image?.picCode?.let { picCode ->
-                            updateShopBasicData(name, domain, tagline, description, picCode)
+                            updateShopBasicData(name, domain, tagLine, description, picCode)
                         }
                         _uploadShopImage.value = Success(it)
                     }
