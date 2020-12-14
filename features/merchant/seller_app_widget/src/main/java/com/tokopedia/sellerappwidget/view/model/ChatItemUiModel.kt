@@ -7,11 +7,10 @@ import kotlinx.android.parcel.Parcelize
  * Created By @ilhamsuaib on 01/12/20
  */
 
-@Parcelize
 data class ChatUiModel(
         val chats: List<ChatItemUiModel> = emptyList(),
         val unreads: Int = 0
-): Parcelable
+)
 
 @Parcelize
 data class ChatItemUiModel(

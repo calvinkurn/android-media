@@ -16,7 +16,6 @@ import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
 import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
-import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.ChatWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,11 +37,12 @@ object ChatWidgetSuccessState {
 
             //setup chat list
             val randomNumber = (Math.random() * 10000).toInt()
+            val chatItems = ArrayList(chat.chats)
             val intent = Intent(context, ChatWidgetRemoteViewService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
                 putExtra(Const.Extra.BUNDLE, Bundle().also {
-                    it.putParcelableArrayList(Const.Extra.CHAT_ITEMS, ArrayList(chat.chats))
+                    it.putParcelableArrayList(Const.Extra.CHAT_ITEMS, chatItems)
                 })
             }
             setRemoteAdapter(R.id.lvSawChatList, intent)
