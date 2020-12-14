@@ -91,6 +91,7 @@
     <string name="mismatch_title">Pinpoint Gagal Disimpan</string>
     <string name="mismatch_desc">Pinpoint Anda gagal disimpan. Silahkan pilih Kota atau Kecamatan secara manual terlebih dahulu</string>
     <string name="mismatch_btn_title">Mengerti</string>
+    <string name="et_nama_lokasi_label">Nama Lokasi</string>
     <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
     <string name="et_kode_pos_label">Kode Pos</string>
     <string name="alamat_label">Alamat</string>
@@ -157,4 +158,13 @@
         <item>Apartemen</item>
         <item>Kos</item>
     </string-array>
+
+    <!--Shop Edit Address-->
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+    <string name="tv_pinpoint_location">Pinpoint Lokasi</string>
+    <string name="tv_pinpoint_desc">Tandai lokasi agar bisa gunakan layanan &lt;b&gt;Dijemput Kurir&lt;/b&gt;</string>
+    <string name="open_map">Buka Peta</string>
+    <string name="tv_transaction_desc">Transaksi yang sedang diproses akan menggunakan almaat lama. Alamat baru berlaku di transaksi berikutnya.</string>
+    <string name="save_changes">Simpan Perubahan</string>
+
 </resources>
