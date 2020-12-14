@@ -12,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
-import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
@@ -66,6 +65,9 @@ object ChatWidgetSuccessState {
             setInt(R.id.btnSawChatRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
             ChatWidgetStateHelper.setupRefreshIntent<ChatAppWidget>(context, remoteViews, R.id.btnSawChatRefresh, widgetId)
 
+            setInt(R.id.icSawChatMoreChat, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_chevron_right)
+
+            registerAppLinkIntent(context, R.id.icSawChatMoreChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
             registerAppLinkIntent(context, R.id.tvSawChatShopName, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
             registerAppLinkIntent(context, R.id.tvSawChatTotalChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
             registerAppLinkIntent(context, R.id.imgSawChatAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
