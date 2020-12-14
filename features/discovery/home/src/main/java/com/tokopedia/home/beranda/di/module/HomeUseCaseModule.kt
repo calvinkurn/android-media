@@ -43,9 +43,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
-//import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
-//import com.tokopedia.stickylogin.data.StickyLoginTickerDataModel
-//import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
@@ -84,15 +81,6 @@ class HomeUseCaseModule {
             "    productID\n" +
             "  }\n" +
             "}"
-
-//    private val stickyLoginQuery : String = "query get_ticker(\$page: String!) {\n" +
-//            "  ticker {\n" +
-//            "    tickers(page: \$page) {\n" +
-//            "      message\n" +
-//            "      layout\n" +
-//            "    }\n" +
-//            "  }\n" +
-//            "}"
 
     private val pendingCashBackQuery : String = "query pendingCashback {\n" +
             "  goalPendingBalance {\n" +
@@ -447,14 +435,6 @@ class HomeUseCaseModule {
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
     }
-
-//    @Provides
-//    @HomeScope
-//    fun provideStickyLoginUseCase(graphqlRepository: GraphqlRepository): StickyLoginUseCase {
-//        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StickyLoginTickerDataModel.TickerResponse>(graphqlRepository)
-//        useCase.setGraphqlQuery(stickyLoginQuery)
-//        return StickyLoginUseCase(useCase)
-//    }
 
     @Provides
     @HomeScope

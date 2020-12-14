@@ -892,7 +892,6 @@ open class HomeFragment : BaseDaggerFragment(),
         observePopupIntroOvo()
         observeErrorEvent()
         observeSendLocation()
-//        observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
