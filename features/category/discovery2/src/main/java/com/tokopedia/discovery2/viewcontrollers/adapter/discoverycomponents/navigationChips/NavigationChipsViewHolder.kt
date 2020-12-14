@@ -68,7 +68,7 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
-    override fun onCategorySelected(catId: String, appLink: String?, depth: Int) {
+    override fun onCategorySelected(catId: String, appLink: String?, depth: Int, catName: String) {
         RouteManager.route(itemView.context, appLink)
     }
 
@@ -87,5 +87,4 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
     override fun onL3Clicked(id: String?, name: String?) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
     }
-
 }
