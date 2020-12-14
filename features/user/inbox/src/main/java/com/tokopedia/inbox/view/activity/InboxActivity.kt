@@ -105,10 +105,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun clearNotificationCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(InboxConfig.role) ?: return
+        val notificationRole = inboxBadgeCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
         notificationRole.notifcenterInt = 0
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
-        navHeader.setBadgeCount(notificationRole.totalInt)
     }
 
     private fun setupToolbar() {
@@ -220,11 +221,16 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun updateBadgeCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(InboxConfig.role) ?: return
+        val notificationRole = inboxBadgeCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
+        val oppositeRole = inboxBadgeCounter.getByRoleOpposite(InboxConfig.role)
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
-        navHeader.setBadgeCount(notificationRole.totalInt)
+        oppositeRole?.let {
+            navHeader.setBadgeCount(oppositeRole.totalInt)
+        }
     }
 
     private fun setupBottomNav() {
