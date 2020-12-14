@@ -61,6 +61,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_REGISTER = 2345
     }
 
+    private var mainNavDataFetched: Boolean = false
     private var sharedPrefs: SharedPreferences? = null
 
     @Inject
@@ -266,12 +267,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
-        if (adapter.currentList.isEmpty()) {
-            recyclerView.addOneTimeGlobalLayoutListener {
-                viewModel.getMainNavData(true)
-            }
-        }
         adapter.submitList(data.dataList)
+        if (!mainNavDataFetched) {
+            viewModel.getMainNavData(true)
+            mainNavDataFetched = true
+        }
     }
 
     private fun setupViewPerformanceMonitoring(data: MainNavigationDataModel) {
