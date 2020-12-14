@@ -22,6 +22,12 @@ data class DiscussionInbox(
         @SerializedName("buyerUnread")
         @Expose
         val buyerUnread: Int = 0,
+        @SerializedName("problemTotal")
+        @Expose
+        val problemTotal: Int = 0,
+        @SerializedName("unrespondedTotal")
+        @Expose
+        val unrespondedTotal: Int = 0,
         @SerializedName("hasNext")
         @Expose
         val hasNext: Boolean = false,

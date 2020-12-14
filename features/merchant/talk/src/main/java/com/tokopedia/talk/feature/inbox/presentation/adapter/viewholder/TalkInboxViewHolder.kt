@@ -29,9 +29,9 @@ class TalkInboxViewHolder(
             setProductThumbnail(productThumbnail)
             setProductName(productName)
             setQuestion(content)
-            setNotification(isUnread)
+            setNotification(if(element.isSellerView) state.isUnresponded else isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
-            setAlertState(isMasked, element.isSellerView)
+            setAlertState(state.hasProblem, element.isSellerView)
             itemView.addOnImpressionListener(ImpressHolder()) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }

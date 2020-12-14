@@ -103,6 +103,8 @@
     <string name="inbox_empty_seller_subtitle">Terus aktif jualan ya supaya pembeli mampir ke tokomu dan memulai diskusi</string>
     <string name="inbox_empty_seller_unread_title">Yay, semua diskusi sudah dibaca</string>
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
+    <string name="inbox_unresponded">Belum Direspon</string>
+    <string name="inbox_problem">Bermasalah</string>
 
     <string name="settings_toolbar">Pengaturan Diskusi</string>
     <string name="settings_template_item">Template Balasan</string>
