@@ -25,9 +25,6 @@ import javax.inject.Inject
 
 class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
-    private var _invoiceRefNum = ""
-    private var _boughtDate = ""
-
     var orderListAnalytics: OrderListAnalytics? = null
         @Inject set
 
@@ -51,8 +48,6 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         webView.settings.builtInZoomControls
         webView.settings.displayZoomControls
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
-        _invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
-        _boughtDate = intent?.getStringExtra(BOUGHT_DATE) ?: ""
         webView.loadUrl(data)
         onPrintClicked(webView)
     }
@@ -73,7 +68,15 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
     private fun onPrintClicked(webView: WebView?) {
         webView?.let {
             val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
-            val jobName = "Invoice $_invoiceRefNum - $_boughtDate"
+
+            var lastNoInvoice = ""
+            val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
+            if (invoiceRefNum.isNotEmpty()) {
+                val splitInvoice = invoiceRefNum.split("/")
+                lastNoInvoice = splitInvoice[splitInvoice.size-1]
+            }
+            val boughtDate = intent?.getStringExtra(BOUGHT_DATE) ?: ""
+            val jobName = "Invoice $lastNoInvoice - $boughtDate"
 
             val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 it.createPrintDocumentAdapter(jobName)
