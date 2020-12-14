@@ -8,6 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper.mapProductManageOwnerAccess
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
@@ -26,6 +30,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,6 +41,8 @@ class CampaignStockViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val editStockUseCase: EditStockUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
+        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
     private val mIsStockVariant = MutableLiveData<Boolean>().apply {
@@ -50,6 +57,9 @@ class CampaignStockViewModel @Inject constructor(
     val productUpdateResponseLiveData: LiveData<Result<UpdateCampaignStockResult>>
         get() = mProductUpdateResponseLiveData
 
+    val showSaveBtn: LiveData<Boolean>
+        get() = mShowSaveBtn
+
     private val mProductIdsLiveData = MutableLiveData<List<String>>()
     private val mShopIdLiveData = MutableLiveData<String>()
 
@@ -59,6 +69,8 @@ class CampaignStockViewModel @Inject constructor(
 
     private val mEditVariantCampaignParamLiveData = MutableLiveData<List<EditVariantCampaignProductResult>>()
     private val mEditVariantResultLiveData = MutableLiveData<EditVariantResult>()
+    private val mProductManageAccess = MutableLiveData<ProductManageAccess>()
+    private val mShowSaveBtn = MutableLiveData<Boolean>()
 
     private val mGetStockAllocationLiveData = MediatorLiveData<Result<StockAllocationResult>>().apply {
         addSource(mProductIdsLiveData) { productIds ->
@@ -233,9 +245,20 @@ class CampaignStockViewModel @Inject constructor(
         mNonVariantStockLiveData.postValue(otherCampaignStockData.stock)
         mNonVariantIsActiveLiveData.postValue(otherCampaignStockData.getIsActive())
 
+        val productManageAccess = async {
+            if(userSession.isShopOwner) {
+                mapProductManageOwnerAccess()
+            } else {
+                getProductManageAccess()
+            }
+        }
+
+        mProductManageAccess.postValue(productManageAccess.await())
+
         return NonVariantStockAllocationResult(
                 stockAllocationData,
-                otherCampaignStockData
+                otherCampaignStockData,
+                productManageAccess.await()
         )
     }
 
@@ -248,7 +271,19 @@ class CampaignStockViewModel @Inject constructor(
 
         val getProductVariantData = async { getProductVariantUseCase.execute(getProductVariantUseCaseRequestParams) }
         val otherCampaignStockData = async { otherCampaignStockDataUseCase.executeOnBackground() }
-        val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(getProductVariantData.await().getProductV3).also {
+
+        val productManageAccess = async {
+            if(userSession.isShopOwner) {
+                mapProductManageOwnerAccess()
+            } else {
+                getProductManageAccess()
+            }
+        }
+
+        val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(
+            getProductVariantData.await().getProductV3,
+            productManageAccess.await()
+        ).also {
             mEditVariantCampaignParamLiveData.postValue(
                     it.variants.map { variant ->
                         EditVariantCampaignProductResult(variant.id, variant.status, variant.stock)
@@ -259,10 +294,26 @@ class CampaignStockViewModel @Inject constructor(
             )
         }
 
+        mProductManageAccess.postValue(productManageAccess.await())
+
         return VariantStockAllocationResult(
                 getVariantResult,
                 stockAllocationData,
-                otherCampaignStockData.await())
+                otherCampaignStockData.await(),
+                productManageAccess.await()
+            )
+    }
+
+    fun toggleSaveButton(mainStockTab: Boolean) {
+        val canManageStock = mProductManageAccess.value?.updateStock == true
+        val canManageProduct =mProductManageAccess.value?.editProduct == true
+        val shouldShowSaveBtn = (canManageStock || canManageProduct) && mainStockTab
+        mShowSaveBtn.value = shouldShowSaveBtn
+    }
+
+    private suspend fun getProductManageAccess(): ProductManageAccess {
+        val response = getProductManageAccessUseCase.execute(userSession.shopId)
+        return ProductManageAccessMapper.mapToProductManageAccess(response)
     }
 
     private fun getUpdateVariantParam(editVariantResult: EditVariantResult,

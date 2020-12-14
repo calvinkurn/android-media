@@ -59,6 +59,7 @@ class SellableStockProductViewHolder(itemView: View?,
                     ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
                 }
             }
+            switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
     }
 
@@ -95,6 +96,15 @@ class SellableStockProductViewHolder(itemView: View?,
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true)
         }
+
+        setEditStockAccess(element)
+    }
+
+    private fun QuantityEditorUnify.setEditStockAccess(element: SellableStockProductUIModel) {
+        val canEditStock = element.access.updateStock
+        editText.isEnabled = canEditStock
+        addButton.isEnabled = canEditStock
+        subtractButton.isEnabled = canEditStock
     }
 
     private fun QuantityEditorUnify.toggleQuantityEditorBtn(stock: Int) {
