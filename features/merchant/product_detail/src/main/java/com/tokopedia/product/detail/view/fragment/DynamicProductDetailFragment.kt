@@ -82,7 +82,7 @@ import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategor
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -134,7 +134,6 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -602,16 +601,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onDestroy()
     }
 
-    override fun gotoVideoPlayer(videos: List<Video>, index: Int) {
+    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, videos.map { it.url }, index))
+                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + videos[index].url)))
+                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
                 } catch (e: Throwable) {
                 }
             }

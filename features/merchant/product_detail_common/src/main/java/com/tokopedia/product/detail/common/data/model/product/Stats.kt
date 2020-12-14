@@ -16,22 +16,3 @@ data class Stats(
         @Expose
         val rating: Float = 0f
 )
-
-data class TxStats(
-        @SerializedName("itemSold")
-        @Expose
-        val sold: Int = 0,
-
-        @SerializedName("txReject")
-        @Expose
-        val txReject: Int = 0,
-
-        @SerializedName("txSuccess")
-        @Expose
-        val txSuccess: Int = 0
-)
-
-data class WishlistCount(@SerializedName("count") @Expose val count: Int = 0){
-        data class Response(@SerializedName("wishlistCount")
-        @Expose val wishlistCount: WishlistCount = WishlistCount())
-}

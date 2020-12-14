@@ -64,7 +64,7 @@ object ProductDetailUtil {
             shopName = productInfo.basic.shopName,
             thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
             basicDescription = textDescription,
-            videoUrlList = productInfo.data.videos.map { it.url },
+            videoUrlList = productInfo.data.youtubeVideos.map { it.url },
             isOfficial = productInfo.data.isOS,
             isGoldMerchant = productInfo.data.isPowerMerchant)
 

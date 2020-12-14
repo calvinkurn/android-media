@@ -109,7 +109,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos)
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
@@ -293,7 +293,7 @@ object DynamicProductDetailMapper {
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.videos
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
                 ?: listOf(), productInfoContent, forceRefresh)
     }
 }
