@@ -86,7 +86,6 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
-        analytic.viewBottomSheetScheduleOnFinalSetupPage()
     }
 
     fun setListener(listener: SetupResultListener) {

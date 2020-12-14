@@ -392,6 +392,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun openSetupBroadcastSchedulePage() {
         getSetupBroadcastScheduleBottomSheet().show(childFragmentManager)
+        analytic.viewBottomSheetScheduleOnFinalSetupPage()
     }
 
     private fun doCopyShareLink() {
