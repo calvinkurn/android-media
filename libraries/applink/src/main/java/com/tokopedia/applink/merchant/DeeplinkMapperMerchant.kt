@@ -31,6 +31,10 @@ object DeeplinkMapperMerchant {
         if (deeplink.startsWith(ApplinkConst.REPUTATION)) {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
+            if (segments.size > 1) {
+                val feedbackId = segments.last()
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)
+            }
             if (segments.size > 0) {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
