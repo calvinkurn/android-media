@@ -662,18 +662,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             }
             timerTextWidth = TimerUnifySingle.TEXT_WRAP
         }
-        if (timerValue != null) {
-            if (timerValue <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                flipTimer?.displayedChild = 0
-                val timeToExpire = convertSecondsToHrMmSs(timerValue)
-                progressBar?.targetDate = timeToExpire
-            } else {
-                flipTimer?.displayedChild = 1
-                val currentTime = System.currentTimeMillis()
-                val formatter = SimpleDateFormat("dd MMM yyyy", Locale("in","ID"))
-                val dateString: String = formatter.format(Date(timerValue * 1000L + currentTime))
-                couponExpire?.text = dateString
-            }
+        if (item.activePeriod != null && item.activePeriod != "0") {
+            flipTimer?.displayedChild = 0
+            val timeToExpire = item.activePeriod?.toLong()?.let { convertSecondsToHrMmSs(it) }
+            progressBar?.targetDate = timeToExpire
+        } else {
+            flipTimer?.displayedChild = 1
+            couponExpire?.text = item.activePeriodDate
         }
     }
 

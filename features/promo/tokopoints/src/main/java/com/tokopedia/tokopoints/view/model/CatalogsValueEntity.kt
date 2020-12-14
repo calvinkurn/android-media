@@ -123,6 +123,9 @@ data class CatalogsValueEntity(
         var minimumUsageLabel: String? = null,
 
         @SerializedName("minUsageValue")
-        var minUsageValue: String? = null
+        var minUsageValue: String? = null,
+
+        @SerializedName("activePeriodDate")
+        var activePeriodDate: String? = null,
 
 )

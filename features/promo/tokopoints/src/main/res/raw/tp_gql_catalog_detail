@@ -30,5 +30,6 @@ query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int , $apiVersion :S
     minimumUsageLabel
     upper_text_desc
     activePeriod
+    activePeriodDate
   }
 }
