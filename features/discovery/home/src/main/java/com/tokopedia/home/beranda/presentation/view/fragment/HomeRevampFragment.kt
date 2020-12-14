@@ -1820,7 +1820,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun getUserIdFromViewModel(): String {
-        getHomeViewModel().getUserId()
+        return getHomeViewModel().getUserId()
     }
 
     override fun recommendationListOnCloseBuyAgain(id: String, position: Int) {
