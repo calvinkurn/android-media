@@ -354,7 +354,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                                         120,
                                         "",
                                         0,
-                                        false,
+                                        true,
                                         "2",
                                         "",
                                         0,
