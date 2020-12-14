@@ -486,7 +486,8 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         scope.launchCatchError(block = {
-            playPusher.restartStreamDuration(duration.remaining)
+            val remainingDuration = duration.remaining*1000
+            playPusher.restartStreamDuration(durationInMillis = remainingDuration)
         }) { }
     }
 
