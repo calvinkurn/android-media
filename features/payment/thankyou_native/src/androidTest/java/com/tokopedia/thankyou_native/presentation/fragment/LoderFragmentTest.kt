@@ -69,9 +69,6 @@ class LoaderFragmentTest {
     private fun launchActivity() {
         val result = Intent("com.tokopedia.RESULT_ACTION", Uri.parse("tokopedia://payment/thankyou?payment_id=853304807&merchant=tokopedia"))
         activityRule.launchActivity(result)
-//        bundle.putString(ThankYouPageActivity.ARG_PAYMENT_ID, "783359")
-//        bundle.putString(ThankYouPageActivity.ARG_MERCHANT, "tokopediatest")
-
     }
 
 

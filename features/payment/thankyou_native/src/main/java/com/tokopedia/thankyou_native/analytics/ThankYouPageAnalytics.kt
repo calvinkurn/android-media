@@ -52,8 +52,6 @@ class ThankYouPageAnalytics @Inject constructor(
             idlingResourceProvider?.decrement()
         } else {
             sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
-            appsFlyerPurchaseEvent(thanksPageData)
-            sendBranchIOEvent(thanksPageData)
             idlingResourceProvider?.decrement()
         }
     }

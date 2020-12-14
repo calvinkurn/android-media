@@ -29,7 +29,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
-
     lateinit var thanksPageData: ThanksPageData
 
     fun getHeader(): HeaderUnify = thank_header
@@ -42,7 +41,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
-
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
