@@ -195,11 +195,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var submitTextView: AppCompatTextView? = null
     private var submitLoadingIndicator: LoaderUnify? = null
 
-    // TODO: Change to usersession value
-    private val isMultiLocationShop = true
-    private val isShopAdmin = true
-    private val isShopOwner = false
-
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -624,6 +619,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.show()
             submitLoadingIndicator?.hide()
         }
+
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupDefaultStockAllocationMessage()
 
         enableProductNameField()
         onFragmentResult()
@@ -1217,18 +1215,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToProductStockInputStatus() {
-        viewModel.isProductStockInputError.observe(viewLifecycleOwner, Observer { isError ->
-            productStockField?.setError(isError)
-            val textFieldMessage = viewModel.productStockMessage.let { message ->
-                (!isError && message.isEmpty() && (isShopAdmin || isShopOwner)).let { shouldDisplayDifferentMessage ->
-                    if (shouldDisplayDifferentMessage) {
-                        getStockAllocationMessage()
-                    } else {
-                        message
-                    }
-                }
-            }
-            productStockField?.setMessage(textFieldMessage)
+        viewModel.isProductStockInputError.observe(viewLifecycleOwner, Observer {
+            productStockField?.setError(it)
+            productStockField?.setMessage(viewModel.productStockMessage)
         })
     }
 
@@ -1662,13 +1651,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             findNavController().navigateUp()
         }
     }
-
-    private fun getStockAllocationMessage(): String =
-            when {
-                isMultiLocationShop && viewModel.isEditing -> context?.getString(R.string.message_edit_product_stock_only_main_location).orEmpty()
-                isMultiLocationShop && viewModel.isAdding -> context?.getString(R.string.message_add_product_stock_only_main_location).orEmpty()
-                else -> ""
-            }
 
     override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {
         val minOrderInput = productMinOrderField.getTextIntOrZero().toString()

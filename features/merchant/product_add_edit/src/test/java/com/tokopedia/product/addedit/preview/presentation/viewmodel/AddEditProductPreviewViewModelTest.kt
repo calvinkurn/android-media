@@ -298,7 +298,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When is shop admin should get admin permission`() {
-        viewModel.isShopAdmin = true
+        onGetIsShopAdmin_thenReturn(true)
 
         viewModel.setProductId("")
 
@@ -307,7 +307,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When is not shop Admin should not get admin permission`() {
-        viewModel.isShopAdmin = false
+        onGetIsShopAdmin_thenReturn(false)
 
         viewModel.setProductId("")
 
@@ -316,7 +316,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When product id is not blank, is shop admin, and admin permission is not yet known, should get admin permission`() {
-        viewModel.isShopAdmin = true
+        onGetIsShopAdmin_thenReturn(true)
 
         viewModel.setProductId("123")
 
@@ -325,24 +325,24 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When product id is not blank, is shop admin, and admin permission result is already known, should not get admin permission`() {
-        viewModel.isShopAdmin = true
-
-        val isManageProductAdminField = viewModel::class.java.getDeclaredField("mIsManageProductAdmin").apply {
-            isAccessible = true
-        }
-        isManageProductAdminField.set(viewModel, Success(true))
+        val isEligible = true
+        
+        onGetIsShopAdmin_thenReturn(true)
+        onGetAdminProductPermission_thenReturn(isEligible)
 
         viewModel.setProductId("123")
+        viewModel.setProductId("123")
 
-        verifyGetAdminProductPermissionNotCalled()
+        verifyGetAdminProductPermissionCalledOnlyOnce()
     }
 
     @Test
     fun `When get admin permission use case success Expect isManageProductAdmin value changed`() = runBlocking {
-        viewModel.isShopAdmin = true
         val isEligible = true
 
+        onGetIsShopAdmin_thenReturn(true)
         onGetAdminProductPermission_thenReturn(isEligible)
+
         viewModel.setProductId("")
 
         verifyGetAdminProductPermissionCalled()
@@ -351,9 +351,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When get admin permission use case failed should return error object`() = runBlocking {
-        viewModel.isShopAdmin = true
-
+        onGetIsShopAdmin_thenReturn(true)
         onGetAdminProductPermission_thenFailed()
+
         viewModel.setProductId("")
 
         verifyGetAdminProductPermissionCalled()
@@ -376,6 +376,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT) } returns isEligible
     }
 
+    private fun onGetIsShopAdmin_thenReturn(isShopAdmin: Boolean) {
+        coEvery { userSession.isShopAdmin } returns isShopAdmin
+    }
+
     private fun onSaveProductDraft_thenFailed() {
         coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
     }
@@ -394,6 +398,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun verifyGetAdminProductPermissionCalled() {
         coVerify {
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+        }
+    }
+
+    private fun verifyGetAdminProductPermissionCalledOnlyOnce() {
+        coVerify(exactly = 1) {
             adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
         }
     }

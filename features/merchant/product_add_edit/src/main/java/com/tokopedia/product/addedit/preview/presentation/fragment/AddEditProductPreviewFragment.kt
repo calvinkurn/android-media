@@ -175,16 +175,11 @@ class AddEditProductPreviewFragment:
     //loading
     private var loadingLayout: View? = null
 
-    // admin revamp
+    // admin multi location ticker
     private var multiLocationTicker: Ticker? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-
-    // TODO: Change to usersession value
-    private val isMultiLocationShop = true
-    private val isShopAdmin = true
-    private val isShopOwner = false
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -471,9 +466,7 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
-        val shouldShowMultiLocationTicker =
-                isAdding() && isMultiLocationShop && (isShopOwner || isShopAdmin)
-        multiLocationTicker?.showWithCondition(shouldShowMultiLocationTicker)
+        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
@@ -979,7 +972,8 @@ class AddEditProductPreviewFragment:
                 is Success -> {
                     result.data.let { isEligible ->
                         if (!isEligible) {
-                            // TODO: Show not eligible page
+                            // TODO: Show not eligible page. Will wait for PM. For now, exit the page
+                            activity?.finish()
                         }
                     }
                 }

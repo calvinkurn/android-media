@@ -139,7 +139,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                 appName = context.getString(R.string.tokopedia_beta)
             GlobalConfig.SELLER_APPLICATION ->
                 appName = "sellerapp"
-            GlobalConfig.CONSUMER_PRO_APPLICATION ->
+            3 ->
                 appName = "Tokopedia Pro"
         }
 

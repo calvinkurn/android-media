@@ -50,9 +50,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
 
-    // TODO: Change to userSession value and private value
-    var isShopAdmin = true
-
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
@@ -63,7 +60,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         addSource(productId) {
             if (!productId.value.isNullOrBlank()) {
                 getProductData(it)
-            } else if (isShopAdmin) {
+            } else if (userSession.isShopAdmin) {
                 getAdminPermission()
             }
         }
@@ -112,6 +109,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
     private var getAdminPermissionJob: Job? = null
+
+    // Enable showing ticker if seller has multi location shop
+    val shouldShowMultiLocationTicker
+        get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
     init {
         with (productInputModel) {
@@ -220,7 +221,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
-        if (isShopAdmin && mIsManageProductAdmin.value !is Success) {
+        if (userSession.isShopAdmin && mIsManageProductAdmin.value !is Success) {
             getAdminPermission()
         }
         launchCatchError(block = {
