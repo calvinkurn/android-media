@@ -7,10 +7,12 @@ import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
@@ -31,24 +33,36 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
     @RelaxedMockK
+    lateinit var validateProductNameUseCase: ValidateProductNameUseCase
+
+    @RelaxedMockK
+    lateinit var getShopInfoLocationUseCase: GetShopInfoLocationUseCase
+
+    @RelaxedMockK
+    lateinit var saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase
+
+    @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
 
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
-    protected val viewModel: AddEditProductPreviewViewModel by lazy {
-        spyk(AddEditProductPreviewViewModel(getProductUseCase,
-                getProductMapper,
-                resourceProvider,
-                getProductDraftUseCase,
-                saveProductDraftUseCase,
-                CoroutineTestDispatchersProvider))
-    }
+    lateinit var viewModel: AddEditProductPreviewViewModel
 
     @Before
     @Throws(Exception::class)
     fun setup() {
         MockKAnnotations.init(this)
+        viewModel = AddEditProductPreviewViewModel(
+                getProductUseCase,
+                getProductMapper,
+                resourceProvider,
+                getProductDraftUseCase,
+                saveProductDraftUseCase,
+                validateProductNameUseCase,
+                getShopInfoLocationUseCase,
+                saveShopShipmentLocationUseCase,
+                CoroutineTestDispatchersProvider)
     }
 
     @AfterEach

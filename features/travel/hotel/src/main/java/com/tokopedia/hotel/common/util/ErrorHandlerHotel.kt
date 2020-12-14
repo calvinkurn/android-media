@@ -41,12 +41,13 @@ class ErrorHandlerHotel {
         }
 
         fun getErrorMessage(context: Context?, e: Throwable?): String {
-            if (context == null || e == null) {
-                return "Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti."
+            return if (context == null || e == null) {
+                "Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti."
             } else {
-                if (e is UnknownHostException) return context.getString(R.string.hotel_error_no_internet_connection_subtitle)
-                else if (e.message.isNullOrEmpty() && e.localizedMessage.length <= 3) return e.message ?: ""
-                else return context.getString(R.string.hotel_error_server_error_subtitle)
+                if (e is UnknownHostException) context.getString(R.string.hotel_error_no_internet_connection_subtitle)
+                else if (!e.message.isNullOrEmpty()) e.message ?: ""
+                else if (!e.localizedMessage.isNullOrEmpty()) e.localizedMessage
+                else context.getString(R.string.hotel_error_server_error_subtitle)
             }
         }
 

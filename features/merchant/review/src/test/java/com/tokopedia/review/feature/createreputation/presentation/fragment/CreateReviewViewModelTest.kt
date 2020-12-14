@@ -187,7 +187,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with images results in back end error should return failure`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
         val expectedUploadResponse = UploadResult.Success("success")
 
         onUploadImage_thenReturn(expectedUploadResponse)
@@ -195,7 +195,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -213,7 +213,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -221,11 +221,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with no images should execute expected usecases`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true))
 
         onSubmitReview_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -235,11 +235,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with no images results in back end error should return failure`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
 
         onSubmitReview_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -253,7 +253,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onSubmitReviewError_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))

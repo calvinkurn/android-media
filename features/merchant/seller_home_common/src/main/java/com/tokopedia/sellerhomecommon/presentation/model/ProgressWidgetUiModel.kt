@@ -20,7 +20,8 @@ class ProgressWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
