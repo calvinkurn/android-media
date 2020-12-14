@@ -15,6 +15,7 @@ import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
+import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.OrderWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,24 +26,24 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object OrderWidgetSuccessState {
 
-    fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, orderStatusId: Int, widgetId: Int) {
+    fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, order: OrderUiModel, orderStatusId: Int, widgetId: Int) {
         val awm = AppWidgetManager.getInstance(context)
         val option = awm.getAppWidgetOptions(widgetId)
         val widgetSize = AppWidgetHelper.getAppWidgetSize(option)
         when (widgetSize) {
-            WidgetSize.SMALL -> showSmallWidgetSuccessState(context, remoteViews, userSession, widgetItems, widgetId)
-            else -> showNormalWidgetSuccessState(context, remoteViews, userSession, widgetItems, orderStatusId, widgetId)
+            WidgetSize.SMALL -> showSmallWidgetSuccessState(context, remoteViews, userSession, order, widgetId)
+            else -> showNormalWidgetSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
         }
     }
 
-    private fun showSmallWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, widgetId: Int) {
+    private fun showSmallWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, order: OrderUiModel, widgetId: Int) {
         with(remoteViews) {
             OrderWidgetStateHelper.updateViewOnSuccess(this)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val newOrderCount = widgetItems.count { it.statusId == Const.OrderStatusId.NEW_ORDER }
-            val readyToShipCount = widgetItems.count { it.statusId == Const.OrderStatusId.READY_TO_SHIP }
+            val newOrderCount = order.sellerOrderStatus.newOrder
+            val readyToShipCount = order.sellerOrderStatus.readyToShip
             val newOrderFmt = "$newOrderCount ${context.getString(R.string.saw_order)}"
             val readyToShipFmt = "$readyToShipCount ${context.getString(R.string.saw_order)}"
             setTextViewText(R.id.tvSawOrderNewOrder, newOrderFmt)
@@ -64,13 +65,13 @@ object OrderWidgetSuccessState {
         }
     }
 
-    private fun showNormalWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, orderStatusId: Int, widgetId: Int) {
+    private fun showNormalWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, order: OrderUiModel, orderStatusId: Int, widgetId: Int) {
         with(remoteViews) {
             OrderWidgetStateHelper.updateViewOnSuccess(this)
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val orderItemsByType = widgetItems.filter { it.statusId == orderStatusId }
+            val orderItemsByType = order.orders.filter { it.statusId == orderStatusId }
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
@@ -86,7 +87,7 @@ object OrderWidgetSuccessState {
                 action = Const.Action.SWITCH_ORDER
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 putExtra(Const.Extra.ORDER_STATUS_ID, mOrderStatusId)
-                putParcelableArrayListExtra(Const.Extra.ORDER_ITEMS, ArrayList(widgetItems))
+                putExtra(Const.Extra.SELLER_ORDER, order)
             }
             val switchPendingIntent = PendingIntent.getBroadcast(context, 0, switchIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             setOnClickPendingIntent(R.id.containerSawOrderSwitch, switchPendingIntent)
@@ -96,7 +97,12 @@ object OrderWidgetSuccessState {
             } else {
                 R.string.saw_ready_to_ship
             }
-            val totalOrderFmt = "${orderItemsByType.size} ${context.getString(orderTypeStringRes)}"
+            val totalOrder = if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
+                order.sellerOrderStatus.newOrder
+            } else {
+                order.sellerOrderStatus.readyToShip
+            }
+            val totalOrderFmt = "$totalOrder ${context.getString(orderTypeStringRes)}"
             setTextViewText(R.id.tvSawOrderTotalOrder, totalOrderFmt)
             setTextViewText(R.id.tvSawOrderShopName, userSession.shopName)
             setInt(R.id.btnSawOrderRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
@@ -136,7 +142,7 @@ object OrderWidgetSuccessState {
         }
     }
 
-    private fun setupOrderList(context: Context, remoteViews: RemoteViews, items: List<OrderUiModel>, widgetId: Int, orderStatusId: Int) {
+    private fun setupOrderList(context: Context, remoteViews: RemoteViews, items: List<OrderItemUiModel>, widgetId: Int, orderStatusId: Int) {
         with(remoteViews) {
             //setup widget list view
             val randomNumber = (Math.random() * 10000).toInt()

@@ -29,8 +29,34 @@ object Utils {
     }
 
     fun formatDate(date: Date, format: String): String {
-        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        val sdf = SimpleDateFormat(format, getLocale())
         return sdf.format(date)
+    }
+
+    fun getNowTimeStamp(): Long {
+        val date = Calendar.getInstance(getLocale())
+        return date.timeInMillis
+    }
+
+    fun getNPastMonthTimeText(monthBefore: Int): String {
+        val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
+        val pattern = "dd/MM/yyyy"
+        return format(pastTwoYear, pattern)
+    }
+
+    fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
+        val sdf = SimpleDateFormat(pattern, locale)
+        return sdf.format(timeMillis)
+    }
+
+    fun getNPastMonthTimeStamp(monthBefore: Int): Long {
+        val date = Calendar.getInstance(getLocale())
+        date.set(Calendar.MONTH, date.get(Calendar.MONTH) - monthBefore)
+        return date.timeInMillis
+    }
+
+    fun getLocale(): Locale {
+        return Locale("id")
     }
 
     fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, imgUrl: String, widgetId: Int) {

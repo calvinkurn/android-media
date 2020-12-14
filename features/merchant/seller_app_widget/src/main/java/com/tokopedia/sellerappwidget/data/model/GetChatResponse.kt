@@ -1,6 +1,5 @@
 package com.tokopedia.sellerappwidget.data.model
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -17,18 +16,6 @@ data class GetChatListMessageModel(
         @Expose
         @SerializedName("list")
         val list: List<ChatListModel> = emptyList()
-)
-
-data class NotificationsModel(
-        @Expose
-        @SerializedName("chat")
-        val chat: ChatModel? = ChatModel()
-)
-
-data class ChatModel(
-        @Expose
-        @SerializedName("unreadsSeller")
-        val unreadsSeller: Int? = 0
 )
 
 data class ChatListModel(
@@ -60,3 +47,4 @@ data class ChatContactModel(
         @SerializedName("name")
         val name: String? = ""
 )
+

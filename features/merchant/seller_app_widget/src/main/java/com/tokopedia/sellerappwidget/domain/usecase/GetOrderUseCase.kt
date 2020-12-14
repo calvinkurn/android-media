@@ -20,16 +20,15 @@ import javax.inject.Inject
 class GetOrderUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: OrderMapper
-) : BaseUseCase<List<OrderUiModel>>() {
+) : BaseUseCase<OrderUiModel>() {
 
-    override suspend fun executeOnBackground(): List<OrderUiModel> {
+    override suspend fun executeOnBackground(): OrderUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GetOrderResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetOrderResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetOrderResponse>()
-            val orderList = data.orderList.list
-            return mapper.mapRemoteModelToUiModel(orderList)
+            return mapper.mapRemoteModelToUiModel(data)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
@@ -37,8 +36,6 @@ class GetOrderUseCase @Inject constructor(
 
     companion object {
         private const val KEY_INPUT = "input"
-        private const val LANG_ID = "id"
-        private const val FILTER_STATUS = 999
 
         /**
          * create params to get order list
@@ -48,19 +45,8 @@ class GetOrderUseCase @Inject constructor(
          * */
         fun createParams(startDateFmt: String, endDateFmt: String): RequestParams {
             val input = InputParameterModel(
-                    batchPage = 0,
                     startDate = startDateFmt,
                     endDate = endDateFmt,
-                    filterStatus = FILTER_STATUS,
-                    isBuyerRequestCancel = 0,
-                    isMobile = true,
-                    lang = LANG_ID,
-                    nextOrderId = 0,
-                    orderTypeList = emptyList(),
-                    page = 1,
-                    search = "",
-                    shippingList = emptyList(),
-                    sortBy = 0,
                     statusList = listOf(Const.OrderStatusId.READY_TO_SHIP, Const.OrderStatusId.NEW_ORDER)
             )
             return RequestParams.create().apply {
@@ -80,6 +66,12 @@ class GetOrderUseCase @Inject constructor(
                     product_name
                     picture
                   }
+                }
+              }
+              notifications {
+                sellerOrderStatus {
+                  newOrder
+                  readyToShip
                 }
               }
             }

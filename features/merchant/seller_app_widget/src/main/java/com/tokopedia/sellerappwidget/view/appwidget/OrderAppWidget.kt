@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.service.GetOrderService
 import com.tokopedia.sellerappwidget.view.state.order.*
@@ -120,8 +121,10 @@ class OrderAppWidget : AppWidgetProvider() {
 
     private fun switchOrder(context: Context, intent: Intent) {
         val orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, DEFAULT_ORDER_STATUS_ID)
-        val widgetItems: List<OrderUiModel> = intent.getParcelableArrayListExtra<OrderUiModel>(Const.Extra.ORDER_ITEMS).orEmpty()
-        setOnSuccess(context, ArrayList(widgetItems), orderStatusId)
+        val order: OrderUiModel? = intent.getParcelableExtra(Const.Extra.SELLER_ORDER)
+        order?.let {
+            setOnSuccess(context, it, orderStatusId)
+        }
 
         AppWidgetTracking.getInstance(context)
                 .sendEventClickSwitchButtonOrderWidget()
@@ -152,7 +155,7 @@ class OrderAppWidget : AppWidgetProvider() {
 
     private fun onOrderItemClick(context: Context, intent: Intent) {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
-        val orderItem: OrderUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
+        val orderItem: OrderItemUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
         val orderId = orderItem?.orderId ?: "0"
         val orderDetailIntent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -169,7 +172,7 @@ class OrderAppWidget : AppWidgetProvider() {
         @JvmField
         val DEFAULT_ORDER_STATUS_ID = Const.OrderStatusId.NEW_ORDER
 
-        fun setOnSuccess(context: Context, widgetItems: List<OrderUiModel>, orderStatusId: Int) {
+        fun setOnSuccess(context: Context, order: OrderUiModel, orderStatusId: Int) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, appWidgetManager)
 
@@ -183,9 +186,9 @@ class OrderAppWidget : AppWidgetProvider() {
 
             widgetIds.forEach { widgetId ->
                 when {
-                    widgetItems.isEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
+                    order.orders.isEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
                     else -> {
-                        OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, widgetItems, orderStatusId, widgetId)
+                        OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
                     }
                 }
 

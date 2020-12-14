@@ -13,6 +13,7 @@ import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.di.DaggerAppWidgetComponent
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
+import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetLoadingState
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
@@ -23,14 +24,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 17/11/20
  */
 
-class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
+class GetOrderService : JobIntentService(), AppWidgetView<OrderUiModel> {
 
     companion object {
         private const val JOB_ID = 8043
@@ -67,19 +67,16 @@ class GetOrderService : JobIntentService(), AppWidgetView<List<OrderUiModel>> {
         orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, orderStatusId)
 
         val dateFormat = "dd/MM/yyyy"
-        val today = Date()
-        val last90Days = Date(today.time.minus(TimeUnit.DAYS.toMillis(90)))
-        val endDateFmt = Utils.formatDate(today, dateFormat)
-        val startDateFmt = Utils.formatDate(last90Days, dateFormat)
+        val endDateFmt = Utils.formatDate(Date(Utils.getNowTimeStamp()), dateFormat)
+        val startDateFmt = Utils.getNPastMonthTimeText(3)
 
         showLoadingState()
         viewModel.getOrderList(startDateFmt, endDateFmt)
     }
 
-    override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
-        val orderList = result.data
+    override fun onSuccessGetOrderList(result: Success<OrderUiModel>) {
         sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
-        OrderAppWidget.setOnSuccess(applicationContext, orderList, orderStatusId)
+        OrderAppWidget.setOnSuccess(applicationContext, result.data, orderStatusId)
         GetOrderWorker.runWorker(applicationContext)
     }
 

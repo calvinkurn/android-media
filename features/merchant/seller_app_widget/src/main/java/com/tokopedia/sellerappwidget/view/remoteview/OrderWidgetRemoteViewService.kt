@@ -12,7 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.view.model.OrderUiModel
+import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import timber.log.Timber
 
 /**
@@ -30,7 +30,7 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
             intent: Intent
     ) : RemoteViewsFactory {
 
-        private var items: ArrayList<OrderUiModel> = arrayListOf()
+        private var items: ArrayList<OrderItemUiModel> = arrayListOf()
 
         init {
             val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)

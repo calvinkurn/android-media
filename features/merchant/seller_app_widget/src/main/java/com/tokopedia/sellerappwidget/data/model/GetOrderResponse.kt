@@ -1,13 +1,15 @@
 package com.tokopedia.sellerappwidget.data.model
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetOrderResponse(
         @Expose
         @SerializedName("orderList")
-        val orderList: OrderListModel = OrderListModel()
+        val orderList: OrderListModel = OrderListModel(),
+        @Expose
+        @SerializedName("notifications")
+        val notifications: NotificationsModel? = NotificationsModel()
 )
 
 data class OrderListModel(

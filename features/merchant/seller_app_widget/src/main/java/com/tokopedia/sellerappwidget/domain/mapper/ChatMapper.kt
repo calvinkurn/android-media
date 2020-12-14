@@ -28,7 +28,7 @@ class ChatMapper @Inject constructor() {
                             lastReplyTime = getLastReplyTimeStr(it.attributes?.lastReplyTimeStr.orEmpty())
                     )
                 }.orEmpty(),
-                unreads = chatResponse.notifications?.chat?.unreadsSeller ?: 0
+                unreads = chatResponse.notifications?.chat?.unreadsSeller.orZero()
         )
     }
 

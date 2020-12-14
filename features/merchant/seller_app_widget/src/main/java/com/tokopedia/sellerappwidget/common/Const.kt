@@ -13,6 +13,7 @@ object Const {
 
     object Extra {
         const val BUNDLE = "extra_bundle"
+        const val SELLER_ORDER = "seller_order"
         const val ORDER_ITEM = "order"
         const val ORDER_ITEMS = "orders"
         const val ORDER_STATUS_ID = "order_status_id"
