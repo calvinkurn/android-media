@@ -1599,7 +1599,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: Int, imageView: ImageView) {
+    override fun onWishlistCheckChanged(productId: String, cartId: Long, imageView: ImageView) {
         cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
         setProductImageAnimationData(imageView, false)
 
