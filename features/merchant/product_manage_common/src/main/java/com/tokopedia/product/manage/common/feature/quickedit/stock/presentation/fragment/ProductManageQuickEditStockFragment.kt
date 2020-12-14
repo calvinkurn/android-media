@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
@@ -205,50 +206,9 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
             })
         }
 
-        quickEditStockSaveButton.setOnClickListener {
-            product?.run {
-                if(quickEditStockQuantityEditor.editText.text.isEmpty()) {
-                    quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
-                }
-                viewModel.updateStock(quickEditStockQuantityEditor.getValue())
-                onFinishedListener?.onFinishEditStock(this)
-                removeObservers()
-                super.dismiss()
-                ProductManageTracking.eventEditStockSave(id)
-                return@setOnClickListener
-            }
+        setupSaveButton()
+        setupStatusSwitch()
 
-            productId?.let { id ->
-                productName?.let { name ->
-                    productStatus?.let { status ->
-                        productStock.let { stock ->
-                            if(quickEditStockQuantityEditor.editText.text.isEmpty()) {
-                                quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
-                                viewModel.updateStock(quickEditStockQuantityEditor.getValue())
-                                onFinishedListener?.onFinishEditStock(id, name, status, stock)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.updateStatus(ProductStatus.ACTIVE)
-            } else {
-                viewModel.updateStatus(ProductStatus.INACTIVE)
-            }
-
-            if(firstStateChecked) {
-                if(isChecked) {
-                    ProductManageTracking.eventEditStockToggle(TOGGLE_ACTIVE, product?.id.orEmpty())
-                } else {
-                    ProductManageTracking.eventEditStockToggle(TOGGLE_NOT_ACTIVE, product?.id.orEmpty())
-                }
-            }
-        }
-        quickEditStockActivateSwitch.isChecked = product?.isActive() ?: false
         product?.stock?.let { stock ->
             quickEditStockQuantityEditor.setValue(stock)
             viewModel.updateStock(stock)
@@ -272,9 +232,92 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         getStockTicker()
 
         setupBottomSheet()
+        setupStockEditor()
+    }
+
+    private fun setupStockEditor() {
+        val hasEditStockAccess = product?.hasEditStockAccess() == true
+
+        if(hasEditStockAccess) {
+            requestStockEditorFocus()
+            setAddButtonClickListener()
+            setSubtractButtonClickListener()
+        } else {
+            disableStockEditor()
+        }
+    }
+
+    private fun requestStockEditorFocus() {
         quickEditStockQuantityEditor.editText.requestFocus()
-        setAddButtonClickListener()
-        setSubtractButtonClickListener()
+    }
+
+    private fun disableStockEditor() {
+        quickEditStockQuantityEditor.apply {
+            addButton.isEnabled = false
+            subtractButton.isEnabled = false
+            editText.isEnabled = false
+        }
+    }
+
+    private fun setupStatusSwitch() {
+        val hasEditProductAccess = product?.hasEditProductAccess() == true
+        quickEditStockActivateSwitch.isChecked = product?.isActive() ?: false
+
+        if(hasEditProductAccess) {
+            quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    viewModel.updateStatus(ProductStatus.ACTIVE)
+                } else {
+                    viewModel.updateStatus(ProductStatus.INACTIVE)
+                }
+
+                if (firstStateChecked) {
+                    if (isChecked) {
+                        ProductManageTracking.eventEditStockToggle(TOGGLE_ACTIVE, product?.id.orEmpty())
+                    } else {
+                        ProductManageTracking.eventEditStockToggle(TOGGLE_NOT_ACTIVE, product?.id.orEmpty())
+                    }
+                }
+            }
+        } else {
+            quickEditStockActivateSwitch.isEnabled = false
+        }
+    }
+
+    private fun setupSaveButton() {
+        val canEditStock = product?.hasEditStockAccess() == true
+        val canEditProduct = product?.hasEditProductAccess() == true
+        val shouldShow = canEditStock || canEditProduct
+
+        quickEditStockSaveButton.setOnClickListener {
+            product?.run {
+                if (quickEditStockQuantityEditor.editText.text.isEmpty()) {
+                    quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+                }
+                viewModel.updateStock(quickEditStockQuantityEditor.getValue())
+                onFinishedListener?.onFinishEditStock(this)
+                removeObservers()
+                super.dismiss()
+                ProductManageTracking.eventEditStockSave(id)
+                return@setOnClickListener
+            }
+
+            productId?.let { id ->
+                productName?.let { name ->
+                    productStatus?.let { status ->
+                        productStock.let { stock ->
+                            if (quickEditStockQuantityEditor.editText.text.isEmpty()) {
+                                quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+                                viewModel.updateStock(quickEditStockQuantityEditor.getValue())
+                                onFinishedListener?.onFinishEditStock(id, name, status, stock)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        quickEditStockSaveButton.showWithCondition(shouldShow)
     }
 
     private fun setupBottomSheet() {
