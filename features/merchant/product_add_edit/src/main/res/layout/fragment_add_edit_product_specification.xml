@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSpecification"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSpecification"
+        android:text="@string/action_specification_save"
+        android:layout_marginVertical="@dimen/spacing_lvl3"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl5"/>
+
+</LinearLayout>
