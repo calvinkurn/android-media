@@ -727,9 +727,9 @@ open class HomeViewModel @Inject constructor(
 
     fun insertRechargeBUWidget(data: RechargePerso) {
         if (data.items.isNotEmpty()) {
-            _homeLiveData.value?.list?.apply {
-                val findRechargeBUWidget = find { visitable -> visitable is RechargeBUWidgetDataModel }
-                val indexOfRechargeBUWidget = indexOf(findRechargeBUWidget)
+            homeVisitableListData.let {
+                val findRechargeBUWidget = it.find { visitable -> visitable is RechargeBUWidgetDataModel }
+                val indexOfRechargeBUWidget = it.indexOf(findRechargeBUWidget)
                 if (indexOfRechargeBUWidget > -1 && findRechargeBUWidget is RechargeBUWidgetDataModel) {
                     val newFindRechargeBUWidget = findRechargeBUWidget.copy(data = data)
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindRechargeBUWidget, indexOfRechargeBUWidget, this@HomeViewModel))
@@ -760,7 +760,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun removeRechargeBUWidget() {
         val findRechargeBUWidgetViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is RechargeBUWidgetDataModel } ?: return
+                homeVisitableListData.find { visitable -> visitable is RechargeBUWidgetDataModel } ?: return
         if (findRechargeBUWidgetViewModel is RechargeBUWidgetDataModel) {
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findRechargeBUWidgetViewModel, -1, this))
         }

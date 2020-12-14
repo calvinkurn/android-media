@@ -170,20 +170,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> {
                     createCarouselPlayWidget(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
-                    createTopAdsBannerModel(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
-                    createLego4AutoComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
-                    createFeaturedShopComponent(channel, position, isCache)
-                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
                     createCategoryIconComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> {
-                    createCarouselPlayWidget(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
@@ -468,7 +456,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createRechargeBUWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
-        visitableList.add(RechargeBUWidgetDataModel(
+        if (!isCache) visitableList.add(RechargeBUWidgetDataModel(
                 channel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isDataCache = isCache
         ))
