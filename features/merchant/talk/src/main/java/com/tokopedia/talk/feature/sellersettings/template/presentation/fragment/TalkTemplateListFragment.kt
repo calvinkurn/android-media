@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
@@ -52,7 +55,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     override fun onEditClicked(template: String) {
-        view?.let { Toaster.build(it, "Edit Clicked").show() }
+        goToEdit()
     }
 
     override fun onItemMove(originalIndex: Int, moveTo: Int) {
@@ -81,6 +84,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         initRecyclerView()
         observeTemplateList()
         setupOnBackPressed()
+        setupAddTemplateButton()
+        setToolbarTitle()
     }
 
     private fun getTemplateList() {
@@ -137,5 +142,28 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                 findNavController().navigateUp()
             }
         })
+    }
+
+    private fun setToolbarTitle() {
+        val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
+        toolbar?.setTitle(R.string.title_template_page)
+    }
+
+    private fun setupAddTemplateButton() {
+        talkTemplateListAddButton.setOnClickListener {
+            goToAdd()
+        }
+    }
+
+    private fun goToEdit() {
+        val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
+        destination.isEdit = true
+        NavigationController.navigate(this, destination)
+    }
+
+    private fun goToAdd() {
+        val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
+        destination.isEdit = false
+        NavigationController.navigate(this, destination)
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
@@ -125,7 +126,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun setToolbarTitle() {
-        val toolbar = activity?.findViewById<Toolbar>(R.id.talk_seller_settings_toolbar)
+        val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
         toolbar?.setTitle(R.string.title_smart_reply_settings_page)
     }
 

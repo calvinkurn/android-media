@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.fragment_talk_settings.*
@@ -18,6 +19,7 @@ class TalkSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setNavigation()
+        setToolbarTitle()
     }
 
     private fun setNavigation() {
@@ -33,6 +35,11 @@ class TalkSettingsFragment : Fragment() {
         talkSettingsSmartReplyChevron.setOnClickListener {
             goToSmartReply()
         }
+    }
+
+    private fun setToolbarTitle() {
+        val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
+        toolbar?.setTitle(R.string.title_seller_settings_page)
     }
 
     private fun goToTemplate() {

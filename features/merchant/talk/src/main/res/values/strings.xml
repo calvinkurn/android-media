@@ -10,6 +10,8 @@
     <string name="title_smart_reply_settings_page">Smart Reply</string>
     <string name="title_smart_reply_detail_page">Stok Produk</string>
     <string name="title_template_page">Pengaturan Diskusi</string>
+    <string name="title_edit_template_page">Ubah Template</string>
+    <string name="title_add_template_page">Tambah Template</string>
 
     <!-- REPORT TALK -->
     <string name="report_talk_question">Bantu Kami Memahami Apa yang Terjadi. Mengapa Anda melaporkan hal ini?</string>

@@ -46,12 +46,12 @@
         app:layout_constraintTop_toBottomOf="@id/talk_template_list_subtitle"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/talkTemplateListAddButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:text="@string/template_list_button"
-        android:visibility="gone"
         app:unifyButtonVariant="ghost"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
