@@ -1104,48 +1104,6 @@ class AddEditProductPreviewFragment:
         }
     }
 
-    @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>): ImagePickerBuilder {
-
-        val title = getString(R.string.action_pick_photo)
-
-        val placeholderDrawableRes = arrayListOf(
-                com.tokopedia.product.addedit.R.drawable.ic_utama,
-                com.tokopedia.product.addedit.R.drawable.ic_depan,
-                com.tokopedia.product.addedit.R.drawable.ic_samping,
-                com.tokopedia.product.addedit.R.drawable.ic_atas,
-                com.tokopedia.product.addedit.R.drawable.ic_detail
-        )
-
-        val imagePickerPickerTabTypeDef = intArrayOf(
-                ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA
-        )
-
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
-            this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
-            this.imageTooLargeErrorMessage = getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
-            this.isRecheckSizeAfterResize = false
-        }
-
-        val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                selectedImagePathList,
-                placeholderDrawableRes,
-                R.string.label_primary,
-                MAX_PRODUCT_PHOTOS, false)
-
-        return ImagePickerBuilder(
-                title,
-                imagePickerPickerTabTypeDef,
-                GalleryType.IMAGE_ONLY,
-                AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                imagePickerEditorBuilder,
-                imagePickerMultipleSelectionBuilder)
-    }
-
     private fun moveToDetailFragment(productInputModel: ProductInputModel, isFirstMoved: Boolean) {
         context?.run {
             updateImageList()

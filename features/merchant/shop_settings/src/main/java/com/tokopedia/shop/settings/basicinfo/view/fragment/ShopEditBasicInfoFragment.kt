@@ -24,12 +24,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
@@ -54,7 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import javax.inject.Inject
 
-class ShopEditBasicInfoFragment: Fragment() {
+class ShopEditBasicInfoFragment : Fragment() {
 
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
@@ -364,7 +360,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeGetShopBasicData() {
         observe(viewModel.shopBasicData) {
-            when(it) {
+            when (it) {
                 is Success -> showShopInformation(it.data)
                 is Fail -> onErrorGetShopBasicData(it.throwable)
             }
@@ -373,7 +369,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
-            when(it) {
+            when (it) {
                 is Fail -> {
                     it.throwable.cause?.apply {
                         onErrorUploadShopImage(this)
@@ -385,7 +381,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
                         graphQlSuccesMessage.message?.let { message ->
@@ -404,7 +400,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeAllowShopNameDomainChanges() {
         observe(viewModel.allowShopNameDomainChanges) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val data = it.data
                     showShopEditShopInfoTicker(data)
@@ -422,12 +418,12 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeValidateShopNameDomain() {
         observe(viewModel.validateShopName) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
                     val notValid = !validateDomainShopName.isValid
 
-                    if(notValid) {
+                    if (notValid) {
                         val message = validateDomainShopName.error.message
                         showShopNameInputError(message)
                     }
@@ -443,12 +439,12 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
 
         observe(viewModel.validateShopDomain) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
                     val notValid = !validateDomainShopName.isValid
 
-                    if(notValid) {
+                    if (notValid) {
                         val message = validateDomainShopName.error.message
                         showShopDomainInputError(message)
                     }
@@ -466,7 +462,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeShopDomainSuggestions() {
         observe(viewModel.shopDomainSuggestion) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     val result = it.data.shopDomainSuggestion.result
                     val shopDomains = result.shopDomains
@@ -516,10 +512,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 clickReadMore(linkUrl)
             }
+
             override fun onDismiss() {}
         })
         shopEditTicker.show()
@@ -528,9 +525,9 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun initInjector() {
         (activity?.application as? BaseMainApplication)?.baseAppComponent?.let { baseAppComponent ->
             DaggerShopSettingsComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .build()
-                .inject(this)
+                    .baseAppComponent(baseAppComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -566,12 +563,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun openImagePicker() {
-        val builder = ImagePickerBuilder(getString(R.string.choose_shop_picture),
-            intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, MAX_FILE_SIZE_IN_KB,
-            ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-            ImagePickerEditorBuilder(
-                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST, ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                false, null), null)
+        val builder = ImagePickerBuilder.getSquareImageBuilder(requireContext())
+                .withSimpleEditor()
+                .apply {
+                    title = getString(R.string.choose_shop_picture)
+                }
         val intent = ImagePickerActivity.getIntent(context, builder)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
@@ -647,7 +643,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                 val logoUrl = it.logo
                 if (TextUtils.isEmpty(logoUrl)) {
                     imageAvatar.setImageDrawable(
-                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
+                            MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
                 } else {
                     ImageHandler.LoadImage(imageAvatar, logoUrl)
                 }
@@ -666,7 +662,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showSnackBarErrorShopInfo(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             loadShopBasicData()
         })
         snackbar?.show()
@@ -700,7 +696,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showAllowShopNameDomainChangesError(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             viewModel.getAllowShopNameDomainChanges()
         })
         snackbar?.show()

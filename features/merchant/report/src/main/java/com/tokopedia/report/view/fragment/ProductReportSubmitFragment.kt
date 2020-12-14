@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -156,18 +157,11 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private fun openPhotoPicker(photoType: String, maxPick: Int){
         this.photoTypeSelected = photoType
         context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.report_choose_picture),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            arrayListOf(), null, -1, maxPick
-                    ))
-
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(maxPick = maxPick).apply {
+                        title = getString(R.string.report_choose_picture)
+                    }
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }

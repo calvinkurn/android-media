@@ -17,8 +17,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
@@ -546,11 +546,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            val MAX_SIZE = 2048
-            val builder = ImagePickerBuilder.getDefaultBuilder(context)
-            builder.maxFileSizeInKB = 2048
-            builder.imagePickerMultipleSelectionBuilder = null
-            val intent = ImagePickerActivity.getIntent(context, builder)
+            val ctx = context ?: return
+            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
+                maxFileSizeInKB = 2048
+            }
+            val intent = ImagePickerActivity.getIntent(ctx, builder)
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
     }

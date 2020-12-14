@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.imagepicker.core.ImagePickerCallback
-import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings
-import com.tokopedia.imagepicker.picker.main.builder.*
+import com.tokopedia.imagepicker.core.*
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -27,44 +26,27 @@ object ImagePickerAddEditNavigation {
 
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(context: Context, selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
-
-        val title = context.getString(R.string.action_pick_photo)
-
-        val placeholderDrawableRes = arrayListOf(
-                com.tokopedia.product.addedit.R.drawable.ic_utama,
-                com.tokopedia.product.addedit.R.drawable.ic_depan,
-                com.tokopedia.product.addedit.R.drawable.ic_samping,
-                com.tokopedia.product.addedit.R.drawable.ic_atas,
-                com.tokopedia.product.addedit.R.drawable.ic_detail
-        )
-
-        val imagePickerPickerTabTypeDef = intArrayOf(
-                ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA
-        )
-
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
-            this.belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
-            this.imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
-            this.isRecheckSizeAfterResize = false
-        }
-
-        val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                selectedImagePathList,
-                placeholderDrawableRes,
-                R.string.label_primary,
-                AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, false)
-
-        return ImagePickerBuilder(
-                title,
-                imagePickerPickerTabTypeDef,
-                GalleryType.IMAGE_ONLY,
-                AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                imagePickerEditorBuilder,
-                imagePickerMultipleSelectionBuilder)
+        return ImagePickerBuilder.getSquareImageBuilder(context)
+                .apply {
+                    this.title = context.getString(R.string.action_pick_photo)
+                    this.maxFileSizeInKB = AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB
+                    this.imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder().apply {
+                        belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, DEFAULT_MIN_RESOLUTION, DEFAULT_MIN_RESOLUTION)
+                        imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
+                    }
+                    this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
+                            usePrimaryImageString = true,
+                            maximumNoPick = AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS,
+                            initialSelectedImagePathList = selectedImagePathList ?: arrayListOf(),
+                            placeholderImagePathResList = arrayListOf(
+                                    com.tokopedia.product.addedit.R.drawable.ic_utama,
+                                    com.tokopedia.product.addedit.R.drawable.ic_depan,
+                                    com.tokopedia.product.addedit.R.drawable.ic_samping,
+                                    com.tokopedia.product.addedit.R.drawable.ic_atas,
+                                    com.tokopedia.product.addedit.R.drawable.ic_detail
+                            )
+                    )
+                }
     }
 
     private fun setUpTrackingForImagePicker(ctx: Context, isAdding: Boolean) {

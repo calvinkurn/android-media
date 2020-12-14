@@ -34,9 +34,8 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
+import com.tokopedia.imagepicker.core.ImagePickerBuilder;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
@@ -318,11 +317,10 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onUploadAttachmentButtonClicked(int positionIndex) {
         positionChangedImage = positionIndex;
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                null, null);
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        Activity activity = getActivity();
+        if (activity == null) return;
+        ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(activity);
+        Intent intent = ImagePickerActivity.getIntent(activity, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 

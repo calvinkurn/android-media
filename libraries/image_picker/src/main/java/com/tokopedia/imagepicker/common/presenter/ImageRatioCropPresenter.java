@@ -6,9 +6,8 @@ import android.media.ExifInterface;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.core.ImageRatioType;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +42,15 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
         }
     }
 
-    public void cropBitmapToExpectedRatio(final ArrayList<String> localImagePaths, final ArrayList<ImageRatioTypeDef> imageRatioList,
+    public void cropBitmapToExpectedRatio(final ArrayList<String> localImagePaths, final ArrayList<ImageRatioType> imageRatioList,
                                           final boolean needCheckRotate, final @ImageUtils.DirectoryDef String targetDirectory) {
         Subscription subscription =
                 Observable.zip(
                         Observable.from(localImagePaths),
                         Observable.from(imageRatioList),
-                        new Func2<String, ImageRatioTypeDef, String>() {
+                        new Func2<String, ImageRatioType, String>() {
                             @Override
-                            public String call(String imagePath, ImageRatioTypeDef imageRatioTypeDef) {
+                            public String call(String imagePath, ImageRatioType imageRatioTypeDef) {
                                 System.gc();
 
                                 int ratioX = imageRatioTypeDef.getRatioX();

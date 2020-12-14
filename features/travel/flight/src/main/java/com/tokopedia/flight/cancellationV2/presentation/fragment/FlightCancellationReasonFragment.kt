@@ -24,9 +24,8 @@ import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellation
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -166,15 +165,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     override fun onUploadAttachmentButtonClicked(position: Int) {
         cancellationReasonViewModel.editedAttachmentPosition = position
-        val imagePickerBuilder = ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                null,
-                true,
-                null,
-                null)
+        val imagePickerBuilder = ImagePickerBuilder.getOriginalImageBuilder(requireContext())
         startActivityForResult(ImagePickerActivity.getIntent(requireContext(), imagePickerBuilder),
                 REQUEST_CODE_IMAGE)
     }

@@ -26,6 +26,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.core.GalleryType;
+import com.tokopedia.imagepicker.core.ImageEditorBuilder;
+import com.tokopedia.imagepicker.core.ImagePickerBuilder;
 import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -35,7 +38,6 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
@@ -105,7 +107,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             Bundle bundle = intent.getBundleExtra(EXTRA_IMAGE_PICKER_BUILDER);
             imagePickerBuilder = bundle.getParcelable(EXTRA_IMAGE_PICKER_BUILDER);
         } else {
-            imagePickerBuilder = ImagePickerBuilder.getDefaultBuilder(getContext());
+            imagePickerBuilder = ImagePickerBuilder.getSquareImageBuilder(getContext());
         }
 
         if (savedInstanceState == null) {
@@ -175,13 +177,13 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
             imagePickerPreviewWidget.setData(selectedImagePaths,
-                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes(),
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getUsePrimaryImageString(),
                     imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPlaceholderImagePathResList());
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
             imagePickerPreviewWidget.setCanReorder(
-                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().isCanReorder());
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getCanReorder());
         } else {
             imagePickerPreviewWidget.setVisibility(View.GONE);
         }
@@ -301,7 +303,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             finish();
             return;
         }
-        int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
+        int cameraIndex = imagePickerBuilder.getCameraIndex();
         String[] permissions;
         if (cameraIndex > -1) {
             permissions = new String[]{
@@ -524,15 +526,20 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     }
 
     protected Intent getEditorIntent(ArrayList<String> selectedImagePaths) {
-        return ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
-                imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
-                imagePickerBuilder.getImageRatioTypeDef(),
-                imagePickerBuilder.isCirclePreview(),
-                imagePickerBuilder.getMaxFileSizeInKB(),
-                imagePickerBuilder.getRatioOptionList(),
-                imagePickerBuilder.getBelowMinResolutionErrorMessage(),
-                imagePickerBuilder.getImageTooLargeErrorMessage(),
-                imagePickerBuilder.isRecheckSizeAfterResize());
+        return ImageEditorActivity.getIntent(this,
+                new ImageEditorBuilder(
+                        selectedImagePaths,
+                        imageDescriptionList,
+                        imagePickerBuilder.getMinResolution(),
+                        imagePickerBuilder.getImageEditActionType(),
+                        imagePickerBuilder.getImageRatioType(),
+                        imagePickerBuilder.isCirclePreview(),
+                        imagePickerBuilder.getMaxFileSizeInKB(),
+                        imagePickerBuilder.getRatioOptionList(),
+                        imagePickerBuilder.getBelowMinResolutionErrorMessage(),
+                        imagePickerBuilder.getImageTooLargeErrorMessage(),
+                        imagePickerBuilder.isRecheckSizeAfterResize()
+                ));
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
@@ -542,7 +549,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void onFinishWithMultipleImageValidateNetworkPath(ArrayList<String> imageUrlOrPathList) {
-        if (imagePickerBuilder.isMoveImageResultToLocal()) {
+        if (imagePickerBuilder.getMoveImageResultToLocal()) {
             //check if there is http url on the list, if any, convert to local.
             showFinishProgressDialog();
             initImagePickerPresenter();
@@ -669,11 +676,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onVideoRecorder(int state) {
-        if (state == StateRecorderType.START) {
-            tabLayout.setClickable(false);
-        } else {
-            tabLayout.setClickable(true);
-        }
+        tabLayout.setClickable(state != StateRecorderType.START);
     }
 
     @Override
@@ -687,19 +690,19 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     }
 
     public void trackOpen() {
-        if (ImagePickerGlobalSettings.onImagePickerOpen != null){
+        if (ImagePickerGlobalSettings.onImagePickerOpen != null) {
             ImagePickerGlobalSettings.onImagePickerOpen.invoke();
         }
     }
 
     public void trackBack() {
-        if (ImagePickerGlobalSettings.onImagePickerBack != null){
+        if (ImagePickerGlobalSettings.onImagePickerBack != null) {
             ImagePickerGlobalSettings.onImagePickerBack.invoke();
         }
     }
 
     public void trackContinue() {
-        if (ImagePickerGlobalSettings.onImagePickerContinue != null){
+        if (ImagePickerGlobalSettings.onImagePickerContinue != null) {
             ImagePickerGlobalSettings.onImagePickerContinue.invoke();
         }
     }

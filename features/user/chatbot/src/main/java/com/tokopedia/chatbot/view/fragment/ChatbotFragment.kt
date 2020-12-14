@@ -65,9 +65,8 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -319,16 +318,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onAttachImageClicked() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                            ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY,
-                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                    null,
-                    true,
-                    null,
-                    null)
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }

@@ -6,36 +6,68 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ImagePickerBuilder(
-        val title: String,
-        val imagePickerTab: Array<ImagePickerTab>,
-        val galleryType: GalleryType,
-        val minResolution: Int,
-        val maxFileSizeInKB: Long,
-        val imageRatioType: ImageRatioType,
-        val moveImageResultToLocal: Boolean = false,
-        val imagePickerEditorBuilder: ImagePickerEditorBuilder? = null,
-        val imagePickerMultipleSelectionBuilder: ImagePickerMultipleSelectionBuilder? = null
+        var title: String,
+        var imagePickerTab: Array<ImagePickerTab>,
+        var galleryType: GalleryType,
+        var imageRatioType: ImageRatioType = ImageRatioType.ORIGINAL,
+        var minResolution: Int = DEFAULT_MIN_RESOLUTION,
+        var maxFileSizeInKB: Int = DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+        var moveImageResultToLocal: Boolean = true,
+        var imagePickerEditorBuilder: ImagePickerEditorBuilder? = null,
+        var imagePickerMultipleSelectionBuilder: ImagePickerMultipleSelectionBuilder? = null
 ) : Parcelable {
-    fun supportMultipleSelection() = imagePickerMultipleSelectionBuilder!= null
-    fun getBelowMinResolutionErrorMessage(): String? {
-        return imagePickerEditorBuilder?.belowMinResolutionErrorMessage
+    fun supportMultipleSelection() = imagePickerMultipleSelectionBuilder != null
+    fun getBelowMinResolutionErrorMessage() = imagePickerEditorBuilder?.belowMinResolutionErrorMessage ?: ""
+
+    fun getImageTooLargeErrorMessage() = imagePickerEditorBuilder?.imageTooLargeErrorMessage ?: ""
+    fun getInitialSelectedImagePathList(): ArrayList<String> {
+        return imagePickerMultipleSelectionBuilder?.initialSelectedImagePathList ?: arrayListOf()
     }
 
-    fun getImageTooLargeErrorMessage(): String? {
-        return imagePickerEditorBuilder?.imageTooLargeErrorMessage
+    fun isContinueToEditAfterPick() = imagePickerEditorBuilder != null
+    fun getMaximumNoPick() = imagePickerMultipleSelectionBuilder?.maximumNoPick ?: 1
+    fun getCameraIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_CAMERA)
+    fun getRatioX() = imageRatioType.getRatioX()
+    fun getRatioY() = imageRatioType.getRatioY()
+    fun isRecheckSizeAfterResize() = imagePickerEditorBuilder?.recheckSizeAfterResize ?: false
+    fun getImageEditActionType(): Array<ImageEditActionType> = imagePickerEditorBuilder?.imageEditActionType
+            ?: arrayOf()
+
+    fun isCirclePreview() = imagePickerEditorBuilder?.circlePreview ?: false
+    fun getRatioOptionList() = imagePickerEditorBuilder?.imageRatioTypeList ?: arrayListOf()
+
+    fun withSimpleEditor():ImagePickerBuilder {
+        imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder()
+        return this
     }
+
+    fun withSimpleMultipleSelection(initialImagePathList: ArrayList<String> = arrayListOf(),
+                                    maxPick:Int = DEFAULT_MAXIMUM_NO_PICK)
+            :ImagePickerBuilder {
+        imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
+                initialSelectedImagePathList = initialImagePathList,
+                maximumNoPick = maxPick)
+        return this
+    }
+
     companion object {
-        fun getDefaultBuilder(context: Context): ImagePickerBuilder {
+        @JvmStatic
+        fun getSquareImageBuilder(context: Context): ImagePickerBuilder {
             return ImagePickerBuilder(
-                    context.getString(R.string.choose_image),
-                    arrayOf(ImagePickerTab.TYPE_GALLERY, ImagePickerTab.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY,
-                    DEFAULT_MIN_RESOLUTION,
-                    DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImageRatioType.RATIO_1_1,
-                    true,
-                    ImagePickerEditorBuilder.getDefaultBuilder(),
-                    ImagePickerMultipleSelectionBuilder(),
+                    title = context.getString(R.string.choose_image),
+                    imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY, ImagePickerTab.TYPE_CAMERA),
+                    galleryType = GalleryType.IMAGE_ONLY,
+                    imageRatioType = ImageRatioType.RATIO_1_1
+            )
+        }
+
+        @JvmStatic
+        fun getOriginalImageBuilder(context: Context): ImagePickerBuilder {
+            return ImagePickerBuilder(
+                    title = context.getString(R.string.choose_image),
+                    imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY, ImagePickerTab.TYPE_CAMERA),
+                    galleryType = GalleryType.IMAGE_ONLY,
+                    imageRatioType = ImageRatioType.ORIGINAL
             )
         }
     }
@@ -43,35 +75,37 @@ data class ImagePickerBuilder(
 
 @Parcelize
 data class ImagePickerEditorBuilder(
-        val imageEditActionType: Array<ImageEditActionType>,
-        val circlePreview: Boolean = false,
-        val imageRatioTypeList: ArrayList<ImageRatioType>? = null,
-        val belowMinResolutionErrorMessage: String = "",
-        val imageTooLargeErrorMessage: String = "",
-        val recheckSizeAfterResize: Boolean = false,
+        var imageEditActionType: Array<ImageEditActionType>,
+        var circlePreview: Boolean = false,
+        var imageRatioTypeList: ArrayList<ImageRatioType>? = null,
+        var belowMinResolutionErrorMessage: String = "",
+        var imageTooLargeErrorMessage: String = "",
+        var recheckSizeAfterResize: Boolean = false,
 ) : Parcelable {
     companion object {
-        fun getDefaultBuilder(): ImagePickerEditorBuilder {
+        fun getSimpleEditBuilder(): ImagePickerEditorBuilder {
             return ImagePickerEditorBuilder(
-                    arrayOf(ImageEditActionType.ACTION_BRIGHTNESS,
-                            ImageEditActionType.ACTION_CONTRAST,
-                            ImageEditActionType.ACTION_CROP,
-                            ImageEditActionType.ACTION_ROTATE),
+                    getDefaultEditor(),
                     false,
                     null
             )
         }
+
+        fun getDefaultEditor() = arrayOf(ImageEditActionType.ACTION_BRIGHTNESS,
+                ImageEditActionType.ACTION_CONTRAST,
+                ImageEditActionType.ACTION_CROP,
+                ImageEditActionType.ACTION_ROTATE)
     }
 }
 
 @Parcelize
 data class ImagePickerMultipleSelectionBuilder(
-        val primaryImageStringRes: Int = 0,
-        val maximumNoPick: Int = DEFAULT_MAXIMUM_NO_PICK,
-        val canReorder: Boolean = false,
-        val initialSelectedImagePathList: ArrayList<String> = arrayListOf(),
-        val placeholderImagePathResList: ArrayList<Int> = arrayListOf(),
-        val previewExtension: PreviewExtension? = null
+        var usePrimaryImageString: Boolean = false,
+        var maximumNoPick: Int = DEFAULT_MAXIMUM_NO_PICK,
+        var canReorder: Boolean = false,
+        var initialSelectedImagePathList: ArrayList<String> = arrayListOf(),
+        var placeholderImagePathResList: ArrayList<Int> = arrayListOf(),
+        var previewExtension: PreviewExtension? = null
 ) : Parcelable
 
 @Parcelize
@@ -87,8 +121,10 @@ enum class ImagePickerTab(val value: Int) {
     TYPE_CAMERA(2),
     TYPE_INSTAGRAM(3),
     TYPE_RECORDER(4);
+
     companion object {
         private val map = values().associateBy(ImagePickerTab::value)
+
         @JvmStatic
         fun fromInt(type: Int) = map[type]
     }
@@ -99,28 +135,31 @@ enum class GalleryType(val value: Int) {
     IMAGE_ONLY(2),
     VIDEO_ONLY(3),
     GIF_ONLY(4);
+
     companion object {
         private val map = values().associateBy(GalleryType::value)
+
         @JvmStatic
         fun fromInt(type: Int) = map[type]
     }
 }
 
-enum class ImageRatioType(val ratio: Pair<Int, Int>) {
-    ORIGINAL(-1 to -1),
-    RATIO_1_1(1 to 1),
-    RATIO_3_4(3 to 4),
-    RATIO_4_3(4 to 3),
-    RATIO_16_9(16 to 9),
-    RATIO_9_16(9 to 16);
+enum class ImageRatioType(val id: Int, val ratio: Pair<Int, Int>) {
+    ORIGINAL(-1, -1 to -1),
+    RATIO_1_1(1, 1 to 1),
+    RATIO_3_4(2, 3 to 4),
+    RATIO_4_3(3, 4 to 3),
+    RATIO_16_9(4, 16 to 9),
+    RATIO_9_16(5, 9 to 16);
 
     fun getRatioX() = ratio.first
     fun getRatioY() = ratio.second
 
     companion object {
-        private val map = values().associateBy(ImageRatioType::ratio)
+        private val map = values().associateBy(ImageRatioType::id)
+
         @JvmStatic
-        fun fromInt(type: Pair<Int, Int>) = map[type]
+        fun fromInt(type: Int) = map[type]
     }
 }
 
@@ -131,8 +170,10 @@ enum class ImageEditActionType(val action: Int) {
     ACTION_CROP_ROTATE(4),
     ACTION_BRIGHTNESS(5),
     ACTION_CONTRAST(6);
+
     companion object {
         private val map = values().associateBy(ImageEditActionType::action)
+
         @JvmStatic
         fun fromInt(type: Int) = map[type]
     }

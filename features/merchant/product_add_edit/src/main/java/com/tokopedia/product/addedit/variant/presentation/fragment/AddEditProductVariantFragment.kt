@@ -23,13 +23,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings
 import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.core.ImagePickerCallback
-import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.core.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.core.*
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
@@ -760,21 +756,8 @@ class AddEditProductVariantFragment :
     private fun showPhotoVariantPicker() {
         val ctx = context ?: return
         val isEditMode = viewModel.isEditMode.value ?: false
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder(intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS,
-                ImageEditActionTypeDef.ACTION_CONTRAST,
-                ImageEditActionTypeDef.ACTION_CROP,
-                ImageEditActionTypeDef.ACTION_ROTATE),
-                false,
-                null)
-        val builder = ImagePickerBuilder(ctx.getString(com.tokopedia.imagepicker.R.string.choose_image), intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                imagePickerEditorBuilder,
-                null)
+        val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
+                .withSimpleEditor()
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
@@ -1097,23 +1080,8 @@ class AddEditProductVariantFragment :
     private fun showSizechartPicker() {
         val ctx = context ?: return
         val isEditMode = viewModel.isEditMode.value ?: false
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder(intArrayOf(
-                ImageEditActionTypeDef.ACTION_BRIGHTNESS,
-                ImageEditActionTypeDef.ACTION_CONTRAST,
-                ImageEditActionTypeDef.ACTION_CROP,
-                ImageEditActionTypeDef.ACTION_ROTATE),
-                false,
-                null)
-
-        val builder = ImagePickerBuilder(ctx.getString(com.tokopedia.product.addedit.R.string.choose_image), intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                imagePickerEditorBuilder,
-                null)
+        val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
+                .withSimpleEditor()
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = ImagePickerActivity.getIntent(ctx, builder)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
@@ -1131,17 +1099,14 @@ class AddEditProductVariantFragment :
 
     private fun showEditorSizechartPicker() {
         val ctx = context ?: return
-        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal ?: ""
 
         val isEditMode = viewModel.isEditMode.value ?: false
-        val intent = ImageEditorActivity.getIntent(ctx, urlOrPath, null,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS,
-                        ImageEditActionTypeDef.ACTION_CONTRAST,
-                        ImageEditActionTypeDef.ACTION_CROP,
-                        ImageEditActionTypeDef.ACTION_ROTATE),
-                ImageRatioTypeDef.RATIO_1_1, false,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB.toLong(), null)
+        val intent = ImageEditorActivity.getIntent(ctx,
+                ImageEditorBuilder(
+                        imageUrls = arrayListOf(urlOrPath),
+                        defaultRatio = ImageRatioType.RATIO_1_1
+                ))
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }

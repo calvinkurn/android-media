@@ -47,11 +47,7 @@ import com.tokopedia.feedback_form.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
-import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
+import com.tokopedia.imagepicker.core.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData
@@ -218,14 +214,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun addImageClick() {
         context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
-                    GalleryType.ALL, DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                    null,
-                    ImagePickerMultipleSelectionBuilder(
-                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
-                    ))
+            val builder = ImagePickerBuilder(
+                    title =  getString(R.string.image_picker_title),
+                    imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY),
+                    galleryType =  GalleryType.ALL,
+                    maxFileSizeInKB = DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
+                    imageRatioType = ImageRatioType.ORIGINAL,
+                    imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
+                            initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }

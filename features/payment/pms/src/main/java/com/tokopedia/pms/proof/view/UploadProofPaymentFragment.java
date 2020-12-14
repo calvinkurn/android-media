@@ -22,9 +22,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.imagepicker.core.ImagePickerBuilder;
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
@@ -36,10 +35,6 @@ import com.tokopedia.pms.proof.model.PaymentProofResponse;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Toaster;
@@ -176,11 +171,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     private void openImagePicker() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_FILE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                null
-                , null);
+        ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PROOF);
     }

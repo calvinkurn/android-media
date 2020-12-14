@@ -41,9 +41,8 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.imagepicker.core.ImagePickerBuilder
 import com.tokopedia.imagepicker.core.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -279,11 +278,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun showImagePickerDialog() {
-        val builder = ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                null, null)
+        val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
         val intent = ImagePickerActivity.getIntent(getActivity(), builder)
         startActivityForResult(intent, InboxBaseView.REQUEST_IMAGE_PICKER)
     }
