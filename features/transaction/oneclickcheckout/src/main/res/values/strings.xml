@@ -114,4 +114,6 @@
 
     <string name="lbl_new_occ_profile_name">Template Beli Langsung</string>
     <string name="lbl_add_new_occ_profile_name">Buat Template Baru</string>
+
+    <string name="lbl_reload_shipping">Refresh</string>
 </resources>

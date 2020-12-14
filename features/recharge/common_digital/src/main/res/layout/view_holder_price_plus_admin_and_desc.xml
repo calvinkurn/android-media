@@ -63,7 +63,7 @@
             android:paddingRight="@dimen/unify_space_12"
             android:paddingStart="@dimen/unify_space_12"
             android:text="@string/digital_common_title_empty_stock"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible"/>
@@ -75,6 +75,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/unify_space_4"
-        android:background="@color/separator_voucher"/>
+        android:background="@color/Unify_N700_20"/>
 
 </LinearLayout>

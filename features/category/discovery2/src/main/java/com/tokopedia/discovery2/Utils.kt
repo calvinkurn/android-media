@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -92,13 +93,13 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
 
-            rpcDiscoQuery?.let { map ->
+            discoComponentQuery?.let { map ->
                 val queryString = StringBuilder()
                 map.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {

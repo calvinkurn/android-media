@@ -14,7 +14,7 @@
         android:id="@+id/svFeedbackForm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/submitButton"
+        android:layout_above="@id/frame_button"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -313,6 +313,7 @@
 
 
     <FrameLayout
+        android:id="@+id/frame_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
