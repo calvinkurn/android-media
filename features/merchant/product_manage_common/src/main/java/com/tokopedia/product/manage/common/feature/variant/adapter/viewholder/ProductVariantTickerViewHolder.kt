@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -28,7 +27,6 @@ class ProductVariantTickerViewHolder(itemView: View): AbstractViewHolder<Product
             val adapter = TickerPagerAdapter(context, tickerList)
             addPagerView(adapter, tickerList)
         }
-        itemView.ticker.showWithCondition(data.tickerList.isNotEmpty())
     }
 
 
