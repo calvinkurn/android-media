@@ -63,6 +63,7 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView)
+            handleBackgroundColor(channel, it)
         }
     }
 
@@ -230,6 +231,13 @@ class DynamicChannelHeaderView: FrameLayout {
                 it.visibility = View.GONE
             }
         }
+    }
+
+    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout) {
+        if (channel.channelHeader.backColor.isNotEmpty()) {
+            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+        }
+
     }
 
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {

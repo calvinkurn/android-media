@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component
 
 import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
@@ -16,6 +20,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.TYPE_LOTTIE
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
@@ -118,12 +123,10 @@ internal abstract class IconHolder(view: View): RecyclerView.ViewHolder(view) {
 
 internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener): IconHolder(view) {
     val iconImage = view.nav_icon_image
-    val iconBadge = view.nav_icon_badge
     val context = itemView.context
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.id.toString()
-        iconBadge.tag = constructCounterTagById(iconToolbar.id)
 
         if (iconToolbar.imageRes != null) {
             val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
@@ -134,13 +137,23 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
                     DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Unify_N700))
                 }
-                iconImage.setImageDrawable(wrappedDrawable)
+                iconImage.imageDrawable = wrappedDrawable
             }
         } else {
             if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Unify_N0))
+                val drawable = getIconUnifyDrawable(
+                        context = context,
+                        iconId = iconToolbar.id,
+                        assetColor = ContextCompat.getColor(context, R.color.Unify_N0)
+                )
+                iconImage.imageDrawable = drawable
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.icon_enable_default_color))
+                val drawable = getIconUnifyDrawable(
+                        context = context,
+                        iconId = iconToolbar.id,
+                        assetColor = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+                )
+                iconImage.imageDrawable = drawable
             }
         }
 
@@ -162,11 +175,17 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         }
 
         if (iconToolbar.badgeCounter.isZero()) {
-            iconBadge.visibility = View.GONE
+            iconImage.notificationRef.gone()
         } else {
-            iconBadge.visibility = View.VISIBLE
-            iconBadge.text = iconToolbar.badgeCounter.toString()
+            iconImage.notificationRef.setNotification(
+                    notif = iconToolbar.badgeCounter.toString(),
+                    notificationType = NotificationUnify.COUNTER_TYPE,
+                    colorType = NotificationUnify.COLOR_PRIMARY
+            )
+            iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
+            iconImage.notificationRef.visible()
         }
+        iconImage.setNotifXY(1f,-0.8f)
     }
 
     private fun constructCounterTagById(id: Int) =

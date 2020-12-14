@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class Variant (
         @Expose
     @SerializedName("products")
-    val products: List<Product>,
+    val products: List<Product> = listOf(),
         @Expose
     @SerializedName("selections")
-    val selections: List<Selection>,
+    val selections: List<Selection> = listOf(),
         @Expose
     @SerializedName("sizecharts")
-    val sizeCharts: List<Picture>
+    val sizeCharts: List<Picture> = listOf()
 )
