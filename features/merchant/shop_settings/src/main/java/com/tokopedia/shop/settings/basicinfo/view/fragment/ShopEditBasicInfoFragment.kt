@@ -60,6 +60,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
+        const val INPUT_DELAY = 500L
     }
 
     @Inject

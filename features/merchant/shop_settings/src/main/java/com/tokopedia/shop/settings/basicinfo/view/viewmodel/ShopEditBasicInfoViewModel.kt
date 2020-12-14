@@ -17,6 +17,7 @@ import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
+import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment.Companion.INPUT_DELAY
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,10 +36,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         private val validateDomainShopNameUseCase: ValidateDomainShopNameUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
-
-    companion object {
-        private const val INPUT_DELAY = 500L
-    }
 
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
@@ -104,8 +101,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         launchCatchError(block = {
             flow {
                 delay(INPUT_DELAY)
-                val requestParams = ValidateDomainShopNameUseCase.createRequestParam(domain)
-                validateDomainShopNameUseCase.params = requestParams
+                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 emit(validateDomainShopNameUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
                     .collectLatest { result ->
@@ -121,10 +117,12 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getShopBasicData() {
         launchCatchError(block = {
-            val shopBasicData = withContext(dispatchers.io) {
-                getShopBasicDataUseCase.getData(RequestParams.EMPTY)
-            }
-            _shopBasicData.value = Success(shopBasicData)
+            flow {
+                emit(getShopBasicDataUseCase.getData(RequestParams.EMPTY))
+            }.flowOn(dispatchers.io)
+                    .collectLatest {
+                        _shopBasicData.value = Success(it)
+                    }
         }) {
             _shopBasicData.value = Fail(it)
         }
@@ -138,14 +136,16 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String
     ) {
         launchCatchError(block = {
-            val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
-            val uploadShopImage = withContext(dispatchers.io) {
-                uploadShopImageUseCase.getData(requestParams)
-            }
-            uploadShopImage.data?.image?.picCode?.let { picCode ->
-                updateShopBasicData(name, domain, tagline, description, picCode)
-            }
-            _uploadShopImage.value = Success(uploadShopImage)
+            flow {
+                val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
+                emit(uploadShopImageUseCase.getData(requestParams))
+            }.flowOn(dispatchers.io)
+                    .collectLatest {
+                        it.data?.image?.picCode?.let { picCode ->
+                            updateShopBasicData(name, domain, tagline, description, picCode)
+                        }
+                        _uploadShopImage.value = Success(it)
+                    }
         }) {
             _uploadShopImage.value = Fail(it)
         }
@@ -193,9 +193,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun updateShopBasicData(requestParams: RequestParams) {
         launchCatchError(block = {
-            updateShopBasicDataUseCase.setParams(requestParams)
-            val updateShopBasicData = updateShopBasicDataUseCase.executeOnBackground()
-            _updateShopBasicData.value = Success(updateShopBasicData)
+            flow {
+                updateShopBasicDataUseCase.setParams(requestParams)
+                emit(updateShopBasicDataUseCase.executeOnBackground())
+            }.flowOn(dispatchers.io)
+                    .collectLatest {
+                        _updateShopBasicData.value = Success(it)
+                    }
         }) {
             _updateShopBasicData.value = Fail(it)
         }
