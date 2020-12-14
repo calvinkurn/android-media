@@ -149,7 +149,7 @@ public class ProductListFragment
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    private static final String SEARCH_RESULT_PRODUCT_THREE_DOTS_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_THREE_DOTS_ONBOARDING_TAG";
+    private static final String SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG";
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final String SHOP = "shop";
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -1632,7 +1632,7 @@ public class ProductListFragment
 
             CoachMarkBuilder builder = new CoachMarkBuilder();
             builder.allowPreviousButton(false);
-            builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_THREE_DOTS_ONBOARDING_TAG, coachMarkItemList);
+            builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
         });
     }
 
