@@ -285,11 +285,11 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorSnackbar(resId: Int) {
-        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showErrorSnackbar(message: String) {
-        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showImageInFragment(filePath: String) {

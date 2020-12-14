@@ -39,21 +39,17 @@ class GetPaymentOrdersNavUseCase (
     }
 
     override suspend fun executeOnBackground(): List<NavPaymentOrder> {
-        return try {
-            val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery)
-            return responseData.data.paymentList.map {
-                NavPaymentOrder(
-                        statusText = "",
-                        statusTextColor = "",
-                        paymentAmountText = it.paymentAmount.toString(),
-                        descriptionText = it.tickerMessage,
-                        imageUrl = it.gatewayImg,
-                        id = it.transactionID,
-                        applink = it.applink
-                )
-            }
-        } catch (e: Throwable){
-            listOf()
+        val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery)
+        return responseData.data.paymentList.map {
+            NavPaymentOrder(
+                    statusText = "",
+                    statusTextColor = "",
+                    paymentAmountText = it.paymentAmount.toString(),
+                    descriptionText = it.tickerMessage,
+                    imageUrl = it.gatewayImg,
+                    id = it.transactionID,
+                    applink = it.applink
+            )
         }
     }
 

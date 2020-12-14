@@ -49,6 +49,11 @@ internal class GetRecommendationUseCaseRequest {
                           title
                           color
                         }
+                        labelgroup{
+                            position
+                            title
+                            type
+                        }
                         badges {
                           title
                           imageUrl
@@ -65,6 +70,7 @@ internal class GetRecommendationUseCaseRequest {
                         }
                         rating
                         countReview
+                        ratingAverage
                         recommendationType
                         stock
                         isTopads
@@ -129,6 +135,7 @@ internal class GetRecommendationUseCaseRequest {
                               priceString
                           }
                           rating
+                          ratingAverage
                           countReview
                           recommendationType
                           stock
