@@ -26,6 +26,8 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                     inboxType
                     sellerUnread
                     buyerUnread
+                    problemTotal
+                    unrespondedTotal
                     hasNext
                     inbox {
                       inboxID
@@ -40,6 +42,9 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                       productName
                       productThumbnail
                       productURL
+                      state {
+                        isUnresponded
+                      }
                     }
                   }
                 }
