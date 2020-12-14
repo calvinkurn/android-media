@@ -11,10 +11,11 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -78,10 +79,16 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
+    override fun addEmptyBanner(): HomeVisitableFactory {
+        val emptyBanner = EmptyBannerDataModel()
+        visitableList.add(emptyBanner)
+        return this
+    }
+
     override fun addTickerVisitable(): HomeVisitableFactory {
         if (!isCache) {
             homeData?.ticker?.tickers?.let { ticker ->
-                if (!HomeFragment.HIDE_TICKER) {
+                if (!HomeRevampFragment.HIDE_TICKER) {
                     ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
                         if (it.isNotEmpty()) {
                             visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))

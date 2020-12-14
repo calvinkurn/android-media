@@ -34,4 +34,22 @@ class HomeDataMapper(
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
     }
+
+    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
+        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
+        if (homeData == null) return HomeDataModel(isCache = isCache)
+        val addLoadingMore = homeData.token.isNotEmpty()
+        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
+                homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
+                .addEmptyBanner()
+                .addUserWalletVisitable()
+
+        if (showGeolocation) factory.addGeolocationVisitable()
+
+        factory.addDynamicChannelVisitable(addLoadingMore)
+                .build()
+
+        BenchmarkHelper.endSystraceSection()
+        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
+    }
 }

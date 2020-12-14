@@ -93,6 +93,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
+import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -172,10 +173,10 @@ import kotlin.Exception
 import kotlin.collections.ArrayList
 
 /**
- * @author by errysuprayogi on 11/27/17.
+ * @author by yoasfs on 12/14/20.
  */
 @SuppressLint("SyntheticAccessor")
-open class HomeFragment : BaseDaggerFragment(),
+open class HomeRevampFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
         CountDownListener,
@@ -193,7 +194,7 @@ open class HomeFragment : BaseDaggerFragment(),
         RecommendationWidgetListener {
 
     companion object {
-        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
         private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
         private const val SCROLL_STATE_DRAG = 0
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
@@ -232,8 +233,8 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val HOME_SOURCE = "home"
 
         @JvmStatic
-        fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
-            val fragment = HomeFragment()
+        fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
+            val fragment = HomeRevampFragment()
             val args = Bundle()
             args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList)
             fragment.arguments = args
@@ -263,7 +264,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     //Get Viewmodel using getHomeViewModel() method
     @Inject
-    lateinit var viewModel: Lazy<HomeViewModel>
+    lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
@@ -1217,10 +1218,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 HomeComponentCallback(this),
                 DynamicLegoBannerComponentCallback(context, this),
-                RecommendationListCarouselComponentCallback(this),
+                RecommendationListCarouselComponentCallback( this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,this),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
                         SalamWidgetCallback(context,this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
@@ -1810,6 +1811,10 @@ open class HomeFragment : BaseDaggerFragment(),
         return getHomeViewModel().currentTopAdsBannerToken
     }
 
+    override fun onDynamicChannelRetryClicked() {
+        getHomeViewModel().onDynamicChannelRetryClicked()
+    }
+
     override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
         getHomeViewModel().getDynamicChannelData(visitable, channelModel, channelPosition)
     }
@@ -1840,10 +1845,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun getSalamWidget() {
         getHomeViewModel().getSalamWidget()
-    }
-
-    override fun onDynamicChannelRetryClicked() {
-        getHomeViewModel().onDynamicChannelRetryClicked()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1985,7 +1986,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 return false
             }
             val fragment = activity!!.supportFragmentManager.findFragmentById(R.id.container)
-            return fragment is HomeFragment
+            return fragment is HomeRevampFragment
         }
 
     override fun setActivityStateListener(activityStateListener: ActivityStateListener) {
@@ -2431,7 +2432,7 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onDetach()
     }
 
-    fun getHomeViewModel(): HomeViewModel{
+    fun getHomeViewModel(): HomeRevampViewModel {
         if(!this::viewModel.isInitialized){
             initInjectorHome()
         }
@@ -2457,7 +2458,7 @@ open class HomeFragment : BaseDaggerFragment(),
      */
     private fun setupPlayWidgetCoordinator() {
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
-            setListener(this@HomeFragment)
+            setListener(this@HomeRevampFragment)
         }
     }
 
@@ -2526,4 +2527,6 @@ open class HomeFragment : BaseDaggerFragment(),
             ""
         }
     }
+
+
 }
