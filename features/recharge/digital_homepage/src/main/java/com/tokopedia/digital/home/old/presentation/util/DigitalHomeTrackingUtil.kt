@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.old.presentation.util
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
 import com.tokopedia.digital.home.old.model.*
@@ -320,13 +321,20 @@ class DigitalHomeTrackingUtil {
 
     fun sliceOpenApp(userId: String){
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, "viewGAMainIris",
+                TrackAppUtils.EVENT, "clickGAMain",
                 TrackAppUtils.EVENT_CATEGORY, "ga main app",
                 TrackAppUtils.EVENT_ACTION, "click open app button",
                 TrackAppUtils.EVENT_LABEL, "",
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
+        ))
+    }
+
+    fun onOpenPageFromSlice() {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                RechargeAnalytics.EVENT_KEY, "openScreen",
+                RechargeAnalytics.EVENT_SCREEN_NAME, "recharge homepage - from voice search - mainapp"
         ))
     }
 

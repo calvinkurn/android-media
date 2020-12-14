@@ -126,6 +126,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         if(sliceOpenApp){
             rechargeHomepageAnalytics.sliceOpenApp(userSession.userId)
+            rechargeHomepageAnalytics.onOpenPageFromSlice()
         }
 
         loadData()

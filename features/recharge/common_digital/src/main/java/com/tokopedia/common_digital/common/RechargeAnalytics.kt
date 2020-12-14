@@ -90,7 +90,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
 
     fun onClickSliceRecharge(userId: String, rechargeProductFromSlice: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_KEY, "viewGAMainIris",
+                EVENT_KEY, "clickGAMain",
                 EVENT_CATEGORY, "ga main app",
                 EVENT_ACTION, "click item transaction",
                 EVENT_LABEL, rechargeProductFromSlice,

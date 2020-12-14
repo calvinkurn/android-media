@@ -414,7 +414,7 @@ public class DigitalAnalytics {
 
     public void onClickSliceRecharge(String userId,  String rechargeProductFromSlice) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                DigitalEventTracking.Event.EVENT_KEY, "viewGAMainIris",
+                DigitalEventTracking.Event.EVENT_KEY, "clickGAMain",
                 DigitalEventTracking.Event. EVENT_CATEGORY, "ga main app",
                 DigitalEventTracking.Event.EVENT_ACTION, "click item transaction",
                 DigitalEventTracking.Event.EVENT_LABEL, rechargeProductFromSlice,

@@ -113,6 +113,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
         if(sliceOpenApp){
             trackingUtil.sliceOpenApp(userSession.userId)
+            trackingUtil.onOpenPageFromSlice()
         }
     }
 

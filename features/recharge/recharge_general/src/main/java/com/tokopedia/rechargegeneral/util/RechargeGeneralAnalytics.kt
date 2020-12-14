@@ -197,7 +197,7 @@ class RechargeGeneralAnalytics {
 
     fun onClickSliceRecharge(userId: String, rechargeProductFromSlice: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, "viewGAMainIris",
+                TrackAppUtils.EVENT, "clickGAMain",
                 TrackAppUtils.EVENT_CATEGORY, "ga main app",
                 TrackAppUtils.EVENT_ACTION, "click item transaction",
                 TrackAppUtils.EVENT_LABEL, rechargeProductFromSlice,
