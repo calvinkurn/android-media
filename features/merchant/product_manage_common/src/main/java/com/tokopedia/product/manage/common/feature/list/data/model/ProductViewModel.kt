@@ -37,5 +37,6 @@ data class ProductViewModel(
     fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true
 
     fun hasEditPriceAccess() = access?.editPrice == true
+    fun hasEditStockAccess() = access?.editStock == true
     fun hasEditProductAccess() = access?.editProduct == true
 }
