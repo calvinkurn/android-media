@@ -54,12 +54,15 @@ class SellerHomeActivityViewModel @Inject constructor(
             result.data?.let { data ->
                 val roleType = data.detailInfo?.adminRoleType?.also { roleType ->
                     with(userSession) {
-                        // TODO: Update user session value
+                        setIsShopOwner(roleType.isShopOwner == true)
+                        setIsLocationAdmin(roleType.isLocationAdmin == true)
+                        setIsShopAdmin(roleType.isShopAdmin == true)
+                        setIsMultiLocationShop(result.data?.getIsMultiLocationShop() == true)
                     }
                 }
                 roleType?.isShopOwner == true || roleType?.isLocationAdmin == false
             }
-            // TODO: Add logic when admin info request fails. Still asking PM
+            // TODO: Add logic when admin info request fails. Still asking PM. For now we will only preserve current user session value
         } ?: true
     }
 

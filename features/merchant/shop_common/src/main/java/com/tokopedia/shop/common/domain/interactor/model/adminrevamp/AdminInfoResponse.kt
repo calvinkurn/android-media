@@ -29,14 +29,14 @@ data class AdminInfoData(
         @Expose
         val responseDetail: AdminResponseDetail? = AdminResponseDetail()) {
 
-        fun getIsMultiLocationShop() = !locations.isNullOrEmpty()
+        fun getIsMultiLocationShop() = locations.orEmpty().count() > 1
 }
 
 
 data class AdminInfoShopLocation(
         @SerializedName("location_id")
         @Expose
-        val id: String
+        val id: String? = ""
 )
 
 sealed class AdminInfoResult {

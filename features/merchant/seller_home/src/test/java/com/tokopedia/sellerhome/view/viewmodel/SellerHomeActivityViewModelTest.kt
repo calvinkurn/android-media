@@ -10,10 +10,7 @@ import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.shop.common.domain.interactor.AdminInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoData
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoDetailInformation
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResult
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminRoleType
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
