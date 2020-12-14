@@ -241,7 +241,7 @@ class DynamicChannelHeaderView: FrameLayout {
             stubSeeAllButtonUnify?.gone()
             titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
 
-            val params: ConstraintLayout.LayoutParams = titleContainer.layoutParams as ConstraintLayout.LayoutParams
+            val params: LayoutParams = titleContainer.layoutParams as LayoutParams
             params.setMargins(params.leftMargin, convertDpToPixel(10f, titleContainer.context), params.rightMargin, params.bottomMargin)
             titleContainer.layoutParams = params
         }
