@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
+import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,65 +18,59 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
-class GetMainNavDataUseCase @Inject constructor(
-        private val mainNavMapper: MainNavMapper,
+class GetProfileDataUseCase @Inject constructor(
+        private val accountHeaderMapper: AccountHeaderMapper,
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val getOvoUseCase: GetCoroutineWalletBalanceUseCase,
         private val getSaldoUseCase: GetSaldoUseCase,
         private val getUserMembershipUseCase: GetUserMembershipUseCase,
         private val getShopInfoUseCase: GetShopInfoUseCase,
-        private val getCategoryGroupUseCase: GetCategoryGroupUseCase,
         private val userSession: UserSessionInterface,
         @ApplicationContext private val context: Context
-): UseCase<MainNavigationDataModel>() {
+): UseCase<AccountHeaderViewModel>() {
 
-    override suspend fun executeOnBackground(): MainNavigationDataModel {
+
+    override suspend fun executeOnBackground(): AccountHeaderViewModel {
+        getUserInfoUseCase.setStrategyCloudThenCache()
+        getUserMembershipUseCase.setStrategyCloudThenCache()
+        getShopInfoUseCase.setStrategyCloudThenCache()
+
         return withContext(coroutineContext){
-
-            val getUserInfoCall = async {
-                getUserInfoUseCase.executeOnBackground()
-            }
-            val getCategoryCall = async {
-                getCategoryGroupUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
-                getCategoryGroupUseCase.executeOnBackground()
-            }
-
-            val userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
-            val categoryData = (getCategoryCall.await().takeIf { it is Success } as? Success<List<DynamicHomeIconEntity.Category>>)?.data
+            var userInfoData: UserPojo? = null
 
             var ovoData: WalletBalanceModel? = null
             var saldoData: SaldoPojo? = null
             var userMembershipData: MembershipPojo? = null
             var shopData: ShopInfoPojo? = null
 
-            if (getLoginState() == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
-
-                val getOvoCall = async {
-                    getOvoUseCase.executeOnBackground()
-                }
-                val getSaldoCall = async {
-                    getSaldoUseCase.executeOnBackground()
-                }
-                val getUserMembershipCall = async {
-                    getUserMembershipUseCase.executeOnBackground()
-                }
-                val getShopInfoCall = async {
-                    getShopInfoUseCase.executeOnBackground()
-
-                }
-                ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
-                saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
-                userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
-                shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            val getUserInfoCall = async {
+                getUserInfoUseCase.executeOnBackground()
             }
+            val getOvoCall = async {
+                getOvoUseCase.executeOnBackground()
+            }
+            val getSaldoCall = async {
+                getSaldoUseCase.executeOnBackground()
+            }
+            val getUserMembershipCall = async {
+                getUserMembershipUseCase.executeOnBackground()
+            }
+            val getShopInfoCall = async {
+                getShopInfoUseCase.executeOnBackground()
+            }
+            userInfoData = (getUserInfoCall.await().takeIf { it is Success } as? Success<UserPojo>)?.data
+            ovoData = (getOvoCall.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+            saldoData = (getSaldoCall.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+            userMembershipData = (getUserMembershipCall.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            shopData = (getShopInfoCall.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
 
-            mainNavMapper.mapMainNavData(
+            accountHeaderMapper.mapToHeaderModel(
                     userInfoData,
                     ovoData,
                     saldoData,
                     userMembershipData,
                     shopData,
-                    categoryData
+                    false
             )
         }
     }
@@ -99,4 +91,5 @@ class GetMainNavDataUseCase @Inject constructor(
     private fun getSharedPreference(): SharedPreferences {
         return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
+
 }

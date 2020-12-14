@@ -5,15 +5,16 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.viewmodel.InitialShimmerDataModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.InitialShimmerProfileDataModel
 
-class InitialShimmeringDataViewHolder (itemView: View)
-    : AbstractViewHolder<InitialShimmerDataModel>(itemView) {
+class InitialShimmeringProfileDataViewHolder (itemView: View)
+    : AbstractViewHolder<InitialShimmerProfileDataModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_nav_shimmer_bu_data
+        val LAYOUT = R.layout.holder_nav_shimmer_profile_data
     }
 
-    override fun bind(element: InitialShimmerDataModel) {
+    override fun bind(element: InitialShimmerProfileDataModel) {
     }
 }
