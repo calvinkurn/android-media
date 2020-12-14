@@ -8,6 +8,7 @@ import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.shop.common.domain.interactor.AdminInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AdminInfoResult
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +39,10 @@ class SellerHomeActivityViewModel @Inject constructor(
     val isRoleEligible: LiveData<Result<Boolean>>
         get() = _isRoleEligible
 
+    private val _isOrderShopAdmin = MutableLiveData<Boolean>()
+    val isOrderShopAdmin: LiveData<Boolean>
+        get() = _isOrderShopAdmin
+
     fun getNotifications() = executeCall(_notifications) {
         getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
         getNotificationUseCase.executeOnBackground()
@@ -58,6 +63,9 @@ class SellerHomeActivityViewModel @Inject constructor(
                         setIsLocationAdmin(roleType.isLocationAdmin == true)
                         setIsShopAdmin(roleType.isShopAdmin == true)
                         setIsMultiLocationShop(result.data?.getIsMultiLocationShop() == true)
+                    }
+                    data.permissionList?.map { it.id }?.let { eligiblePermissions ->
+                        _isOrderShopAdmin.value = eligiblePermissions.contains(AdminPermissionGroup.ORDER)
                     }
                 }
                 roleType?.isShopOwner == true || roleType?.isLocationAdmin == false

@@ -9,6 +9,7 @@ import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.shop.common.domain.interactor.AdminInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -296,6 +297,73 @@ class SellerHomeActivityViewModelTest {
         }
 
         assert((mViewModel.isRoleEligible.value as? Success)?.data == true)
+    }
+
+    @Test
+    fun `success get admin info will change is order shop if permission list is not null`() = coroutineTestRule.runBlockingTest {
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        permissionList = listOf()
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isOrderShopAdmin.value != null)
+    }
+
+    @Test
+    fun `success get admin info will change is order shop to true if permission list contains order permission`() = coroutineTestRule.runBlockingTest {
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        permissionList = listOf(
+                                AdminPermission(id = AdminPermissionGroup.ORDER)
+                        )
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isOrderShopAdmin.value == true)
+    }
+
+    @Test
+    fun `success get admin info will change is order shop to false if permission list not null but not contains order permission`() = coroutineTestRule.runBlockingTest {
+        val adminInfoResult = AdminInfoResult.Success(
+                AdminInfoData(
+                        permissionList = listOf(
+                                AdminPermission(id = AdminPermissionGroup.CHAT)
+                        )
+                )
+        )
+
+        coEvery {
+            adminInfoUseCase.execute(any())
+        } returns adminInfoResult
+
+        mViewModel.getAdminInfo()
+
+        coVerify {
+            adminInfoUseCase.execute(any())
+        }
+
+        assert(mViewModel.isOrderShopAdmin.value == false)
     }
 
     @Test
