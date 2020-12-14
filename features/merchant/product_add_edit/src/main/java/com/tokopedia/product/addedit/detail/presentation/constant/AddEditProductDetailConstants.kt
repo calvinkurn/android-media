@@ -8,7 +8,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_IMAGE = 0
         const val REQUEST_CODE_CATEGORY = 1
         const val REQUEST_CODE_SHOP_LOCATION = 2
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 6
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
