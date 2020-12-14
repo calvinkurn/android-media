@@ -308,7 +308,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
 
     private fun observeStockTicker() {
         observe(viewModel.stockTicker) {
-            if(it.shouldShowTicker()) {
+            if(it.shouldShow()) {
                 val resourceId = when(it) {
                     is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
                     is EmptyStockTicker -> R.string.product_manage_multi_location_stock_no_access_description

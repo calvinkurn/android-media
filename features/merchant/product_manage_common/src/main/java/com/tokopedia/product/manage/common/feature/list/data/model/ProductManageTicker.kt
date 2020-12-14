@@ -8,7 +8,7 @@ sealed class ProductManageTicker {
     object CampaignStockTicker: ProductManageTicker()
     object NoTicker: ProductManageTicker()
 
-    fun shouldShowTicker(): Boolean {
+    fun shouldShow(): Boolean {
         return this != NoTicker
     }
 }

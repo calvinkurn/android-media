@@ -36,13 +36,16 @@ object ProductManageTickerMapper {
             multiLocationShop && !canEditStock -> MultiLocationNoAccessTicker
             else -> NoTicker
         }
-        tickerList.add(adminTicker)
+
+        if(adminTicker.shouldShow()) {
+            tickerList.add(adminTicker)
+        }
 
         if (isAllStockEmpty) {
             tickerList.add(EmptyStockTicker)
         }
 
-        return tickerList.filter { it !is NoTicker }
+        return tickerList
     }
 
     fun mapToCampaignStockTickerList(multiLocationShop: Boolean): List<ProductManageTicker> {
