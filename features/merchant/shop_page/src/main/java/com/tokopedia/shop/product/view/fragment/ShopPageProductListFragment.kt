@@ -1087,7 +1087,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     if (shopProductAdapter.shopProductUiModelList.isEmpty() && totalProduct != 0) {
                         updateEtalaseTitleSection()
                     }
-                    updateProductChangeGridSection(totalProduct)
+                    if(!isOwner)
+                        updateProductChangeGridSection(totalProduct)
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
                     productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
                 }
