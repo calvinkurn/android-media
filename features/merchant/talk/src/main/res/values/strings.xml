@@ -113,6 +113,8 @@
     <string name="inbox_coach_mark_smart_reply_title">Balasan otomatis dari Smart Reply</string>
     <string name="inbox_coach_mark_smart_reply_subtitle">Sekarang diskusi tentang stok bisa dibalas otomatis oleh Smart Reply. Yuk, atur pesan balasannya di halaman Pengaturan!</string>
     <string name="inbox_coach_mark_finish">Selesai</string>
+    <string name="inbox_ticker_title">Pembeli nungguin balasanmu nih!</string>
+    <string name="inbox_ticker_description">Notifikasi pada diskusi yang belum kamu respon akan hilang otomatis setelah 14 hari.</string>
 
     <string name="settings_toolbar">Pengaturan Diskusi</string>
     <string name="settings_template_item">Template Balasan</string>

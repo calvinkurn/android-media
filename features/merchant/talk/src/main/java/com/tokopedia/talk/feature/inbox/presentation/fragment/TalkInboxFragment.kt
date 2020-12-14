@@ -21,6 +21,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -228,6 +229,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         super.onViewCreated(view, savedInstanceState)
         initErrorPage()
         initSortFilter()
+        setupTicker()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -486,7 +488,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         settingsChip.listener = {
             gotoSellerSettings()
         }
-        return arrayListOf(unrespondedFilter, problemFilter, settingsChip)
+        return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter, settingsChip)
     }
 
     private fun gotoSellerSettings() {
@@ -591,5 +593,17 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 title,
                 subtitle
         )
+    }
+
+    private fun setupTicker() {
+        if(GlobalConfig.isSellerApp()) {
+            talkInboxTicker.apply {
+                tickerTitle = getString(R.string.inbox_ticker_title)
+                setTextDescription(getString(R.string.inbox_ticker_description))
+                show()
+            }
+            return
+        }
+        talkInboxTicker.hide()
     }
 }

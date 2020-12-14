@@ -7,6 +7,14 @@
     android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/talkInboxTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerType="information"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/talkInboxSortFilter"
         android:paddingTop="@dimen/dp_12"
@@ -14,7 +22,7 @@
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/talkInboxTicker"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="quick"/>
 
