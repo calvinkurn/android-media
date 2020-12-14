@@ -268,7 +268,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
-        if (!mainNavDataFetched) {
+        if (data.dataList.size > 1 && !mainNavDataFetched) {
             viewModel.getMainNavData(true)
             mainNavDataFetched = true
         }
