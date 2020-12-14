@@ -283,7 +283,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             if(reviewText.isEmpty()) {
                 reviewDetailContent.apply {
                     text = getString(R.string.no_reviews_yet)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                     show()
                 }
             } else {

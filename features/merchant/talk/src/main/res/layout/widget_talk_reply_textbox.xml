@@ -23,7 +23,7 @@
         android:hint="@string/reply_editText_placeholder"
         android:inputType="textMultiLine"
         android:textColor="@color/Unify_N700_96"
-        android:textColorHint="@color/Unify_N700_96"
+        android:textColorHint="@color/Unify_N700_32"
         android:maxLines="4"
         android:scrollbars="vertical"
         android:minHeight="@dimen/layout_lvl5"
