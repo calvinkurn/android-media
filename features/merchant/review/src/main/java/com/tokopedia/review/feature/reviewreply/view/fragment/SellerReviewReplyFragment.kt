@@ -16,6 +16,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
@@ -41,7 +43,7 @@ import kotlinx.android.synthetic.main.widget_reply_feedback_item.*
 import kotlinx.android.synthetic.main.widget_reply_textbox.*
 import javax.inject.Inject
 
-class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener {
+class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener, ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         const val EXTRA_FEEDBACK_DATA = "EXTRA_FEEDBACK_DATA"
@@ -81,6 +83,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     private var isEmptyReply = false
 
     private var replyTemplateList: List<ReplyTemplateUiModel>? = null
+    private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewSellerPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initData(savedInstanceState)
@@ -133,6 +141,30 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
         viewModelReviewReply?.flush()
         super.onDestroy()
+    }
+
+    override fun stopPreparePerformancePageMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        //no op
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
+        return if(context is ReviewSellerPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
     }
 
     private fun getReviewTemplate() {

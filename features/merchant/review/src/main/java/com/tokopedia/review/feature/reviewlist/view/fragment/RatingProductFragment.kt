@@ -30,6 +30,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
@@ -58,13 +61,12 @@ import kotlinx.android.synthetic.main.item_empty_state_list_rating_product.*
 import kotlinx.android.synthetic.main.item_search_rating_product.*
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
         HasComponent<ReviewProductListComponent>,
         ReviewSummaryViewHolder.ReviewSummaryViewListener,
-        SellerReviewListViewHolder.SellerReviewListListener {
+        SellerReviewListViewHolder.SellerReviewListListener,
+        ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
@@ -135,6 +137,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var coachMarkSummary: CoachMarkItem? = null
     private var coachMarkItemRatingProduct: CoachMarkItem? = null
+    private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? = null
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -148,6 +151,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val isNeedToShowCoachMark by lazy {
         arguments?.getBoolean(IS_DIRECTLY_GO_TO_RATING, true) ?: true
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewSellerPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,6 +197,30 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         super.onResume()
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
+        }
+    }
+
+    override fun stopPreparePerformancePageMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        //no op
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
+        return if(context is ReviewSellerPerformanceMonitoringListener) {
+            context
+        } else {
+            null
         }
     }
 
@@ -588,7 +620,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 loadInitialData()
             })
         }
