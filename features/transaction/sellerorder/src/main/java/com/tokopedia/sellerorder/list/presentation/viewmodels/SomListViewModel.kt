@@ -290,9 +290,7 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        // TODO: Change to userSession value
-        val isShopAdmin = true
-        if (getAdminPermissionJob?.isCompleted != true && isShopAdmin) {
+        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
             getAdminPermissionJob = launchCatchError(
                     block = {
                         val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
