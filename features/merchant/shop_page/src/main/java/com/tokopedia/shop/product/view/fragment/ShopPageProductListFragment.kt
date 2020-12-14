@@ -540,6 +540,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     }
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
+                    changeShopProductFilterParameterSharedData()
                     changeSortData(sortId)
                     scrollToChangeProductGridSegment()
                 }
@@ -1357,6 +1358,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isOwner,
                 customDimensionShopPage
         )
+        changeShopProductFilterParameterSharedData()
         changeSortData("")
         scrollToChangeProductGridSegment()
     }
@@ -1415,6 +1417,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if(isResetButtonVisible == false){
             sortId = ""
         }
+        changeShopProductFilterParameterSharedData()
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToChangeProductGridSegment()
         applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
@@ -1422,17 +1425,22 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
-                shopProductFilterParameter?:ShopProductFilterParameter()
-        )
         shopProductAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
         shopProductAdapter.refreshSticky()
         initialProductListData = null
-        shopProductAdapter.clearProductList()
-        loadNewProductData()
+        if(!isOnViewCreated) {
+            shopProductAdapter.clearProductList()
+            loadNewProductData()
+        }
+    }
+
+    private fun changeShopProductFilterParameterSharedData(){
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

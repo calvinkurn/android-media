@@ -874,6 +874,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
+                    changeShopProductFilterParameterSharedData()
                     changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
                 }
@@ -1386,6 +1387,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOwner,
                 customDimensionShopPage
         )
+        changeShopProductFilterParameterSharedData()
         changeSortData("")
         scrollToEtalaseTitlePosition()
     }
@@ -1608,6 +1610,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if(isResetButtonVisible == false){
             sortId = ""
         }
+        changeShopProductFilterParameterSharedData()
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToEtalaseTitlePosition()
         applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
@@ -1615,15 +1618,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
-                shopProductFilterParameter?:ShopProductFilterParameter()
-        )
         shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
         shopHomeAdapter.refreshSticky()
-        refreshProductList()
+        if(!isLoadInitialData)
+            refreshProductList()
+    }
+
+    private fun changeShopProductFilterParameterSharedData(){
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
