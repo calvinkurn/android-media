@@ -94,9 +94,9 @@ class SearchProductFirstPageGqlUseCase(
             )
 
     companion object {
-        private const val HEADLINE_PRODUCT_COUNT = 3
+        internal const val HEADLINE_PRODUCT_COUNT = 3
 
-        private const val QUICK_FILTER_QUERY = """
+        internal const val QUICK_FILTER_QUERY = """
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
@@ -134,7 +134,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val HEADLINE_ADS_QUERY = """
+        internal const val HEADLINE_ADS_QUERY = """
             query HeadlineAds(${'$'}headline_params: String!) {
                 headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
                     status {
@@ -217,7 +217,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val GLOBAL_NAV_GQL_QUERY = """
+        internal const val GLOBAL_NAV_GQL_QUERY = """
             query GlobalSearchNavigation(${'$'}query: String!, ${'$'}params: String!) {
                 global_search_navigation(keyword:${'$'}query, device:"android", size:5, params:${'$'}params) {
                     data {
@@ -246,7 +246,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
+        internal const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
             query SearchInspirationCarousel(${'$'}params: String!) {
                 searchInspirationCarouselV2(params: ${'$'}params) {
                     data {
@@ -288,7 +288,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val SEARCH_INSPIRATION_WIDGET_QUERY = """
+        internal const val SEARCH_INSPIRATION_WIDGET_QUERY = """
             query SearchInspirationWidget(${'$'}params: String!) {
                 searchInspirationWidget(params:${'$'}params){
                     data {

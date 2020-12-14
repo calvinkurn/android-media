@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -39,6 +40,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchInTokopediaViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductCountViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
@@ -220,6 +222,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel) {
+        return SearchProductTopAdsImageViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -265,6 +272,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new SearchInTokopediaViewHolder(view, searchInTokopediaListener);
         } else if (type == SearchProductCountViewHolder.LAYOUT) {
             viewHolder = new SearchProductCountViewHolder(view, searchNavigationListener);
+        } else if (type == SearchProductTopAdsImageViewHolder.LAYOUT) {
+            viewHolder = new SearchProductTopAdsImageViewHolder(view);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }
