@@ -54,7 +54,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
         video_volume?.setOnClickListener {
-            viewListener.onVolumeVideoClicked(mPlayer?.isMute() ?: false)
+            viewListener.onVolumeVideoClicked(mPlayer?.isMute() != true)
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.videoId)
         }
 

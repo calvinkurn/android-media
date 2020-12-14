@@ -174,9 +174,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
 
-    private val _videoTrackerData = MutableLiveData<Pair<Long,Long>>() // pair(stopDuration,videoDuration)
-    val videoTrackerData :LiveData<Pair<Long,Long>>
-        get() = _videoTrackerData
+    var videoTrackerData : Pair<Long,Long>? = null
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -243,7 +241,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun updateVideoTrackerData(stopDuration: Long, videoDuration: Long) {
-        _videoTrackerData.postValue(stopDuration to videoDuration)
+        videoTrackerData = stopDuration to videoDuration
     }
 
     fun clearCacheP2Data() {

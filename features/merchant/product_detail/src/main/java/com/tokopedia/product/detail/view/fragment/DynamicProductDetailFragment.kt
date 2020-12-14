@@ -377,7 +377,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun trackVideoState() {
         if (!alreadyHitVideoTracker && productVideoCoordinator != null) {
-            val videoTrackerData = viewModel.videoTrackerData.value
+            val videoTrackerData = viewModel.videoTrackerData
             val isAutoPlay = if (context == null) false else DeviceConnectionInfo.isConnectWifi(requireContext())
 
             videoTrackerData?.let {

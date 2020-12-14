@@ -47,8 +47,8 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
         setThumbnail()
         video_volume?.setOnClickListener {
+            listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
-            listener?.onVideoVolumeCLicked(mPlayer?.isMute() ?: false)
         }
         video_full_screen?.setOnClickListener {
             listener?.onVideoFullScreenClicked()
