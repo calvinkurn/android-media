@@ -119,6 +119,7 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_clock"
         app:layout_constraintTop_toTopOf="@+id/iv_clock"
         app:layout_constraintVertical_bias="0.5"
+        android:textColor="@color/Unify_N700_96"
         tools:text="Berlaku hingga tanggal 1 Juni 2018" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

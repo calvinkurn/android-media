@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
-                    style="@style/TextView.Small.BlackPrimary"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
                     app:layout_constraintLeft_toRightOf="@+id/iv_clock"
                     app:layout_constraintTop_toTopOf="@+id/iv_clock"
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:text="@string/available_locations"
-                    style="@style/TextView.Small.BlackPrimary"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                     app:layout_constraintLeft_toRightOf="@+id/iv_map"
                     app:layout_constraintTop_toTopOf="@+id/iv_map"
@@ -204,7 +204,7 @@
                         android:maxLines="1"
                         android:paddingLeft="@dimen/dp_0"
                         android:textColorHint="@color/Unify_N100"
-                        style="@style/TextView.Title.BlackPrimary"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintLeft_toLeftOf="@+id/tv2"
                         app:layout_constraintRight_toLeftOf="@+id/update_email"
                         app:layout_constraintTop_toBottomOf="@+id/tv2" />
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    style="@style/TextView.Small.BlackPrimary"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_price_details"
                     tools:text="2 x Vouchers" />
@@ -388,7 +388,7 @@
                     android:layout_marginLeft="@dimen/sp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/text_service_fees"
-                    style="@style/TextView.Small.BlackPrimary"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cl_promo" />
 
