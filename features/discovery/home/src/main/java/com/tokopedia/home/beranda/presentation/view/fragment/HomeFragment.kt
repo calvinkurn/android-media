@@ -901,6 +901,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetToggleReminder()
+        observeRechargeBUWidget()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1095,6 +1096,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeRechargeBUWidget() {
+        context?.let {
+            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
+                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
@@ -1227,8 +1236,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
-                CategoryNavigationCallback(context, this)
-
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
