@@ -18,7 +18,6 @@ import android.text.style.ClickableSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -39,7 +38,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -53,10 +51,11 @@ import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -69,7 +68,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -77,17 +75,16 @@ import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewMode
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -108,8 +105,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bannerRegister: ImageView
     private lateinit var socmedButton: ButtonCompat
-    private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var socmedButtonsContainer: LinearLayout
+    private lateinit var bottomSheet: SocmedBottomSheet
+    private var socmedButtonsContainer: LinearLayout? = null
     private lateinit var sharedPrefs: SharedPreferences
 
     private var phoneNumber: String? = ""
@@ -313,17 +310,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     @SuppressLint("RtlHardcoded")
     private fun prepareView() {
         activity?.run {
-            val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-            socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
-
-            bottomSheet = BottomSheetUnify()
-            bottomSheet.setTitle(getString(R.string.choose_social_media))
-            bottomSheet.setChild(viewBottomSheetDialog)
+            bottomSheet = SocmedBottomSheet(context)
+            socmedButtonsContainer = bottomSheet.getSocmedButtonContainer()
             bottomSheet.setCloseClickListener {
                 registerAnalytics.trackClickCloseSocmedButton()
                 bottomSheet.dismiss()
             }
-
             socmedButton.setOnClickListener {
                 registerAnalytics.trackClickSocmedButton()
                 bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
@@ -455,7 +447,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
         })
         registerInitialViewModel.showPopup.observe(viewLifecycleOwner, Observer {
-            if (it != null) showPopupError(it.header, it.body, it.action)
+            if (it != null) PopupErrorDialog.createDialog(context, it.header, it.body, it.action)?.show()
         })
         registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPage(it)
@@ -492,7 +484,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 resources.getDimensionPixelSize(R.dimen.dp_52))
         layoutParams.setMargins(0, 10, 0, 10)
 
-        socmedButtonsContainer.removeAllViews()
+        socmedButtonsContainer?.removeAllViews()
 
         for (i in discoverItems.indices) {
             val item = discoverItems[i]
@@ -506,8 +498,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
                 setDiscoverOnClickListener(item, loginTextView)
 
-                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
-                        layoutParams)
+                socmedButtonsContainer?.run {
+                    addView(loginTextView, childCount,
+                            layoutParams)
+                }
             }
         }
     }
@@ -941,12 +935,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun showLoadingDiscover() {
-        val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-        val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
-            socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
+        socmedButtonsContainer?.run {
+            val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
+            val lastPos = childCount - 1
+            if (getChildAt(lastPos) !is ProgressBar) {
+                addView(pb, childCount)
+            }
+            emailExtension?.hide()
         }
-        emailExtension?.hide()
     }
 
     private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,
@@ -980,9 +976,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun dismissLoadingDiscover() {
-        val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
-            socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
+        socmedButtonsContainer?.run {
+            val lastPos = childCount - 1
+            if (getChildAt(lastPos) is ProgressBar) {
+                removeViewAt(childCount - 1)
+            }
         }
     }
 
@@ -1351,30 +1349,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun showPopupError(header: String, body: String, url: String) {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(header)
-            dialog.setDescription(body)
-            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
-            dialog.setSecondaryCTAText(getString(R.string.close_popup))
-            dialog.setPrimaryCTAClickListener {
-                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-            }
-            dialog.setSecondaryCTAClickListener {
-                dialog.hide()
-            }
-            dialog.show()
-        }
-    }
-
-
     private fun showPopupErrorAkamai() {
-        showPopupError(
-                getString(R.string.popup_error_title),
-                getString(R.string.popup_error_desc),
-                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-        )
+        PopupErrorDialog.showPopupErrorAkamai(context)
     }
 
     override fun onDestroy() {
@@ -1443,7 +1419,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
       
-        private const val TOKOPEDIA_CARE_PATH = "help"
+        const val TOKOPEDIA_CARE_PATH = "help"
       
         private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
 
