@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 

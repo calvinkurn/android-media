@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.domain.model.shoplocation
+package com.tokopedia.logisticCommon.data.entity.shoplocation
 
 data class ShopLocationModel (
         var listWarehouse: List<Warehouse> = emptyList()

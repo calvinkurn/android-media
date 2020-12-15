@@ -14,10 +14,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
-import com.tokopedia.manageaddress.domain.model.shoplocation.Warehouse
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
