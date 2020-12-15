@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
+import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.data.TemplateMutationResult
 import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,12 +15,9 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TalkTemplateViewModel @Inject constructor(
-        private val addTemplateUseCase: AddTemplateUseCase,
         private val arrangeTemplateUseCase: ArrangeTemplateUseCase,
-        private val deleteSpecificTemplateUseCase: DeleteSpecificTemplateUseCase,
         private val enableTemplateUseCase: EnableTemplateUseCase,
         private val getAllTemplatesUseCase: GetAllTemplatesUseCase,
-        private val updateSpecificTemplateUseCase: UpdateSpecificTemplateUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -27,19 +25,9 @@ class TalkTemplateViewModel @Inject constructor(
     val templateList: LiveData<Result<ChatTemplatesAll>>
         get() = _templateList
 
-    private val _templateMutation = MutableLiveData<Boolean>()
-    val templateMutation: LiveData<Boolean>
+    private val _templateMutation = MutableLiveData<TalkTemplateMutationResults>()
+    val templateMutation: LiveData<TalkTemplateMutationResults>
         get() = _templateMutation
-
-    fun addTemplate(isSeller: Boolean, template: String) {
-        launchCatchError(block = {
-            addTemplateUseCase.setParams(isSeller, template)
-            val response = addTemplateUseCase.executeOnBackground()
-            _templateMutation.postValue(response.chatAddTemplate.success.isMutationSuccess())
-        }) {
-            _templateMutation.postValue(false)
-        }
-    }
 
     fun arrangeTemplate(originalIndex: Int, moveTo: Int, isSeller: Boolean) {
         if(originalIndex == moveTo) {
@@ -48,19 +36,11 @@ class TalkTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             arrangeTemplateUseCase.setParams(originalIndex, moveTo, isSeller)
             val response = arrangeTemplateUseCase.executeOnBackground()
-            _templateMutation.postValue(response.chatMoveTemplate.success.isMutationSuccess())
+            if(response.chatMoveTemplate.success.isMutationSuccess()) {
+                _templateMutation.postValue(TalkTemplateMutationResults.ArrangeTemplate)
+            }
         }) {
-            _templateMutation.postValue(false)
-        }
-    }
-
-    fun deleteSpecificTemplate(index: Int, isSeller: Boolean) {
-        launchCatchError(block = {
-            deleteSpecificTemplateUseCase.setParams(index, isSeller)
-            val response = deleteSpecificTemplateUseCase.executeOnBackground()
-            _templateMutation.postValue(response.chatDeleteTemplate.success.isMutationSuccess())
-        }) {
-            _templateMutation.postValue(false)
+            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
         }
     }
 
@@ -68,9 +48,11 @@ class TalkTemplateViewModel @Inject constructor(
         launchCatchError(block = {
             enableTemplateUseCase.setParams(isEnable)
             val response = enableTemplateUseCase.executeOnBackground()
-            _templateMutation.postValue(response.chatToggleTemplate.success.isMutationSuccess())
+            if(response.chatToggleTemplate.success.isMutationSuccess()) {
+                _templateMutation.postValue(TalkTemplateMutationResults.ToggleTemplate)
+            }
         }) {
-            _templateMutation.postValue(false)
+            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
         }
     }
 
@@ -84,19 +66,8 @@ class TalkTemplateViewModel @Inject constructor(
         }
     }
 
-    fun updateSpecificTemplate(isSeller: Boolean, value: String, index: Int) {
-        launchCatchError(block = {
-            updateSpecificTemplateUseCase.setParams(isSeller, value, index)
-            val response = updateSpecificTemplateUseCase.executeOnBackground()
-            _templateMutation.postValue(response.chatUpdateTemplate.success.isMutationSuccess())
-        }) {
-            _templateMutation.postValue(false)
-        }
-    }
-
     private fun Int.isMutationSuccess(): Boolean {
         return this == 1
     }
-
 
 }

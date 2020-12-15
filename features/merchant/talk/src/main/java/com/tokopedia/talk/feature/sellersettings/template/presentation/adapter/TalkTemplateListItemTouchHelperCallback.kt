@@ -22,10 +22,10 @@ class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        itemTouchHelperAdapter.onItemDismiss(viewHolder.adapterPosition)
+        // No Op
     }
 }

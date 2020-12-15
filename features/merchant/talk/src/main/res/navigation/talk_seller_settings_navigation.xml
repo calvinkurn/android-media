@@ -60,9 +60,9 @@
         android:name="com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment">
 
         <argument
-            android:name="isEdit"
-            app:argType="boolean"
-            android:defaultValue='false' />
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
 
     </fragment>
 

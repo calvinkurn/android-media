@@ -25,9 +25,7 @@ class TalkTemplateListAdapter(private val talkTemplateListListener: TalkTemplate
     }
 
     override fun onItemDismiss(position: Int) {
-        templates.removeAt(position)
-        talkTemplateListListener.onItemRemoved(position)
-        notifyItemRemoved(position)
+        // No Op
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {

@@ -150,5 +150,8 @@
     <string name="template_list_title">Template Balasan</string>
     <string name="template_list_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>
     <string name="template_list_button">Tambah Template</string>
+    <string name="template_list_success_add_template">Yay, template diskusi berhasil disimpan!</string>
+    <string name="template_list_success_delete_template">Template diskusi berhasil dihapus.</string>
+    <string name="template_list_toaster_fail">Template diskusi gagal disimpan. Coba lagi, ya.</string>
 
 </resources>

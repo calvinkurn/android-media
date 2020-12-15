@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -20,6 +21,9 @@ import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateC
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
+import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
@@ -32,11 +36,17 @@ import javax.inject.Inject
 
 class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplateComponent>, TalkTemplateListListener {
 
+    companion object {
+        const val MAX_TEMPLATE_SIZE = 5
+    }
+
     @Inject
     lateinit var viewModel: TalkTemplateViewModel
 
     private var isSeller: Boolean = false
     private val adapter = TalkTemplateListAdapter(this)
+    private var toaster: Snackbar? = null
+    private var toolbar: HeaderUnify? = null
 
     override fun getScreenName(): String {
         return ""
@@ -62,10 +72,6 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         viewModel.arrangeTemplate(originalIndex, moveTo, isSeller)
     }
 
-    override fun onItemRemoved(index: Int) {
-        viewModel.deleteSpecificTemplate(index, isSeller)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_template_list, container, false)
     }
@@ -83,20 +89,47 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         observeTemplateList()
+        observeTemplateMutation()
         setupOnBackPressed()
         setupAddTemplateButton()
         setToolbarTitle()
+        onFragmentResult()
     }
 
     private fun getTemplateList() {
         viewModel.getTemplateList(isSeller)
     }
 
+    private fun observeTemplateMutation() {
+        viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                TalkTemplateMutationResults.AddTemplate -> {
+                    showToaster(getString(R.string.template_list_success_add_template), false)
+                }
+                TalkTemplateMutationResults.ToggleTemplate -> {
+                    showToaster(getString(R.string.template_list_success_add_template), false)
+                }
+                TalkTemplateMutationResults.ArrangeTemplate -> {
+                    showToaster(getString(R.string.template_list_success_add_template), false)
+                }
+                TalkTemplateMutationResults.DeleteTemplate -> {
+                    showToaster(getString(R.string.template_list_success_delete_template), false)
+                }
+                TalkTemplateMutationResults.UpdateTemplate -> {
+                    showToaster(getString(R.string.template_list_success_add_template), false)
+                }
+                TalkTemplateMutationResults.MutationFailed -> {
+                    showToaster(getString(R.string.template_list_success_add_template), true)
+                }
+            }
+        })
+    }
+
     private fun observeTemplateList() {
         viewModel.templateList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
-                    if(isSeller) {
+                    if (isSeller) {
                         renderList(it.data.sellerTemplate.templates)
                         return@Observer
                     }
@@ -110,6 +143,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun renderList(templates: List<String>) {
+        talkTemplateListAddButton.isEnabled = templates.shouldEnableButton()
         adapter.setData(templates)
         talkTemplateListRecyclerView.show()
         initSwitch()
@@ -128,7 +162,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun initSwitch() {
         talkTemplateListSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.enableTemplate(isChecked)
-            if(isChecked) {
+            if (isChecked) {
                 talkTemplateListRecyclerView.show()
                 return@setOnCheckedChangeListener
             }
@@ -137,7 +171,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 findNavController().navigateUp()
             }
@@ -145,7 +179,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun setToolbarTitle() {
-        val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
+        toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
         toolbar?.setTitle(R.string.title_template_page)
     }
 
@@ -155,15 +189,43 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         }
     }
 
+    private fun showToaster(successMessage: String, isError: Boolean) {
+        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        view?.let {
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, toasterType, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if (toaster.isShownOrQueued) {
+                    return
+                }
+                toaster.show()
+            }
+        }
+    }
+
+    private fun List<String>.shouldEnableButton(): Boolean {
+        return this.size < MAX_TEMPLATE_SIZE
+    }
+
     private fun goToEdit() {
         val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
-        destination.isEdit = true
         NavigationController.navigate(this, destination)
     }
 
     private fun goToAdd() {
         val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
-        destination.isEdit = false
         NavigationController.navigate(this, destination)
     }
+
+    private fun onFragmentResult() {
+        getNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                toolbar?.rightContentView?.removeAllViews()
+                when(it.getString(TalkEditTemplateFragment.KEY_ACTION, "")) {
+
+                }
+            }
+            removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
+        })
+    }
+
 }

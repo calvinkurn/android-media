@@ -8,22 +8,13 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class TalkTemplateViewModelTestFixture {
+abstract class TalkEditTemplateViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var addTemplateUseCase: AddTemplateUseCase
 
     @RelaxedMockK
-    lateinit var arrangeTemplateUseCase: ArrangeTemplateUseCase
-
-    @RelaxedMockK
     lateinit var deleteSpecificTemplateUseCase: DeleteSpecificTemplateUseCase
-
-    @RelaxedMockK
-    lateinit var enableTemplateUseCase: EnableTemplateUseCase
-
-    @RelaxedMockK
-    lateinit var getAllTemplatesUseCase: GetAllTemplatesUseCase
 
     @RelaxedMockK
     lateinit var updateSpecificTemplateUseCase: UpdateSpecificTemplateUseCase
@@ -31,12 +22,12 @@ abstract class TalkTemplateViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: TalkTemplateViewModel
+    protected lateinit var viewModel: TalkEditTemplateViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkTemplateViewModel(arrangeTemplateUseCase, enableTemplateUseCase, getAllTemplatesUseCase, CoroutineTestDispatchersProvider)
+        viewModel = TalkEditTemplateViewModel(addTemplateUseCase, deleteSpecificTemplateUseCase, updateSpecificTemplateUseCase, CoroutineTestDispatchersProvider)
     }
 
 }
