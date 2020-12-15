@@ -42,9 +42,7 @@ class PltPlayPerformanceTest {
     fun testPageLoadTimePerformance() {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         intentsTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
-            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/10708")
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/2413")
         })
         IdlingRegistry.getInstance().register(idlingResource)
 
@@ -59,7 +57,7 @@ class PltPlayPerformanceTest {
 
     @After
     fun tearDown() {
-//        intentsTestRule.activity.finishAndRemoveTask()
+        intentsTestRule.activity.finishAndRemoveTask()
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
