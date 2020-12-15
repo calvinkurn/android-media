@@ -96,6 +96,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
                 emit(validateDomainShopNameUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
+                    .conflate()
                     .collectLatest {
                          _validateShopName.value = Success(it)
                         Log.d("SHOP_SETTINGS", "validate shop name - ${System.currentTimeMillis() - timeValidateShopName}")
@@ -117,6 +118,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 emit(validateDomainShopNameUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
+                    .conflate()
                     .collectLatest { result ->
                         if(!result.validateDomainShopName.isValid) {
                             currentShopName?.let { getShopDomainSuggestion(it) }
@@ -201,7 +203,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 emit(getShopDomainNameSuggestionUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
-                    .buffer()
+                    .conflate()
                     .collectLatest {
                         _shopDomainSuggestion.value = Success(it)
                         Log.d("SHOP_SETTINGS", "get shop domain suggestion - ${System.currentTimeMillis() - timeGetShopDomainSuggestion}")
