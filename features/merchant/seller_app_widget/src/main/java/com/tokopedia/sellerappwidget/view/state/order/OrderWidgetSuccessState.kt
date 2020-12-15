@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.*
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -34,6 +35,8 @@ object OrderWidgetSuccessState {
             WidgetSize.SMALL -> showSmallWidgetSuccessState(context, remoteViews, userSession, order, widgetId)
             else -> showNormalWidgetSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
         }
+        SellerAppWidgetPreferences.getInstance(context)
+                .putInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, orderStatusId)
     }
 
     private fun showSmallWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, order: OrderUiModel, widgetId: Int) {

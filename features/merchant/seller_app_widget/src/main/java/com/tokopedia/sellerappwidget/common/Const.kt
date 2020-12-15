@@ -44,5 +44,6 @@ object Const {
         const val ORDER_LAST_UPDATED = "saw_order_last_updated"
         const val CHAT_LAST_UPDATED = "saw_chat_last_updated"
         const val LAST_PRUNE_WORK = "saw_last_prune_work"
+        const val LAST_SELECTED_ORDER_TYPE = "saw_last_selected_order_type"
     }
 }

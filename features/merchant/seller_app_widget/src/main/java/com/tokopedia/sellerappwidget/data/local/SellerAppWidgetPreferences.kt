@@ -21,4 +21,8 @@ interface SellerAppWidgetPreferences {
     fun putLong(key: String, value: Long)
 
     fun getLong(key: String, defValue: Long): Long
+
+    fun putInt(key: String, value: Int)
+
+    fun getInt(key: String, defValue: Int): Int
 }

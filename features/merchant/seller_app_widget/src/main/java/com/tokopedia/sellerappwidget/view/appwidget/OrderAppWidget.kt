@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
@@ -50,7 +51,7 @@ class OrderAppWidget : AppWidgetProvider() {
                     onUpdate(context, awm, ids)
                 }
             }
-            Const.Action.REFRESH -> refreshWidget(context, intent)
+            Const.Action.REFRESH -> refreshWidget(context)
             Const.Action.ITEM_CLICK -> onOrderItemClick(context, intent)
             Const.Action.SWITCH_ORDER -> switchOrder(context, intent)
             Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
@@ -130,7 +131,7 @@ class OrderAppWidget : AppWidgetProvider() {
                 .sendEventClickSwitchButtonOrderWidget()
     }
 
-    private fun refreshWidget(context: Context, intent: Intent) {
+    private fun refreshWidget(context: Context) {
         val awm = AppWidgetManager.getInstance(context)
         val appWidgetIds = awm.getAppWidgetIds(ComponentName(context, OrderAppWidget::class.java))
         val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
@@ -150,7 +151,9 @@ class OrderAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
                 .sendEventClickRefreshButtonOrderWidget()
 
-        GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
+        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        val lastSelectedOrderStatusId = sharedPref.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, DEFAULT_ORDER_STATUS_ID)
+        GetOrderExecutor.run(context, lastSelectedOrderStatusId)
     }
 
     private fun onOrderItemClick(context: Context, intent: Intent) {

@@ -38,4 +38,12 @@ class SellerAppWidgetPreferencesImpl(context: Context) : SellerAppWidgetPreferen
     override fun getLong(key: String, defValue: Long): Long {
         return sharedPreferences.getLong(key, defValue)
     }
+
+    override fun putInt(key: String, value: Int) {
+        sharedPreferences.edit().putInt(key, value).apply()
+    }
+
+    override fun getInt(key: String, defValue: Int): Int {
+        return sharedPreferences.getInt(key, defValue)
+    }
 }
