@@ -82,7 +82,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
         launchCatchError(block = {
             flow {
-                delay(INPUT_DELAY)
                 validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
                 emit(validateDomainShopNameUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
@@ -101,7 +100,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
         launchCatchError(block = {
             flow {
-                delay(INPUT_DELAY)
                 validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
                 emit(validateDomainShopNameUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
@@ -180,7 +178,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private fun getShopDomainSuggestion(shopName: String) {
         launchCatchError(block = {
             flow {
-                delay(INPUT_DELAY)
                 getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 emit(getShopDomainNameSuggestionUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
