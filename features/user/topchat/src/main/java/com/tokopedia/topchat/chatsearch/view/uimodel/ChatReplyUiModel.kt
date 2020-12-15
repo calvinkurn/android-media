@@ -17,9 +17,7 @@ data class ChatReplyUiModel(
         @SerializedName("msgId")
         val msgId: Long = 0L,
         @SerializedName("productId")
-        val productId: String = "",
-        @SerializedName("replyId")
-        val replyId: Int = 0
+        val productId: String = ""
 ) : Visitable<ChatSearchTypeFactory> {
 
     val tag get() = contact.attributes.tag
