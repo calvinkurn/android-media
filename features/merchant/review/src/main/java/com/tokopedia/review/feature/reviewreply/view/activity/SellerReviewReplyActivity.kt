@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.view.activity
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,6 +19,11 @@ import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyF
 class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReplyComponent>, ReviewSellerPerformanceMonitoringListener {
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startPerformanceMonitoring()
+    }
 
     override fun getNewFragment(): Fragment = SellerReviewReplyFragment()
 
@@ -59,7 +65,6 @@ class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReply
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.SELLER_REVIEW_REPLY_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-
     }
 
     override fun stopPerformanceMonitoring() {

@@ -38,12 +38,14 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_reply.*
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.*
 import kotlinx.android.synthetic.main.widget_reply_textbox.*
 import javax.inject.Inject
 
-class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener, ReviewSellerPerformanceMonitoringContract {
+class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener,
+        ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         const val EXTRA_FEEDBACK_DATA = "EXTRA_FEEDBACK_DATA"
@@ -105,6 +107,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initToolbar()
@@ -139,7 +143,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
-        viewModelReviewReply?.flush()
         super.onDestroy()
     }
 
@@ -156,7 +159,14 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     override fun startRenderPerformanceMonitoring() {
-        //no op
+        reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        list_template?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                list_template.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
@@ -173,18 +183,20 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     private fun observeLiveData() {
-        viewModelReviewReply?.reviewTemplate?.observe(this, Observer {
+        viewModelReviewReply?.reviewTemplate?.observe(viewLifecycleOwner, Observer {
             showData()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     replyTemplateList = it.data
                     setTemplateList(it.data)
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, context?.getString(R.string.error_message_load_more_review_product).orEmpty(), type = Toaster.TYPE_ERROR,
+                        Toaster.build(it1, context?.getString(R.string.error_message_load_more_review_product).orEmpty(), type = Toaster.TYPE_ERROR,
                                 actionText = context?.getString(R.string.action_retry_toaster_review_product).orEmpty(),
-                                clickListener = View.OnClickListener {
+                                clickListener = {
                                     getReviewTemplate()
                                 })
                     }
@@ -192,7 +204,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             }
         })
 
-        viewModelReviewReply?.insertReviewReply?.observe(this, Observer {
+        viewModelReviewReply?.insertReviewReply?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isEmptyReply = false
@@ -200,26 +212,26 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     }
                 }
             }
         })
 
-        viewModelReviewReply?.updateReviewReply?.observe(this, Observer {
+        viewModelReviewReply?.updateReviewReply?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     updateReviewReplySuccess(it.data)
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     }
                 }
             }
         })
 
-        viewModelReviewReply?.insertTemplateReply?.observe(this, Observer {
+        viewModelReviewReply?.insertTemplateReply?.observe(viewLifecycleOwner, Observer {
             bottomSheetAddTemplate?.dismiss()
             when (it) {
                 is Success -> {
@@ -229,7 +241,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
                     }
                 }
             }

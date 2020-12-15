@@ -105,6 +105,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
             finish();
         }
+        startPerformanceMonitoring();
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();

@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,7 +31,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
@@ -177,15 +177,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initRecyclerView(view)
-        observeLiveData()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
         initChipsFilter(view)
         initEmptyState()
+        observeLiveData()
     }
 
     override fun onDestroy() {
@@ -215,7 +217,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun startRenderPerformanceMonitoring() {
-        //no op
+        reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        rvRatingProduct?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                rvRatingProduct.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
@@ -379,6 +388,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             hideLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     onSuccessGetProductRatingOverallData(it.data)
                 }
                 is Fail -> {

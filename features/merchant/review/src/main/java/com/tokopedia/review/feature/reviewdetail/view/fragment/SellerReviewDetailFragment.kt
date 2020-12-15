@@ -52,6 +52,7 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -158,8 +159,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
-        observeLiveData()
         initViewBottomSheet()
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
+        observeLiveData()
     }
 
     override fun initInjector() {
@@ -247,7 +250,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun startRenderPerformanceMonitoring() {
-        //no op
+        reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        rvRatingDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                rvRatingDetail.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
@@ -344,6 +354,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             hidePageLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     swipeToRefresh?.isRefreshing = false
                     productName = it.data.first.filterIsInstance<OverallRatingDetailUiModel>().firstOrNull()?.productName.orEmpty()
                     viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
@@ -406,7 +418,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 loadInitialData()
             })
         }
