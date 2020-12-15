@@ -62,7 +62,6 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -76,7 +75,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -109,6 +107,7 @@ open class HomeViewModel @Inject constructor(
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>,
@@ -1113,6 +1112,17 @@ open class HomeViewModel @Inject constructor(
             declineSalamWidgetUseCase.get().setParams(requestParams)
             declineSalamWidgetUseCase.get().executeOnBackground()
         }){}
+    }
+
+    fun getRechargeBUWidget(source: WidgetSource) {
+        if(getRechargeBUWidgetJob?.isActive == true) return
+        getRechargeBUWidgetJob = launchCatchError(coroutineContext, block = {
+            getRechargeBUWidgetUseCase.get().setParams(source)
+            val data = getRechargeBUWidgetUseCase.get().executeOnBackground()
+            _rechargeBUWidgetLiveData.postValue(Event(data))
+        }){
+            removeRechargeBUWidget()
+        }
     }
 
     fun getFeedTabData() {
