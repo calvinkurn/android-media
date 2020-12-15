@@ -26,46 +26,6 @@ class HomeViewModelRechargeBUWidgetUnitTest{
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
 
-//    @Test
-//    fun `Recharge Decline`(){
-//        val rechargeDataModel = ReminderWidgetModel(source=ReminderEnum.RECHARGE)
-//
-//        val requestParams = mapOf(
-//                DeclineRechargeRecommendationUseCase.PARAM_UUID to "1",
-//                DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to "1")
-//
-//        val declineRechargeRecommendation = DeclineRechargeRecommendation(
-//                isError = false,
-//                message = "Not Error"
-//        )
-//
-//        // Add Recharge Recommendation to HomeDataModel
-//        getHomeUseCase.givenGetHomeDataReturn(
-//                HomeDataModel(
-//                        list = listOf(rechargeDataModel)
-//                )
-//        )
-//
-//        // recharge decline use case
-//        declineRechargeRecommendationUseCase.givenDeclineRechargeRecommendationUseCase(
-//                declineRechargeRecommendation
-//        )
-//
-//        homeViewModel = createHomeViewModel(
-//                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-//                getHomeUseCase = getHomeUseCase,
-//                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
-//        )
-//
-//        // decline recharge
-//        homeViewModel.declineRechargeRecommendationItem(requestParams)
-//
-//        // Expect the reminder recharge not available in home live data
-//        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
-//            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
-//        }
-//    }
-
     @Test
     fun `Recharge BU Widget Not Available`(){
         val rechargeDataModel = RechargeBUWidgetDataModel(channel = ChannelModel(id = "1", groupId = "1"))
@@ -86,7 +46,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // insert null recharge to home data
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
-        // Expect the recharge bu widget not available in home live data
+        // Expect recharge bu widget not available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
@@ -112,7 +72,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // insert null recharge to home data
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
-        // Expect the recharge bu widget not available in home live data
+        // Expect recharge bu widget not available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
@@ -144,7 +104,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
                 )
         )
 
-        // Add Recharge Recommendation to HomeDataModel
+        // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(rechargeDataModel)
@@ -171,7 +131,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
     fun `No Recharge Data Available`() {
         val rechargeDataModel = RechargeBUWidgetDataModel(channel = ChannelModel(id = "1", groupId = "1"))
 
-        // Not Add Recharge Recommendation to HomeDataModel
+        // Not Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf()
@@ -186,7 +146,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // viewmodel load recharge data
         homeViewModel.getRechargeBUWidget(WidgetSource.TOPUP_BILLS)
 
-        // Expect the reminder recharge not available in home live data
+        // Expect recharge bu widget not available in home live data
         homeViewModel.homeLiveData.observeOnce {
             assert(!it.list.contains(rechargeDataModel))
         }
@@ -196,7 +156,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
     fun `Get Recharge Recommendation Failed`(){
         val rechargeDataModel = RechargeBUWidgetDataModel(channel = ChannelModel(id = "1", groupId = "1"))
 
-        // Add Recharge Recommendation to HomeDataModel
+        // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(rechargeDataModel)
@@ -214,7 +174,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // viewmodel load recharge data
         homeViewModel.getRechargeBUWidget(WidgetSource.TOPUP_BILLS)
 
-        // Expect the reminder recharge not available in home live data
+        // Expect recharge bu widget not available in home live data
         homeViewModel.homeLiveData.observeOnce {
             assert(!it.list.contains(rechargeDataModel))
         }
@@ -245,7 +205,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
                 )
         )
 
-        // Add Recharge Recommendation to HomeDataModel
+        // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(rechargeDataModel)
@@ -274,7 +234,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         // Recharge valid and submited to live data home
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
-        // Expect the reminder recharge available in home live data
+        // Expect recharge bu widget available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.title == "Title" &&
                     (homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.items?.size == rechargePerso.items.size
