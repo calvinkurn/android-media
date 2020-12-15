@@ -3,13 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -28,6 +26,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PRODUCT_PER_PAGE = 10
 private const val RESET_HEIGHT = 0
+
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -86,7 +85,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
     }
 
-    private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>){
+    private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
         if (components.name == ComponentsList.ProductCardCarousel.componentName
                 || components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName) {
             getMaxHeightProductCard(list)

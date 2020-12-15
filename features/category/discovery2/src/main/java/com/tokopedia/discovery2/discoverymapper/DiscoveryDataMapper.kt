@@ -178,7 +178,9 @@ class DiscoveryDataMapper {
         val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
 
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName
-                || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+                || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
+                || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
             slashedPrice = dataItem.price ?: ""
             formattedPrice = dataItem.discountedPrice ?: ""
