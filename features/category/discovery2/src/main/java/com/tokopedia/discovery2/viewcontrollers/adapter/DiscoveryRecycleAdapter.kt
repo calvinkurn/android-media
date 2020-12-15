@@ -40,8 +40,11 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder, componentList[position].properties?.template)
-        holder.bindView(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
+        with(viewHolderListModel.getViewHolderModel(
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position)) {
+            holder.bindView(this, parentComponent)
+        }
+
     }
 
 

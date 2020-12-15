@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -20,7 +21,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_PAGE__SIZE = "rpc_page_size"
     }
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, queryMap: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
@@ -33,7 +34,6 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.chipSelectionData,
                             it.selectedFilters,
                             it.selectedSort,
-                            queryMap,
                             parentComponentsItem?.data,
                             productsLimit),
                     pageEndPoint, it.name)
@@ -47,7 +47,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, rpcDiscoQuery: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
@@ -60,7 +60,6 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.chipSelectionData,
                             component1.selectedFilters,
                             component1.selectedSort,
-                            rpcDiscoQuery,
                             parentComponentsItem?.data, productsLimit),
                     pageEndPoint,
                     component1.name)
@@ -77,7 +76,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, rpcDiscoQuery: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         component?.let {
             it.properties?.let { properties ->
@@ -91,7 +90,6 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.chipSelectionData,
                             it.selectedFilters,
                             it.selectedSort,
-                            rpcDiscoQuery,
                             parentComponentsItem?.data,
                             productsLimit),
                     pageEndPoint,
@@ -107,7 +105,6 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      chipSelectionData: DataItem?,
                                      selectedFilters: HashMap<String, String>?,
                                      selectedSort: HashMap<String, String>?,
-                                     queryMap: Map<String, String?>? = null,
                                      data: List<DataItem>?,
                                      productsPerPage: Int): MutableMap<String, Any> {
 
@@ -130,7 +127,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             }
         }
 
-        queryMap?.let {
+        discoComponentQuery?.let {
             if (!it[PIN_PRODUCT].isNullOrEmpty()) {
                 queryParameterMap[PIN_PRODUCT] = it[PIN_PRODUCT] ?: ""
                 queryParameterMap[PRODUCT_ID] = it[PRODUCT_ID] ?: ""

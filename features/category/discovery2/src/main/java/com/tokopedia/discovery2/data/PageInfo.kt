@@ -31,5 +31,11 @@ data class PageInfo(
         @SerializedName("search_title")
         val searchTitle: String = "Cari di Tokopedia",
 
-        var additionalInfo: AdditionalInfo? = null
+        var additionalInfo: AdditionalInfo? = null,
+
+        var redirectionUrl: String? = null,
+
+        var isAdult: Int = 0,
+
+        var origin: Int = 0
 )
