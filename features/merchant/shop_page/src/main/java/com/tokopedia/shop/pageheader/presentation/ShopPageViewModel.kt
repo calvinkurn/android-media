@@ -41,6 +41,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -89,7 +90,7 @@ class ShopPageViewModel @Inject constructor(
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
-    var productListData: GetShopProductUiModel = GetShopProductUiModel()
+    var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
 
     fun getShopPageTabData(
@@ -123,13 +124,7 @@ class ShopPageViewModel @Inject constructor(
                         null
                     })
             shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListData = GetShopProductUiModel(
-                        isHasNextPage(page, itemPerPage, shopPageHeaderP1Data.productList.totalData),
-                        shopPageHeaderP1Data.productList.data.map {
-                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId.toString()), etalaseId)
-                        },
-                        shopPageHeaderP1Data.productList.totalData
-                )
+                productListData = shopPageHeaderP1Data.productList
                 shopPageP1Data.postValue(Success(ShopPageHeaderMapper.mapToShopPageP1HeaderData(
                         shopPageHeaderP1Data.isShopOfficialStore,
                         shopPageHeaderP1Data.isShopPowerMerchant,
