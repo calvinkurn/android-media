@@ -152,7 +152,7 @@ class BranchHelperValidation {
 
     private fun validateContentId(eventName: String ,contentId: String) {
         if (contentId.isNullOrBlank()) {
-            logging("validation;reason=contentId_blank;eventName='$eventName';data=")
+            logging("validation;reason=contentId_blank;eventName='$eventName';data=''")
         } else {
             try {
                 val productarray = JSONArray(contentId)
@@ -167,19 +167,19 @@ class BranchHelperValidation {
 
     private fun validateProductName(eventName: String ,productName: String?){
         if (productName.isNullOrBlank()) {
-            logging("validation;reason=productName_blank;eventName='$eventName';data=")
+            logging("validation;reason=productName_blank;eventName='$eventName';data=''")
         }
     }
 
     private fun validateProductCate3(eventName: String ,ProductCate3: String){
         if (ProductCate3.isNullOrBlank()) {
-            logging("validation;reason=ProductCate3_blank;eventName='$eventName';data=")
+            logging("validation;reason=ProductCate3_blank;eventName='$eventName';data=''")
         }
     }
 
     private fun validateUser(eventName: String ,userId: String){
         if (userId.isNullOrBlank()) {
-            logging("validation;reason=userId_blank;eventName='$eventName';data=")
+            logging("validation;reason=userId_blank;eventName='$eventName';data=''")
         }else if(userId.trim() == "0"){
             logging("validation;reason=userId_blank;eventName='$eventName';data='$userId'")
         }
@@ -193,7 +193,7 @@ class BranchHelperValidation {
 
     private fun validateContent(eventName: String, content: String) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank;eventName='$eventName'; data= ")
+            logging("validation;reason=content_array_blank;eventName='$eventName';data=''")
         } else {
             try {
                 val contentarray = JSONArray(content)
@@ -208,7 +208,7 @@ class BranchHelperValidation {
 
     private fun validateProductType( productType: String) {
         if (LinkerConstants.PRODUCTTYPE_DIGITAL != productType && LinkerConstants.PRODUCTTYPE_MARKETPLACE != productType) {
-            logging("validation;reason=validateProductType;data='$productType'")
+            logging("validation;reason=validateProductType;eventName='';data='$productType'")
         }
     }
 
