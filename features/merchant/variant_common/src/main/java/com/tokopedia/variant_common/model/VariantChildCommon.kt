@@ -186,7 +186,7 @@ data class Campaign(
 
         @SerializedName("endDateUnix")
         @Expose
-        val endDateUnix: Int? = null,
+        val endDateUnix: String? = null,
 
         @SerializedName("stockSoldPercentage")
         @Expose
