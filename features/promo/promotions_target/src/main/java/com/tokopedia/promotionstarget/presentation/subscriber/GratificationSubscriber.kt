@@ -221,17 +221,10 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                     var claimPopGratificationResponse: ClaimPopGratificationResponse? = null
                                     var couponDetail: GetCouponDetailResponse? = null
                                     try {
+                                        val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
+                                        claimPopGratificationResponse = presenter.get().claimGratification(claimPayload)
                                         val popBenefits = response.popGratification?.popGratificationBenefits
-                                        val ids = popBenefits?.filter { it?.referenceID!=null && it.referenceID!=0 }?.map {
-                                            it?.referenceID.toString()
-                                        }
-                                        if(!ids.isNullOrEmpty()) {
-                                            couponDetail = presenter.get().composeApi(popBenefits)
-                                        }
-                                        if(couponDetail !=null) {
-                                            val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
-                                            claimPopGratificationResponse = presenter.get().claimGratification(claimPayload)
-                                        }
+                                        couponDetail = presenter.get().composeApi(popBenefits)
 
                                     } catch (ex: Exception) {
                                     }
@@ -286,7 +279,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse?, gratificationData: GratificationData) {
+    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
         weakActivity.get()?.let { activity ->
             val dialog = targetPromotionsDialog.showNonLoggedInUi(activity, data, couponDetailResponse, gratificationData)
