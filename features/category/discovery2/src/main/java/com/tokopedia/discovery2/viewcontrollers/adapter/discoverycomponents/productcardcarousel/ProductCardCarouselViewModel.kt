@@ -76,15 +76,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         getProductList()?.let {
             if (it.isNotEmpty()) {
                 productLoadError.value = false
-                if (components.name == ComponentsList.ProductCardCarousel.componentName) {
-                    getMaxHeightProductCard(it)
-                }
+                reSyncProductCardHeight(it)
                 productCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
                 maxHeightProductCard.value = RESET_HEIGHT
                 productLoadError.value = true
             }
+        }
+    }
+
+    private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>){
+        if (components.name == ComponentsList.ProductCardCarousel.componentName
+                || components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName) {
+            getMaxHeightProductCard(list)
         }
     }
 
@@ -105,6 +110,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
+                    reSyncProductCardHeight(it)
                     productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }
