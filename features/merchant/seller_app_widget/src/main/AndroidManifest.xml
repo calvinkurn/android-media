@@ -38,8 +38,9 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_CHAT_APP_WIDGET_DATA" />
-                <action android:name="com.tokopedia.sellerappwidget.view.service.AppWidgetIntentService.GET_ORDER_APP_WIDGET_DATA" />
+                <action android:name="com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA" />
+                <action android:name="com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA" />
+                <action android:name="com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA" />
             </intent-filter>
         </receiver>
     </application>

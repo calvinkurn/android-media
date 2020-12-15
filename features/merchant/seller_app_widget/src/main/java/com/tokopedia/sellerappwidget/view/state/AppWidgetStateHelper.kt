@@ -37,6 +37,7 @@ abstract class AppWidgetStateHelper {
             }
             setInt(R.id.tvSawNormalCommonCta, Const.Method.SET_VISIBILITY, ctaVisibility)
             setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
+            setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<T>(context, this, R.id.btnSawNormalRefreshCommon, data.widgetId)
             registerAppLinkIntent(context, R.id.tvSawNormalCommonCta, data.appLink, data.widgetId)
@@ -58,6 +59,7 @@ abstract class AppWidgetStateHelper {
             }
             setInt(R.id.tvSawLargeCommonCta, Const.Method.SET_VISIBILITY, ctaVisibility)
             setInt(R.id.btnSawLargeRefreshCommon, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
+            setInt(R.id.btnSawLargeRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<T>(context, this, R.id.btnSawLargeRefreshCommon, data.widgetId)
             registerAppLinkIntent(context, R.id.tvSawLargeCommonCta, data.appLink, data.widgetId)

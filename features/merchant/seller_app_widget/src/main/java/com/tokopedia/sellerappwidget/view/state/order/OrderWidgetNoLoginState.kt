@@ -2,6 +2,7 @@ package com.tokopedia.sellerappwidget.view.state.order
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.sellerappwidget.R
@@ -50,6 +51,7 @@ object OrderWidgetNoLoginState {
                 appLink = ApplinkConst.LOGIN
         )
         OrderWidgetStateHelper.setupSmallCommonWidget(context, remoteView, data)
+        remoteView.setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.INVISIBLE)
     }
 
     private fun setupViewNormalWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
@@ -62,6 +64,7 @@ object OrderWidgetNoLoginState {
                 appLink = ApplinkConst.LOGIN
         )
         OrderWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteView, data)
+        remoteView.setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.INVISIBLE)
     }
 
     private fun setupViewLargeWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
@@ -74,5 +77,6 @@ object OrderWidgetNoLoginState {
                 appLink = ApplinkConst.LOGIN
         )
         OrderWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteView, data)
+        remoteView.setInt(R.id.btnSawLargeRefreshCommon, Const.Method.SET_VISIBILITY, View.INVISIBLE)
     }
 }
