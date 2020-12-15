@@ -274,7 +274,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
             cardNameText = MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName));
             sellerCardDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_shop_account);
         } else {
-            cardNameText = MethodChecker.fromHtml(getContext().getString(R.string.account_home_role_name_card, shopName));
+            cardNameText = MethodChecker.fromHtml(getContext().getString(R.string.account_home_role_name_card, roleName));
             sellerCardDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_seller_role_account);
         }
 
