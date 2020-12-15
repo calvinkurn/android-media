@@ -279,7 +279,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         }
 
         shopNameTxt.setText(cardNameText);
-        sellerCardImageView.setBackground(sellerCardDrawable);
+        sellerCardImageView.setImageDrawable(sellerCardDrawable);
         iconContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_open_shop_ellipse));
 
         sellerAccountCard.setVisibility(View.VISIBLE);
