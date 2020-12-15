@@ -112,7 +112,15 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = HeadLineAdItemsListAdapter(HeadLineAdItemsAdapterTypeFactoryImpl(::startSelectMode,
-                ::singleItemDelete, ::statusChange, ::onGroupClicked))
+                ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
+    }
+
+    private fun editGroup(groupId: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+            putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+        }
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -41,9 +41,6 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val PRODUK_NAME = " Produk"
-    const val KATA_KUNCI = " Kata Kunci"
-    const val ATUR_NAME = " Atur"
     const val EDIT_SOURCE = "dashboard_edit_group_app"
     const val ACTION_EDIT = "edit"
     const val ACTION_ADD = "add"

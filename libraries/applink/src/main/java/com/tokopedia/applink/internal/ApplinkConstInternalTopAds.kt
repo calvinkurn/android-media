@@ -71,4 +71,7 @@ object ApplinkConstInternalTopAds {
 
     @JvmField
     val TOPADS_HEADLINE_DETAIL = "${INTERNAL_TOPADS}/headline-ad-detail"
+
+    @JvmField
+    val TOPADS_HEADLINE_ADS_EDIT = "${INTERNAL_TOPADS}/headline-ad-edit"
 }

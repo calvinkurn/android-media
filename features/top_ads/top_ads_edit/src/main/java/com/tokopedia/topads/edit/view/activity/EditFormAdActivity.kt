@@ -12,6 +12,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.Constants.ATUR_NAME
+import com.tokopedia.topads.common.constant.Constants.KATA_KUNCI
+import com.tokopedia.topads.common.constant.Constants.PRODUK_NAME
+import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
@@ -20,12 +24,8 @@ import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
-import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
-import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
-import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
-import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
@@ -152,7 +152,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-        adapter = TopAdsEditPagerAdapter(supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, ATUR_NAME), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }

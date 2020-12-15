@@ -111,4 +111,7 @@
     <string name="topads_headline_tips_budget_row2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
     <string name="topads_headline_tips_budget_row3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
 
+    <!--topads headline edit-->
+    <string name="topads_headline_edit_form_label">Isi Konten Iklan</string>
+
 </resources>

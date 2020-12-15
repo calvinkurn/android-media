@@ -17,6 +17,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
@@ -30,6 +32,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUST
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX
@@ -163,6 +166,13 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
+        }
+        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+            }
+            startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
