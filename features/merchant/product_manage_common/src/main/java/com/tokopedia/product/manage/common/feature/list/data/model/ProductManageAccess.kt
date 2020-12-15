@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class ProductManageAccess(
     val addProduct: Boolean,
     val editProduct: Boolean,
-    val changeEtalase: Boolean,
+    val etalaseList: Boolean,
     val multiSelect: Boolean,
     val editPrice: Boolean,
     val editStock: Boolean,

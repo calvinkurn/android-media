@@ -6,7 +6,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAc
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_PRICE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_STOCK
-import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MOVE_ETALASE
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.ETALASE_LIST
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MULTI_SELECT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.PRODUCT_LIST
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_CASHBACK
@@ -25,7 +25,7 @@ object ProductManageAccessMapper {
         return ProductManageAccess(
             accessIds.contains(ADD_PRODUCT),
             accessIds.contains(EDIT_PRODUCT),
-            accessIds.contains(MOVE_ETALASE),
+            accessIds.contains(ETALASE_LIST),
             accessIds.contains(MULTI_SELECT),
             accessIds.contains(EDIT_PRICE),
             accessIds.contains(EDIT_STOCK),
@@ -44,7 +44,7 @@ object ProductManageAccessMapper {
         return ProductManageAccess(
             addProduct = true,
             editProduct = true,
-            changeEtalase = true,
+            etalaseList = true,
             multiSelect = true,
             editPrice = true,
             editStock = true,

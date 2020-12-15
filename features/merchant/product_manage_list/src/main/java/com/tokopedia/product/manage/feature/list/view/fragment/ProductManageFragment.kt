@@ -2066,7 +2066,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val addProductMenu = optionsMenu?.findItem(R.id.add_product_menu)
         val moreMenu = optionsMenu?.findItem(R.id.action_more_menu)
         addProductMenu?.isVisible = access.addProduct
-        moreMenu?.isVisible = access.changeEtalase
+        moreMenu?.isVisible = access.etalaseList
     }
 
     private fun renderStockLocationBottomSheet() {
