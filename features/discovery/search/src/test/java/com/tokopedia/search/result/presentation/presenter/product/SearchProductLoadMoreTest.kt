@@ -2,6 +2,8 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -86,7 +88,10 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
     private fun `Then verify load more use case request params`() {
         val requestParams = requestParamsSlot.captured
 
-        requestParams.getInt(SearchApiConst.START, -1) shouldBe 8
+        val params = requestParams.getSearchProductParams()
+        params[SearchApiConst.START] shouldBe 8
+
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
     }
 
     private fun `Then verify view interaction when load more data success`(searchProductModelFirstPage: SearchProductModel) {
@@ -125,7 +130,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.parameters)
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.getSearchProductParams())
     }
 
     private fun `Given Search Product Load More API will throw exception`(exception: Exception?) {
