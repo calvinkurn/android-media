@@ -67,6 +67,7 @@ fun createHomeViewModel(
         getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
+        getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),

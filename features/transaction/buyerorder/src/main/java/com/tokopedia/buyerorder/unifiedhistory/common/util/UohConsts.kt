@@ -116,6 +116,7 @@ object UohConsts {
     const val VERTICAL_CATEGORY_EVENTS = "event"
     const val VERTICAL_CATEGORY_DEALS = "deals"
     const val VERTICAL_CATEGORY_FLIGHT = "flight"
+    const val VERTICAL_CATEGORY_TRAIN = "train"
     const val VERTICAL_CATEGORY_KEUANGAN = "mutual_fund,gold,insurance,gift_card,modal_toko"
     const val VERTICAL_CATEGORY_GIFTCARD = "gift_card"
     const val VERTICAL_CATEGORY_INSURANCE = "insurance"

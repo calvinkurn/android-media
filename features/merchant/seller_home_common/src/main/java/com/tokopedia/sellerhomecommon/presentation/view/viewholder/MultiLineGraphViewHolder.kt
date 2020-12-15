@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -24,6 +26,7 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_line_graph_state_empty.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_graph_loading_state.view.*
 import timber.log.Timber
@@ -49,8 +52,12 @@ class MultiLineGraphViewHolder(
     private var element: MultiLineGraphWidgetUiModel? = null
     private var lastSelectedMetric: MultiLineMetricUiModel? = null
     private var isMetricComparableByPeriodSelected: Boolean = false
+    private var showAnimation: ValueAnimator? = null
+    private var hideAnimation: ValueAnimator? = null
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
+        showAnimation?.cancel()
+        hideAnimation?.cancel()
         this.element = element
 
         val data = element.data
@@ -224,6 +231,20 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    private fun setupEmptyState(element: MultiLineGraphWidgetUiModel) {
+        with(element.emptyState) {
+            itemView.tvLineGraphEmptyStateTitle.text = title
+            itemView.tvLineGraphEmptyStateDescription.text = description
+            itemView.tvShcMultiLineEmptyStateCta.text = ctaText
+            itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                if (RouteManager.route(itemView.context, appLink)) {
+                    listener.sendMultiLineGraphEmptyStateCtaClick(element)
+                }
+            }
+            animateShowEmptyState()
+        }
+    }
+
     private fun getWidgetComponents(): List<View> {
         return with(itemView) {
             listOf(rvShcGraphMetrics, lvShcCurrentPeriod, lvShcLastPeriod,
@@ -293,6 +314,15 @@ class MultiLineGraphViewHolder(
             init(getLineGraphConfig(lineChartDataSets))
             setDataSets(*lineChartDataSets.toTypedArray())
             invalidateChart()
+        }
+        element?.let { element ->
+            if (element.isShowEmpty && metrics.filter { it.isSelected }.all { it.isEmpty } &&
+                    element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
+                    element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()) {
+                setupEmptyState(element)
+            } else {
+                animateHideEmptyState()
+            }
         }
     }
 
@@ -549,11 +579,53 @@ class MultiLineGraphViewHolder(
         }
     }
 
+    private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
+        val animator = ValueAnimator.ofFloat(from, to)
+        animator.duration = 200L
+        animator.addUpdateListener { valueAnimator ->
+            this?.context?.let {
+                scaleX = (valueAnimator.animatedValue as? Float).orZero()
+                scaleY = (valueAnimator.animatedValue as? Float).orZero()
+            }
+        }
+        animator.start()
+        return animator
+    }
+
+    private fun animateShowEmptyState() {
+        if (hideAnimation?.isRunning == true) hideAnimation?.cancel()
+        if (itemView.multiLineEmptyState?.isVisible == true) return
+        itemView.multiLineEmptyState.show()
+        showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
+    }
+
+    private fun animateHideEmptyState() {
+        if (showAnimation?.isRunning == true) showAnimation?.cancel()
+        if (itemView.multiLineEmptyState?.isVisible != true) return
+        hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
+        hideAnimation?.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                itemView.multiLineEmptyState?.gone()
+                hideAnimation?.removeListener(this)
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+                hideAnimation?.removeListener(this)
+            }
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
+    }
+
     interface Listener : BaseViewHolderListener {
         fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {}
 
         fun sendMultiLineGraphMetricClick(element: MultiLineGraphWidgetUiModel, metric: MultiLineMetricUiModel) {}
 
         fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {}
+
+        fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {}
     }
 }

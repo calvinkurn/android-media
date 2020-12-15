@@ -4,9 +4,9 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kategori.model.CategoryAllList
-import com.tokopedia.kategori.model.Data
-import com.tokopedia.kategori.model.raw.GQL_CATEGORY_LIST
+import com.tokopedia.common_category.data.kategorymodel.CategoryAllList
+import com.tokopedia.common_category.data.kategorymodel.Data
+import com.tokopedia.common_category.data.raw.GQL_CATEGORY_LIST
 import javax.inject.Inject
 
 class KategoriRepository @Inject constructor() : BaseRepository() {
