@@ -108,7 +108,8 @@ class RecommendationEntityMapper : Func1<List<RecommendationEntity.Recomendation
                     data.freeOngkirInformation?.isActive?:false,
                     data.freeOngkirInformation?.imageUrl?:"",
                     labelGroupList,
-                    data.shop?.isGold ?: false
+                    data.shop?.isGold ?: false,
+                    data.shop?.isOfficial ?: false
             )
 
         }

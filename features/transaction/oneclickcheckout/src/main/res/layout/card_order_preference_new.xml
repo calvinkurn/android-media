@@ -295,7 +295,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:text="Refresh"
+                android:text="@string/lbl_reload_shipping"
                 android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_new_shipping_error_message"
                 app:layout_constraintEnd_toEndOf="parent"

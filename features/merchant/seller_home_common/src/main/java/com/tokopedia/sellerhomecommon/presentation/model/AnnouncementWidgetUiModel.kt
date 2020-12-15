@@ -20,7 +20,8 @@ data class AnnouncementWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<AnnouncementDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
