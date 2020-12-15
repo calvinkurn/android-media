@@ -38,19 +38,19 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val shopBasicData: LiveData<Result<ShopBasicDataModel>?>
+    val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
-    val uploadShopImage: LiveData<Result<UploadShopEditImageModel>?>
+    val uploadShopImage: LiveData<Result<UploadShopEditImageModel>>
         get() = _uploadShopImage
-    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>?>
+    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>>
         get() = _updateShopBasicData
-    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>?>
+    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
         get() = _allowShopNameDomainChanges
-    val validateShopName: LiveData<Result<ValidateShopDomainNameResult>?>
+    val validateShopName: LiveData<Result<ValidateShopDomainNameResult>>
         get() = _validateShopName
-    val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>?>
+    val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>>
         get() = _validateShopDomain
-    val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>?>
+    val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>>
         get() = _shopDomainSuggestion
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
