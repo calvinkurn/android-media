@@ -100,6 +100,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:layout_marginLeft="32dp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textColorHint="@color/Unify_N700_44"
                     android:hint="@string/hint_input_reason"
                     android:paddingLeft="@dimen/padding_activity"
                     android:paddingRight="@dimen/padding_activity"

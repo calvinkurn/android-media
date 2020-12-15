@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_16"
         >
 
@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
+                android:textColor="@color/Unify_N700_96"
                 android:maxLines="1"
                 android:text="@string/by"
                 style="@style/TextView.Small"

@@ -137,6 +137,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_deadline"
+                android:textColor="@color/Unify_N700_68"
                 android:gravity="center_vertical"
                 style="@style/TextView.Micro.BlackSecondary"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
@@ -183,6 +184,7 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
                 android:text="@string/locked_reputation"
@@ -225,6 +227,7 @@
             android:layout_alignParentRight="true"
             android:lineSpacingExtra="7sp"
             android:text="@string/change"
+            android:textColor="@color/Unify_G400"
             style="@style/TextView.Small.Green"
             android:layout_marginTop="@dimen/dp_8"
             />
@@ -262,6 +265,7 @@
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
             style="@style/TextView.Micro.BlackSecondary"
+            android:textColor="@color/Unify_N700_68"
             tools:text="Penjual Belum Menilai"
             android:layout_marginTop="@dimen/dp_4"
             />

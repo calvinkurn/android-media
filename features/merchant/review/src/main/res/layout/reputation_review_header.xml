@@ -45,6 +45,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:lineSpacingExtra="6sp"
             android:text="@string/not_reviewed"
+            android:textColor="@color/Unify_N700_44"
             style="@style/TextView.Micro.BlackDisabled"
             android:visibility="gone"
             tools:visibility="visible"/>
