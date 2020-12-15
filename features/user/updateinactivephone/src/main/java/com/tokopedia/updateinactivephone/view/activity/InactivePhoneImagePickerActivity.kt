@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.imagepicker.common.EXTRA_IMAGE_PICKER_BUILDER
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.view.fragment.InactivePhoneCameraFragment
@@ -15,9 +14,8 @@ class InactivePhoneImagePickerActivity : BaseSimpleActivity() {
     private var cameraViewMode: CameraViewMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (intent != null && intent.extras != null && intent.extras?.containsKey(EXTRA_IMAGE_PICKER_BUILDER) as Boolean) {
-            val bundle = intent.getBundleExtra(EXTRA_IMAGE_PICKER_BUILDER)
-            cameraViewMode = bundle?.getParcelable<CameraViewMode>(EXTRA_CAMERA_MODE) as CameraViewMode
+        if (intent != null && intent.extras != null && intent.extras?.containsKey(EXTRA_CAMERA_MODE) == true) {
+            cameraViewMode = intent.extras?.getParcelable(EXTRA_CAMERA_MODE)
         }
         title = getString(R.string.text_select_image)
         super.onCreate(savedInstanceState)

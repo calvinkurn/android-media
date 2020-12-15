@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
@@ -26,7 +28,7 @@ import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancella
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -166,8 +168,9 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     override fun onUploadAttachmentButtonClicked(position: Int) {
         cancellationReasonViewModel.editedAttachmentPosition = position
         val imagePickerBuilder = ImagePickerBuilder.getOriginalImageBuilder(requireContext())
-        startActivityForResult(ImagePickerActivity.getIntent(requireContext(), imagePickerBuilder),
-                REQUEST_CODE_IMAGE)
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(imagePickerBuilder)
+        startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
     override fun viewImage(filePath: String) {

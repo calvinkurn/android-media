@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -38,7 +40,7 @@ import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,7 +288,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     private void showImagePickerDialog() {
         ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        Intent intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 

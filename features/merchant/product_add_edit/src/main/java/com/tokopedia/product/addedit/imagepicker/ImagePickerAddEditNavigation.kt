@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
@@ -17,9 +17,13 @@ import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditEditImageTracking
 import com.tokopedia.user.session.UserSession
 
+
 object ImagePickerAddEditNavigation {
     fun getIntent(context: Context, imageUrlOrPathList: List<String>, isAdding: Boolean): Intent {
-        val intent = ImagePickerActivity.getIntent(context, createImagePickerBuilder(context, ArrayList(imageUrlOrPathList)))
+        val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList))
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
+
         setUpTrackingForImagePicker(context, isAdding)
         return intent
     }

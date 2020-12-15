@@ -20,13 +20,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.*
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
@@ -763,7 +763,8 @@ class AddEditProductVariantFragment :
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
             else ProductAddVariantTracking.pickProductVariantPhotos(shopId)
         }
-        val intent = ImagePickerActivity.getIntent(ctx, builder)
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder);
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
     }
 
@@ -1083,7 +1084,8 @@ class AddEditProductVariantFragment :
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
-        val intent = ImagePickerActivity.getIntent(ctx, builder)
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }
 
@@ -1102,11 +1104,12 @@ class AddEditProductVariantFragment :
         val urlOrPath = viewModel.variantSizechart.value?.urlOriginal ?: ""
 
         val isEditMode = viewModel.isEditMode.value ?: false
-        val intent = ImageEditorActivity.getIntent(ctx,
-                ImageEditorBuilder(
-                        imageUrls = arrayListOf(urlOrPath),
-                        defaultRatio = ImageRatioType.RATIO_1_1
-                ))
+        val builder = ImageEditorBuilder(
+                imageUrls = arrayListOf(urlOrPath),
+                defaultRatio = ImageRatioType.RATIO_1_1
+        )
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
+        intent.putImageEditorBuilder(builder)
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }

@@ -22,9 +22,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.payment.view.model.PaymentListModel;
@@ -172,7 +174,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
 
     private void openImagePicker() {
         ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        Intent intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PROOF);
     }
 

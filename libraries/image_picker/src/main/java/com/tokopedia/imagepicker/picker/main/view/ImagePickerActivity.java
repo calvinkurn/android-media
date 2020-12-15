@@ -45,7 +45,7 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.imagepicker.common.ResultConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
@@ -86,10 +86,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
-        // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
-        intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
+        intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
         return intent;
     }
 
@@ -102,10 +99,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRA_IMAGE_PICKER_BUILDER)) {
-            // regarding bug on samsung
-            // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
-            Bundle bundle = intent.getBundleExtra(EXTRA_IMAGE_PICKER_BUILDER);
-            imagePickerBuilder = bundle.getParcelable(EXTRA_IMAGE_PICKER_BUILDER);
+            imagePickerBuilder = intent.getParcelableExtra(EXTRA_IMAGE_PICKER_BUILDER);
         } else {
             imagePickerBuilder = ImagePickerBuilder.getSquareImageBuilder(getContext());
         }

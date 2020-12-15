@@ -21,6 +21,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity;
@@ -36,7 +38,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrappe
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
 
@@ -320,7 +322,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         Activity activity = getActivity();
         if (activity == null) return;
         ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(activity);
-        Intent intent = ImagePickerActivity.getIntent(activity, builder);
+        Intent intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 

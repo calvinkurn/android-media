@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage.FeedbackPagePresenter
@@ -48,7 +50,6 @@ import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -215,14 +216,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     override fun addImageClick() {
         context?.let {
             val builder = ImagePickerBuilder(
-                    title =  getString(R.string.image_picker_title),
+                    title = getString(R.string.image_picker_title),
                     imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY),
-                    galleryType =  GalleryType.ALL,
+                    galleryType = GalleryType.ALL,
                     maxFileSizeInKB = DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
                     imageRatioType = ImageRatioType.ORIGINAL,
                     imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                             initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -388,23 +390,23 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
             if (emailText.isEmpty()) {
                 validate = false
-                setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
+                setWrapperError(et_email_wrapper, getString(R.string.warning_email))
             }
 
             if (reportType == 1) {
                 if (affectedPageText.isEmpty()) {
                     validate = false
-                    setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page) )
+                    setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page))
                 }
 
                 if(journeyText.isEmpty()) {
                     validate = false
-                    setWrapperError(et_str_wrapper, getString(R.string.warning_str) )
+                    setWrapperError(et_str_wrapper, getString(R.string.warning_str))
                 }
             } else {
                 if (detailFeedback.isEmpty()) {
                     validate = false
-                    setWrapperError(et_feedback_wrapper, getString(R.string.warning_feedback) )
+                    setWrapperError(et_feedback_wrapper, getString(R.string.warning_feedback))
                 }
             }
 
@@ -465,7 +467,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return FeedbackFormRequest(
                 platformID = 2,
                 email = userSession?.email,
-                appVersion =  affectedVersion,
+                appVersion = affectedVersion,
                 bundleVersion = versionCode,
                 device = deviceInfo,
                 os = androidVersion,

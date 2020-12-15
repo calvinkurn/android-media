@@ -42,6 +42,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
@@ -59,8 +60,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener,
         ImageEditActionMainWidget.OnImageEditActionMainWidgetListener,
         ImageEditCropListWidget.OnImageEditCropWidgetListener, ImageRatioCropPresenter.ImageRatioCropView {
-
-    public static final String EXTRA_IMAGE_EDITOR_BUILDER = "IMG_EDITOR_BUILDER";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";

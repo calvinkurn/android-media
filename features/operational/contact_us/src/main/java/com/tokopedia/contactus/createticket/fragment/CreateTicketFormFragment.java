@@ -21,6 +21,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.createticket.utilities.CreateTicketProgressDialog;
 import com.tokopedia.contactus.createticket.widget.LinearLayoutManager;
@@ -36,7 +38,7 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -266,10 +268,10 @@ public class CreateTicketFormFragment extends TkpdBaseV4Fragment
 
     private void showImagePickerDialog() {
         ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
-
 
     @Override
     public String getTicketCategoryId() {

@@ -2,11 +2,13 @@ package com.tokopedia.createpost.view.activity
 
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 
 
 /**
@@ -29,6 +31,8 @@ object CreatePostImagePickerNavigation {
                 .apply {
                     title = context.getString(R.string.cp_title_image_picker)
                 }
-        return ImagePickerActivity.getIntent(context, builder)
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER).apply {
+            putImagePickerBuilder(builder)
+        }
     }
 }
