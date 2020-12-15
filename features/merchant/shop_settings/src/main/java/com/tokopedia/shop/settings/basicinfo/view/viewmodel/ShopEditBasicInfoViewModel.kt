@@ -25,7 +25,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import java.lang.Exception
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi

@@ -362,11 +362,13 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun getAllowShopNameDomainChanges() {
+        showLoading()
         viewModel.getAllowShopNameDomainChanges()
     }
 
     private fun observeGetShopBasicData() {
         observe(viewModel.shopBasicData) {
+            hideLoading()
             when(it) {
                 is Success -> showShopInformation(it.data)
                 is Fail -> onErrorGetShopBasicData(it.throwable)
@@ -408,6 +410,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeAllowShopNameDomainChanges() {
         observe(viewModel.allowShopNameDomainChanges) {
+            hideLoading()
             when(it) {
                 is Success -> {
                     val data = it.data
@@ -419,8 +422,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     showAllowShopNameDomainChangesError(throwable)
                 }
             }
-            progressBar.hide()
-            container.show()
         }
     }
 
@@ -540,7 +541,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onSaveButtonClicked() {
-        showSubmitLoading()
+        showLoading()
 
         val name = shopNameTextField.textFieldInput.text.toString()
         val domain = shopDomainTextField.textFieldInput.text.toString()
@@ -556,17 +557,18 @@ class ShopEditBasicInfoFragment: Fragment() {
         tvSave?.isEnabled = false
     }
 
-    private fun showSubmitLoading() {
-        progressBar.show()
+    private fun showLoading() {
+        loader.show()
         container.hide()
     }
 
-    private fun hideSubmitLoading() {
-        progressBar.hide()
+    private fun hideLoading() {
+        loader.hide()
         container.show()
     }
 
     private fun loadShopBasicData() {
+        showLoading()
         viewModel.getShopBasicData()
     }
 
@@ -583,7 +585,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
 
     private fun onSuccessUpdateShopBasicData(successMessage: String) {
-        hideSubmitLoading()
+        hideLoading()
 
         val bundle = Bundle().apply {
             putString(EXTRA_MESSAGE, successMessage)
@@ -593,7 +595,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
-        hideSubmitLoading()
+        hideLoading()
         showSnackBarErrorSubmitEdit(throwable)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
@@ -601,7 +603,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(message: String) {
-        hideSubmitLoading()
+        hideLoading()
         showSnackBarErrorSubmitEdit(message)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(message)
@@ -706,6 +708,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            showLoading()
             viewModel.getAllowShopNameDomainChanges()
         })
         snackbar?.show()
