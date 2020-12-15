@@ -23,6 +23,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTa
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -134,9 +135,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         (viewModel.smartReplyData.value as? Success)?.data?.let {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             cacheManager?.apply {
-                put(TalkSmartReplyConstants.IS_SMART_REPLY_ON, it.isSmartReplyOn)
-                put(TalkSmartReplyConstants.MESSAGE_READY, it.messageReady)
-                put(TalkSmartReplyConstants.MESSAGE_NOT_READY, it.messageNotReady)
+                put(TalkSmartReplyConstants.SMART_REPLY_DATA_WRAPPER, SmartReplyDataWrapper(it.isSmartReplyOn, it.messageReady, it.messageNotReady))
             }
             return cacheManager?.id ?: ""
         }

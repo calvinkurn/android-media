@@ -24,7 +24,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
-import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
+import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
@@ -229,10 +229,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun putDataIntoCacheManager(isEditMode: Boolean, template: String?, index: Int?): String {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.apply {
-            put(TalkEditTemplateFragment.IS_SELLER, isSeller)
-            put(TalkEditTemplateFragment.IS_EDIT_MODE, isEditMode)
-            index?.let { put(TalkEditTemplateFragment.INDEX, it) }
-            template?.let { put(TalkEditTemplateFragment.TEMPLATE, it) }
+            put(TalkEditTemplateFragment.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index))
         }
         return cacheManager?.id ?: ""
     }

@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
+import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
@@ -37,6 +38,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         const val IS_SELLER = "isSeller"
         const val VALUE_ADD_EDIT = "add/edit"
         const val VALUE_DELETE = "delete"
+        const val KEY_TEMPLATE = "template"
     }
 
     @Inject
@@ -161,11 +163,14 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
             val saveInstanceCacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
 
             saveInstanceCacheManager?.run {
-                isSeller = get(IS_SELLER, Boolean::class.java) ?: false
-                isEditMode = get(IS_EDIT_MODE, Boolean::class.java) ?: false
-                if(isEditMode) {
-                    index = get(INDEX, Int::class.java) ?: -1
-                    text = get(TEMPLATE, String::class.java) ?: ""
+                val dataWrapper = get<TalkTemplateDataWrapper>(KEY_TEMPLATE, TalkTemplateDataWrapper::class.java)
+                dataWrapper?.let {
+                    isSeller = it.isSeller
+                    isEditMode = it.isEditMode
+                    if(isEditMode) {
+                        index = it.index ?: -1
+                        text = it.template ?: ""
+                    }
                 }
             }
         }
@@ -192,6 +197,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun setupOnBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                clearToolbar()
                 findNavController().navigateUp()
             }
         })

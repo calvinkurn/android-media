@@ -35,6 +35,9 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
 
         findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)?.let {
             setSupportActionBar(it)
+            it.setNavigationOnClickListener {
+                onBackPressed()
+            }
         }
 
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()

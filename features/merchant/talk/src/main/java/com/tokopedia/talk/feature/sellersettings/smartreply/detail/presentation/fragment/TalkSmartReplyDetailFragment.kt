@@ -19,6 +19,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalk
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.fragment_talk_smart_reply_detail.*
 import javax.inject.Inject
@@ -44,9 +45,10 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             val saveInstanceCacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
 
             saveInstanceCacheManager?.run {
-                viewModel.isSmartReplyOn = get(TalkSmartReplyConstants.IS_SMART_REPLY_ON, Boolean::class.java) ?: false
-                viewModel.messageReady = get(TalkSmartReplyConstants.MESSAGE_READY, String::class.java) ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
-                viewModel.messageNotReady = get(TalkSmartReplyConstants.MESSAGE_NOT_READY, String::class.java) ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
+                val smartReplyDataWrapper = get<SmartReplyDataWrapper>(TalkSmartReplyConstants.SMART_REPLY_DATA_WRAPPER, SmartReplyDataWrapper::class.java)
+                viewModel.isSmartReplyOn = smartReplyDataWrapper?.isSmartReplyOn ?: false
+                viewModel.messageReady = smartReplyDataWrapper?.messageReady ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
+                viewModel.messageNotReady = smartReplyDataWrapper?.messageNotReady ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
             }
         }
     }
