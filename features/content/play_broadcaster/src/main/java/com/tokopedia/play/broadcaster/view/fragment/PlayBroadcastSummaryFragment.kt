@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -76,8 +77,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         observeLiveTrafficMetrics()
         observeSaveVideo()
         observeDeleteVideo()
-
-        parentViewModel.getReportDuration()
 
         return view
     }
@@ -144,8 +143,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         summaryInfoView.setSummaryInfo(dataList)
     }
 
-    private fun setLiveDuration(timeElapsed: String) {
-        summaryInfoView.setLiveDuration(timeElapsed)
+    private fun setLiveDuration(model: LiveDurationUiModel) {
+        summaryInfoView.setLiveDuration(model)
     }
 
     private fun showConfirmDeleteVideoDialog() {
@@ -208,7 +207,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this::setLiveDuration))
+        viewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this@PlayBroadcastSummaryFragment::setLiveDuration))
     }
 
     private fun observeSaveVideo() {

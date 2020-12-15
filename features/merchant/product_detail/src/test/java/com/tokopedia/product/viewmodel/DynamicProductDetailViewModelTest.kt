@@ -478,7 +478,7 @@ class DynamicProductDetailViewModelTest {
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
         viewModel.loadRecommendation(pageName)
@@ -501,7 +501,7 @@ class DynamicProductDetailViewModelTest {
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
         viewModel.loadRecommendation(pageName)
@@ -521,7 +521,7 @@ class DynamicProductDetailViewModelTest {
         } throws Throwable()
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOf()
 
         viewModel.loadRecommendation(pageName)

@@ -103,13 +103,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
                 putInt(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
     }
@@ -131,6 +132,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var shopId: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
+    private var utmSource: String = ""
     private var shouldShowThankYouBottomSheet = false
     private var ovoIncentiveAmount = 0
 
@@ -204,6 +206,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
+            utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -528,7 +531,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea.getText()
         createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
+                createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked, utmSource)
     }
 
     private fun isReviewComplete(): Boolean {

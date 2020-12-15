@@ -119,7 +119,7 @@ object DeeplinkMapperUohOrder {
 
     fun useUoh(context: Context): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, UOH_AB_TEST_VALUE)
             val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
             val remoteConfig = FirebaseRemoteConfigImpl(context)

@@ -8,7 +8,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -187,7 +186,7 @@ class ShopPlayWidgetAnalyticListener(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_SELLER,
                     eventAction = CLICK,
-                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                    eventLabel = "card - widget play - $shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}",
                     promotions = listOf(
                             BaseTrackerConst.Promotion(
                                     id = item.channelId,
@@ -270,7 +269,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_SELLER,
                         EVENT_ACTION to "click option button on card - widget play",
-                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)}",
                         BUSINESS_UNIT to "play",
                         CURRENT_SITE to "tokopediaseller",
                         USER_ID to userId,
@@ -286,7 +285,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT to CLICK_SHOP_PAGE,
                         EVENT_CATEGORY to SHOP_PAGE_SELLER,
                         EVENT_ACTION to "click delete on card - widget play",
-                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}}",
+                        EVENT_LABEL to "$shopId - ${item.channelId} - $widgetPosition - $channelPositionInList - ${getFoldPosition(widgetPosition)} - ${getChannelStatusValue(item.channelType)}",
                         BUSINESS_UNIT to "play",
                         CURRENT_SITE to "tokopediaseller",
                         USER_ID to userId,
@@ -402,5 +401,29 @@ class ShopPlayWidgetAnalyticListener(
             PlayWidgetChannelType.FailedTranscoding -> "error"
             else -> ""
         }
+    }
+
+    companion object {
+        const val EVENT = "event"
+        const val EVENT_CATEGORY = "eventCategory"
+        const val EVENT_ACTION = "eventAction"
+        const val EVENT_LABEL = "eventLabel"
+
+        const val CURRENT_SITE = "currentSite"
+        const val BUSINESS_UNIT = "businessUnit"
+
+        const val PROMO_VIEW = "promoView"
+        const val PROMO_CLICK = "promoClick"
+
+        const val CLICK_SHOP_PAGE = "clickShopPage"
+        const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+
+        const val CLICK = "click"
+
+        const val SHOP_PAGE_SELLER = "shop page - seller"
+        const val SHOP_PAGE_BUYER = "shop page - buyer"
+
+        const val SHOP_ID = "shopId"
+        const val USER_ID = "userId"
     }
 }
