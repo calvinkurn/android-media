@@ -68,6 +68,7 @@ import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -550,14 +551,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @SuppressLint("Range")
     @Override
     public void showLoginSnackbar(String message, int position) {
-
-        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
+        Toaster.INSTANCE.build(mainContent, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
-                }
-        ).show();
-
+                }).show();
     }
 
     @Override
