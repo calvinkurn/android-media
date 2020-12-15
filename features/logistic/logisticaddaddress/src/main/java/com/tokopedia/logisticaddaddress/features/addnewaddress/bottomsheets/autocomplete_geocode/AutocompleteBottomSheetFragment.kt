@@ -28,7 +28,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
@@ -157,6 +156,17 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
                 setSelection(etSearch.text.length)
             }
             loadAutocomplete(currentSearch)
+        } else {
+            icCloseBtn.visibility = View.GONE
+            context?.let {
+                if (!AddNewAddressUtils.isLocationEnabled(it)) {
+                    // When user does not enable location
+                    showGpsDisabledNotification()
+                    rlCurrentLocation.setOnClickListener {
+                        showLocationInfoBottomSheet()
+                    }
+                }
+            }
         }
 
         etSearch.run {
@@ -252,7 +262,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private fun loadAutocomplete(input: String) {
         showLoadingList()
         viewModel.getAutoCompleteList(input)
-//        presenter.getAutocomplete(input)
     }
 
     private fun showLoadingList() {
@@ -266,7 +275,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         mDisabledGps.visibility = View.GONE
         if (suggestedPlaces.data.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
-            adapter.isAutocompleteGeocode = false
             adapter.addAutoComplete(suggestedPlaces.data)
         }
     }
@@ -299,6 +307,14 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private fun getUnnamedRoadModelFormat(data: SaveAddressDataModel?): SaveAddressDataModel? {
         val fmt = data?.formattedAddress?.replaceAfter("Unnamed Road, ", "")
         return fmt?.let { data.copy(formattedAddress = it, selectedDistrict = fmt) }
+    }
+
+    private fun showLocationInfoBottomSheet() {
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow, isLogisticLabel)
+        fragmentManager?.run {
+            locationInfoBottomSheetFragment.show(this, "")
+        }
+        dismiss()
     }
 
     /**

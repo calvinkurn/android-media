@@ -6,7 +6,6 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +30,6 @@ class AutoCompleteBottomSheetViewModelTest {
     private val mapper: AutoCompleteMapper = AutoCompleteMapper()
 
     private val autoCompleteObserver: Observer<Result<Place>> = mockk(relaxed = true)
-    private val autoCompleteGeocodeObserver: Observer<Result<AutocompleteGeocodeResponseUiModel>> = mockk(relaxed = true)
 
     private lateinit var autoCompleteBottomSheetViewModel: AutoCompleteBottomSheetViewModel
 
@@ -42,7 +40,6 @@ class AutoCompleteBottomSheetViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         autoCompleteBottomSheetViewModel = AutoCompleteBottomSheetViewModel(repo, mapper)
         autoCompleteBottomSheetViewModel.autoCompleteList.observeForever(autoCompleteObserver)
-        autoCompleteBottomSheetViewModel.autoCompleteGeocodeList.observeForever(autoCompleteGeocodeObserver)
     }
 
     @Test
