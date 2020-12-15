@@ -63,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnSawChatRefresh"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/unify_space_12"
         android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/unify_font_10"
