@@ -48,7 +48,7 @@ public class BranchWrapper implements WrapperInterface {
             Branch.enableBypassCurrentActivityIntentState();
             Branch.getAutoInstance(context);
             if(GlobalConfig.isAllowDebuggingTools()) {
-                Branch.enableDebugMode();
+                Branch.enableLogging();
             }
         }
     }
