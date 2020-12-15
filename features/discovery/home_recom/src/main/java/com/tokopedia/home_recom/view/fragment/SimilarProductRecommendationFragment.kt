@@ -33,6 +33,7 @@ import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,7 +44,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
@@ -53,11 +53,12 @@ import javax.inject.Inject
 open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(),
         RecommendationListener,
         RecommendationErrorListener,
+        RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
         SortFilterBottomSheet.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this) }
+    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this, this) }
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
@@ -146,19 +147,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun showEmpty() {
-        val selectedList = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.filterChip?.getSelectedOption()?.map {
-            SortFilterItem(
-                    title = it.name,
-                    type = ChipsUnify.TYPE_SELECTED
-            ).apply {
-                listener = {
-                    toggleSelected()
-                    recommendationViewModel.getRecommendationFromEmptyFilter(it, ref, source, productId)
-                }
-            }
-        } ?: listOf()
         adapter.clearAllElements()
-        adapter.addElement(RecommendationEmptyDataModel(selectedList))
+        adapter.addElement(RecommendationEmptyDataModel())
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
@@ -377,6 +367,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
         item.toggleSelected()
         SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId())
+    }
+
+    /**
+     * =================================================================================
+     * Listener from [RecommendationEmptyViewHolder.RecommendationEmptyStateListener]
+     * =================================================================================
+     */
+    override fun onResetFilterClick() {
+        onRefreshRecommendation()
     }
 
     /**
