@@ -92,7 +92,7 @@ object Utils {
         val color = if (colorHex.length > 1) Color.parseColor(colorHex)
         else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_order_status_indicator)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), color)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
         return drawable
     }

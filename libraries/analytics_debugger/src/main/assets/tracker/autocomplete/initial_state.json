@@ -77,6 +77,16 @@
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}",
       "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - initial state - /",
+      "eventAction": "{{click - curated campaign - .*}}",
+      "eventLabel": "{{.* - .*}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "sessionIris": "{{.*}}"
     }
   ]
 }
