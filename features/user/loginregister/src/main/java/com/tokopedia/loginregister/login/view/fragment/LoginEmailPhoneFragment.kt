@@ -1022,6 +1022,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
+            userSession.setTempLoginEmail(email)
+
             val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
@@ -1451,11 +1453,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
 
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                 if (it.isExist) {
                     if (!it.isPending) {
-                        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                         userSession.setTempLoginEmail(partialRegisterInputView.textValue)
-                        userSession.userId = it.userID
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)

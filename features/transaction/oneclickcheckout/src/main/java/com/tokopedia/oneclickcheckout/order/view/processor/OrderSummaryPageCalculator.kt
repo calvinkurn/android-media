@@ -10,6 +10,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Compa
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
@@ -57,7 +58,11 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.main) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
-            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked) quantity.orderQuantity * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
+            var purchaseProtectionPriceMultiplier = quantity.orderQuantity
+            if (orderCart.product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
+                purchaseProtectionPriceMultiplier = 1
+            }
+            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
