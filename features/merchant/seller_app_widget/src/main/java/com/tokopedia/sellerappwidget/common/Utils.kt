@@ -72,7 +72,7 @@ object Utils {
         Glide.with(context)
                 .asBitmap()
                 .load(resId)
-                .transform(CenterCrop(), RoundedCorners(radius))
+                .transform(RoundedCorners(radius))
                 .into(awt)
     }
 }
