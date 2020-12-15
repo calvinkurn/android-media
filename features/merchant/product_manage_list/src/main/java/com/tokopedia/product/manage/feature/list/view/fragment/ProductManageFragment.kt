@@ -785,15 +785,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun renderMultiSelectProduct() {
-        val shouldShow = adapter.data
+        val productNotEmpty = adapter.data
             .filterIsInstance<ProductViewModel>()
             .isNotEmpty()
+        val productManageAccess = viewModel.productManageAccess.value as? Success<ProductManageAccess>
+        val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
+        val shouldShow = productNotEmpty && GlobalConfig.isSellerApp() && hasMultiSelectAccess
 
         multiSelectContainer.showWithCondition(shouldShow)
-        textMultipleSelect.showWithCondition(GlobalConfig.isSellerApp())
+        textMultipleSelect.showWithCondition(shouldShow)
+
         if (shouldEnableMultiEdit) {
             shouldEnableMultiEdit = false
             textMultipleSelect.performClick()
+        }
+
+        if(hasMultiSelectAccess) {
+            enableMultiSelect()
         }
     }
 
@@ -1832,7 +1840,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     initHeaderView(it.data)
                     showProductList(it.data)
-                    enableMultiSelect()
                     renderMultiSelectProduct()
                 }
                 is Fail -> {
@@ -2033,7 +2040,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                        getTopAdsInfo()
 
                        setupBottomSheet(access)
-                       showHideMultiSelect(access)
                        showHideOptionsMenu(access)
 
                        renderStockLocationBottomSheet()
@@ -2057,10 +2063,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
     // endregion
-
-    private fun showHideMultiSelect(access: ProductManageAccess) {
-        textMultipleSelect.showWithCondition(access.multiSelect)
-    }
 
     private fun showHideOptionsMenu(access: ProductManageAccess) {
         val addProductMenu = optionsMenu?.findItem(R.id.add_product_menu)
