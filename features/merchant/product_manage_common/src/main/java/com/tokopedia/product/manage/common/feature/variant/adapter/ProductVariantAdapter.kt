@@ -70,6 +70,7 @@ class ProductVariantAdapter(
         data.run {
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
+                data.removeAt(index)
                 notifyItemRemoved(index)
             }
         }
