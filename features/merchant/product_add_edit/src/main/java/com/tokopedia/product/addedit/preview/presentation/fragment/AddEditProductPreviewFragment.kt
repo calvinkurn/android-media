@@ -467,9 +467,6 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
-        //reset the variable each view created
-        isStartButtonClicked = false
-
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -484,7 +481,7 @@ class AddEditProductPreviewFragment:
         observeSaveShipmentLocationData()
 
         // validate whether shop has location
-        validateShopLocation()
+        validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
     }
@@ -1483,8 +1480,14 @@ class AddEditProductPreviewFragment:
         return shipmentPayload
     }
 
+    private fun validateShopLocationWhenPageOpened() {
+        if (!isStartButtonClicked) {
+            validateShopLocation()
+        }
+    }
+
     private fun validateShopLocation() {
-        if (isAdding() && dataBackPressedLoss()) {
+        if (isAdding()) {
             viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
         }
     }
