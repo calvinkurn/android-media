@@ -272,6 +272,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.libraries.utils)
+    implementation(rootProject.ext.analyticsDependencies.moengage)
 
 }
 
