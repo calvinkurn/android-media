@@ -40,8 +40,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
@@ -77,7 +75,6 @@ import timber.log.Timber;
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
         LoginRegisterApplinkModule.class,
-        PhoneVerificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         WebViewApplinkModule.class,
 })
@@ -98,7 +95,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
-                    new PhoneVerificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
             );

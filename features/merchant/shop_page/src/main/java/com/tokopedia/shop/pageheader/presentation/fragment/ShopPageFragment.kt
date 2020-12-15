@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -133,12 +134,14 @@ class ShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
+        const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -156,6 +159,8 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
+
+        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -184,6 +189,7 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
+    private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
         get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
             isUsingNewNavigation()
@@ -501,6 +507,7 @@ class ShopPageFragment :
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 isFirstCreateShop = getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
+                isForceNotShowingTab = getBooleanExtra(FORCE_NOT_SHOWING_HOME_TAB, false)
                 data?.run {
                     if (shopId.isEmpty()) {
                         if (pathSegments.size > 1) {
@@ -527,6 +534,7 @@ class ShopPageFragment :
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
+                handlePlayBroadcastExtra(this@run)
             }
             if (GlobalConfig.isSellerApp()) {
                 shopId = shopViewModel.userShopId
@@ -913,7 +921,7 @@ class ShopPageFragment :
             shopId = this@ShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
             isGoldMerchant = shopPageP1Data.isGoldMerchant
-            shopHomeType = shopPageP1Data.shopHomeType
+            shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab } ?: ShopHomeType.NONE
             topContentUrl = shopPageP1Data.topContentUrl
             shopName = shopPageP1Data.shopName
             shopDomain = shopPageP1Data.shopDomain
@@ -1192,6 +1200,8 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
+        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
+            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1214,6 +1224,23 @@ class ShopPageFragment :
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
+    }
+
+    fun collapseAppBar() {
+        appBarLayout.post {
+            appBarLayout.setExpanded(false)
+        }
+    }
+
+    fun isNewlyBroadcastSaved(): Boolean? {
+        val args = arguments
+        return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
+            args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
+        }
+    }
+
+    fun clearIsNewlyBroadcastSaved() {
+        arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
     }
 
     override fun onFollowerTextClicked(shopFavourited: Boolean) {
@@ -1463,5 +1490,50 @@ class ShopPageFragment :
             shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
             shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
         }
+    }
+
+    /**
+     * Play Widget "Start Live Streaming"
+     */
+    override fun onStartLiveStreamingClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            handlePlayBroadcastExtra(data)
+            refreshData()
+        }
+    }
+
+    private fun handlePlayBroadcastExtra(data: Intent) {
+        val isChannelSaved: Boolean = if (data.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED)) {
+            data.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
+        } else return
+
+        if (arguments == null) arguments = Bundle()
+        arguments?.putBoolean(NEWLY_BROADCAST_CHANNEL_SAVED, isChannelSaved)
+
+        if (isChannelSaved) showWidgetTranscodingToaster()
+        else showWidgetDeletedToaster()
+    }
+
+    private fun showWidgetTranscodingToaster() {
+        Toaster.build(
+                view = requireView(),
+                text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showWidgetDeletedToaster() {
+        Toaster.build(
+                requireView(),
+                getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+        ).show()
     }
 }

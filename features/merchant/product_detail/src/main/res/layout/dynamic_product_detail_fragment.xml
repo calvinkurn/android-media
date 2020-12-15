@@ -112,6 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:background="@drawable/bg_rounded_black"
             android:orientation="horizontal">
 
@@ -130,11 +132,7 @@
             <ImageView
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_4"
                 app:srcCompat="@drawable/ic_close_white"
                 tools:ignore="ContentDescription" />
         </LinearLayout>

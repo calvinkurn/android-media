@@ -58,7 +58,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
-                        throwable = null
+                        throwable = null,
+                        revampData = orderData.revampData
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -68,7 +69,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPayment = OrderPayment(),
                         orderPromo = OrderPromo(),
                         globalEvent = null,
-                        throwable = t
+                        throwable = t,
+                        revampData = OccRevampData()
                 )
             }
         }
@@ -85,7 +87,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     orderProduct.notes,
                     orderProduct.productId.toString(),
                     orderShipment.getRealShipperId(),
-                    orderShipment.getRealShipperProductId()
+                    orderShipment.getRealShipperProductId(),
+                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
             )
             var metadata = orderPreference.preference.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
@@ -102,11 +105,12 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     return null
                 }
             }
+            val realServiceId = orderShipment.getRealServiceId()
             val profile = UpdateCartOccProfileRequest(
                     orderPreference.preference.profileId.toString(),
                     orderPreference.preference.payment.gatewayCode,
                     metadata,
-                    orderPreference.preference.shipment.serviceId,
+                    if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
                     orderPreference.preference.address.addressId.toString()
             )
             return UpdateCartOccRequest(arrayListOf(cart), profile)
@@ -198,5 +202,6 @@ class ResultGetOccCart(
         var orderPayment: OrderPayment,
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,
-        var throwable: Throwable?
+        var throwable: Throwable?,
+        var revampData: OccRevampData
 )

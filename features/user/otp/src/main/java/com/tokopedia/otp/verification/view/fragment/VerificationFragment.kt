@@ -55,6 +55,7 @@ import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -111,6 +112,8 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
 
     override val viewBound = VerificationViewBinding()
 
+    private val permissionCheckerHelper = PermissionCheckerHelper()
+
     override fun getScreenName() = when (otpData.otpType) {
         OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
         else -> TrackingOtpConstant.Screen.SCREEN_COTP + modeListData.modeText
@@ -142,8 +145,10 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     override fun onResume() {
         super.onResume()
         context?.let {
-            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-                phoneCallBroadcastReceiver.registerReceiver(it, this)
+            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
+                    phoneCallBroadcastReceiver.registerReceiver(it, this)
+                }
             } else {
                 smsBroadcastReceiver.register(it, getOtpReceiverListener())
             }
@@ -154,7 +159,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     override fun onPause() {
         super.onPause()
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            if (::phoneCallBroadcastReceiver.isInitialized) activity?.unregisterReceiver(phoneCallBroadcastReceiver)
+            if (::phoneCallBroadcastReceiver.isInitialized) activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
         } else {
             if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
         }
@@ -174,6 +179,15 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
             analytics.trackClickBackRegisterPhoneOtp()
         }
         return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
     }
 
     private fun sendOtp() {
@@ -657,6 +671,14 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         }
 
         return result.replace(symbolRegex, "")
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
+                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
+        )
     }
 
     companion object {

@@ -54,12 +54,17 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             name
                             price
                             imageUrl
-                            rating
-                            countReview
                             url
                             applink
                             priceStr
                             wishlist
+                            ratingAverage
+                            labelGroups {
+                                title
+                                position
+                                type
+                                url
+                            }
                             shop {
                                 city
                             }
@@ -98,7 +103,6 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
-                        rating_average
                         url
                         isOfficial
                         isPowerBadge
@@ -116,9 +120,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     categoryId
                     categoryName
                     categoryBreadcrumb
-                    rating
                     ratingAverage
-                    countReview
                     priceInt
                     originalPrice
                     discountPercentage
@@ -133,13 +135,18 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         type
                         url
                     }
+                    labelGroupVariant {
+                        title
+                        type
+                        type_variant
+                        hex_color
+                    }
                     badges {
                         title
                         imageUrl
                         show
                     }
                     wishlist
-                    count_sold
                 }
             }
         }
