@@ -54,12 +54,14 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
         sharedPref.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
         ChatAppWidget.setOnSuccess(context, result.data)
         GetChatWorker.runWorkerPeriodically(context)
+        viewModel.unbind()
     }
 
     override fun onFailedGetOrderList(fail: Fail) {
         Timber.e(fail.throwable)
         ChatAppWidget.setOnError(context)
         GetChatWorker.runWorkerPeriodically(context)
+        viewModel.unbind()
     }
 
     private fun showLoadingState() {

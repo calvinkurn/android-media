@@ -67,12 +67,14 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
         OrderAppWidget.setOnSuccess(context, result.data, orderStatusId)
         GetOrderWorker.runWorker(context)
+        viewModel.unbind()
     }
 
     override fun onFailedGetOrderList(fail: Fail) {
         OrderAppWidget.setOnError(context)
         GetOrderWorker.runWorker(context)
         Timber.e(fail.throwable)
+        viewModel.unbind()
     }
 
     private fun showLoadingState() {

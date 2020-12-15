@@ -21,4 +21,8 @@ abstract class BaseAppWidgetVM<T>(
     fun bindView(view: T) {
         this.view = view
     }
+
+    fun unbind() {
+        this.view = null
+    }
 }
