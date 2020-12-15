@@ -39,20 +39,20 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val shopBasicData: MutableStateFlow<Result<ShopBasicDataModel>>
-        get() = _shopBasicData
-    val uploadShopImage: MutableStateFlow<Result<UploadShopEditImageModel>>
-        get() = _uploadShopImage
-    val updateShopBasicData: MutableStateFlow<Result<ShopBasicDataMutation>>
-        get() = _updateShopBasicData
-    val allowShopNameDomainChanges: MutableStateFlow<Result<AllowShopNameDomainChangesData>>
-        get() = _allowShopNameDomainChanges
-    val validateShopName: MutableStateFlow<Result<ValidateShopDomainNameResult>>
-        get() = _validateShopName
-    val validateShopDomain: MutableStateFlow<Result<ValidateShopDomainNameResult>>
-        get() = _validateShopDomain
-    val shopDomainSuggestion: MutableStateFlow<Result<ShopDomainSuggestionData>>
-        get() = _shopDomainSuggestion
+    val shopBasicData: LiveData<Result<ShopBasicDataModel>>
+        get() = _shopBasicData.asLiveData()
+    val uploadShopImage: LiveData<Result<UploadShopEditImageModel>>
+        get() = _uploadShopImage.asLiveData()
+    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>>
+        get() = _updateShopBasicData.asLiveData()
+    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
+        get() = _allowShopNameDomainChanges.asLiveData()
+    val validateShopName: LiveData<Result<ValidateShopDomainNameResult>>
+        get() = _validateShopName.asLiveData()
+    val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>>
+        get() = _validateShopDomain.asLiveData()
+    val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>>
+        get() = _shopDomainSuggestion.asLiveData()
 
     private val _shopBasicData = MutableStateFlow<Result<ShopBasicDataModel>>(Fail(Exception()))
     private val _uploadShopImage = MutableStateFlow<Result<UploadShopEditImageModel>>(Fail(Exception()))

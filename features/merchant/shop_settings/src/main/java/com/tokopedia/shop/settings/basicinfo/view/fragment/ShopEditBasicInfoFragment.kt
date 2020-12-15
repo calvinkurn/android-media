@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -54,8 +53,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -369,130 +366,114 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun observeGetShopBasicData() {
-        lifecycleScope.launch {
-            viewModel.shopBasicData.collectLatest {
-                when(it) {
-                    is Success -> showShopInformation(it.data)
-                    is Fail -> onErrorGetShopBasicData(it.throwable)
-                }
+        observe(viewModel.shopBasicData) {
+            when(it) {
+                is Success -> showShopInformation(it.data)
+                is Fail -> onErrorGetShopBasicData(it.throwable)
             }
         }
     }
 
     private fun observeUploadShopImage() {
-        lifecycleScope.launch {
-            viewModel.uploadShopImage.collectLatest {
-                when(it) {
-                    is Fail -> {
-                        it.throwable.cause?.apply {
-                            onErrorUploadShopImage(this)
-                        }
+        observe(viewModel.uploadShopImage) {
+            when(it) {
+                is Fail -> {
+                    it.throwable.cause?.apply {
+                        onErrorUploadShopImage(this)
                     }
-                    else -> { /* no op */ }
                 }
             }
         }
     }
 
     private fun observeUpdateShopData() {
-        lifecycleScope.launch {
-            viewModel.updateShopBasicData.collectLatest {
-                when(it) {
-                    is Success -> {
-                        it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
-                            graphQlSuccesMessage.message?.let { message ->
-                                if (graphQlSuccesMessage.isSuccess) {
-                                    onSuccessUpdateShopBasicData(message)
-                                } else {
-                                    onErrorUpdateShopBasicData(message)
-                                }
+        observe(viewModel.updateShopBasicData) {
+            when(it) {
+                is Success -> {
+                    it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
+                        graphQlSuccesMessage.message?.let { message ->
+                            if (graphQlSuccesMessage.isSuccess) {
+                                onSuccessUpdateShopBasicData(message)
+                            } else {
+                                onErrorUpdateShopBasicData(message)
                             }
                         }
                     }
-                    is Fail -> onErrorUpdateShopBasicData(it.throwable)
                 }
+                is Fail -> onErrorUpdateShopBasicData(it.throwable)
             }
         }
     }
 
     private fun observeAllowShopNameDomainChanges() {
-        lifecycleScope.launch {
-            viewModel.allowShopNameDomainChanges.collectLatest {
-                when(it) {
-                    is Success -> {
-                        val data = it.data
-                        showShopEditShopInfoTicker(data)
-                        showShopNameDomainTextField(data)
-                    }
-                    is Fail -> {
-                        val throwable = it.throwable
-                        showAllowShopNameDomainChangesError(throwable)
-                    }
+        observe(viewModel.allowShopNameDomainChanges) {
+            when(it) {
+                is Success -> {
+                    val data = it.data
+                    showShopEditShopInfoTicker(data)
+                    showShopNameDomainTextField(data)
                 }
-                progressBar.hide()
-                container.show()
+                is Fail -> {
+                    val throwable = it.throwable
+                    showAllowShopNameDomainChangesError(throwable)
+                }
             }
+            progressBar.hide()
+            container.show()
         }
     }
 
     private fun observeValidateShopNameDomain() {
-        lifecycleScope.launch {
-            viewModel.validateShopName.collectLatest {
-                when(it) {
-                    is Success -> {
-                        val validateDomainShopName = it.data.validateDomainShopName
-                        val notValid = !validateDomainShopName.isValid
+        observe(viewModel.validateShopName) {
+            when(it) {
+                is Success -> {
+                    val validateDomainShopName = it.data.validateDomainShopName
+                    val notValid = !validateDomainShopName.isValid
 
-                        if(notValid) {
-                            val message = validateDomainShopName.error.message
-                            showShopNameInputError(message)
-                        }
-                    }
-                    is Fail -> {
-                        val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
+                    if(notValid) {
+                        val message = validateDomainShopName.error.message
                         showShopNameInputError(message)
-                        shopDomainSuggestions.hide()
-                        ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
-                        ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
+                }
+                is Fail -> {
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
+                    showShopNameInputError(message)
+                    shopDomainSuggestions.hide()
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.validateShopDomain.collectLatest {
-                when(it) {
-                    is Success -> {
-                        val validateDomainShopName = it.data.validateDomainShopName
-                        val notValid = !validateDomainShopName.isValid
+        observe(viewModel.validateShopDomain) {
+            when(it) {
+                is Success -> {
+                    val validateDomainShopName = it.data.validateDomainShopName
+                    val notValid = !validateDomainShopName.isValid
 
-                        if(notValid) {
-                            val message = validateDomainShopName.error.message
-                            showShopDomainInputError(message)
-                        }
-                    }
-                    is Fail -> {
-                        val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
+                    if(notValid) {
+                        val message = validateDomainShopName.error.message
                         showShopDomainInputError(message)
-                        shopDomainSuggestions.hide()
-                        ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
-                        ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
+                }
+                is Fail -> {
+                    val message = context?.getString(R.string.error_validation_shop_name_domain).orEmpty()
+                    showShopDomainInputError(message)
+                    shopDomainSuggestions.hide()
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
     }
 
     private fun observeShopDomainSuggestions() {
-        lifecycleScope.launch {
-            viewModel.shopDomainSuggestion.collectLatest {
-                when(it) {
-                    is Success -> {
-                        val result = it.data.shopDomainSuggestion.result
-                        val shopDomains = result.shopDomains
-                        shopDomainSuggestions.show(shopDomains)
-                    }
-                    else -> { /* no op */ }
+        observe(viewModel.shopDomainSuggestion) {
+            when(it) {
+                is Success -> {
+                    val result = it.data.shopDomainSuggestion.result
+                    val shopDomains = result.shopDomains
+                    shopDomainSuggestions.show(shopDomains)
                 }
             }
         }
