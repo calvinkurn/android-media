@@ -177,12 +177,12 @@ class ProductVariantStockViewHolder(
                 if(stock <= MAXIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
+                    listener.onStockBtnClicked()
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
                 setupStockHint(variant)
                 setupStatusLabel(variant)
-                listener.onStockBtnClicked()
             }
         }
     }
@@ -203,12 +203,12 @@ class ProductVariantStockViewHolder(
                 if(stock >= MINIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
+                    listener.onStockBtnClicked()
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
                 setupStockHint(variant)
                 setupStatusLabel(variant)
-                listener.onStockBtnClicked()
             }
         }
     }
