@@ -1,7 +1,7 @@
-package com.tokopedia.imagepicker.core
+package com.tokopedia.imagepicker.common
 
 import android.os.Parcelable
-import com.tokopedia.imagepicker.core.ImagePickerEditorBuilder.Companion.getDefaultEditor
+import com.tokopedia.imagepicker.common.ImagePickerEditorBuilder.Companion.getDefaultEditor
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

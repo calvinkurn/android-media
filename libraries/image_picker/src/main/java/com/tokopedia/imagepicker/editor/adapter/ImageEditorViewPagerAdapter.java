@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.collection.SparseArrayCompat;
 import android.view.ViewGroup;
 
-import com.tokopedia.imagepicker.core.ImageRatioType;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditPreviewFragment;
 
 import java.util.ArrayList;

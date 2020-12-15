@@ -47,7 +47,7 @@ import com.tokopedia.feedback_form.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
-import com.tokopedia.imagepicker.core.*
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData

@@ -6,7 +6,7 @@ import android.media.ExifInterface;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.core.ImageRatioType;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 
 import java.util.ArrayList;
 import java.util.List;

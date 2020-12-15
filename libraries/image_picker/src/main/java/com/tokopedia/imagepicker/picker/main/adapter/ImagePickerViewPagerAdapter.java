@@ -9,7 +9,7 @@ import androidx.collection.SparseArrayCompat;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;

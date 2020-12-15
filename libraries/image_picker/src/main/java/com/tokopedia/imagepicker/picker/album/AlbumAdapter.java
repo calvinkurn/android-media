@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.GalleryType;
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
 import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
 

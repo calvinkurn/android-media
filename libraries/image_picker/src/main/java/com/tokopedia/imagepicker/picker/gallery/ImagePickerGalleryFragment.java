@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.GalleryType;
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.album.AlbumPickerActivity;
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;

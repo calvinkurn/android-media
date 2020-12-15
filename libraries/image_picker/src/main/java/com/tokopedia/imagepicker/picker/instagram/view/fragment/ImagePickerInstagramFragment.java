@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.data.source.exception.ShouldLoginInstagramException;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;

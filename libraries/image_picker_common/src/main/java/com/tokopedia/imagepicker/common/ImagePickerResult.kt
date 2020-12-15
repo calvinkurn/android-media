@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.core
+package com.tokopedia.imagepicker.common
 
 
 data class ImagePickerResult (

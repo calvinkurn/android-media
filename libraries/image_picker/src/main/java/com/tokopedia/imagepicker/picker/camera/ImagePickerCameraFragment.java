@@ -36,7 +36,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.core.ImageRatioType;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;

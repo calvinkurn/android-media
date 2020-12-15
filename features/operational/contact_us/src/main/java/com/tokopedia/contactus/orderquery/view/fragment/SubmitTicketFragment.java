@@ -36,8 +36,8 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
-import com.tokopedia.imagepicker.core.ImagePickerBuilder;
-import com.tokopedia.imagepicker.core.ImagePickerResultExtractor;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;

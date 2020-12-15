@@ -5,7 +5,7 @@ import androidx.annotation.ColorRes;
 import com.google.android.material.tabs.TabLayout;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.ImagePickerTab;
+import com.tokopedia.imagepicker.common.ImagePickerTab;
 
 /**
  * Created by hendry on 19/04/18.

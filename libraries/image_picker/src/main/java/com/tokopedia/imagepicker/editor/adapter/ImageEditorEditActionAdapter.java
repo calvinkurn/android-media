@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.ImageEditActionType;
+import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**

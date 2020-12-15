@@ -8,7 +8,7 @@ import android.provider.MediaStore;
 import androidx.annotation.Nullable;
 import androidx.loader.content.CursorLoader;
 
-import com.tokopedia.imagepicker.core.GalleryType;
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
 
 /**

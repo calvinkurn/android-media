@@ -26,10 +26,10 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.core.GalleryType;
-import com.tokopedia.imagepicker.core.ImageEditorBuilder;
-import com.tokopedia.imagepicker.core.ImagePickerBuilder;
-import com.tokopedia.imagepicker.core.ImagePickerGlobalSettings;
+import com.tokopedia.imagepicker.common.GalleryType;
+import com.tokopedia.imagepicker.common.ImageEditorBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
@@ -45,10 +45,10 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.imagepicker.core.ResultConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
-import static com.tokopedia.imagepicker.core.ResultConstantKt.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_IS_EDITTED;
-import static com.tokopedia.imagepicker.core.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
 
 public final class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,

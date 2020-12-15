@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.core
+package com.tokopedia.imagepicker.common
 
 const val PICKER_RESULT_PATHS = "result_paths"
 const val RESULT_PREVIOUS_IMAGE = "ori_image"

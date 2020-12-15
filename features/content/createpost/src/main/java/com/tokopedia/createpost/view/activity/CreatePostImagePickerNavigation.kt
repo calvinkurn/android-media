@@ -5,7 +5,7 @@ import android.content.Intent
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.MediaType
-import com.tokopedia.imagepicker.core.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 
 
