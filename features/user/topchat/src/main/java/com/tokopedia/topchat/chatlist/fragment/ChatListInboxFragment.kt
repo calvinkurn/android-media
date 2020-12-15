@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -30,6 +31,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
+import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -79,7 +83,7 @@ import javax.inject.Inject
  * @author : Steven 2019-08-06
  */
 class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        ChatListItemListener, LifecycleOwner {
+        ChatListItemListener, LifecycleOwner, InboxFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -100,7 +104,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 //    private var mUserSeen = false
 //    private var mViewCreated = false
 
-    private var sightTag = PARAM_TAB_USER
+    private var role = PARAM_TAB_USER
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
@@ -108,10 +112,17 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
     private lateinit var broadCastButton: FloatingActionButton
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = "chatlist"
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
+    }
 
 //    override fun onAttachActivity(context: Context?) {
 //        if (context is ChatListContract.TabFragment) {
@@ -125,10 +136,38 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 //        }
 //    }
 
+    override fun onRoleChanged(role: Int) {
+        if (assignRole(role)) {
+            loadInitialData()
+        }
+    }
+
+    override fun onPageClickedAgain() {
+        rv?.scrollToPosition(0)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
-        setHasOptionsMenu(true)
+        initRole()
+        setHasOptionsMenu(false)
+    }
+
+    private fun initRole() {
+        assignRole(containerListener?.role)
+    }
+
+    private fun assignRole(@RoleType role: Int?): Boolean {
+        val chosenRole = when (role) {
+            RoleType.BUYER -> PARAM_TAB_USER
+            RoleType.SELLER -> PARAM_TAB_SELLER
+            else -> null
+        }
+        chosenRole?.let {
+            this.role = chosenRole
+            return true
+        }
+        return false
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
@@ -168,7 +207,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Timber.d("$sightTag onViewCreated")
+        Timber.d("$role onViewCreated")
 //        mViewCreated = true
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView(view)
@@ -471,7 +510,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun loadData(page: Int) {
-        chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
+        chatItemListViewModel.getChatListMessage(page, filterChecked, role)
     }
 
     override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {
@@ -503,14 +542,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun increaseNotificationCounter() {
-        when (sightTag) {
+        when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
         }
     }
 
     override fun decreaseNotificationCounter() {
-        when (sightTag) {
+        when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()
         }
@@ -599,7 +638,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         var ctaApplink = ""
         var isTopAds = false
         activity?.let {
-            when (sightTag) {
+            when (role) {
                 PARAM_TAB_SELLER -> {
                     title = it.getString(R.string.title_topchat_empty_chat)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
@@ -647,7 +686,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun isTabSeller(): Boolean {
-        return sightTag == PARAM_TAB_SELLER
+        return role == PARAM_TAB_SELLER
     }
 
     override fun getSupportChildFragmentManager(): FragmentManager {
