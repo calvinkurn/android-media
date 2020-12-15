@@ -226,4 +226,5 @@ object SomConsts {
     // Som print awb
     const val PATH_PRINT_AWB = "shipping-label"
     const val PRINT_AWB_ORDER_ID_QUERY_PARAM = "order_id"
+    const val PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM = "mark_as_printed"
 }

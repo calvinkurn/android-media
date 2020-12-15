@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 
-class SomListBulkActionDialog(private val context: Context) {
+class SomListBulkAcceptOrderDialog(private val context: Context) {
 
     private var onDismissAction: (() -> Unit)? = null
     private var dialogUnify: DialogUnify? = null

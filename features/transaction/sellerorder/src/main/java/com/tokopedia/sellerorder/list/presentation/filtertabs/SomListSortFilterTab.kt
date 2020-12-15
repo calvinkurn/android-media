@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.filtertabs
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -164,7 +165,7 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
+    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER || selectedTab?.key == KEY_CONFIRM_SHIPPING
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
