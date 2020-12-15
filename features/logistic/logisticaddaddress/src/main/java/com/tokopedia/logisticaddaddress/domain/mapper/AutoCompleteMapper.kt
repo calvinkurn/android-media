@@ -29,14 +29,4 @@ class AutoCompleteMapper @Inject constructor() {
         }
     }
 
-    fun mapAutoCompleteNew(response: AutoCompleteResponse): List<SuggestedPlace> {
-        val dataResponse = response.keroMapsAutocomplete.AData.predictions
-        return dataResponse.map {
-            SuggestedPlace(
-                    it.structuredFormatting.mainText,
-                    it.structuredFormatting.secondaryText,
-                    it.placeId
-            )
-        }
-    }
 }
