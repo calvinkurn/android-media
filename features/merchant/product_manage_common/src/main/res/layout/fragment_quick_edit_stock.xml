@@ -8,13 +8,13 @@
 
     <include
         android:id="@+id/tickerStockLayout"
-        layout="@layout/layout_stock_location_ticker"
-        android:visibility="visible"
+        layout="@layout/layout_product_manage_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
