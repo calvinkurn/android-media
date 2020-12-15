@@ -807,8 +807,8 @@ class FlightOrderDetailViewModelTest {
                                 FlightOrderDetailWebCheckInModel(
                                         "Check In",
                                         "Check In Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
                                         "",
                                         "",
                                         ""
