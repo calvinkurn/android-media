@@ -77,13 +77,6 @@ class ShopHomeViewModel @Inject constructor(
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
-//    val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-//        get() = _initialProductListData
-//    private val _initialProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
-//
-//    val newProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-//        get() = _newProductListData
-//    private val _newProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -153,7 +146,10 @@ class ShopHomeViewModel @Inject constructor(
             val productList = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
-                        getProductListData(shopId, 1, shopProductFilterParameter)
+                        if(initialProductListData == null)
+                            getProductListData(shopId, 1, shopProductFilterParameter)
+                        else
+                            null
                     },
                     onError = { null }
             )

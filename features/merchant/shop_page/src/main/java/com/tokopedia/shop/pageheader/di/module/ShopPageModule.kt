@@ -193,8 +193,7 @@ class ShopPageModule {
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) queryShopInfoTopContent: String,
             @Named(ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE) queryShopHomeType: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) queryShopInfoCoreAssets: String,
-            @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String,
-            @Named(GQLQueryConstant.SHOP_PRODUCT) queryShopProduct: String
+            @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String
     ): Map<String, String> {
         return mapOf(
                 GQLQueryNamedConstant.GET_IS_OFFICIAL to queryGetIsOfficial,
@@ -202,8 +201,7 @@ class ShopPageModule {
                 GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT to queryShopInfoTopContent,
                 ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE to queryShopHomeType,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
-                ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist,
-                GQLQueryConstant.SHOP_PRODUCT to queryShopProduct
+                ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
         )
     }
 
