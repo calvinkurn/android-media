@@ -716,7 +716,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 })
     }
 
-    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
+    fun toggleTeaserNotifyMe(campaignId: Long, productId: Long, source: String) {
         launchCatchError(block = {
             toggleNotifyMeUseCase.get().createParams(campaignId, productId, notifyMeAction, source)
             val isSuccess = toggleNotifyMeUseCase.get().executeOnBackground().result.isSuccess

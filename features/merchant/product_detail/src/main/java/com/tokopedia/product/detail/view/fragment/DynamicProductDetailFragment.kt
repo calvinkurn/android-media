@@ -3121,7 +3121,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpUiUpdater?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
-                    viewModel.toggleTeaserNotifyMe(data.campaignID.toIntOrZero(), productId?.toIntOrZero()
+                    viewModel.toggleTeaserNotifyMe(data.campaignID.toLongOrZero(), productId?.toLongOrZero()
                             ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()
