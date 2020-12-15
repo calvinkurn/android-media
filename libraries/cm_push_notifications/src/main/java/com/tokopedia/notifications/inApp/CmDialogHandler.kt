@@ -26,8 +26,8 @@ class CmDialogHandler {
             // set flag if has dialog showing
             cmDialogHandlerCallback.onShow(activity)
         } catch (e: Exception) {
-            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e).substring(0, Math.min(Log.getStackTraceString(e).length, CMConstant.TimberTags.MAX_LIMIT))
-                    + "';data='" + data.toString().substring(0, Math.min(data.toString().length, CMConstant.TimberTags.MAX_LIMIT)) + "'")
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${data.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
             cmDialogHandlerCallback.onException(e, data)
         }
     }

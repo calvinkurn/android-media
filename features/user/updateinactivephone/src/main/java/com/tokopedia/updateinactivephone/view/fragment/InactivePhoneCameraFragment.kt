@@ -72,7 +72,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         btnReCapture?.setOnClickListener {
-            ImageUtils.clearImage(imgPreview)
+            imgPreview?.let {
+                ImageUtils.clearImage(it)
+            }
+
             showCamera()
         }
 
@@ -153,9 +156,11 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showPreview(file: File) {
-        ImageUtils.loadImage(imgPreview, file.absolutePath)
+        imgPreview?.let {
+            ImageUtils.loadImage(it, file.absolutePath)
+            it.visibility = View.VISIBLE
+        }
 
-        imgPreview?.visibility = View.VISIBLE
         layoutButtonPreview?.visibility = View.VISIBLE
         cameraView?.visibility = View.GONE
         btnShutter?.visibility = View.GONE

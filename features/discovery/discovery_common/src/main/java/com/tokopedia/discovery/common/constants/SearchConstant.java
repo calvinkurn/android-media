@@ -147,6 +147,9 @@ public interface SearchConstant {
     interface ProductCardLabel {
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
+        String TEXT_DARK_ORANGE = "textDarkOrange";
+        String TEXT_DARK_RED = "textDarkRed";
+        String TEXT_LIGHT_GREY = "textLightGrey";
     }
 
     interface OnBoarding {
@@ -158,6 +161,8 @@ public interface SearchConstant {
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
     }
 
     interface TopAdsComponent {
