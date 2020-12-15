@@ -64,6 +64,7 @@
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingEnd="@dimen/play_dp_6"
             android:paddingBottom="@dimen/spacing_lvl1"
+            android:text="@string/mock_report_live_duration"
             android:textColor="@color/Neutral_N0"
             app:drawableLeftCompat="@drawable/ic_play_duration_white"
             app:layout_constraintEnd_toEndOf="parent"
