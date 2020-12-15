@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,6 +24,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
+import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
@@ -64,8 +66,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         component?.inject(this)
     }
 
-    override fun onEditClicked(template: String) {
-        goToEdit()
+    override fun onEditClicked(template: String, index: Int) {
+        goToEdit(template, index)
     }
 
     override fun onItemMove(originalIndex: Int, moveTo: Int) {
@@ -103,23 +105,11 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun observeTemplateMutation() {
         viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
             when (it) {
-                TalkTemplateMutationResults.AddTemplate -> {
+                TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     showToaster(getString(R.string.template_list_success_add_template), false)
                 }
-                TalkTemplateMutationResults.ToggleTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                TalkTemplateMutationResults.ArrangeTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                TalkTemplateMutationResults.DeleteTemplate -> {
-                    showToaster(getString(R.string.template_list_success_delete_template), false)
-                }
-                TalkTemplateMutationResults.UpdateTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                TalkTemplateMutationResults.MutationFailed -> {
-                    showToaster(getString(R.string.template_list_success_add_template), true)
+                else -> {
+                    showToaster(getString(R.string.template_list_toaster_fail), true)
                 }
             }
         })
@@ -206,13 +196,15 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         return this.size < MAX_TEMPLATE_SIZE
     }
 
-    private fun goToEdit() {
+    private fun goToEdit(template: String, index: Int) {
         val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
+        destination.cacheManagerId = putDataIntoCacheManager(true, template, index)
         NavigationController.navigate(this, destination)
     }
 
     private fun goToAdd() {
         val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
+        destination.cacheManagerId = putDataIntoCacheManager(false, null, null)
         NavigationController.navigate(this, destination)
     }
 
@@ -221,11 +213,28 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
             it?.let {
                 toolbar?.rightContentView?.removeAllViews()
                 when(it.getString(TalkEditTemplateFragment.KEY_ACTION, "")) {
-
+                    TalkEditTemplateFragment.VALUE_DELETE -> {
+                        showToaster(getString(R.string.template_list_success_delete_template), false)
+                    }
+                    TalkEditTemplateFragment.VALUE_ADD_EDIT -> {
+                        showToaster(getString(R.string.template_list_success_add_template), false)
+                    }
                 }
             }
             removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
+            getTemplateList()
         })
+    }
+
+    private fun putDataIntoCacheManager(isEditMode: Boolean, template: String?, index: Int?): String {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.apply {
+            put(TalkEditTemplateFragment.IS_SELLER, isSeller)
+            put(TalkEditTemplateFragment.IS_EDIT_MODE, isEditMode)
+            index?.let { put(TalkEditTemplateFragment.INDEX, it) }
+            template?.let { put(TalkEditTemplateFragment.TEMPLATE, it) }
+        }
+        return cacheManager?.id ?: ""
     }
 
 }

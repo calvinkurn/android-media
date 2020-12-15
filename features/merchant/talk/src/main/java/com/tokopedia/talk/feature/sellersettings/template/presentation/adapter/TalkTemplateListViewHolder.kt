@@ -13,7 +13,7 @@ class TalkTemplateListViewHolder(private val view: View, private val talkTemplat
             talkTemplateLayout.setBackgroundResource(R.drawable.bg_talk_template)
             talkTemplate.text = template
             talkEditTemplateIcon.setOnClickListener {
-                talkTemplateListListener.onEditClicked(template)
+                talkTemplateListListener.onEditClicked(template, adapterPosition)
             }
         }
     }

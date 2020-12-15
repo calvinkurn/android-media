@@ -24,7 +24,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
 
         viewModel.arrangeTemplate(0, 1, anyBoolean())
 
-        val expectedValue = TalkTemplateMutationResults.ArrangeTemplate
+        val expectedValue = TalkTemplateMutationResults.TemplateMutationSuccess
 
         verifyArrangeTemplateUseCaseCalled()
         verifyTemplateMutationSuccess(expectedValue)
@@ -70,7 +70,7 @@ class TalkTemplateViewModelTest : TalkTemplateViewModelTestFixture() {
 
         viewModel.enableTemplate(anyBoolean())
 
-        val expectedValue = TalkTemplateMutationResults.ToggleTemplate
+        val expectedValue = TalkTemplateMutationResults.TemplateMutationSuccess
 
         verifyEnableTemplateUseCaseCalled()
         verifyTemplateMutationSuccess(expectedValue)

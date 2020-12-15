@@ -27,7 +27,7 @@ class TalkEditTemplateViewModel @Inject constructor(
             addTemplateUseCase.setParams(isSeller, template)
             val response = addTemplateUseCase.executeOnBackground()
             if(response.chatAddTemplate.success.isMutationSuccess()) {
-                _templateMutation.postValue(TalkTemplateMutationResults.AddTemplate)
+                _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
@@ -51,7 +51,7 @@ class TalkEditTemplateViewModel @Inject constructor(
             updateSpecificTemplateUseCase.setParams(isSeller, value, index)
             val response = updateSpecificTemplateUseCase.executeOnBackground()
             if(response.chatUpdateTemplate.success.isMutationSuccess()) {
-                _templateMutation.postValue(TalkTemplateMutationResults.UpdateTemplate)
+                _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)

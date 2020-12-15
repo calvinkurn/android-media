@@ -17,7 +17,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
         viewModel.addTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString())
 
-        val expectedValue = TalkTemplateMutationResults.AddTemplate
+        val expectedValue = TalkTemplateMutationResults.TemplateMutationSuccess
 
         verifyAddTemplateUseCaseCalled()
         verifyTemplateMutationSuccess(expectedValue)
@@ -93,7 +93,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
         viewModel.updateSpecificTemplate(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt())
 
-        val expectedValue = TalkTemplateMutationResults.UpdateTemplate
+        val expectedValue = TalkTemplateMutationResults.TemplateMutationSuccess
 
         verifyUpdateSpecificTemplateUseCaseCalled()
         verifyTemplateMutationSuccess(expectedValue)

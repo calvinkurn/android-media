@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.clearImage
@@ -30,17 +31,28 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     companion object {
         const val REQUEST_KEY = "talk_template_request"
         const val KEY_ACTION = "action"
-        const val VALUE_EDIT = "edit"
-        const val VALUE_ADD = "add"
+        const val IS_EDIT_MODE = "isEditMode"
+        const val INDEX = "index"
+        const val TEMPLATE = "template"
+        const val IS_SELLER = "isSeller"
+        const val VALUE_ADD_EDIT = "add/edit"
         const val VALUE_DELETE = "delete"
     }
 
     @Inject
     lateinit var viewModel: TalkEditTemplateViewModel
 
-    private var index: Int = 0
+    private var isSeller: Boolean = false
+    private var index: Int = -1
     private var text: String = ""
     private var toaster: Snackbar? = null
+    private var isEditMode: Boolean = false
+    private var toolbar: HeaderUnify? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getDataFromCacheManager()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_edit_template, container, false)
@@ -67,6 +79,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         super.onViewCreated(view, savedInstanceState)
         setupOnBackPressed()
         setupToolbar()
+        setupEditText()
         observeTemplateMutation()
         initButton()
     }
@@ -74,32 +87,22 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun observeTemplateMutation() {
         viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
             when (it) {
-                TalkTemplateMutationResults.AddTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                TalkTemplateMutationResults.ToggleTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
-                TalkTemplateMutationResults.ArrangeTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
-                }
                 TalkTemplateMutationResults.DeleteTemplate -> {
-                    showToaster(getString(R.string.template_list_success_delete_template), false)
+                    setFragmentResultWithBundle(VALUE_DELETE)
                 }
-                TalkTemplateMutationResults.UpdateTemplate -> {
-                    showToaster(getString(R.string.template_list_success_add_template), false)
+                TalkTemplateMutationResults.TemplateMutationSuccess -> {
+                    setFragmentResultWithBundle(VALUE_ADD_EDIT)
                 }
                 TalkTemplateMutationResults.MutationFailed -> {
-                    showToaster(getString(R.string.template_list_toaster_fail), true)
+                    showToaster(getString(R.string.template_list_toaster_fail))
                 }
             }
         })
     }
 
-    private fun showToaster(successMessage: String, isError: Boolean) {
-        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+    private fun showToaster(successMessage: String) {
         view?.let {
-            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, toasterType, getString(R.string.talk_ok))
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
             toaster?.let { toaster ->
                 if (toaster.isShownOrQueued) {
                     return
@@ -112,8 +115,8 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun setupToolbar() {
         val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
         toolbar?.apply {
-            if (isEditMode()) {
-                rightContentView.removeAllViews()
+            clearToolbar()
+            if (isEditMode) {
                 setTitle(R.string.title_edit_template_page)
                 addRightIcon(0).apply {
                     clearImage()
@@ -145,30 +148,46 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun saveTemplate() {
-        if (isEditMode()) {
+        if (isEditMode) {
             editTemplate()
             return
         }
         addTemplate()
     }
 
-    private fun isEditMode(): Boolean {
-        return false
-//        return arguments?.let { TalkEditTemplateFragmentArgs.fromBundle(it).isEdit } ?: false
+    private fun getDataFromCacheManager() {
+        arguments?.let {
+            val cacheManagerId = TalkEditTemplateFragmentArgs.fromBundle(it).cacheManagerId
+            val saveInstanceCacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+
+            saveInstanceCacheManager?.run {
+                isSeller = get(IS_SELLER, Boolean::class.java) ?: false
+                isEditMode = get(IS_EDIT_MODE, Boolean::class.java) ?: false
+                if(isEditMode) {
+                    index = get(INDEX, Int::class.java) ?: -1
+                    text = get(TEMPLATE, String::class.java) ?: ""
+                }
+            }
+        }
     }
 
     private fun addTemplate() {
-//        viewModel.addTemplate()
+        viewModel.addTemplate(isSeller, talkEditTemplateEditText.text.toString())
     }
 
     private fun deleteTemplate() {
-//        viewModel.deleteSpecificTemplate()
+        viewModel.deleteSpecificTemplate(index, isSeller)
     }
 
     private fun editTemplate() {
-//        viewModel.updateSpecificTemplate()
+        viewModel.updateSpecificTemplate(isSeller, talkEditTemplateEditText.text.toString(), index)
     }
 
+    private fun setupEditText() {
+        if(isEditMode) {
+            talkEditTemplateEditText.setText(text)
+        }
+    }
 
     private fun setupOnBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -178,4 +197,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         })
     }
 
+    private fun clearToolbar() {
+        toolbar?.rightContentView?.removeAllViews()
+    }
 }
