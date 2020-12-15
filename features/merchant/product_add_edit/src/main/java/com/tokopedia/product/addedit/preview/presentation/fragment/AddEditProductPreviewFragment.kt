@@ -467,6 +467,9 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
+        //reset isStartButton each view created
+        isStartButtonClicked = false
+
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
