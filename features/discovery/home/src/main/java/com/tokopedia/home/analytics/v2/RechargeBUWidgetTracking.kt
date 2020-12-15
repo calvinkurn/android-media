@@ -1,5 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
@@ -18,10 +19,11 @@ object RechargeBUWidgetTracking : BaseTracking() {
             data: RechargeBUWidgetDataModel,
             userId: String
     ) {
+        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
         val promotions = data.data.items.mapIndexed { index, item ->  Promotion(
-                id = data.channel.id,
+                id = "${data.channel.id}_0_0_$persoType",
                 creative = "${data.data.title} - ${item.title}",
-                name = "/ - p1 - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
+                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
                 position = index.toString()
         )}
         trackingQueue.putEETracking(getBasicPromotionView(
@@ -43,11 +45,12 @@ object RechargeBUWidgetTracking : BaseTracking() {
             userId: String
     ) {
         if (position < data.data.items.size) {
+            val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
             val item = data.data.items[position]
             val promotion = Promotion(
-                    id = data.channel.id,
+                    id = "${data.channel.id}_0_0_$persoType",
                     creative = "${data.data.title} - ${item.title}",
-                    name = "/ - p1 - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
+                    name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
                     position = position.toString()
             )
             trackingQueue.putEETracking(getBasicPromotionClick(
@@ -100,11 +103,12 @@ object RechargeBUWidgetTracking : BaseTracking() {
             data: RechargeBUWidgetDataModel,
             userId: String
     ) {
+        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
         val promotion = Promotion(
-                id = data.channel.id,
+                id = "${data.channel.id}_0_0_$persoType",
                 creative = data.data.mediaUrl,
-                name = "/ - p1 - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
-                position = "none/other"
+                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${data.channel.widgetParam}",
+                position = "1"
         )
         trackingQueue.putEETracking(getBasicPromotionClick(
                 Event.PROMO_CLICK,
@@ -123,11 +127,12 @@ object RechargeBUWidgetTracking : BaseTracking() {
             data: RechargeBUWidgetDataModel,
             userId: String
     ) {
+        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
         val promotion = Promotion(
-                id = data.channel.id,
+                id = "${data.channel.id}_0_0_$persoType",
                 creative = data.data.mediaUrl,
-                name = "/ - p1 - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER - ${data.channel.widgetParam}",
-                position = "none/other"
+                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER - ${data.channel.widgetParam}",
+                position = "1"
         )
         trackingQueue.putEETracking(getBasicPromotionView(
                 Event.PROMO_VIEW,
