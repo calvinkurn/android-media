@@ -1,12 +1,12 @@
 package com.tokopedia.recharge_slice.util
 
-import com.tokopedia.user.session.UserSession
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.recharge_slice.data.Recommendation
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.user.session.UserSessionInterface
 
-class SliceTracking (private val userSession: UserSession){
+class SliceTracking (private val userSession: UserSessionInterface){
 
     private object Event {
         val KEY = "event"

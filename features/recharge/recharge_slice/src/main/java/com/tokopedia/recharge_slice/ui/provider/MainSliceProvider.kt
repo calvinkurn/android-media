@@ -34,6 +34,7 @@ import com.tokopedia.recharge_slice.util.SliceTracking
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ import java.util.*
 
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
-    private lateinit var userSession: UserSession
+    private lateinit var userSession: UserSessionInterface
     private lateinit var sliceTracking: SliceTracking
     private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
@@ -319,7 +320,5 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
-
-
     }
 }
