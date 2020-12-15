@@ -57,6 +57,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputList
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
+import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
@@ -92,6 +93,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private lateinit var favoriteNumbers: List<TopupBillsFavNumberItem>
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
+
+    var rechargeProductFromSlice: String = ""
 
     private var operatorId: Int = 0
     set(value) {
@@ -171,6 +174,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
             selectedProduct = it.getParcelable(EXTRA_PARAM_PRODUCT)
             hasInputData = operatorId > 0
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
         }
     }
 
@@ -250,6 +254,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: inputData
             inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toMutableList() ?: inputDataKeys
+        }
+
+        if(rechargeProductFromSlice.isNotEmpty()){
+            rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeGeneralAnalytics.onOpenPageFromSlice()
+
         }
 
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -1079,13 +1089,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         fun newInstance(categoryId: Int,
                         menuId: Int,
                         operatorId: Int = 0,
-                        selectedProduct: String = ""): RechargeGeneralFragment {
+                        selectedProduct: String = "",
+                        rechargeProductFromSlice: String = ""): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             bundle.putString(EXTRA_PARAM_PRODUCT, selectedProduct)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }
