@@ -2,6 +2,8 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.convertToCuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
@@ -27,12 +29,6 @@ class InitialStatePresenter @Inject constructor(
         @Named(REFRESH_INITIAL_STATE_USE_CASE) private val refreshInitialStateUseCase: UseCase<List<InitialStateData>>,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
-
-    companion object {
-        const val RECENT_SEARCH = "recent_search"
-        const val RECENT_VIEW = "recent_view"
-        const val POPULAR_SEARCH = "popular_search"
-    }
 
     private var listVisitable = mutableListOf<Visitable<*>>()
     private var recentSearchList: MutableList<InitialStateItem>? = null
@@ -82,22 +78,7 @@ class InitialStatePresenter @Inject constructor(
             val initialStateViewModel = InitialStateViewModel()
 
             for (initialStateData in list) {
-                if (initialStateData.items.isNotEmpty()) {
-                    when (initialStateData.id) {
-                        RECENT_SEARCH-> {
-                            initialStateViewModel.addList(initialStateData)
-                        }
-                        RECENT_VIEW -> {
-                            initialStateViewModel.addList(initialStateData)
-                        }
-                        POPULAR_SEARCH -> {
-                            initialStateViewModel.addList(initialStateData)
-                        }
-                        else -> {
-                            initialStateViewModel.addList(initialStateData)
-                        }
-                    }
-                }
+                if (initialStateData.items.isNotEmpty()) initialStateViewModel.addList(initialStateData)
             }
 
             listVisitable = getInitialStateResult(initialStateViewModel.list)
@@ -176,6 +157,9 @@ class InitialStatePresenter @Inject constructor(
         val data = mutableListOf<Visitable<*>>()
         for (initialStateData in list) {
             when (initialStateData.id) {
+                InitialStateData.INITIAL_STATE_CURATED_CAMPAIGN -> {
+                    addCuratedCampaignCard(data, initialStateData)
+                }
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.add(createTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction))
                     addRecentSearchData(data, initialStateData.items)
@@ -209,6 +193,19 @@ class InitialStatePresenter @Inject constructor(
             }
         }
         return data
+    }
+
+    private fun addCuratedCampaignCard(listVisitable: MutableList<Visitable<*>>, initialStateData: InitialStateData) {
+        val item = initialStateData.items.getOrNull(0) ?: return
+
+        val curatedCampaignViewModel = item.convertToCuratedCampaignViewModel(initialStateData.featureId)
+        listVisitable.add(curatedCampaignViewModel)
+        onImpressCuratedCampaignCard(curatedCampaignViewModel)
+    }
+
+    private fun onImpressCuratedCampaignCard(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        val label = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+        view?.onCuratedCampaignCardImpressed(getUserId(), label, curatedCampaignViewModel.type)
     }
 
     private fun addRecentSearchData(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
@@ -517,6 +514,14 @@ class InitialStatePresenter @Inject constructor(
         view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
 
         view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        val label = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+        view?.trackEventClickCuratedCampaignCard(getUserId(), label, curatedCampaignViewModel.type)
+
+        view?.route(curatedCampaignViewModel.applink, searchParameter)
         view?.finish()
     }
 }

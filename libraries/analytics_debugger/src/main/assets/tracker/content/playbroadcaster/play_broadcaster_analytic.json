@@ -3,6 +3,24 @@
   "mode": "exact",
   "query": [
     {
+      "eventAction": "view widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
+      "eventAction": "click widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
       "event": "openScreen",
       "networkSpeed": "{{.*}}",
       "clientId": "{{.*}}",
@@ -30,6 +48,28 @@
     },
     {
       "eventAction": "click camera onboarding",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view syarat dan ketentuan",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click syarat dan ketentuan",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+}}",
@@ -274,6 +314,17 @@
     },
     {
       "eventAction": "click capture",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click switch camera on add cover",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+}}",

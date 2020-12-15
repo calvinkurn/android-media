@@ -95,7 +95,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var resizedUriImage: Uri? = null
     private var categoryItem: Int = -1
     private var reportType: Int = 0
-    private var labelsId: Int = 0
+    private var labelsId: ArrayList<Int> = arrayListOf()
     private var isFromScreenshot: Boolean = false
 
     private var userSession: UserSessionInterface? = null
@@ -254,7 +254,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         bottomSheetPage?.dismiss()
         page.setText(pageName)
         feedbackPagePresenter.setSelectedPage(selection)
-        labelsId = selection
+        labelsId = arrayListOf(selection)
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -482,7 +482,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 category = categoryItem,
                 journey = journey,
                 expected = expectedResult,
-                labelsId = arrayListOf(labelsId),
+                labelsId = labelsId,
                 type = reportType,
                 detail = detailFeedback
         )
