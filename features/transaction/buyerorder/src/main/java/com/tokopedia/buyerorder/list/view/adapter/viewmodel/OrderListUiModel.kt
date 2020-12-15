@@ -12,7 +12,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
+class OrderListUiModel(var order: Order) : Visitable<OrderListTypeFactory> {
 
     companion object {
         private const val WAITING_THIRD_PARTY = 103
@@ -37,23 +37,6 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
             orderListLiveData.value = DotMenuVisibility(View.GONE)
         } else if (order.dotMenu() != null) {
             orderListLiveData.value = DotMenuVisibility(View.VISIBLE)
-        }
-    }
-
-    fun setActionButtonData() {
-        if (order.actionButtons().size == TWO_BUTTON_VIEW) {
-            val leftActionButton = order.actionButtons()[0]
-            val rightActionButton = order.actionButtons()[1]
-            orderListLiveData.value = SetActionButtonData(leftActionButton, rightActionButton, View.VISIBLE, View.VISIBLE)
-        } else if (order.actionButtons().size == SINGLE_BUTTON_VIEW) {
-            val actionButton = order.actionButtons()[0]
-            if (actionButton.buttonType() == "primary") {
-                orderListLiveData.value = SetActionButtonData(actionButton, null, View.VISIBLE, View.GONE)
-            } else {
-                orderListLiveData.value = SetActionButtonData(null, actionButton, View.GONE, View.VISIBLE)
-            }
-        } else {
-            orderListLiveData.value = SetActionButtonData(null, null, View.GONE, View.GONE)
         }
     }
 

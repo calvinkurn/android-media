@@ -3,18 +3,18 @@ package com.tokopedia.buyerorder.common.util
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-
-import android.content.Context.CLIPBOARD_SERVICE
 import com.tokopedia.buyerorder.R
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.regex.Pattern
 
 
-object Utils {
+object BuyerUtils {
     val VIBRATE_DURATION = 150
 
     @JvmStatic
@@ -26,12 +26,10 @@ object Utils {
     @JvmStatic
     fun vibrate(context: Context) {
         val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (v != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                v.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                v.vibrate(VIBRATE_DURATION.toLong())
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            v.vibrate(VIBRATE_DURATION.toLong())
         }
     }
 
@@ -68,5 +66,24 @@ object Utils {
                 Ticker.TYPE_ANNOUNCEMENT
             }
         }
+    }
+
+    @JvmStatic
+    fun formatTitleHtml(desc: String, urlText: String, url: String): String? {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
+    }
+
+    @JvmStatic
+    fun isUridownloadable(uri: String, isDownloadable: Boolean): Boolean {
+        val pattern = Pattern.compile("^.+\\.([pP][dD][fF])$")
+        val matcher = pattern.matcher(uri)
+        return matcher.find() || isDownloadable
+    }
+
+    @JvmStatic
+    fun isValidUrl(invoiceUrl: String?): Boolean {
+        val pattern = Pattern.compile("^(https|HTTPS):\\/\\/")
+        val matcher = pattern.matcher(invoiceUrl)
+        return matcher.find()
     }
 }
