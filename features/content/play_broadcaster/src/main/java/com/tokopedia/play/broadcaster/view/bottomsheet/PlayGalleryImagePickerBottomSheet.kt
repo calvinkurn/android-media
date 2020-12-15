@@ -23,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.imagepicker.common.GalleryType
 import com.tokopedia.imagepicker.picker.album.AlbumAdapter
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
