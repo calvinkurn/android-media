@@ -134,7 +134,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var needReloadData: Boolean = false
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
-    private var threeDotsClickShopProductUiModel: ShopProductViewModel? = null
+    private var threeDotsClickShopProductUiModel: ShopProductUiModel? = null
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
@@ -495,7 +495,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun renderProductList(
-            productList: List<ShopProductViewModel>,
+            productList: List<ShopProductUiModel>,
             hasNextPage: Boolean,
             totalProductData: Int
     ) {
@@ -518,7 +518,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
         } else {
-            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -571,7 +571,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
-    private fun renderProductListEmptyState(productList: List<ShopProductViewModel>) {
+    private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {
         hideLoading()
         shopProductAdapter.clearAllElements()
         shopProductAdapter.addEmptyStateData(productList)
@@ -588,14 +588,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun showGetListError(throwable: Throwable) {
         hideLoading()
         updateStateScrollListener()
-        if (shopProductAdapter.shopProductViewModelList.size > 0) {
+        if (shopProductAdapter.shopProductUiModelList.size > 0) {
             onGetListErrorWithExistingData(throwable)
         } else {
             onGetListErrorWithEmptyData(throwable)
         }
     }
 
-    override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
+    override fun onProductClicked(shopProductUiModel: ShopProductUiModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
         if (!isEmptyState) {
             shopPageTracking?.clickProductSearchResult(
@@ -607,15 +607,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
                             shopInfo?.goldOS?.isGold == 1,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming,
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.isUpcoming,
                     keyword
 
             )
@@ -626,21 +626,21 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
                             shopInfo?.goldOS?.isGold == 1,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId
             )
         }
-        startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
+        startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
 
-    override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
+    override fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
         if (!isEmptyState) {
             shopPageTracking?.impressionProductListSearchResult(
                     isMyShop,
@@ -651,15 +651,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
                             shopInfo?.goldOS?.isGold == 1,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming,
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.isUpcoming,
                     keyword
             )
         } else {
@@ -669,11 +669,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopInfo?.shopCore?.shopID,
                             shopInfo?.goldOS?.isOfficial == 1,
                             shopInfo?.goldOS?.isGold == 1,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId
             )
@@ -768,14 +768,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         showGetListError(e)
     }
 
-    override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
-        threeDotsClickShopProductUiModel = shopProductViewModel
+    override fun onThreeDotsClicked(shopProductUiModel: ShopProductUiModel, @ShopTrackProductTypeDef shopTrackType: Int) {
+        threeDotsClickShopProductUiModel = shopProductUiModel
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
                         hasWishlist = true,
-                        isWishlisted = shopProductViewModel.isWishList,
-                        productId = shopProductViewModel.id ?: ""
+                        isWishlisted = shopProductUiModel.isWishList,
+                        productId = shopProductUiModel.id ?: ""
                 )
         )
     }
@@ -1196,12 +1196,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
     }
 
     override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
-        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+        val productListName =  shopProductAdapter.shopProductUiModelList.joinToString(","){
             it.name.orEmpty()
         }
         shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)

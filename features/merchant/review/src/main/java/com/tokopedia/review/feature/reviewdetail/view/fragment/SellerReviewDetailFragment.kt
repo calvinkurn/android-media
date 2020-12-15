@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.reviewdetail.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -28,6 +29,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
@@ -49,6 +52,7 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -57,7 +61,7 @@ import javax.inject.Inject
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(), SellerReviewDetailListener,
-        OverallRatingDetailListener, ProductFeedbackDetailListener, SellerRatingAndTopicListener {
+        OverallRatingDetailListener, ProductFeedbackDetailListener, SellerRatingAndTopicListener, ReviewSellerPerformanceMonitoringContract {
 
     companion object {
         const val PRODUCT_ID = "EXTRA_PRODUCT_ID"
@@ -115,7 +119,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
     private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
+    private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? = null
+
     override fun getScreenName(): String = context?.getString(R.string.title_review_detail_page).orEmpty()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewSellerPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
@@ -148,8 +159,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
-        observeLiveData()
         initViewBottomSheet()
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
+        observeLiveData()
     }
 
     override fun initInjector() {
@@ -222,6 +235,37 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun stopPreparePerformancePageMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        rvRatingDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                rvRatingDetail.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
+        return if(context is ReviewSellerPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
     }
 
     private fun initToolbar() {
@@ -310,6 +354,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             hidePageLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     swipeToRefresh?.isRefreshing = false
                     productName = it.data.first.filterIsInstance<OverallRatingDetailUiModel>().firstOrNull()?.productName.orEmpty()
                     viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
@@ -372,7 +418,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let {
-            Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 loadInitialData()
             })
         }

@@ -194,4 +194,30 @@ class RechargeGeneralAnalytics {
             )
         }
     }
+
+    fun onClickSliceRecharge(userId: String, rechargeProductFromSlice: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, "clickGAMain",
+                TrackAppUtils.EVENT_CATEGORY, "ga main app",
+                TrackAppUtils.EVENT_ACTION, "click item transaction",
+                TrackAppUtils.EVENT_LABEL, rechargeProductFromSlice,
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ))
+    }
+
+    fun onOpenPageFromSlice() {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, "openScreen",
+                EVENT_SCREEN_NAME, "recharge general - from voice search - mainapp"
+        ))
+    }
+
+    companion object{
+        const val BUSINESS_UNIT = "businessUnit"
+        const val CURRENT_SITE = "currentSite"
+        const val USER_ID = "userId"
+        const val EVENT_SCREEN_NAME = "screenName"
+    }
 }

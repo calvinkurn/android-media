@@ -20,7 +20,8 @@ class WhiteSpaceUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean = true,
         override var isLoading: Boolean = false,
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

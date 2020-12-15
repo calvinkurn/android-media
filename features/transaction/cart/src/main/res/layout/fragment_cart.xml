@@ -36,16 +36,16 @@
             android:id="@+id/nav_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:minHeight="?attr/actionBarSize"
             android:gravity="top"
+            android:minHeight="?attr/actionBarSize"
             android:visibility="gone"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarAlwaysShowShadow="false"
+            app:toolbarContentType="typeTitle"
             app:toolbarInitialTheme="light"
-            app:toolbarTitle="@string/cart"
             app:toolbarPageName="@string/toolbar_page_name_cart"
-            app:toolbarContentType="typeTitle" />
+            app:toolbarTitle="@string/cart" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -69,15 +69,14 @@
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/bottom_layout"
-                    android:layout_alignParentTop="true" />
+                    android:layout_above="@+id/bottom_layout" />
 
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_4"
                     android:layout_above="@+id/bottom_layout"
-                    android:background="@drawable/bottom_sheet_shadow" />
+                    android:background="@drawable/shadow_top" />
 
                 <LinearLayout
                     android:id="@+id/ll_promo_checkout"
@@ -92,7 +91,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_4"
-                        android:background="@drawable/bottom_sheet_shadow" />
+                        android:background="@drawable/shadow_top" />
 
                     <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                         android:id="@+id/promo_checkout_btn_cart"
@@ -188,13 +187,32 @@
                             <View
                                 android:id="@+id/v_disabled_go_to_courier_page_button"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"/>
+                                android:layout_height="match_parent" />
 
                         </FrameLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include
+                    android:id="@+id/top_layout"
+                    layout="@layout/item_select_all"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <View
+                    android:id="@+id/top_layout_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_below="@+id/top_layout"
+                    android:background="@drawable/shadow_bottom" />
 
             </RelativeLayout>
 

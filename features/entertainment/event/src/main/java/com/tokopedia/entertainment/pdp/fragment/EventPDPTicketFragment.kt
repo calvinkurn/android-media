@@ -68,6 +68,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var urlPDP = ""
     private var startDate = ""
     private var endDate = ""
+    private var gatewayCode = ""
     private var selectedDate = ""
     private var PACKAGES_ID = ""
     private var AMOUNT_TICKET = 0
@@ -262,7 +263,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_LOGIN -> context?.let {
-                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive))
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
                 }
             }
         }
@@ -298,8 +299,9 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
             metaDataResponse = it.eventVerify.metadata
+            gatewayCode = it.eventVerify.gatewayCode
             if (userSession.isLoggedIn) {
-                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive))
+                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
