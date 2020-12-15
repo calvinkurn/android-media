@@ -2,7 +2,7 @@ package com.tokopedia.sellerappwidget.view.work
 
 import android.content.Context
 import androidx.work.*
-import com.tokopedia.sellerappwidget.view.service.GetChatService
+import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -45,7 +45,7 @@ class GetChatWorker(
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
-            GetChatService.startService(context)
+            GetChatExecutor.run(context)
             super.doWork()
         }
     }

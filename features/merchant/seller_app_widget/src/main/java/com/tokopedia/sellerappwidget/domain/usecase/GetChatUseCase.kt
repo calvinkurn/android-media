@@ -4,18 +4,15 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerappwidget.data.model.GetChatResponse
-import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.domain.mapper.ChatMapper
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.usecase.RequestParams
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 01/12/20
  */
 
-@AppWidgetScope
-class GetChatUseCase @Inject constructor(
+class GetChatUseCase(
         private val gqlRepository: GraphqlRepository,
         private val mapper: ChatMapper
 ) : BaseUseCase<ChatUiModel>() {
@@ -50,7 +47,6 @@ class GetChatUseCase @Inject constructor(
 
         private val QUERY = """
             query getUserChatListMessage(${'$'}page: Int!, ${'$'}filter: String!, ${'$'}tab: String!) {
-              status
               chatListMessage(page: ${'$'}page, filter:${'$'}filter, tab:${'$'}tab) {
                 list {
                   msgID

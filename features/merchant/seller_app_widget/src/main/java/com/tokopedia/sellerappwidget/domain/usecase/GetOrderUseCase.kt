@@ -6,18 +6,15 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.model.GetOrderResponse
 import com.tokopedia.sellerappwidget.data.model.InputParameterModel
-import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.usecase.RequestParams
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 17/11/20
  */
 
-@AppWidgetScope
-class GetOrderUseCase @Inject constructor(
+class GetOrderUseCase(
         private val gqlRepository: GraphqlRepository,
         private val mapper: OrderMapper
 ) : BaseUseCase<OrderUiModel>() {

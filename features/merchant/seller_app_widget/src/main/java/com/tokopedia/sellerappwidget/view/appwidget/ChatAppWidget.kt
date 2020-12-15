@@ -13,7 +13,7 @@ import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
-import com.tokopedia.sellerappwidget.view.service.GetChatService
+import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import com.tokopedia.sellerappwidget.view.state.chat.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +31,7 @@ class ChatAppWidget : AppWidgetProvider() {
         userSession?.let {
             if (it.isLoggedIn) {
                 showLoadingState(context, appWidgetManager, appWidgetIds)
-                GetChatService.startService(context)
+                GetChatExecutor.run(context)
             } else {
                 ChatWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -66,7 +66,7 @@ class ChatAppWidget : AppWidgetProvider() {
                 return
             }
         }
-        GetChatService.startService(context)
+        GetChatExecutor.run(context)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -127,7 +127,7 @@ class ChatAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
                 .sendEventClickRefreshButtonChatWidget()
 
-        GetChatService.startService(context)
+        GetChatExecutor.run(context)
     }
 
     private fun initUserSession(context: Context) {

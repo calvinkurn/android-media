@@ -3,19 +3,16 @@ package com.tokopedia.sellerappwidget.domain.mapper
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerappwidget.data.model.GetOrderResponse
 import com.tokopedia.sellerappwidget.data.model.OrderProductModel
-import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderProductUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.model.SellerOrderStatusUiModel
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 17/11/20
  */
 
-@AppWidgetScope
-class OrderMapper @Inject constructor() {
+class OrderMapper {
 
     fun mapRemoteModelToUiModel(orderResponse: GetOrderResponse): OrderUiModel {
         return OrderUiModel(

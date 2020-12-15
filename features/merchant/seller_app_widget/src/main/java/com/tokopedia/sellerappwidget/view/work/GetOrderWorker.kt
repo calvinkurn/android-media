@@ -3,7 +3,7 @@ package com.tokopedia.sellerappwidget.view.work
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
-import com.tokopedia.sellerappwidget.view.service.GetOrderService
+import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -45,7 +45,7 @@ class GetOrderWorker(
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
-            GetOrderService.startService(context, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
+            GetOrderExecutor.run(context, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
             super.doWork()
         }
     }

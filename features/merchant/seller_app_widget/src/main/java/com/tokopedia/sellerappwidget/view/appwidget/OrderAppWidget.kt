@@ -15,7 +15,7 @@ import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
-import com.tokopedia.sellerappwidget.view.service.GetOrderService
+import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
 import com.tokopedia.sellerappwidget.view.state.order.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,7 +33,7 @@ class OrderAppWidget : AppWidgetProvider() {
         userSession?.let {
             if (it.isLoggedIn) {
                 showLoadingState(context, appWidgetManager, appWidgetIds)
-                GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+                GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
             } else {
                 OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -69,7 +69,7 @@ class OrderAppWidget : AppWidgetProvider() {
                 return
             }
         }
-        GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+        GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -150,7 +150,7 @@ class OrderAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
                 .sendEventClickRefreshButtonOrderWidget()
 
-        GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+        GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
     }
 
     private fun onOrderItemClick(context: Context, intent: Intent) {
