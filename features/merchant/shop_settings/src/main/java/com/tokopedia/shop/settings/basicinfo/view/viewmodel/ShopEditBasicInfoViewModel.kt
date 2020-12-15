@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -63,14 +64,22 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
+    var timeAllowShopNameDomain = 0L
+    var timeValidateShopName = 0L
+    var timeValidateShopDomain = 0L
+    var timeUploadShopImage = 0L
+    var timeUpdateShopBasicData = 0L
+    var timeGetShopDomainSuggestion = 0L
 
     fun getAllowShopNameDomainChanges() {
+        timeAllowShopNameDomain = System.currentTimeMillis()
         launchCatchError(block = {
             flow {
                 emit(getAllowShopNameDomainChangesUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
                     .collectLatest {
                         _allowShopNameDomainChanges.value = Success(it.data)
+                        Log.d("SHOP_SETTINGS", "allow shop name domain - ${System.currentTimeMillis() - timeAllowShopNameDomain}")
                     }
         }) {
             _allowShopNameDomainChanges.value = Fail(it)
@@ -78,6 +87,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun validateShopName(shopName: String) {
+        timeValidateShopName = System.currentTimeMillis()
         if(shopName == currentShop?.name) return
 
         launchCatchError(block = {
@@ -88,6 +98,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             }.flowOn(dispatchers.io)
                     .collectLatest {
                          _validateShopName.value = Success(it)
+                        Log.d("SHOP_SETTINGS", "validate shop name - ${System.currentTimeMillis() - timeValidateShopName}")
                     }
         }) {
             _validateShopName.value = Fail(it)
@@ -97,6 +108,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun validateShopDomain(domain: String) {
+        timeValidateShopDomain = System.currentTimeMillis()
         if(domain == currentShop?.domain) return
 
         launchCatchError(block = {
@@ -110,6 +122,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                             currentShopName?.let { getShopDomainSuggestion(it) }
                         }
                         _validateShopDomain.value = Success(result)
+                        Log.d("SHOP_SETTINGS", "validate shop domain - ${System.currentTimeMillis() - timeValidateShopDomain}")
                     }
         }) {
             _validateShopDomain.value = Fail(it)
@@ -136,6 +149,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         tagLine: String,
         description: String
     ) {
+        timeUploadShopImage = System.currentTimeMillis()
         launchCatchError(block = {
             flow {
                 val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
@@ -146,6 +160,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                             updateShopBasicData(name, domain, tagLine, description, picCode)
                         }
                         _uploadShopImage.value = Success(it)
+                        Log.d("SHOP_SETTINGS", "upload shop image - ${System.currentTimeMillis() - timeUploadShopImage}")
                     }
         }) {
             _uploadShopImage.value = Fail(it)
@@ -159,6 +174,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String,
         logoCode: String? = null
     ) {
+        timeUpdateShopBasicData = System.currentTimeMillis()
         val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
 
@@ -178,6 +194,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun getShopDomainSuggestion(shopName: String) {
+        timeGetShopDomainSuggestion = System.currentTimeMillis()
         launchCatchError(block = {
             flow {
                 delay(INPUT_DELAY)
@@ -187,6 +204,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     .buffer()
                     .collectLatest {
                         _shopDomainSuggestion.value = Success(it)
+                        Log.d("SHOP_SETTINGS", "get shop domain suggestion - ${System.currentTimeMillis() - timeGetShopDomainSuggestion}")
                     }
         }) {
             _shopDomainSuggestion.value = Fail(it)
@@ -201,6 +219,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             }.flowOn(dispatchers.io)
                     .collectLatest {
                         _updateShopBasicData.value = Success(it)
+                        Log.d("SHOP_SETTINGS", "get shop basic data - ${System.currentTimeMillis() - timeUpdateShopBasicData}")
                     }
         }) {
             _updateShopBasicData.value = Fail(it)
