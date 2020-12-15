@@ -85,6 +85,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/icSawChatMoreChat"
         android:layout_alignParentBottom="true"
+        android:scrollbarThumbVertical="@color/Unify_N700_44"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:divider="@null"
         tools:itemCount="4"
