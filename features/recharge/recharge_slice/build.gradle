@@ -41,6 +41,8 @@ dependencies {
     implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.networkDependencies.glide
     annotationProcessor rootProject.ext.networkDependencies.glideProcessor
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.track)
 
 }
 

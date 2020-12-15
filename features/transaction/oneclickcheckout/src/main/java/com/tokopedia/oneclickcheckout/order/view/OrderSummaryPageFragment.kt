@@ -71,6 +71,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -145,6 +146,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
+    private var lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_EMPTY
 
     private var source: String = SOURCE_OTHERS
 
@@ -1209,8 +1211,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
     }
 
-    override fun onPurchaseProtectionCheckedChange() {
+    override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
+        if (isChecked) {
+            lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_TICKED
+        } else {
+            lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_UNTICKED
+        }
         viewModel.calculateTotal()
+    }
+
+    override fun getLastPurchaseProtectionCheckState(): Int {
+        return lastPurchaseProtectionCheckState
     }
 
     private fun handleError(throwable: Throwable?) {
