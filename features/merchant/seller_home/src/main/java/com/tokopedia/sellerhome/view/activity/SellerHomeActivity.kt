@@ -110,6 +110,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        fetchSellerAppWidget()
     }
 
     override fun onResume() {
@@ -180,6 +181,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     fun attachCallback(callback: StatusBarCallback) {
