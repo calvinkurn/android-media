@@ -1,12 +1,14 @@
 package com.tokopedia.product.manage.common.feature.list.data.model
 
-sealed class ProductManageTicker {
-    object MultiLocationTicker: ProductManageTicker()
-    object SingleLocationNoAccessTicker: ProductManageTicker()
-    object MultiLocationNoAccessTicker: ProductManageTicker()
-    object EmptyStockTicker: ProductManageTicker()
-    object CampaignStockTicker: ProductManageTicker()
-    object NoTicker: ProductManageTicker()
+import com.tokopedia.unifycomponents.ticker.Ticker
+
+sealed class ProductManageTicker(val type: Int) {
+    object MultiLocationTicker: ProductManageTicker(Ticker.TYPE_INFORMATION)
+    object SingleLocationNoAccessTicker: ProductManageTicker(Ticker.TYPE_INFORMATION)
+    object MultiLocationNoAccessTicker: ProductManageTicker(Ticker.TYPE_INFORMATION)
+    object EmptyStockTicker: ProductManageTicker(Ticker.TYPE_WARNING)
+    object CampaignStockTicker: ProductManageTicker(Ticker.TYPE_INFORMATION)
+    object NoTicker: ProductManageTicker(Ticker.TYPE_INFORMATION)
 
     fun shouldShow(): Boolean {
         return this != NoTicker

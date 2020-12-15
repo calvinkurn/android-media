@@ -19,7 +19,7 @@ object ProductManageTickerMapper {
                 else -> R.string.product_manage_stock_ticker_description
             }
             val description = context?.getString(descriptionResId).orEmpty()
-            TickerData(description, Ticker.TYPE_ANNOUNCEMENT)
+            TickerData(description, it.type)
         }
     }
 
