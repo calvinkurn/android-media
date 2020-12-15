@@ -322,7 +322,7 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            true
         }
     }
     private fun isNavOld(): Boolean {
@@ -330,16 +330,16 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
         }
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
-        if (isNavRevamp()) {
-            ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+       if (isNavOld()) {
             ifNavOld.invoke()
-        }
+       } else if (isNavRevamp()) {
+            ifNavRevamp.invoke()
+       }
     }
 
     override fun onAttach(context: Context) {

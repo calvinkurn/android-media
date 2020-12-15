@@ -24,6 +24,10 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         val LAYOUT = R.layout.holder_transaction_product
     }
 
+    override fun bind(element: OrderProductModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(productModel: OrderProductModel) {
         val context = itemView.context
 
@@ -50,7 +54,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer.visible()
+                            shimmer.gone()
                         }
 
                         override fun onLoadFailed(errorDrawable: Drawable?) {

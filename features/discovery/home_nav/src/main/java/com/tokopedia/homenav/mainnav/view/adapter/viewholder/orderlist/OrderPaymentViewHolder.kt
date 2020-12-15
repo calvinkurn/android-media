@@ -28,6 +28,10 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         val LAYOUT = R.layout.holder_transaction_payment
     }
 
+    override fun bind(element: OrderPaymentModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(paymentModel: OrderPaymentModel) {
         val context = itemView.context
 
@@ -56,7 +60,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
-                            shimmer.visible()
+                            shimmer.gone()
                         }
 
                         override fun onLoadFailed(errorDrawable: Drawable?) {
