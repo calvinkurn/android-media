@@ -7,13 +7,13 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import kotlinx.android.synthetic.main.item_product_manage_announcement_ticker.view.*
+import kotlinx.android.synthetic.main.layout_product_manage_ticker.view.*
 
 class ProductVariantTickerViewHolder(itemView: View): AbstractViewHolder<ProductVariantTicker>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_product_manage_announcement_ticker
+        val LAYOUT = R.layout.layout_product_manage_ticker
     }
 
     override fun bind(data: ProductVariantTicker) {

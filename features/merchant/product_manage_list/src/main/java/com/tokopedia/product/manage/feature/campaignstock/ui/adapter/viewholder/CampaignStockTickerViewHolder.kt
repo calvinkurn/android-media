@@ -15,7 +15,7 @@ class CampaignStockTickerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_product_manage_announcement_ticker
+        val LAYOUT = R.layout.layout_product_manage_ticker
     }
 
     override fun bind(data: CampaignStockTickerUiModel) {
