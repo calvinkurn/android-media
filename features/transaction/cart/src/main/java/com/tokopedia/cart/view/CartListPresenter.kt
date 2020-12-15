@@ -244,7 +244,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                        removedCartItems: List<CartItemData>,
                                        addWishList: Boolean,
                                        removeInsurance: Boolean,
-                                       forceExpandCollapsedUnavailableItems: Boolean) {
+                                       forceExpandCollapsedUnavailableItems: Boolean,
+                                       isFromGlobalCheckbox: Boolean) {
         view?.let {
             it.showProgressLoading()
 
@@ -264,7 +265,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
-                            removeAllItem, removeInsurance, forceExpandCollapsedUnavailableItems)))
+                            removeAllItem, removeInsurance, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)))
         }
     }
 

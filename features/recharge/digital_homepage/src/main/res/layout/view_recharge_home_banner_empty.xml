@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/banner_margin_top"
         android:layout_marginHorizontal="@dimen/layout_lvl3"
         app:layout_constraintTop_toTopOf="parent">
 

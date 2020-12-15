@@ -143,6 +143,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             tvShippingErrorMessage?.gone()
             btnReloadShipping?.gone()
             iconReloadShipping?.gone()
+            tickerShippingPromo?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
