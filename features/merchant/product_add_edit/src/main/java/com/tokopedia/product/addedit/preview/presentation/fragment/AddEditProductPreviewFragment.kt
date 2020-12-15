@@ -467,7 +467,7 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
-        //reset isStartButton each view created
+        //reset the variable each view created
         isStartButtonClicked = false
 
         context?.let { UpdateShopActiveService.startService(it) }
