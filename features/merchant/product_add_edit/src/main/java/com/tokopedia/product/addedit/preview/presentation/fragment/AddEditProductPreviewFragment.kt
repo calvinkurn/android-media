@@ -1483,6 +1483,9 @@ class AddEditProductPreviewFragment:
     private fun validateShopLocationWhenPageOpened() {
         if (!isStartButtonClicked) {
             validateShopLocation()
+        } else {
+            // reset the value when on view created
+            isStartButtonClicked = false
         }
     }
 
