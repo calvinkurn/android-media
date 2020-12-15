@@ -39,28 +39,28 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val shopBasicData: LiveData<Result<ShopBasicDataModel>>
+    val shopBasicData: LiveData<Result<ShopBasicDataModel>?>
         get() = _shopBasicData.asLiveData()
-    val uploadShopImage: LiveData<Result<UploadShopEditImageModel>>
+    val uploadShopImage: LiveData<Result<UploadShopEditImageModel>?>
         get() = _uploadShopImage.asLiveData()
-    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>>
+    val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>?>
         get() = _updateShopBasicData.asLiveData()
-    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>>
+    val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>?>
         get() = _allowShopNameDomainChanges.asLiveData()
-    val validateShopName: LiveData<Result<ValidateShopDomainNameResult>>
+    val validateShopName: LiveData<Result<ValidateShopDomainNameResult>?>
         get() = _validateShopName.asLiveData()
-    val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>>
+    val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>?>
         get() = _validateShopDomain.asLiveData()
-    val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>>
+    val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>?>
         get() = _shopDomainSuggestion.asLiveData()
 
-    private val _shopBasicData = MutableStateFlow<Result<ShopBasicDataModel>>(Fail(Exception()))
-    private val _uploadShopImage = MutableStateFlow<Result<UploadShopEditImageModel>>(Fail(Exception()))
-    private val _updateShopBasicData = MutableStateFlow<Result<ShopBasicDataMutation>>(Fail(Exception()))
-    private val _allowShopNameDomainChanges = MutableStateFlow<Result<AllowShopNameDomainChangesData>>(Fail(Exception()))
-    private val _validateShopName = MutableStateFlow<Result<ValidateShopDomainNameResult>>(Fail(Exception()))
-    private val _validateShopDomain = MutableStateFlow<Result<ValidateShopDomainNameResult>>(Fail(Exception()))
-    private val _shopDomainSuggestion = MutableStateFlow<Result<ShopDomainSuggestionData>>(Fail(Exception()))
+    private val _shopBasicData = MutableStateFlow<Result<ShopBasicDataModel>?>(null)
+    private val _uploadShopImage = MutableStateFlow<Result<UploadShopEditImageModel>?>(null)
+    private val _updateShopBasicData = MutableStateFlow<Result<ShopBasicDataMutation>?>(null)
+    private val _allowShopNameDomainChanges = MutableStateFlow<Result<AllowShopNameDomainChangesData>?>(null)
+    private val _validateShopName = MutableStateFlow<Result<ValidateShopDomainNameResult>?>(null)
+    private val _validateShopDomain = MutableStateFlow<Result<ValidateShopDomainNameResult>?>(null)
+    private val _shopDomainSuggestion = MutableStateFlow<Result<ShopDomainSuggestionData>?>(null)
 
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null

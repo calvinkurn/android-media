@@ -382,6 +382,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                         onErrorUploadShopImage(this)
                     }
                 }
+                else -> {/* no op */}
             }
         }
     }
@@ -475,6 +476,7 @@ class ShopEditBasicInfoFragment: Fragment() {
                     val shopDomains = result.shopDomains
                     shopDomainSuggestions.show(shopDomains)
                 }
+                else -> {/* no op */}
             }
         }
     }
