@@ -184,6 +184,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
                 emit(getShopDomainNameSuggestionUseCase.executeOnBackground())
             }.flowOn(dispatchers.io)
+                    .buffer()
                     .collectLatest {
                         _shopDomainSuggestion.value = Success(it)
                     }
