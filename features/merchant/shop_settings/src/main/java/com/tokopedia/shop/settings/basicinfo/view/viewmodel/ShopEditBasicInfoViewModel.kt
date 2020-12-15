@@ -1,7 +1,7 @@
 package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -39,27 +39,27 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 ): BaseViewModel(dispatchers.main) {
 
     val shopBasicData: LiveData<Result<ShopBasicDataModel>?>
-        get() = _shopBasicData.asLiveData()
+        get() = _shopBasicData
     val uploadShopImage: LiveData<Result<UploadShopEditImageModel>?>
-        get() = _uploadShopImage.asLiveData()
+        get() = _uploadShopImage
     val updateShopBasicData: LiveData<Result<ShopBasicDataMutation>?>
-        get() = _updateShopBasicData.asLiveData()
+        get() = _updateShopBasicData
     val allowShopNameDomainChanges: LiveData<Result<AllowShopNameDomainChangesData>?>
-        get() = _allowShopNameDomainChanges.asLiveData()
+        get() = _allowShopNameDomainChanges
     val validateShopName: LiveData<Result<ValidateShopDomainNameResult>?>
-        get() = _validateShopName.asLiveData()
+        get() = _validateShopName
     val validateShopDomain: LiveData<Result<ValidateShopDomainNameResult>?>
-        get() = _validateShopDomain.asLiveData()
+        get() = _validateShopDomain
     val shopDomainSuggestion: LiveData<Result<ShopDomainSuggestionData>?>
-        get() = _shopDomainSuggestion.asLiveData()
+        get() = _shopDomainSuggestion
 
-    private val _shopBasicData = MutableStateFlow<Result<ShopBasicDataModel>?>(null)
-    private val _uploadShopImage = MutableStateFlow<Result<UploadShopEditImageModel>?>(null)
-    private val _updateShopBasicData = MutableStateFlow<Result<ShopBasicDataMutation>?>(null)
-    private val _allowShopNameDomainChanges = MutableStateFlow<Result<AllowShopNameDomainChangesData>?>(null)
-    private val _validateShopName = MutableStateFlow<Result<ValidateShopDomainNameResult>?>(null)
-    private val _validateShopDomain = MutableStateFlow<Result<ValidateShopDomainNameResult>?>(null)
-    private val _shopDomainSuggestion = MutableStateFlow<Result<ShopDomainSuggestionData>?>(null)
+    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
+    private val _uploadShopImage = MutableLiveData<Result<UploadShopEditImageModel>>()
+    private val _updateShopBasicData = MutableLiveData<Result<ShopBasicDataMutation>>()
+    private val _allowShopNameDomainChanges = MutableLiveData<Result<AllowShopNameDomainChangesData>>()
+    private val _validateShopName = MutableLiveData<Result<ValidateShopDomainNameResult>>()
+    private val _validateShopDomain = MutableLiveData<Result<ValidateShopDomainNameResult>>()
+    private val _shopDomainSuggestion = MutableLiveData<Result<ShopDomainSuggestionData>>()
 
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
