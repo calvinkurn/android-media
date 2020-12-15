@@ -1484,7 +1484,7 @@ class AddEditProductPreviewFragment:
     }
 
     private fun validateShopLocation() {
-        if (isAdding()) {
+        if (isAdding() && dataBackPressedLoss()) {
             viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
         }
     }
