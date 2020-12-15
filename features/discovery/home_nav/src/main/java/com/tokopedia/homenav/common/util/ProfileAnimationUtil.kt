@@ -43,8 +43,8 @@ fun View.shrinkToCenter(duration: Long = 300, visibility: Int = View.INVISIBLE, 
 fun View.expandFromCenter(duration: Long = 300, completion: (() -> Unit)? = null) {
     visibility = View.VISIBLE
     animate()
-            .scaleX(3f)
-            .scaleY(3f)
+            .scaleX(1f)
+            .scaleY(1f)
             .setDuration(duration)
             .withEndAction {
                 completion?.let {
