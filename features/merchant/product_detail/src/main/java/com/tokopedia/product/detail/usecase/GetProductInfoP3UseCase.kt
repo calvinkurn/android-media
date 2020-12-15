@@ -23,6 +23,17 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
 
 
     companion object {
+        val QUERY_TICKER = """
+            query get_ticker(${'$'}page: String!) {
+              ticker {
+                tickers(page: ${'$'}page) {
+                  message
+                  layout
+                }
+              }
+            }
+        """.trimIndent()
+
         fun createParams(weight: Float, shopDomain: String?, origin: String?): Map<String, Any?> = mapOf(
                 ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
                 ProductDetailCommonConstant.PARAM_SHOP_DOMAIN to shopDomain,
@@ -60,7 +71,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
 
         //region Ticker
         val tickerParams = generateTickerParam()
-        val tickerRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TICKER], GeneralTickerDataModel.TickerResponse::class.java, tickerParams)
+        val tickerRequest = GraphqlRequest(QUERY_TICKER, GeneralTickerDataModel.TickerResponse::class.java, tickerParams)
         p3Request.add(tickerRequest)
         //endregion
 
