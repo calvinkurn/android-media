@@ -12,6 +12,7 @@
     <RelativeLayout
         android:id="@+id/orderSawSuccessSmall"
         android:layout_width="match_parent"
+        tools:visibility="gone"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -150,7 +151,7 @@
         android:id="@+id/orderSawSuccessNormal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/imgSawOrderAppIcon"
@@ -203,8 +204,7 @@
             android:id="@+id/tvSawOrderUpdated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tvSawOrderTotalOrder"
-            android:layout_alignBottom="@+id/tvSawOrderTotalOrder"
+            android:layout_below="@+id/btnSawOrderRefresh"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/unify_space_12"
             android:textColor="@color/Unify_N700_44"

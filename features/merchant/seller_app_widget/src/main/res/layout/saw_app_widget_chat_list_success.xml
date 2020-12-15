@@ -61,8 +61,7 @@
         android:id="@+id/tvSawChatUpdated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tvSawChatTotalChat"
-        android:layout_alignBottom="@+id/tvSawChatTotalChat"
+        android:layout_below="@+id/btnSawChatRefresh"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/unify_space_12"
         android:textColor="@color/Unify_N700_44"
@@ -85,9 +84,9 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/icSawChatMoreChat"
         android:layout_alignParentBottom="true"
-        android:scrollbarThumbVertical="@color/Unify_N700_44"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:divider="@null"
+        android:scrollbarThumbVertical="@color/Unify_N700_44"
         tools:itemCount="4"
         tools:listitem="@layout/saw_app_widget_chat_item" />
 </RelativeLayout>
