@@ -177,7 +177,8 @@ class DiscoveryDataMapper {
         val isOutOfStock: Boolean
         val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
 
-        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
             productName = dataItem.title ?: ""
             slashedPrice = dataItem.price ?: ""
             formattedPrice = dataItem.discountedPrice ?: ""
