@@ -66,6 +66,7 @@ class QuickEditVariantViewModel @Inject constructor(
             _productManageAccess.value = access
             getProductVariants(productId, access)
         }) {
+            setEmptyTickerList()
             hideProgressBar()
             showErrorView()
         }
@@ -90,6 +91,7 @@ class QuickEditVariantViewModel @Inject constructor(
                 setEditVariantResult(productId, result)
                 getTickerList()
             } else {
+                setEmptyTickerList()
                 showErrorView()
             }
 
@@ -134,9 +136,8 @@ class QuickEditVariantViewModel @Inject constructor(
     fun setTickerList() {
         _editVariantResult.value?.run {
             val tickerList = _tickerList.value?.toMutableList()
-            val isAllStockEmpty = isAllStockEmpty()
 
-            if(isAllStockEmpty) {
+            if(isAllStockEmpty()) {
                 tickerList?.add(EmptyStockTicker)
             } else {
                 tickerList?.remove(EmptyStockTicker)
@@ -151,6 +152,10 @@ class QuickEditVariantViewModel @Inject constructor(
         val canEditStock = _productManageAccess.value?.editStock == true
         val isAllStockEmpty = _editVariantResult.value?.isAllStockEmpty() == true
         _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, isAllStockEmpty)
+    }
+
+    private fun setEmptyTickerList() {
+        _tickerList.value = emptyList()
     }
 
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {
