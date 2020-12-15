@@ -367,11 +367,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onEmptyButtonClicked() {
         if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
-            filterBottomSheet = HotelFilterBottomSheets()
-                    .setSubmitFilterListener(this)
-                    .setSelected(searchResultviewModel.getSelectedFilter())
-                    .setFilter((searchResultviewModel.liveSearchResult.value as Success<PropertySearch>).data.filters)
-            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
+            val searchResultValue = searchResultviewModel.liveSearchResult.value as Success
+            initiateAdvancedFilter(searchResultValue.data.filters.toMutableList(), searchResultValue.data.displayInfo.sort)
         }
     }
 
