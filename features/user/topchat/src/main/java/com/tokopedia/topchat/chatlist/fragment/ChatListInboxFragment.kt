@@ -64,6 +64,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
+import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
@@ -76,7 +77,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -98,7 +98,15 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     lateinit var userSession: UserSessionInterface
 
     //    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val chatItemListViewModel by lazy { ViewModelProvider(this, viewModelFactory).get(ChatItemListViewModel::class.java) }
+
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val chatItemListViewModel by lazy {
+        viewModelProvider.get(ChatItemListViewModel::class.java)
+    }
+    private val webSocketViewModel by lazy {
+        viewModelProvider.get(WebSocketViewModel::class.java)
+    }
+
     private lateinit var performanceMonitoring: PerformanceMonitoring
 //    private var chatTabListContract: ChatListContract.TabFragment? = null
 //    private var mUserSeen = false
@@ -149,6 +157,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
+        webSocketViewModel.connectWebSocket()
         initRole()
         setHasOptionsMenu(false)
     }
@@ -203,19 +212,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chat_list, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Timber.d("$role onViewCreated")
-//        mViewCreated = true
-        super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView(view)
-        initView(view)
-        setObserver()
-        setupSellerBroadcast()
-        setupChatSellerBannedStatus()
-        setupEmptyModel()
+        return inflater.inflate(R.layout.fragment_chat_list, container, false)?.also {
+            initView(it)
+            setUpRecyclerView(it)
+            setupObserver()
+            setupSellerBroadcast()
+            setupChatSellerBannedStatus()
+            setupEmptyModel()
+        }
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -309,7 +313,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 //    }
 
     private fun initView(view: View) {
-        showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
@@ -324,14 +327,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
-    private fun setObserver() {
+    private fun setupObserver() {
+        setupWebSocketObserver()
         chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetChatList(it.data.data)
                 is Fail -> onFailGetChatList(it.throwable)
             }
         })
-
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
@@ -343,6 +346,25 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
             }
         })
+    }
+
+    private fun setupWebSocketObserver() {
+        webSocketViewModel.itemChat.observe(viewLifecycleOwner,
+                Observer { result ->
+                    when (result) {
+                        is Success -> {
+                            when (result.data) {
+                                is IncomingChatWebSocketModel -> processIncomingMessage(
+                                        result.data as IncomingChatWebSocketModel
+                                )
+                                is IncomingTypingWebSocketModel -> processIncomingMessage(
+                                        result.data as IncomingTypingWebSocketModel
+                                )
+                            }
+                        }
+                    }
+                }
+        )
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {

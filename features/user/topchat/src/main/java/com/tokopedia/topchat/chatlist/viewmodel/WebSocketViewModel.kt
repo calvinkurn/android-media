@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,11 +32,12 @@ import javax.inject.Inject
  * Created by stevenfredian on 10/19/17.
  */
 
-class WebSocketViewModel
-@Inject constructor(dispatcher: CoroutineDispatcher,
-                    private val userSession: UserSessionInterface,
-                    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-                    private val fingerprintInterceptor: FingerprintInterceptor) : BaseViewModel(dispatcher), LifecycleObserver {
+class WebSocketViewModel @Inject constructor(
+        private val dispatchers: TopchatCoroutineContextProvider,
+        private val userSession: UserSessionInterface,
+        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        private val fingerprintInterceptor: FingerprintInterceptor
+) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
 
     val client = OkHttpClient()
     private val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
@@ -55,9 +57,7 @@ class WebSocketViewModel
                         .addInterceptor(fingerprintInterceptor)
             }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
-
             Timber.d(" Open: ${easyWS?.response}")
-
             easyWS?.let {
                 for (response in it.textChannel) {
                     Timber.d(" Response: $response")
@@ -65,15 +65,15 @@ class WebSocketViewModel
                     when (response.code) {
                         EVENT_TOPCHAT_REPLY_MESSAGE -> {
                             val chat = Success(mapToIncomingChat(response))
-                            _itemChat.value = chat
+                            _itemChat.postValue(chat)
                         }
                         EVENT_TOPCHAT_TYPING -> {
                             val stateTyping = Success(mapToIncomingTypeState(response, true))
-                            _itemChat.value = stateTyping
+                            _itemChat.postValue(stateTyping)
                         }
                         EVENT_TOPCHAT_END_TYPING -> {
                             val stateEndTyping = Success(mapToIncomingTypeState(response, false))
-                            _itemChat.value = stateEndTyping
+                            _itemChat.postValue(stateEndTyping)
                         }
                     }
                 }
