@@ -198,7 +198,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             //noinspection unchecked
             edittedImagePaths = (ArrayList<ArrayList<String>>) savedInstanceState.getSerializable(SAVED_EDITTED_PATHS);
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
-            currentEditActionType = ImageEditActionType.fromInt(savedInstanceState.getInt(SAVED_EDIT_TYPE));
+            currentEditActionType = savedInstanceState.getParcelable(SAVED_EDIT_TYPE);
             currentEditStepIndexList = savedInstanceState.getIntegerArrayList(SAVED_CURRENT_STEP_INDEX);
             imageRatioTypeDefStepList = (ArrayList<ArrayList<ImageRatioType>>)
                     savedInstanceState.getSerializable(SAVED_RATIO);
@@ -1052,7 +1052,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         outState.putSerializable(SAVED_EDITTED_PATHS, edittedImagePaths);
         outState.putIntegerArrayList(SAVED_CURRENT_STEP_INDEX, currentEditStepIndexList);
         outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
-        outState.putInt(SAVED_EDIT_TYPE, currentEditActionType.getAction());
+        outState.putParcelable(SAVED_EDIT_TYPE, currentEditActionType);
         outState.putSerializable(SAVED_RATIO, imageRatioTypeDefStepList);
     }
 

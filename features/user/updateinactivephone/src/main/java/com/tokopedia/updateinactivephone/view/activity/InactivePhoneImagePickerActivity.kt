@@ -15,7 +15,8 @@ class InactivePhoneImagePickerActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (intent != null && intent.extras != null && intent.extras?.containsKey(EXTRA_CAMERA_MODE) == true) {
-            cameraViewMode = intent.extras?.getParcelable(EXTRA_CAMERA_MODE)
+            val bundle = intent.getBundleExtra(EXTRA_CAMERA_MODE)
+            cameraViewMode = bundle?.getParcelable(EXTRA_CAMERA_MODE)
         }
         title = getString(R.string.text_select_image)
         super.onCreate(savedInstanceState)
@@ -35,6 +36,7 @@ class InactivePhoneImagePickerActivity : BaseSimpleActivity() {
             val bundle = Bundle()
             val intent = Intent(context, InactivePhoneImagePickerActivity::class.java)
             bundle.putParcelable(EXTRA_CAMERA_MODE, cameraViewMode)
+            intent.putExtra(EXTRA_CAMERA_MODE, bundle)
             return intent
         }
     }

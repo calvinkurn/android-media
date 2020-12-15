@@ -116,21 +116,16 @@ data class PreviewExtension(
         val appendInitialSelectedImageInGallery: Boolean = false
 ) : Parcelable
 
-enum class ImagePickerTab(val value: Int) {
+@Parcelize
+enum class ImagePickerTab(val value: Int) : Parcelable {
     TYPE_GALLERY(1),
     TYPE_CAMERA(2),
     TYPE_INSTAGRAM(3),
     TYPE_RECORDER(4);
-
-    companion object {
-        private val map = values().associateBy(ImagePickerTab::value)
-
-        @JvmStatic
-        fun fromInt(type: Int) = map[type]
-    }
 }
 
-enum class GalleryType(val value: Int) {
+@Parcelize
+enum class GalleryType(val value: Int) : Parcelable {
     ALL(1),
     IMAGE_ONLY(2),
     VIDEO_ONLY(3),
@@ -144,7 +139,8 @@ enum class GalleryType(val value: Int) {
     }
 }
 
-enum class ImageRatioType(val id: Int, val ratio: Pair<Int, Int>) {
+@Parcelize
+enum class ImageRatioType(val id: Int, val ratio: Pair<Int, Int>) : Parcelable {
     ORIGINAL(-1, -1 to -1),
     RATIO_1_1(1, 1 to 1),
     RATIO_3_4(2, 3 to 4),
@@ -154,16 +150,10 @@ enum class ImageRatioType(val id: Int, val ratio: Pair<Int, Int>) {
 
     fun getRatioX() = ratio.first
     fun getRatioY() = ratio.second
-
-    companion object {
-        private val map = values().associateBy(ImageRatioType::id)
-
-        @JvmStatic
-        fun fromInt(type: Int) = map[type]
-    }
 }
 
-enum class ImageEditActionType(val action: Int) {
+@Parcelize
+enum class ImageEditActionType(val action: Int) : Parcelable {
     ACTION_CROP(1),
     ACTION_ROTATE(2),
     ACTION_WATERMARK(3),

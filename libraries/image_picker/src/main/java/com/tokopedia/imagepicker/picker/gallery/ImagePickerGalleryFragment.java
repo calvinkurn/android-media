@@ -40,6 +40,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_POSITION;
 import static com.tokopedia.imagepicker.picker.gallery.model.AlbumItem.ALBUM_ID_ALL;
@@ -76,9 +77,9 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private AlbumItem selectedAlbumItem;
     private int selectedAlbumPosition;
     private
-    GalleryType galleryType;
-    private boolean supportMultipleSelection;
-    private int minImageResolution;
+    GalleryType galleryType = GalleryType.IMAGE_ONLY;
+    private boolean supportMultipleSelection = false;
+    private int minImageResolution = DEFAULT_MIN_RESOLUTION;
     private String belowMinImageResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
 
@@ -103,7 +104,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                                                          String imageTooLargeErrorMessage) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_GALLERY_TYPE, galleryType.getValue());
+        bundle.putParcelable(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
         bundle.putString(ARGS_ERROR_MIN_RESOLUTION, imageBelowMinresolutionErrorMessage);
@@ -125,14 +126,16 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        galleryType = GalleryType.Companion.fromInt(bundle.getInt(ARGS_GALLERY_TYPE));
-        supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
-        minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
-        belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");
+        if (bundle != null) {
+            galleryType = bundle.getParcelable(ARGS_GALLERY_TYPE);
+            supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
+            minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+            belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");
+            imageTooLargeErrorMessage = bundle.getString(ARGS_ERROR_IMAGE_TOO_LARGE, "");
+        }
         if (belowMinImageResolutionErrorMessage == null || belowMinImageResolutionErrorMessage.isEmpty()) {
             belowMinImageResolutionErrorMessage = getString(R.string.image_under_x_resolution, minImageResolution);
         }
-        imageTooLargeErrorMessage = bundle.getString(ARGS_ERROR_IMAGE_TOO_LARGE, "");
         if (imageTooLargeErrorMessage == null || imageTooLargeErrorMessage.isEmpty()) {
             imageTooLargeErrorMessage = getString(R.string.max_file_size_reached);
         }
