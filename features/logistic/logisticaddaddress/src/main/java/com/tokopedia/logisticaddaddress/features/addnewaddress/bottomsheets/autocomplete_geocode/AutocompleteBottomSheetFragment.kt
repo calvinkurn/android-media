@@ -39,7 +39,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-13.
  */
-class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener {
+class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetAdapter.ActionListener {
     private var bottomSheetView: View? = null
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
@@ -52,7 +52,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var rvPoiList: RecyclerView
     private lateinit var llPoi: LinearLayout
     private lateinit var llLoading: LinearLayout
-    private lateinit var llSubtitle: LinearLayout
     private lateinit var mDisabledGps: View
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
@@ -62,9 +61,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var isLogisticLabel: Boolean = true
     private var token: Token? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
-
-    @Inject
-    lateinit var presenter: AutocompleteBottomSheetPresenter
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -138,13 +134,12 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         rvPoiList = view.findViewById(R.id.rv_poi_list)
         llPoi = view.findViewById(R.id.ll_poi)
         llLoading = view.findViewById(R.id.ll_loading)
-        llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
         mDisabledGps = view.findViewById(R.id.layout_gps_disabled)
         etSearch = view.findViewById(R.id.et_search_logistic)
         icCloseBtn = view.findViewById(R.id.ic_close)
 
         adapter = AutocompleteBottomSheetAdapter(this)
-        hideListPointOfInterest()
+        hideListLocation()
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
@@ -162,20 +157,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 setSelection(etSearch.text.length)
             }
             loadAutocomplete(currentSearch)
-        } else {
-            icCloseBtn.visibility = View.GONE
-            context?.let {
-                if (AddNewAddressUtils.isLocationEnabled(it)) {
-                    doLoadAutocompleteGeocode()
-                } else {
-                    // When user does not enable location
-                    showGpsDisabledNotification()
-                    rlCurrentLocation.setOnClickListener {
-                        showLocationInfoBottomSheet()
-                    }
-                }
-            }
-
         }
 
         etSearch.run {
@@ -226,20 +207,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 }
                 is Fail -> {
                     Timber.d(it.throwable)
-                    hideListPointOfInterest()
-                }
-            }
-        })
-
-        viewModel.autoCompleteGeocodeList.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetAutocompleteGeocode(it.data.data)
-                }
-
-                is Fail -> {
-                    it.throwable.printStackTrace()
-                    hideListPointOfInterest()
+                    hideListLocation()
                 }
             }
         })
@@ -248,17 +216,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private fun setListenerClearBtn() {
         icCloseBtn.setOnClickListener {
             etSearch.setText("")
-            hideListPointOfInterest()
+            hideListLocation()
             icCloseBtn.visibility = View.GONE
         }
-    }
-
-    private fun doLoadAutocompleteGeocode() {
-        showLoadingList()
-
-//        presenter.clearCacheAutocompleteGeocode()
-//        presenter.getAutocompleteGeocode(currentLat, currentLong)
-        viewModel.getAutoCompleteGeocodeList(currentLat, currentLong)
     }
 
     override fun configView(parentView: View?) {
@@ -277,7 +237,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                     .addNewAddressModule(AddNewAddressModule())
                     .build()
                     .inject(this@AutocompleteBottomSheetFragment)
-            presenter.attachView(this@AutocompleteBottomSheetFragment)
         }
     }
 
@@ -285,7 +244,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         this.actionListener = actionListener
     }
 
-    override fun hideListPointOfInterest() {
+    private fun hideListLocation() {
         llPoi.visibility = View.GONE
         llLoading.visibility = View.GONE
     }
@@ -301,22 +260,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llLoading.visibility = View.VISIBLE
     }
 
-    override fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel) {
+    private fun onSuccessGetAutocomplete(suggestedPlaces: Place) {
         llLoading.visibility = View.GONE
-        rvPoiList.visibility = View.VISIBLE
-        mDisabledGps.visibility = View.GONE
-        if (dataUiModel.results.isNotEmpty()) {
-            llSubtitle.visibility = View.VISIBLE
-            llPoi.visibility = View.VISIBLE
-            adapter.isAutocompleteGeocode = true
-            adapter.dataAutocompleteGeocode = dataUiModel.results.toMutableList()
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun onSuccessGetAutocomplete(suggestedPlaces: Place) {
-        llLoading.visibility = View.GONE
-        llSubtitle.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
         if (suggestedPlaces.data.isNotEmpty()) {
@@ -326,7 +271,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun goToAddNewAddressNegative() {
+    private fun goToAddNewAddressNegative() {
         val saveModel = getUnnamedRoadModelFormat(saveAddressDataModel)
 
         Intent(context, AddEditAddressActivity::class.java).apply {
@@ -354,14 +299,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private fun getUnnamedRoadModelFormat(data: SaveAddressDataModel?): SaveAddressDataModel? {
         val fmt = data?.formattedAddress?.replaceAfter("Unnamed Road, ", "")
         return fmt?.let { data.copy(formattedAddress = it, selectedDistrict = fmt) }
-    }
-
-    private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow, isLogisticLabel)
-        fragmentManager?.run {
-            locationInfoBottomSheetFragment.show(this, "")
-        }
-        dismiss()
     }
 
     /**

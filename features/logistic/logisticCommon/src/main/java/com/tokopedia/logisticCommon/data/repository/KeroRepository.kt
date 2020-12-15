@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.AutoCompleteGeocodeResponse
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
@@ -36,13 +35,6 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
         )
         val request = GraphqlRequest(KeroLogisticQuery.addressCorner,
                 AddressResponse::class.java, param)
-        return gql.getResponse(request)
-    }
-
-    suspend fun getAutoCompleteGeocode(lat: Double, long: Double): AutoCompleteGeocodeResponse {
-        val param = mapOf("lat" to lat, "long" to long)
-        val request = GraphqlRequest(KeroLogisticQuery.autoCompleteGeocode,
-                AutoCompleteGeocodeResponse::class.java, param)
         return gql.getResponse(request)
     }
 
