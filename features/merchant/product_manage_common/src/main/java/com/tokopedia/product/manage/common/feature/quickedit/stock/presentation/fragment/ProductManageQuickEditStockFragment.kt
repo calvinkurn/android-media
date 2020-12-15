@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -321,9 +322,9 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     }
 
     private fun setupBottomSheet() {
-        val verticalPadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        val horizontalpadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        bottomSheetHeader.setPadding(horizontalpadding, verticalPadding, horizontalpadding, verticalPadding)
+        val horizontalSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val topSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, 0)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 

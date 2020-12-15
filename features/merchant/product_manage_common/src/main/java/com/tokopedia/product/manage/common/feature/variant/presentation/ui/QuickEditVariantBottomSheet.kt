@@ -106,9 +106,9 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupBottomSheet() {
-        val verticalPadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        val horizontalpadding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        bottomSheetHeader.setPadding(horizontalpadding, verticalPadding, horizontalpadding, verticalPadding)
+        val horizontalSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        val topSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, 0)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
