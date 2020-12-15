@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/imgSawLargeCommon"
-            android:layout_width="@dimen/saw_dimen_160dp"
-            android:layout_height="@dimen/saw_dimen_148dp"
+            android:layout_width="@dimen/saw_dimen_200dp"
+            android:layout_height="@dimen/saw_dimen_160dp"
             tools:src="@tools:sample/avatars" />
 
         <TextView

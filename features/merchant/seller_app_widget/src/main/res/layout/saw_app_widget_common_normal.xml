@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSawNormalCommonTitle"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_N700"
         android:lineSpacingExtra="@dimen/spacing_lvl1"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/unify_font_12"
         tools:text="Check pesanan biar nggak ada pesanan yang terlewat, ya." />
 
@@ -52,11 +52,13 @@
 
     <ImageView
         android:id="@+id/imgSawNormalCommon"
-        android:layout_width="@dimen/saw_dimen_200dp"
-        android:layout_height="@dimen/saw_dimen_148dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/tvSawNormalCommonCta"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/layout_lvl6"
         android:layout_marginTop="@dimen/layout_lvl3"
         tools:src="@tools:sample/avatars" />
 </RelativeLayout>
