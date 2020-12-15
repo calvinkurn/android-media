@@ -21,11 +21,11 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAd
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticdata.data.autocomplete.Place
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.util.rxEditText
-import com.tokopedia.logisticdata.util.toCompositeSubs
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.util.rxEditText
+import com.tokopedia.logisticCommon.util.toCompositeSubs
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -122,7 +122,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
         mDisabledGps = view.findViewById(R.id.layout_gps_disabled)
-        etSearch = view.findViewById(R.id.et_search)
+        etSearch = view.findViewById(R.id.et_search_logistic)
         icCloseBtn = view.findViewById(R.id.ic_close)
 
         adapter = AutocompleteBottomSheetAdapter(this)

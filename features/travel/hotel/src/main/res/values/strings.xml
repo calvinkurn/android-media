@@ -15,6 +15,7 @@
 
     <string name="hotel_google_map_intent_link">geo:%1$f,%2$f?z=20&amp;q=%3$f,%4$f(%3$s)</string>
 
+    <string name="hotel_search_result_applink_format">tokopedia://hotel/result?type=%1$s&amp;id=%2$s&amp;name=%3$s</string>
     <string name="hotel_search_result_change">Ubah</string>
     <string name="hotel_search_filter_label">Filter</string>
     <string name="hotel_search_sort_label">Urutkan</string>
@@ -64,6 +65,10 @@
     <string name="hotel_button_save">Simpan</string>
     <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
+    <string name="hotel_homepage_popular_city_section_subtitle">TUJUAN POPULER</string>
+    <string name="hotel_homepage_popular_city_section_title">Kota menarik untuk dikunjungi</string>
+    <string name="hotel_homepage_popular_city_button_see_more">Lihat Selengkapnya</string>
+    <string name="hotel_homepage_popular_city_button_see_less">Sembunyikan</string>
 
     <string name="hotel_calendar_error_max_range">Maks. 30 malam. Coba ubah tanggal cek-in atau check-out</string>
 

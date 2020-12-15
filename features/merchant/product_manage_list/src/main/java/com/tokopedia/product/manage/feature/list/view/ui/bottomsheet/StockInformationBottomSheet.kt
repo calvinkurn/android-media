@@ -27,7 +27,7 @@ class StockInformationBottomSheet(
             .inflate(LAYOUT, (container as ViewGroup), false)
 
         val title = itemView.context.getString(R.string.product_manage_stock_information)
-        val description = itemView.context.getString(R.string.product_manage_stock_info_description)
+        val description = itemView.context.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_info_description)
         val padding = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
         itemView.textDescription.text = description

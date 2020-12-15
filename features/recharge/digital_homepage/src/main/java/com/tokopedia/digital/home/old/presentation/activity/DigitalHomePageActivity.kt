@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.activity
+package com.tokopedia.digital.home.old.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
-import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
+import com.tokopedia.digital.home.old.di.DigitalHomePageComponent
+import com.tokopedia.digital.home.old.di.DigitalHomePageComponentInstance
+import com.tokopedia.digital.home.old.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
 import timber.log.Timber
 

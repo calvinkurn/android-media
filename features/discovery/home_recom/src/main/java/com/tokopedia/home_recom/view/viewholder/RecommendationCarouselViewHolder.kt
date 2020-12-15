@@ -8,7 +8,6 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -24,7 +23,6 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
-    private val list = mutableListOf<RecommendationCarouselItemDataModel>()
 
     companion object {
         private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
@@ -87,14 +85,15 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                             formattedPrice = it.productItem.price,
                             productImageUrl = it.productItem.imageUrl,
                             isTopAds = it.productItem.isTopAds,
-                            discountPercentage = it.productItem.discountPercentage.toString(),
+                            discountPercentage = it.productItem.discountPercentage,
                             reviewCount = it.productItem.countReview,
                             ratingCount = it.productItem.rating,
+                            countSoldRating = it.productItem.ratingAverage,
                             shopLocation = it.productItem.location,
                             isWishlistVisible = true,
                             isWishlisted = it.productItem.isWishlist,
-                            shopBadgeList = it.productItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it
+                            shopBadgeList = it.productItem.badgesUrl.map { badgeUrl ->
+                                ProductCardModel.ShopBadge(imageUrl = badgeUrl
                                         ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(

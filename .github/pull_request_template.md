@@ -33,3 +33,28 @@ https://phab.tokopedia.com/XXXXX
 ## Affected Module / Feature
 
 ## QA Name
+
+## Command List
+- **/check all** - run all pr checker
+- **/check build** - run MainApp and/or SellerApp checker based on affected modules
+- **/check unittest** - run unit test checker
+- **/check review** - run auto mention code review system
+- **/check risk** - run risk analysis
+- **/check lint** - run linter checker
+- **/check instrument** - run TopAds Checker instrumentation test
+- **/check datatest** - run data tracking test (Cassava)
+- **/check performance** - run performance check
+
+## Gatekeeper Spells
+- **approved for app-size** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-app-size)*
+
+- **approved for risk** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-risk-analysis)*
+
+- **approved for linter** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-linter)*
+
+- **approved for new module** - send along with the approval to cast the magic 
+*(more info: @tokopedia/android-gatekeeper-new-module)*
+

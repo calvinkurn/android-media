@@ -62,7 +62,7 @@ class PromoCheckoutListDealsPresenter(
     override fun getListTravelCollectiveBanner(resources: Resources) {
         val variables = HashMap<String, Any>()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
+                com.tokopedia.promocheckout.common.R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
         dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

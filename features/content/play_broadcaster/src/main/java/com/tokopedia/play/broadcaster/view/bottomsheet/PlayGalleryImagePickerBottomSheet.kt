@@ -190,11 +190,13 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
                 height = maxHeight
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.skipCollapsed = true
-            bottomSheetBehavior.peekHeight = maxHeight
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                val bottomSheetBehavior = BottomSheetBehavior.from(it)
+                bottomSheetBehavior.isHideable = true
+                bottomSheetBehavior.skipCollapsed = true
+                bottomSheetBehavior.peekHeight = maxHeight
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = true
         }

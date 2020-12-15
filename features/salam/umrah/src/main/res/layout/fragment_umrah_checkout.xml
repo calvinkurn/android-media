@@ -31,7 +31,7 @@
                     />
 
                 <include
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     android:id="@+id/partial_umrah_checkout_header"
                     layout="@layout/partial_umrah_checkout_header"
                     android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                     layout="@layout/partial_umrah_checkout_content_order"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/partial_umrah_checkout_header" />
@@ -55,7 +55,7 @@
                     layout="@layout/partial_umrah_checkout_content_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/partial_umrah_checkout_content_order" />
@@ -65,7 +65,7 @@
                     layout="@layout/partial_umrah_checkout_footer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/partial_umrah_checkout_content_summary" />

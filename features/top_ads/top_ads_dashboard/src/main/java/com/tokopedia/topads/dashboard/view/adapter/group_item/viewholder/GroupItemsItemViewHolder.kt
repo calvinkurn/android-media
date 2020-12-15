@@ -3,16 +3,17 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
@@ -30,12 +31,16 @@ private const val CLICK_ATUR_IKLAN = "click - atur iklan"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int, groupName: String) -> Unit),
+                               private var editDone: ((groupId: Int) -> Unit),
                                private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_with_group_card
+    }
+
+    private val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
+        TopadsSelectActionSheet.newInstance()
     }
 
     override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
@@ -65,7 +70,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
-            if (countList.isNotEmpty() && adapterPosition < countList.size &&  adapterPosition != RecyclerView.NO_POSITION) {
+            if (countList.isNotEmpty() && adapterPosition < countList.size && adapterPosition != RecyclerView.NO_POSITION) {
                 view.total_item.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
@@ -76,11 +81,10 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                     view.klik_count.text = statsData[index].statTotalClick
                     view.persentase_klik_count.text = statsData[index].statTotalCtr
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
+                    view.pendapatan_count.text = statsData[index].groupTotalIncome
                     view.produk_terjual_count.text = statsData[index].statTotalConversion
                 }
             }
-            view.pendapatan.visibility = View.GONE
-            view.pendapatan_count.visibility = View.GONE
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
@@ -106,17 +110,16 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus, item.data.groupName)
-            sheet.onEditAction = {
-                editDone.invoke(item.data.groupId, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.onEditAction = {
+                editDone.invoke(item.data.groupId)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
-            sheet.show()
-            sheet.onDeleteClick = {
+            sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
-            sheet.changeStatus = {
+            sheet?.changeStatus = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

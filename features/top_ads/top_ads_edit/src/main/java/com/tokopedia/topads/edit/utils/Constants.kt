@@ -6,7 +6,6 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
-    const val COUNT = 50
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"
@@ -31,6 +30,7 @@ object Constants {
     const val DAILY_BUDGET = "daily_budget"
     const val NAME_EDIT = "isNameEdit"
     const val MULTIPLIER = 40
+    const val MAXIMUM_LIMIT = "10.000.000"
     const val PRODUCT = "product"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val KEYWORD_EXISTS = 1
@@ -44,10 +44,7 @@ object Constants {
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
-    const val TITLE_1 = "Pencarian luas"
-    const val TITLE_2 = "Pencarian Spesifik"
-    const val REGEX = "^[A-Za-z0-9 ]*\$"
-    const val EDIT_SOURCE = "dashboard_edit_group"
+    const val EDIT_SOURCE = "dashboard_edit_group_app"
     const val ACTION_EDIT = "edit"
     const val ACTION_ADD = "add"
     const val ACTION_REMOVE = "remove"
@@ -65,7 +62,6 @@ object Constants {
     const val MULTIPLY_CONST = 50
     const val groupId = "groupId"
     const val priceBid = "price_bid"
-    const val priceDaily = "price_daily"
     const val groupName = "groupName"
     const val TAB_POSITION = "tab_position"
     const val MAX_BID = "max"
@@ -75,8 +71,8 @@ object Constants {
     const val FROM_EDIT = "fromEdit"
     const val CURRENT_KEY_TYPE = "currentKeyType"
     const val ITEM_POSITION = "pos"
-    const val GROUPID = "group_id"
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
+    const val IS_DATA_CHANGE = "dataChange"
 
 }

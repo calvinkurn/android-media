@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.discoverymapper
 
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
@@ -17,6 +18,10 @@ import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
+private const val SALE_PRODUCT_STOCK = 100
+private const val PRODUCT_STOCK = 0
+private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
+private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 
 class DiscoveryDataMapper {
 
@@ -89,6 +94,15 @@ class DiscoveryDataMapper {
         }
     }
 
+    fun mapProductListToCircularModel(listItem: List<DataItem>) : ArrayList<CircularModel> {
+        val bannerList = ArrayList<CircularModel>()
+        listItem.forEachIndexed { index, it ->
+            val circularModel = CircularModel(index, it.imageUrlDynamicMobile ?: "")
+            bannerList.add(circularModel)
+        }
+        return bannerList
+    }
+
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
                                               categoryHeaderPosition: Int): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
@@ -106,15 +120,17 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             componentsItem.position = index
             componentsItem.name = subComponentName
             componentsItem.properties = properties
+            componentsItem.creativeName = creativeName
             val dataItem = mutableListOf<DataItem>()
             it.typeProductCard = subComponentName
+            it.creativeName = creativeName
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)
@@ -151,18 +167,44 @@ class DiscoveryDataMapper {
         return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
     }
 
-    fun mapDataItemToProductCardModel(dataItem: DataItem): ProductCardModel {
+    fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {
+        val productName: String
+        val slashedPrice: String
+        val formattedPrice: String
+        val isOutOfStock: Boolean
+
+        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+            productName = dataItem.title ?: ""
+            slashedPrice = dataItem.price ?: ""
+            formattedPrice = dataItem.discountedPrice ?: ""
+            isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+        } else {
+            productName = dataItem.name ?: ""
+            slashedPrice = dataItem.discountedPrice ?: ""
+            formattedPrice = dataItem.price ?: ""
+            isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
+        }
         return ProductCardModel(
-                productName = dataItem.name ?: "",
-                slashedPrice = dataItem.discountedPrice ?: "",
-                formattedPrice = dataItem.price ?: "",
+                productImageUrl = dataItem.imageUrlMobile ?: "",
+                productName = productName,
+                slashedPrice = slashedPrice,
+                formattedPrice = formattedPrice,
                 discountPercentage = if (dataItem.discountPercentage?.toIntOrZero() != 0) {
                     "${dataItem.discountPercentage}%"
                 } else {
                     ""
                 },
-                countSoldRating = dataItem.averageRating,
-                productImageUrl = dataItem.imageUrlMobile ?: "",
+                countSoldRating = if (dataItem.isOldRating) {
+                    ""
+                } else {
+                    dataItem.averageRating
+                },
+                ratingCount = if (dataItem.isOldRating) {
+                    dataItem.rating.toIntOrZero()
+                } else 0,
+                reviewCount = if (dataItem.isOldRating) {
+                    dataItem.countReview.toIntOrZero()
+                } else 0,
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
@@ -171,8 +213,36 @@ class DiscoveryDataMapper {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
                 },
                 shopLocation = getShopLocation(dataItem),
-                shopBadgeList = getShopBadgeList(dataItem)
+                shopBadgeList = getShopBadgeList(dataItem),
+                stockBarPercentage = setStockProgress(dataItem),
+                stockBarLabel = dataItem.stockWording?.title ?: "",
+                isOutOfStock = isOutOfStock,
+                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasThreeDots = dataItem.hasThreeDots
         )
+    }
+
+    private fun setStockProgress(dataItem: DataItem): Int {
+        val stockSoldPercentage = dataItem.stockSoldPercentage
+        if (stockSoldPercentage?.toIntOrNull() == null || stockSoldPercentage.isEmpty()) {
+            dataItem.stockWording?.title = ""
+        } else {
+            if (stockSoldPercentage.toIntOrZero() !in (SOLD_PERCENTAGE_LOWER_LIMIT) until SOLD_PERCENTAGE_UPPER_LIMIT) {
+                dataItem.stockWording?.title = ""
+            }
+        }
+        return stockSoldPercentage.toIntOrZero()
+    }
+
+    private fun outOfStockLabelStatus(productStock: String?, saleStockValidation: Int = 0): Boolean {
+        return when (saleStockValidation) {
+            productStock?.toIntOrNull() -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
     }
 
     private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
@@ -191,9 +261,9 @@ class DiscoveryDataMapper {
 
     private fun getShopLocation(dataItem: DataItem): String {
         return if (!dataItem.shopLocation.isNullOrEmpty()) {
-            dataItem.shopLocation
+            dataItem.shopLocation!!
         } else if (!dataItem.shopName.isNullOrEmpty()) {
-            dataItem.shopName
+            dataItem.shopName!!
         } else {
             ""
         }

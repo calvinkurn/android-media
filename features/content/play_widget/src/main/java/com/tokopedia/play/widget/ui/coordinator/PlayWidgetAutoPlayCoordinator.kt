@@ -141,6 +141,6 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val MAX_DELAY = 3000L // set delay before play to 3s
+        private const val MAX_DELAY = 2000L // set delay before play to 2s
     }
 }

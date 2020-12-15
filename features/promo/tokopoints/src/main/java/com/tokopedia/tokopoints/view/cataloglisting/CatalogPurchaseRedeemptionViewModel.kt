@@ -66,9 +66,11 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
         }
     }
 
-    override fun redeemCoupon(promoCode: String, cta: String) {
+    override fun redeemCoupon(promoCode: String?, cta: String?) {
         launchCatchError(block = {
-            repository.redeemCoupon(promoCode)
+            if (promoCode != null) {
+                repository.redeemCoupon(promoCode)
+            }
             onRedeemCouponLiveData.value = cta
         }) {
             onRedeemCouponLiveData.value = cta

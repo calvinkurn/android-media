@@ -154,7 +154,7 @@ class TravelDestinationTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_DESTINATION_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, CLICK_DEALS_WIDGET,
                         TrackAppUtils.EVENT_LABEL, "${position + 1} - ${item.product} - ${item.title}",
-                        ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, "/event",
+                        ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, "/deals",
                         PRODUCTS, products)))
                 ))
     }

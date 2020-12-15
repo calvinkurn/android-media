@@ -17,7 +17,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/rv_widget_umrah_pdp_itinerary"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/g_500"
+            android:textColor="@color/Green_G500"
             android:text="@string/umrah_pdp_read_more" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

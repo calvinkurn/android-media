@@ -1,16 +1,8 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.JsonIOException
-import com.google.gson.JsonSyntaxException
-import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.data.PlayWidgetResponse
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.Reader
+import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import kotlin.random.Random
 
 
 /**
@@ -18,38 +10,137 @@ import java.io.Reader
  */
 object PlayWidgetUiMock {
 
-    @Throws(JsonSyntaxException::class, JsonIOException::class)
-    fun getPlayWidgetMedium(context: Context): PlayWidgetUiModel {
-        val reader: Reader = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.play_widget_v2_medium)))
-        val gson = Gson()
-        val response = gson.fromJson(reader, PlayWidgetResponse::class.java)
-        return PlayWidgetMediumUiMapper(PlayWidgetConfigMapper(), PlayWidgetVideoMapper()).mapWidget(response.playWidget)
-    }
+    private val cardItemTypeRandom = Random(2)
 
-    @Throws(JsonSyntaxException::class, JsonIOException::class)
-    fun getPlayWidgetSmall(context: Context): PlayWidgetUiModel {
-        val reader: Reader = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.play_widget_v2_small)))
-        val gson = Gson()
-        val response = gson.fromJson(reader, PlayWidgetResponse::class.java)
-        return PlayWidgetSmallUiMapper(PlayWidgetConfigMapper(), PlayWidgetVideoMapper()).mapWidget(response.playWidget)
-    }
+    fun getPlayWidgetMedium(): PlayWidgetUiModel = getSamplePlayMediumWidget()
 
-    @Throws(JsonSyntaxException::class, JsonIOException::class)
-    fun getPlayWidgetSmallVideo(context: Context): PlayWidgetUiModel {
-        val reader: Reader = BufferedReader(InputStreamReader(context.resources.openRawResource(R.raw.play_widget_v2_small)))
-        val gson = Gson()
-        val response = gson.fromJson(reader, PlayWidgetResponse::class.java)
-        val model = PlayWidgetSmallUiMapper(PlayWidgetConfigMapper(), PlayWidgetVideoMapper()).mapWidget(response.playWidget) as PlayWidgetUiModel.Small
-        val newModel = model.copy(
-                items = model.items.mapIndexed { index, item ->
-                    if (item is PlayWidgetSmallChannelUiModel) item.copy(
-                            video = item.video.copy(
-                                    videoUrl = if (index % 2 == 0) "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                                    else "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-                            )
-                    ) else item
+    fun getPlayWidgetSmall(): PlayWidgetUiModel = getSamplePlaySmallWidget()
+
+    private fun getSamplePlaySmallWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Small(
+            title = "Yuk Nonton Sekarang!",
+            actionTitle = "Lihat semua",
+            actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+            isActionVisible = true,
+            config = getPlayWidgetConfigUiModel(),
+            items = getSampleSmallCardData(),
+            useHeader = true
+    )
+
+    private fun getSamplePlayMediumWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Medium(
+            title = "Yuk Nonton Sekarang!",
+            actionTitle = "Lihat semua",
+            actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+            isActionVisible = true,
+            background = getPlayWidgetBackgroundUiModel(),
+            config = getPlayWidgetConfigUiModel(),
+            items = getSampleMediumCardData()
+    )
+
+    private fun getSampleSmallCardData(): List<PlayWidgetSmallItemUiModel> {
+        return List(5) {
+            if (it == 0) getSampleSmallCardBanner()
+            else {
+                val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    0 -> PlayWidgetChannelType.Upcoming
+                    1 -> PlayWidgetChannelType.Vod
+                    else -> PlayWidgetChannelType.Live
                 }
-        )
-        return newModel
+                getSampleSmallChannelCardBanner(channelType)
+            }
+        }
     }
+
+    private fun getSampleMediumCardData(): List<PlayWidgetMediumItemUiModel> {
+        return List(5) {
+            when (it) {
+                0 -> getSampleMediumCardOverlayBanner()
+                4 -> getSampleMediumCardBanner()
+                else -> {
+                    val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                        0 -> PlayWidgetChannelType.Upcoming
+                        1 -> PlayWidgetChannelType.Vod
+                        else -> PlayWidgetChannelType.Live
+                    }
+                    getSampleMediumChannelCardBanner(channelType)
+                }
+            }
+        }
+    }
+
+    private fun getSampleSmallCardBanner() = PlayWidgetSmallBannerUiModel(
+            imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            appLink = "",
+            webLink = ""
+    )
+
+    private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetSmallChannelUiModel(
+            channelId = "123",
+            title = "Google Assistant review with me",
+            channelType = channelType,
+            appLink = "",
+            webLink = "",
+            startTime = "",
+            totalView = "10,0 rb",
+            totalViewVisible = true,
+            hasPromo = cardItemTypeRandom.nextBoolean(),
+            video = getVideoUiModel(channelType)
+    )
+
+    private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
+            imageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
+            appLink = "",
+            webLink = ""
+    )
+
+    private fun getSampleMediumCardBanner() = PlayWidgetMediumBannerUiModel(
+            imageUrl = "https://ecs7.tokopedia.net/img/cache/700/attachment/2020/9/2/inv/inv_b4cb80bc-aa3c-44b9-b368-ca373c488db1.jpg",
+            appLink = "",
+            webLink = "",
+            partner = PlayWidgetPartnerUiModel("123", "Google")
+    )
+
+    private fun getSampleMediumChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetMediumChannelUiModel(
+            channelId = "123",
+            title = "Google Assistant review with me",
+            channelType = channelType,
+            appLink = "",
+            webLink = "",
+            startTime = "",
+            totalView = "10,0 rb",
+            totalViewVisible = true,
+            hasPromo = cardItemTypeRandom.nextBoolean(),
+            activeReminder = cardItemTypeRandom.nextBoolean(),
+            partner = PlayWidgetPartnerUiModel("123", "Google"),
+            video = getVideoUiModel(channelType),
+            hasAction = true,
+            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+            share = PlayWidgetShareUiModel(
+                    "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+                    isShow = true
+            )
+    )
+
+    private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
+            id = "123",
+            coverUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            isLive = channelType == PlayWidgetChannelType.Live
+    )
+
+    private fun getPlayWidgetConfigUiModel() = PlayWidgetConfigUiModel(
+            autoRefresh = true,
+            autoRefreshTimer = 30,
+            autoPlay = true,
+            autoPlayAmount = 3,
+            maxAutoPlayCellularDuration = 5,
+            maxAutoPlayWifiDuration = 10
+    )
+
+    private fun getPlayWidgetBackgroundUiModel() = PlayWidgetBackgroundUiModel(
+            overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
+            overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+            overlayImageWebLink = "www.tokopedia.com/play/channels",
+            gradientColors = listOf( "#57E9FF", "#009ad6"),
+            backgroundUrl = ""
+    )
 }

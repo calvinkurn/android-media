@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -8,58 +9,61 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 
 class OfficialHomeAdapterTypeFactory(
         private val dcEventHandler: DynamicChannelEventHandler,
         private val featuredShopListener: FeaturedShopListener,
         private val homeComponentListener: HomeComponentListener,
-        private val legoBannerListener: DynamicLegoBannerListener
+        private val legoBannerListener: DynamicLegoBannerListener,
+        private val mixLeftComponentListener: MixLeftComponentListener,
+        private val recycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
-    override fun type(officialLoadingViewModel: OfficialLoadingViewModel): Int {
+    override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
         return OfficialLoadingContentViewHolder.LAYOUT
     }
 
-    override fun type(officialLoadingMoreViewModel: OfficialLoadingMoreViewModel): Int {
+    override fun type(officialLoadingMoreDataModel: OfficialLoadingMoreDataModel): Int {
         return OfficialLoadingMoreViewHolder.LAYOUT
     }
 
-    override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
-        return if (officialBannerViewModel.banner.isEmpty())
+    override fun type(officialBannerDataModel: OfficialBannerDataModel): Int {
+        return if (officialBannerDataModel.banner.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialBannerViewHolder.LAYOUT
     }
-    override fun type(officialBenefitViewModel: OfficialBenefitViewModel): Int {
-        return if (officialBenefitViewModel.benefit.isEmpty())
+    override fun type(officialBenefitDataModel: OfficialBenefitDataModel): Int {
+        return if (officialBenefitDataModel.benefit.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialBenefitViewHolder.LAYOUT
     }
 
-    override fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int {
-        return if (officialFeaturedShopViewModel.featuredShop.isEmpty())
+    override fun type(officialFeaturedShopDataModel: OfficialFeaturedShopDataModel): Int {
+        return if (officialFeaturedShopDataModel.featuredShop.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialFeaturedShopViewHolder.LAYOUT
     }
 
-    override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        return dynamicChannelViewModel.getLayoutType()
+    override fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int {
+        return dynamicChannelDataModel.getLayoutType()
     }
 
-    override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
+    override fun type(productRecommendationTitleDataModel: ProductRecommendationTitleDataModel): Int {
         return OfficialProductRecommendationTitleViewHolder.LAYOUT
     }
 
-    override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
+    override fun type(productRecommendationDataModel: ProductRecommendationDataModel): Int {
         return OfficialProductRecommendationViewHolder.LAYOUT
     }
 
@@ -97,6 +101,10 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedShopViewHolder.LAYOUT
     }
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
@@ -106,7 +114,12 @@ class OfficialHomeAdapterTypeFactory(
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
-            DynamicChannelMixLeftViewHolder.LAYOUT -> DynamicChannelMixLeftViewHolder(view, dcEventHandler)
+            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(
+                    view,
+                    mixLeftComponentListener,
+                    homeComponentListener,
+                    recycledViewPool
+            )
             DynamicChannelMixTopViewHolder.LAYOUT -> DynamicChannelMixTopViewHolder(view, dcEventHandler)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)

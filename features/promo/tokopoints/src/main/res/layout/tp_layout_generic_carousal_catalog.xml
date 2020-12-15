@@ -27,20 +27,38 @@
         tools:text="Huge News!"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.TimerUnify
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/timer_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Kupon berakhir dalam"
+        android:layout_marginTop="@dimen/dp_3"
+        android:visibility="gone"
+        android:textColor="@color/tp_textcolor_dynamic_action"
+        app:layout_constraintStart_toStartOf="@id/text_title_column"
+        app:layout_constraintTop_toBottomOf="@id/text_sub_title_column"
+        app:typographyType="body_3"/>
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/tp_count_down_view_column"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/text_title_column"
-        app:layout_constraintStart_toEndOf="@id/text_title_column"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_timer_background_color="#FFEAEF"
-        app:unify_timer_colon_color="#FF5C84"
-        app:unify_timer_text_color="#FF5C84"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toEndOf="@id/timer_msg"
+        app:layout_constraintTop_toTopOf="@id/timer_msg"
+        app:layout_constraintBottom_toBottomOf="@id/timer_msg"
+        app:timer_unify_single_remainingDays="5"
+        app:timer_unify_single_remainingHours="12"
+        app:timer_unify_single_remainingMinutes="12"
+        app:timer_unify_single_remainingSeconds="00"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_textWidth="full_radius"
+        app:timer_unify_single_type="auto"
+        app:timer_unify_single_variant="informative"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_see_all_column"
@@ -66,8 +84,9 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textColor="@color/tp_subtitle_color_topads"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/text_see_all_column"
         app:layout_constraintLeft_toLeftOf="@+id/text_title_column"
         app:layout_constraintStart_toStartOf="@+id/text_title_column"
@@ -81,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_sub_title_column"
+        app:layout_constraintTop_toBottomOf="@+id/timer_msg"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

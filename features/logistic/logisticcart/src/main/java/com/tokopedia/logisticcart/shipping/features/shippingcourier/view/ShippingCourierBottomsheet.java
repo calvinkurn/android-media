@@ -16,12 +16,11 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShi
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -92,15 +91,14 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel,
-                                             List<ShopShipment> shopShipmentList) {
+                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
         hideLoading();
         if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
             mCourierModelList = shippingCourierUiModels;
             setupRecyclerView(cartPosition);
             updateHeight();
         } else {
-            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition, shopShipmentList);
+            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition);
             updateHeight();
         }
     }
@@ -221,7 +219,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         llContent.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
+    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition) {
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -231,7 +229,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
                     public void onRetryClicked() {
                         showLoading();
                         if (shippingCourierBottomsheetListener != null) {
-                            shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
+                            shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition);
                         }
                     }
                 });

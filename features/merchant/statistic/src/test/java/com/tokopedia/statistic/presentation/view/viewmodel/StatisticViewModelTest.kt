@@ -8,7 +8,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
-import com.tokopedia.statistic.utils.TestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -95,7 +95,7 @@ class StatisticViewModelTest {
                 Lazy { getTableDataUseCase },
                 Lazy { getPieChartDataUseCase },
                 Lazy { getBarChartDataUseCase },
-                TestDispatchersProvider
+                CoroutineTestDispatchersProvider
         )
 
         dynamicParameter = getDynamicParameter()
@@ -378,7 +378,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get post widget data`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -402,7 +402,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should failed when get post widget data`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"))
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)

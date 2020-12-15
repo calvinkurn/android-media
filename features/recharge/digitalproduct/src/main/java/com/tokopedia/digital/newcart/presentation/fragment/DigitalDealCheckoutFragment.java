@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -38,6 +37,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutCo
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalDealCheckoutPresenter;
 import com.tokopedia.unifycomponents.Toaster;
 

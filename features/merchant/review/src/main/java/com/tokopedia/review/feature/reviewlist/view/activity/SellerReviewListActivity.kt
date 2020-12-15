@@ -12,6 +12,10 @@ class SellerReviewListActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment = RatingProductFragment()
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.seller_review_list_parent_view
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_seller_review_list
     }

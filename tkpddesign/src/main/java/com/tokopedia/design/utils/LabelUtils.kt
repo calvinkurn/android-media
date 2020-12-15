@@ -2,7 +2,6 @@ package com.tokopedia.design.utils
 
 import android.content.Context
 import android.graphics.*
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -11,6 +10,7 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.ReplacementSpan
 import android.text.style.StyleSpan
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.design.R
 
 class LabelUtils {
@@ -51,7 +51,11 @@ class LabelUtils {
             val rect = RectF(x, (top + 5).toFloat(), x + labelWidth, bottom.toFloat())
             paint.color = userPrivilegeSelection(roleLabelText)
             canvas.drawRoundRect(rect, 3f, 3f, paint)
-            paint.color = Color.WHITE
+            if (context != null) {
+                paint.color = androidx.core.content.ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            } else {
+                paint.color = Color.WHITE
+            }
             canvas.drawText(text, start, end, x, y.toFloat(), paint)
         }
     }
@@ -80,7 +84,11 @@ class LabelUtils {
         labelWidth = userName!!.paint.measureText(role) * 0.7f
         val wordToSpan = SpannableString("$role $user")
         wordToSpan.setSpan(RelativeSizeSpan(0.7f), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        wordToSpan.setSpan(ForegroundColorSpan(Color.WHITE), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        if (context != null) {
+            wordToSpan.setSpan(ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0)), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else {
+            wordToSpan.setSpan(ForegroundColorSpan(Color.WHITE), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         reboldText(checkTextTypeFace(), wordToSpan, role.length, user.length)
         wordToSpan.setSpan(RoundedBackgroundSpan(userRole), 0, role.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (userRole != "")

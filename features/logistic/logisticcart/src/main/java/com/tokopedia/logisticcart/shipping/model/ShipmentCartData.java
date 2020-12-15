@@ -30,6 +30,8 @@ public class ShipmentCartData implements Parcelable {
     private int productInsurance;
     private int orderValue;
     private String categoryIds;
+    private int preOrderDuration;
+    private boolean isFulfillment;
 
     public ShipmentCartData() {
     }
@@ -221,6 +223,8 @@ public class ShipmentCartData implements Parcelable {
         dest.writeInt(this.productInsurance);
         dest.writeInt(this.orderValue);
         dest.writeString(this.categoryIds);
+        dest.writeInt(this.preOrderDuration);
+        dest.writeByte((byte) (isFulfillment? 1 : 0));
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -244,6 +248,8 @@ public class ShipmentCartData implements Parcelable {
         this.productInsurance = in.readInt();
         this.orderValue = in.readInt();
         this.categoryIds = in.readString();
+        this.preOrderDuration = in.readInt();
+        this.isFulfillment = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
@@ -257,4 +263,20 @@ public class ShipmentCartData implements Parcelable {
             return new ShipmentCartData[size];
         }
     };
+
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
 }

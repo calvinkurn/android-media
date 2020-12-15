@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.common.constants.TalkConstants
-import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
 import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
@@ -17,10 +17,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkInboxViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        private val talkInboxListUseCase: TalkInboxListUseCase,
-        private val userSession: UserSessionInterface,
-        private val talkInboxTracking: TalkInboxTracking
+    dispatcher: CoroutineDispatchers,
+    private val talkInboxListUseCase: TalkInboxListUseCase,
+    private val userSession: UserSessionInterface,
+    private val talkInboxTracking: TalkInboxTracking
 ) : BaseViewModel(dispatcher.io) {
 
     private val _inboxList: MediatorLiveData<TalkInboxViewState<DiscussionInbox>> = MediatorLiveData()

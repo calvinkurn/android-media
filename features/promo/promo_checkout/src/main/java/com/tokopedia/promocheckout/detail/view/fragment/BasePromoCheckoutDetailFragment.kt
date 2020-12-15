@@ -186,7 +186,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun enableViews() {
-        imageMinTrans?.setImageResource(R.drawable.ic_voucher_promo_green)
+        imageMinTrans?.setImageResource(com.tokopedia.promocheckout.common.R.drawable.ic_voucher_promo_green)
         imagePeriod?.setImageResource(R.drawable.ic_period_promo_green)
         buttonUse?.isEnabled = true
     }

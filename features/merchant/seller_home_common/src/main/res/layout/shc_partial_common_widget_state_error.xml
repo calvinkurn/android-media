@@ -15,6 +15,7 @@
         tools:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"

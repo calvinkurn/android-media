@@ -2,26 +2,31 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.graphics.Paint
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Space
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -39,11 +44,22 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
+    private val dividerTop by lazy { view.findViewById<View>(R.id.divider_top) }
+    private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
+    private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
+    private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
+    private val btnProtectionInfo by lazy { view.findViewById<UnifyImageButton>(R.id.btn_protection_info) }
+    private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
+    private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
+    private val spacePurchaseProtection by lazy { view.findViewById<Space>(R.id.space_purchase_protection) }
+    private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
 
     private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
 
     private var oldQtyValue: Int = 0
+
+    private var resetQuantityJob: Job? = null
 
     fun setProduct(product: OrderProduct) {
         this.product = product
@@ -69,6 +85,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             tfNote?.textFieldInput?.textSize = 16f
             tfNote?.textFieldInput?.isSingleLine = false
             tfNote?.setCounter(MAX_NOTES_LENGTH)
+            tfNote?.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
             tfNote?.textFieldInput?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
@@ -99,6 +116,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 qtyEditorProduct?.editText?.removeTextChangedListener(quantityTextWatcher)
                 qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
             }
+            qtyEditorProduct?.autoHideKeyboard = true
             qtyEditorProduct?.minValue = product.quantity.minOrderQuantity
             qtyEditorProduct?.maxValue = product.quantity.maxOrderStock
             oldQtyValue = product.quantity.orderQuantity
@@ -121,9 +139,19 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 override fun afterTextChanged(s: Editable?) {
                     // for automatic reload rates when typing
                     val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
-                    if (oldQtyValue != newValue) {
+                    if (newValue > 0 && oldQtyValue != newValue) {
+                        resetQuantityJob?.cancel()
                         oldQtyValue = newValue
                         qtyEditorProduct?.setValue(newValue)
+                    } else if (newValue <= 0) {
+                        // trigger reset quantity debounce to prevent empty quantity edit text
+                        resetQuantityJob?.cancel()
+                        resetQuantityJob = launch {
+                            delay(DEBOUNCE_RESET_QUANTITY_MS)
+                            if (isActive) {
+                                qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                            }
+                        }
                     }
                 }
 
@@ -138,7 +166,45 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
 
             renderProductTickerMessage()
+            renderPurchaseProtection()
         }
+    }
+
+    private fun renderPurchaseProtection() {
+        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+            tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
+            tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
+            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPricePerProduct, false).removeDecimalSuffix()
+            btnProtectionInfo.setOnClickListener {
+                val url = product.purchaseProtectionPlanData.protectionLinkUrl
+                if (url.isNotBlank()) {
+                    listener.onPurchaseProtectionInfoClicked(url)
+                }
+            }
+            cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
+            cbPurchaseProtection.setOnCheckedChangeListener { buttonView, isChecked ->
+                handleOnPurchaseProtectionCheckedChange(isChecked)
+            }
+            val lastState = listener.getLastPurchaseProtectionCheckState()
+            if (lastState != PurchaseProtectionPlanData.STATE_EMPTY) {
+                val tmpIsChecked = lastState == PurchaseProtectionPlanData.STATE_TICKED
+                cbPurchaseProtection.isChecked = tmpIsChecked
+                handleOnPurchaseProtectionCheckedChange(tmpIsChecked)
+            } else {
+                cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+            }
+            tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
+
+            groupPurchaseProtection.show()
+        } else {
+            groupPurchaseProtection.gone()
+        }
+    }
+
+    private fun handleOnPurchaseProtectionCheckedChange(tmpIsChecked: Boolean) {
+        product.purchaseProtectionPlanData.stateChecked = if (tmpIsChecked) PurchaseProtectionPlanData.STATE_TICKED else PurchaseProtectionPlanData.STATE_UNTICKED
+        listener.onProductChange(product, false)
+        listener.onPurchaseProtectionCheckedChange(tmpIsChecked)
     }
 
     private fun renderProductTickerMessage() {
@@ -197,9 +263,24 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+
+        fun onPurchaseProtectionInfoClicked(url: String)
+
+        fun onPurchaseProtectionCheckedChange(isChecked: Boolean)
+
+        fun getLastPurchaseProtectionCheckState(): Int
     }
 
     companion object {
         const val MAX_NOTES_LENGTH = 144
+
+        private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main.immediate
+
+    fun clearJob() {
+        resetQuantityJob?.cancel()
     }
 }

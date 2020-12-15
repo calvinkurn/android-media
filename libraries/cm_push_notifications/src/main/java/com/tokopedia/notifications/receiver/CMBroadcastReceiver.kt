@@ -360,7 +360,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleCouponCode(intent: Intent, context: Context) {
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
-            coupon?.let {
+            val gratificationId = intent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)
+            if(!gratificationId.isNullOrEmpty()){
+                return
+            }
+            if(!coupon.isNullOrEmpty()){
                 copyToClipboard(context, coupon)
             }
         }

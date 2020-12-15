@@ -1,14 +1,14 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
-import androidx.annotation.NonNull
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -21,6 +21,8 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -242,6 +244,41 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         val adapter = getAdapter()
         if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
             adapter.removeElement(model)
+        }
+    }
+
+    override fun hideOptionList(model: HelpFullQuestionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is HelpFullQuestionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
+        }
+    }
+
+    override fun hideCsatOptionList(model: CsatOptionsViewModel) {
+        val adapter = getAdapter()
+        var position: Int = 0
+        for (msg in adapter.list) {
+            if (msg is CsatOptionsViewModel && model.csat?.caseChatId == msg.csat?.caseChatId) {
+                model.isSubmited = true
+                adapter.setElement(position, model)
+                break;
+            }
+            position++
+        }
+    }
+
+    override fun hideActionBubbleOnSenderMsg() {
+        var item: ChatActionSelectionBubbleViewModel? = null
+        for (it in adapter.list) {
+            if (it is ChatActionSelectionBubbleViewModel) {
+                item = it
+                break
+            }
+        }
+
+        if (item != null && adapter.list.isNotEmpty()) {
+            adapter.clearElement(item)
         }
     }
 

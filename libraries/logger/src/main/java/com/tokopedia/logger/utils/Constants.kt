@@ -21,6 +21,8 @@ class Constants {
 
         val LOG_SERVICE_DELAY = 30L
         val LOG_SERVICE_BACKOFF = 30L
+        // to prevent bursting scheduling
+        val SCHEDULE_MIN_GAP = 10_000L // ms
 
         const val CLIENT_LOGENTRIES = "logentries"
         const val CLIENT_SCALYR = "scalyr"

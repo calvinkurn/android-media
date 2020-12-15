@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
-import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
@@ -17,10 +17,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class InitialSearchViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getSellerSearchUseCase: GetSellerSearchUseCase,
-        private val deleteSuggestionHistoryUseCase: DeleteSuggestionHistoryUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getSellerSearchUseCase: GetSellerSearchUseCase,
+    private val deleteSuggestionHistoryUseCase: DeleteSuggestionHistoryUseCase
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _deleteHistorySearch = MutableLiveData<Result<DeleteHistorySearchUiModel>>()
     val deleteHistorySearch: LiveData<Result<DeleteHistorySearchUiModel>>
@@ -32,7 +32,7 @@ class InitialSearchViewModel @Inject constructor(
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
-            val responseGetSellerSearch = withContext(dispatcherProvider.io()) {
+            val responseGetSellerSearch = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
                         keyword, shopId, section)
                 GlobalSearchSellerMapper.mapToInitialSearchUiModel(getSellerSearchUseCase.executeOnBackground())
@@ -45,7 +45,7 @@ class InitialSearchViewModel @Inject constructor(
 
     fun deleteSuggestionSearch(keyword: List<String>) {
         launchCatchError(block = {
-            val responseDeleteSearch = withContext(dispatcherProvider.io()) {
+            val responseDeleteSearch = withContext(dispatcherProvider.io) {
                 deleteSuggestionHistoryUseCase.params = DeleteSuggestionHistoryUseCase.createParams(keyword)
                 GlobalSearchSellerMapper.mapToDeleteHistorySearchUiModel(deleteSuggestionHistoryUseCase.executeOnBackground())
             }

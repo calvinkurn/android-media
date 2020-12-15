@@ -314,6 +314,16 @@
       "clientId": "{{.*}}",
       "userId": "{{.*}}",
       "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on button share link",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
     }
   ]
 }

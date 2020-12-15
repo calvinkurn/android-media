@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.buyerorder.detail.di.OrderListDetailModule
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase
+import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl
@@ -72,9 +72,9 @@ class OrderListUseCaseModule {
                                        addWishListUseCase: AddWishListUseCase, removeWishListUseCase: RemoveWishListUseCase,
                                        topAdsWishlishedUseCase: TopAdsWishlishedUseCase, userSessionInterface: UserSessionInterface,
                                        orderListAnalytics: OrderListAnalytics, postCancelReasonUseCase: PostCancelReasonUseCase,
-                                       finishOrderUseCase: FinishOrderUseCase, addToCartMultiLegacyUseCase: AddToCartMultiLegacyUseCase): OrderListPresenterImpl {
+                                       addToCartMultiLegacyUseCase: AddToCartMultiLegacyUseCase, finishOrderGqlUseCase: FinishOrderGqlUseCase): OrderListPresenterImpl {
         return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase,
-                userSessionInterface, orderListAnalytics, postCancelReasonUseCase, finishOrderUseCase, addToCartMultiLegacyUseCase)
+                userSessionInterface, orderListAnalytics, postCancelReasonUseCase, addToCartMultiLegacyUseCase, finishOrderGqlUseCase)
     }
 
 }

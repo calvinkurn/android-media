@@ -40,6 +40,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
@@ -52,6 +54,10 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewMod
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
+import com.tokopedia.searchbar.data.HintData;
+import com.tokopedia.searchbar.navigation_component.NavToolbar;
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder;
+import com.tokopedia.searchbar.navigation_component.icons.IconList;
 import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -64,6 +70,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import kotlin.Unit;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -81,6 +89,7 @@ public class SearchActivity extends BaseActivity
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
+    private NavToolbar searchNavigationToolbar;
     private Toolbar toolbar;
     private MotionLayout container;
     private LoaderUnify loadingView;
@@ -114,6 +123,8 @@ public class SearchActivity extends BaseActivity
 
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
+    private boolean isABTestNavigationRevamp = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +132,8 @@ public class SearchActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_search);
+
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
 
         setStatusBarColor();
         getExtrasFromIntent(getIntent());
@@ -144,6 +157,18 @@ public class SearchActivity extends BaseActivity
 
         pageLoadTimePerformanceMonitoring.startMonitoring(SEARCH_RESULT_TRACE);
         pageLoadTimePerformanceMonitoring.startPreparePagePerformanceMonitoring();
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return RemoteConfigInstance.getInstance().getABTestPlatform()
+                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                    .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void setStatusBarColor() {
@@ -183,6 +208,7 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void findViews() {
+        searchNavigationToolbar = findViewById(R.id.searchNavigationToolbar);
         toolbar = findViewById(R.id.toolbar);
         container = findViewById(R.id.container);
         loadingView = findViewById(R.id.progressBar);
@@ -241,9 +267,36 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initToolbar() {
-        configureSupportActionBar();
-        configureToolbarOnClickListener();
+        if (isABTestNavigationRevamp) {
+            configureSearchNavigationToolbar();
+        }
+        else {
+            configureSupportActionBar();
+            configureToolbarOnClickListener();
+        }
         configureToolbarVisibility();
+    }
+
+    private void configureSearchNavigationToolbar() {
+        hideToolbar();
+        setSearchNavigationToolbar();
+    }
+
+    private void hideToolbar() {
+        if (toolbar == null) return;
+
+        toolbar.setVisibility(View.GONE);
+    }
+
+    private void setSearchNavigationToolbar(){
+        if (searchNavigationToolbar == null) return;
+
+        searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
+        searchNavigationToolbar.setIcon(
+                new IconBuilder()
+                        .addIcon(IconList.ID_CART, false, false, () -> Unit.INSTANCE)
+                        .addIcon(IconList.ID_NAV_GLOBAL, false, false, () -> Unit.INSTANCE)
+        );
     }
 
     private void configureSupportActionBar() {
@@ -447,8 +500,35 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        String toolbarTitle = getToolbarTitle(query);
-        searchTextView.setText(toolbarTitle);
+        if (isABTestNavigationRevamp) {
+            configureSearchNavigationSearchBar();
+        }
+        else {
+            String toolbarTitle = getToolbarTitle(query);
+            searchTextView.setText(toolbarTitle);
+        }
+    }
+
+    private void configureSearchNavigationSearchBar(){
+        String query = searchParameter.getSearchQuery();
+
+        List<HintData> hintData = new ArrayList();
+        hintData.add(new HintData(query, query));
+
+        searchNavigationToolbar.setupSearchbar(
+                hintData,
+                "",
+                this::onSearchNavigationSearchBarClicked,
+                null,
+                0,
+                true,
+                false
+        );
+    }
+
+    private Unit onSearchNavigationSearchBarClicked(String keyword) {
+        moveToAutoCompleteActivity();
+        return Unit.INSTANCE;
     }
 
     private String getToolbarTitle(String query) {
@@ -544,12 +624,27 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        showButtonCart();
+
+        if (isABTestNavigationRevamp) setSearchNavigationCartButton();
+        else showButtonCart();
     }
 
     @Override
     public boolean isAllowShake() {
         return false;
+    }
+
+    private void setSearchNavigationCartButton() {
+        if (userSession.isLoggedIn()) {
+            setSearchNavigationCartButtonCount();
+        }
+    }
+
+    private void setSearchNavigationCartButtonCount() {
+        if (searchNavigationToolbar == null) return;
+
+        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+        searchNavigationToolbar.setBadgeCounter(IconList.ID_CART, cartCount);
     }
 
     private void showButtonCart() {
@@ -613,6 +708,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
+        if (isABTestNavigationRevamp) return;
+
         if(buttonChangeGrid != null) {
             buttonChangeGrid.setImageResource(iconResId);
         }

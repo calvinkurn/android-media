@@ -8,6 +8,7 @@ import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class FlightCancellationReviewViewModel @Inject constructor(
         private val estimateUseCase: FlightCancellationEstimateRefundUseCase,
         private val requestUseCase: FlightCancellationRequestCancelUseCase,
+        private val flightAnalytics: FlightAnalytics,
         private val userSession: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -50,6 +52,13 @@ class FlightCancellationReviewViewModel @Inject constructor(
         }
 
         fetchRefundEstimation()
+    }
+
+    fun trackOnSubmit() {
+        flightAnalytics.eventClickNextOnCancellationSubmit(
+                "${cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateRefund} - ${cancellationWrapperModel.invoiceId}",
+                userSession.userId
+        )
     }
 
     fun fetchRefundEstimation() {

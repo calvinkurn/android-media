@@ -18,7 +18,7 @@ class GetTickerUseCase(
 
     override suspend fun executeOnBackground(): List<TickerItemUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetTickerResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetTickerResponse::class.java)
         if (errors.isNullOrEmpty()) {

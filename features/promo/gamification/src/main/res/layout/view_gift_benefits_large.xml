@@ -33,12 +33,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:lines="1"
+        android:ellipsize="end"
         android:textColor="@color/gf_orange_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
@@ -47,32 +51,42 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDesc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_3"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:typographyWeight="reguler"
-        tools:text="Kupon Diskon Bimoli" />
+        tools:text="Kupon Diskon Bimoli saljdlskadjl asldjalksaldjlas sad" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginBottom="@dimen/dp_8"
         android:textColor="@color/gf_box_prize_color"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/tvDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:typographyType="body_2"
         app:typographyWeight="bold"
+        android:ellipsize="end"
         tools:text="Jadi Rp 100" />
 
 

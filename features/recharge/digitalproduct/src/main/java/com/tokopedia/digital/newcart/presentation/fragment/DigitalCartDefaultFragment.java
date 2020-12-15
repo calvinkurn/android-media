@@ -14,11 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDefaultPresenter;
 
 import javax.inject.Inject;
@@ -53,7 +53,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, subParams);
         fragment.setArguments(bundle);
         return fragment;
-
     }
 
 

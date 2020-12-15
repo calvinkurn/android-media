@@ -61,6 +61,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageProductBannerViewHolder.LAYOUT
     }
 
+    fun type(productCardCustomModel: RechargeProductCardCustomBannerModel): Int {
+        return RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -93,6 +97,10 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return 0
+    }
+
     override fun type(viewModel: LoadingModel): Int {
         return RechargeHomepageLoadingViewholder.LAYOUT
     }
@@ -114,6 +122,7 @@ class RechargeHomepageAdapterTypeFactory(
             RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
             RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
             RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
+            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -69,6 +69,9 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option) {}
     }
 }
 
@@ -107,12 +110,6 @@ internal fun createEmptyStateListener(): EmptyStateListener {
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
-    }
-}
-
-internal fun createBannedProductsEmptySearch(): BannedProductsRedirectToBrowserListener {
-    return object: BannedProductsRedirectToBrowserListener {
-        override fun onGoToBrowserClicked(isEmptySearch: Boolean, liteUrl: String) {}
     }
 }
 

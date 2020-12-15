@@ -13,9 +13,9 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticdata.data.autocomplete.Place
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals

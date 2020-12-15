@@ -9,9 +9,9 @@ data class ProductGeneralInfoDataModel(
         val type: String = "",
         val applink: String = "",
         var title: String = "",
-        val isApplink: Boolean = false,
+        var isApplink: Boolean = false,
         val parentIcon: String = "",
-        val data: List<Content> = listOf(Content())
+        var data: List<Content> = listOf(Content())
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

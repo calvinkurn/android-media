@@ -1,6 +1,6 @@
 package com.tokopedia.search.utils;
 
-import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.utils.text.currency.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ public final class UrlParamUtils {
 
     public static HashMap<String, String> getParamMap(String paramString) {
         HashMap<String, String> map = new HashMap<>();
-        if (StringUtils.isNotBlank(paramString)) {
+        if (StringUtils.INSTANCE.isNotBlank(paramString)) {
             String[] params = paramString.split("&");
             for (String param : params) {
                 String[] val = param.split("=");

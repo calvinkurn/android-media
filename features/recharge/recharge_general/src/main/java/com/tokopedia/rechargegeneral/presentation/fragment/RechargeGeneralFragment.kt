@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -34,11 +36,9 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -674,32 +674,55 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         var recentTransactionFragment: RechargeGeneralRecentTransactionFragment? = null
         var promoListFragment: RechargeGeneralPromoListFragment? = null
+        val showTitle = !(recommendations.isNotEmpty() && promos.isNotEmpty())
         if (recommendations.isNotEmpty()) {
-            recentTransactionFragment = RechargeGeneralRecentTransactionFragment.newInstance(recommendations)
-            listProductTab.add(TopupBillsTabItem(recentTransactionFragment, getString(R.string.recent_transaction_tab_title)))
+            recentTransactionFragment = RechargeGeneralRecentTransactionFragment.newInstance(recommendations, showTitle)
+            listProductTab.add(TopupBillsTabItem(recentTransactionFragment, RECENT_TRANSACTION_LABEL))
         }
         if (promos.isNotEmpty()) {
-            promoListFragment = RechargeGeneralPromoListFragment.newInstance(promos)
-            listProductTab.add(TopupBillsTabItem(promoListFragment, getString(R.string.promo_tab_title)))
+            promoListFragment = RechargeGeneralPromoListFragment.newInstance(promos, showTitle)
+            listProductTab.add(TopupBillsTabItem(promoListFragment, PROMO_LIST_LABEL))
         }
 
         if (listProductTab.isNotEmpty()) {
-            val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
+            val pagerAdapter = TopupBillsProductTabAdapter(this, listProductTab)
             product_view_pager.adapter = pagerAdapter
             product_view_pager.offscreenPageLimit = listProductTab.size
+            tab_layout.customTabMode = TabLayout.MODE_FIXED
+            tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
 
             if (listProductTab.size > 1) {
-                tab_layout.setupWithViewPager(product_view_pager)
-                tab_layout.onTabSelected {
-                    if (it.text == getString(R.string.promo_tab_title)) {
-                        rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
-                    }
+                for (item in listProductTab) {
+                    tab_layout.addNewTab(item.title)
                 }
-                tab_layout.show()
+                tab_layout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        product_view_pager.setCurrentItem(tab.position, true)
+                        val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
+                        if (tab.position == promoListIndex) {
+                            rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
+                        }
+                    }
 
-                // Hide widget title
-                (product_view_pager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
-                (product_view_pager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+
+                    }
+
+                })
+                product_view_pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
+                            it.select()
+                        }
+                    }
+                })
+                tab_layout.show()
+            } else {
+                tab_layout.hide()
             }
             product_view_pager.show()
         } else {
@@ -740,7 +763,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun hideFooterView() {
         tab_layout.hide()
-        separator.hide()
         product_view_pager.hide()
     }
 
@@ -1047,9 +1069,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_ZONE_ID = "zone_id"
 
+        const val PROMO_LIST_LABEL = "Promo"
+        const val RECENT_TRANSACTION_LABEL = "Transaksi Terakhir"
+
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
-        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
+        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
         fun newInstance(categoryId: Int,
                         menuId: Int,

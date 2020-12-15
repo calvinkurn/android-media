@@ -1,13 +1,14 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.sellerorder.R
@@ -34,7 +35,8 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         if (intent.extras != null) {
             bundle = intent.extras ?: Bundle()
         } else {
-            bundle.putString(PARAM_ORDER_ID, "")
+            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
+            bundle.putString(PARAM_ORDER_ID, orderId)
         }
         return SomDetailFragment.newInstance(bundle)
     }
@@ -66,7 +68,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
 
     private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 }

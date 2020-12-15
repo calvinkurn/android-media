@@ -39,7 +39,7 @@ class ProductInfoAdapter(private val listener: DynamicProductDetailListener,
             view.desc_info.text = data.subtitle
 
             if (data.applink.isNotEmpty()) {
-                view.desc_info.setTextColor(MethodChecker.getColor(view.context, R.color.tkpd_main_green))
+                view.desc_info.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 view.desc_info.setOnClickListener {
                     when {
                         data.applink.startsWith(categoryApplink) -> {

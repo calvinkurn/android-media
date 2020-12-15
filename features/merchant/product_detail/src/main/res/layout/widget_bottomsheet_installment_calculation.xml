@@ -49,13 +49,13 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/white"
+            app:tabBackground="@color/Unify_N0"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/tkpd_green_header"
+            app:tabIndicatorColor="@color/Unify_G400"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/tkpd_green_header"
+            app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="@color/black_38" />
+            app:tabTextColor="@color/Unify_N700_32" />
 
         <View
             android:layout_width="match_parent"

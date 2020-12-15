@@ -10,10 +10,11 @@
         android:layout_alignParentLeft="true"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:srcCompat="@drawable/ic_umrah_verified_green"
-            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -21,7 +22,7 @@
             android:text="@string/umrah_pdp_ad_certainly_depart"
             app:typographyWeight="reguler"
             app:typographyType="small"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
     </LinearLayout>
 
@@ -32,11 +33,11 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:srcCompat="@drawable/ic_umrah_verified_green"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -44,7 +45,7 @@
             android:text="@string/umrah_pdp_add_verified_money_secured"
             app:typographyWeight="reguler"
             app:typographyType="small"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
     </LinearLayout>
 
@@ -52,13 +53,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/dp_18"
+        android:layout_marginRight="@dimen/dimen_dp_18"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:srcCompat="@drawable/ic_umrah_verified_green"
-            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -66,7 +68,7 @@
             android:text="@string/umrah_pdp_add_verified_promise"
             app:typographyWeight="reguler"
             app:typographyType="small"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             />
     </LinearLayout>
 

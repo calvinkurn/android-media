@@ -72,7 +72,7 @@ class SmartBillsViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        smartBillsViewModel.getStatementMonths("", mapParams)
+        smartBillsViewModel.getStatementMonths(mapParams)
         val actualData = smartBillsViewModel.statementMonths.value
         assert(actualData is Success)
         val statementMonths = (actualData as Success).data
@@ -92,7 +92,7 @@ class SmartBillsViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        smartBillsViewModel.getStatementMonths("", mapParams)
+        smartBillsViewModel.getStatementMonths(mapParams)
         val actualData = smartBillsViewModel.statementMonths.value
         assert(actualData is Fail)
     }
@@ -101,7 +101,7 @@ class SmartBillsViewModelTest {
     fun getStatementMonths_Fail_ErrorResponse() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        smartBillsViewModel.getStatementMonths("", mapParams)
+        smartBillsViewModel.getStatementMonths(mapParams)
         val actualData = smartBillsViewModel.statementMonths.value
         assert(actualData is Fail)
     }
@@ -121,7 +121,7 @@ class SmartBillsViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        smartBillsViewModel.getStatementBills("", mapParams)
+        smartBillsViewModel.getStatementBills(mapParams)
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Success)
         val statementBills = (actualData as Success).data
@@ -151,7 +151,7 @@ class SmartBillsViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        smartBillsViewModel.getStatementBills("", mapParams)
+        smartBillsViewModel.getStatementBills(mapParams)
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Success)
         val statementBills = (actualData as Success).data
@@ -166,7 +166,7 @@ class SmartBillsViewModelTest {
     fun getStatementBills_Fail() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        smartBillsViewModel.getStatementMonths("", mapParams)
+        smartBillsViewModel.getStatementMonths(mapParams)
         val actualData = smartBillsViewModel.statementMonths.value
         assert(actualData is Fail)
     }

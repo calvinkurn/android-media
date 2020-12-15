@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
@@ -18,6 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
 
@@ -37,12 +37,10 @@ internal open class ProductListPresenterTestFixtures {
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
-    protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
     protected val getLocalSearchRecommendationUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
-    protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
@@ -59,9 +57,7 @@ internal open class ProductListPresenterTestFixtures {
                 searchProductFirstPageUseCase,
                 searchProductLoadMoreUseCase,
                 recommendationUseCase,
-                seamlessLoginUseCase,
                 userSession,
-                advertisingLocalCache,
                 searchOnBoardingLocalCache,
                 dagger.Lazy { getDynamicFilterUseCase },
                 dagger.Lazy { getProductCountUseCase },
@@ -151,5 +147,10 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe organicProduct.name
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
+    }
+
+    @After
+    open fun tearDown() {
+        productListPresenter.detachView()
     }
 }

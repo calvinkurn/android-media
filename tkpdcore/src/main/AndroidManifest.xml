@@ -62,12 +62,12 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
-        <meta-data
+        <!--<meta-data
             android:name="HANSEL_APP_ID"
-            android:value="JM8LWF8S5B951JQOAZAFRNX14"/>
+            android:value="NX65FFRN4CS3MSSVZP5F1VU31"/>
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+            android:value="MVO7CHBZKIC1PISXRRGVH1UH97T55PYRSFWMV6X4J1V151MQVH"/>-->
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->

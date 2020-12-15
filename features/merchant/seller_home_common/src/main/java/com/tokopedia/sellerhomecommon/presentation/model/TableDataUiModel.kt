@@ -11,7 +11,8 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFact
 data class TableDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
-        val dataSet: List<TablePageUiModel> = emptyList()
+        val dataSet: List<TablePageUiModel> = emptyList(),
+        override var isFromCache: Boolean = false
 ) : BaseDataUiModel
 
 data class TablePageUiModel(

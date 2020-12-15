@@ -28,15 +28,10 @@
 
             <include
                 layout="@layout/item_cart_product"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <include
                 layout="@layout/item_shipment_other_product"
-                tools:visibility="visible" />
-
-            <!--Shipping: Trade In Pickup-->
-            <include
-                layout="@layout/item_shipment_trade_in_pickup"
                 tools:visibility="visible" />
 
             <!--Shipping: Shipping Experience-->

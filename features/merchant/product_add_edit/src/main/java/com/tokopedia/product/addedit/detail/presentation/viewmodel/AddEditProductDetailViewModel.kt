@@ -22,6 +22,9 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -36,7 +39,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase
+        private val validateProductUseCase: ValidateProductUseCase,
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -44,6 +48,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAdding = false
 
     var isDrafting = false
+
+    var isReloadingShowCase = false
 
     var isFirstMoved = false
 
@@ -54,6 +60,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val hasTransaction get() = productInputModel.itemSold > 0
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
+
+    var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
 
@@ -146,6 +154,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
+
+    private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
+        get() = mShopShowCases
 
     private fun isInputValid(): Boolean {
 
@@ -411,6 +423,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
+        productShowCases = selectedShowcaseList
+    }
+
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO) {
@@ -431,6 +447,17 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
+        })
+    }
+
+    fun getShopShowCasesUseCase() {
+        launchCatchError(block = {
+            mShopShowCases.value = Success(withContext(Dispatchers.IO) {
+                val response = getShopEtalaseUseCase.executeOnBackground()
+                response.shopShowcases.result
+            })
+        }, onError = {
+            mShopShowCases.value = Fail(it)
         })
     }
 }

@@ -22,83 +22,100 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
-            android:text="@string/rate_est_detail_dest_fmt" />
+            android:layout_height="wrap_content"
+            android:text="@string/rate_est_detail_dest_fmt"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shipping_destination"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:layout_width="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            tools:text="Yehezkiel" />
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_weight"
-        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weight"
+        app:typographyType="body_2"
         tools:text="1000 gram" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_receiver_name"
-        style="@style/TextView.Micro.BlackSecondary"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_shipping_destination"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="@string/service_title_format" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_receiver_phone"
-        style="@style/TextView.Micro.BlackSecondary"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_32"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_name"
-        tools:text="@string/service_title_format" />
+        app:typographyType="body_2"
+        tools:text="@string/service_title_format"
+        tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_receiver_address"
-        style="@style/TextView.Micro.BlackSecondary"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_32"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_phone"
+        app:typographyType="body_2"
         tools:text="@string/service_title_format" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/weight"
-        style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/rate_est_detail_weight_fmt"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ll_shipping_destination" />
+        app:layout_constraintTop_toTopOf="@+id/ll_shipping_destination"
+        app:typographyType="body_2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/light_grey"
+        android:background="@color/Unify_N0"
         android:padding="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -128,33 +145,37 @@
             app:layout_constraintTop_toBottomOf="@id/information1"
             app:srcCompat="@drawable/ic_bullet_green" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/information1"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:text="@string/shipping_cost_descr_1"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/indicator1"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@+id/indicator1"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/information2"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/shipping_cost_descr_2"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/information1"
             app:layout_constraintLeft_toRightOf="@+id/indicator2"
             app:layout_constraintRight_toRightOf="@+id/information1"
             app:layout_constraintStart_toEndOf="@+id/indicator2"
-            app:layout_constraintTop_toBottomOf="@+id/information1" />
+            app:layout_constraintTop_toBottomOf="@+id/information1"
+            app:typographyType="body_2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -173,6 +194,7 @@
         app:layout_constraintTop_toBottomOf="@+id/info_container"
         app:layout_constraintVertical_bias="0"
         app:tickerShapeType="loose"
-        app:tickerType="announcement" />
+        app:tickerType="announcement"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

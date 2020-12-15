@@ -4,6 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
@@ -13,8 +14,10 @@ import rx.Subscriber
 class LoginTokenSubscriber(val userSession: UserSessionInterface,
                            val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                            val onErrorLoginToken: (e: Throwable) -> Unit,
+                           val onShowPopupError: (pojo: LoginTokenPojo)  -> Unit,
                            val onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
-                           val onGoToSecurityQuestion: () -> Unit) :
+                           val onGoToSecurityQuestion: () -> Unit,
+                           val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -31,6 +34,10 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
             }
         } else if (shouldGoToActivationPage(pojo)) {
             onGoToActivationPage(MessageErrorException(pojo.loginToken.errors[0].message))
+        } else if (pojo.loginToken.popupError.header.isNotEmpty() &&
+                pojo.loginToken.popupError.body.isNotEmpty() &&
+                pojo.loginToken.popupError.action.isNotEmpty()) {
+            onShowPopupError(pojo)
         } else if (pojo.loginToken.errors.isNotEmpty()) {
             onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message))
         } else if (errors.isNotEmpty()) {
@@ -55,13 +62,14 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
     }
 
     override fun onCompleted() {
-
+        onFinished.invoke()
     }
 
     override fun onError(e: Throwable?) {
         e?.run {
             onErrorLoginToken(this)
         }
+        onFinished.invoke()
     }
 
 

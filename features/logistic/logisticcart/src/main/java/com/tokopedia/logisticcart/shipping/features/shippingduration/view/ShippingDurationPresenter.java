@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RatesParam;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
@@ -17,8 +17,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.network.utils.ErrorHandler;
 
 import java.util.List;
@@ -66,21 +66,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     /**
-     * This method is only called from express checkout,
-     * once express checkout is deleted, this should be deleted.
-     * If someone need to call courier recommendation, please use the other one
-     */
-    @Override
-    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList) {
-        if (view != null) {
-            view.showLoading();
-            loadDuration(0, selectedServiceId, -1, false, false,
-                    shopShipmentList, false, shippingParam, "");
-        }
-    }
-
-    /**
      * Calls rates
      */
     @Override
@@ -91,7 +76,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           boolean isLeasing, String pslCode,
                                           List<Product> products, String cartString,
                                           boolean isTradeInDropOff,
-                                          RecipientAddressModel recipientAddressModel) {
+                                          RecipientAddressModel recipientAddressModel,
+                                          boolean isFulfillment, int preOrderTime,
+                                          String mvc) {
         if (view != null) {
             view.showLoading();
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -101,19 +88,21 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode);
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc);
         }
     }
 
     private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory,
                               boolean isCorner, boolean isLeasing,
                               List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
-                              ShippingParam shippingParam, String pslCode) {
+                              ShippingParam shippingParam, String pslCode,
+                              boolean isFulfillment, int preOrderTime, String mvc) {
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
+                .mvc(mvc)
                 .build();
 
         Observable<ShippingRecommendationData> observable;
@@ -198,6 +187,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
+        shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
+        shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

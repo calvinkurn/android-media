@@ -31,9 +31,9 @@ import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
@@ -104,7 +104,7 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
 
-                if (modeList.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
+                if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {
                     (activity as VerificationActivity).goToVerificationPage(modeList)
@@ -169,6 +169,8 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
+        loadTickerTrouble(otpModeListData)
+
         when (otpModeListData.linkType) {
             TYPE_HIDE_LINK -> onTypeHideLink()
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
@@ -206,12 +208,14 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
         viewBound.phoneInactive?.setOnClickListener {
             context?.let {
                 analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
-                val intent = RouteManager.getIntent(it,
-                        ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_USER_ID,
-                        userSession.temporaryUserId)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_OLD_PHONE,
-                        userSession.tempPhoneNumber)
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+                if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
+                } else {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
+                }
                 startActivity(intent)
             }
         }
@@ -244,6 +248,15 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
 
+    }
+
+    private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
+        if (otpModeListData.enableTicker) {
+            viewBound.ticker?.show()
+            viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
+        } else {
+            viewBound.ticker?.hide()
+        }
     }
 
     private fun showLoading() {

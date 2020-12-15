@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.fragment
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -17,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
@@ -32,6 +33,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
+import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,14 +44,17 @@ import javax.inject.Inject
 class RechargeHomepageFragment : BaseDaggerFragment(),
         RechargeHomepageItemListener,
         RechargeHomepageAdapter.LoaderListener,
-        SearchInputView.FocusChangeListener {
+        RechargeSearchBarWidget.FocusChangeListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: RechargeHomepageViewModel
+
     @Inject
     lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
 
@@ -106,7 +111,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             }
         })
 
-        swipe_refresh_layout.setOnRefreshListener{
+        swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
             loadData()
         }
@@ -132,7 +137,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             var flags = digital_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.run {
+                activity?.window?.statusBarColor =
+                        androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {
@@ -158,12 +166,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
 
-        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(com.tokopedia.common_digital.R.id.search_input_view_container)
+        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
             context?.run {
+                digital_homepage_order_list.setColorFilter(
+                        ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
+                )
                 searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
             }
@@ -197,8 +207,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             hideLoading()
 
             val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
-            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull {
-                homeComponent -> homeComponent.visitableId()?.toInt()
+            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
+                homeComponent.visitableId()?.toInt()
             }
             homeComponentsData = it.filter { section -> section.id in homeComponentIDs }
             adapter.renderList(mappedData)
@@ -346,7 +356,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            digital_homepage_search_view.searchTextView.clearFocus()
+            digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
             context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }

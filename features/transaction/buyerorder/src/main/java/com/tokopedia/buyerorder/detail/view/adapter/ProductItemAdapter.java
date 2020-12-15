@@ -105,11 +105,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             if (items != null && items.getFreeShipping() != null && items.getFreeShipping().isEligible()) {
                 freeShippingImage.setVisibility(View.VISIBLE);
-                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
             if (items != null) {
                 if (!TextUtils.isEmpty(items.getImageUrl())) {
-                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 }
                 if (!TextUtils.isEmpty(items.getTitle())) {
                     productName.setText(Html.fromHtml(items.getTitle()));

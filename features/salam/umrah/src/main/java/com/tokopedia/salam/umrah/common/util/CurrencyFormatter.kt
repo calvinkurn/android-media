@@ -12,4 +12,9 @@ object CurrencyFormatter {
         rupiahFormat.maximumFractionDigits = 0
         return if(x!=0)rupiahFormat.format(x) else ""
     }
+
+    fun getRupiahFormatSliderFilter(x: Int, maxRange:Int): String {
+        return if(x>=maxRange) getRupiahFormat(x)+"+"
+        else getRupiahFormat(x)
+    }
 }

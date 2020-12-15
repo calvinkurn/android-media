@@ -81,6 +81,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -92,7 +93,6 @@ import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -225,7 +225,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Inject
     ProductDigitalPresenter presenter;
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
     @Inject
     RechargeAnalytics rechargeAnalytics;
 
@@ -790,7 +790,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void onButtonContactPickerClicked() {
         permissionCheckerHelper.checkPermission(getActivity(),
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS, new PermissionCheckerHelper.PermissionCheckListener() {
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
                         permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);

@@ -8,6 +8,7 @@ import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 const val CREATE_POST_ERROR_MSG = "create_post_error_msg"
 const val DRAFT_ID = "draft_id"
 const val DRAFT_ID_PARAM = "{$DRAFT_ID}"
+const val SHOP_ID_PARAM = "{shop_id}"
 const val USER_ID_PARAM = "{user_id}"
 const val TYPE_CONTENT = "content"
 const val TYPE_CONTENT_SHOP = "content-shop"

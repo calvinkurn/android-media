@@ -18,13 +18,13 @@ import com.tokopedia.review.common.util.TimeConverter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
 
 /**
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputationItemViewModel> {
+public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputationItemUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_item;
@@ -63,7 +63,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     @Override
-    public void bind(final InboxReputationItemViewModel element) {
+    public void bind(final InboxReputationItemUiModel element) {
 
         name.setText(MethodChecker.fromHtml(element.getRevieweeName()));
         date.setText(getDate(element.getCreateTime()));
@@ -83,7 +83,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getCreateTime(),
                         element.getRevieweeName(),
                         element.getRevieweePicture(),
-                        element.getReputationDataViewModel(),
+                        element.getReputationDataUiModel(),
                         getTextDeadline(element),
                         getAdapterPosition(),
                         element.getRole());
@@ -99,7 +99,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getCreateTime(),
                         element.getRevieweeName(),
                         element.getRevieweePicture(),
-                        element.getReputationDataViewModel(),
+                        element.getReputationDataUiModel(),
                         getTextDeadline(element),
                         getAdapterPosition(),
                         element.getRole());
@@ -107,8 +107,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         });
     }
 
-    private void setUnreadNotification(InboxReputationItemViewModel element) {
-        if (element.getReputationDataViewModel().isShowBookmark()) {
+    private void setUnreadNotification(InboxReputationItemUiModel element) {
+        if (element.getReputationDataUiModel().isShowBookmark()) {
             unreadNotification.setVisibility(View.VISIBLE);
         } else {
             unreadNotification.setVisibility(View.GONE);
@@ -120,34 +120,34 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
 
-    private void setAction(InboxReputationItemViewModel inboxReputationItemViewModel) {
-        action.setText(inboxReputationItemViewModel.getReputationDataViewModel().getActionMessage());
+    private void setAction(InboxReputationItemUiModel inboxReputationItemUiModel) {
+        action.setText(inboxReputationItemUiModel.getReputationDataUiModel().getActionMessage());
     }
 
-    private void setReputation(InboxReputationItemViewModel element) {
-        if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
+    private void setReputation(InboxReputationItemUiModel element) {
+        if (element.getRole() == InboxReputationItemUiModel.ROLE_BUYER) {
             userReputationView.setVisibility(View.VISIBLE);
             shopReputationView.setVisibility(View.GONE);
             userReputationView.setValue(
-                    element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation() == 1,
-                    element.getRevieweeBadgeCustomerViewModel().getPositive(),
-                    element.getRevieweeBadgeCustomerViewModel().getNeutral(),
-                    element.getRevieweeBadgeCustomerViewModel().getNegative()
+                    element.getRevieweeBadgeCustomerUiModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerUiModel().getNoReputation() == 1,
+                    element.getRevieweeBadgeCustomerUiModel().getPositive(),
+                    element.getRevieweeBadgeCustomerUiModel().getNeutral(),
+                    element.getRevieweeBadgeCustomerUiModel().getNegative()
             );
         } else {
             userReputationView.setVisibility(View.GONE);
             shopReputationView.setVisibility(View.VISIBLE);
             shopReputationView.setValue(
-                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
-                    element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
+                    element.getRevieweeBadgeSellerUiModel().getReputationBadge().getSet(),
+                    element.getRevieweeBadgeSellerUiModel().getReputationBadge().getLevel(),
+                    String.valueOf(element.getRevieweeBadgeSellerUiModel().getScore()));
 
         }
     }
 
-    private void setDeadline(InboxReputationItemViewModel element) {
-        if (element.getReputationDataViewModel().isShowLockingDeadline()) {
+    private void setDeadline(InboxReputationItemUiModel element) {
+        if (element.getReputationDataUiModel().isShowLockingDeadline()) {
             deadline.setVisibility(View.VISIBLE);
             textDeadline.setVisibility(View.VISIBLE);
             setIconDeadline(deadline, element.getReputationDaysLeft());
@@ -157,7 +157,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         }
     }
 
-    private String getTextDeadline(InboxReputationItemViewModel element) {
+    private String getTextDeadline(InboxReputationItemUiModel element) {
         return context.getString(R.string.deadline_prefix)
                 + " " + element.getReputationDaysLeft() + " " +
                 context.getString(R.string.deadline_suffix);
@@ -171,21 +171,21 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         switch (reputationDaysLeft) {
             case "1":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.abstraction.R
                         .color.red_500),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             case "2":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.design.R
                         .color.orange_300),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             default:
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.design.R
                         .color.light_blue_300),
                         PorterDuff.Mode
                                 .MULTIPLY));

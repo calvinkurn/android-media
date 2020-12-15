@@ -19,6 +19,13 @@ object DateTimeUtil {
         return sdf.format(timeMillis)
     }
 
+    fun format(timeMillis: Long, pattern: String, timeZone: TimeZone, locale: Locale = getLocale()): String {
+        val sdf = SimpleDateFormat(pattern, locale).apply {
+            setTimeZone(timeZone)
+        }
+        return sdf.format(timeMillis)
+    }
+
     fun getNPastDaysTimestamp(daysBefore: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }

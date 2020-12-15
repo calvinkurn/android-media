@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/push_noti_background"
     android:layout_width="match_parent"
@@ -29,10 +30,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
-                android:text="Tokopedia"
-                android:textColor="@color/medium_green_70"
+                android:text="@string/cm_app_title_name"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_13" />
 
             <ImageView
@@ -47,11 +48,10 @@
                 android:id="@+id/push_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:paddingRight="@dimen/dp_7"
-                android:textColor="@color/cm_grey_255"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/sp_12"
                 tools:text="11:00 am" />
+
         </LinearLayout>
 
         <TextView
@@ -62,8 +62,8 @@
             android:layout_marginTop="@dimen/dp_2"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="Title"
-            android:textColor="@color/cm_title_black_255"
+            tools:text="Title"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -74,15 +74,17 @@
             android:layout_marginTop="@dimen/dp_1"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/cm_light_grey_255"
+            tools:text="@tools:sample/lorem/random"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_13" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/push_image"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_weight="0.44">
 
@@ -93,5 +95,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:visibility="visible" />
+
     </RelativeLayout>
+
 </LinearLayout>

@@ -87,6 +87,7 @@ class RecommendationItemViewHolder(
             reviewCount = recommendationItem.countReview,
             ratingCount = recommendationItem.rating,
             shopLocation = recommendationItem.location,
+            countSoldRating = recommendationItem.ratingAverage,
             shopBadgeList = recommendationItem.badgesUrl.map {
                 ProductCardModel.ShopBadge(imageUrl = it
                         ?: "")

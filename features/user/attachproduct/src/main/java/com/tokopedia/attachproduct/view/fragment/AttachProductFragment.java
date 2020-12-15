@@ -107,6 +107,11 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     }
 
     @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSearchBar();
         super.onViewCreated(view, savedInstanceState);
@@ -326,7 +331,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
             emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
         } else {
             emptyResultViewModel.setContent(getString(R.string.string_attach_product_search_not_found));
-            emptyResultViewModel.setIconRes(R.drawable.ic_empty_search);
+            emptyResultViewModel.setIconRes(R.drawable.ic_attach_product_empty_search);
         }
         if (activityContract.isSeller()) {
             emptyResultViewModel.setButtonTitleRes(R.string.string_attach_product_add_product_now);

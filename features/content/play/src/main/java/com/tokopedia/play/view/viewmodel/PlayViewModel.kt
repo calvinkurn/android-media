@@ -170,21 +170,6 @@ class PlayViewModel @Inject constructor(
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(observablePartnerInfo) {
-            val currentMessageValue = _observablePinnedMessage.value
-            if (currentMessageValue != null) {
-                _observablePinnedMessage.value = currentMessageValue.copy(
-                        partnerName = it.name
-                )
-            }
-
-            val currentProductValue = _observablePinnedProduct.value
-            if (currentProductValue != null) {
-                _observablePinnedProduct.value = currentProductValue.copy(
-                        partnerName = it.name
-                )
-            }
-        }
         addSource(observableProductSheetContent) {
             _observablePinned.value = getPinnedModel(
                     pinnedMessage = _observablePinnedMessage.value,
@@ -437,13 +422,13 @@ class PlayViewModel @Inject constructor(
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
-                        partnerName = _observablePartnerInfo.value?.name.orEmpty(),
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
                 )
                 _observableCompleteInfo.value = completeInfoUiModel
 
                 _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
+                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
@@ -453,7 +438,7 @@ class PlayViewModel @Inject constructor(
 
                 if (!isActive) return@launchCatchError
 
-                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
                 launch { getBadgeCart(channel.configuration.showCart) }
                 launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
@@ -463,7 +448,9 @@ class PlayViewModel @Inject constructor(
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
-                _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+                if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
+                    getFollowStatus(completeInfoUiModel.channelInfo)
+                }
 
             }) {
                 if (retryCount == 0) _observableChannelErrorEvent.value = Event(false)
@@ -640,13 +627,10 @@ class PlayViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun getTotalLikes(feedInfoUiModel: FeedInfoUiModel) {
+    private suspend fun getTotalLikes(channelId: String) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(
-                        contentId = feedInfoUiModel.contentId,
-                        contentType = feedInfoUiModel.contentType,
-                        likeType = feedInfoUiModel.likeType)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
@@ -669,17 +653,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        return if (channel.partnerInfo.type == PartnerType.Tokopedia) channel.partnerInfo
-        else {
-            val shopInfo = getPartnerInfo(channel.partnerInfo.id, channel.partnerInfo.type)
-            PlayUiMapper.mapPartnerInfoFromShop(userSession.shopId, shopInfo)
+    private suspend fun getFollowStatus(channel: ChannelInfoUiModel) {
+        val shopInfo = withContext(dispatchers.io) {
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(channel.partnerInfo.id.toInt(), channel.partnerInfo.type)
+            getPartnerInfoUseCase.executeOnBackground()
         }
-    }
-
-    private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
-        getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
-        getPartnerInfoUseCase.executeOnBackground()
+        _observablePartnerInfo.value = channel.partnerInfo.copy(
+                isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
+                isFollowable = userSession.shopId != shopInfo.shopCore.shopId
+        )
     }
 
     private suspend fun getBadgeCart(showCart: Boolean) {

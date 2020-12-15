@@ -1,0 +1,11 @@
+{
+  "readme": "Login AppsFlyer Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "user_email": "{{.*}}",
+      "user_id": "{{.*}}",
+      "timestamp": "{{.*}}"
+    }
+  ]
+}

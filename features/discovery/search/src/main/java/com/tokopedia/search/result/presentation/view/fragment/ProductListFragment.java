@@ -72,7 +72,6 @@ import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -83,6 +82,7 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -136,12 +136,12 @@ public class ProductListFragment
         EmptyStateListener,
         RecommendationListener,
         InspirationCarouselListener,
-        BannedProductsRedirectToBrowserListener,
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener {
+        SearchInTokopediaListener,
+        SearchNavigationClickListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -314,8 +314,8 @@ public class ProductListFragment
         ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this, this,
                 this, this, this,
-                this, this, this,
-                this, this, this, this,
+                this, this,
+                this, this, this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1322,31 +1322,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String liteUrl) {
-        trackEventClickGoToBrowserBannedProducts(isEmptySearch);
-
-        if (presenter != null) {
-            presenter.onBannedProductsGoToBrowserClick(liteUrl);
-        }
-    }
-
-    @Override
-    public void redirectToBrowser(String url) {
-        if (TextUtils.isEmpty(url)) return;
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
-    }
-
-    private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
-        if (isEmptySearch) {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
-        } else {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
-        }
-    }
-
-    @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
         if (getActivity() == null || redirectionListener == null) return;
 
@@ -1401,6 +1376,20 @@ public class ProductListFragment
     }
 
     @Override
+    public void onInspirationCarouselGridProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselListProduct(product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
+        redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
+    }
+
+    @Override
     public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselViewModel.Option.Product product) {
         if (product == null) return;
 
@@ -1414,6 +1403,14 @@ public class ProductListFragment
     public void onImpressedInspirationCarouselListProduct(InspirationCarouselViewModel.Option.Product product) {
         if (product == null) return;
 
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
+
+        SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void onImpressedInspirationCarouselGridProduct(@NotNull InspirationCarouselViewModel.Option.Product product) {
         List<Object> products = new ArrayList<>();
         products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
 
@@ -1788,5 +1785,41 @@ public class ProductListFragment
     @Override
     public void addLocalSearchRecommendation(List<Visitable> visitableList) {
         adapter.appendItems(visitableList);
+    }
+
+    @Override
+    public void onChangeViewClicked(int position) {
+        if (presenter == null) return;
+
+        presenter.handleChangeView(position, adapter.getCurrentLayoutType());
+    }
+
+    @Override
+    public void trackEventSearchResultChangeView(String viewType) {
+        SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToListView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationListView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToBigGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationSingleGridView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToSmallGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(2);
+        adapter.changeSearchNavigationDoubleGridView(position);
     }
 }

@@ -3,23 +3,22 @@ package com.tokopedia.review.feature.reputationhistory.view.helper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
-import com.tokopedia.review.R;
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+
+import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
-import com.db.williamchart.util.GoldMerchantDateUtils;
+import com.tokopedia.review.R;
 import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter;
 import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
+import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -68,15 +67,15 @@ public class GMStatHeaderViewHelper {
     }
 
     private void initView(View itemView) {
-        monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+        monthNamesAbrev = itemView.getResources().getStringArray(com.tokopedia.datepicker.range.R.array.lib_date_picker_month_entries);
 
         calendarRange = (TextView) itemView.findViewById(R.id.calendar_range);
 
         calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
-        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.abstraction.R.color.grey_400, null);
 
-        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.tkpd_main_green, null);
+        greenColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.abstraction.R.color.tkpd_main_green, null);
     }
 
     public void resetToLoading() {
@@ -270,15 +269,15 @@ public class GMStatHeaderViewHelper {
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, -1);
         startCalendar.add(Calendar.DATE, -1);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(R.string.yesterday)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.yesterday)));
         startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.seven_days_ago)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)));
         startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH);
-        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.thirty_days_ago)));
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)));
         return periodRangeList;
     }
 

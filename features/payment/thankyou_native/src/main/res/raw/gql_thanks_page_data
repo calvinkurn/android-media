@@ -74,6 +74,8 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         shipping_desc
         insurance_amount
         insurance_amount_str
+        logistic_duration
+        logistic_eta
         address
         promo_data{
             promo_code
@@ -118,6 +120,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        custom_wtv_text
        custom_title_home_button
     }
+    config_flag
   }
 }
 

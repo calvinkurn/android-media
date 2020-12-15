@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseViewHolder(itemView: View,
-                            private val onOnShopEtalaseViewHolderListener: OnShopEtalaseViewHolderListener?) : AbstractViewHolder<ShopEtalaseViewModel>(itemView) {
+                            private val onOnShopEtalaseViewHolderListener: OnShopEtalaseViewHolderListener?) : AbstractViewHolder<ShopEtalaseUiModel>(itemView) {
 
     private val ivMenuMore: View
     private val tvEtalaseName: TextView
@@ -26,15 +26,15 @@ class ShopEtalaseViewHolder(itemView: View,
         ivMenuMore = itemView.findViewById(R.id.ivMenuMore)
         tvEtalaseName = itemView.findViewById(R.id.tvEtalaseName)
         tvEtalaseCount = itemView.findViewById(R.id.tvEtalaseCount)
-        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_primary_70))
+        boldColor = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     interface OnShopEtalaseViewHolderListener {
         val keyword: String
-        fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseViewModel)
+        fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseUiModel)
     }
 
-    override fun bind(shopEtalaseViewModel: ShopEtalaseViewModel) {
+    override fun bind(shopEtalaseViewModel: ShopEtalaseUiModel) {
         var keyword = ""
         if (onOnShopEtalaseViewHolderListener != null) {
             keyword = onOnShopEtalaseViewHolderListener.keyword

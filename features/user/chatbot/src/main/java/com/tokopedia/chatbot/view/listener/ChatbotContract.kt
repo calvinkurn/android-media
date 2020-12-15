@@ -8,11 +8,14 @@ import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 
 /**
  * @author by nisie on 07/12/18.
@@ -53,12 +56,14 @@ interface ChatbotContract {
 
         fun getExistingChat(messageId: String,
                             onError: (Throwable) -> Unit,
-                            onSuccess: (ChatroomViewModel) -> Unit)
+                            onSuccess: (ChatroomViewModel) -> Unit,
+                            onGetChatRatingListMessageError: (String) -> Unit)
 
         fun loadPrevious(messageId: String,
                          page: Int,
                          onError: (Throwable) -> Unit,
-                         onSuccess: (ChatroomViewModel) -> Unit)
+                         onSuccess: (ChatroomViewModel) -> Unit,
+                         onGetChatRatingListMessageError: (String) -> Unit)
 
 
         fun connectWebSocket(messageId: String)
@@ -89,6 +94,12 @@ interface ChatbotContract {
                          onError: (Throwable) -> Unit)
 
         fun destroyWebSocket()
+
+        fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?)
+
+        fun submitChatCsat(input: ChipSubmitChatCsatInput,
+                           onsubmitingChatCsatSuccess: (String) -> Unit,
+                           onError: (Throwable) -> Unit)
 
     }
 }

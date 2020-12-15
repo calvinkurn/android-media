@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.contract
 
-import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
+import com.tokopedia.digital.newcart.presentation.model.cart.FintechProduct
 
 interface DigitalCartMyBillsContract {
     interface View : DigitalBaseContract.View {
