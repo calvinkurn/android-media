@@ -110,7 +110,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         popularCityAdapter.cityList = cityList.toMutableList()
 
         rvChips.apply {
-            val dist = context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+            val dist = context.resources.getDimensionPixelOffset(R.dimen.unify_space_8)
             layoutManager = chipsLayoutManager
             adapter = popularCityAdapter
             addItemDecoration(ChipsItemDecoration(dist))

@@ -21,5 +21,8 @@
 
     <dimen name="digital_spacing_show_case">12dp</dimen>
     <dimen name="digital_arrow_width_show_case">16dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
 
 </resources>

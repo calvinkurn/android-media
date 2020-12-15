@@ -230,7 +230,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
         if (TextUtils.isEmpty(item.minimumUsage)) {
             holder.tvMinTxnValue.hide()
-            holder.tvMinTxnLabel.setPadding(0, holder.imgBanner.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_5), 0, 0)
+            holder.tvMinTxnLabel.setPadding(0, holder.imgBanner.resources.getDimensionPixelOffset(R.dimen.dp_5), 0, 0)
         } else {
             holder.tvMinTxnLabel.setPadding(0, 0, 0, 0)
             holder.tvMinTxnValue.show()
@@ -240,12 +240,12 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         val layoutParamsCv1 = holder.cvShadow1.layoutParams as ConstraintLayout.LayoutParams
         val layoutParamsCvData = holder.cvData.layoutParams as ConstraintLayout.LayoutParams
         if (item.isStacked) {
-            layoutParamsCv1.setMargins(holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12),
+            layoutParamsCv1.setMargins(holder.cvShadow1.resources.getDimensionPixelOffset(R.dimen.unify_space_12),
                     0,
-                    holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12),
-                    holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_5))
+                    holder.cvShadow1.resources.getDimensionPixelOffset(R.dimen.unify_space_12),
+                    holder.cvShadow1.resources.getDimensionPixelOffset(R.dimen.dp_5))
             layoutParamsCvData.setMargins(0, 0, 0,
-                    holder.cvShadow1.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10))
+                    holder.cvShadow1.resources.getDimensionPixelOffset(R.dimen.dp_10))
             holder.cvShadow1.show()
             holder.cvShadow2.show()
             holder.cvShadow1.layoutParams = layoutParamsCv1
@@ -388,9 +388,9 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         try {
             val shape = GradientDrawable()
             shape.shape = GradientDrawable.RECTANGLE
-            shape.cornerRadii = floatArrayOf(context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat(), context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4).toFloat())
+            shape.cornerRadii = floatArrayOf(context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat(), context.resources.getDimensionPixelOffset(R.dimen.unify_space_4).toFloat())
             shape.setColor(Color.parseColor(hex))
-            shape.setStroke(context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(hex))
+            shape.setStroke(context.resources.getDimensionPixelOffset(R.dimen.unify_space_2), Color.parseColor(hex))
             return shape
         } catch (e: Exception) {
             e.printStackTrace()

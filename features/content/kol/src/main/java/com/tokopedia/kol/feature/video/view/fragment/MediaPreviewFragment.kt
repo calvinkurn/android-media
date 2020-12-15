@@ -271,7 +271,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
+                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.unify_space_8))
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }

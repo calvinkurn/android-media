@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
@@ -226,7 +227,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
                 brandName.setVisibility(View.GONE);
                 Drawable img = MethodChecker.getDrawable(context, com.tokopedia.digital_deals.R.drawable.ic_location);
                 dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8));
+                dealavailableLocations.setCompoundDrawablePadding(context.getResources().getDimensionPixelSize(R.dimen.unify_space_8));
 
             }
             int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());

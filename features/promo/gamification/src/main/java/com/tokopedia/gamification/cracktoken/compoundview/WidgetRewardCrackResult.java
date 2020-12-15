@@ -225,7 +225,7 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
             AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
             alphaAnimation.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(alphaAnimation);
-            TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -rlPoints.getHeight() + getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12));
+            TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0, 0, 0f, -rlPoints.getHeight() + getResources().getDimensionPixelOffset(R.dimen.unify_space_12));
             translateAnimationCrackResult.setStartOffset((listLength - 1 - i) * SLIDE_UP_TEXT_RELATIVE_DURATION);
             translateAnimationCrackResult.setDuration(TRANSLATE_TEXT_UP_DURATION);
             animatorSet.addAnimation(translateAnimationCrackResult);

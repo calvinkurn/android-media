@@ -97,7 +97,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
 
     private void initRewardBound(View rootView) {
         int rootHeight = rootView.getHeight();
-        int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_32);
+        int imageMarginBottom = rootView.getHeight() - TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) + getContext().getResources().getDimensionPixelOffset(R.dimen.unify_space_32);
         RelativeLayout.LayoutParams tvFullLp = (RelativeLayout.LayoutParams) listCrackResultText.getLayoutParams();
         tvFullLp.bottomMargin = imageMarginBottom;
         listCrackResultText.requestLayout();

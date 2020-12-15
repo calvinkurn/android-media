@@ -3,6 +3,7 @@ package com.tokopedia.atc_variant.view
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import com.tokopedia.atc_variant.R
 
 /**
  * Created by Irfan Khoirul on 13/12/18.
@@ -11,7 +12,7 @@ import android.view.View
 class NormalCheckoutItemDecorator : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val dimen: Int? = view.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+        val dimen: Int? = view.context?.resources?.getDimension(R.dimen.unify_space_8)?.toInt()
         val position = parent.getChildAdapterPosition(view)
         when (position) {
             (parent.adapter?.itemCount)?.minus(1) -> {

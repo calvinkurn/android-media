@@ -65,7 +65,7 @@ class PromoListItemViewHolder(private val view: View,
                     hasNonBlankUrl = true
                     val imageView = ImageView(itemView.context)
                     imageView.layoutParams = LinearLayout.LayoutParams(
-                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
+                            itemView.context.resources.getDimensionPixelSize(R.dimen.dp_30),
                             LinearLayout.LayoutParams.MATCH_PARENT
                     )
                     imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4), 0)

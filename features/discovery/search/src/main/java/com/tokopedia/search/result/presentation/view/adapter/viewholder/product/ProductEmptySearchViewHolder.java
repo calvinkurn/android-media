@@ -85,7 +85,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build();
-        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8);
+        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.unify_space_8);
         selectedFilterRecyclerView.addItemDecoration(new SpacingItemDecoration(staticDimen8dp));
         selectedFilterRecyclerView.setLayoutManager(layoutManager);
         ViewCompat.setLayoutDirection(selectedFilterRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR);

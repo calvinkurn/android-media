@@ -1240,7 +1240,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
                 .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .textSizeRes(com.tokopedia.design.R.dimen.dp_12)
+                .textSizeRes(R.dimen.unify_space_12)
                 .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
                 .nextStringRes(com.tokopedia.showcase.R.string.next)
@@ -1392,10 +1392,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         tickerView.postDelayed(() -> {
             tickerView.setItemPadding(
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10),
-                    getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_15)
+                    getResources().getDimensionPixelSize(R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(R.dimen.dp_15),
+                    getResources().getDimensionPixelSize(R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(R.dimen.dp_15)
             );
             tickerView.setItemTextAppearance(com.tokopedia.design.R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);

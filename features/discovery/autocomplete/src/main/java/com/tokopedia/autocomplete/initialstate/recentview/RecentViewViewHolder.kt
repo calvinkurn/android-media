@@ -83,7 +83,7 @@ class RecentViewViewHolder(
             private fun ImageView.loadImageCircle(context: Context, url: String){
                 Glide.with(context)
                         .load(url)
-                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
+                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(R.dimen.dp_6)))
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(this)
             }

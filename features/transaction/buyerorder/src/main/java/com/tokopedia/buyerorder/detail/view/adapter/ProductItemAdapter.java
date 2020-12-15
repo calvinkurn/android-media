@@ -134,12 +134,12 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setText(actionButton.getLabel());
                 GradientDrawable shape = new GradientDrawable();
                 shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimensionPixelSize(R.dimen.unify_space_4));
                 if (!actionButton.getActionColor().getBackground().equals("")) {
                     shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
                 if (!actionButton.getActionColor().getBorder().equals("")) {
-                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                    shape.setStroke(context.getResources().getDimensionPixelSize(R.dimen.unify_space_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 buyBtn.setBackground(shape);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {

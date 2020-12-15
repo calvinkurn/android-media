@@ -277,14 +277,14 @@ class ShopCardView: BaseCustomView {
 
     @DimenRes
     private fun getTextViewShopNameMarginLeft(): Int {
-        return shopWidgetImageViewShopBadge?.let { if (it.isVisible) com.tokopedia.design.R.dimen.dp_2 else com.tokopedia.design.R.dimen.dp_8 }
-                ?: com.tokopedia.design.R.dimen.dp_8
+        return shopWidgetImageViewShopBadge?.let { if (it.isVisible) R.dimen.unify_space_2 else R.dimen.unify_space_8 }
+                ?: R.dimen.unify_space_8
     }
 
     private fun setLabelVoucherCashbackMargin() {
         shopWidgetLabelVoucherCashback?.doIfVisible {
             if(shopWidgetLabelVoucherFreeShipping.isNullOrNotVisible) {
-                setViewMargins(it.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_0)
+                setViewMargins(it.id, ConstraintSet.START, R.dimen.unify_space_0)
             }
         }
     }
@@ -311,7 +311,7 @@ class ShopCardView: BaseCustomView {
             setViewConstraint(
                     labelVoucherFreeShipping.id, ConstraintSet.TOP,
                     topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    com.tokopedia.design.R.dimen.dp_4
+                    R.dimen.unify_space_4
             )
         }
 
@@ -319,7 +319,7 @@ class ShopCardView: BaseCustomView {
             setViewConstraint(
                     labelVoucherCashback.id, ConstraintSet.TOP,
                     topConstraintViewForLabelVoucher.id, ConstraintSet.BOTTOM,
-                    com.tokopedia.design.R.dimen.dp_4
+                    R.dimen.unify_space_4
             )
         }
     }

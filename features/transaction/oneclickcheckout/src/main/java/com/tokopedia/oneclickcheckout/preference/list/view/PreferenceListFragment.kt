@@ -247,13 +247,13 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.left = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.left = context?.resources?.getDimension(R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.right = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_16)?.toInt()
+                outRect.right = context?.resources?.getDimension(R.dimen.unify_space_16)?.toInt()
                         ?: 0
-                outRect.top = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.top = context?.resources?.getDimension(R.dimen.unify_space_8)?.toInt()
                         ?: 0
-                outRect.bottom = context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_8)?.toInt()
+                outRect.bottom = context?.resources?.getDimension(R.dimen.unify_space_8)?.toInt()
                         ?: 0
             }
         })

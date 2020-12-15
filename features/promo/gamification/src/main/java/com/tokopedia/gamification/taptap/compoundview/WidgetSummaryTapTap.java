@@ -78,7 +78,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
         ImageHandler.loadImageWithId(ivImageStar, com.tokopedia.gamification.R.drawable.ic_star_summary);
         imageSinar.loadRemoteImageDrawable("sinar_rewards_3_x.png");
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), com.tokopedia.gamification.R.drawable.gf_item_divider_summary_page);
-        dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8));
+        dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.unify_space_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
         initListBound(getScreenHeight(), 0);
     }

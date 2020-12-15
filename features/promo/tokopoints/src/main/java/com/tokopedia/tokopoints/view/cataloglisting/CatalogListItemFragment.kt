@@ -485,9 +485,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
             mAdapter = CatalogListAdapter(finalCatalogList)
             if (mRecyclerViewCatalog?.itemDecorationCount == 0) {
-                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
-                        activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
-                        activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)))
+                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(R.dimen.dp_10),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14)))
             }
             mRecyclerViewCatalog?.adapter = mAdapter
             mAdapter?.notifyDataSetChanged()

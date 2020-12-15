@@ -57,10 +57,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                getDimensionPixelSize(R.dimen.unify_space_8),
+                getDimensionPixelSize(R.dimen.unify_space_16),
+                getDimensionPixelSize(R.dimen.unify_space_8),
+                getDimensionPixelSize(R.dimen.unify_space_16)
             )
         }
     }

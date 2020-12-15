@@ -84,4 +84,6 @@
     <dimen name="gami_reward_summary_box_w">102dp</dimen>
     <dimen name="gami_reward_summary_box_h">79dp</dimen>
     <dimen name="gami_reward_summary_margin_top">44dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_112">112dp</dimen>
 </resources>

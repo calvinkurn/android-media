@@ -158,12 +158,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 if (verticalOffset != 0) {
                     divider.setVisibility(View.GONE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        appBarToolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
+                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.unify_space_4));
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        appBarToolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
+                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.unify_space_0));
                     }
                 }
             }
@@ -326,11 +326,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             }
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
-            params1.setMargins(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16), getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12), 0, 0);
+            params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.unify_space_16), getResources().getDimensionPixelOffset(R.dimen.unify_space_12), 0, 0);
             dealsHeading.setLayoutParams(params1);
             brandLayout.removeAllViews();
             View view;
-            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(com.tokopedia.digital_deals.R.dimen.dp_66) + getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));//Divide by item width including margin
+            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(com.tokopedia.digital_deals.R.dimen.dp_66) + getResources().getDimension(R.dimen.unify_space_8));//Divide by item width including margin
             int maxBrands = Math.min(brandList.size(), itemCount);
 
             dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList, searchText);

@@ -3,6 +3,7 @@ package com.tokopedia.thankyou_native.recommendation.presentation.adapter.decora
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.thankyou_native.R
 
 class ProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
@@ -17,7 +18,7 @@ class ProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.left = 0
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.unify_space_16)
         }
     }
 }

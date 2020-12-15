@@ -99,8 +99,8 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindContent(element: InspirationCardViewModel) {
         val spacingItemDecoration = ChipSpacingItemDecoration(
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+                itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_8),
+                itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_8)
         )
 
         itemView.smallGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {

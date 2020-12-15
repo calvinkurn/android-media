@@ -208,7 +208,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvExpandableTC = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_tnc);
         seeMoreButtonTC = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_tnc);
         recyclerViewDeals = view.findViewById(com.tokopedia.digital_deals.R.id.recycler_view);
-        circlePageIndicator.setRadius(getResources().getDimension(com.tokopedia.design.R.dimen.dp_3));
+        circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
@@ -241,9 +241,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     private void setCardViewElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cardView.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));
+            cardView.setCardElevation(getResources().getDimension(R.dimen.unify_space_8));
         } else {
-            cardView.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
+            cardView.setCardElevation(getResources().getDimension(R.dimen.unify_space_0));
         }
     }
 

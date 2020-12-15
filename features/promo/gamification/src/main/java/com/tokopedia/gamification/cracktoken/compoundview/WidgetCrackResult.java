@@ -292,7 +292,7 @@ public class WidgetCrackResult extends RelativeLayout {
         TextView textView = new TextView(getContext());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        int margin = getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_20);
+        int margin = getContext().getResources().getDimensionPixelOffset(R.dimen.dp_20);
         layoutParams.setMargins(margin, 0, margin, 0);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setTypeface(textView.getTypeface(), Typeface.BOLD);

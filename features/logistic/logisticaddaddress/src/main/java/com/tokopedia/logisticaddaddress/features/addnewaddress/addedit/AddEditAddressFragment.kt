@@ -166,7 +166,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.unify_space_8)
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)

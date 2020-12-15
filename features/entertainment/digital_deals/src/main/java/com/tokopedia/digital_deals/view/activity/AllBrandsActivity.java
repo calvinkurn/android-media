@@ -32,6 +32,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
@@ -118,7 +119,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         searchInputView.setSearchHint(getResources().getString(com.tokopedia.digital_deals.R.string.search_input_hint_brand));
         searchInputView.setSearchTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_17));
         searchInputView.setSearchTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.clr_ae31353b));
-        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24), getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24));
+        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.unify_space_24), getResources().getDimensionPixelSize(R.dimen.unify_space_24));
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
         categoryViewPager = findViewById(com.tokopedia.digital_deals.R.id.container);

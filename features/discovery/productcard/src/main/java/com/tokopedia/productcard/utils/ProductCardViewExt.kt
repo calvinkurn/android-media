@@ -158,7 +158,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
-                .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
+                .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.placeholder_grey)
                 .error(R.drawable.placeholder_grey)

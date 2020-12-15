@@ -292,10 +292,10 @@ class VideoDetailFragment:
             if (it.avatarBadgeImage.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.avatarBadgeImage)
-                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_4), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(R.dimen.unify_space_4), 0, authorTitle.getDimens(R.dimen.unify_space_8), 0)
             } else {
                 authorBadge.hide()
-                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(R.dimen.unify_space_8), 0, authorTitle.getDimens(R.dimen.unify_space_8), 0)
             }
 
             authorTitle.text = it.avatarTitle

@@ -482,7 +482,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         product_attachment.adapter = adapter
         product_attachment.setHasFixedSize(true)
         product_attachment.layoutManager = productAttachmentLayoutManager
-        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.unify_space_8),
                 LinearLayoutManager.HORIZONTAL))
 
         image_picker.setOnClickListener {
@@ -562,7 +562,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         list_captions.adapter = captionsAdapter
         list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
+        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.unify_space_8), LinearLayoutManager.HORIZONTAL))
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
 
@@ -682,7 +682,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
                 Toaster.apply {
-                    toasterCustomCtaWidth = resources.getDimension(com.tokopedia.design.R.dimen.dp_100).toPx().toInt()
+                    toasterCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
                     make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
                         actionClick?.invoke(it)
                     })

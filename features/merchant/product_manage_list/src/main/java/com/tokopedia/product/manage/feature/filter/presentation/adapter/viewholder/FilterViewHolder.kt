@@ -37,7 +37,7 @@ class FilterViewHolder(view: View,
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+        val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(R.dimen.unify_space_8)
         recyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
         recyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)

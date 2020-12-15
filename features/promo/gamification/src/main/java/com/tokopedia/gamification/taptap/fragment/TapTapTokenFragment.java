@@ -251,7 +251,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
 
                 if (HexValidator.validate(timeRemaining.getBorderColor())) {
-                    drawable.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4), Color.parseColor(timeRemaining.getBorderColor()));
+                    drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.unify_space_4), Color.parseColor(timeRemaining.getBorderColor()));
                 }
 
                 if (HexValidator.validate(timeRemaining.getBackgroundColor())) {
@@ -427,7 +427,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         int rootHeight = rootView.getHeight();
         int imageHeight = TokenMarginUtilTapTap.getEggWidth(rootWidth, rootHeight);
         int marginTop = TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) - imageHeight
-                - getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_112);
+                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) infoTitlePage.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;

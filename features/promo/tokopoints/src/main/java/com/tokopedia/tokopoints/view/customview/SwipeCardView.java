@@ -180,7 +180,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     private int getMaxSwipeWidth() {
-        return mView.getWidth() - getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
+        return mView.getWidth() - getResources().getDimensionPixelOffset(R.dimen.dp_6);
     }
 
     private boolean isLeftSwipe(float dx) {
