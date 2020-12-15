@@ -28,7 +28,7 @@ class BranchHelperValidation {
             validateMonthlyNewBuyer(branchIOPayment.monthlyNewBuyer, branchIOPayment.productType)
             validateProductType(branchIOPayment.productType)
             branchIOPayment.products.forEach {item ->
-                validateProductPrice(PURCHASE,LinkerUtils.convertToDouble(item.get(LinkerConstants.PRICE_IDR_TO_DOUBLE), "Product price-PURCHASE"))
+                validateProductPrice(PURCHASE,LinkerUtils.convertToDouble(item.get(LinkerConstants.PRICE_IDR_TO_DOUBLE), "Product_price-PURCHASE"))
                 validateProductId(PURCHASE,item.get(LinkerConstants.ID))
                 validateProductName(PURCHASE,item.get(LinkerConstants.NAME))
             }
@@ -43,7 +43,7 @@ class BranchHelperValidation {
         try{
             validateQuantity(ADD_TO_CART, linkerData.quantity,linkerData.sku,linkerData.userId)
             validateCurrency(ADD_TO_CART,linkerData.currency)
-            validateProductPrice(ADD_TO_CART,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product price-ADD_TO_CART"))
+            validateProductPrice(ADD_TO_CART,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-ADD_TO_CART"))
             validateProductId(ADD_TO_CART,linkerData.sku)
             validateContentId(ADD_TO_CART,linkerData.contentId)
             validateProductName(ADD_TO_CART,linkerData.productName)
@@ -61,7 +61,7 @@ class BranchHelperValidation {
         try{
             validateQuantity(VIEW_ITEM, linkerData.quantity,linkerData.sku,linkerData.userId)
             validateCurrency(VIEW_ITEM,linkerData.currency)
-            validateProductPrice(VIEW_ITEM,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product price-VIEW_ITEM"))
+            validateProductPrice(VIEW_ITEM,LinkerUtils.convertToDouble(linkerData.getPrice(), "Product_price-VIEW_ITEM"))
             validateProductId(VIEW_ITEM,linkerData.sku)
             validateContentId(VIEW_ITEM,linkerData.contentId)
             validateProductName(VIEW_ITEM,linkerData.productName)
@@ -140,13 +140,13 @@ class BranchHelperValidation {
 
     private fun validateProductId(eventName: String ,productId: String?){
         if (productId.isNullOrBlank()) {
-            logging("validation;reason=productId_blank;eventName='$eventName'; data=")
+            logging("validation;reason=productId_blank;eventName='$eventName';data=''")
         }
     }
 
     fun validateQuantity(eventName: String, quantity: String,productId: String, userId:String) {
         if (LinkerUtils.convertToDouble(quantity,"quantity validation" ) <= 0) {
-            logging("validation;reason=quantity_blank;eventName='$eventName';quantity='$quantity'; productId='$productId'; userId='$userId'")
+            logging("validation;reason=quantity_blank;eventName='$eventName';quantity='$quantity';productId='$productId';userId='$userId'")
         }
     }
 
@@ -167,21 +167,21 @@ class BranchHelperValidation {
 
     private fun validateProductName(eventName: String ,productName: String?){
         if (productName.isNullOrBlank()) {
-            logging("validation;reason=productName_blank;eventName='$eventName'; data=")
+            logging("validation;reason=productName_blank;eventName='$eventName';data=")
         }
     }
 
     private fun validateProductCate3(eventName: String ,ProductCate3: String){
         if (ProductCate3.isNullOrBlank()) {
-            logging("validation;reason=ProductCate3_blank;eventName='$eventName'; data=")
+            logging("validation;reason=ProductCate3_blank;eventName='$eventName';data=")
         }
     }
 
     private fun validateUser(eventName: String ,userId: String){
         if (userId.isNullOrBlank()) {
-            logging("validation;reason=userId_blank;eventName='$eventName'; data=")
+            logging("validation;reason=userId_blank;eventName='$eventName';data=")
         }else if(userId.trim() == "0"){
-            logging("validation;reason=userId_blank;eventName='$eventName'; data='$userId'")
+            logging("validation;reason=userId_blank;eventName='$eventName';data='$userId'")
         }
     }
 
@@ -198,7 +198,7 @@ class BranchHelperValidation {
             try {
                 val contentarray = JSONArray(content)
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid;eventName=$eventName;data=$content")
+                    logging("validation;reason=content_array_invalid;eventName='$eventName';data='$content'")
                 }
             } catch (e: JSONException) {
                 logging("error;reason=content_array_exception;eventName='$eventName';data='$content'")
