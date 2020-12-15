@@ -29,7 +29,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
-import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
 import com.tokopedia.recharge_slice.util.SliceTracking
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -39,10 +38,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import timber.log.Timber
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -203,7 +200,6 @@ class MainSliceProvider : SliceProvider() {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNotLogin(sliceUri: Uri): Slice {
-        Timber.w("""${contextNonNull.resources.getString(R.string.slice_track_timber_impression)}${contextNonNull.resources.getString(R.string.slice_user_not_login)}""")
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
             header {
@@ -255,7 +251,6 @@ class MainSliceProvider : SliceProvider() {
             } catch (e: Exception) {
                 isError = true
                 updateSlice(sliceUri)
-                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
             }
         }
     }
@@ -299,9 +294,8 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-//        remoteConfig = FirebaseRemoteConfigImpl(context)
-//        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
-        return true
+        remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
     fun <T> allowReads(block: () -> T): T {
