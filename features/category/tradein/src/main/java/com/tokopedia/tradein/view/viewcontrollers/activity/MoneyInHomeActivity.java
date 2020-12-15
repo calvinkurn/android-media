@@ -45,6 +45,8 @@ import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -336,10 +338,10 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
     private void getPriceFromSDK(Context context) {
         String campaignId = TradeinConstants.CAMPAIGN_ID_PROD;
-        if (TradeinConstants.LAKU6_BASEURL.equals(TradeinConstants.LAKU6_BASEURL_STAGING))
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING)
             campaignId = TradeinConstants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TradeinConstants.LAKU6_BASEURL, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
+                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().getTYPE() == Env.STAGING, TRADEIN_TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN);
         requestPermission();
     }
 
@@ -451,9 +453,6 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         if(messageStringId == R.string.money_in_need_permission) {
             spannableString.setSpan(foregroundColorSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             spannableString.setSpan(clickableSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        } else {
-            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         mTvPriceElligible.setText(spannableString);
         mTvPriceElligible.setVisibility(View.VISIBLE);

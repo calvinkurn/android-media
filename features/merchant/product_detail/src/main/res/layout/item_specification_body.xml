@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:lineSpacingExtra="@dimen/dp_8"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,4 +35,11 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.4" />
 
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/Unify_N75"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_6"
+        app:layout_constraintTop_toBottomOf="@+id/value_specification"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

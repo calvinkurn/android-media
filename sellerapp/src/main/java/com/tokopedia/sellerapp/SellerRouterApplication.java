@@ -43,7 +43,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
-import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -77,6 +76,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
@@ -92,7 +92,6 @@ public abstract class SellerRouterApplication extends MainApplication
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
-        PhoneVerificationRouter,
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
@@ -108,6 +107,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onCreate() {
         super.onCreate();
+        Hansel.init(this);
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
@@ -318,11 +318,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
 
-    }
-
-    @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
     }
 
     @Override

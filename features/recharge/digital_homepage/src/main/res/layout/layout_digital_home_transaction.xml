@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardElevation="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:contentPadding="@dimen/dp_8">
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    app:cardElevation="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:contentPadding="@dimen/spacing_lvl3">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -18,16 +18,16 @@
 
         <LinearLayout
             android:id="@+id/favouriteNumber"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_home_fav_number" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -41,29 +41,29 @@
         </LinearLayout>
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/black_12"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/orderList"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_home_order_list" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:textAlignment="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/dp_50"
+                android:maxWidth="@dimen/layout_lvl6"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/digital_home_label_order_list"
@@ -71,29 +71,29 @@
         </LinearLayout>
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/black_12"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/help"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_home_help" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:textAlignment="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/dp_50"
+                android:maxWidth="@dimen/layout_lvl6"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/digital_home_label_help"
@@ -101,29 +101,29 @@
         </LinearLayout>
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/black_12"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/myBills"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_marginBottom="@dimen/dp_5"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
                 app:srcCompat="@drawable/ic_home_my_bills" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:textAlignment="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/dp_50"
+                android:maxWidth="@dimen/layout_lvl6"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/digital_home_label_mybills"

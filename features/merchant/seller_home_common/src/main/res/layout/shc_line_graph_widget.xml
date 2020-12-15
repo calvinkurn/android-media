@@ -120,5 +120,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLineGraphTitle" />
+
+        <include
+            layout="@layout/shc_partial_line_graph_state_empty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/lineGraphView"
+            app:layout_constraintEnd_toEndOf="@id/lineGraphView"
+            app:layout_constraintStart_toStartOf="@id/lineGraphView"
+            app:layout_constraintTop_toTopOf="@id/lineGraphView"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

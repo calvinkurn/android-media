@@ -379,7 +379,7 @@
     <!--  new som list  -->
     <string name="som_list_empty_state_description_no_topads_no_filter">Tetap semangat, rejeki nggak akan pergi \nasal kamu pantang menyerah</string>
     <string name="som_list_error_some_information_cannot_be_loaded">Beberapa informasi gagal dimuat</string>
-    <string name="som_list_response_before_label">Respons sebelum</string>
+    <string name="som_list_response_before_label">Batas Respons</string>
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
@@ -420,4 +420,5 @@
     <string name="som_list_coachmark_multi_select_description">Klik tombol Pilih Sekaligus untuk terima pesanan, cetak label, atau request pick-up beberapa order.</string>
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
     <string name="som_list_button_ok">Ok</string>
+    <string name="som_list_pre_order_flag">(PO)</string>
 </resources>

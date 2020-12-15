@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.view.fragment
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,14 +46,16 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             }
         }
 
-        activity?.let {
-            permissionCheckerHelper.request(it, arrayOf(
-                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-            ), granted = {
-            }, denied = {
-                it.finish()
-            })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.request(it, arrayOf(
+                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+                ), granted = {
+                }, denied = {
+                    it.finish()
+                })
+            }
         }
     }
 
@@ -69,7 +72,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         btnReCapture?.setOnClickListener {
-            ImageUtils.clearImage(imgPreview)
+            imgPreview?.let {
+                ImageUtils.clearImage(it)
+            }
+
             showCamera()
         }
 
@@ -82,6 +88,15 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
         btnBack?.setOnClickListener {
             activity?.onBackPressed()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
         }
     }
 
@@ -141,9 +156,11 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showPreview(file: File) {
-        ImageUtils.loadImage(imgPreview, file.absolutePath)
+        imgPreview?.let {
+            ImageUtils.loadImage(it, file.absolutePath)
+            it.visibility = View.VISIBLE
+        }
 
-        imgPreview?.visibility = View.VISIBLE
         layoutButtonPreview?.visibility = View.VISIBLE
         cameraView?.visibility = View.GONE
         btnShutter?.visibility = View.GONE

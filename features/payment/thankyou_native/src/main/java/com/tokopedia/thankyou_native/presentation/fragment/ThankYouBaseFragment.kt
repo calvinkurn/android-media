@@ -258,6 +258,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
                 thanksPageData.paymentID.toString())
+
+        if(activity is ThankYouPageActivity){
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
     }
 
     override fun gotoHomePage() {

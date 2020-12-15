@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -42,7 +43,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
@@ -69,6 +70,7 @@ import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderRes
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -116,9 +118,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private View containerDownloadInvoice;
     private TextView totalPrice;
     private TextView orderHelp;
-    private Button buttonCancelTicket;
-    private Button buttonRescheduleTicket;
-    private Button buttonReorder;
+    private UnifyButton buttonCancelTicket;
+    private UnifyButton buttonRescheduleTicket;
+    private UnifyButton buttonReorder;
     private ProgressDialog progressDialog;
     private LinearLayout showEticket;
 
@@ -179,6 +181,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
+    @SuppressLint("DialogUnifyUsage")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -675,7 +678,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @NonNull
     private SpannableString buildAirlineContactInfo(String fullText, String mark) {
-        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = fullText.indexOf(mark);
         int stopIndex = fullText.length();
         SpannableString description = new SpannableString(fullText);
@@ -699,48 +702,41 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(MethodChecker.fromHtml(
+        dialog.setDescription(MethodChecker.fromHtml(
                 getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToCancellationPage(invoiceId, items);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            navigateToCancellationPage(invoiceId, items);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+
+        dialog.setSecondaryCTAText(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }
 
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> items) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(MethodChecker.fromHtml(getString(
+        dialog.setDescription(MethodChecker.fromHtml(getString(
                 com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToCancellationPage(invoiceId, items);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            navigateToCancellationPage(invoiceId, items);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setSecondaryCTAText(getString(com.tokopedia.flight.orderlist.R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }

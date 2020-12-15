@@ -27,6 +27,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
@@ -49,9 +50,11 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -68,10 +71,10 @@ import javax.inject.Inject
  * @author by milhamj on 25/07/18.
  */
 
-private const val EXP_NAME = "Navigation Revamp"
-private const val VARIANT_OLD = "existing navigation"
-private const val VARIANT_REVAMP = "navigation revamp"
-private const val FEED_PAGE = "feed page"
+private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+private const val FEED_PAGE = "feed"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
@@ -200,7 +203,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setToolbarPageName(FEED_PAGE)
                 viewLifecycleOwner.lifecycle.addObserver(it)
                 it.setIcon(
-                        IconBuilder()
+                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                                 .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
                                 .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
                                 .addIcon(IconList.ID_CART) {}
