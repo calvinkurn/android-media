@@ -108,7 +108,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
 
     private fun populateData(productCardModel: ProductCardModel) {
         if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
-                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+                || productCardName == ComponentNames.MasterProductCardItemList.componentName) {
             productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
             masterProductCardGridView?.let {
                 it.applyCarousel()

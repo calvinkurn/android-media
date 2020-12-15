@@ -4,6 +4,8 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
+import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
+import com.tokopedia.discovery2.TRANSPARENT_BLACK
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -18,6 +20,7 @@ import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
+private const val TERJUAL_HABIS = "Terjual Habis"
 private const val SALE_PRODUCT_STOCK = 100
 private const val PRODUCT_STOCK = 0
 private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
@@ -172,17 +175,20 @@ class DiscoveryDataMapper {
         val slashedPrice: String
         val formattedPrice: String
         val isOutOfStock: Boolean
+        val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
 
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
             productName = dataItem.title ?: ""
             slashedPrice = dataItem.price ?: ""
             formattedPrice = dataItem.discountedPrice ?: ""
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
             slashedPrice = dataItem.discountedPrice ?: ""
             formattedPrice = dataItem.price ?: ""
             isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
         return ProductCardModel(
                 productImageUrl = dataItem.imageUrlMobile ?: "",
@@ -209,7 +215,7 @@ class DiscoveryDataMapper {
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
                 pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
-                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                labelGroupList = labelGroupList.apply {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
                 },
                 shopLocation = getShopLocation(dataItem),
