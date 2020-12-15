@@ -19,37 +19,44 @@ import java.util.concurrent.ConcurrentHashMap
 object GratifCmInitializer {
 
     fun start(appContext: Application) {
-        val activityProvider = ActivityProviderImpl()
-        appContext.registerActivityLifecycleCallbacks(activityProvider)
+        try {
 
-        val mapOfGratifJobs = ConcurrentHashMap<Int, Job>()
-        val mapOfPendingInApp = ConcurrentHashMap<Int, PendingData>()
+            if(CMInAppManager.getInstance() == null || CMInAppManager.getInstance().dataConsumer == null) return
 
-        val gratificationPresenter = GratificationPresenter(appContext)
-        val dataConsumer = CMInAppManager.getInstance().dataConsumer
-        gratificationPresenter.dialogVisibilityContract = CMInAppManager.getInstance()
-        gratificationPresenter.dataConsumer = dataConsumer
+            val activityProvider = ActivityProviderImpl()
+            appContext.registerActivityLifecycleCallbacks(activityProvider)
 
-        val cmInAppListener: CmInAppListener = CMInAppManager.getInstance()
-        val firebaseRemoteConfig: FirebaseRemoteConfigImpl? = try {
-            FirebaseRemoteConfigImpl(appContext)
-        } catch (ex: Exception) {
-            Timber.e(ex)
-            null
+            val mapOfGratifJobs = ConcurrentHashMap<Int, Job>()
+            val mapOfPendingInApp = ConcurrentHashMap<Int, PendingData>()
+
+            val gratificationPresenter = GratificationPresenter(appContext)
+            val dataConsumer = CMInAppManager.getInstance().dataConsumer
+            gratificationPresenter.dialogVisibilityContract = CMInAppManager.getInstance()
+            gratificationPresenter.dataConsumer = dataConsumer
+
+            val cmInAppListener: CmInAppListener = CMInAppManager.getInstance()
+            val firebaseRemoteConfig: FirebaseRemoteConfigImpl? = try {
+                FirebaseRemoteConfigImpl(appContext)
+            } catch (ex: Exception) {
+                Timber.e(ex)
+                null
+            }
+            val dialogHandler = GratificationDialogHandler(gratificationPresenter,
+                    mapOfGratifJobs,
+                    mapOfPendingInApp,
+                    arrayListOf(),
+                    activityProvider,
+                    firebaseRemoteConfig, cmInAppListener, dataConsumer)
+            val pushHandler = GratifCmPushHandler(dialogHandler)
+
+            val cmActivityLifecycleCallbacks = CmActivityLifecycleCallbacks(appContext, null, null, mapOfGratifJobs)
+            val fragmentLifecycleCallback = GratifFragmentLifeCycleCallback(cmActivityLifecycleCallbacks)
+
+            appContext.registerActivityLifecycleCallbacks(cmActivityLifecycleCallbacks)
+
+            CmEventListenerManager.register(pushHandler, fragmentLifecycleCallback, arrayListOf("gratification"), dialogHandler)
+        }catch (t:Throwable){
+            Timber.e(t)
         }
-        val dialogHandler = GratificationDialogHandler(gratificationPresenter,
-                mapOfGratifJobs,
-                mapOfPendingInApp,
-                arrayListOf(),
-                activityProvider,
-                firebaseRemoteConfig, cmInAppListener, dataConsumer)
-        val pushHandler = GratifCmPushHandler(dialogHandler)
-
-        val cmActivityLifecycleCallbacks = CmActivityLifecycleCallbacks(appContext, null, null, mapOfGratifJobs)
-        val fragmentLifecycleCallback = GratifFragmentLifeCycleCallback(cmActivityLifecycleCallbacks)
-
-        appContext.registerActivityLifecycleCallbacks(cmActivityLifecycleCallbacks)
-
-        CmEventListenerManager.register(pushHandler, fragmentLifecycleCallback, arrayListOf("gratification"), dialogHandler)
     }
 }

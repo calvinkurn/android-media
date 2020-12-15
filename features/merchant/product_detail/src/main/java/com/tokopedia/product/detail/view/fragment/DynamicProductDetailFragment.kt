@@ -988,8 +988,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted ?: false
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         activity?.let {
-            val intent = ImagePreviewPdpActivity.createIntent(it, dynamicProductInfoData.basic.productID, isWishlisted,
-                    dynamicProductInfoData.data.getImagePath(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it,
+                    shopId = dynamicProductInfoData.basic.shopID,
+                    productId = dynamicProductInfoData.basic.productID,
+                    isWishlisted = isWishlisted,
+                    imageUris = dynamicProductInfoData.data.getImagePath(),
+                    imageDesc = null,
+                    position = position)
             startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
