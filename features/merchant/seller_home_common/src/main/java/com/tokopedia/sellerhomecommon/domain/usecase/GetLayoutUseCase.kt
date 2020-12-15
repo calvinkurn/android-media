@@ -75,6 +75,13 @@ class GetLayoutUseCase(
                   applink
                   dataKey
                   ctaText
+                  emptyState {
+                    imageUrl
+                    title
+                    description
+                    ctaText
+                    applink
+                  }
                 }
               }
             }
