@@ -133,7 +133,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         if (item.isDisabledButton) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, R.color.Unify_N0))
         }
 
         if (item.pointsSlash <= 0) {

@@ -239,7 +239,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         proceed.setEnabled(can);
         if (can) {
             proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.Unify_N0));
         } else {
             proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_300), PorterDuff.Mode.SRC_IN);
             proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_500));

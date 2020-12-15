@@ -207,8 +207,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun createShowCase(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
-                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .backgroundContentColorRes(R.color.Unify_Static_Black)
+                .titleTextColorRes(R.color.Unify_N0)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)

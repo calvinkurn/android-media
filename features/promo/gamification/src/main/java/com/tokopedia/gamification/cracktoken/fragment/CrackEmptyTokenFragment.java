@@ -125,7 +125,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.black));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_Static_Black));
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {

@@ -421,7 +421,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.design.R.color.white))
+            btnAction2.setTextColor(ContextCompat.getColor(activityContext, R.color.Unify_N0))
             mSubscriptionCouponTimer.unsubscribe()
         }
     }
@@ -447,7 +447,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (data.isDisabledButton) {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.disabled_color))
         } else {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.Unify_N0))
         }
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
@@ -570,7 +570,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.abstraction.R.color.black_12))
         } else {
             giftSectionMainLayout.visibility = View.VISIBLE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.Unify_N0))
         }
         if (data.pointsSlash <= 0) {
             labelPoint.visibility = View.GONE

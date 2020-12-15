@@ -135,7 +135,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             containerLayout.setElevation(60);
-            containerLayout.setBackgroundResource(com.tokopedia.design.R.color.white);
+            containerLayout.setBackgroundResource(R.color.Unify_N0);
         } else {
             containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }

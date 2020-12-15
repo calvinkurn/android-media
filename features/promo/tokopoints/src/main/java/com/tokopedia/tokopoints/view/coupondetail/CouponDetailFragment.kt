@@ -314,7 +314,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btn_continue.setText(R.string.tp_label_use)
                     btn_continue.isEnabled = true
                     progress_refetch_code.visibility = View.GONE
-                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
+                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, R.color.Unify_N0))
                     mSubscriptionCouponTimer?.unsubscribe()
                     return
                 }
@@ -323,7 +323,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     btn_continue.setText(R.string.tp_label_refresh_repeat)
                     btn_continue.isEnabled = true
                     progress_refetch_code.visibility = View.GONE
-                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
+                    btn_continue.setTextColor(ContextCompat.getColor(activityContext!!, R.color.Unify_N0))
                     mSubscriptionCouponTimer?.unsubscribe()
                 }
             }
@@ -345,7 +345,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
             progressBar.visibility = View.GONE
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext!!, com.tokopedia.design.R.color.white))
+            btnAction2.setTextColor(ContextCompat.getColor(activityContext!!, R.color.Unify_N0))
             mSubscriptionCouponTimer!!.unsubscribe()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -472,7 +472,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         if (data.realCode != null && !data.realCode.isEmpty()) {
             btnAction2.setText(R.string.tp_label_use)
             btnAction2.isEnabled = true
-            btnAction2.setTextColor(resources.getColor(com.tokopedia.design.R.color.white))
+            btnAction2.setTextColor(resources.getColor(R.color.Unify_N0))
             progressBar.visibility = View.GONE
         } else {
             //check for real_code and start rxjava-timer
@@ -613,7 +613,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 btnContinue.text = item.usage.btnUsage.text
                 btnContinue.isEnabled = true
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.design.R.color.white))
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, R.color.Unify_N0))
             }
         } else {
             if (item.usage.activeCountDown > 0) {
@@ -638,7 +638,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 btnContinue.text = item.usage.usageStr
                 btnContinue.isEnabled = true
-                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.design.R.color.white))
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, R.color.Unify_N0))
             }
         }
     }

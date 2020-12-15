@@ -217,7 +217,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         for (i in 0 until tabList.size) {
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(MethodChecker.getColor(
-                    context, com.tokopedia.design.R.color.white
+                    context, R.color.Unify_N0
             ))
         }
 

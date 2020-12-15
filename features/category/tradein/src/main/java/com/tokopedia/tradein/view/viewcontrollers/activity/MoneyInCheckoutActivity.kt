@@ -232,12 +232,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
         MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
-        courierButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
+        courierButton.setTextColor(MethodChecker.getColor(this, R.color.Unify_N0))
         retrieverTimeLabel.text = getString(R.string.retrieval_time)
         retrieverTime.hide()
         retrieverTimeButton.text = getString(R.string.choose)
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, com.tokopedia.design.R.drawable.bg_green_rounded_tradein))
-        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.Unify_N0))
         isCourierSet = false
         isTimeSet = false
     }

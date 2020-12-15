@@ -89,7 +89,7 @@ public class ServerErrorView extends NestedScrollView {
 
             buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.bg_button_green_border_outline);
 
-            buttonFontColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white);
+            buttonFontColor = MethodChecker.getColor(getContext(), R.color.Unify_N0);
             errorTitle = getResources().getText(R.string.tp_no_internet_title);
             errorSubTitle = getResources().getText(R.string.tp_no_internet_label);
         }

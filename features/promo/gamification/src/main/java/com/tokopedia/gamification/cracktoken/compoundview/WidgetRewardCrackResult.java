@@ -312,9 +312,9 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     }
 
     private void resetView() {
-        tvPoints.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
-        tvLoyalty.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
-        tvCoupons.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
+        tvPoints.setTextColor(getResources().getColor(R.color.Unify_N0));
+        tvLoyalty.setTextColor(getResources().getColor(R.color.Unify_N0));
+        tvCoupons.setTextColor(getResources().getColor(R.color.Unify_N0));
         rlCoupons.clearAnimation();
         rlLoyalty.clearAnimation();
         rlPoints.clearAnimation();

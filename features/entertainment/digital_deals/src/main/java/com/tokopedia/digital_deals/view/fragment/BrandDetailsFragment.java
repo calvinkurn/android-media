@@ -103,7 +103,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 if (verticalOffset >= difference) {
                     setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
                 } else {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_N0));
                 }
             }
         });

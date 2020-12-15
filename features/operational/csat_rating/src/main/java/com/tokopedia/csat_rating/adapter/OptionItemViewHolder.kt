@@ -26,7 +26,7 @@ open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListe
             filterName.setTextColor(MethodChecker.getColor(filterName.context, com.tokopedia.design.R.color.font_black_primary_70))
         } else {
             drawableBorder.setColor(MethodChecker.getColor(layoutInside.context, com.tokopedia.design.R.color.grey_500))
-            drawableInside.setColor(MethodChecker.getColor(layoutBorder.context, com.tokopedia.design.R.color.white))
+            drawableInside.setColor(MethodChecker.getColor(layoutBorder.context, R.color.Unify_N0))
             filterName.setTextColor(MethodChecker.getColor(filterName.context, com.tokopedia.design.R.color.grey_500))
         }
     }
