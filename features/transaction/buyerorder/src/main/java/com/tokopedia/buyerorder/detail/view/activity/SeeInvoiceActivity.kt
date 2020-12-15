@@ -77,8 +77,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                     lastNoInvoice = splitInvoice[splitInvoice.size-1]
                 }
             }
-            val boughtDate = intent?.getStringExtra(BOUGHT_DATE) ?: ""
-            val jobName = "Invoice $lastNoInvoice - $boughtDate"
+            val jobName = "Invoice $lastNoInvoice"
 
             val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 it.createPrintDocumentAdapter(jobName)
