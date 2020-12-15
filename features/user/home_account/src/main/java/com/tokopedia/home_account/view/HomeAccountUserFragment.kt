@@ -1,9 +1,11 @@
 package com.tokopedia.home_account.view
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -55,6 +57,7 @@ import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
@@ -77,7 +80,6 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import javax.inject.Inject
 
@@ -92,6 +94,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     var financialAdapter: HomeAccountFinancialAdapter? = null
     var memberAdapter: HomeAccountMemberAdapter? = null
 
+    var commonAdapter: HomeAccountUserCommonAdapter? = null
+
     var isProfileSectionBinded = false
 
     val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -99,6 +103,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     var appBarCollapseListener: onAppBarCollapseListener? = null
 
     var isNeedRefreshProfileItems = true
+
+    var coachMark: CoachMark2? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -322,6 +328,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         setupStatusBar()
         setupObserver()
 
+        context?.run {
+            coachMark = CoachMark2(this)
+        }
+
         financialAdapter = HomeAccountFinancialAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
@@ -351,6 +361,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
         home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
+            coachMark?.dismissCoachMark()
             onRefresh()
             getData()
             isNeedRefreshProfileItems = true
@@ -363,7 +374,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun getData(){
-        coachMarkItem.clear()
         home_account_user_fragment_rv?.scrollToPosition(0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
@@ -428,11 +438,21 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter?.notifyDataSetChanged()
     }
 
-    private fun addItem(item: Any, addSeparator: Boolean) {
-        adapter?.addItem(item)
-        if(addSeparator) {
-            adapter?.addItem(SeparatorView())
+    private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
+        if(position != -1){
+            adapter?.removeItemAt(position)
+            adapter?.notifyItemRemoved(position)
+            adapter?.addItem(position, item)
+            if(addSeparator) {
+                adapter?.addItem(position, SeparatorView())
+            }
+        }else {
+            adapter?.addItem(item)
+            if(addSeparator) {
+                adapter?.addItem(SeparatorView())
+            }
         }
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onEditProfileClicked() {
@@ -463,6 +483,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 if(isActive) {
                     switch.isChecked = false
                     createAndShowLocationAlertDialog(isActive)
+                }else{
+                    goToApplicationDetailActivity()
                 }
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
@@ -634,25 +656,49 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    private fun askPermissionLocation() {
-        activity?.run {
-            permissionChecker.askLocationPermission(this, object : PermissionCheckerHelper.PermissionCheckListener {
-                override fun onPermissionDenied(permissionText: String) {
-
-                }
-                override fun onNeverAskAgain(permissionText: String) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            888 -> {
+                if(grantResults.isNotEmpty() &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    updateLocationSwitch(true)
+                }else {
                     goToApplicationDetailActivity()
                 }
-                override fun onPermissionGranted() {
-                    updateLocationSwitch(true)
-                }
-            })
+            }
         }
     }
 
+    private fun askPermissionLocation() {
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+                888)
+
+//        activity?.run {
+//            permissionChecker.askLocationPermission(this, object : PermissionCheckerHelper.PermissionCheckListener {
+//                override fun onPermissionDenied(permissionText: String) {
+//
+//                }
+//                override fun onNeverAskAgain(permissionText: String) {
+//                    goToApplicationDetailActivity()
+//                }
+//                override fun onPermissionGranted() {
+//                    updateLocationSwitch(true)
+//                }
+//            })
+//        }
+    }
+
     private fun updateLocationSwitch(isEnable: Boolean){
-        (adapter?.getItem(2) as SettingDataView).items.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
-        adapter?.notifyItemChanged(2)
+//        val newGeo = CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = getString(R.string.menu_account_title_geolocation), body = getString(R.string.menu_account_desc_geolocation),
+//                type = CommonViewHolder.TYPE_SWITCH, icon = R.drawable.ic_account_location,
+//                isChecked = permissionChecker.hasLocationPermission())
+
+        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+//        commonAdapter?.list?.add(1, newGeo)
+        commonAdapter?.notifyDataSetChanged()
+//        addItem(menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker), addSeparator = true, position = 2)
+//        (adapter?.getItem(2) as SettingDataView).items.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+        adapter?.notifyDataSetChanged()
     }
 
     private fun goToApplicationDetailActivity() {
@@ -716,36 +762,42 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         if(accountPref.isShowCoachmark()) {
             if(!isProfileSectionBinded) {
-                if (position == 0 && data is ProfileDataView) {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_profile_member_section),
-                                    "Info tentang akunmu ada di sini",
-                                    "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
-                                    CoachMark2.POSITION_BOTTOM
-                            )
-                    )
-                }
-                if (position == 1 && data is SettingDataView) {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_expandable_layout_title),
-                                    "Ubah pengaturan dan cek info lainnya",
-                                    "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
-                                    CoachMark2.POSITION_TOP
-                            )
-                    )
-
-                    context?.run {
-                        val coachMark = CoachMark2(this)
-                        coachMark.onFinishListener = {
-                            accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
-                        }
-                        coachMark.showCoachMark(coachMarkItem)
-                        isProfileSectionBinded = true
+                if(coachMarkItem.count() < 3) {
+                    if (position == 0 && data is ProfileDataView) {
+                        coachMarkItem.add(
+                                CoachMark2Item(
+                                        itemView.findViewById(R.id.account_user_item_profile_email),
+                                        "Info tentang akunmu ada di sini",
+                                        "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
+                                        CoachMark2.POSITION_BOTTOM
+                                )
+                        )
                     }
+                    if (position == 1 && data is SettingDataView) {
+                        coachMarkItem.add(
+                                CoachMark2Item(
+                                        itemView.findViewById(R.id.home_account_expandable_layout_title),
+                                        "Ubah pengaturan dan cek info lainnya",
+                                        "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
+                                        CoachMark2.POSITION_TOP
+                                )
+                        )
+                        showCoachMark()
+                    }
+                } else {
+                    showCoachMark()
                 }
             }
+        }
+    }
+
+    private fun showCoachMark(){
+        context?.run {
+            coachMark?.onFinishListener = {
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+            }
+            coachMark?.showCoachMark(coachMarkItem)
+            isProfileSectionBinded = true
         }
     }
 
@@ -937,6 +989,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
         fpmBuyer?.run { stopTrace() }
+    }
+
+    override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
+        if(position == 2)
+            this.commonAdapter = commonAdapter
     }
 
     private fun showError(e: Throwable) {

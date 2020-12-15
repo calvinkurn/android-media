@@ -54,8 +54,8 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
     }
 
     private fun spanLayoutSize(layoutParams: RecyclerView.LayoutParams): RecyclerView.LayoutParams {
+        val width = Math.round(horizontalSpace / itemCount.toDouble()).toInt() - itemSpacing
         if (orientation == HORIZONTAL) {
-            val width = Math.round(horizontalSpace / itemCount.toDouble()).toInt() - itemSpacing
             if(minWidth > 0) {
                 context?.run {
                     if (dpFromPx(this, width.toFloat()) >= minWidth) {
@@ -66,7 +66,7 @@ class SpanningLinearLayoutManager : LinearLayoutManager {
                 layoutParams.width = width
             }
         } else if (orientation == VERTICAL) {
-            layoutParams.height = Math.round(verticalSpace / itemCount.toDouble()).toInt() - itemSpacing
+            layoutParams.height = width
         }
         return layoutParams
     }

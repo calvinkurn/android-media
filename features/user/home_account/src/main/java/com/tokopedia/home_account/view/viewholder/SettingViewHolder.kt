@@ -20,6 +20,12 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
 
     private var rotationAngle = 0F
 
+    var adapter: HomeAccountUserCommonAdapter? = null
+
+    fun refreshCommonAdapter(){
+        adapter?.notifyDataSetChanged()
+    }
+
     fun bind(setting: SettingDataView) {
         with(itemView) {
             if(setting.title.isNotEmpty()) {
@@ -41,8 +47,8 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     }
 
     private fun setupItemAdapter(itemView: View, setting: SettingDataView) {
-        val adapter = HomeAccountUserCommonAdapter(listener, CommonViewHolder.LAYOUT)
-        adapter.list = setting.items
+        adapter = HomeAccountUserCommonAdapter(listener, CommonViewHolder.LAYOUT)
+        adapter?.list = setting.items
         itemView.home_account_expandable_layout_rv?.adapter = adapter
         itemView.home_account_expandable_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_expandable_layout_rv?.context, LinearLayoutManager.VERTICAL, false)
         itemView.home_account_expandable_layout_rv?.isNestedScrollingEnabled = false
@@ -55,6 +61,9 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
                 itemView?.home_account_expandable_arrow?.animate()?.rotation(rotationAngle)?.setDuration(400)?.start()
                 expandCollapseItem(itemView, setting.isExpanded)
             }
+        }
+        adapter?.run {
+            listener.onCommonAdapterReady(adapterPosition,this)
         }
     }
 

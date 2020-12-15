@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
@@ -19,6 +20,7 @@ interface HomeAccountUserListener {
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify)
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
+    fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
 
     fun onFinancialErrorClicked()
     fun onMemberErrorClicked()
