@@ -18,6 +18,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -41,9 +42,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
@@ -76,6 +77,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     private var shouldRefreshOnResume = true
     private var UOH_AB_TEST_KEY = "uoh_android_v2"
     private var UOH_AB_TEST_VALUE = "uoh_android_v2"
+    private var canGoToShopAccount = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +112,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     private fun setObservers() {
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             hideLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     loadBuyerData(buyerAccountMapper.call(it.data))
                 }
@@ -125,7 +127,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         })
 
         viewModel.addWishList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     showSuccessAddWishlist()
                 }
@@ -140,7 +142,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         })
 
         viewModel.removeWishList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     showSuccessRemoveWishlist()
                 }
@@ -156,7 +158,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         viewModel.firstRecommendation.observe(viewLifecycleOwner, Observer {
             hideLoadMoreLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     val visitable = ArrayList<Visitable<*>>()
                     visitable.add(AccountRecommendationTitleViewModel(it.data.title))
@@ -175,7 +177,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
         viewModel.recommendation.observe(viewLifecycleOwner, Observer {
             hideLoadMoreLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     adapter.addElement(getRecommendationVisitable(it.data))
                 }
@@ -184,6 +186,10 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                 }
             }
         })
+
+        viewModel.canGoToSellerAccount.observe(viewLifecycleOwner) {
+            canGoToShopAccount = it
+        }
     }
 
     private fun sendBuyerAccountItemImpression() {
@@ -353,6 +359,14 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
                         productPosition = adapterPosition
                 )
         )
+    }
+
+    override fun onSellerAccountCardClicked() {
+        if (canGoToShopAccount) {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        } else {
+            LocationAdminDialog(context).show()
+        }
     }
 
     private fun hideLoadMoreLoading() {
