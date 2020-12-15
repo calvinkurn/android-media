@@ -1,18 +1,23 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderPaymentModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.holder_transaction_payment.view.*
 import kotlinx.android.synthetic.main.holder_transaction_product.view.*
@@ -35,11 +40,30 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         //image
         if (paymentModel.navPaymentModel.imageUrl.isNotEmpty()) {
             val imageView = itemView.order_payment_image
+            val shimmer = itemView.order_payment_image_shimmer
             imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
             Glide.with(imageView.context)
                     .load(paymentModel.navPaymentModel.imageUrl)
                     .centerInside()
-                    .into(imageView)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                            imageView.setImageDrawable(resource)
+                            shimmer.gone()
+                        }
+
+                        override fun onLoadStarted(placeholder: Drawable?) {
+                            shimmer.visible()
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            shimmer.visible()
+                        }
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder))
+                        }
+                    })
+
         }
 
         //description
