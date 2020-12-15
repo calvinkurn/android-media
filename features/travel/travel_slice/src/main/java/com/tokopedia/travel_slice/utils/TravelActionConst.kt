@@ -8,6 +8,7 @@ object TravelActionConst {
 
     const val PARAM_FEATURE_NAME = "featureName"
     const val PARAM_FEATURE_APPLINK = "featureApplink"
+    const val PARAM_CITY_NAME = "cityName"
 
     object Feature {
         const val HOTEL_DASHBOARD = "hotelDashboard"

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.travel_slice.analytics.TravelSliceAnalytics
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
 import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
 import com.tokopedia.travel_slice.flight.data.FlightSliceRepository
@@ -46,6 +47,9 @@ class MainSliceProvider : SliceProvider() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: TravelSliceAnalytics
 
     private var sliceHashMap: HashMap<Uri, Slice> = HashMap()
     private var isAlreadyInit: Boolean = false
@@ -104,13 +108,16 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
-                if (hotelList.isEmpty()) HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+                analytics.viewHotelBooking(contextNonNull, isSuccess = true, isLogin = userSession.isLoggedIn)
+                if (hotelList.isEmpty()) HotelSliceProviderUtil.getEmptyDataSlices(contextNonNull, sliceUri)
                 else HotelSliceProviderUtil.getHotelRecommendationSlices(contextNonNull, sliceUri, city, checkIn, hotelList)
             }
             TravelSliceStatus.FAILURE -> {
+                analytics.viewHotelBooking(contextNonNull, isSuccess = false, isLogin = userSession.isLoggedIn)
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             else -> {
+                analytics.viewHotelBooking(contextNonNull, isSuccess = false, isLogin = userSession.isLoggedIn)
                 status = TravelSliceStatus.FAILURE
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
@@ -153,13 +160,16 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
+                analytics.viewHotelReservation(contextNonNull, true, userSession.isLoggedIn)
                 if (orderList.isNotEmpty()) HotelSliceProviderUtil.getMyHotelOrderSlices(contextNonNull, sliceUri, orderList)
-                else HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+                else HotelSliceProviderUtil.getEmptyOrderListSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.FAILURE -> {
+                analytics.viewHotelReservation(contextNonNull, false, userSession.isLoggedIn)
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.USER_NOT_LOG_IN -> {
+                analytics.viewHotelReservation(contextNonNull, false, userSession.isLoggedIn)
                 status = TravelSliceStatus.INIT
                 HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
             }
@@ -200,13 +210,16 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> FlightSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
+                analytics.viewFlightReservation(contextNonNull, userSession.isLoggedIn, true)
                 if (flightOrderList.isNotEmpty()) FlightSliceProviderUtil.getFlightOrderSlices(contextNonNull, sliceUri, flightOrderList)
-                else FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+                else FlightSliceProviderUtil.getEmptyOrderListSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.FAILURE -> {
+                analytics.viewFlightReservation(contextNonNull, userSession.isLoggedIn, false)
                 FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.USER_NOT_LOG_IN -> {
+                analytics.viewFlightReservation(contextNonNull, userSession.isLoggedIn, false)
                 status = TravelSliceStatus.INIT
                 FlightSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
             }
