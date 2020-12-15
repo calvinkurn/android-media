@@ -347,7 +347,6 @@ class ShopPageFragment :
         })
         swipeToRefresh.setOnRefreshListener {
             refreshData()
-            stickyLoginView.loadContent()
         }
         mainLayout.requestFocus()
         initStickyLogin(view)
@@ -624,8 +623,6 @@ class ShopPageFragment :
                 updateFloatingChatButtonMargin()
             }
         })
-
-        stickyLoginView.loadContent()
     }
 
     private fun getInitialData() {
@@ -1177,7 +1174,6 @@ class ShopPageFragment :
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
-                stickyLoginView.loadContent()
             }
         } else if (requestCode == REQUEST_CODE_FOLLOW) {
             if (resultCode == Activity.RESULT_OK) {
@@ -1212,6 +1208,8 @@ class ShopPageFragment :
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
+
+        stickyLoginView.loadContent()
     }
 
     fun collapseAppBar() {
