@@ -354,6 +354,8 @@ class AddEditProductPreviewFragment:
                 } else {
                     validateShopLocation()
                 }
+            } else {
+                moveToImagePicker()
             }
         }
 
