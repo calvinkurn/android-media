@@ -27,6 +27,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 private const val PRODUCT_PER_PAGE = 10
+private const val RESET_HEIGHT = 0
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -47,7 +48,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
 
     init {
-        initDaggerInject()
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
             val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
@@ -56,12 +56,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -70,7 +64,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)
+            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
             productLoadError.value = true
@@ -88,6 +82,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 productCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
+                maxHeightProductCard.value = RESET_HEIGHT
                 productLoadError.value = true
             }
         }
@@ -107,7 +102,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)) {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
                     productCarouselList.value = addLoadMore(it)

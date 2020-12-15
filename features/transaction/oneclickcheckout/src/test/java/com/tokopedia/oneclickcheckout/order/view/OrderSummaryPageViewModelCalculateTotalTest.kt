@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -587,7 +588,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, listOf(
+        assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, 0, listOf(
                 "cashback" to "Rp1000"
         )), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
     }
@@ -705,4 +706,69 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isSelected = true, isEnable = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
     }
+
+    @Test
+    fun `Calculate Total with Purchase Protection Checked`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(2500.0, 1000.0, 500.0, purchaseProtectionPrice = 1000), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total with Purchase Protection Checked and Multiple Quantity `() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 2), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(4500.0, 2000.0, 500.0, purchaseProtectionPrice = 2000), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total with Purchase Protection Unchecked from State`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, purchaseProtectionPrice = 0), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total with Purchase Protection Unchecked`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_EMPTY)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, purchaseProtectionPrice = 0), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+    }
+
 }

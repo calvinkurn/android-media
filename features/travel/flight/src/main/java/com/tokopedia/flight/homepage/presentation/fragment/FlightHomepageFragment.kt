@@ -483,11 +483,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
         view?.let {
-            Toaster.make(it,
+            Toaster.build(it,
                     getString(resourceId),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.flight_booking_action_okay))
+                    getString(R.string.flight_booking_action_okay)).show()
         }
     }
 

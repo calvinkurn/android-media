@@ -20,7 +20,8 @@ data class SectionWidgetUiModel(
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

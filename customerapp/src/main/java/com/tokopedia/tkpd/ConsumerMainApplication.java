@@ -9,6 +9,8 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.utils.permission.SlicePermission;
 
+import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -88,6 +90,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         super.onCreate();
-        SlicePermission.initPermission(this);
+        SlicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
     }
 }

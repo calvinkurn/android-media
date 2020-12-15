@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetLeft="@dimen/layout_lvl0"
+        app:contentInsetStart="@dimen/layout_lvl0"
+        app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
         xmlns:app="http://schemas.android.com/apk/res-auto" />
