@@ -6,10 +6,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ImageEditorBuilder(
-        var imageUrls:ArrayList<String>,
-        var imageDescriptions:ArrayList<String>? = arrayListOf(),
-        var minResolution:Int = DEFAULT_MIN_RESOLUTION,
-        var imageEditActionType:Array<ImageEditActionType> = getDefaultEditor(),
+        var imageUrls: ArrayList<String>,
+        var imageDescriptions: ArrayList<String>? = arrayListOf(),
+        var minResolution: Int = DEFAULT_MIN_RESOLUTION,
+        var imageEditActionType: Array<ImageEditActionType> = getDefaultEditor(),
         var defaultRatio: ImageRatioType = ImageRatioType.ORIGINAL,
         var isCirclePreview: Boolean = false,
         var maxFileSize: Int = DEFAULT_MAX_IMAGE_SIZE_IN_KB,

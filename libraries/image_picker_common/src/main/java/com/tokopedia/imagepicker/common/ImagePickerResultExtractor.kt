@@ -21,7 +21,7 @@ object ImagePickerResultExtractor {
         return ImagePickerResult(
             imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: mutableListOf(),
             originalImageUrl = intent.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE) ?: mutableListOf(),
-            isEditted = (intent.getSerializableExtra(RESULT_PREVIOUS_IMAGE) as? MutableList<Boolean>) ?: mutableListOf()
+            isEditted = (intent.getSerializableExtra(RESULT_IS_EDITTED) as? MutableList<Boolean>) ?: mutableListOf()
         )
     }
 }
