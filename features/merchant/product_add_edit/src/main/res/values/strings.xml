@@ -312,6 +312,7 @@
     <string name="title_specification_activity">Spesifikasi</string>
     <string name="title_specification_activity_action">Hapus Semua</string>
     <string name="action_specification_save">Simpan</string>
+    <string name="label_specification_search">Cari jenis bahan</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

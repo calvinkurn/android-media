@@ -22,11 +22,13 @@ import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
+import com.tokopedia.product.addedit.specification.presentation.dialog.SpecificationDataBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_product_specification.*
 import javax.inject.Inject
 
-class AddEditProductSpecificationFragment: BaseDaggerFragment(), SpecificationValueAdapter.OnSpecificationValueAdapterClickListener {
+class AddEditProductSpecificationFragment: BaseDaggerFragment(),
+        SpecificationValueAdapter.OnSpecificationValueAdapterClickListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -38,7 +40,6 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(), SpecificationVa
 
     @Inject
     lateinit var viewModel: AddEditProductSpecificationViewModel
-
     private var tvDeleteAll: TextView? = null
 
     override fun getScreenName(): String = ""
@@ -78,16 +79,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(), SpecificationVa
         observeProductInputModel()
     }
 
-    override fun onSpecificationValueTextClicked(position: Int) {
-        println("faisal $position")
-    }
-
     private fun setupSpecificationAdapter() {
-        val adapter = SpecificationValueAdapter(this)
+        val adapter = SpecificationValueAdapter(this, fragmentManager)
         rvSpecification.adapter = adapter
         setRecyclerViewToVertical(rvSpecification)
 
-        for (i in 0 until 100) {
+        for (i in 0 until 15) {
             val ggg = (200 * i).toLong()
             Handler().postDelayed({
                 adapter.addData("item $i")
@@ -109,8 +106,8 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(), SpecificationVa
     }
 
     private fun setupToolbarActions() {
-        activity?.findViewById<HeaderUnify>(com.tokopedia.product.addedit.R.id.toolbar_specification)?.apply {
-            headerTitle = getString(com.tokopedia.product.addedit.R.string.title_specification_activity)
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_specification)?.apply {
+            headerTitle = getString(R.string.title_specification_activity)
             setNavigationOnClickListener {
                 activity?.finish()
             }
@@ -121,5 +118,9 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(), SpecificationVa
             tvDeleteAll = actionTextView
             tvDeleteAll?.isEnabled = false
         }
+    }
+
+    override fun onSpecificationValueTextClicked(position: Int) {
+        //
     }
 }
