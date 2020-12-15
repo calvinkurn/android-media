@@ -26,8 +26,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
-import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
-import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -73,7 +71,6 @@ import timber.log.Timber;
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
         ProductDetailApplinkModule.class,
-        FeedDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
@@ -95,7 +92,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
-                    new FeedDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
