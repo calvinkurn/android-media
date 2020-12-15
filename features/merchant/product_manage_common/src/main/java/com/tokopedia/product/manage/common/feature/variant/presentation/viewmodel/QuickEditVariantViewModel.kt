@@ -59,6 +59,7 @@ class QuickEditVariantViewModel @Inject constructor(
     fun getData(productId: String) {
         hideErrorView()
         showProgressBar()
+        setEmptyTicker()
         getTickerList()
 
         launchCatchError(block = {
@@ -66,7 +67,7 @@ class QuickEditVariantViewModel @Inject constructor(
             _productManageAccess.value = access
             getProductVariants(productId, access)
         }) {
-            setEmptyTickerList()
+            setEmptyTicker()
             hideProgressBar()
             showErrorView()
         }
@@ -91,12 +92,13 @@ class QuickEditVariantViewModel @Inject constructor(
                 setEditVariantResult(productId, result)
                 getTickerList()
             } else {
-                setEmptyTickerList()
+                setEmptyTicker()
                 showErrorView()
             }
 
             hideProgressBar()
         }) {
+            setEmptyTicker()
             hideProgressBar()
             showErrorView()
         }
@@ -154,7 +156,7 @@ class QuickEditVariantViewModel @Inject constructor(
         _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, isAllStockEmpty)
     }
 
-    private fun setEmptyTickerList() {
+    private fun setEmptyTicker() {
         _tickerList.value = emptyList()
     }
 
