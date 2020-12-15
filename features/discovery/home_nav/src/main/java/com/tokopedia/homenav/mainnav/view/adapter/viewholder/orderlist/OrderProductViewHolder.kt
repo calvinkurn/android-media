@@ -41,6 +41,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
             Glide.with(imageView.context)
                     .load(productModel.navProductModel.imageUrl)
                     .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                    .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                     .dontAnimate()
                     .fitCenter()
                     .into(object : CustomTarget<Drawable>() {
@@ -58,7 +59,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
                         }
 
                         override fun onLoadFailed(errorDrawable: Drawable?) {
-                            imageView.setImageDrawable(ContextCompat.getDrawable(imageView.context, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder))
+                            shimmer.gone()
                         }
                     })
         }
