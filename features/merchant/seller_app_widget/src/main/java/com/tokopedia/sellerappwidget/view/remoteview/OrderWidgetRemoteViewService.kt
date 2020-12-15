@@ -9,6 +9,7 @@ import android.widget.RemoteViewsService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
@@ -56,9 +57,10 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                 }
                 setOnClickFillInIntent(R.id.containerSawOrderItem, fillIntent)
 
-                if (item.productCount > 1) {
+                val productCount = item.productCount.orZero()
+                if (productCount > 1) {
                     setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.VISIBLE)
-                    val otherProducts = "+${item.productCount.minus(1)} ${context.getString(R.string.saw_product)}"
+                    val otherProducts = "+${productCount.minus(1)} ${context.getString(R.string.saw_product)}"
                     setTextViewText(R.id.tvSawOrderItemOtherOrder, otherProducts)
                 } else {
                     setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.GONE)

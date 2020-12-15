@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class OrderProductUiModel(
-        val productId: String = "",
-        val productName: String = "",
-        val picture: String = ""
+        val productId: String? = "",
+        val productName: String? = "",
+        val picture: String? = ""
 ): Parcelable

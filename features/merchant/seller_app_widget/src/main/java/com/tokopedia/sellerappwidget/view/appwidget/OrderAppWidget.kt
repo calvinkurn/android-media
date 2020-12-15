@@ -189,7 +189,7 @@ class OrderAppWidget : AppWidgetProvider() {
 
             widgetIds.forEach { widgetId ->
                 when {
-                    order.orders.isEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
+                    order.orders.isNullOrEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
                     else -> {
                         OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
                     }

@@ -14,9 +14,9 @@ data class ChatUiModel(
 
 @Parcelize
 data class ChatItemUiModel(
-        val messageId: Int = 0,
-        val messageKey: String = "",
-        val userDisplayName: String = "",
-        val lastMessage: String = "",
-        val lastReplyTime: String = ""
+        val messageId: Long? = 0,
+        val messageKey: String? = "",
+        val userDisplayName: String? = "",
+        val lastMessage: String? = "",
+        val lastReplyTime: String? = ""
 ) : Parcelable

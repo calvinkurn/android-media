@@ -27,7 +27,7 @@ data class ChatListModel(
         val messageKey: String? = "",
         @Expose
         @SerializedName("msgID")
-        val msgID: Int? = 0
+        val msgID: Long? = 0
 )
 
 data class ChatAttributesModel(

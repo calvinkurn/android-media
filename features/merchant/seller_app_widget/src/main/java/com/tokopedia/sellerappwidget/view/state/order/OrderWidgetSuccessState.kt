@@ -11,6 +11,7 @@ import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.*
@@ -45,8 +46,8 @@ object OrderWidgetSuccessState {
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val newOrderCount = order.sellerOrderStatus.newOrder
-            val readyToShipCount = order.sellerOrderStatus.readyToShip
+            val newOrderCount = order.sellerOrderStatus?.newOrder.orZero()
+            val readyToShipCount = order.sellerOrderStatus?.readyToShip.orZero()
             val newOrderFmt = "$newOrderCount ${context.getString(R.string.saw_order)}"
             val readyToShipFmt = "$readyToShipCount ${context.getString(R.string.saw_order)}"
             setTextViewText(R.id.tvSawOrderNewOrder, newOrderFmt)
@@ -74,7 +75,7 @@ object OrderWidgetSuccessState {
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val orderItemsByType = order.orders.filter { it.statusId == orderStatusId }
+            val orderItemsByType = order.orders?.filter { it.statusId == orderStatusId }.orEmpty()
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
@@ -101,9 +102,9 @@ object OrderWidgetSuccessState {
                 R.string.saw_ready_to_ship
             }
             val totalOrder = if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
-                order.sellerOrderStatus.newOrder
+                order.sellerOrderStatus?.newOrder.orZero()
             } else {
-                order.sellerOrderStatus.readyToShip
+                order.sellerOrderStatus?.readyToShip.orZero()
             }
             val totalOrderFmt = "$totalOrder ${context.getString(orderTypeStringRes)}"
             setTextViewText(R.id.tvSawOrderTotalOrder, totalOrderFmt)
