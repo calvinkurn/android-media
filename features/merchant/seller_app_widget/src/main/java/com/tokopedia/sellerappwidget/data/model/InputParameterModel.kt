@@ -1,10 +1,7 @@
 package com.tokopedia.sellerappwidget.data.model
 
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.sellerappwidget.common.Utils
-import java.util.*
 
 data class InputParameterModel(
         @SerializedName("search")
