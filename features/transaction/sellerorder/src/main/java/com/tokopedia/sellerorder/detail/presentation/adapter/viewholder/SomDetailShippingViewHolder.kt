@@ -156,6 +156,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         tv_som_dropshipper_name.text = item.dataObject.dropshipperName
                         tv_dropshipper_number.text = numberPhoneDropShipper
                     } else {
+                        tv_dropshipper_number.hide()
                         tv_som_dropshipper_name.text = item.dataObject.dropshipperName
                     }
                 } else {
