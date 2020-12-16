@@ -1583,6 +1583,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         orderListParam.statusList = filterCancelWrapper.orderStatusIdList
         viewModel.updateGetOrderListParams(orderListParam)
         this.filterDate = filterCancelWrapper.filterDate
+        this.filterOrderType = if (filterCancelWrapper.requestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
     }
 
     private fun setCoachMarkStepListener() {
