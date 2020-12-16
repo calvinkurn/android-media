@@ -20,6 +20,11 @@ import javax.inject.Inject
  */
 class RegisterAnalytics @Inject constructor() {
 
+    val MEDIUM_EMAIL = "email"
+    val MEDIUM_PHONE = "phone"
+    val MEDIUM_FACEBOOK = "facebook"
+    val MEDIUM_GOOGLE = "google"
+
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -467,10 +472,10 @@ class RegisterAnalytics @Inject constructor() {
             shopName:String
     ) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone(userId)
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle(userId)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook(userId)
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId.toString(), name, email)
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone(userId.toString())
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle(userId.toString())
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook(userId.toString())
         }
         sendSuccessRegisterToMoengage(
                 userId,
@@ -484,7 +489,7 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     //#R7
-    private fun onSuccessRegisterFacebook(userId: Int) {
+    private fun onSuccessRegisterFacebook(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
@@ -498,11 +503,11 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_REGISTER_SUCCESS,
                 FACEBOOK
         ))
-        sendBranchRegisterEvent(userId, "facebook")
+        sendBranchRegisterEvent(userId, MEDIUM_FACEBOOK)
     }
 
     //#R6
-    private fun onSuccessRegisterGoogle(userId: Int) {
+    private fun onSuccessRegisterGoogle(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
@@ -516,20 +521,20 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_REGISTER_SUCCESS,
                 LoginRegisterAnalytics.GOOGLE
         ))
-        sendBranchRegisterEvent(userId, "google")
+        sendBranchRegisterEvent(userId, MEDIUM_GOOGLE)
     }
 
-    private fun onSuccessRegisterPhone(userId: Int) {
+    private fun onSuccessRegisterPhone(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_SUCCESS
         ))
-        sendBranchRegisterEvent(userId, "phone")
+        sendBranchRegisterEvent(userId, MEDIUM_PHONE)
     }
 
-    private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+    private fun onSuccessRegisterEmail(userId: String, name: String, email: String) {
         trackSuccessClickEmailSignUpButton()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
@@ -539,16 +544,16 @@ class RegisterAnalytics @Inject constructor() {
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
-        sendBranchRegisterEvent(userId, "email")
+        sendBranchRegisterEvent(userId, MEDIUM_EMAIL)
     }
 
     private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
         TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
     }
 
-    private fun sendBranchRegisterEvent(userId: Int, medium: String) {
+    private fun sendBranchRegisterEvent(userId: String, medium: String) {
         val userData = UserData()
-        userData.userId = userId.toString()
+        userData.userId = userId
         userData.medium = medium
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
