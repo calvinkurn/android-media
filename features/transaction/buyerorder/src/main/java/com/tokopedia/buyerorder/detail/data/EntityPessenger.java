@@ -74,7 +74,7 @@ public class EntityPessenger {
         this.name = name;
     }
 
-    public long getProductId() {
+    public int getProductId() {
         return productId;
     }
 
