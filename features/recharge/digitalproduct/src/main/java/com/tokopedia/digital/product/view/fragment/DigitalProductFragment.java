@@ -37,7 +37,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -81,6 +80,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -123,6 +123,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME =
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME";
+    private static final String ARG_PARAM_EXTRA_RECHARGE_SLICE =
+            "ARG_PARAM_EXTRA_RECHARGE_SLICE";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -199,6 +201,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
+    private String rechargeParamFromSlice = "";
+
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
@@ -232,7 +236,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
             boolean isFromWidget, boolean isCouponApplied, String additionalETollBalance,
-            String additionalETollLastUpdatedDate, String additionalETollOperatorName) {
+            String additionalETollLastUpdatedDate, String additionalETollOperatorName,String rechargeParamFromSlice) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
@@ -244,6 +248,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME, additionalETollOperatorName);
+        bundle.putString(ARG_PARAM_EXTRA_RECHARGE_SLICE, rechargeParamFromSlice);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -271,6 +276,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
+        if(rechargeParamFromSlice!=null || !rechargeParamFromSlice.isEmpty()){
+            digitalAnalytics.onOpenPageFromSlice();
+            digitalAnalytics.onClickSliceRecharge(userSession.getUserId(), rechargeParamFromSlice);
+        }
         // (Temporary) Ignore unparsable categoryId error
         try {
             if (categoryId != null)
@@ -371,6 +380,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
         additionalETollOperatorName = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_OPERATOR_NAME);
+        rechargeParamFromSlice = arguments.getString(ARG_PARAM_EXTRA_RECHARGE_SLICE);
     }
 
     protected void initView(View view) {
@@ -615,7 +625,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (view != null) {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -790,7 +802,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void onButtonContactPickerClicked() {
         permissionCheckerHelper.checkPermission(getActivity(),
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS, new PermissionCheckerHelper.PermissionCheckListener() {
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT, new PermissionCheckerHelper.PermissionCheckListener() {
                     @Override
                     public void onPermissionDenied(@NotNull String permissionText) {
                         permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
@@ -1035,8 +1047,11 @@ public class DigitalProductFragment extends BaseDaggerFragment
             );
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    getString(R.string.error_message_contact_not_found));
+
+            View view = getView();
+            if (view != null) {
+                Toaster.build(view, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+            }
         }
     }
 

@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="8sp"
+                android:textColor="@color/Unify_N700_96"
                 style="@style/TextView.Small.Bold"
                 android:maxLines="1"
                 tools:text="Pretty Sugar Shop"
@@ -79,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 style="@style/TextView.Micro"
                 tools:text="@string/already_favorite"
 
@@ -100,7 +101,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         />
 
     <LinearLayout
@@ -116,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/red_deadline"
+            android:background="@color/Unify_R100"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -136,6 +137,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_deadline"
+                android:textColor="@color/Unify_N700_68"
                 android:gravity="center_vertical"
                 style="@style/TextView.Micro.BlackSecondary"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
@@ -145,7 +147,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             />
     </LinearLayout>
 
@@ -163,7 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@color/grey_200"
+            android:background="@color/Unify_N50"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -182,6 +184,7 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
                 android:text="@string/locked_reputation"
@@ -192,7 +195,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             />
     </LinearLayout>
 
@@ -214,6 +217,7 @@
             style="@style/TextView.Small"
             tools:text="Bagaimana pen"
             android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/Unify_N700_96"
             />
 
         <TextView
@@ -223,6 +227,7 @@
             android:layout_alignParentRight="true"
             android:lineSpacingExtra="7sp"
             android:text="@string/change"
+            android:textColor="@color/Unify_G400"
             style="@style/TextView.Small.Green"
             android:layout_marginTop="@dimen/dp_8"
             />
@@ -237,7 +242,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         />
@@ -260,6 +265,7 @@
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
             style="@style/TextView.Micro.BlackSecondary"
+            android:textColor="@color/Unify_N700_68"
             tools:text="Penjual Belum Menilai"
             android:layout_marginTop="@dimen/dp_4"
             />

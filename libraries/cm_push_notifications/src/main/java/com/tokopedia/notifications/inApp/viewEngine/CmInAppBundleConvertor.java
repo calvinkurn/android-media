@@ -71,28 +71,30 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
                 cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
 
-            if(!TextUtils.isEmpty(cmInApp.getType()) && cmInApp.getType().equals(CmInAppConstant.TYPE_GRATIF)){
-                cmInApp.setScreen("");
+            String tempScreenName = "";
+
+            if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME)) {
+                tempScreenName = map.get(RulesUtil.Constants.Payload.SCREEN_NAME);
+                cmInApp.setScreen(tempScreenName);
             }
 
-            if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME))
-                cmInApp.setScreen(map.get(RulesUtil.Constants.Payload.SCREEN_NAME));
-
             if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
-                String screenName = cmInApp.getScreen();
                 String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
-                if(!TextUtils.isEmpty(finalScreenName)){
+                if (!TextUtils.isEmpty(finalScreenName)) {
                     StringBuilder sb = new StringBuilder(finalScreenName);
-                    if (!TextUtils.isEmpty(screenName)) {
+                    if (!TextUtils.isEmpty(tempScreenName)) {
                         sb.append(",");
-                        sb.append(screenName);
+                        sb.append(tempScreenName);
                     }
                     cmInApp.setScreen(sb.toString());
                 }
             }
 
-            if(TextUtils.isEmpty(cmInApp.getScreen()))
+            boolean screenNameIsPresent = (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME) ||
+                    map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME));
+            if (!screenNameIsPresent) {
                 return null;
+            }
 
             if (!map.containsKey(RulesUtil.Constants.Payload.UI)) {
                 return null;

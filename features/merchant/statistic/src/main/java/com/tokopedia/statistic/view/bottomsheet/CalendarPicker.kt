@@ -36,7 +36,7 @@ class CalendarPicker : BottomSheetUnify() {
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
     private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
-    private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
+    private val maxDate = Date()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -67,8 +67,14 @@ class PushController(val context: Context) : CoroutineScope {
                     val bundle = jsonToBundle(payloadJson)
                     handleNotificationBundle(bundle, true)
                 }
-            }, onError = {})
-        } catch (e: Exception) { }
+            }, onError = {
+                Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            })
+        } catch (e: Exception) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        }
     }
 
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {

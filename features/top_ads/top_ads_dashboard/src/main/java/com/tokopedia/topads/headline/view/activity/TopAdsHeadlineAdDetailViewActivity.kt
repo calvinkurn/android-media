@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -89,16 +88,17 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
-    companion object{
+    companion object {
         private const val ACTIVE = "1"
         private const val TIDAK_TAMPIL = "2"
     }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
 
-        ViewModelProvider(this,viewModelFactory).get(GroupDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(GroupDetailViewModel::class.java)
     }
 
     private lateinit var detailPagerAdapter: TopAdsDashGroupDetailPagerAdapter
@@ -132,7 +132,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         viewPagerHeadline.adapter = getViewPagerAdapter()
         viewPagerHeadline.offscreenPageLimit = 2
         viewPagerHeadline.currentItem = 0
-      //  viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        //  viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout?.setupWithViewPager(viewPagerHeadline)
     }
 
@@ -292,7 +292,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
         } else
-            getString(R.string.topads_dash_custom_date_desc) ?: ""
+            getString(R.string.topads_dash_custom_date_desc)
 
         datePickerSheet = DatePickerSheet.newInstance(this, index ?: 2, dateRange)
         datePickerSheet?.show()
@@ -307,15 +307,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
         sheet.show(supportFragmentManager, DATE_PICKER_SHEET)
     }

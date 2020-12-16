@@ -301,7 +301,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
         } else
-            getString(R.string.topads_dash_custom_date_desc) ?: ""
+            getString(R.string.topads_dash_custom_date_desc)
 
         datePickerSheet = DatePickerSheet.newInstance(this, index ?: 2, dateRange)
         datePickerSheet?.show()
@@ -316,15 +316,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
         sheet.show(supportFragmentManager, DATE_PICKER_SHEET)
     }

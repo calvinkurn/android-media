@@ -163,12 +163,12 @@ import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
-import java.lang.Exception
 import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.Exception
 import kotlin.collections.ArrayList
 
 /**
@@ -225,9 +225,9 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
-        private const val EXP_TOP_NAV = "Navigation Revamp"
-        private const val VARIANT_OLD = "Existing Navigation"
-        private const val VARIANT_REVAMP = "Navigation Revamp"
+        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
@@ -588,7 +588,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run {
-                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+                bottomSheet.show(this, "onboarding navigation")
             }
             saveFirstViewNavigation(false)
         }
@@ -615,15 +615,23 @@ open class HomeFragment : BaseDaggerFragment(),
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
             coachMark.dismissCoachMark()
         }
-
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
             bottomSheet.dismiss()
-            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
+            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                coachMark.showCoachMark(step = coachMarkItem, index = 0)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -684,9 +692,6 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         if (recyclerView.canScrollVertically(1)) {
             navAbTestCondition(
-                    ifNavRevamp = {
-                        navToolbar?.let { it.showShadow() }
-                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
@@ -696,9 +701,6 @@ open class HomeFragment : BaseDaggerFragment(),
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             navAbTestCondition(
-                    ifNavRevamp = {
-                        navToolbar?.let { it.hideShadow() }
-                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
@@ -758,9 +760,9 @@ open class HomeFragment : BaseDaggerFragment(),
         })
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
-                    HomeRollanceConst.Navigation.VARIANT_REVAMP
+                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
                 } else {
-                    HomeRollanceConst.Navigation.VARIANT_OLD
+                    AbTestPlatform.NAVIGATION_VARIANT_OLD
                 })
     }
 
@@ -899,6 +901,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetToggleReminder()
+        observeRechargeBUWidget()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1093,6 +1096,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeRechargeBUWidget() {
+        context?.let {
+            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
+                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
@@ -1225,8 +1236,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
-                CategoryNavigationCallback(context, this)
-
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
