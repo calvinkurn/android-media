@@ -32,29 +32,31 @@ class UohListTrackingTest {
     var activityRule = ActivityTestRule(UohListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    // private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
+    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        // IdlingRegistry.getInstance().register(idlingResourceLogin)
+        IdlingRegistry.getInstance().register(idlingResourceLogin)
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
 
         setupGraphqlMockResponse {
             addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        // InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
+        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
+        onIdle()
 
-        // activityRule.launchActivity(null)
+        activityRule.launchActivity(null)
+        onIdle()
     }
 
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(UohIdlingResource.countingIdlingResource)
-        // IdlingRegistry.getInstance().unregister(idlingResourceLogin)
+        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
         activityRule.finishActivity()
     }
 
@@ -64,8 +66,7 @@ class UohListTrackingTest {
                 ?: throw AssertionError("Validator Query not found")
 
         runBot {
-            login(context)
-            launchFrom(activityRule)
+            loading()
             clickPrimaryButton()
             clickThreeDotsMenu()
             clickBeliLagi()
@@ -77,8 +78,8 @@ class UohListTrackingTest {
             doApplyFilterCategory()
             clickFilterDate()
             doApplyFilterDate()
-        } /*submit {
+        } submit {
             hasPassedAnalytics(gtmLogDBSource, query)
-        }*/
+        }
     }
 }

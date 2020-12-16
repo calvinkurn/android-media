@@ -31,13 +31,7 @@ import org.hamcrest.TypeSafeMatcher
  * Created by fwidjaja on 08/11/20.
  */
 class UohRobot {
-    fun launchFrom(rule: ActivityTestRule<UohListActivity>) {
-        rule.launchActivity(null)
-        waitForData()
-    }
-
-    fun login(context: Context) {
-        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application)
+    fun loading() {
         waitForData()
     }
 
