@@ -11,11 +11,14 @@ import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -73,14 +76,31 @@ class BuyerAccountViewModel @Inject constructor (
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
-            val (canGoToShopAccount, adminTypeText) = accountAdminInfoUseCase.executeOnBackground()
+            val (adminData, shopData) =
+                    if (!userSession.isShopAdmin) {
+                        with(accountAdminInfoUseCase) {
+                            requestParams = AccountAdminInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                            isLocationAdmin = userSession.isLocationAdmin
+                            executeOnBackground()
+                        }
+                    } else {
+                        Pair(null, null)
+                    }
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
-                accountModel.adminTypeText = adminTypeText
+                accountModel.adminTypeText = adminData?.adminTypeText
                 saveLocallyAttributes(accountModel)
-                _canGoToSellerAccount.postValue(canGoToShopAccount)
+                adminData?.let {
+                    refreshUserSessionAdminData(it)
+                }
+                (adminData?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
+                    _canGoToSellerAccount.postValue(canGoToSellerAccount)
+                }
+                shopData?.let {
+                    refreshUserSessionShopData(it)
+                }
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
@@ -206,6 +226,42 @@ class BuyerAccountViewModel @Inject constructor (
             override fun onSuccessRemoveWishlist(productId: String?) {
                 _removeWishList.postValue(Success(MSG_SUCCESS_REMOVE_WISHLIST))
             }
+        }
+    }
+
+    private fun refreshUserSessionShopData(shopData: ShopData) {
+        val levelGold = 1
+        val levelOfficialStore = 2
+        with(userSession) {
+            shopId = shopData.shopId
+            shopName = shopData.shopName
+            shopAvatar = shopData.shopAvatar
+            setIsGoldMerchant(shopData.shopLevel == levelGold  ||  shopData.shopLevel == levelOfficialStore)
+            setIsShopOfficialStore(shopData.shopLevel == levelOfficialStore)
+        }
+    }
+
+    private fun refreshUserSessionAdminData(adminData: AdminData) {
+        adminData.detail.roleType.let {
+            userSession.run {
+                setIsShopOwner(it.isShopOwner)
+                setIsLocationAdmin(it.isLocationAdmin)
+                setIsShopAdmin(it.isShopAdmin)
+                setIsMultiLocationShop((adminData.locations.count() > 1))
+            }
+            if (it.isLocationAdmin) {
+                removeUnnecessaryShopData()
+            }
+        }
+    }
+
+    private fun removeUnnecessaryShopData() {
+        userSession.run {
+            shopAvatar = ""
+            shopId = "0"
+            shopName = ""
+            setIsGoldMerchant(false)
+            setIsShopOfficialStore(false)
         }
     }
 
