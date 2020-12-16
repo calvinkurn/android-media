@@ -54,6 +54,23 @@
         app:layout_constraintEnd_toEndOf="@id/vertical_image_empty_state"
         app:layout_constraintStart_toStartOf="@id/vertical_image_empty_state"
         app:layout_constraintTop_toBottomOf="@id/vertical_title_tv" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/vertical_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_6"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dp_25"
+            android:text="@string/filter_empty_state_description"
+            android:textColor="@color/clr_ae31353b"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vertical_decription_tv"
+            app:typographyType="body_3"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

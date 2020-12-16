@@ -3,12 +3,16 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.emptystate.EmptyStateModel
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -19,6 +23,7 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private val verticalDecription: Typography = itemView.findViewById(R.id.vertical_decription_tv)
     private val horizontalTitle: Typography = itemView.findViewById(R.id.horizontal_title_tv)
     private val horizontalDecription: Typography = itemView.findViewById(R.id.horizontal_decription_tv)
+    private val verticalButton: UnifyButton = itemView.findViewById(R.id.vertical_button)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as EmptyStateViewModel
@@ -34,12 +39,30 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 horizontalTitle.text = it.title
                 horizontalDecription.text = it.description
             } else {
-                horizontalView.hide()
-                verticalView.show()
-                verticalTitle.text = it.title
-                verticalDecription.text = it.description
+                setVerticalState(it)
             }
+        }
+    }
 
+    private fun setVerticalState(emptyStateModel: EmptyStateModel) {
+        horizontalView.hide()
+        verticalView.show()
+        verticalTitle.text = emptyStateModel.title
+        verticalDecription.text = emptyStateModel.description
+        if (emptyStateModel.isFilterState) {
+            verticalButton.show()
+            verticalButton.setOnClickListener {
+                emptyStateViewModel.resetChildComponents()
+            }
+        }
+    }
+
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
+        lifecycleOwner?.let { lifecycle ->
+            emptyStateViewModel.needReSyncLiveData.observe(lifecycle, {
+                if (it) (fragment as DiscoveryFragment).reSync()
+            })
         }
     }
 }

@@ -36,4 +36,13 @@ object Constant {
     object StaticFontColor{
         const val FONT_COLOR =  "#03AC0E"
     }
+
+    object EmptyStateTexts{
+        const val TITLE = "Awas keduluan pembeli lain!"
+        const val DESCRIPTION = "Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!"
+
+        const val FILTER_TITLE = "Oops, barangnya nggak ketemu"
+        const val FILTER_DESCRIPTION = "Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!"
+        const val FILTER_BUTTON_TEXT = "Reset Filter"
+    }
 }
