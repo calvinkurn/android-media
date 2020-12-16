@@ -18,7 +18,6 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
-    private var viewedTopadsProductsSet: ArrayList<String> = arrayListOf()
     private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
                                    eventCategory: String = "$VALUE_CATEGORY_PAGE - $pageIdentifier",
@@ -124,16 +123,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         if (!componentsItems.data.isNullOrEmpty()) {
             componentsItems.data?.firstOrNull()?.let {
                 it.productId?.let { productId ->
-                    if(it.isTopads == true){
-                        if (!viewedTopadsProductsSet.contains(productId)) {
-                            viewedTopadsProductsSet.add(productId)
-                            trackEventImpressionProductCard(componentsItems)
-                        }
-                    } else {
-                        if (!viewedProductsSet.contains(productId)) {
-                            viewedProductsSet.add(productId)
-                            trackEventImpressionProductCard(componentsItems)
-                        }
+                    if (!viewedProductsSet.contains(productId)) {
+                        viewedProductsSet.add(productId)
+                        trackEventImpressionProductCard(componentsItems)
                     }
                 }
             }
@@ -152,7 +144,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_ID] = it.productId.toString()
             productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
             productMap[KEY_NAME] = it.name.toString()
-            productMap[KEY_POSITION] = if (it.isTopads == false) viewedProductsSet.indexOf(it.productId) + 1 else viewedTopadsProductsSet.indexOf(it.productId) + 1
+            productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
         }
@@ -162,7 +154,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 CURRENCY_CODE to IDR,
                 KEY_IMPRESSIONS to list)
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
-                eventAction = if (componentsItems.data?.firstOrNull()?.isTopads == false) CATEGORY_PRODUCT_LIST_IMPRESSION else CATEGORY_PRODUCT_LIST_IMPRESSION_TOPADS)
+                eventAction = CATEGORY_PRODUCT_LIST_IMPRESSION)
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -183,7 +175,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
                 productMap[KEY_NAME] = it.name.toString()
-                productMap[KEY_POSITION] = if (it.isTopads == false) viewedProductsSet.indexOf(it.productId) + 1 else viewedTopadsProductsSet.indexOf(it.productId) + 1
+                productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
                 productMap[KEY_VARIANT] = NONE_OTHER
             }
@@ -197,7 +189,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                             PRODUCTS to list
                     )
             )
-            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = if (componentsItems.data?.firstOrNull()?.isTopads == false) CATEGORY_CLICK_PRODUCT_LIST else CATEGORY_CLICK_PRODUCT_LIST_TOPADS)
+            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CATEGORY_CLICK_PRODUCT_LIST)
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
@@ -207,7 +199,6 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     override fun clearProductViewIds(isRefresh : Boolean) {
         if(isRefresh) {
             viewedProductsSet.clear()
-            viewedTopadsProductsSet.clear()
         }
     }
 
