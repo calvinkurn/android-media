@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.constant.GqlQueryConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
@@ -209,5 +211,11 @@ class ShopPageModule {
     @Provides
     fun getCoroutineDispatcherProvider(): CoroutineDispatchers {
         return CoroutineDispatchersProvider
+    }
+
+    @ShopPageScope
+    @Provides
+    fun provideFirebaseRemoteConfig(@ApplicationContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

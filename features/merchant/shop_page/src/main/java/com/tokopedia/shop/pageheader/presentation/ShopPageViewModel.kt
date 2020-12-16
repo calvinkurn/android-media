@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -73,6 +75,7 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -169,7 +172,11 @@ class ShopPageViewModel @Inject constructor(
             isRefresh: Boolean
     ): ShopProduct.GetShopProduct {
         val useCase = getShopProductListUseCase.get()
-        useCase.isFromCacheFirst = !isRefresh
+        val isDisableProductListCache = firebaseRemoteConfig.getBoolean(
+                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
+                false
+        )
+        useCase.isFromCacheFirst = (!isRefresh).takeIf { !isDisableProductListCache } ?: false
         useCase.cacheTime = TEN_MINUTE_MS
         useCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
