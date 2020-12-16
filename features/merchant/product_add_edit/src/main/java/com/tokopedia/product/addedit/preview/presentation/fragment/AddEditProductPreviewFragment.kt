@@ -200,9 +200,6 @@ class AddEditProductPreviewFragment:
     //loading
     private var loadingLayout: MotionLayout? = null
 
-    //dialog
-    private var shopLocationDialog: DialogUnify? = null
-
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
@@ -708,7 +705,6 @@ class AddEditProductPreviewFragment:
     private fun onFragmentResult() {
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, Observer { bundle ->
             bundle?.let { data ->
-                shopLocationDialog?.dismiss()
                 dataBackPressed = data.getInt(BUNDLE_BACK_PRESSED, 0)
                 updateProductInputModelOfCacheManagerId(data)
                 //only update data on preview page
@@ -1029,9 +1025,8 @@ class AddEditProductPreviewFragment:
         viewModel.locationValidation.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (!it.data) {
-                        shopLocationDialog = showDialogLocationValidation()
-                        shopLocationDialog?.show()
+                    if (!it.data && dataBackPressedLoss()) {
+                        showDialogLocationValidation()
                     }
                     hasLocation = it.data
                     if (isStartButtonClicked && hasLocation) {
@@ -1054,9 +1049,9 @@ class AddEditProductPreviewFragment:
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
-                    if (isSuccess) {
+                    if (isSuccess && dataBackPressedLoss()) {
                         showToasterSuccessSetLocation()
-                    } else {
+                    } else if (dataBackPressedLoss()) {
                         moveToLocationPicker()
                     }
                     hasLocation = isSuccess
@@ -1422,8 +1417,8 @@ class AddEditProductPreviewFragment:
         }
     }
 
-    private fun showDialogLocationValidation(): DialogUnify {
-        return DialogUnify(
+    private fun showDialogLocationValidation() {
+        DialogUnify(
                 requireContext(),
                 DialogUnify.SINGLE_ACTION,
                 DialogUnify.NO_IMAGE
@@ -1435,7 +1430,7 @@ class AddEditProductPreviewFragment:
                 moveToLocationPicker()
                 dismiss()
             }
-        }
+        }.show()
     }
 
     private fun moveToLocationPicker() {
