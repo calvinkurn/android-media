@@ -1,6 +1,7 @@
 package com.tokopedia.linker.validation
 
 import android.text.TextUtils
+import android.util.Log
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
@@ -35,6 +36,7 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
+            logging("error;reason=exception_validatePURCHASE;data='$PURCHASE'ex='${Log.getStackTraceString(e)}'")
         }
 
     }
@@ -54,6 +56,7 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
+            logging("error;reason=exception_validateADD_TO_CART;data='$ADD_TO_CART'ex='${Log.getStackTraceString(e)}'")
         }
     }
 
@@ -71,6 +74,7 @@ class BranchHelperValidation {
             validateContent(VIEW_ITEM,linkerData.content)
         }catch (e: Exception){
             e.printStackTrace()
+            logging("error;reason=exception_validateVIEW_ITEM;data='$VIEW_ITEM'ex='${Log.getStackTraceString(e)}'")
         }
     }
 

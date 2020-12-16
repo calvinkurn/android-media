@@ -73,7 +73,7 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validateAddToCart;data='"+eventValue+"'ex='"+e+"'");
+            logging("error;reason=exception_validateAddToCart;data='"+eventValue+"'ex='"+ Log.getStackTraceString(e) +"'");
         }
     }
 
