@@ -73,8 +73,8 @@ class TalkInboxViewHolder(
         }
     }
 
-    private fun setAlertState(isMasked: Boolean, isSellerView: Boolean) {
-        itemView.talkInboxAlertSignifier.showWithCondition(isMasked && isSellerView)
+    private fun setAlertState(hasProblem: Boolean, isSellerView: Boolean) {
+        itemView.talkInboxAlertSignifier.showWithCondition(hasProblem && isSellerView)
     }
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
