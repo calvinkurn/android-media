@@ -13,9 +13,9 @@ data class Product(
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("parent_id")
-        val parentId: Int = 0,
+        val parentId: Long = 0,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("sku")
