@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class AddToCartMultiParam (
         @SerializedName("product_id")
-        val productId: Int = -1,
+        val productId: Long = -1,
 
         @SerializedName("product_name")
         val productName: String = "",

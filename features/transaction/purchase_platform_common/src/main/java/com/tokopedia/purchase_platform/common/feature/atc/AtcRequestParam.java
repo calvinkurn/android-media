@@ -20,7 +20,7 @@ public class AtcRequestParam implements Parcelable {
     public String notes;
 
     @SerializedName("product_id")
-    public int productId;
+    public Long productId;
 
     @SerializedName("warehouse_id")
     public int warehouseId;
@@ -32,7 +32,7 @@ public class AtcRequestParam implements Parcelable {
         shopId = in.readInt();
         quantity = in.readInt();
         notes = in.readString();
-        productId = in.readInt();
+        productId = in.readLong();
         warehouseId = in.readInt();
     }
 
@@ -41,7 +41,7 @@ public class AtcRequestParam implements Parcelable {
         dest.writeInt(shopId);
         dest.writeInt(quantity);
         dest.writeString(notes);
-        dest.writeInt(productId);
+        dest.writeLong(productId);
         dest.writeInt(warehouseId);
     }
 
@@ -86,11 +86,11 @@ public class AtcRequestParam implements Parcelable {
         this.notes = notes;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
