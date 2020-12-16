@@ -2,6 +2,7 @@ package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,6 +28,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class ShopEditBasicInfoViewModel @Inject constructor(
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
@@ -61,8 +63,53 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     private val _validateShopDomain = MutableLiveData<Result<ValidateShopDomainNameResult>>()
     private val _shopDomainSuggestion = MutableLiveData<Result<ShopDomainSuggestionData>>()
 
+    private val shopNameValidation = MutableLiveData<String>()
+    private val shopDomainValidation = MutableLiveData<String>()
+
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
+
+    init {
+        initShopNameValidation()
+        initShopDomainValidation()
+    }
+
+    private fun initShopNameValidation() {
+        viewModelScope.launch {
+            shopNameValidation.asFlow()
+                    .flowOn(dispatchers.io)
+                    .debounce(INPUT_DELAY)
+                    .map {
+                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(it)
+                        validateDomainShopNameUseCase.executeOnBackground()
+                    }.catch {
+                        _validateShopName.value = Fail(it)
+                    }.collectLatest {
+                        _validateShopName.value = Success(it)
+                    }
+        }
+    }
+
+    private fun initShopDomainValidation() {
+        viewModelScope.launch {
+            shopDomainValidation.asFlow()
+                    .flowOn(dispatchers.io)
+                    .debounce(INPUT_DELAY)
+                    .map {
+                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(it)
+                        validateDomainShopNameUseCase.executeOnBackground()
+                    }.catch {
+                        _validateShopDomain.value = Fail(it)
+                    }.collectLatest {
+                        if(!it.validateDomainShopName.isValid) {
+                            currentShopName?.let { shopName ->
+                                getShopDomainSuggestion(shopName)
+                            }
+                        }
+                        _validateShopDomain.value = Success(it)
+                    }
+        }
+    }
 
     fun getAllowShopNameDomainChanges() {
         launchCatchError(block = {
@@ -77,27 +124,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }
     }
 
-    @FlowPreview
     fun validateShopName(shopName: String) {
         if(shopName == currentShop?.name) return
 
-        viewModelScope.launch {
-            flow {
-                emit(shopName)
-            }.flowOn(dispatchers.io)
-                    .debounce(INPUT_DELAY)
-                    .map { name ->
-                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(name)
-                        validateDomainShopNameUseCase.executeOnBackground()
-                    }
-                    .conflate()
-                    .catch {
-                        _validateShopName.value = Fail(it)
-                    }
-                    .collectLatest {
-                        _validateShopName.value = Success(it)
-                    }
-        }
+        shopNameValidation.value = shopName
 
         setCurrentShopName(shopName)
     }
@@ -106,26 +136,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun validateShopDomain(shopDomain: String) {
         if(shopDomain == currentShop?.domain) return
 
-        viewModelScope.launch {
-            flow {
-                emit(shopDomain)
-            }.flowOn(dispatchers.io)
-                    .debounce(INPUT_DELAY)
-                    .map { domain ->
-                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
-                        validateDomainShopNameUseCase.executeOnBackground()
-                    }
-                    .conflate()
-                    .catch {
-                        _validateShopDomain.value = Fail(it)
-                    }
-                    .collectLatest { result ->
-                        if(!result.validateDomainShopName.isValid) {
-                            currentShopName?.let { getShopDomainSuggestion(it) }
-                        }
-                        _validateShopDomain.value = Success(result)
-                    }
-        }
+        shopDomainValidation.value = shopDomain
     }
 
     fun getShopBasicData() {
