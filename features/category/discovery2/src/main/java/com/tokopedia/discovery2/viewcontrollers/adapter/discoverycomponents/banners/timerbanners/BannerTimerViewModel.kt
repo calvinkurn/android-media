@@ -8,10 +8,8 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
-class BannerTimerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BannerTimerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val bannerTimeData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
@@ -26,16 +24,22 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     fun getBannerUrlWidth() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile, "width")
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
 
-
     fun startTimer() {
-        TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
-        val currentSystemTime = Calendar.getInstance().time
-        val parsedEndDate = SimpleDateFormat(Utils.TIMER_DATE_FORMAT, Locale.getDefault())
-                .parse(bannerTimeData.value?.data?.get(0)?.endDate)
-        val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
-
-        if (saleTimeMillis > 0) {
-            timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, SHOW_DAYS){
+//        TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
+//        val currentSystemTime = Calendar.getInstance().time
+//        val parsedEndDate = SimpleDateFormat(Utils.TIMER_DATE_FORMAT, Locale.getDefault())
+//                .parse(bannerTimeData.value?.data?.get(0)?.endDate)
+//        val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+//
+//        if (saleTimeMillis > 0) {
+//            timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, SHOW_DAYS){
+//                mutableTimeDiffModel.value = it
+//            }
+//            timerWithBannerCounter?.start()
+//        }
+        val timeDiff = Utils.getElapsedTime(components.data?.firstOrNull()?.endDate ?: "")
+        if(timeDiff > 0){
+            timerWithBannerCounter = SaleCountDownTimer(timeDiff, elapsedTime, SHOW_DAYS){
                 mutableTimeDiffModel.value = it
             }
             timerWithBannerCounter?.start()
@@ -55,8 +59,22 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
         }
     }
 
+    fun getComponent() = components
+
     override fun onStop() {
         stopTimer()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        stopTimer()
+        super.onDestroy()
+    }
+
+    fun checkTimerEnd(timerDataModel: TimerDataModel) {
+        if(timerDataModel.days == 0 && timerDataModel.hours == 0 &&
+                timerDataModel.minutes == 0 && timerDataModel.seconds == 0){
+            this@BannerTimerViewModel.syncData.value = true
+        }
     }
 }

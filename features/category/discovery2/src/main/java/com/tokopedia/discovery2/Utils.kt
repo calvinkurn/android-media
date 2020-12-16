@@ -189,5 +189,19 @@ class Utils {
             }
         }
 
+        fun getElapsedTime(endDate: String): Long {
+            if (endDate.isNotEmpty()) {
+                try {
+                    TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
+                    val currentSystemTime = Calendar.getInstance().time
+                    SimpleDateFormat(TIMER_DATE_FORMAT, Locale.getDefault()).parse(endDate)?.let {
+                        return it.time - currentSystemTime.time
+                    }
+                } catch (e: Exception) {
+                    return 0
+                }
+            }
+            return 0
+        }
     }
 }
