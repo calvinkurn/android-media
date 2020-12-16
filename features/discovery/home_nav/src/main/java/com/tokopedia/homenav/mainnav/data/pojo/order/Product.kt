@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 data class Product(
         @SerializedName("imageURL")
         @Expose
-        val imageURL: String,
+        val imageURL: String? = "",
         @SerializedName("inline1")
         @Expose
-        val inline1: Inline1,
+        val inline1: Inline1? = Inline1(),
         @SerializedName("inline2")
         @Expose
-        val inline2: Inline2,
+        val inline2: Inline2? = Inline2(),
         @SerializedName("title")
         @Expose
-        val title: String
+        val title: String? = ""
 )

@@ -6,26 +6,26 @@ import com.google.gson.annotations.SerializedName
 data class Order(
         @SerializedName("metadata")
         @Expose
-        val metadata: Metadata,
+        val metadata: Metadata? = Metadata(),
         @SerializedName("orderUUID")
         @Expose
-        val orderUUID: String,
+        val orderUUID: String? = "",
         @SerializedName("searchableText")
         @Expose
-        val searchableText: String,
+        val searchableText: String? = "",
         @SerializedName("status")
         @Expose
-        val status: String,
+        val status: String? = "",
         @SerializedName("userID")
         @Expose
-        val userID: String,
+        val userID: String? = "",
         @SerializedName("verticalCategory")
         @Expose
-        val verticalCategory: String,
+        val verticalCategory: String? = "",
         @SerializedName("verticalID")
         @Expose
-        val verticalID: String,
+        val verticalID: String? = "",
         @SerializedName("verticalStatus")
         @Expose
-        val verticalStatus: String
+        val verticalStatus: String? = ""
 )

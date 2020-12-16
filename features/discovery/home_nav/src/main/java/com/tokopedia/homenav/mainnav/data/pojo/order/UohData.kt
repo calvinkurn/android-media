@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class UohData(
         @SerializedName("uohOrders")
         @Expose
-        val uohOrders: UohOrders
+        val uohOrders: UohOrders? = UohOrders()
 )

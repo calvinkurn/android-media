@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class Inline2(
         @SerializedName("bgColor")
         @Expose
-        val bgColor: String,
+        val bgColor: String? = "#FFFFFF",
         @SerializedName("label")
         @Expose
-        val label: String,
+        val label: String? = "",
         @SerializedName("textColor")
         @Expose
-        val textColor: String
+        val textColor: String? = "#FFFFFF"
 )

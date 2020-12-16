@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 data class DetailURL(
         @SerializedName("appTypeLink")
         @Expose
-        val appTypeLink: String,
+        val appTypeLink: String? = "",
         @SerializedName("appURL")
         @Expose
-        val appURL: String,
+        val appURL: String? = "",
         @SerializedName("webTypeLink")
         @Expose
-        val webTypeLink: String,
+        val webTypeLink: String? = "",
         @SerializedName("webURL")
         @Expose
-        val webURL: String
+        val webURL: String? = ""
 )
