@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.travel_slice.analytics.TravelSliceAnalytics
@@ -48,6 +49,14 @@ class TravelSliceActivity : Activity() {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_ORDER)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
                 putExtra(TravelActionConst.PARAM_CITY_NAME, city)
+                action = System.currentTimeMillis().toString()
+            }
+        }
+
+        fun createHotelOrderListIntent(context: Context): Intent {
+            return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
+                putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_ORDER_LIST)
+                putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, ApplinkConst.HOTEL_ORDER)
                 action = System.currentTimeMillis().toString()
             }
         }
