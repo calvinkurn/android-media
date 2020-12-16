@@ -1,33 +1,56 @@
 package com.tokopedia.logisticaddaddress.features.shopeditaddress
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
 
 class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         DiscomBottomSheetFragment.ActionListener{
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: ShopEditAddressViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopEditAddressViewModel::class.java)
+    }
+
+    private var warehouseModel: Warehouse? = null
+    private val zipCodes: List<String> = ArrayList()
+    private var currentLat: Double = 0.0
+    private var currentLong: Double = 0.0
+
     private var etShopLocationWrapper: TextInputLayout? = null
-    private var etShopLocation: TextInputLayout? = null
+    private var etShopLocation: TextInputEditText? = null
     private var etKotaKecamatanWrapper: TextInputLayout? = null
-    private var etKotaKecamatan: TextInputLayout? = null
+    private var etKotaKecamatan: TextInputEditText? = null
     private var etZipCodeWrapper: TextInputLayout? = null
-    private var etZipCode: TextInputLayout? = null
+    private var etZipCode: TextInputEditText? = null
     private var etShopDetailWrapper: TextInputLayout? = null
-    private var etShopDetail: TextInputLayout? = null
+    private var etShopDetail: TextInputEditText? = null
     private var tvPinpointText: Typography? = null
 
     private var mapView: MapView? = null
@@ -43,6 +66,14 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         getComponent(ShopEditAddressComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments.let {
+            warehouseModel = it?.getParcelable(EXTRA_WAREHOUSE_DATA)
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_edit_addres, container, false)
     }
@@ -53,6 +84,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
             getSavedInstanceState = savedInstanceState
         }
         initViews()
+        initViewModel()
         prepareMap()
         prepareLayout()
         setViewListener()
@@ -73,6 +105,26 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
     }
 
+    private fun initViewModel() {
+        viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
+                is Fail -> Timber.d(it.throwable)
+            }
+        })
+
+        viewModel.districtLocation.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val lat = it.data.latitude.toDouble()
+                    val long = it.data.longitude.toDouble()
+                    adjustMap(lat, long)
+                }
+                is Fail -> Timber.d(it.throwable)
+            }
+        })
+    }
+
     private fun prepareMap() {
         mapView?.onCreate(getSavedInstanceState)
         mapView?.getMapAsync(this)
@@ -84,15 +136,33 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
         activity?.let { MapsInitializer.initialize(activity) }
-//        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong))
     }
 
     private fun prepareLayout() {
-        /*here isi semua edit text with data dr model*/
+        etShopLocation?.setText(warehouseModel?.warehouseName)
+        etKotaKecamatan?.setText(warehouseModel?.districtName)
+        etZipCode?.setText(warehouseModel?.zipCodes.toString())
+        etShopDetail?.setText(warehouseModel?.addressDetail)
+
+        tvPinpointText?.text = getString(R.string.tv_pinpoint_desc)
+
     }
 
     private fun setViewListener() {
         /*here text wrapper dsb*/
+        etKotaKecamatan?.apply {
+            addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
+            setOnClickListener {
+                showDistrictRecommendationBottomSheet()
+            }
+        }
+
+        etZipCode?.apply {
+            setOnClickListener {
+
+            }
+        }
     }
 
     private fun showDistrictRecommendationBottomSheet() {
@@ -104,9 +174,75 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         }
     }
 
+    private fun showZipCodes() {
+
+    }
+
     override fun onGetDistrict(districtAddress: Address) {
         /*see AddEditAddressFragment*/
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        warehouseModel?.cityId = districtAddress.cityId
+        warehouseModel?.districtId = districtAddress.districtId
+        warehouseModel?.zipCodes = districtAddress.zipCodes
+        viewModel.getAutoCompleteList(districtAddress.districtName)
+    }
+
+    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+        }
+    }
+
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.isErrorEnabled = false
+        } else {
+            wrapper.isErrorEnabled = true
+            wrapper.hint = ""
+            wrapper.error = s
+        }
+    }
+
+    private fun adjustMap(lat: Double, long: Double) {
+        currentLat = lat
+        currentLong = long
+        moveMap(getLatLng(currentLat, currentLong))
+    }
+
+    private fun moveMap(latLng: LatLng) {
+        val cameraPosition = CameraPosition.Builder()
+                .target(latLng)
+                .zoom(15f)
+                .bearing(0f)
+                .build()
+
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    companion object {
+        const val EXTRA_WAREHOUSE_DATA = "WAREHOUSE_DATA"
+
+        fun newInstance(extra: Bundle): ShopEditAddressFragment {
+            return ShopEditAddressFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
+                }
+            }
+        }
     }
 
 }

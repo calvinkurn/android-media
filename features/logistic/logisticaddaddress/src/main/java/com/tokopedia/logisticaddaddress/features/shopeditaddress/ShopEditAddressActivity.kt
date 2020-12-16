@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.shopeditaddress
 
-import androidx.fragment.app.Fragment
+import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -9,8 +9,13 @@ import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressCompon
 
 class ShopEditAddressActivity : BaseSimpleActivity(), HasComponent<ShopEditAddressComponent> {
 
-    override fun getNewFragment(): Fragment? {
-        return ShopEditAddressFragment()
+    override fun getNewFragment(): ShopEditAddressFragment? {
+        var fragment: ShopEditAddressFragment? = null
+        if (intent.extras != null) {
+            val bundle = intent.extras
+            fragment = ShopEditAddressFragment.newInstance(bundle?: Bundle())
+        }
+        return fragment
     }
 
     override fun getComponent(): ShopEditAddressComponent {

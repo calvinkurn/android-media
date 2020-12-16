@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.manageaddress.R
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,6 +19,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
     interface ShopLocationItemAdapterListener {
         fun onShopLocationStateStatusClicked(data: Warehouse)
+        fun onShopEditAddress(data: Warehouse)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopLocationViewHolder {
@@ -48,6 +49,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         private val imgPinpointState = itemView.findViewById<ImageView>(R.id.img_location_state)
         private val tvPinpointState = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         private val btnSetLocation = itemView.findViewById<IconUnify>(R.id.icon_kebab)
+        private val btnEditocation = itemView.findViewById<Typography>(R.id.action_edit)
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: Warehouse) {
@@ -82,6 +84,9 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
         private fun setListener(shopLocation: Warehouse) {
             btnSetLocation.setOnClickListener {
+                listener.onShopLocationStateStatusClicked(shopLocation)
+            }
+            btnEditocation.setOnClickListener {
                 listener.onShopLocationStateStatusClicked(shopLocation)
             }
         }

@@ -3,15 +3,16 @@ package com.tokopedia.manageaddress.domain.mapper
 import com.tokopedia.logisticCommon.data.entity.shoplocation.PartnerId
 import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopId
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Ticker
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.domain.response.shoplocation.GetShopLocationResponse
 import javax.inject.Inject
 
 class ShopLocationMapper @Inject constructor(){
 
-    fun mapShopLocation(response: GetShopLocationResponse) : List<com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse> {
+    fun mapShopLocation(response: GetShopLocationResponse) : List<Warehouse> {
         val data = response.shopLocations.data.warehouse
         return data.map {
-            com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse(
+            Warehouse(
                     it.warehouseId,
                     it.warehouseName,
                     it.warehouseType,

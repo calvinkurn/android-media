@@ -1,9 +1,14 @@
 package com.tokopedia.logisticCommon.data.entity.shoplocation
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import java.util.*
+
 data class ShopLocationModel (
         var listWarehouse: List<Warehouse> = emptyList()
 )
 
+@Parcelize
 data class Warehouse(
         var warehouseId: Int = 0,
         var warehouseName: String = "",
@@ -22,21 +27,25 @@ data class Warehouse(
         var country: String = "",
         var status: Int = 0,
         var isCoveredByCouriers: Boolean = false,
-        var ticker: Ticker = Ticker()
-)
+        var ticker: Ticker = Ticker(),
+        var zipCodes: List<String> = ArrayList()
+) : Parcelable
 
+@Parcelize
 data class ShopId(
         var int64: Int = 0,
         var valid: Boolean = false
-)
+) : Parcelable
 
+@Parcelize
 data class PartnerId(
         var int64: Int = 0,
         var valid: Boolean = false
-)
+) : Parcelable
 
+@Parcelize
 data class Ticker(
         var textInactive: String = "",
         var textCourierSetting: String = "",
         var linkCourierSetting: String = ""
-)
+) : Parcelable

@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -180,6 +182,16 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onShopLocationStateStatusClicked(data: Warehouse) {
         openBottomSheetAddressType(data)
+    }
+
+    override fun onShopEditAddress(data: Warehouse) {
+        openFormShopEditAddress(data)
+    }
+
+    private fun openFormShopEditAddress(data: Warehouse) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS)
+        intent.putExtra("WAREHOUSE_DATA", data)
+        startActivityForResult(intent, 121)
     }
 
 }
