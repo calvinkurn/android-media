@@ -23,6 +23,8 @@ data class PayLaterItemProductData(
         val partnerName: String,
         @SerializedName("subheader")
         val subHeader: String,
+        @SerializedName("gateway_code")
+        val gateWayCode: String,
         @SerializedName("img_light_url")
         val partnerImgLightUrl: String,
         @SerializedName("img_dark_url")
@@ -39,8 +41,8 @@ data class PayLaterItemProductData(
         val partnerApplyDetails: PayLaterPartnerStepDetails,
         @SerializedName("is_able_apply")
         val isAbleToApply: Boolean,
-        @SerializedName("apply_url")
-        val applyWebUrl: String
+        @SerializedName("how_to_action_url")
+        val actionWebUrl: String
 ) : Parcelable
 
 @Parcelize

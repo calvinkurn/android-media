@@ -6,15 +6,17 @@
     android:layout_height="wrap_content"
     android:background="@color/Neutral_N0">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivPartner"
         android:layout_width="@dimen/payLater_application_status_dp_80"
         android:layout_height="@dimen/payLater_application_status_dp_62"
         android:layout_marginStart="@dimen/unify_space_16"
         android:scaleType="centerInside"
+        app:unify_image_corner_radius="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvApplicationStatus"
-        tools:src="@tools:sample/avatars" />
+        android:src="@drawable/ic_paylater_application_status_background"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvApplicationStatus"

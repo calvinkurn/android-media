@@ -30,8 +30,8 @@ object PayLaterApplicationStatusMapper {
             STATUS_REJECTED -> PayLaterStatusRejected
             STATUS_ACTIVE -> PayLaterStatusActive
             STATUS_SUSPENDED -> PayLaterStatusSuspended
-            STATUS_EXPIRED -> PayLaterStatusSuspended
-            STATUS_FAILED -> PayLaterStatusExpired
+            STATUS_EXPIRED -> PayLaterStatusExpired
+            STATUS_FAILED -> PayLaterStatusFailed
             else -> PayLaterStatusCancelled
         }
     }

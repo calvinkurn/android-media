@@ -4,6 +4,7 @@ query {
       id
       name
       subheader
+      gateway_code
       img_light_url
       img_dark_url
       benefit {
@@ -24,7 +25,7 @@ query {
         steps
       }
       is_able_apply
-      apply_url
+      how_to_action_url
     }
   }
 }

@@ -12,8 +12,8 @@ class PayLaterApplicationStatusUseCase @Inject constructor(
         @Named(GQL_PAYLATER_APPLICATION_STATUS) val query: String, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<PayLaterApplicationStatusResponse>(graphqlRepository) {
 
-    fun getPayLaterApplicationStaus(onSuccess: (UserCreditApplicationStatus) -> Unit,
-                        onError: (Throwable) -> Unit) {
+    fun getPayLaterApplicationStatus(onSuccess: (UserCreditApplicationStatus) -> Unit,
+                                     onError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(PayLaterApplicationStatusResponse::class.java)
             this.setGraphqlQuery(query)

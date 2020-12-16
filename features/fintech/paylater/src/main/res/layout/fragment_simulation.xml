@@ -39,7 +39,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_connection" />
+            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerVertical"

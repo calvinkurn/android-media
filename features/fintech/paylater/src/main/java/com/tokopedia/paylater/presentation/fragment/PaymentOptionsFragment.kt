@@ -72,7 +72,7 @@ class PaymentOptionsFragment : Fragment() {
 
     private fun setBundleData(bundle: Bundle) {
         responseData?.let { data ->
-            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.applyWebUrl)
+            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data)) {
                 is RegisterStepsPartnerType -> {
                     bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)

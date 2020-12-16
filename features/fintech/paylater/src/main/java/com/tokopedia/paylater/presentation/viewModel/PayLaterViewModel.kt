@@ -34,7 +34,7 @@ class PayLaterViewModel @Inject constructor(
 
     fun getPayLaterApplicationStatus() {
         payLaterApplicationStatusUseCase.cancelJobs()
-        payLaterApplicationStatusUseCase.getPayLaterApplicationStaus(
+        payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
                 ::onPayLaterApplicationStatusSuccess,
                 ::onPayLaterApplicationStatusError
         )

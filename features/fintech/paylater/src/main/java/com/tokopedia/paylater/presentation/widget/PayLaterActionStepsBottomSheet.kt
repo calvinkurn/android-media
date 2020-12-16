@@ -98,7 +98,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
-            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + "https://staging.tokopedia.com/kredivo/"
             RouteManager.route(context, webViewAppLink)
         }
     }
