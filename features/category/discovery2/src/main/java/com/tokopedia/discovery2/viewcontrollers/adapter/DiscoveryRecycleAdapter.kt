@@ -108,7 +108,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun isStickyHeaderView(it: Int): Boolean {
-        return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it))
+        return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it)) || componentList[it].isSticky
     }
 }
 
