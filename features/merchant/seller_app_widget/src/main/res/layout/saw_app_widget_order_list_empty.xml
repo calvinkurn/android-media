@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/imgSawOrderEmptyState"
-        android:layout_width="@dimen/saw_dimen_160dp"
-        android:layout_height="@dimen/saw_dimen_148dp"
+        android:layout_width="@dimen/saw_dimen_180dp"
+        android:layout_height="@dimen/saw_dimen_140dp"
         tools:src="@tools:sample/avatars" />
 
     <TextView
