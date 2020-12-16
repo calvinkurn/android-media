@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  * Created by Irfan Khoirul on 30/11/18.
  */
 @Parcelize
-data class ProductViewModel(
+data class ProductViewModel constructor(
         var parentId: Int = 0,
         var productName: String = "",
         var productPrice: Int = 0,

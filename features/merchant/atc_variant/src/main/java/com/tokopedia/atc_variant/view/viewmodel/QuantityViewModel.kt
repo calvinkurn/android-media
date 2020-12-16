@@ -9,7 +9,7 @@ import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class QuantityViewModel(
+data class QuantityViewModel constructor(
         var stockWording: String,
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int,

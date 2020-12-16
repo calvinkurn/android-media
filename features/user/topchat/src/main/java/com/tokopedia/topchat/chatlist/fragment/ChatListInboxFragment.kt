@@ -66,6 +66,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
+import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -118,6 +119,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
+    private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
     private lateinit var broadCastButton: FloatingActionButton
     private var containerListener: InboxFragmentContainer? = null
@@ -147,6 +149,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onRoleChanged(role: Int) {
         if (assignRole(role)) {
             loadInitialData()
+            chatFilter?.onRoleChanged(isTabSeller())
         }
     }
 
@@ -219,7 +222,21 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             setupSellerBroadcast()
             setupChatSellerBannedStatus()
             setupEmptyModel()
+            setupFilter()
         }
+    }
+
+    private fun setupFilter() {
+        chatFilter?.show()
+        chatFilter?.init(isTabSeller())
+        chatFilter?.setFilterListener(
+                object : ChatFilterView.FilterListener {
+                    override fun onFilterChanged(filterType: String) {
+                        chatItemListViewModel.filter = filterType
+                        loadInitialData()
+                    }
+                }
+        )
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -316,6 +333,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
+        chatFilter = view.findViewById(R.id.cf_chat_list)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -532,7 +550,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun loadData(page: Int) {
-        chatItemListViewModel.getChatListMessage(page, filterChecked, role)
+        chatItemListViewModel.getChatListMessage(page, role)
     }
 
     override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {

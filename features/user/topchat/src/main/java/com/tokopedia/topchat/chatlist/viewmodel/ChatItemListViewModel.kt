@@ -69,6 +69,8 @@ class ChatItemListViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
+    var filter: String = PARAM_FILTER_ALL
+
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
     val mutateChatList: LiveData<Result<ChatListPojo>>
         get() = _mutateChatList
@@ -95,6 +97,10 @@ class ChatItemListViewModel @Inject constructor(
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+    }
+
+    fun getChatListMessage(page: Int, tab: String) {
+        queryGetChatListMessage(page, filter, tab)
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
