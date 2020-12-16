@@ -124,6 +124,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
+
+        <include
+            layout="@layout/shc_partial_line_graph_state_empty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/chartViewShcMultiLine"
+            app:layout_constraintEnd_toEndOf="@id/chartViewShcMultiLine"
+            app:layout_constraintStart_toStartOf="@id/chartViewShcMultiLine"
+            app:layout_constraintTop_toTopOf="@id/chartViewShcMultiLine"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/shc_partial_multi_line_graph_loading_state" />

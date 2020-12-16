@@ -83,7 +83,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product)
+                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.BroadcastChatProductManageUiModel(product)
                 ))
             }
 
@@ -123,6 +124,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                     product.hasTopAds() -> add(SeeTopAds(product))
                     else -> add(SetTopAds(product))
                 }
+
+                add(CreateBroadcastChat(product))
 
                 add(SetCashBack(product))
 

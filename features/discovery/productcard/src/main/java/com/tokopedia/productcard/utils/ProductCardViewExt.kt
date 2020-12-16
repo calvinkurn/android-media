@@ -3,7 +3,10 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -271,6 +274,16 @@ private fun String?.toUnifyTextColor(context: Context): Int {
     }
 }
 
+internal fun safeParseColor(color: String): Int {
+    return try {
+        Color.parseColor(color)
+    }
+    catch (throwable: Throwable) {
+        throwable.printStackTrace()
+        0
+    }
+}
+
 internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) {
     val parent = parent
 
@@ -292,9 +305,9 @@ internal fun renderLabelCampaign(
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel
 ) {
-    val labelCampaign = productCardModel.getLabelCampaign()
+    if (productCardModel.isShowLabelCampaign()) {
+        val labelCampaign = productCardModel.getLabelCampaign() ?: return
 
-    if (labelCampaign?.isShowLabelCampaign() == true) {
         labelCampaignBackground?.show()
         labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
 
@@ -304,5 +317,39 @@ internal fun renderLabelCampaign(
     else {
         labelCampaignBackground?.hide()
         textViewLabelCampaign?.hide()
+    }
+}
+
+internal fun renderLabelBestSeller(
+        labelBestSeller: Typography?,
+        productCardModel: ProductCardModel
+) {
+    labelBestSeller ?: return
+
+    if (productCardModel.isShowLabelBestSeller()) {
+        labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
+    }
+    else {
+        labelBestSeller.initLabelBestSeller(null)
+    }
+}
+
+private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
+    if (labelBestSellerModel == null) hide()
+    else showLabelBestSeller(labelBestSellerModel)
+}
+
+private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
+    show()
+
+    background.overrideColor(labelBestSellerModel.type)
+    text = labelBestSellerModel.title
+}
+
+internal fun Drawable.overrideColor(hexColor: String) {
+    when (this) {
+        is GradientDrawable -> setColor(safeParseColor(hexColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor)
+        is ColorDrawable -> color = safeParseColor(hexColor)
     }
 }
