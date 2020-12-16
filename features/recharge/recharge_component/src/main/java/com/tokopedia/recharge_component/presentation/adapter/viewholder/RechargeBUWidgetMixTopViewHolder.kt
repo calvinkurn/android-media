@@ -91,7 +91,8 @@ class RechargeBUWidgetMixTopViewHolder(
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        listener.onRechargeBUWidgetItemClick(dataModel, position)
+        // Decrement position to account for empty product card
+        listener.onRechargeBUWidgetItemClick(dataModel, position - 1)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -124,6 +125,7 @@ class RechargeBUWidgetMixTopViewHolder(
                     listener.onRechargeBUWidgetBannerImpression(element)
             }
 
+            if (textlink.isNotEmpty()) bannerUnifyButton.text = textlink
             bannerUnifyButton.setOnClickListener {
                 listener.onRechargeBUWidgetClickSeeAllButton(element)
             }
