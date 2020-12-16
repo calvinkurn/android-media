@@ -316,11 +316,11 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 FlightOrderDetailJourneyModel(
                         1,
                         1,
-                        "123",
+                        "CGK",
                         "0001-01-01T00:00:00Z",
                         "departure airport",
                         "aceh",
-                        "321",
+                        "BTJ",
                         "0001-01-01T00:00:00Z",
                         "arrival airport",
                         "jakarta",
@@ -331,8 +331,8 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                         120,
                         FlightOrderDetailFareModel(
                                 1000000,
-                                0,
-                                0
+                                100,
+                                10
                         ),
                         arrayListOf(
                                 FlightOrderDetailRouteModel(
@@ -386,8 +386,67 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 FlightOrderDetailPassengerModel(
                         1,
                         1,
-                        1,
+                        0,
                         "Dewasa",
+                        1,
+                        "Tuan",
+                        "Muhammad",
+                        "Furqan",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        arrayListOf(
+                                FlightOrderDetailAmenityModel(
+                                        "CGK",
+                                        "BTJ",
+                                        1,
+                                        "Rp1.000",
+                                        1000,
+                                        "Bagasi 10kg"
+                                ),
+                                FlightOrderDetailAmenityModel(
+                                        "CGK",
+                                        "BTJ",
+                                        2,
+                                        "Rp1.000",
+                                        1000,
+                                        "Makanan Enak Banget"
+                                ),
+                                FlightOrderDetailAmenityModel(
+                                        "CGK",
+                                        "BTJ",
+                                        3,
+                                        "Rp1.000",
+                                        1000,
+                                        "Wrong Input"
+                                )
+                        ),
+                        arrayListOf()
+                ),
+                FlightOrderDetailPassengerModel(
+                        1,
+                        1,
+                        1,
+                        "Anak",
+                        1,
+                        "Tuan",
+                        "Muhammad",
+                        "Furqan",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        arrayListOf(),
+                        arrayListOf()
+                ),
+                FlightOrderDetailPassengerModel(
+                        1,
+                        1,
+                        2,
+                        "Bayi",
                         1,
                         "Tuan",
                         "Muhammad",

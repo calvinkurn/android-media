@@ -664,18 +664,6 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
-    fun buildPaymentDetailData_failedToFetchOrderDetail() {
-        // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
-
-        // when
-        val paymentData = viewModel.buildPaymentDetailData()
-
-        // then
-        paymentData.size shouldBe 0
-    }
-
-    @Test
     fun isWebCheckInAvailable_whenOrderStatusNotSuccess_shouldNotAvailable() {
         // given
         val dummyData = DUMMY_FAILED_ORDER_DETAIL_DATA
@@ -1329,23 +1317,103 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
-    fun buildPaymentDetailData_successToFetchOrderDetail() {
+    fun buildPaymentDetailData_failedToFetchOrderDetail() {
         // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
 
         // when
         val paymentData = viewModel.buildPaymentDetailData()
 
         // then
-//        paymentData.size shouldBe dummyData.passengers.size
-//        paymentData[0].leftValue shouldBe "${dummyData.journeys[0].departureId} - ${dummyData.journeys[0].arrivalId} ${FlightPassengerType.ADULT.type} x1"
-//        paymentData[0].rightValue shouldBe "Rp1.000.000"
-//        paymentData[0].isLeftBold shouldBe false
-//        paymentData[0].isRightBold shouldBe false
-//        paymentData[0].isLeftStriked shouldBe false
-//        paymentData[0].isRightStriked shouldBe false
-//        paymentData[0].isRightAlign shouldBe false
+        paymentData.size shouldBe 0
+    }
+
+    @Test
+    fun buildPaymentDetailData_successToFetchOrderDetail() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns dummyData
+        viewModel.fetchOrderDetailData()
+
+        // when
+        val paymentData = viewModel.buildPaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 3
+        // check adult passenger paymentData
+        paymentData[0].leftValue shouldBe "CGK - BTJ Dewasa x1"
+        paymentData[0].rightValue shouldBe "Rp1.000.000"
+        paymentData[0].isLeftBold shouldBe false
+        paymentData[0].isRightBold shouldBe false
+        paymentData[0].isLeftStriked shouldBe false
+        paymentData[0].isRightStriked shouldBe false
+        paymentData[0].isRightAlign shouldBe true
+        // check child passenger paymentData
+        paymentData[1].leftValue shouldBe "CGK - BTJ Anak x1"
+        paymentData[1].rightValue shouldBe "Rp100"
+        paymentData[1].isLeftBold shouldBe false
+        paymentData[1].isRightBold shouldBe false
+        paymentData[1].isLeftStriked shouldBe false
+        paymentData[1].isRightStriked shouldBe false
+        paymentData[1].isRightAlign shouldBe true
+        // check infant passenger paymentData
+        paymentData[2].leftValue shouldBe "CGK - BTJ Bayi x1"
+        paymentData[2].rightValue shouldBe "Rp10"
+        paymentData[2].isLeftBold shouldBe false
+        paymentData[2].isRightBold shouldBe false
+        paymentData[2].isLeftStriked shouldBe false
+        paymentData[2].isRightStriked shouldBe false
+        paymentData[2].isRightAlign shouldBe true
+    }
+
+    @Test
+    fun buildAmenitiesPaymentDetailData_failedToFetchOrderDetail() {
+        // given
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+
+        // when
+        val paymentData = viewModel.buildAmenitiesPaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 0
+    }
+
+    @Test
+    fun buildAmenitiesPaymentDetailData_successToFetchOrderDetail() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns dummyData
+        viewModel.fetchOrderDetailData()
+
+        // when
+        val paymentData = viewModel.buildAmenitiesPaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 3
+        // check luggage paymentData
+        paymentData[0].leftValue shouldBe "Bagasi CGK - BTJ"
+        paymentData[0].rightValue shouldBe "Rp1.000"
+        paymentData[0].isLeftBold shouldBe false
+        paymentData[0].isRightBold shouldBe false
+        paymentData[0].isLeftStriked shouldBe false
+        paymentData[0].isRightStriked shouldBe false
+        paymentData[0].isRightAlign shouldBe true
+        // check meal paymentData
+        paymentData[1].leftValue shouldBe "Makanan CGK - BTJ"
+        paymentData[1].rightValue shouldBe "Rp1.000"
+        paymentData[1].isLeftBold shouldBe false
+        paymentData[1].isRightBold shouldBe false
+        paymentData[1].isLeftStriked shouldBe false
+        paymentData[1].isRightStriked shouldBe false
+        paymentData[1].isRightAlign shouldBe true
+        // check wrong paymentData
+        paymentData[2].leftValue shouldBe ""
+        paymentData[2].rightValue shouldBe "Rp1.000"
+        paymentData[2].isLeftBold shouldBe false
+        paymentData[2].isRightBold shouldBe false
+        paymentData[2].isLeftStriked shouldBe false
+        paymentData[2].isRightStriked shouldBe false
+        paymentData[2].isRightAlign shouldBe true
     }
 
     @Test
