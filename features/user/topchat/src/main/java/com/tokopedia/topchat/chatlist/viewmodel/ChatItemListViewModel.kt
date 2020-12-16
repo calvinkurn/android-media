@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -18,6 +19,8 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
@@ -103,8 +106,13 @@ class ChatItemListViewModel @Inject constructor(
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
     }
 
-    fun getChatListMessage(page: Int, tab: String) {
-        queryGetChatListMessage(page, filter, tab)
+    fun getChatListMessage(page: Int, @RoleType role: Int) {
+        val tabRole = when (role) {
+            RoleType.BUYER -> PARAM_TAB_USER
+            RoleType.SELLER -> PARAM_TAB_SELLER
+            else -> PARAM_TAB_USER
+        }
+        queryGetChatListMessage(page, filter, tabRole)
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {

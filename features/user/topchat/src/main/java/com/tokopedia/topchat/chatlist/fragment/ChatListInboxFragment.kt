@@ -113,7 +113,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 //    private var mUserSeen = false
 //    private var mViewCreated = false
 
-    private var role = PARAM_TAB_USER
+    @RoleType
+    private var role: Int = RoleType.BUYER
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
@@ -169,12 +170,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         assignRole(containerListener?.role)
     }
 
-    private fun assignRole(@RoleType role: Int?): Boolean {
-        val chosenRole = when (role) {
-            RoleType.BUYER -> PARAM_TAB_USER
-            RoleType.SELLER -> PARAM_TAB_SELLER
-            else -> null
-        }
+    private fun assignRole(@RoleType chosenRole: Int?): Boolean {
         chosenRole?.let {
             this.role = chosenRole
             return true
@@ -684,7 +680,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         var isTopAds = false
         activity?.let {
             when (role) {
-                PARAM_TAB_SELLER -> {
+                RoleType.SELLER -> {
                     title = it.getString(R.string.title_topchat_empty_chat)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
@@ -692,7 +688,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     ctaApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO + "?redirect_to_sellerapp=true"
                     isTopAds = true
                 }
-                PARAM_TAB_USER -> {
+                RoleType.BUYER -> {
                     title = it.getString(R.string.title_topchat_empty_chat)
                     subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
                     image = CHAT_BUYER_EMPTY
@@ -731,7 +727,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun isTabSeller(): Boolean {
-        return role == PARAM_TAB_SELLER
+        return role == RoleType.SELLER
     }
 
     override fun getSupportChildFragmentManager(): FragmentManager {
