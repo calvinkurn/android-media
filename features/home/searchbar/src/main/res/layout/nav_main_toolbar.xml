@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             tools:layout_height="100dp"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
@@ -45,8 +46,8 @@
                 android:visibility="gone"
                 tools:visibility="visible"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 app:layout_constraintTop_toTopOf="@id/layout_search"
                 app:layout_constraintBottom_toBottomOf="@id/layout_search"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,9 +67,7 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"/>
+                android:orientation="horizontal"/>
 
             <LinearLayout
                 android:id="@+id/layout_search"
@@ -80,13 +79,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:layout_width="0dp"
                 android:background="@drawable/nav_toolbar_searchbar_bg_corner"
                 android:layout_height="@dimen/dp_36"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2">
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_4">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/search_magnify_icon"
@@ -123,11 +122,12 @@
                 tools:layout_width="200dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_2"
                 tools:listitem="@layout/toolbar_viewholder_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:paddingStart="@dimen/dp_4" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

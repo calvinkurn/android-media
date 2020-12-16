@@ -35,6 +35,11 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.recharge_component.RechargeComponentTypeFactory
+import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixTopViewHolder
 import java.util.*
 
 /**
@@ -57,10 +62,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val featuredShopListener: FeaturedShopListener,
                          private val playWidgetCoordinator: PlayWidgetCoordinator,
                          private val bestSellerListener: RecommendationWidgetListener,
-                         private val categoryNavigationListener: CategoryNavigationListener
+                         private val categoryNavigationListener: CategoryNavigationListener,
+                         private val rechargeBUWidgetListener: RechargeBUWidgetListener
 ) :
         BaseAdapterTypeFactory(),
-        HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory{
+        HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
+        RechargeComponentTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -170,6 +177,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
         return ReminderWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel): Int {
+        return if (rechargeBUWidgetDataModel.data.option1 == RechargeBUWidgetMixTopViewHolder.BU_WIDGET_TYPE_TOP)
+        RechargeBUWidgetMixTopViewHolder.LAYOUT else RechargeBUWidgetMixLeftViewHolder.LAYOUT
     }
 
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
@@ -337,6 +349,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
+            RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
+                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
+            RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
+                    RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
