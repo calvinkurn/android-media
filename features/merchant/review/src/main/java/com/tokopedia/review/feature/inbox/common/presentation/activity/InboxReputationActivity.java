@@ -91,7 +91,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     protected void onCreate(Bundle savedInstanceState) {
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
-        String tab = Objects.requireNonNull(getIntent().getData()).getQueryParameter(ReviewInboxConstants.PARAM_TAB);
+        String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         canFireTracking = !goToReputationHistory;
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
