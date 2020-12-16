@@ -50,20 +50,20 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun goToTemplate() {
-        if(!GlobalConfig.isSellerApp()) {
-            goToSellerMigration()
-            return
-        }
+//        if(!GlobalConfig.isSellerApp()) {
+//            goToSellerMigration()
+//            return
+//        }
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkTemplateListFragment()
         destination.isSeller = true
         NavigationController.navigate(this@TalkSettingsFragment, destination)
     }
 
     private fun goToSmartReply() {
-        if(!GlobalConfig.isSellerApp()) {
-            goToSellerMigration()
-            return
-        }
+//        if(!GlobalConfig.isSellerApp()) {
+//            goToSellerMigration()
+//            return
+//        }
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkSmartReplySettingsFragment()
         NavigationController.navigate(this@TalkSettingsFragment, destination)
     }
