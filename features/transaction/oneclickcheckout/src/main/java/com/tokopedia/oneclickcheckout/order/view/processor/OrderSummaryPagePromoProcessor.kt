@@ -83,6 +83,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                     val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it?.code == logisticPromoCode }
                     if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
                         return@withContext Triple(true, response, OccGlobalEvent.Normal)
+                    } else if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.text.isNotEmpty()) {
+                        return@withContext Triple(false, response, OccGlobalEvent.Error(errorMessage = voucherOrderUiModel.messageUiModel.text))
                     }
                 }
                 return@withContext Triple(false, response, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))

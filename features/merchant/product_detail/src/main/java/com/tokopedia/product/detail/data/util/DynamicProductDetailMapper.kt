@@ -6,6 +6,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -29,6 +30,9 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
+                }
+                ProductDetailConstant.PRODUCT_DETAIL -> {
+                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
                 }
                 ProductDetailConstant.SHOP_INFO -> {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
@@ -136,7 +140,7 @@ object DynamicProductDetailMapper {
         val variants = networkData.variants.map { it ->
             val newOption = it.options.map { data ->
                 Option(id = data.id.toIntOrZero(), vuv = data.vuv.toIntOrZero(), value = data.value, hex = data.hex, picture = Picture(original = data.picture?.original
-                        ?: "", thumbnail = data.picture?.thumbnail ?: ""))
+                        ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
             }
 
             Variant(pv = it.pv.toIntOrZero(),
@@ -222,6 +226,11 @@ object DynamicProductDetailMapper {
         }
     }
 
+    private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
+        if (data == null) return listOf()
+        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
+    }
+
     private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {
         if (componentData == null) return null
 
@@ -277,5 +286,14 @@ object DynamicProductDetailMapper {
                     review.reviewer?.fullName, image.uriThumbnail,
                     image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
         } ?: listOf()
+    }
+
+    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
+        val data = productInfoP1?.data
+        val basic = productInfoP1?.basic
+        return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
+                ?: "", data?.name ?: "", data?.getProductImageUrl()
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.videos
+                ?: listOf(), productInfoContent, forceRefresh)
     }
 }

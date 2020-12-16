@@ -7,10 +7,10 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -33,8 +33,7 @@ class AddToCartDoneViewModel @Inject constructor(
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addToCartUseCase: AddToCartUseCase,
-        private val dispatcher: DynamicProductDetailDispatcherProvider) : BaseViewModel(dispatcher.ui()
-) {
+        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
     val recommendationProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
@@ -49,7 +48,7 @@ class AddToCartDoneViewModel @Inject constructor(
 
     fun getRecommendationProduct(productId: String) {
         launchCatchError(block = {
-            val recommendationWidget = withContext(dispatcher.io()) {
+            val recommendationWidget = withContext(dispatcher.io) {
                 if (!GlobalConfig.isSellerApp())
                     loadRecommendationProduct(productId)
                 else listOf()
@@ -120,7 +119,7 @@ class AddToCartDoneViewModel @Inject constructor(
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
 
     fun addToCart(dataModel: AddToCartDoneRecommendationItemDataModel) {
-        launchCatchError(dispatcher.io(), block = {
+        launchCatchError(dispatcher.io, block = {
             val recommendationItem = dataModel.recommendationItem
             val requestParams = RequestParams.create()
             val addToCartRequestParams = AddToCartRequestParams().apply {

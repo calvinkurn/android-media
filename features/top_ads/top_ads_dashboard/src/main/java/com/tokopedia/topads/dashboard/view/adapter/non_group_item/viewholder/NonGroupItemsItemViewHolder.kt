@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
@@ -31,6 +32,10 @@ class NonGroupItemsItemViewHolder(val view: View,
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
+    }
+
+    private  val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
+        TopadsSelectActionSheet.newInstance()
     }
 
     override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
@@ -92,16 +97,15 @@ class NonGroupItemsItemViewHolder(val view: View,
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.adStatus, item.data.productName)
-            sheet.show()
-            sheet.onEditAction = {
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName)
+            sheet?.onEditAction = {
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
-            sheet.onDeleteClick = {
+            sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
-            sheet.changeStatus = {
+            sheet?.changeStatus = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

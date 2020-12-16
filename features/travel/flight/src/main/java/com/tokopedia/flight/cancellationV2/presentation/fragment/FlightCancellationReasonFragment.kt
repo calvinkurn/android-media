@@ -184,7 +184,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun buildView() {
-        et_saved_passenger.setOnClickListener {
+        til_saved_passenger.textFieldInput.isClickable = true
+        til_saved_passenger.textFieldInput.isFocusable = false
+        til_saved_passenger.textFieldInput.isSingleLine = true
+        til_saved_passenger.textFieldInput.setOnClickListener {
             startActivityForResult(FlightCancellationChooseReasonActivity.getCallingIntent(requireContext(), cancellationReasonViewModel.selectedReason),
                     REQUEST_CODE_CHOOSE_REASON)
             requireActivity().overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in, com.tokopedia.common.travel.R.anim.travel_anim_stay)
@@ -221,7 +224,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private fun renderSelectedReason() {
         cancellationReasonViewModel.selectedReason?.let {
-            et_saved_passenger.setText(it.title)
+            til_saved_passenger.textFieldInput.setText(it.title)
             deleteAllAttachments()
             if (it.formattedRequiredDocs.size > 0) {
                 cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toInt())
@@ -282,11 +285,11 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorSnackbar(resId: Int) {
-        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showErrorSnackbar(message: String) {
-        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun showImageInFragment(filePath: String) {

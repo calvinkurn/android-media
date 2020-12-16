@@ -18,8 +18,8 @@
 
                 <data
                     android:host="@string/recharge_slice_host"
-                    android:pathPattern="@string/main_path"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:pathPattern="@string/recharge_slice_main_path"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 

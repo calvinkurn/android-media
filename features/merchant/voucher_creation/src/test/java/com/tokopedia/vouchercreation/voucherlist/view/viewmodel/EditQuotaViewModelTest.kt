@@ -6,7 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.UpdateQuotaUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -38,7 +38,7 @@ class EditQuotaViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = EditQuotaViewModel(TestCoroutineDispatchers, updateQuotaUseCase)
+        mViewModel = EditQuotaViewModel(CoroutineTestDispatchersProvider, updateQuotaUseCase)
         mViewModel.editQuotaSuccessLiveData.observeForever(editQuotaSuccessObserver)
     }
 
