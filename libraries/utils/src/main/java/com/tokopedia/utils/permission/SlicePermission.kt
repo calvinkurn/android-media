@@ -22,19 +22,23 @@ class SlicePermission {
     }
 
     private fun grantAssistantPermissions(context: Context, authority: String) {
-        val provider = context.contentResolver.acquireContentProviderClient(authority)
-        if (provider!=null) {
-            getAssistantPackage(context)?.let { assistantPackage ->
-                val sliceProviderUri = Uri.Builder()
-                        .scheme(ContentResolver.SCHEME_CONTENT)
-                        .authority(authority)
-                        .build()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
+        try {
+            val provider = context.contentResolver.acquireContentProviderClient(authority)
+            if (provider != null) {
+                getAssistantPackage(context)?.let { assistantPackage ->
+                    val sliceProviderUri = Uri.Builder()
+                            .scheme(ContentResolver.SCHEME_CONTENT)
+                            .authority(authority)
+                            .build()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
+                    }
                 }
+            } else {
+                Timber.w("P2#SLICE_GRANT_PERMISSION#NULL_PROVIDER")
             }
-        } else {
-            Timber.w("P2#SLICE_GRANT_PERMISSION#NULL_PROVIDER")
+        } catch (e : Exception){
+            Timber.w("P2#SLICE_GRANT_PERMISSION#"+e)
         }
     }
 

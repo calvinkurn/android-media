@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.utils.permission.SlicePermission;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
 
@@ -94,7 +95,13 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     public void setGrantPermissionSlice(){
-        SlicePermission slicePermission = new SlicePermission();
-        slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
+        if(getSliceRemoteConfig()) {
+            SlicePermission slicePermission = new SlicePermission();
+            slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
+        }
+    }
+
+    private Boolean getSliceRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true);
     }
 }
