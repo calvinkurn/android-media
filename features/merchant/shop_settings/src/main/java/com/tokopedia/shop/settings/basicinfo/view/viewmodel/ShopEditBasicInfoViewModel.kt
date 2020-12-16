@@ -203,9 +203,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     @FlowPreview
     private fun getShopDomainSuggestion(shopName: String) {
         viewModelScope.launch {
-            flow {
-                emit(shopName)
-            }.flowOn(dispatchers.io)
+            shopNameValidation.asFlow()
+                    .flowOn(dispatchers.io)
                     .debounce(INPUT_DELAY)
                     .map {
                         getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
