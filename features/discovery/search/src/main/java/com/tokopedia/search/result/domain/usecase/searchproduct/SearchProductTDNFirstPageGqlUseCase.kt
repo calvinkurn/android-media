@@ -152,9 +152,12 @@ class SearchProductTDNFirstPageGqlUseCase(
 
     private fun setTopAdsImageViewModelList(
             searchProductModel: SearchProductModel?,
-            topAdsImageViewModelList: List<TopAdsImageViewModel>
+            topAdsImageViewModelList: List<TopAdsImageViewModel>?
     ): SearchProductModel? {
-        searchProductModel?.setTopAdsImageViewModelList(topAdsImageViewModelList)
+        if (searchProductModel == null || topAdsImageViewModelList == null) return searchProductModel
+
+        searchProductModel.setTopAdsImageViewModelList(topAdsImageViewModelList)
+
         return searchProductModel
     }
 
