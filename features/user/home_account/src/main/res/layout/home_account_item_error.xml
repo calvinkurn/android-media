@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="70dp"
+    android:layout_height="@dimen/home_account_dp_70"
     android:paddingLeft="@dimen/unify_space_8"
     android:paddingRight="@dimen/unify_space_8"
     android:paddingTop="@dimen/home_account_dp_10"
