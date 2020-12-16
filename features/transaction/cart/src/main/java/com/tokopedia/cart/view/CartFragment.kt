@@ -2338,7 +2338,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun doAddToListProducts(cartItemHolderData: ShopGroupAvailableData, j: Int, listProductDetail: ArrayList<ProductDetailsItem>) {
         cartItemHolderData.cartItemDataList?.get(j)?.let { cartItemData ->
             if (cartItemData.isSelected) {
-                val productDetail = cartItemData.cartItemData?.originData?.productId?.toInt()?.let {
+                val productDetail = cartItemData.cartItemData?.originData?.productId?.toLong()?.let {
                     cartItemData.cartItemData?.updatedData?.quantity?.let { it1 ->
                         ProductDetailsItem(
                                 productId = it,

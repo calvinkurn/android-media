@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class PriceChanges(
 
 	@field:SerializedName("amount_difference")
-	val amountDifference: Int = 0,
+	val amountDifference: Long = 0,
 
 	@field:SerializedName("changes_state")
 	val changesState: Int = 0,

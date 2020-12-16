@@ -389,9 +389,9 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0L
-        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0
+        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0L
         val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toLong() ?: 0
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
@@ -405,7 +405,7 @@ class CartItemViewHolder constructor(itemView: View,
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
+            } else if (data.cartItemData?.originData?.wholesalePrice != 0L) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }

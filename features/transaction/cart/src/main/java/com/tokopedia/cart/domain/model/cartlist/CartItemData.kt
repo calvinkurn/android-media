@@ -44,7 +44,7 @@ data class CartItemData(
             var priceCurrency: Int = 0,
             var priceFormatted: String? = null,
             var wholesalePriceFormatted: String? = null,
-            var wholesalePrice: Int = 0,
+            var wholesalePrice: Long = 0,
             var productImage: String? = null,
             var productVarianRemark: String? = null,
             var weightPlan: Double = 0.toDouble(),
