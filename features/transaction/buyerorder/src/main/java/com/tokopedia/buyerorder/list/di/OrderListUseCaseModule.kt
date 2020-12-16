@@ -71,10 +71,10 @@ class OrderListUseCaseModule {
     fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase,
                                        addWishListUseCase: AddWishListUseCase, removeWishListUseCase: RemoveWishListUseCase,
                                        topAdsWishlishedUseCase: TopAdsWishlishedUseCase, userSessionInterface: UserSessionInterface,
-                                       orderListAnalytics: OrderListAnalytics, postCancelReasonUseCase: PostCancelReasonUseCase,
-                                       addToCartMultiLegacyUseCase: AddToCartMultiLegacyUseCase, finishOrderGqlUseCase: FinishOrderGqlUseCase): OrderListPresenterImpl {
+                                       postCancelReasonUseCase: PostCancelReasonUseCase, addToCartMultiLegacyUseCase: AddToCartMultiLegacyUseCase,
+                                       finishOrderGqlUseCase: FinishOrderGqlUseCase): OrderListPresenterImpl {
         return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase,
-                userSessionInterface, orderListAnalytics, postCancelReasonUseCase, addToCartMultiLegacyUseCase, finishOrderGqlUseCase)
+                userSessionInterface, postCancelReasonUseCase, addToCartMultiLegacyUseCase, finishOrderGqlUseCase)
     }
 
 }
