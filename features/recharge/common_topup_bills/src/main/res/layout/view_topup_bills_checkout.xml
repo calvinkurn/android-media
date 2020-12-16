@@ -5,8 +5,8 @@
     android:id="@+id/buy_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/checkout_view_padding"
+    android:background="@color/Unify_N0"
+    android:paddingBottom="@dimen/unify_space_12"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -25,10 +25,10 @@
         android:id="@+id/txt_recharge_checkout_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/checkout_view_label_margin"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:lines="1"
         android:text="@string/common_topup_checkout_view_total_value_label"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recharge_checkout_promo_ticker"
         app:typographyType="heading_4" />
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:lines="1"
-        android:textColor="@color/tkpd_main_orange"
+        android:textColor="@color/Unify_Y500"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_recharge_checkout_label"
         app:typographyType="body_1"

@@ -12,7 +12,7 @@ sealed class PlayWidgetUiModel {
             val title: String,
             val actionTitle: String,
             val actionAppLink: String,
-            val actionWebLink: String,
+            val isActionVisible: Boolean,
             override val config: PlayWidgetConfigUiModel,
             val useHeader: Boolean,
             val items: List<PlayWidgetSmallItemUiModel>
@@ -25,7 +25,7 @@ sealed class PlayWidgetUiModel {
             val title: String,
             val actionTitle: String,
             val actionAppLink: String,
-            val actionWebLink: String,
+            val isActionVisible: Boolean,
             override val config: PlayWidgetConfigUiModel,
             val background: PlayWidgetBackgroundUiModel,
             val items: List<PlayWidgetMediumItemUiModel>

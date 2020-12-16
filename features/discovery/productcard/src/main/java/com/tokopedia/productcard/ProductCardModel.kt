@@ -125,6 +125,10 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_CAMPAIGN)
     }
 
+    fun getLabelBestSeller(): LabelGroup? {
+        return findLabelGroup(LABEL_BEST_SELLER)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -145,7 +149,20 @@ data class ProductCardModel (
 
     fun isShowShopRating() = shopRating.isNotEmpty()
 
-    fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
+    fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCampaign(): Boolean {
+        val labelCampaign = getLabelCampaign()
+
+        return !isShowLabelBestSeller()
+                && labelCampaign != null
+                && labelCampaign.title.isNotEmpty()
+                && labelCampaign.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelGimmick() =
+            !isShowLabelBestSeller()
+                    && !isShowLabelCampaign()
 
     fun willShowVariant(): Boolean {
         return labelGroupVariantList.isNotEmpty()

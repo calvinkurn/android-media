@@ -73,6 +73,12 @@ data class SomListOrderListResponse(
                     @SerializedName("courier_product_name")
                     @Expose
                     val courierProductName: String = "",
+                    @SerializedName("preorder_type")
+                    @Expose
+                    val preOrderType: Int = 0,
+                    @SerializedName("buyer_name")
+                    @Expose
+                    val buyerName: String = "",
                     @SerializedName("ticker_info")
                     @Expose
                     val tickerInfo: TickerInfo = TickerInfo(),

@@ -8,6 +8,8 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class ShimmerViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+
+
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     fun getComponentData(): LiveData<ComponentsItem> {
         componentData.value = components
