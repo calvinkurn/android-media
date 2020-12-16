@@ -25,15 +25,15 @@ data class Product(
         @SerializedName("free_returns")
         val freeReturns: FreeReturns = FreeReturns(),
         @SerializedName("initial_price")
-        val initialPrice: Int = 0,
+        val initialPrice: Long = 0,
         @SerializedName("initial_price_fmt")
         val initialPriceFmt: String = "",
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
         @SerializedName("product_price")
-        val productPrice: Int = 0,
+        val productPrice: Long = 0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Int = 0,
+        val productOriginalPrice: Long = 0,
         @SerializedName("is_slash_price")
         val isSlashPrice: Boolean = false,
         @SerializedName("slash_price_label")

@@ -13,7 +13,7 @@ data class PriceChanges(
 	val changesState: Int = 0,
 
 	@field:SerializedName("original_amount")
-	val originalAmount: Int = 0,
+	val originalAmount: Long = 0,
 
 	@field:SerializedName("description")
 	val description: String = ""
