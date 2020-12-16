@@ -13,7 +13,7 @@ data class AddToCartMultiParam (
         val productName: String = "",
 
         @SerializedName("product_price")
-        val productPrice: Int = -1,
+        val productPrice: Long = -1,
 
         @SerializedName("quantity")
         val qty: Int = -1,
