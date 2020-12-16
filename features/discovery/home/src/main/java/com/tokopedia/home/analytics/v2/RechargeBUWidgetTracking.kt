@@ -3,6 +3,7 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetProductCardViewHolder.Companion.IMAGE_TYPE_FULL
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
@@ -21,12 +22,15 @@ object RechargeBUWidgetTracking : BaseTracking() {
             userId: String
     ) {
         val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
-        val promotions = data.data.items.mapIndexed { index, item ->  Promotion(
+        val promotions = data.data.items.mapIndexed { index, item ->
+            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
+            Promotion(
                 id = "${data.channel.id}_0_0_$persoType",
-                creative = "${getHeaderName(data.channel)} - ${item.title}",
+                creative = "${getHeaderName(data.channel)} - $productName",
                 name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
                 position = (index + 1).toString()
-        )}
+            )
+        }
         trackingQueue.putEETracking(getBasicPromotionView(
                 Event.PROMO_VIEW,
                 RECHARGE_BU_WIDGET_EVENT_CATEGORY,
@@ -48,9 +52,10 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
             val item = data.data.items[position]
+            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
             val promotion = Promotion(
                     id = "${data.channel.id}_0_0_$persoType",
-                    creative = "${getHeaderName(data.channel)} - ${item.title}",
+                    creative = "${getHeaderName(data.channel)} - $productName",
                     name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
                     position = position.toString()
             )
