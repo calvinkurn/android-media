@@ -102,6 +102,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private Boolean getSliceRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true);
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, false);
     }
 }
