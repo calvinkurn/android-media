@@ -511,7 +511,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         // first load
-        if (viewModel.orderProduct.productId == 0) {
+        if (viewModel.orderProduct.productId == 0L) {
             val productId = arguments?.getString(QUERY_PRODUCT_ID)
             if (productId.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()

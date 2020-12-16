@@ -1776,7 +1776,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
                 listParamAtcMulti.add(AddToCartMultiParam(
-                        productId = objParam.get(PRODUCT_ID).asInt,
+                        productId = objParam.get(PRODUCT_ID).asLong,
                         productName = objParam.get(PRODUCT_NAME).asString,
                         productPrice = objParam.get(PRODUCT_PRICE).asInt,
                         qty = objParam.get(QUANTITY).asInt,
