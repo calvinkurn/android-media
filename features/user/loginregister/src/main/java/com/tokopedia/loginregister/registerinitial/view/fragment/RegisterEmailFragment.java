@@ -41,7 +41,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
@@ -91,15 +90,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     private static final String ALREADY_REGISTERED = "sudah terdaftar";
-
-    private static final int GO_TO_REGISTER = 0;
-    private static final int GO_TO_ACTIVATION_PAGE = 1;
-    private static final int GO_TO_LOGIN = 2;
-    private static final int GO_TO_RESET_PASSWORD = 3;
-
-    private static final int STATUS_ACTIVE = 1;
-    private static final int STATUS_PENDING = -1;
-    private static final int STATUS_INACTIVE = 0;
 
     View redirectView;
     AutoCompleteTextView email;
@@ -258,7 +248,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     private void initObserver(){
-        registerInitialViewModel.getRegisterRequestResponse().observe(this, registerRequestDataResult -> {
+        registerInitialViewModel.getRegisterRequestResponse().observe(getViewLifecycleOwner(), registerRequestDataResult -> {
             if(registerRequestDataResult instanceof Success){
                 RegisterRequestData data = ((Success<RegisterRequestData>) registerRequestDataResult).getData();
                 userSession.clearToken();
@@ -584,17 +574,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
         progressBar.setVisibility(View.GONE);
-    }
-
-    public void goToActivationPage(String email, String password) {
-        if (getActivity() != null) {
-            Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-                    email,
-                    password,
-                    source
-            );
-            startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
-        }
     }
 
     public void goToAutomaticLogin() {
