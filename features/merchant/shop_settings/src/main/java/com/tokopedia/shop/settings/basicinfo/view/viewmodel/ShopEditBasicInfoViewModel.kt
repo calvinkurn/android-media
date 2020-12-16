@@ -2,6 +2,7 @@ package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -22,8 +23,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -77,44 +77,54 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         }
     }
 
+    @FlowPreview
     fun validateShopName(shopName: String) {
         if(shopName == currentShop?.name) return
 
-        launchCatchError(block = {
+        viewModelScope.launch {
             flow {
-                delay(INPUT_DELAY)
-                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(shopName)
-                emit(validateDomainShopNameUseCase.executeOnBackground())
+                emit(shopName)
             }.flowOn(dispatchers.io)
-                    .conflate()
-                    .collectLatest {
-                         _validateShopName.value = Success(it)
+                    .debounce(INPUT_DELAY)
+                    .map { name ->
+                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(name)
+                        validateDomainShopNameUseCase.executeOnBackground()
                     }
-        }) {
-            _validateShopName.value = Fail(it)
+                    .conflate()
+                    .catch {
+                        _validateShopName.value = Fail(it)
+                    }
+                    .collectLatest {
+                        _validateShopName.value = Success(it)
+                    }
         }
 
         setCurrentShopName(shopName)
     }
 
-    fun validateShopDomain(domain: String) {
-        if(domain == currentShop?.domain) return
+    @FlowPreview
+    fun validateShopDomain(shopDomain: String) {
+        if(shopDomain == currentShop?.domain) return
 
-        launchCatchError(block = {
+        viewModelScope.launch {
             flow {
-                delay(INPUT_DELAY)
-                validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
-                emit(validateDomainShopNameUseCase.executeOnBackground())
+                emit(shopDomain)
             }.flowOn(dispatchers.io)
+                    .debounce(INPUT_DELAY)
+                    .map { domain ->
+                        validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(domain)
+                        validateDomainShopNameUseCase.executeOnBackground()
+                    }
                     .conflate()
+                    .catch {
+                        _validateShopDomain.value = Fail(it)
+                    }
                     .collectLatest { result ->
                         if(!result.validateDomainShopName.isValid) {
                             currentShopName?.let { getShopDomainSuggestion(it) }
                         }
                         _validateShopDomain.value = Success(result)
                     }
-        }) {
-            _validateShopDomain.value = Fail(it)
         }
     }
 
@@ -179,19 +189,24 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         currentShopName = shopName
     }
 
+    @FlowPreview
     private fun getShopDomainSuggestion(shopName: String) {
-        launchCatchError(block = {
+        viewModelScope.launch {
             flow {
-                delay(INPUT_DELAY)
-                getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
-                emit(getShopDomainNameSuggestionUseCase.executeOnBackground())
+                emit(shopName)
             }.flowOn(dispatchers.io)
+                    .debounce(INPUT_DELAY)
+                    .map {
+                        getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
+                        getShopDomainNameSuggestionUseCase.executeOnBackground()
+                    }
                     .conflate()
+                    .catch {
+                        _shopDomainSuggestion.value = Fail(it)
+                    }
                     .collectLatest {
                         _shopDomainSuggestion.value = Success(it)
                     }
-        }) {
-            _shopDomainSuggestion.value = Fail(it)
         }
     }
 
