@@ -53,7 +53,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.variantCommon)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.thankYouNative)
     implementation project(rootProject.ext.features.commonPayment)
