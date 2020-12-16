@@ -558,4 +558,18 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
+
+
+    /**
+     * TermPrivacyActivity
+     * @applink : tokopedia-android-internal://global/term-privacy/{page}
+     **/
+
+    @JvmField
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}"
+    @JvmField
+    val PAGE_TERM_AND_CONDITION = "termAndCondition"
+    @JvmField
+    val PAGE_PRIVACY_POLICY = "privacyPolicy"
+
 }
