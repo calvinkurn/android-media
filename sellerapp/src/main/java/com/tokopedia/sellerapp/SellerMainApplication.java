@@ -169,7 +169,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
-        SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        SlicePermission slicePermission = new SlicePermission();
+        slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
     }
 
     private void initCacheManager(){
