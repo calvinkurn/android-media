@@ -160,7 +160,7 @@
             android:visibility="gone"/>
     </RelativeLayout>
 
-  <com.tokopedia.loginregister.common.view.EmailExtension
+  <com.tokopedia.loginregister.common.view.emailextension.EmailExtension
     android:id="@+id/emailExtension"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

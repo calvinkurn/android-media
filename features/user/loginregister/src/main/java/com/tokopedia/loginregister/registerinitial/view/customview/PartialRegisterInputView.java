@@ -26,7 +26,7 @@ import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.utils.KeyboardHandler;
-import com.tokopedia.loginregister.common.view.EmailExtension;
+import com.tokopedia.loginregister.common.view.emailextension.EmailExtension;
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import org.jetbrains.annotations.NotNull;
