@@ -1,12 +1,16 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -19,8 +23,14 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalk
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.TalkSmartReplyDetailComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel.TalkSmartReplyDetailViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_smart_reply_detail.*
 import javax.inject.Inject
 
@@ -28,6 +38,9 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     @Inject
     lateinit var viewModel: TalkSmartReplyDetailViewModel
+
+    private var toaster: Snackbar? = null
+    private var isTemplateEdited = false
 
     override fun getComponent(): TalkSmartReplyDetailComponent? {
         return activity?.run {
@@ -64,6 +77,8 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         setDescriptionText()
         setToolbarTitle()
         setupOnBackPressed()
+        initButton()
+        observeSetSmartReplyResult()
     }
 
     override fun getScreenName(): String {
@@ -90,6 +105,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             viewModel.setSmartReply()
             if(isChecked) {
                 talkSmartReplyDetailCardContainer.hide()
+                talkSmartReplyDetailSubmitButton.show()
             } else {
                 setCardData()
             }
@@ -107,26 +123,92 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun initTextArea() {
-        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.setText(viewModel.messageReady)
-        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.setText(viewModel.messageNotReady)
+        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.apply {
+            setText(viewModel.messageReady)
+            addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.messageReady = s?.let { it.toString() } ?: ""
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // No Op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // No Op
+                }
+            })
+        }
+        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.apply {
+            setText(viewModel.messageNotReady)
+            addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    viewModel.messageNotReady = s?.let { it.toString() } ?: ""
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // No Op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // No Op
+                }
+            })
+        }
     }
 
-    private fun onSuccessActivateSmartReply() {
-
+    private fun observeSetSmartReplyResult() {
+        viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    showToaster(it.data, false)
+                }
+                is Fail -> {
+                    showToaster(it.throwable.message ?: getString(R.string.inbox_toaster_connection_error), true)
+                }
+            }
+        })
     }
 
-    private fun showToaster(text: String) {
-
+    private fun showToaster(successMessage: String, isError: Boolean) {
+        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        view?.let {
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, toasterType, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if (toaster.isShownOrQueued) {
+                    return
+                }
+                toaster.show()
+            }
+        }
     }
 
-    private fun showErrorToaster(text: String) {
+    private fun initButton() {
+        talkSmartReplyDetailSubmitButton.setOnClickListener {
+            saveSmartReplySettings()
+        }
+    }
 
+    private fun setFragmentResultWithBundle(requestValue: String) {
+        arguments?.let {
+            if(isTemplateEdited) {
+                val bundle = Bundle().apply {
+                    putString(TalkSellerSettingsConstants.KEY_ACTION, requestValue)
+                }
+                setNavigationResult(bundle, TalkEditTemplateFragment.REQUEST_KEY)
+            }
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun saveSmartReplySettings() {
+        viewModel.setSmartReplyTemplate()
     }
 
     private fun setupOnBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigateUp()
+                setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
             }
         })
     }

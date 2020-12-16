@@ -24,6 +24,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
@@ -217,11 +218,11 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         getNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
             it?.let {
                 toolbar?.rightContentView?.removeAllViews()
-                when(it.getString(TalkEditTemplateFragment.KEY_ACTION, "")) {
-                    TalkEditTemplateFragment.VALUE_DELETE -> {
+                when(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "")) {
+                    TalkSellerSettingsConstants.VALUE_DELETE -> {
                         showToaster(getString(R.string.template_list_success_delete_template), false)
                     }
-                    TalkEditTemplateFragment.VALUE_ADD_EDIT -> {
+                    TalkSellerSettingsConstants.VALUE_ADD_EDIT -> {
                         showToaster(getString(R.string.template_list_success_add_template), false)
                     }
                 }

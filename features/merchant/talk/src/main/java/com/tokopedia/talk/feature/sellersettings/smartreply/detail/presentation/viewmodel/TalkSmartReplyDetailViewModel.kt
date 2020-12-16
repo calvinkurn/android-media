@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.DiscussionSmartReplyMutationResult
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplySettingsUseCase
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -20,14 +20,9 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    private val _setSmartReplyResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<String>>()
-    val setSmartReplyResult: LiveData<com.tokopedia.usecase.coroutines.Result<String>>
+    private val _setSmartReplyResult = MutableLiveData<Result<String>>()
+    val setSmartReplyResult: LiveData<Result<String>>
         get() = _setSmartReplyResult
-
-    private val _setSmartReplyTemplateResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<String>>()
-    val setSmartReplyTemplateResult: LiveData<com.tokopedia.usecase.coroutines.Result<String>>
-        get() = _setSmartReplyTemplateResult
-
 
     var isSmartReplyOn: Boolean = false
     var messageReady: String = ""
@@ -56,12 +51,12 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
             discussionSetSmartReplyTemplateUseCase.setParams(messageReady, messageNotReady)
             val response = discussionSetSmartReplyTemplateUseCase.executeOnBackground()
             if (response.discussionSetSmartReplyTemplate.isSuccess) {
-                _setSmartReplyTemplateResult.postValue(Success(response.discussionSetSmartReplyTemplate.reason))
+                _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplyTemplate.reason))
             } else {
-                _setSmartReplyTemplateResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplyTemplate.reason)))
+                _setSmartReplyResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplyTemplate.reason)))
             }
         }) {
-            _setSmartReplyTemplateResult.postValue(Fail(it))
+            _setSmartReplyResult.postValue(Fail(it))
         }
     }
 

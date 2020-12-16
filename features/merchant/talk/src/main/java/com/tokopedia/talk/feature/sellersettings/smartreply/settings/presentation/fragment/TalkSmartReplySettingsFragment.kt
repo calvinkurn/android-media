@@ -23,7 +23,11 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTa
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
+import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -56,7 +60,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getSmartReplyData()
+        getSmartReplyData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,6 +72,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         setTncText()
         setToolbarTitle()
         setupOnBackPressed()
+        onFragmentResult()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -153,6 +158,23 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
                 findNavController().navigateUp()
             }
         })
+    }
+
+    private fun onFragmentResult() {
+        getNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "") == TalkSellerSettingsConstants.VALUE_ADD_EDIT) {
+                    getSmartReplyData()
+                }
+            }
+            removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
+            getSmartReplyData()
+            showLoading()
+        })
+    }
+
+    private fun getSmartReplyData() {
+        viewModel.getSmartReplyData()
     }
 
     private fun showLoading() {

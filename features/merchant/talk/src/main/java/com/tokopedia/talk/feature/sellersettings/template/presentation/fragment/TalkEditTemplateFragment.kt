@@ -18,6 +18,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
+import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataWrapper
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
@@ -31,13 +32,6 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     companion object {
         const val REQUEST_KEY = "talk_template_request"
-        const val KEY_ACTION = "action"
-        const val IS_EDIT_MODE = "isEditMode"
-        const val INDEX = "index"
-        const val TEMPLATE = "template"
-        const val IS_SELLER = "isSeller"
-        const val VALUE_ADD_EDIT = "add/edit"
-        const val VALUE_DELETE = "delete"
         const val KEY_TEMPLATE = "template"
     }
 
@@ -90,10 +84,10 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         viewModel.templateMutation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 TalkTemplateMutationResults.DeleteTemplate -> {
-                    setFragmentResultWithBundle(VALUE_DELETE)
+                    setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_DELETE)
                 }
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
-                    setFragmentResultWithBundle(VALUE_ADD_EDIT)
+                    setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
                 }
                 TalkTemplateMutationResults.DeleteTemplateFailed -> {
                     showToaster(getString(R.string.template_delete_toaster_fail))
@@ -139,7 +133,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private fun setFragmentResultWithBundle(requestValue: String) {
         arguments?.let {
             val bundle = Bundle().apply {
-                putString(KEY_ACTION, requestValue)
+                putString(TalkSellerSettingsConstants.KEY_ACTION, requestValue)
             }
             setNavigationResult(bundle, REQUEST_KEY)
             findNavController().navigateUp()
