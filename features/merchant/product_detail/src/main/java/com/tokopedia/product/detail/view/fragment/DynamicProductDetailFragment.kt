@@ -306,6 +306,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isLoadingInitialData = true
         ticker_occ_layout.gone()
         loadProductData(true)
+        stickyLoginView?.loadContent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -525,8 +526,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-                stickyLoginView?.loadContent()
-                updateActionButtonShadow()
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
@@ -555,8 +554,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                     if (isUserLoginFromShopPage) {
                         stickyLoginView?.loadContent()
-                        updateActionButtonShadow()
                     }
+
                     if (isFavoriteFromShopPage != wasFavorite) {
                         onSuccessFavoriteShop(true)
                     }

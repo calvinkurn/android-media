@@ -140,6 +140,7 @@ class ShopPageFragment :
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -623,6 +624,8 @@ class ShopPageFragment :
                 updateFloatingChatButtonMargin()
             }
         })
+
+        stickyLoginView.loadContent()
     }
 
     private fun getInitialData() {
@@ -736,8 +739,8 @@ class ShopPageFragment :
     override fun onResume() {
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
-        stickyLoginView.loadContent()
         setShopName()
+        stickyLoginView.loadContent()
     }
 
     private fun setViewState(viewState: Int) {
@@ -1148,8 +1151,10 @@ class ShopPageFragment :
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
         activity?.run {
+            val userSession = UserSession(this)
             setResult(Activity.RESULT_OK, intentData.apply {
                 putExtra(SHOP_STATUS_FAVOURITE, isFavorite)
+                putExtra(SHOP_STICKY_LOGIN, userSession.isLoggedIn)
             })
         }
     }
@@ -1383,15 +1388,23 @@ class ShopPageFragment :
     }
 
     private fun updateFloatingChatButtonMargin() {
-        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
-                ?: 0
         val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
-        buttonChatLayoutParams.setMargins(
-                buttonChatLayoutParams.leftMargin,
-                buttonChatLayoutParams.topMargin,
-                buttonChatLayoutParams.rightMargin,
-                initialFloatingChatButtonMarginBottom + stickyLoginViewHeight
-        )
+        if (stickyLoginView.isShowing()) {
+            val stickyLoginViewHeight = stickyLoginView.height
+            buttonChatLayoutParams.setMargins(
+                    buttonChatLayoutParams.leftMargin,
+                    buttonChatLayoutParams.topMargin,
+                    buttonChatLayoutParams.rightMargin,
+                    stickyLoginViewHeight + 16
+            )
+        } else {
+            buttonChatLayoutParams.setMargins(
+                    buttonChatLayoutParams.leftMargin,
+                    buttonChatLayoutParams.topMargin,
+                    buttonChatLayoutParams.rightMargin,
+                    initialFloatingChatButtonMarginBottom + 16
+            )
+        }
         chatButton.layoutParams = buttonChatLayoutParams
     }
 

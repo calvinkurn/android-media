@@ -802,6 +802,7 @@ open class HomeFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = { oldToolbar?.startHintAnimation() }
         )
+        stickyLoginView?.loadContent()
     }
 
     private fun conditionalViewModelRefresh(){
