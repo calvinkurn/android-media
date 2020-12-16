@@ -62,10 +62,20 @@ object OrderWidgetSuccessState {
                 Utils.loadImageIntoAppWidget(context, this, R.id.imgSawSmallOrderAppIcon, it, widgetId, radius)
             }
 
-            registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
-            registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
+            val bundle = Bundle().apply {
+                putString(Const.Extra.WIDGET_SIZE, WidgetSize.SMALL)
+            }
+            registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId, bundle)
+            registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId, bundle)
             registerAppLinkIntent(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
             registerAppLinkIntent(context, R.id.imgSawSmallOrderAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+
+            val trackingInstance = AppWidgetTracking.getInstance(context)
+            if (readyToShipCount > 0) {
+                trackingInstance.sendEventImpressionSmallSuccessStateReadyToShipOrderWidget()
+            } else {
+                trackingInstance.sendEventImpressionSmallSuccessStateNewOrderWidget()
+            }
         }
     }
 

@@ -121,6 +121,22 @@ class AppWidgetTracking(context: Context) {
         }
     }
 
+    fun sendEventImpressionSmallSuccessStateNewOrderWidget() {
+        val action = TrackingConstant.Action.IMPRESSION_NEW_ORDER_SMALL_ORDER
+        sendEventOnceADayOrder(action) {
+            val eventMap = createImpressionOrderWidget(action)
+            sendEvent(eventMap)
+        }
+    }
+
+    fun sendEventImpressionSmallSuccessStateReadyToShipOrderWidget() {
+        val action = TrackingConstant.Action.IMPRESSION_READY_TO_SHIP_SMALL_ORDER
+        sendEventOnceADayOrder(action) {
+            val eventMap = createImpressionOrderWidget(action)
+            sendEvent(eventMap)
+        }
+    }
+
     fun sendEventImpressionEmptyStateOrderWidget() {
         val action = TrackingConstant.Action.IMPRESSION_EMPTY_STATE
         sendEventOnceADayOrder(action) {
@@ -151,6 +167,16 @@ class AppWidgetTracking(context: Context) {
             val eventMap = createImpressionOrderWidget(action)
             sendEvent(eventMap)
         }
+    }
+
+    fun sendEventClickSmallNewOrderWidget() {
+        val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_NEW_ORDER_SMALL_ORDER)
+        sendEvent(eventMap)
+    }
+
+    fun sendEventClickSmallReadyToShipOrderWidget() {
+        val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_READY_TO_SHIP_SMALL_ORDER)
+        sendEvent(eventMap)
     }
 
     fun sendEventClickSellerIconOrderWidget() {

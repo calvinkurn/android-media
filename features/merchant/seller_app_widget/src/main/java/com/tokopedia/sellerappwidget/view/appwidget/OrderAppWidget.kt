@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.common.WidgetSize
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -100,14 +101,25 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun openAppLink(context: Context, intent: Intent) {
         val appLink = intent.data?.toString().orEmpty()
         val appWidgetTracking = AppWidgetTracking.getInstance(context)
-
+        val isSmallWidget = intent.getBundleExtra(Const.Extra.BUNDLE)
+                ?.getString(Const.Extra.WIDGET_SIZE) == WidgetSize.SMALL
         when (appLink) {
             ApplinkConstInternalSellerapp.SELLER_HOME -> {
                 appWidgetTracking.sendEventClickSellerIconOrderWidget()
             }
-            ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP,
+            ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP -> {
+                if (isSmallWidget) {
+                    appWidgetTracking.sendEventClickSmallReadyToShipOrderWidget()
+                } else {
+                    appWidgetTracking.sendEventClickShopNameOrderWidget()
+                }
+            }
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER -> {
-                appWidgetTracking.sendEventClickShopNameOrderWidget()
+                if (isSmallWidget) {
+                    appWidgetTracking.sendEventClickSmallNewOrderWidget()
+                } else {
+                    appWidgetTracking.sendEventClickShopNameOrderWidget()
+                }
             }
             ApplinkConst.LOGIN -> {
                 appWidgetTracking.sendEventClickLoginNowOrderWidget()

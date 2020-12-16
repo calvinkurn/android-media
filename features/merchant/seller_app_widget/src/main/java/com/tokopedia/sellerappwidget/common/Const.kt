@@ -19,6 +19,7 @@ object Const {
         const val ORDER_STATUS_ID = "order_status_id"
         const val CHAT_ITEM = "chat"
         const val CHAT_ITEMS = "chats"
+        const val WIDGET_SIZE = "widget_size"
     }
 
     object Action {

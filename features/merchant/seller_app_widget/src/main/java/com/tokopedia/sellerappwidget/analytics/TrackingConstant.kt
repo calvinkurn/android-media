@@ -35,14 +35,17 @@ object TrackingConstant {
         const val CLICK_SHOP_NAME_AND_ORDER = "click shop name and order"
         const val CLICK_ORDER_LINE = "click order line"
         const val CLICK_BUTTON_STATUS = "click button status"
+        const val CLICK_NEW_ORDER_SMALL_ORDER = "click active 4x2 order widget - pesanan baru"
+        const val CLICK_READY_TO_SHIP_SMALL_ORDER = "click active 4x2 order widget - siap dikirim"
         const val IMPRESSION_ACTIVE_STATE = "impression active state"
         const val IMPRESSION_EMPTY_STATE = "impression empty state"
         const val IMPRESSION_LOADING_STATE = "impression loading state"
-        const val IMPRESSION_NO_ACCESS_STATE = "impression no access state"
         const val IMPRESSION_NO_LOGIN_STATE = "impression no login state"
         const val IMPRESSION_NO_CONNECTION_STATE = "impression no connection state"
         const val IMPRESSION_ACTIVE_NEW_ORDER = "mpression active new order"
         const val IMPRESSION_ACTIVE_READY_SHIPPING = "impression active ready shipping"
+        const val IMPRESSION_NEW_ORDER_SMALL_ORDER = "impression active 4x2 order widget - pesanan baru"
+        const val IMPRESSION_READY_TO_SHIP_SMALL_ORDER = "impression active 4x2 order widget - siap dikirim"
     }
 
     object Value {
