@@ -191,7 +191,7 @@ public class AppsflyerEventValidation {
             result = Double.valueOf(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
-            exceptionStringToDouble("" + ex.getMessage(), type + "=" + value);
+            exceptionStringToDouble("" + Log.getStackTraceString(ex), type + "=" + value);
         }
         return result;
     }
