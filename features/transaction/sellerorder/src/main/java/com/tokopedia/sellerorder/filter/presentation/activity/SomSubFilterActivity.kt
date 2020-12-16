@@ -194,13 +194,21 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onCheckboxItemClicked(idList: List<Int>, position: Int) {
+    override fun onCheckboxItemClicked(id: Int, position: Int, checked: Boolean) {
         when (idFilter) {
             SomConsts.FILTER_TYPE_ORDER -> {
-                somListGetOrderListParam.orderTypeList.addAll(idList)
+                if (checked) {
+                    somListGetOrderListParam.orderTypeList.add(id)
+                } else {
+                    somListGetOrderListParam.orderTypeList.remove(id)
+                }
             }
             SomConsts.FILTER_COURIER -> {
-                somListGetOrderListParam.shippingList.addAll(idList)
+                if (checked) {
+                    somListGetOrderListParam.shippingList.add(id)
+                } else {
+                    somListGetOrderListParam.shippingList.remove(id)
+                }
             }
         }
         setToggleResetSubFilter()
