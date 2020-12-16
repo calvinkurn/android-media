@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
+import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
@@ -21,7 +22,6 @@ import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.ResponseProductList
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.product.ProductListAdapter

@@ -2,8 +2,8 @@ package com.tokopedia.topads.edit.view.model
 
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
-import com.tokopedia.topads.edit.usecase.GetEtalaseUseCase
-import com.tokopedia.topads.edit.usecase.GetProductUseCase
+import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -14,14 +14,14 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ProductAdsListViewModelTest {
-    private val getProductUseCase: GetProductUseCase = mockk(relaxed = true)
-    private val getEtalaseUseCase: GetEtalaseUseCase = mockk(relaxed = true)
+    private val getProductUseCase: TopAdsGetListProductUseCase = mockk(relaxed = true)
+    private val getEtalaseUseCase: GetEtalaseListUseCase = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: ProductAdsListViewModel
 
     @Before
     fun setUp() {
-        viewModel = ProductAdsListViewModel(testDispatcher, getProductUseCase, getEtalaseUseCase)
+        viewModel = ProductAdsListViewModel(testDispatcher, mockk(), getProductUseCase, getEtalaseUseCase)
     }
 
     @After
@@ -33,14 +33,14 @@ class ProductAdsListViewModelTest {
     fun etalaseList() {
         val data = ResponseEtalase.Data()
         every {
-            getEtalaseUseCase.executeQuerySafeMode(captureLambda(), any())
+            getEtalaseUseCase.execute(captureLambda(), any())
         } answers {
             val onSuccess = lambda<(ResponseEtalase.Data) -> Unit>()
             onSuccess.invoke(data)
         }
         viewModel.etalaseList {}
         verify {
-            getEtalaseUseCase.executeQuerySafeMode(any(), any())
+            getEtalaseUseCase.execute(any(), any())
         }
     }
 
@@ -48,7 +48,7 @@ class ProductAdsListViewModelTest {
     fun productList() {
         val data = ResponseProductList.Result()
         every {
-            getProductUseCase.executeQuerySafeMode(captureLambda(), any())
+            getProductUseCase.execute(captureLambda(), any())
         } answers {
             val onSuccess = lambda<(ResponseProductList.Result) -> Unit>()
             onSuccess.invoke(data)
@@ -56,7 +56,7 @@ class ProductAdsListViewModelTest {
         viewModel.productList("key", "123", "", "", 1, 1,
                 { _: List<ResponseProductList.Result.TopadsGetListProduct.Data>, b: Boolean -> }, {}, {})
         verify {
-            getProductUseCase.executeQuerySafeMode(any(), any())
+            getProductUseCase.execute(any(), any())
         }
     }
 

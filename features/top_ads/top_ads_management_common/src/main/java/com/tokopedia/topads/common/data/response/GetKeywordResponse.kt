@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.data.response
+package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -48,25 +48,31 @@ data class GetKeywordResponse(
 
     @Parcelize
     data class KeywordsItem(
-
-            @field:SerializedName("type")
+            @SerializedName("type")
             var type: Int = 11,
-
-            @field:SerializedName("status")
+            @SerializedName("status")
             var status: Int = 1,
-
-            @field:SerializedName("keyword_id")
+            @SerializedName("keyword_id")
             val keywordId: String = "",
-
-            @field:SerializedName("price_bid")
+            @SerializedName("price_bid")
             var priceBid: Int = 0,
-
-            @field:SerializedName("isChecked")
+            @SerializedName("isChecked")
             var isChecked: Boolean = false,
-
-            @field:SerializedName("tag")
+            @SerializedName("tag")
             val tag: String = "",
-            @field:SerializedName("source")
-            val source: String = "") : Parcelable
+            @SerializedName("source")
+            val source: String = "",
+            @SerializedName("create_by")
+            var createBy: String = "",
+            @SerializedName("create_time_utc")
+            var createTimeUtc: String = "",
+            @SerializedName("group_id")
+            var groupId: String = "",
+            @SerializedName("shop_id")
+            var shopId: String = "",
+            @SerializedName("update_by")
+            var updateBy: String = "",
+            @SerializedName("update_time_utc")
+            var updateTimeUtc: String = "") : Parcelable
 }
 

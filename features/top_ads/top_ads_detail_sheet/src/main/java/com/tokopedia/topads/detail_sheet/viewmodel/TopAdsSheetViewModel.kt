@@ -6,11 +6,10 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.raw.GROUP_REQUEST
+import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -18,9 +17,8 @@ import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataIt
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.detail_sheet.R
-import com.tokopedia.topads.detail_sheet.data.AdData
-import com.tokopedia.topads.detail_sheet.data.AdInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -33,7 +31,7 @@ import javax.inject.Named
 class TopAdsSheetViewModel @Inject constructor(
         private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
         private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-        private val topAdsGetGroupIdUseCase: GraphqlUseCase<AdInfo>,
+        private val topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase,
         private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
         private val topAdsGetAutoAdsStatusUseCase: GraphqlUseCase<TopAdsAutoAds.Response>,
         @Named("Main")
@@ -76,13 +74,10 @@ class TopAdsSheetViewModel @Inject constructor(
         })
     }
 
-    @GqlQuery("CategoryList", GROUP_REQUEST)
-    fun getGroupId(shopId: String, adId: String, onSuccess: ((List<AdData>) -> Unit)) {
+    fun getGroupId(shopId: String, adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
         val params = mapOf(ParamObject.SHOP_ID to shopId,
                 ParamObject.AD_ID to adId)
-        topAdsGetGroupIdUseCase.setTypeClass(AdInfo::class.java)
-        topAdsGetGroupIdUseCase.setRequestParams(params)
-        topAdsGetGroupIdUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
+        topAdsGetGroupIdUseCase.setParams(adId.toIntOrNull() ?: 0, shopId.toIntOrNull() ?: 0)
         topAdsGetGroupIdUseCase.execute({
             onSuccess(it.topAdsGetPromo.data)
         }, {

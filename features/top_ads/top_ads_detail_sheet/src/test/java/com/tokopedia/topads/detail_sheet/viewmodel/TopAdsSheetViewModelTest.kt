@@ -5,13 +5,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.ProductActionResponse
+import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.detail_sheet.data.AdInfo
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
@@ -31,7 +32,7 @@ class TopAdsSheetViewModelTest {
 
     private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase = mockk(relaxed = true)
     private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupIdUseCase: GraphqlUseCase<AdInfo> = mockk(relaxed = true)
+    private val topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase = mockk(relaxed = true)
     private val topAdsGetAutoAdsStatusUseCase: GraphqlUseCase<TopAdsAutoAds.Response> = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
@@ -85,11 +86,11 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun testGetGroupId() {
-        val data = AdInfo()
+        val data = SingleAdInFo()
         every {
             topAdsGetGroupIdUseCase.execute(captureLambda(), any())
         } answers {
-            val onSuccess = lambda<(AdInfo) -> Unit>()
+            val onSuccess = lambda<(SingleAdInFo) -> Unit>()
             onSuccess.invoke(data)
         }
         viewModel.getGroupId("123", "456", ) {}

@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
@@ -24,7 +22,6 @@ import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
-import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
@@ -46,20 +43,10 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var cpmModelMapper: CpmModelMapper
-
-    private lateinit var viewModel: AdContentViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AdContentViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -125,13 +112,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         btnSubmit.setOnClickListener {
             onClickSubmit()
         }
-        fetchProductsForPreview()
-    }
-
-    private fun fetchProductsForPreview() {
-        if (selectedTopAdsProducts.isEmpty()) {
-            viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", MAX_PRODUCT_PREVIEW, 0, this::showTopAdsBannerPreview, this::onError)
-        }
+        showTopAdsBannerPreview()
     }
 
     private fun onClickSubmit() {
@@ -169,22 +150,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         }
     }
 
-    private fun showTopAdsBannerPreview(responseProductList: List<ResponseProductList.Result.TopadsGetListProduct.Data> = emptyList()) {
-        val cpmModel = if (selectedTopAdsProducts.isNotEmpty()) {
-            cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
-                    ?: "")
-        } else {
-            cpmModelMapper.getCpmModelResponse(responseProductList.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
-                    ?: "")
-        }
+    private fun showTopAdsBannerPreview() {
+        val cpmModel = cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
+                ?: "")
         stepperModel?.cpmModel = cpmModel
-        topAdsBannerView.displayAds(stepperModel?.cpmModel)
-    }
-
-    private fun onError(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
+        topAdsBannerView.displayAdsWithProductShimmer(stepperModel?.cpmModel, true)
     }
 
     private fun openPromotionalMessageBottomSheet() {

@@ -1,6 +1,7 @@
 package com.tokopedia.top_ads_headline.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.top_ads_headline.view.activity.EditFormHeadlineActivity
 import com.tokopedia.top_ads_headline.view.fragment.*
 import dagger.Component
 
@@ -12,4 +13,5 @@ interface HeadlineAdsComponent {
     fun inject(topAdsHeadlineKeyFragment: TopAdsHeadlineKeyFragment)
     fun inject(adScheduleAndBudgetFragment: AdScheduleAndBudgetFragment)
     fun inject(topAdsProductListFragment: TopAdsProductListFragment)
+    fun inject(editFormHeadlineActivity: EditFormHeadlineActivity)
 }

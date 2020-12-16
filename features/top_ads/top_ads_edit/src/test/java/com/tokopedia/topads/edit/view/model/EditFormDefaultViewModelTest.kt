@@ -2,14 +2,22 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
-import com.tokopedia.topads.common.data.response.SingleAdInFo
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
-import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.edit.data.response.*
-import com.tokopedia.topads.edit.usecase.*
+import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.edit.data.response.EditSingleAdResponse
+import com.tokopedia.topads.edit.data.response.FinalAdResponse
+import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
+import com.tokopedia.topads.edit.usecase.GetAdsUseCase
+import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
+import com.tokopedia.topads.edit.usecase.TopAdsCreateUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.invoke
@@ -27,7 +35,7 @@ class EditFormDefaultViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val validGroupUseCase: ValidGroupUseCase = mockk(relaxed = true)
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val getAdsUseCase: GetAdsUseCase = mockk(relaxed = true)
     private val getAdKeywordUseCase: GetAdKeywordUseCase = mockk(relaxed = true)
@@ -35,7 +43,7 @@ class EditFormDefaultViewModelTest {
     private val editSingleAdUseCase: EditSingleAdUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
-    private val singleAdInfoUseCase: GraphqlUseCase<SingleAdInFo> = mockk(relaxed = true)
+    private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
     private val userSession:UserSession = mockk()
     private var groupId = 123
@@ -65,7 +73,7 @@ class EditFormDefaultViewModelTest {
         viewModel.validateGroup("name") {}
 
         verify {
-            validGroupUseCase.executeQuerySafeMode(any(), any())
+            validGroupUseCase.execute(any(), any())
         }
     }
 

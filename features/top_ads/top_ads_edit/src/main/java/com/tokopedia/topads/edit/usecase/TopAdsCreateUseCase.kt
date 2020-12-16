@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.GroupEditInput
@@ -14,7 +15,6 @@ import com.tokopedia.topads.edit.data.param.KeywordEditInput
 import com.tokopedia.topads.edit.data.param.TopadsManageGroupAdsInput
 import com.tokopedia.topads.edit.data.response.FinalAdResponse
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
 import com.tokopedia.topads.edit.utils.Constants.ACTION_CREATE
