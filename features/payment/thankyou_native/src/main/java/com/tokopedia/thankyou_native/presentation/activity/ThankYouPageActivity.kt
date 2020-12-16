@@ -1,8 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -147,7 +145,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): FragmentByPaymentMode? {
-        thank_header.isShowBackButton = true
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -198,6 +195,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun setupOldToolbar(title: String){
+        thank_header.isShowBackButton = true
         toolbar = thank_header
         setSupportActionBar(toolbar)
         supportActionBar?.let {
