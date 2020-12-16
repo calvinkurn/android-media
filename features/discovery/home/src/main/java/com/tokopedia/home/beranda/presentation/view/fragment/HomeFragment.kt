@@ -322,7 +322,7 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            true
         }
     }
     private fun isNavOld(): Boolean {
@@ -330,16 +330,16 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
         }
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
-        if (isNavRevamp()) {
-            ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+       if (isNavOld()) {
             ifNavOld.invoke()
-        }
+       } else if (isNavRevamp()) {
+            ifNavRevamp.invoke()
+       }
     }
 
     override fun onAttach(context: Context) {
@@ -588,7 +588,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run {
-                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+                bottomSheet.show(this, "onboarding navigation")
             }
             saveFirstViewNavigation(false)
         }
@@ -901,6 +901,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetToggleReminder()
+        observeRechargeBUWidget()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1095,6 +1096,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeRechargeBUWidget() {
+        context?.let {
+            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
+                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
@@ -1227,8 +1236,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
-                CategoryNavigationCallback(context, this)
-
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

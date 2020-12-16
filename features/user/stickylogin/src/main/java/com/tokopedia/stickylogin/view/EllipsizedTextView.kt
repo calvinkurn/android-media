@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.stickylogin.R
 
 class EllipsizedTextView @JvmOverloads constructor(
@@ -54,16 +55,20 @@ class EllipsizedTextView @JvmOverloads constructor(
         if (ellipsizedFullText.contains(getDefaultEllipsis())) {
             if (ellipsizedText.contains(getDefaultEllipsis())) {
                 val start = ellipsizedText.indexOf(getDefaultEllipsis()) - highLightSpannable.length - 1
-                text = SpannableStringBuilder()
-                        .append(ellipsizedText)
-                        .replace(start, start + 1, getDefaultEllipsis().toString())
-                        .replace(start + 1, ellipsizedText.length, highLightSpannable)
+                if (start.isMoreThanZero()) {
+                    text = SpannableStringBuilder()
+                            .append(ellipsizedText)
+                            .replace(start, start + 1, getDefaultEllipsis().toString())
+                            .replace(start + 1, ellipsizedText.length, highLightSpannable)
+                }
             } else {
                 val start = ellipsizedFullText.indexOf(getDefaultEllipsis()) - highLightSpannable.length - 1
-                text = SpannableStringBuilder()
-                        .append(ellipsizedFullText)
-                        .replace(start, start + 1, getDefaultEllipsis().toString())
-                        .replace(start + 1, ellipsizedFullText.length, highLightSpannable)
+                if (start.isMoreThanZero()) {
+                    text = SpannableStringBuilder()
+                            .append(ellipsizedFullText)
+                            .replace(start, start + 1, getDefaultEllipsis().toString())
+                            .replace(start + 1, ellipsizedFullText.length, highLightSpannable)
+                }
             }
         } else {
             text = SpannableStringBuilder().append(content).append(highLightSpannable)

@@ -88,7 +88,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
-        getRecyclerView(view).isNestedScrollingEnabled = false
 
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

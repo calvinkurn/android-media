@@ -210,11 +210,11 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
                 analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
                 if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
-                } else {
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
+                } else {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
                 }
                 startActivity(intent)
             }

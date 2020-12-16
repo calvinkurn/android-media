@@ -169,7 +169,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.NORMAL)
-                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
+                            tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points_new, homeHeaderWalletAction.pointBalance)
                         }
                     } else {
                         tvTitleTokocash.text = TITLE
@@ -277,7 +277,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
-                        setTokopointHeaderData(sectionContent[1], mTextCouponCount)
+                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, R.dimen.sp_10)
                     }
                 } else {
                     tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints)
@@ -363,7 +363,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
-                        setTokopointHeaderData(sectionContent[1], mTextCouponCount)
+                        setTokopointHeaderData(sectionContent[1], mTextCouponCount, R.dimen.sp_10)
                     }
                 } else {
                     tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_bebasongkir)
@@ -392,13 +392,13 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         }
     }
 
-    private fun setTokopointHeaderData(sectionContentItem: SectionContentItem?, tokopointsTextView: TextView) {
+    private fun setTokopointHeaderData(sectionContentItem: SectionContentItem?, tokopointsTextView: TextView, textSize: Int = R.dimen.sp_12) {
         if (sectionContentItem != null) {
 
             //Initializing to default value to prevent stale data in case of onresume
             tokopointsTextView.background = null
             tokopointsTextView.text = null
-            tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_12))
+            tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
 
             if (sectionContentItem.tagAttributes != null && !TextUtils.isEmpty(sectionContentItem.tagAttributes.text)) {
                 if (!TextUtils.isEmpty(sectionContentItem.tagAttributes.backgroundColour) && HexValidator.validate(sectionContentItem.tagAttributes.backgroundColour)) {

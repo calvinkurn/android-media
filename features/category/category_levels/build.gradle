@@ -63,6 +63,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation project(rootProject.ext.features.discovery2)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
