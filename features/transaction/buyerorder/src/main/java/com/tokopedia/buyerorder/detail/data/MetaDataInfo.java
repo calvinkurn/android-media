@@ -60,11 +60,11 @@ public class MetaDataInfo {
     private int quantity;
     @SerializedName("total_ticket_price")
     @Expose
-    private int totalTicketPrice;
+    private long totalTicketPrice;
 
     @SerializedName("total_price")
     @Expose
-    private int totalPrice;
+    private long totalPrice;
 
     @SerializedName("entity_passengers")
     @Expose
@@ -277,11 +277,11 @@ public class MetaDataInfo {
         this.totalTicketCount = totalTicketCount;
     }
 
-    public int getTotalTicketPrice() {
+    public long getTotalTicketPrice() {
         return totalTicketPrice;
     }
 
-    public int getTotalPrice() {
+    public long getTotalPrice() {
         return totalPrice;
     }
 

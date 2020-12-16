@@ -6,7 +6,6 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
-import com.tokopedia.buyerorder.detail.data.Datum;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
@@ -234,7 +233,7 @@ public class OrderListAnalytics {
         sendGtmData(TEVENT_TICKER_CLOSE_ACTION, "");
 
     }
-    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId, int categoryType, String paymentType, String paymentStatus) {
+    public void sendThankYouEvent(int entityProductId, String entityProductName, long totalTicketPrice, int quantity, String brandName, String orderId, int categoryType, String paymentType, String paymentStatus) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();

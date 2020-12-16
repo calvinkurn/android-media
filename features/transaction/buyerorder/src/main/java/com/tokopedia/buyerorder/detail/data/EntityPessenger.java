@@ -14,13 +14,13 @@ public class EntityPessenger {
     private String helpText;
 
     @SerializedName("id")
-    private int id;
+    private long id;
 
     @SerializedName("name")
     private String name;
 
     @SerializedName("product_id")
-    private int productId;
+    private long productId;
 
     @SerializedName("required")
     private int require;
@@ -58,11 +58,11 @@ public class EntityPessenger {
         this.helpText = helpText;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -74,11 +74,11 @@ public class EntityPessenger {
         this.name = name;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
