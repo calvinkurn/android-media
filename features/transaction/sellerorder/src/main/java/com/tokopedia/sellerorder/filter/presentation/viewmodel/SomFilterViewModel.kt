@@ -123,6 +123,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
             val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
                     ?: listOf()
+            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }, onError = {
             _updateFilterSelected.postValue(Fail(it))
@@ -153,6 +154,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData = somSubFilterList
             val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
                     ?: listOf()
+            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }, onError = {
             _updateFilterSelected.postValue(Fail(it))
