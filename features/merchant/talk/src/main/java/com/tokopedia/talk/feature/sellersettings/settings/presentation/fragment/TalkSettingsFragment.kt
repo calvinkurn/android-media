@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.fragment_talk_settings.*
@@ -20,6 +23,7 @@ class TalkSettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setNavigation()
         setToolbarTitle()
+        showLabel()
     }
 
     private fun setNavigation() {
@@ -51,6 +55,16 @@ class TalkSettingsFragment : Fragment() {
     private fun goToSmartReply() {
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkSmartReplySettingsFragment()
         NavigationController.navigate(this@TalkSettingsFragment, destination)
+    }
+
+    private fun showLabel() {
+        if(!GlobalConfig.isSellerApp()) {
+            talkSettingsTemplateLabel.show()
+            talkSettingsSmartReplyLabel.show()
+            return
+        }
+        talkSettingsTemplateLabel.hide()
+        talkSettingsSmartReplyLabel.hide()
     }
 
 }

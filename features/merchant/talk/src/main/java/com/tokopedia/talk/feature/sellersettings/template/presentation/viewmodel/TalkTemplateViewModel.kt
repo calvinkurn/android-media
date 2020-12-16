@@ -40,7 +40,7 @@ class TalkTemplateViewModel @Inject constructor(
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
         }
     }
 

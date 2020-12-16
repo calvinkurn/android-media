@@ -95,6 +95,9 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     setFragmentResultWithBundle(VALUE_ADD_EDIT)
                 }
+                TalkTemplateMutationResults.DeleteTemplateFailed -> {
+                    showToaster(getString(R.string.template_delete_toaster_fail))
+                }
                 TalkTemplateMutationResults.MutationFailed -> {
                     showToaster(getString(R.string.template_list_toaster_fail))
                 }

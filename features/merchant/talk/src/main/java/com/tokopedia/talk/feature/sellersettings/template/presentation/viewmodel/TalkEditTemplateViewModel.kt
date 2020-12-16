@@ -42,7 +42,7 @@ class TalkEditTemplateViewModel @Inject constructor(
                 _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplate)
             }
         }) {
-            _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
+            _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
         }
     }
 

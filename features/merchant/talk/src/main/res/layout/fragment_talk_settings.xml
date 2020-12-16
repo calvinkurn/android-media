@@ -14,6 +14,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/talkSettingsTemplateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_label_seller_app"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/talkSettingsTemplateText"
+        app:layout_constraintBottom_toBottomOf="@id/talkSettingsTemplateText"
+        app:layout_constraintStart_toEndOf="@id/talkSettingsTemplateText"
+        app:labelType="general_light_green"/>
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/talkSettingsTemplateChevron"
         android:layout_width="wrap_content"
@@ -41,6 +53,18 @@
         android:text="@string/settings_smart_reply_item"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/talk_settings_divider" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/talkSettingsSmartReplyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_label_seller_app"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/talkSettingsSmartReplyText"
+        app:layout_constraintBottom_toBottomOf="@id/talkSettingsSmartReplyText"
+        app:layout_constraintStart_toEndOf="@id/talkSettingsSmartReplyText"
+        app:labelType="general_light_green"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/talkSettingsSmartReplyChevron"

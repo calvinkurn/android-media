@@ -108,6 +108,9 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                 TalkTemplateMutationResults.TemplateMutationSuccess -> {
                     showToaster(getString(R.string.template_list_success_add_template), false)
                 }
+                TalkTemplateMutationResults.RearrangeTemplateFailed -> {
+                    showToaster(getString(R.string.template_list_rearrange_toaster_fail), true)
+                }
                 else -> {
                     showToaster(getString(R.string.template_list_toaster_fail), true)
                 }

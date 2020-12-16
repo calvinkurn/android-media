@@ -121,6 +121,7 @@
     <string name="settings_toolbar">Pengaturan Diskusi</string>
     <string name="settings_template_item">Template Balasan</string>
     <string name="settings_smart_reply_item">Smart Reply</string>
+    <string name="settings_label_seller_app">Tokopedia Seller App</string>
     <string name="smart_reply_header">Balas otomatis pertanyaan pembeli khusus stok produk dengan fitur Smart Reply.</string>
     <string name="smart_reply_learn">Pelajari Smart Reply</string>
     <string name="smart_reply_performance_title">Performa Smart Reply</string>
@@ -153,5 +154,7 @@
     <string name="template_list_success_add_template">Yay, template diskusi berhasil disimpan!</string>
     <string name="template_list_success_delete_template">Template diskusi berhasil dihapus.</string>
     <string name="template_list_toaster_fail">Template diskusi gagal disimpan. Coba lagi, ya.</string>
+    <string name="template_list_rearrange_toaster_fail">Urutan template diskusi gagal diubah. Coba ubah lagi, ya.</string>
+    <string name="template_delete_toaster_fail">Template diskusi gagal dihapus.</string>
 
 </resources>
