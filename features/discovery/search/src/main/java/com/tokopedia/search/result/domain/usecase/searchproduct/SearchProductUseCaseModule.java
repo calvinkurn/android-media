@@ -19,6 +19,8 @@ import dagger.Module;
 import dagger.Provides;
 import rx.functions.Func1;
 
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_SEARCH_TDN;
+
 @SearchScope
 @Module(includes = {
         SearchProductMapperModule.class
@@ -33,10 +35,12 @@ public class SearchProductUseCaseModule {
             RemoteConfig remoteConfig,
             UserSessionInterface userSession
     ) {
-        // Temporarily keep 2 use cases for TDN and without TDN
-        if (true) { // TODO:: Remote Config
-            TopAdsRepository topAdsRepository = new TopAdsRepository();
-            TopAdsImageViewUseCase topAdsImageViewUseCase = new TopAdsImageViewUseCase(userSession.getUserId(), topAdsRepository);
+        // Temporarily keep 2 search use case for TDN and without TDN
+        if (remoteConfig.getBoolean(ENABLE_SEARCH_TDN)) {
+            TopAdsImageViewUseCase topAdsImageViewUseCase = new TopAdsImageViewUseCase(
+                    userSession.getUserId(),
+                    new TopAdsRepository()
+            );
 
             return new SearchProductTDNFirstPageGqlUseCase(
                     new GraphqlUseCase(),

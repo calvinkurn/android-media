@@ -20,10 +20,8 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import rx.Emitter
 import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
 import rx.functions.Func1
@@ -64,38 +62,9 @@ class SearchProductTDNFirstPageGqlUseCase(
                 .createObservable(RequestParams.EMPTY)
                 .map(searchProductModelMapper)
 
-        val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(requestParams.parameters)
+        val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
 
-        return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable) { searchProductModel, topAdsImageViewModelList ->
-            searchProductModel?.setTopAdsImageViewModelList(topAdsImageViewModelList)
-            searchProductModel
-        }
-    }
-
-    private fun createTopAdsImageViewModelObservable(params: Map<String, Any>): Observable<List<TopAdsImageViewModel>> {
-        return Observable.create({ emitter ->
-            try {
-                launch {
-                    // TODO:: Fix this getQueryMap!!
-                    val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
-                                    params[SearchApiConst.Q]?.toString() ?: "", "search", "", 1, 3, ""
-                            )
-                    )
-                    emitter.onNext(topAdsImageViewModelList)
-                    emitter.onCompleted()
-                }
-            }
-            catch (exception: Throwable) {
-                emitter.onNext(listOf())
-            }
-        }, BUFFER)
-    }
-
-    override fun unsubscribe() {
-        super.unsubscribe()
-
-        if (isActive && !masterJob.isCancelled) masterJob.children.map { it.cancel() }
+        return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
     }
 
     private fun getQueryFromParameters(parameters: Map<String, Any>): String {
@@ -147,4 +116,47 @@ class SearchProductTDNFirstPageGqlUseCase(
                     SearchInspirationWidgetModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
+
+    private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
+        return Observable.create({ emitter ->
+            try {
+                launch { emitTopAdsImageViewData(emitter, query) }
+            }
+            catch (exception: Throwable) {
+                emitter.onNext(listOf())
+            }
+        }, BUFFER)
+    }
+
+    private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageViewModel>>, query: String) {
+        withContext(coroutineDispatchers.io) {
+            try {
+                val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
+                        topAdsImageViewUseCase.getQueryMapSearch(query)
+                )
+                emitter.onNext(topAdsImageViewModelList)
+                emitter.onCompleted()
+            }
+            catch (throwable: Throwable) {
+                emitter.onNext(listOf())
+            }
+        }
+    }
+
+    private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
+            getQueryMap(query, "2", "", 1, 5, "")
+
+    private fun setTopAdsImageViewModelList(
+            searchProductModel: SearchProductModel?,
+            topAdsImageViewModelList: List<TopAdsImageViewModel>
+    ): SearchProductModel? {
+        searchProductModel?.setTopAdsImageViewModelList(topAdsImageViewModelList)
+        return searchProductModel
+    }
+
+    override fun unsubscribe() {
+        super.unsubscribe()
+
+        if (isActive && !masterJob.isCancelled) masterJob.children.map { it.cancel() }
+    }
 }
