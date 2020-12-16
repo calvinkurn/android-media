@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorder
 
+import android.app.Application
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -34,8 +36,8 @@ class UohRobot {
         waitForData()
     }
 
-    fun login(rule: ActivityTestRule<UohListActivity>) {
-        InstrumentationAuthHelper.loginToAnUser(rule.activity.application)
+    fun login(context: Context) {
+        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application)
         waitForData()
     }
 
