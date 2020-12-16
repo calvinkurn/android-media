@@ -37,8 +37,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
 
-    private val productCountMutableLiveData = MutableLiveData<Int?>()
-    val productCountLiveData: LiveData<Int?>
+    private val productCountMutableLiveData = MutableLiveData<String?>()
+    val productCountLiveData: LiveData<String?>
         get() = productCountMutableLiveData
 
     override val coroutineContext: CoroutineContext
@@ -184,12 +184,17 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return UserSession(application).userId
     }
 
-    fun filterProductsCount(mapParameter: Map<String, String>){
-        launchCatchError(block = {
-            productCountMutableLiveData.value = quickFilterGQLRepository.getQuickFilterProductCountData(components.id,
-                    components.pageEndPoint, mapParameter, getUserId()).component?.compAdditionalInfo?.productCount
-        }, onError = {
-            it.printStackTrace()
-        })
+    fun filterProductsCount(mapParameter: Map<String, String>) {
+        components.properties?.targetId?.let {
+            val targetList = it.split(",")
+            if (targetList.isNotEmpty()) {
+                launchCatchError(block = {
+                    productCountMutableLiveData.value = quickFilterGQLRepository.getQuickFilterProductCountData(targetList.first(),
+                            components.pageEndPoint, mapParameter, getUserId()).component?.compAdditionalInfo?.productCount ?: ""
+                }, onError = {
+                    it.printStackTrace()
+                })
+            }
+        }
     }
 }

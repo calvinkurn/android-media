@@ -7,5 +7,5 @@ data class ComponentAdditionalInfo(
         @SerializedName("enabled")
         val enabled: Boolean,
         @SerializedName("product_count")
-        val productCount: Int,
+        val productCount: String,
 )

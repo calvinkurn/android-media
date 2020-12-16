@@ -42,8 +42,8 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                 }
             })
             quickFilterViewModel.productCountLiveData.observe(it, { count ->
-                if (count != null && count != 0) {
-                    sortFilterBottomSheet.setResultCountText("$count")
+                if (!count.isNullOrEmpty()) {
+                    sortFilterBottomSheet.setResultCountText(count)
                 } else {
                     sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
                 }
