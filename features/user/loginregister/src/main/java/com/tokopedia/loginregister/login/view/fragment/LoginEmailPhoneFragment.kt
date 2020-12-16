@@ -774,6 +774,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 userData.userId = userSession.userId
                 userData.email = userSession.email
                 userData.phoneNumber = userSession.phoneNumber
+                userData.medium = userSession.loginMethod
 
                 //Identity Event
                 LinkerManager.getInstance().sendEvent(
