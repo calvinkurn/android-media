@@ -59,4 +59,5 @@
     <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
     <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
+    <string name="discovery_top_to_bottom">Top to bottom</string>
 </resources>

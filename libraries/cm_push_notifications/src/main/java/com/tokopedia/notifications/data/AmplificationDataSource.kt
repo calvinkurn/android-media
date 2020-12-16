@@ -1,11 +1,13 @@
 package com.tokopedia.notifications.data
 
 import android.app.Application
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents.INAPP_DELIVERED
 import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendAmplificationInAppEvent
 import com.tokopedia.notifications.data.model.Amplification
@@ -15,6 +17,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.utils.NextFetchCacheManager
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
@@ -86,7 +89,10 @@ object AmplificationDataSource {
 
                     // send amplification tracker
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                }
             }
         }
     }

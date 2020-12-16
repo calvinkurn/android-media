@@ -56,7 +56,6 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         super.onCreate(savedInstanceState)
 
         initInjector()
-        intent?.handleExtra()
 
         //draw background without overdraw GPU
         window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
@@ -94,18 +93,6 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                 }
             }
         })
-    }
-
-    /* This Method is use to tracking Action click when user click TelcoProduct
-   */
-
-    private fun Intent.handleExtra() {
-        if (intent.data != null) {
-            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            if (trackingClick != null) {
-                Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
