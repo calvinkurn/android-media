@@ -142,7 +142,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     private fun initView() {
         initInjector()
-
         setContent(content, highlight)
 
         if (leftImage != null) {
@@ -214,16 +213,17 @@ class StickyLoginView : FrameLayout, CoroutineScope {
     fun loadContent(page: StickyLoginConstant.Page, lifecycleOwner: LifecycleOwner) {
         this.page = page
 
-        if (!::remoteConfig.isInitialized) {
-            remoteConfig = FirebaseRemoteConfigImpl(context)
-        }
-
         if (!::userSession.isInitialized) {
             userSession = UserSession(context)
         }
 
         if (userSession.isLoggedIn) {
             hide()
+            return
+        }
+
+        if (!::remoteConfig.isInitialized) {
+            remoteConfig = FirebaseRemoteConfigImpl(context)
         }
 
         if (isLoginReminder() && isCanShowLoginReminder(page) && !isOnDelay(page)) {
@@ -384,7 +384,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
-        textContent.setContent(TEXT_RE_LOGIN + name)
+        textContent.setContent("$TEXT_RE_LOGIN $name")
         textContent.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
 
         profilePicture?.let {
@@ -409,7 +409,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
 
-        private const val TEXT_RE_LOGIN = "Masuk sebagai "
+        private const val TEXT_RE_LOGIN = "Masuk sebagai"
 
         private val REGEX_HTML_TAG = "<[^>]+>".toRegex()
     }

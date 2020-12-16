@@ -38,9 +38,9 @@ class EllipsizedTextView @JvmOverloads constructor(
         setContent(content, "")
     }
 
-    fun setContent(content: String, highLight: String) {
-        this.content = content
-        this.highLight = highLight
+    fun setContent(_content: String, _highLight: String) {
+        content = _content
+        highLight = _highLight
         highLightSpannable = SpannableString(highLight)
         highLightSpannable.setSpan(ForegroundColorSpan(highLightColor), 0, highLight.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         requestLayout()
@@ -71,7 +71,9 @@ class EllipsizedTextView @JvmOverloads constructor(
                 }
             }
         } else {
-            text = SpannableStringBuilder().append(content).append(highLightSpannable)
+            if (content.isNotEmpty()) {
+                text = SpannableStringBuilder().append(content).append(highLightSpannable)
+            }
         }
     }
 
