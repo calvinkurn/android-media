@@ -1,6 +1,7 @@
 package com.tokopedia.utils.permission
 
 
+import android.content.ContentProvider
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -15,11 +16,12 @@ object SlicePermission {
     const val SELLER_ORDER_AUTHORITY = "com.tokopedia.seller.action.slices"
 
     @JvmStatic
-    fun initPermission(context: Context, authority: String){
+    fun initPermission(context: Context, authority: String) {
         grantAssistantPermissions(context, authority)
     }
 
     private fun grantAssistantPermissions(context: Context, authority: String) {
+        val provider = context.contentResolver.acquireContentProviderClient(authority)
         getAssistantPackage(context)?.let { assistantPackage ->
             val sliceProviderUri = Uri.Builder()
                     .scheme(ContentResolver.SCHEME_CONTENT)
