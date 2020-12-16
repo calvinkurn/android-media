@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
@@ -64,7 +63,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             }
 
             view.label.text = it.data.adStatusDesc
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
             view.product_name.text = it.data.productName
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked

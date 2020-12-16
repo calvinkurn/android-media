@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
@@ -21,7 +20,7 @@ class AutoAdsItemsItemViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAd
 
     override fun bind(item: AutoAdsItemsItemViewModel, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
             view.product_name.text = it.data.productName
             view.img_menu.visibility = View.GONE
             view.check_box.visibility = View.GONE

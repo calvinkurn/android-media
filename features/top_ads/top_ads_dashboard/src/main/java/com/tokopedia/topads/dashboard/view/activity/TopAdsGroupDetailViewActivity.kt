@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -49,10 +50,14 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.setCustomText
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
+import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.header_toolbar
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.tab_layout
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
@@ -130,6 +135,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
         tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
         tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
+        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
@@ -397,18 +403,13 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     fun setProductCount(size: Int) {
-        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCustomText(String.format(getString(R.string.topads_dash_product_count), size))
-//        detailPagerAdapter.setTitleProduct(String.format(getString(R.string.topads_dash_product_count), size))
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
-
     fun setKeywordCount(size: Int) {
-        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCustomText(String.format(getString(R.string.topads_dash_keyword_count), size))
-//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
-
     fun setNegKeywordCount(size: Int) {
-        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCustomText(String.format(getString(R.string.topads_dash_neg_key_count), size))
-//        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

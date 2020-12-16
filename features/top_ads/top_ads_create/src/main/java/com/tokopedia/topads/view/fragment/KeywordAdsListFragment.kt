@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -34,7 +35,16 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.emptyLayout
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.headlineList
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.keyword_list
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.selected_info
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.tip_btn
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.txtRecommendation
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_empty_tip.view.*
 import javax.inject.Inject
 
 /**
@@ -88,6 +98,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
+        emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
         keywordSelectedAdapter = KeywordSelectedAdapter(::onItemUnchecked)
 

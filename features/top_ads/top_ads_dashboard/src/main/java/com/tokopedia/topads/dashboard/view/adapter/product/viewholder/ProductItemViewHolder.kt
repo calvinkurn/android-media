@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter.product.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
@@ -41,7 +40,7 @@ class ProductItemViewHolder(val view: View,
                 view.btn_switch.isChecked = it.data.adStatus == STATUS_ACTIVE || it.data.adStatus == STATUS_TIDAK_TAMPIL
             else
                 view.btn_switch.isChecked = item.valueChanged
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
             view.product_name.text = it.data.productName
             if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression

@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -35,6 +34,7 @@ import com.tokopedia.topads.edit.utils.Constants.PRICE_BID
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_edit_activity_edit_form_ad.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

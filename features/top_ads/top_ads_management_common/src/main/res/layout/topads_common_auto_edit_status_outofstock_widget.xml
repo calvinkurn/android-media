@@ -60,7 +60,7 @@
         android:layout_marginRight="@dimen/dp_16" />
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +69,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/btn_switch"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_common_setting" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

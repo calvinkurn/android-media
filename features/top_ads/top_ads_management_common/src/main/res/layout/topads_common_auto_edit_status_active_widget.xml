@@ -51,16 +51,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_18"
-        android:layout_marginRight="@dimen/dp_18"
-        android:progress="0"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginRight="18dp"
+        app:unify_progress_bar_value="50"
         app:layout_constraintEnd_toStartOf="@id/btn_switch"
         app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
         app:layout_constraintTop_toBottomOf="@id/daily_usage_status" />

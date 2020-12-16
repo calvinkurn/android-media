@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -40,6 +41,9 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.*
+import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.btn_switch
+import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.setting
+import kotlinx.android.synthetic.main.topads_common_auto_edit_status_outofcredit_widget.view.*
 import javax.inject.Inject
 
 /**
@@ -223,15 +227,24 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun setSwitchAction(view: View) {
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
+        setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
         switch.isChecked = true
         when (entryPoint) {
             ENTRY_FROM_EDIT_PAGE -> {
                 setting.visibility = View.GONE
                 switch.visibility = View.VISIBLE
                 switch.setOnClickListener {
-                    val manual = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
-                    manual.show()
-                    manual.dismissed = { switch.isChecked = true }
+                    val manual = ManualAdsConfirmationCommonSheet.newInstance()
+                    manual.show((view.context as FragmentActivity).supportFragmentManager, "")
+                    manual.manualClick = {
+                        widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
+                                TOGGLE_OFF,
+                                CHANNEL,
+                                currentBudget,
+                                userSession.shopId.toInt(),
+                                SOURCE))
+                        )
+                    }
                 }
             }
             ENTRY_FROM_DETAIL_SHEET -> {
@@ -309,20 +322,16 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         view.let { it ->
             imgBg.background = drawable
             it.progress_status1.text = "Rp $dailyUsage"
-            it.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), currentBudget)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                progress_bar.setProgress(dailyUsage, true)
-            } else {
-                progress_bar.progress = dailyUsage
-            }
+            it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
+            it.progress_bar.setValue(dailyUsage, true)
             it.btn_switch.isChecked = true
             when (entryPoint) {
                 ENTRY_FROM_EDIT_PAGE -> {
                     it.setting.visibility = View.GONE
                     it.btn_switch.visibility = View.VISIBLE
                     it.btn_switch.setOnClickListener {
-                        val man = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
-                        man.show()
+                        val man = ManualAdsConfirmationCommonSheet.newInstance()
+                        man.show((view.context as FragmentActivity).supportFragmentManager, "")
                         man.dismissed = { it.btn_switch.isChecked = true }
                     }
                 }
@@ -345,16 +354,6 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
         (context as BaseActivity).startActivityForResult(intent, AUTO_ADS_DISABLED)
-    }
-
-    private fun switchToManual() {
-        widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                TOGGLE_OFF,
-                CHANNEL,
-                currentBudget,
-                userSession.shopId.toInt(),
-                SOURCE))
-        )
     }
 
     fun loadData(fromEdit: Int) {

@@ -94,7 +94,7 @@
             app:layout_constraintStart_toEndOf="@id/img_delete"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_delete"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
