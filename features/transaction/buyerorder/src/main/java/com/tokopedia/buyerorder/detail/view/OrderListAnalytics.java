@@ -6,7 +6,6 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
-import com.tokopedia.buyerorder.detail.data.Datum;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;

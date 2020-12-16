@@ -787,7 +787,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            int productId = 0;
+            long productId = 0;
             int quantity = 0;
             int shopId = 0;
             String notes = "";
