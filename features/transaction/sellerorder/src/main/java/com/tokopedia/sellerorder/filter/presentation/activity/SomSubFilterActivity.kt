@@ -164,12 +164,12 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                             somSubFilterList = subFilterRadioButtonAdapter?.getSubFilterList()
                         }
                         SomConsts.FILTER_TYPE_ORDER -> {
-                            somListGetOrderListParam.orderTypeList = emptyList()
+                            somListGetOrderListParam.orderTypeList = mutableSetOf()
                             subFilterCheckboxAdapter?.resetCheckboxFilter()
                             somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
                         }
                         SomConsts.FILTER_COURIER -> {
-                            somListGetOrderListParam.shippingList = emptyList()
+                            somListGetOrderListParam.shippingList = mutableSetOf()
                             subFilterCheckboxAdapter?.resetCheckboxFilter()
                             somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
                         }
@@ -197,10 +197,10 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     override fun onCheckboxItemClicked(idList: List<Int>, position: Int) {
         when (idFilter) {
             SomConsts.FILTER_TYPE_ORDER -> {
-                somListGetOrderListParam.orderTypeList = idList
+                somListGetOrderListParam.orderTypeList.addAll(idList)
             }
             SomConsts.FILTER_COURIER -> {
-                somListGetOrderListParam.shippingList = idList
+                somListGetOrderListParam.shippingList.addAll(idList)
             }
         }
         setToggleResetSubFilter()

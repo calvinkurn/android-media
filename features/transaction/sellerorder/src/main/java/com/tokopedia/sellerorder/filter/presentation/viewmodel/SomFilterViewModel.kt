@@ -162,8 +162,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     fun updateParamSom(idFilter: String) {
         launchCatchError(block = {
             val idOneSelect = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.find { it.isSelected }?.id
-            val idManySelect = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.filter { it.isSelected }?.map { it.id }
-                    ?: listOf()
+            val idManySelect = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.filter { it.isSelected }?.map { it.id }?.toMutableSet()
+                    ?: mutableSetOf()
             when (idFilter) {
                 FILTER_SORT -> {
                     somListGetOrderListParam.sortBy = idOneSelect ?: 0
@@ -205,10 +205,10 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                         somListGetOrderListParam.statusList = emptyList()
                     }
                     FILTER_TYPE_ORDER -> {
-                        somListGetOrderListParam.orderTypeList = emptyList()
+                        somListGetOrderListParam.orderTypeList = mutableSetOf()
                     }
                     FILTER_COURIER -> {
-                        somListGetOrderListParam.shippingList = emptyList()
+                        somListGetOrderListParam.shippingList = mutableSetOf()
                     }
                     FILTER_LABEL -> {
                         somListGetOrderListParam.isShippingPrinted = 0
