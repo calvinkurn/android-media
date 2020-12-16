@@ -42,7 +42,7 @@ object TrackingConstant {
         const val IMPRESSION_LOADING_STATE = "impression loading state"
         const val IMPRESSION_NO_LOGIN_STATE = "impression no login state"
         const val IMPRESSION_NO_CONNECTION_STATE = "impression no connection state"
-        const val IMPRESSION_ACTIVE_NEW_ORDER = "mpression active new order"
+        const val IMPRESSION_ACTIVE_NEW_ORDER = "impression active new order"
         const val IMPRESSION_ACTIVE_READY_SHIPPING = "impression active ready shipping"
         const val IMPRESSION_NEW_ORDER_SMALL_ORDER = "impression active 4x2 order widget - pesanan baru"
         const val IMPRESSION_READY_TO_SHIP_SMALL_ORDER = "impression active 4x2 order widget - siap dikirim"
