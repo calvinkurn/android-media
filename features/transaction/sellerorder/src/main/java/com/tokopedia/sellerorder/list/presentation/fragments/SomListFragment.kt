@@ -1509,10 +1509,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun setInitialOrderListParams() {
         val orderTypes = if (filterOrderType == 0) {
-            emptyList()
+            mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            listOf(filterOrderType)
+            mutableSetOf(filterOrderType)
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)
