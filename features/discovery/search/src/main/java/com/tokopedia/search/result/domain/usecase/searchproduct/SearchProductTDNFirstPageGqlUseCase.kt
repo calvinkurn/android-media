@@ -14,6 +14,7 @@ import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductFir
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductFirstPageGqlUseCase.Companion.QUICK_FILTER_QUERY
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductFirstPageGqlUseCase.Companion.SEARCH_INSPIRATION_CAROUSEL_QUERY
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductFirstPageGqlUseCase.Companion.SEARCH_INSPIRATION_WIDGET_QUERY
+import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -32,7 +33,8 @@ class SearchProductTDNFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
         private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val coroutineDispatchers: CoroutineDispatchers
+        private val coroutineDispatchers: CoroutineDispatchers,
+        private val searchLogger: SearchLogger
 ): UseCase<SearchProductModel>(), CoroutineScope {
 
     private val masterJob = SupervisorJob()
@@ -122,7 +124,8 @@ class SearchProductTDNFirstPageGqlUseCase(
             try {
                 launch { emitTopAdsImageViewData(emitter, query) }
             }
-            catch (exception: Throwable) {
+            catch (throwable: Throwable) {
+                searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
         }, BUFFER)
@@ -138,6 +141,7 @@ class SearchProductTDNFirstPageGqlUseCase(
                 emitter.onCompleted()
             }
             catch (throwable: Throwable) {
+                searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
         }

@@ -8,6 +8,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
 import com.tokopedia.topads.sdk.repository.TopAdsRepository;
 import com.tokopedia.usecase.UseCase;
@@ -46,7 +47,8 @@ public class SearchProductUseCaseModule {
                     new GraphqlUseCase(),
                     searchProductModelMapper,
                     topAdsImageViewUseCase,
-                    CoroutineDispatchersProvider.INSTANCE
+                    CoroutineDispatchersProvider.INSTANCE,
+                    new SearchLogger()
             );
         }
 
