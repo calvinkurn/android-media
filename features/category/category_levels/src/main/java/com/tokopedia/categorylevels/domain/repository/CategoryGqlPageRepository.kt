@@ -35,7 +35,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         origin = AdultManager.ORIGIN_CATEGORY_PAGE,
                         share = Share(
                                 enabled = true,
-                                description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
+                                description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${data.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
                                 url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL + "://", DOMAIN_URL_LIVE), title = "", image = "")),
                 title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null))
