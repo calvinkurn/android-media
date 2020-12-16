@@ -3,8 +3,8 @@ package com.tokopedia.sessioncommon.data.admin
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class AdminInfoResponse(
+data class AdminTypeResponse(
     @Expose
-    @SerializedName("getAdminInfo")
+    @SerializedName("getAdminType")
     val response: AdminDataResponse
 )

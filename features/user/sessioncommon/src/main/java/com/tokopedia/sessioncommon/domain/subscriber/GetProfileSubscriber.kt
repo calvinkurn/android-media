@@ -3,8 +3,9 @@ package com.tokopedia.sessioncommon.domain.subscriber
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
@@ -14,60 +15,64 @@ import rx.Subscriber
 class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
-                           val getAdminInfoUseCase: GetAdminInfoUseCase? = null,
+                           val getAdminTypeUseCase: GetAdminTypeUseCase? = null,
                            val showLocationAdminPopUp: (() -> Unit)? = null,
-                           val showLocationAdminError: ((e: Throwable) -> Unit)? = null,
+                           val showErrorGetAdminType: ((e: Throwable) -> Unit)? = null,
                            val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
-        if(GlobalConfig.isSellerApp()) {
-            getLocationAdmin(response)
-        } else {
-            onSuccessGetUserProfile(response)
-        }
+        onSuccessGetUserProfile(response)
     }
 
     private fun onSuccessGetUserProfile(response: GraphqlResponse) {
-        val pojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
+        val profile = response.getData<ProfilePojo>(ProfilePojo::class.java)
         val errors = response.getError(ProfilePojo::class.java)
-        if (pojo.profileInfo.userId.isNotBlank()
-                && pojo.profileInfo.userId!= "0") {
-            saveProfileData(pojo)
-            onSuccessGetProfile(pojo)
-        } else if (errors.isNotEmpty()){
-            onErrorGetProfile(MessageErrorException(errors[0].message))
-        } else {
-            onErrorGetProfile(Throwable())
-        }
-        onFinished.invoke()
-    }
-
-    private fun getLocationAdmin(response: GraphqlResponse) {
-        val error = response.getError(ProfilePojo::class.java)
+        val isProfileValid = profile.profileInfo.userId.isNotBlank()
+            && profile.profileInfo.userId != "0"
+        val shouldGetAdminType = getAdminTypeUseCase != null
 
         when {
-            error.isNullOrEmpty() -> {
-                val profile = response.getData<ProfilePojo>(ProfilePojo::class.java)
-                val shopId = profile.shopInfo.shopData.shopId.toIntOrNull() ?: 0
-
-                if(getAdminInfoUseCase != null) {
-                    getAdminInfoUseCase.execute(shopId, GetAdminInfoSubscriber(
-                        userSession,
-                        { onSuccessGetUserProfile(response) },
-                        showLocationAdminPopUp,
-                        showLocationAdminError
-                    ))
-                } else {
-                    onSuccessGetUserProfile(response)
-                }
+            isProfileValid && shouldGetAdminType -> {
+                getAdminType(profile)
             }
-            error.isNotEmpty() -> {
-                val message = error.firstOrNull()?.message.orEmpty()
-                onErrorGetProfile(MessageErrorException(message))
+            isProfileValid -> {
+                saveProfileData(profile)
+                onSuccessGetProfile(profile)
+            }
+            errors.isNotEmpty() -> {
+                val message = errors.firstOrNull()?.message.orEmpty()
+                val exception = MessageErrorException(message)
+                onErrorGetProfile(exception)
             }
             else -> onErrorGetProfile(Throwable())
         }
+
+        onFinished.invoke()
+    }
+
+    private fun getAdminType(profile: ProfilePojo) {
+        getAdminTypeUseCase?.execute(GetAdminTypeSubscriber(
+            userSession,
+            onSuccessGetAdminType(profile),
+            onErrorGetAdminType()
+        ))
+    }
+
+    private fun onSuccessGetAdminType(profile: ProfilePojo): (AdminData) -> Unit {
+        return {
+            val isLocationAdmin = it.detail.roleType.isLocationAdmin
+            if(GlobalConfig.isSellerApp() && isLocationAdmin) {
+                showLocationAdminPopUp?.invoke()
+            } else {
+                saveProfileData(profile)
+                onSuccessGetProfile(profile)
+            }
+        }
+    }
+
+    private fun onErrorGetAdminType(): (Throwable) -> Unit = {
+        showErrorGetAdminType?.invoke(it)
     }
 
     private fun saveProfileData(pojo: ProfilePojo?) {
