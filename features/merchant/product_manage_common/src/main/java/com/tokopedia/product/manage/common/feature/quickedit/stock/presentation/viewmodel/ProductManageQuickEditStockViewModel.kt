@@ -50,7 +50,7 @@ class ProductManageQuickEditStockViewModel @Inject constructor(
         val tickerType = when {
             multiLocationShop && canEditStock -> MultiLocationTicker
             !multiLocationShop && !canEditStock -> SingleLocationNoAccessTicker
-            multiLocationShop && !canEditStock -> EmptyStockTicker
+            multiLocationShop && !canEditStock -> MultiLocationNoAccessTicker
             else -> NoTicker
         }
         _stockTicker.value = tickerType

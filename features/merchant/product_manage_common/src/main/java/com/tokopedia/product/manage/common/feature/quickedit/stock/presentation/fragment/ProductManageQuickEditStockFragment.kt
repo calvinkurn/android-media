@@ -29,13 +29,14 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewMo
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import java.util.*
 import javax.inject.Inject
@@ -353,13 +354,10 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     private fun observeStockTicker() {
         observe(viewModel.stockTicker) {
             if(it.shouldShow()) {
-                val resourceId = when(it) {
-                    is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
-                    is EmptyStockTicker -> R.string.product_manage_multi_location_stock_no_access_description
-                    else -> R.string.product_manage_stock_ticker_description
-                }
-                val description = context?.getString(resourceId).orEmpty()
-                (tickerStockLayout as? Ticker)?.setTextDescription(description)
+                val ticker = tickerStockLayout as? Ticker
+                val tickerList = ProductManageTickerMapper.mapToTickerData(context, listOf(it))
+                val adapter = TickerPagerAdapter(context, tickerList)
+                ticker?.addPagerView(adapter, tickerList)
                 tickerStockLayout.show()
             } else {
                 tickerStockLayout.hide()
