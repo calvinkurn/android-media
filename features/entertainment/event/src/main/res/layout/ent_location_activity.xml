@@ -9,11 +9,11 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:elevation="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="0dp"
+        android:elevation="@dimen/unify_space_0"
+        app:contentInsetLeft="@dimen/unify_space_0"
+        app:contentInsetStart="@dimen/unify_space_0"
+        app:contentInsetStartWithNavigation="@dimen/unify_space_0"
+        app:elevation="@dimen/unify_space_0"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 

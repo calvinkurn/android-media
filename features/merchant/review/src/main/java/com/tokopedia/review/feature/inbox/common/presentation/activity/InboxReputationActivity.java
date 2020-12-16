@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
@@ -22,11 +21,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.review.R;
+import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener;
+import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant;
@@ -46,12 +50,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener {
+public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
@@ -72,7 +77,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private ViewPager viewPager;
     private TabsUnify indicator;
     private PagerAdapter sectionAdapter;
-    private Toolbar toolbar;
+    private HeaderUnify toolbar;
 
     private UserSessionInterface userSession;
 
@@ -81,6 +86,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
+
+    private PageLoadTimePerformanceInterface pageLoadTimePerformance;
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxReputationActivity.class);
@@ -99,6 +106,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab));
             finish();
         }
+        startPerformanceMonitoring();
         setContentView(R.layout.activity_inbox_reputation);
         setupStatusBar();
         clearCacheIfFromNotification();
@@ -109,9 +117,9 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private void initView() {
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
+        toolbar = findViewById(R.id.headerInboxReputation);
         indicator.getUnifyTabLayout().clearOnTabSelectedListeners();
-        toolbar = findViewById(R.id.toolbar);
-
+        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifycomponents.R.color.Unify_N0));
         setupToolbar();
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();
@@ -171,7 +179,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
-        if(goToBuyerReview) {
+        if (goToBuyerReview) {
             viewPager.setCurrentItem(TAB_BUYER_REVIEW);
         }
 
@@ -283,18 +291,18 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(this.getTitle());
-        }
+        toolbar.setTitle(getString(R.string.title_activity_reputation_review));
     }
 
     private void setupStatusBar() {
+       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 
@@ -312,5 +320,89 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void updateTickerTitle(@NotNull String title) {
         tickerTitle = title;
+    }
+
+    @Override
+    public void startPerformanceMonitoring() {
+        if(GlobalConfig.isSellerApp()) {
+            pageLoadTimePerformance = new PageLoadTimePerformanceCallback(
+                    ReviewConstants.RATING_PRODUCT_PLT_PREPARE_METRICS,
+                    ReviewConstants.RATING_PRODUCT_PLT_NETWORK_METRICS,
+                    ReviewConstants.RATING_PRODUCT_PLT_RENDER_METRICS,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null
+            );
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.startMonitoring(ReviewConstants.RATING_PRODUCT_TRACE);
+                pageLoadTimePerformance.startPreparePagePerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void stopPerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.stopMonitoring();
+                pageLoadTimePerformance = null;
+            }
+        }
+    }
+
+    @Override
+    public void startPreparePagePerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.startPreparePagePerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void stopPreparePagePerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.stopPreparePagePerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void startNetworkRequestPerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.startNetworkRequestPerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void stopNetworkRequestPerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.stopNetworkRequestPerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void startRenderPerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.startRenderPerformanceMonitoring();
+            }
+        }
+    }
+
+    @Override
+    public void stopRenderPerformanceMonitoring() {
+        if (GlobalConfig.isSellerApp()) {
+            if(pageLoadTimePerformance != null) {
+                pageLoadTimePerformance.stopRenderPerformanceMonitoring();
+            }
+        }
     }
 }

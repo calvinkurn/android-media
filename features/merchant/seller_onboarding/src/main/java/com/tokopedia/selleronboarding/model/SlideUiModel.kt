@@ -1,6 +1,5 @@
 package com.tokopedia.selleronboarding.model
 
-import androidx.annotation.DrawableRes
 import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
@@ -9,7 +8,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class SlideUiModel(
         val headerText: String,
-        @DrawableRes val vectorDrawableRes: Int,
-        @DrawableRes val pngDrawableRes: Int,
+        val drawableUrl: String,
         val impressHolder: ImpressHolder = ImpressHolder()
 )
