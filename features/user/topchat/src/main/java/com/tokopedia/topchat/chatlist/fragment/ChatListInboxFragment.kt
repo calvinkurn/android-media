@@ -364,6 +364,11 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
             }
         })
+        chatItemListViewModel.isWhitelistTopBot.observe(viewLifecycleOwner,
+                Observer { isWhiteListTopBot ->
+                    chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
+                }
+        )
     }
 
     private fun setupWebSocketObserver() {

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter
 
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,6 +20,7 @@ class ChatFilterAdapter constructor(
 
     private val defaultFilter = ChatFilterUiModel()
     private var selectedFilter = defaultFilter
+    private val handler = Handler()
 
     fun reset() {
         selectedFilter = defaultFilter
@@ -60,6 +62,18 @@ class ChatFilterAdapter constructor(
             selectedFilter = element
         }
         filterListener?.onFilterChanged(selectedFilter.id)
+    }
+
+    fun hasTopBotFilter(): Boolean {
+        return visitables.size > 2
+    }
+
+    fun addTopBotFilter(topBotFilter: ChatFilterUiModel) {
+        handler.post {
+            val index= visitables.size
+            visitables.add(topBotFilter)
+            notifyItemInserted(index)
+        }
     }
 
 }

@@ -91,6 +91,10 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
+    private val _isWhitelistTopBot = MutableLiveData<Boolean>()
+    val isWhitelistTopBot: LiveData<Boolean>
+        get() = _isWhitelistTopBot
+
     val chatListHasNext: Boolean get() = getChatListUseCase.hasNext
     val pinnedMsgId: HashSet<String> = HashSet()
     val unpinnedMsgId: HashSet<String> = HashSet()
@@ -245,6 +249,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun onSuccessLoadWhiteList(chatWhitelistFeatureResponse: ChatWhitelistFeatureResponse) {
+        _isWhitelistTopBot.value = chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist
         if (chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist) {
             arrayFilterParam.add(PARAM_FILTER_TOPBOT)
         }

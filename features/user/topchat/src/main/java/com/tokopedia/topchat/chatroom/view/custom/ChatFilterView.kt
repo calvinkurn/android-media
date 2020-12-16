@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatroom.view.adapter.ChatFilterAdapter
@@ -18,12 +19,13 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 
 class ChatFilterView : LinearLayout {
 
+    private var isWhiteListTopBot: Boolean = false
     private var rvFilter: RecyclerView? = null
     private var settingBtn: ImageView? = null
     private var isSeller = false
     private var rvFilterAdapter: ChatFilterAdapter? = null
 
-    private val sellerFilter = listOf(
+    private val sellerFilter = arrayListOf(
             ChatFilterUiModel(R.string.filter_chat_unread, PARAM_FILTER_UNREAD),
             ChatFilterUiModel(R.string.filter_chat_unreplied, PARAM_FILTER_UNREPLIED)
     )
@@ -119,6 +121,21 @@ class ChatFilterView : LinearLayout {
     fun onRoleChanged(isSeller: Boolean) {
         this.isSeller = isSeller
         initFilterData()
+    }
+
+    fun updateIsWhiteListTopBot(whiteListTopBot: Boolean) {
+        isWhiteListTopBot = whiteListTopBot
+        val topBotFilter = ChatFilterUiModel(R.string.filter_chat_smart_reply, PARAM_FILTER_TOPBOT)
+        if (sellerFilter.size <= 2) {
+            sellerFilter.add(topBotFilter)
+        }
+        updateFilterTopBotSeller(topBotFilter)
+    }
+
+    private fun updateFilterTopBotSeller(topBotFilter: ChatFilterUiModel) {
+        if (isSeller && rvFilterAdapter?.hasTopBotFilter() == false) {
+            rvFilterAdapter?.addTopBotFilter(topBotFilter)
+        }
     }
 
 }

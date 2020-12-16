@@ -106,12 +106,12 @@ yang ditemukan</string>
     <string name="title_official">Official</string>
     <string name="title_template_chat">Template Chat</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="menu_chat_search">Pencarian</string>
     <string name="search_chat_hint">Cari di Chat</string>
+    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
 
     <string name="filter_chat_all">Semua</string>
     <string name="filter_chat_unread">Belum Dibaca</string>
@@ -164,7 +164,6 @@ yang ditemukan</string>
     <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
     <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
-    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
     <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
     <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
