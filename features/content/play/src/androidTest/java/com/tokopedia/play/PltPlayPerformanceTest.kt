@@ -32,25 +32,24 @@ class PltPlayPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-
-    private val idlingResource: IdlingResource by lazy {
-        object : IdlingResource {
-            override fun getName(): String = "prepare"
-
-            private var callback: IdlingResource.ResourceCallback? = null
-
-            override fun isIdleNow(): Boolean {
-                val textView = activityTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
-                val isIdle =  !TextUtils.isEmpty(textView.text.toString())
-                if (isIdle) callback?.onTransitionToIdle()
-                return isIdle
-            }
-
-            override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
-                this.callback = callback
-            }
-        }
-    }
+//    private val idlingResource: IdlingResource by lazy {
+//        object : IdlingResource {
+//            override fun getName(): String = "prepare"
+//
+//            private var callback: IdlingResource.ResourceCallback? = null
+//
+//            override fun isIdleNow(): Boolean {
+//                val textView = activityTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
+//                val isIdle =  !TextUtils.isEmpty(textView.text.toString())
+//                if (isIdle) callback?.onTransitionToIdle()
+//                return isIdle
+//            }
+//
+//            override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
+//                this.callback = callback
+//            }
+//        }
+//    }
 
     @Before
     fun setup() {
@@ -60,10 +59,9 @@ class PltPlayPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         launchActivity()
-
-        IdlingRegistry.getInstance().register(idlingResource)
-
-        onIdle()
+        Thread.sleep(10000)
+//        IdlingRegistry.getInstance().register(idlingResource)
+//        onIdle()
         getPerformanceReport()
 
         clearTask()
@@ -91,7 +89,7 @@ class PltPlayPerformanceTest {
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(idlingResource)
+//        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     companion object {
