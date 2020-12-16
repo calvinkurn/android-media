@@ -70,7 +70,7 @@ class PltPlayPerformanceTest {
     private fun launchActivity() {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         activityTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
-            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/2413")
+            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/2")
         })
     }
 
