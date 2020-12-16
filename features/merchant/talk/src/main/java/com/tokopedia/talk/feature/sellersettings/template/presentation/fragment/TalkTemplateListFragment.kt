@@ -89,6 +89,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showLoading()
         initRecyclerView()
         observeTemplateList()
         observeTemplateMutation()
@@ -122,6 +123,7 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         viewModel.templateList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    hideLoading()
                     if (isSeller) {
                         renderList(it.data.sellerTemplate.templates)
                         return@Observer
@@ -235,6 +237,14 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
             put(TalkEditTemplateFragment.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index))
         }
         return cacheManager?.id ?: ""
+    }
+
+    private fun showLoading() {
+        talkTemplateListLoading.show()
+    }
+
+    private fun hideLoading() {
+        talkTemplateListLoading.hide()
     }
 
 }
