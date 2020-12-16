@@ -240,9 +240,6 @@ infix fun String?.toDateId(format: String): String {
     return ""
 }
 
-fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString()
-        ?: "")
-
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {
         is Success -> {

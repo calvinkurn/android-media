@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 
 const val KG = "kilogram"
-const val KILO = 1000
 
 const val LABEL_KG = "Kg"
 const val LABEL_GRAM = "gram"
