@@ -90,6 +90,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         super.onCreate();
-        SlicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
+        setGrantPermissionSlice();
+    }
+
+    public void setGrantPermissionSlice(){
+        SlicePermission slicePermission = new SlicePermission();
+        slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
     }
 }
