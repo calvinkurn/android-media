@@ -42,6 +42,7 @@ enum class ComponentNames(val componentName: String) {
     QuickCoupon("quick_coupon"),
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
+    BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),

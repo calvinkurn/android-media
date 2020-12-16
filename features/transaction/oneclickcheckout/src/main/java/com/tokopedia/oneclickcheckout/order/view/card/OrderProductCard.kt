@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -182,17 +183,28 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
             cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
             cbPurchaseProtection.setOnCheckedChangeListener { buttonView, isChecked ->
-                product.purchaseProtectionPlanData.stateChecked = isChecked
-                listener.onProductChange(product, false)
-                listener.onPurchaseProtectionCheckedChange()
+                handleOnPurchaseProtectionCheckedChange(isChecked)
             }
-            cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+            val lastState = listener.getLastPurchaseProtectionCheckState()
+            if (lastState != PurchaseProtectionPlanData.STATE_EMPTY) {
+                val tmpIsChecked = lastState == PurchaseProtectionPlanData.STATE_TICKED
+                cbPurchaseProtection.isChecked = tmpIsChecked
+                handleOnPurchaseProtectionCheckedChange(tmpIsChecked)
+            } else {
+                cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+            }
             tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
 
             groupPurchaseProtection.show()
         } else {
             groupPurchaseProtection.gone()
         }
+    }
+
+    private fun handleOnPurchaseProtectionCheckedChange(tmpIsChecked: Boolean) {
+        product.purchaseProtectionPlanData.stateChecked = if (tmpIsChecked) PurchaseProtectionPlanData.STATE_TICKED else PurchaseProtectionPlanData.STATE_UNTICKED
+        listener.onProductChange(product, false)
+        listener.onPurchaseProtectionCheckedChange(tmpIsChecked)
     }
 
     private fun renderProductTickerMessage() {
@@ -254,7 +266,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
         fun onPurchaseProtectionInfoClicked(url: String)
 
-        fun onPurchaseProtectionCheckedChange()
+        fun onPurchaseProtectionCheckedChange(isChecked: Boolean)
+
+        fun getLastPurchaseProtectionCheckState(): Int
     }
 
     companion object {
