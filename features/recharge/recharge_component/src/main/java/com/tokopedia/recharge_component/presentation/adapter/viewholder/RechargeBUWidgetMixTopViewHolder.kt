@@ -91,8 +91,7 @@ class RechargeBUWidgetMixTopViewHolder(
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        // Decrement position to account for empty product card
-        listener.onRechargeBUWidgetItemClick(dataModel, position - 1)
+        listener.onRechargeBUWidgetItemClick(dataModel, position)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
