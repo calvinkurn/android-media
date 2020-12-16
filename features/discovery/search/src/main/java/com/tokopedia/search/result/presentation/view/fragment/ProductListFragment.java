@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1629,8 +1628,7 @@ public class ProductListFragment
             if (firstProductPosition > 0 && threeDots != null)
                 recyclerView.smoothScrollToPosition(firstProductPosition);
 
-            final Handler handler = new Handler();
-            handler.postDelayed(() -> {
+            recyclerView.postDelayed(() -> {
                 ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
 
                 CoachMarkBuilder builder = new CoachMarkBuilder();
