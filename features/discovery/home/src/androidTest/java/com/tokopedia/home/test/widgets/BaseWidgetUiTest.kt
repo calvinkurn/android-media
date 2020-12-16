@@ -43,9 +43,11 @@ abstract class BaseWidgetUiTest{
     open val getPopularKeywordUseCase = mockk<Lazy<GetPopularKeywordUseCase>> (relaxed = true)
     open val getAtcUseCase = mockk<Lazy<AddToCartOccUseCase>>(relaxed = true)
     open val getRechargeRecommendationUseCase = mockk<Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
+    open val getRechargeBUWidgetUseCase = mockk<Lazy<GetRechargeBUWidgetUseCase>>(relaxed = true)
     open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
     open val getSalamWIdgetUseCase = mockk<Lazy<GetSalamWidgetUseCase>>(relaxed = true)
     open val declineSalamWIdgetUseCase = mockk<Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
+    open val getRechargeBUWidgetUseCase = mockk<Lazy<GetRechargeBUWidgetUseCase>>(relaxed = true)
     open val closeChannelUseCase = mockk<Lazy<CloseChannelUseCase>>(relaxed = true)
     open val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
@@ -83,9 +85,11 @@ abstract class BaseWidgetUiTest{
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            getRechargeBUWidget = getRechargeBUWidgetUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
             declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
+            getRechargeBUWidgetUseCase = getRechargeBUWidgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             getDisplayHeadlineAds = getDisplayHeadlineAds,
