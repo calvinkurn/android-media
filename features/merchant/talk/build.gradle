@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.features.inboxCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)

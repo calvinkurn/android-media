@@ -172,6 +172,18 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_tab_ads_broadcast_chat_description
     )
 
+    class DiscussionTemplateUiModel: SellerFeatureUiModel(
+            imageUrl = URL_TEMPLATE_CHAT_ICON,
+            titleId = R.string.seller_migration_template_title,
+            descriptionId = R.string.seller_migration_template_subtitle
+    )
+
+    class DiscussionSmartReplyUiModel: SellerFeatureUiModel(
+            imageUrl = URL_TEMPLATE_CHAT_ICON,
+            titleId = R.string.seller_migration_smart_reply_title,
+            descriptionId = R.string.seller_migration_smart_reply_subtitle
+    )
+
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

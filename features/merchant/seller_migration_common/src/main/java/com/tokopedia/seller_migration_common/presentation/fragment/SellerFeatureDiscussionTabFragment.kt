@@ -1,0 +1,5 @@
+package com.tokopedia.seller_migration_common.presentation.fragment
+
+import com.tokopedia.seller_migration_common.presentation.SellerFeatureDiscussionStaticDataProvider
+
+class SellerFeatureDiscussionTabFragment: BaseSellerFeatureTabFragment(SellerFeatureDiscussionStaticDataProvider)
