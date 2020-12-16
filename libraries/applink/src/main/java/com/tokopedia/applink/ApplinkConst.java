@@ -328,6 +328,8 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
+    String ACCOUNT = "tokopedia://account";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }

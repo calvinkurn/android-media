@@ -198,7 +198,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
         startActivity(intent)
     }
 
