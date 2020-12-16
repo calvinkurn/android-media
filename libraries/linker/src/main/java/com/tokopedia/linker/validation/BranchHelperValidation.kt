@@ -207,7 +207,7 @@ class BranchHelperValidation {
     }
 
     private fun validateProductType( productType: String) {
-        if (LinkerConstants.PRODUCTTYPE_DIGITAL != productType && LinkerConstants.PRODUCTTYPE_MARKETPLACE != productType) {
+        if (!(LinkerConstants.PRODUCTTYPE_DIGITAL == productType || LinkerConstants.PRODUCTTYPE_MARKETPLACE == productType)) {
             logging("validation;reason=validateProductType;eventName='';data='$productType'")
         }
     }
