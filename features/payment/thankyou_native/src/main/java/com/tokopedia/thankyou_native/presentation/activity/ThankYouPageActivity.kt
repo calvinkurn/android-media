@@ -1,6 +1,8 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -191,8 +193,18 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         } else {
             globalNabToolbar.gone()
             thank_header.visible()
-            updateHeaderTitle(title)
+            setupOldToolbar(title)
         }
+    }
+
+    private fun setupOldToolbar(title: String){
+        toolbar = thank_header
+        setSupportActionBar(toolbar)
+        supportActionBar?.let {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+        }
+        updateHeaderTitle(title)
     }
 
     private fun isGlobalNavEnable(): Boolean {
