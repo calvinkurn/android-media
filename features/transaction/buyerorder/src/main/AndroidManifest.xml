@@ -20,12 +20,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".detail.view.activity.RequestCancelActivity"
-            android:label="@string/title_activity_people_reason"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
-
         <activity android:name=".detail.view.activity.OrderListwebViewActivity"
             android:screenOrientation="portrait"
             android:configChanges="uiMode"

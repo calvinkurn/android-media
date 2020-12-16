@@ -187,7 +187,7 @@ class PermissionCheckerHelper {
 
         } else if (!permissions.isEmpty()
                 && shouldShowRequestPermissionRationale(activity, permissions[0])) {
-            onShowRationale(activity, permissions, permissions[0], listener, rationaleText)
+            onShowRationale(activity, permissions, getPermissionName(activity, permissions[0]), listener, rationaleText)
         } else if (!permissions.isEmpty()) {
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         }
