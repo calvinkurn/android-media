@@ -20,7 +20,7 @@ public class EntityPessenger {
     private String name;
 
     @SerializedName("product_id")
-    private long productId;
+    private int productId;
 
     @SerializedName("required")
     private int require;
@@ -78,7 +78,7 @@ public class EntityPessenger {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
