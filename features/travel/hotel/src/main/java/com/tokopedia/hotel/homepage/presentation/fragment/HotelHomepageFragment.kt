@@ -349,25 +349,29 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun initView() {
         checkCheckInAndCheckOutDate()
 
+        tv_hotel_homepage_destination.textFieldInput.tag = R.id.tv_hotel_homepage_destination.toString()
         tv_hotel_homepage_destination.textFieldInput.isClickable = true
         tv_hotel_homepage_destination.textFieldInput.isFocusable = false
         tv_hotel_homepage_destination.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_destination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
 
+        tv_hotel_homepage_checkin_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkin_date.toString()
         tv_hotel_homepage_checkin_date.textFieldInput.isClickable = true
         tv_hotel_homepage_checkin_date.textFieldInput.isFocusable = false
         tv_hotel_homepage_checkin_date.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_checkin_date.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
 
+        tv_hotel_homepage_checkout_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkout_date.toString()
         tv_hotel_homepage_checkout_date.textFieldInput.isClickable = true
         tv_hotel_homepage_checkout_date.textFieldInput.isFocusable = false
         tv_hotel_homepage_checkout_date.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_checkout_date.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
 
+        tv_hotel_homepage_guest_info.textFieldInput.tag = R.id.tv_hotel_homepage_guest_info.toString()
         tv_hotel_homepage_guest_info.textFieldInput.isClickable = true
         tv_hotel_homepage_guest_info.textFieldInput.isFocusable = false
         tv_hotel_homepage_guest_info.textFieldWrapper.isHelperTextEnabled = false
-        tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
+        tv_hotel_homepage_guest_info.textFieldInput.setOnClickListener { onGuestInfoClicked() }
 
 
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
