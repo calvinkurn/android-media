@@ -26,6 +26,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -41,6 +42,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.List;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_FACEBOOK;
+import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE;
 import static com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl.DISCOVER_LOGIN;
 
 /**
@@ -230,9 +233,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                             onGoogleClick();
                         }
                     });
-                } else {
-                    tv.setOnClickListener(loginProvideOnClick(i));
                 }
+
                 tv.setBorderColor(Color.BLACK);
 
                 if (containerProvider != null) {
@@ -242,34 +244,14 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    private View.OnClickListener loginProvideOnClick(final int position) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginWebview(getActivity(), listProvider.get(position)
-                                    .getName(), listProvider.get(position).getUrl());
-                    startActivityForResult(intent, REQUEST_LOGIN);
-                }
-                getActivity().getWindow().setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                UserAuthenticationAnalytics.setActiveAuthenticationMedium(getActivity(), listProvider.get(position).getName());
-            }
-        };
-    }
-
     public void onGoogleClick() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginGoogle(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.LOGIN_THIRD_PARTY, METHOD_LOGIN_GOOGLE);
+        startActivityForResult(intent, REQUEST_LOGIN);
     }
 
     private void onFacebookClick() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginFacebook(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.LOGIN_THIRD_PARTY, METHOD_LOGIN_FACEBOOK);
+        startActivityForResult(intent, REQUEST_LOGIN);
     }
 
     @Override
