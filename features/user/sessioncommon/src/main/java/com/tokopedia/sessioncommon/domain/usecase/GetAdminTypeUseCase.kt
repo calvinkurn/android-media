@@ -3,24 +3,20 @@ package com.tokopedia.sessioncommon.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sessioncommon.data.admin.AdminInfoResponse
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import rx.Subscriber
 import javax.inject.Inject
 
-class GetAdminInfoUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
+class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
 
     companion object {
-        const val shopID = "shop_id"
-
         val QUERY = """
-            query getAdminInfo(${'$'}$shopID: Int!){
-              getAdminInfo(source: "akw-testing", shop_id: ${'$'}$shopID) {
+            query getAdminType {
+              getAdminType(source: "akw-testing") {
+                shopID
+                isMultiLocation
                 admin_data {
                   admin_type_text
-                  location_list {
-                    location_id
-                  }
                   detail_information {
                     admin_role_type {
                       is_shop_admin
@@ -34,12 +30,8 @@ class GetAdminInfoUseCase @Inject constructor(private val graphqlUseCase: Graphq
         """.trimIndent()
     }
 
-    fun execute(shopId: Int, subscriber: Subscriber<GraphqlResponse>) {
-        val requestParams = RequestParams().apply {
-            putInt(shopID, shopId)
-        }.parameters
-
-        GraphqlRequest(QUERY, AdminInfoResponse::class.java, requestParams).let { request ->
+    fun execute(subscriber: Subscriber<GraphqlResponse>) {
+        GraphqlRequest(QUERY, AdminTypeResponse::class.java).let { request ->
             graphqlUseCase.clearRequest()
             graphqlUseCase.addRequest(request)
             graphqlUseCase.execute(subscriber)
