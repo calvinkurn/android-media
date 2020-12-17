@@ -58,6 +58,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaL
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.topads.sdk.base.Config;
 
 public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implements ProductListTypeFactory {
@@ -74,6 +75,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final InspirationCardListener inspirationCardListener;
     private final SearchInTokopediaListener searchInTokopediaListener;
     private final SearchNavigationClickListener searchNavigationListener;
+    private final TopAdsImageViewListener topAdsImageViewListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -89,6 +91,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       InspirationCardListener inspirationCardListener,
                                       SearchInTokopediaListener searchInTokopediaListener,
                                       SearchNavigationClickListener searchNavigationListener,
+                                      TopAdsImageViewListener topAdsImageViewListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -104,6 +107,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.inspirationCardListener = inspirationCardListener;
         this.searchInTokopediaListener = searchInTokopediaListener;
         this.searchNavigationListener = searchNavigationListener;
+        this.topAdsImageViewListener = topAdsImageViewListener;
     }
 
     @Override
@@ -273,7 +277,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         } else if (type == SearchProductCountViewHolder.LAYOUT) {
             viewHolder = new SearchProductCountViewHolder(view, searchNavigationListener);
         } else if (type == SearchProductTopAdsImageViewHolder.LAYOUT) {
-            viewHolder = new SearchProductTopAdsImageViewHolder(view);
+            viewHolder = new SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

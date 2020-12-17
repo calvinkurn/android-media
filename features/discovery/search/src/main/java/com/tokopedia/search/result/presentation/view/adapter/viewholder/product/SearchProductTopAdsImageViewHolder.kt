@@ -6,9 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
-class SearchProductTopAdsImageViewHolder(itemView: View): AbstractViewHolder<SearchProductTopAdsImageViewModel>(itemView) {
+class SearchProductTopAdsImageViewHolder(
+        itemView: View,
+        private val topAdsImageViewListener: TopAdsImageViewListener
+): AbstractViewHolder<SearchProductTopAdsImageViewModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -20,11 +26,25 @@ class SearchProductTopAdsImageViewHolder(itemView: View): AbstractViewHolder<Sea
         element ?: return
 
         val topAdsImageView = itemView.findViewById<TopAdsImageView?>(R.id.searchProductTopAdsImageView)
+        val topAdsImageViewModel = element.topAdsImageViewModel
 
-        topAdsImageView?.loadImage(element.topAdsImageViewModel, 0) {
+        topAdsImageView?.loadImage(topAdsImageViewModel, 20) {
             topAdsImageView.hide()
         }
 
-//        topAdsImageView?.setTopAdsImageViewImpression()
+        topAdsImageView?.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                topAdsImageViewListener.onTopAdsImageViewImpressed(
+                        topAdsImageView.javaClass.canonicalName,
+                        element
+                )
+            }
+        })
+
+        topAdsImageView?.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
+            override fun onTopAdsImageViewClicked(applink: String?) {
+                topAdsImageViewListener.onTopAdsImageViewClick(element)
+            }
+        })
     }
 }
