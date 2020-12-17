@@ -70,7 +70,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     }
 
 
-                    if(receiverDistrict.isNotBlank() || !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                    if(receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
                         tv_receiver_district.show()
                         tv_receiver_district.text = receiverDistrict
                     } else {
