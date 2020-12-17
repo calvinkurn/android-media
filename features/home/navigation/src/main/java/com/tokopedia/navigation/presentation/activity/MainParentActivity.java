@@ -57,6 +57,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
@@ -643,9 +644,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(RouteManager.instantiateFragment(this, ApplinkConstInternalFeed.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
+        fragmentList.add(RouteManager.instantiateFragment(this, FeedPlusContainerFragment.class.getName(), getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
