@@ -24,7 +24,7 @@ data class UnavailableGroup(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("sort_key")
-        val sortKey: Int = 0,
+        val sortKey: Long = 0,
         @SerializedName("cart_string")
         val cartString: String = ""
 )

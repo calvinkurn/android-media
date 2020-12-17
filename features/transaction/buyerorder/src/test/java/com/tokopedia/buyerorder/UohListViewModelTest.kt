@@ -35,7 +35,7 @@ class UohListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = UohTestDispatcherProvider()
+    private val dispatcher = BuyerTestDispatcherProvider()
     private lateinit var uohListViewModel: UohListViewModel
     private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()

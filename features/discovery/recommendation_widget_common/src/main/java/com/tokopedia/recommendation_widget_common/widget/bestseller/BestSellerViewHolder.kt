@@ -110,7 +110,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             annotationChipAdapter.submitList(
                     it.filterChip.map {filter ->
                         filter.copy(
-                                isActivated = annotationChip.name == filter.name
+                                isActivated = annotationChip.title == filter.title
                                         && !annotationChip.isActivated
                         )
                     }

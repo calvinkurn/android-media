@@ -43,6 +43,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
@@ -58,6 +59,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
@@ -71,6 +73,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -161,7 +164,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
-        PlayWidgetListener {
+        PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -436,16 +439,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 when(it) {
                     is Success -> {
                         val data = it.data
-                        if (data.isSuccess) {
-                            onAddToCartSuccess()
-                        } else {
-                            onAddToCartFailed(data.applink)
+                        when {
+                            data.isSuccess -> {
+                                onAddToCartSuccess()
+                            }
+                            data.errorMsg.isNotEmpty() -> {
+                                view?.run {
+                                    Toaster.build(this, data.errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                            else -> {
+                                onAddToCartFailed(data.applink)
+                            }
                         }
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
                         view?.run {
-                            Toaster.make(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.build(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -624,6 +635,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed.visibility = View.GONE
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
+        TopAdsHeadlineActivityCounter.page = 0
     }
 
     override fun onDestroyView() {
@@ -1626,9 +1638,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        if (newList.size > rowNumber) {
-            val (_, _, _, _, footer) = newList[rowNumber]
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
@@ -1648,8 +1660,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-
-            adapter.updateList(newList)
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 
@@ -1699,22 +1710,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
+        if(rowNumber < adapter.getlist().size) {
+            if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+                val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+                header.followCta.isFollow = !header.followCta.isFollow
+                adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
+            }
 
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
+            if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
+                val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
+                cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
 
-        if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-            val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
-            dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
+            if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
+                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+                dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
+            if (adapter.getlist()[rowNumber] is TopadsHeadlineUiModel) {
+                val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadlineUiModel
+                topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
+                    topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed = !it
+                }
+                adapter.notifyItemChanged(rowNumber)
+            }
         }
     }
 
@@ -2065,5 +2085,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
+    }
+
+    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+        feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 }

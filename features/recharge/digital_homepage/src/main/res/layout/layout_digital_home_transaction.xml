@@ -43,7 +43,7 @@
         <View
             android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N700_20"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/orderList"
@@ -73,7 +73,7 @@
         <View
             android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N700_20"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/help"
@@ -103,7 +103,7 @@
         <View
             android:layout_width="@dimen/transaction_divider_view_width"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N700_20"/>
+            android:background="@color/Unify_N700_44"/>
 
         <LinearLayout
             android:id="@+id/myBills"

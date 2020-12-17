@@ -81,6 +81,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         return mPlayer
     }
 
+    override fun isPlayable(): Boolean {
+        return mModel.channelType == PlayWidgetChannelType.Live ||
+                mModel.channelType == PlayWidgetChannelType.Vod
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         setPlayer(null)

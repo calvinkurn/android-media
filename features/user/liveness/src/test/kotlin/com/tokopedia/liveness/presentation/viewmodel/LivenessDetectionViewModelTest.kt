@@ -3,7 +3,7 @@ package com.tokopedia.liveness.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.liveness.data.model.response.LivenessData
 import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
-import com.tokopedia.liveness.util.getOrAwaitValue
+import com.tokopedia.liveness.util.CoroutineTestDispatchersProvider
 import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -12,7 +12,6 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import junit.framework.Assert.*
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,7 +34,7 @@ class LivenessDetectionViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = LivenessDetectionViewModel(useCase, Dispatchers.Unconfined)
+        viewModel = LivenessDetectionViewModel(useCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -51,7 +50,7 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        val result = viewModel.livenessResponseLiveData.value
         assertEquals(result, Success(livenessData))
         assertTrue((result as Success).data.isSuccessRegister)
     }
@@ -69,7 +68,7 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        val result = viewModel.livenessResponseLiveData.value
         assertFalse((result as Success).data.isSuccessRegister)
     }
 
@@ -111,7 +110,7 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        val result = viewModel.livenessResponseLiveData.value
         assertTrue(result is Fail)
     }
 }

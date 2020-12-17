@@ -143,7 +143,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()
@@ -156,8 +156,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
+            view?.let {
+                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 
@@ -221,7 +222,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun onErrorCustomData() {
         val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
         view?.run {
-            Toaster.make(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -296,11 +297,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun sendOpenScreenTracking() {
