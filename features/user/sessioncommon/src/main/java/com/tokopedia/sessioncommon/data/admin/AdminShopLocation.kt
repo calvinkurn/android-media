@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class AdminShopLocation(
     @Expose
     @SerializedName("location_id")
-    val id: String
+    val id: String = ""
 )
