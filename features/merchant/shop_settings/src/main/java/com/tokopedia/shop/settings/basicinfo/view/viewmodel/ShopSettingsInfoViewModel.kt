@@ -49,7 +49,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
     fun getShopData(shopId: String, includeOS: Boolean) {
         launch {
             flow {
-                emit(getShopBasicDataAsync().await())
+                emit(getShopBasicDataUseCase.getData(RequestParams.EMPTY))
             }       .flowOn(dispatchers.io)
                     .catch {
                         _shopBasicData.value = Fail(it)
@@ -59,7 +59,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
                     }
 
             flow {
-                emit(getShopStatusAsync(shopId, includeOS).await())
+                val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
+                emit(getShopStatusUseCase.getData(requestParams))
             }       .flowOn(dispatchers.io)
                     .catch {
                         _shopStatusData.value = Fail(it)
@@ -109,19 +110,6 @@ class ShopSettingsInfoViewModel @Inject constructor (
                     .collectLatest {
                         _checkOsMerchantTypeData.value = Success(it)
                     }
-        }
-    }
-
-    private fun getShopBasicDataAsync(): Deferred<ShopBasicDataModel> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            getShopBasicDataUseCase.getData(RequestParams.EMPTY)
-        }
-    }
-
-    private fun getShopStatusAsync(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
-            getShopStatusUseCase.getData(requestParams)
         }
     }
 }
