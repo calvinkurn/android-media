@@ -67,10 +67,10 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
                 ImageHandler.LoadImage(bannerImageView, it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
                 timeTextFontColour = getTimerFontColour(it)
                 timeBoxColour = getTimerBoxColour(it)
-                setTimerUI(it, DAYS)
-                setTimerUI(it, HOURS)
-                setTimerUI(it, MINUTES)
-                setTimerUI(it, SECONDS)
+                setTimerUI(DAYS)
+                setTimerUI(HOURS)
+                setTimerUI(MINUTES)
+                setTimerUI(SECONDS)
                 setSeparatorUI()
             }
         }
@@ -111,7 +111,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         bannerTimerViewModel.startTimer()
     }
 
-    private fun setTimerUI(componentItem: ComponentsItem?, timeType: Int) {
+    private fun setTimerUI(timeType: Int) {
         when (timeType) {
             DAYS -> {
                 val daysViewLayout: View = customItemView.findViewById(R.id.day_layout)
