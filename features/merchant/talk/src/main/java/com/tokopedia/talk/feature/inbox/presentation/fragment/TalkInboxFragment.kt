@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,13 +24,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -230,6 +230,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         initErrorPage()
         initSortFilter()
         setupTicker()
+        hideToolbar()
+        setupToolbar()
+        showFullPageLoading()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -486,12 +489,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             }
         }
         settingsChip.listener = {
-            gotoSellerSettings()
+            goToSellerSettings()
         }
         return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter, settingsChip)
     }
 
-    private fun gotoSellerSettings() {
+    private fun goToSellerSettings() {
         RouteManager.route(context, ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS)
     }
 
@@ -596,7 +599,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupTicker() {
-        if(GlobalConfig.isSellerApp()) {
+        if(GlobalConfig.isSellerApp() && !isOldView()) {
             talkInboxTicker.apply {
                 tickerTitle = getString(R.string.inbox_ticker_title)
                 setTextDescription(getString(R.string.inbox_ticker_description))
@@ -605,5 +608,27 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             return
         }
         talkInboxTicker.hide()
+    }
+
+    private fun hideToolbar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(headerTalkInbox)
+        }
+    }
+
+    private fun setupToolbar() {
+        if(GlobalConfig.isSellerApp() && !isOldView()) {
+            headerTalkInbox.apply {
+                setTitle(R.string.title_talk_discuss)
+                addRightIcon(0).apply {
+                    clearImage()
+                    setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                    setOnClickListener {
+                        goToSellerSettings()
+                    }
+                }
+            }
+        }
     }
 }

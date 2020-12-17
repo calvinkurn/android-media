@@ -12,7 +12,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
@@ -43,7 +42,6 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
         component.inject(this)
         super.onCreate(savedInstanceState)
         talkInboxTracking.openScreen(screenName)
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -125,9 +123,5 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     override fun sendScreenAnalytics() {
         talkInboxTracking.openScreen(screenName)
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 }

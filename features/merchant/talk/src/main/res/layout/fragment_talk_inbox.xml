@@ -7,13 +7,21 @@
     android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerTalkInbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/talkInboxTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:tickerType="information"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:tickerType="announcement"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"/>
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/talkInboxSortFilter"
