@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
@@ -99,6 +100,8 @@ class FlightHomepageActivityTest {
 
     @Test
     fun validateFlightHomepageAnalyticsP2AndBelow() {
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
+
         departureAirport()
         arrivalAirport()
         switchTrip()
