@@ -150,7 +150,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         if (assignRole(role)) {
             loadInitialData()
             chatFilter?.onRoleChanged(isTabSeller())
-            webSocket.onRoleChanged(role)
         }
     }
 
@@ -183,7 +182,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun initWebSocket() {
-        webSocket.onRoleChanged(role)
         webSocket.connectWebSocket()
     }
 
