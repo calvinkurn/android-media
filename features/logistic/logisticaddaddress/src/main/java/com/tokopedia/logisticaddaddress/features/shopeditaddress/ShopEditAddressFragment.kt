@@ -142,7 +142,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
     private fun prepareLayout() {
         etShopLocation?.setText(warehouseModel?.warehouseName)
         etKotaKecamatan?.setText(warehouseModel?.districtName)
-        etZipCode?.setText(warehouseModel?.zipCodes.toString())
+        etZipCode?.setText(warehouseModel?.postalCode)
         etShopDetail?.setText(warehouseModel?.addressDetail)
 
         tvPinpointText?.text = getString(R.string.tv_pinpoint_desc)

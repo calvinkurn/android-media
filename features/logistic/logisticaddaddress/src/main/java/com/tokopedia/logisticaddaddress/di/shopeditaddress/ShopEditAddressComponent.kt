@@ -6,7 +6,7 @@ import com.tokopedia.logisticaddaddress.features.shopeditaddress.ShopEditAddress
 import dagger.Component
 
 @ShopEditAddressScope
-@Component(modules = [ShopEditAddressModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [ShopEditAddressModule::class, ShopEditAddressViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface ShopEditAddressComponent{
     fun inject (shopEditAddressActivity: ShopEditAddressActivity)
     fun inject (shopEditAddressFragment: ShopEditAddressFragment)
