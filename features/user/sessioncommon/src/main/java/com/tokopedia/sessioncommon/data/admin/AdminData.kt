@@ -8,9 +8,6 @@ data class AdminData(
     @SerializedName("admin_type_text")
     val adminTypeText: String?,
     @Expose
-    @SerializedName("location_list")
-    val locations: List<AdminShopLocation>,
-    @Expose
     @SerializedName("detail_information")
     val detail: AdminDetailInformation
 )

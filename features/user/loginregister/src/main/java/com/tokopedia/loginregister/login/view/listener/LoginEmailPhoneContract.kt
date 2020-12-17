@@ -122,7 +122,7 @@ interface LoginEmailPhoneContract {
 
         fun showLocationAdminPopUp(): () -> Unit
 
-        fun showLocationAdminError(): (Throwable) -> Unit
+        fun showGetAdminTypeError(): (Throwable) -> Unit
     }
 
     interface Presenter : CustomerPresenter<View> {

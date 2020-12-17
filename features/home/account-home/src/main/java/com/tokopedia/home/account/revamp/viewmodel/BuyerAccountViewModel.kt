@@ -11,13 +11,12 @@ import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
@@ -76,10 +75,9 @@ class BuyerAccountViewModel @Inject constructor (
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
-            val (adminData, shopData) =
+            val (adminDataResponse, shopData) =
                     if (!userSession.isShopAdmin) {
                         with(accountAdminInfoUseCase) {
-                            requestParams = AccountAdminInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                             isLocationAdmin = userSession.isLocationAdmin
                             executeOnBackground()
                         }
@@ -90,12 +88,12 @@ class BuyerAccountViewModel @Inject constructor (
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
-                accountModel.adminTypeText = adminData?.adminTypeText
+                accountModel.adminTypeText = adminDataResponse?.data?.adminTypeText
                 saveLocallyAttributes(accountModel)
-                adminData?.let {
+                adminDataResponse?.let {
                     refreshUserSessionAdminData(it)
                 }
-                (adminData?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
+                (adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
                     _canGoToSellerAccount.postValue(canGoToSellerAccount)
                 }
                 shopData?.let {
@@ -241,13 +239,13 @@ class BuyerAccountViewModel @Inject constructor (
         }
     }
 
-    private fun refreshUserSessionAdminData(adminData: AdminData) {
-        adminData.detail.roleType.let {
+    private fun refreshUserSessionAdminData(adminDataResponse: AdminDataResponse) {
+        adminDataResponse.data.detail.roleType.let {
             userSession.run {
                 setIsShopOwner(it.isShopOwner)
                 setIsLocationAdmin(it.isLocationAdmin)
                 setIsShopAdmin(it.isShopAdmin)
-                setIsMultiLocationShop((adminData.locations.count() > 1))
+                setIsMultiLocationShop(adminDataResponse.isMultiLocationShop)
             }
             if (it.isLocationAdmin) {
                 removeUnnecessaryShopData()

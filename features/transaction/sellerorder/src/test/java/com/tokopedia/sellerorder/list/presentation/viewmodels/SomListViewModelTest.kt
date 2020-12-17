@@ -683,6 +683,9 @@ class SomListViewModelTest {
         coEvery {
             adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } returns true
+        coEvery {
+            userSession.isShopAdmin
+        } returns true
 
         viewModel.getAdminPermission()
 
@@ -698,6 +701,9 @@ class SomListViewModelTest {
         coEvery {
             adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } throws Throwable()
+        coEvery {
+            userSession.isShopAdmin
+        } returns true
 
         viewModel.getAdminPermission()
 
@@ -706,6 +712,19 @@ class SomListViewModelTest {
         }
 
         assert(viewModel.isAdminEligible.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getAdminPermission_whenIsNotShopAdmin_shouldNotRun() {
+        coEvery {
+            userSession.isShopAdmin
+        } returns false
+
+        viewModel.getAdminPermission()
+
+        coVerify(exactly = 0) {
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
+        }
     }
 
     @Test

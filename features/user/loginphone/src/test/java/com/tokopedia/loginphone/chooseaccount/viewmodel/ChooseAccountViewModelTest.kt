@@ -1,5 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.viewmodel
 
+import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -14,14 +15,14 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -45,7 +46,7 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var getProfileUseCase: GetProfileUseCase
     @RelaxedMockK
-    lateinit var getAdminInfoUseCase: GetAdminInfoUseCase
+    lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
@@ -79,7 +80,7 @@ class ChooseAccountViewModelTest {
                 userSession,
                 loginTokenUseCase,
                 getProfileUseCase,
-                getAdminInfoUseCase,
+                getAdminTypeUseCase,
                 rawQueries,
                 testDispatcher
         )
@@ -315,7 +316,7 @@ class ChooseAccountViewModelTest {
         viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().getAdminInfoUseCase?.let { getAdminInfoUseCase = it }
+            firstArg<GetProfileSubscriber>().getAdminTypeUseCase?.let { getAdminTypeUseCase = it }
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
 
@@ -333,7 +334,7 @@ class ChooseAccountViewModelTest {
         viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
 
         coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().showLocationAdminError?.invoke(throwable)
+            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
         }
 
         viewmodel.getUserInfo()

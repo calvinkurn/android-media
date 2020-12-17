@@ -1010,7 +1010,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }.show()
     }
 
-    override fun showLocationAdminError(): (Throwable) -> Unit = {
+    override fun showGetAdminTypeError(): (Throwable) -> Unit = {
         val errorMessage = ErrorHandler.getErrorMessage(context, it)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         dismissLoadingLogin()
