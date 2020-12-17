@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.view.mapper
 
+import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
@@ -21,14 +22,14 @@ class DataViewMapper @Inject constructor(
         private val remoteConfig: RemoteConfig
 ) {
 
-    fun mapToProfileDataView(accountDataModel: UserAccountDataModel): ProfileDataView {
+    fun mapToProfileDataView(context: Context?, accountDataModel: UserAccountDataModel): ProfileDataView {
         return ProfileDataView(
                 name = accountDataModel.profile.fullName,
                 phone = userSession.phoneNumber,
                 email = userSession.email,
                 avatar = accountDataModel.profile.profilePicture,
                 members = mapToMemberDataView(accountDataModel),
-                financial = mapSaldo(accountDataModel),
+                financial = mapSaldo(context, accountDataModel),
                 backdrop = accountDataModel.tokopoints.status.tier.backgroundImgUrl
         )
     }
@@ -43,8 +44,10 @@ class DataViewMapper @Inject constructor(
 
     fun mapMemberItemDataView(shortcutResponse: ShortcutResponse): ArrayList<MemberItemDataView> {
         val items = arrayListOf<MemberItemDataView>()
-        if(shortcutResponse.tokopointsShortcutList.shortcutGroupList.isNotEmpty() && shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList.isNotEmpty()) {
-            shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList.forEach {
+        val shortcutGroupList = shortcutResponse.tokopointsShortcutList.shortcutGroupList
+        val shortcutList = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList
+        if(shortcutGroupList.isNotEmpty() && shortcutList.isNotEmpty()) {
+            shortcutList.forEach {
                 items.add(
                     MemberItemDataView(
                         title = it.description,
@@ -59,7 +62,7 @@ class DataViewMapper @Inject constructor(
         return items
     }
 
-    fun mapToFinancialData(wallet: WalletModel): List<CommonDataView> {
+    fun mapToFinancialData(context: Context?, wallet: WalletModel): List<CommonDataView> {
         val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
 
         val items = arrayListOf<CommonDataView>()
@@ -82,7 +85,7 @@ class DataViewMapper @Inject constructor(
             } else {
                 val item = CommonDataView(
                         title = wallet.cashBalance.toEmptyStringIfNull(),
-                        body = "Points " + wallet.pointBalance.toEmptyStringIfNull(),
+                        body = getString(context, R.string.account_title_points_item) + wallet.pointBalance.toEmptyStringIfNull(),
                         type = CommonViewHolder.TYPE_DEFAULT,
                         applink = wallet.applink.toEmptyStringIfNull(),
                         icon = R.drawable.ic_account_ovo
@@ -93,11 +96,11 @@ class DataViewMapper @Inject constructor(
         return items
     }
 
-    fun mapSaldo(accountDataModel: UserAccountDataModel): SettingDataView {
-        val dataView = SettingDataView("Dana & Investasi")
+    fun mapSaldo(context: Context?, accountDataModel: UserAccountDataModel): SettingDataView {
+        val dataView = SettingDataView(getString(context, R.string.account_title_saldo_section))
         val saldoItem = CommonDataView(
                 title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
-                body = "Saldo",
+                body = getString(context, R.string.account_title_saldo_item),
                 type = CommonViewHolder.TYPE_DEFAULT,
                 icon = R.drawable.ic_account_balance,
                 applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
@@ -106,19 +109,11 @@ class DataViewMapper @Inject constructor(
         return dataView
     }
 
-    private fun setOvoWalletItem(){
-
+    private fun getString(context: Context?, stringResource: Int): String {
+       return context?.getString(stringResource).toEmptyStringIfNull()
     }
 
     companion object {
         private val OVO = "OVO"
-        private val OVO_PAY_LATER = "OVO PayLater"
-        private val LABEL_ELIGIBLE = "Aktifkan"
-        private val LABEL_HOLD = "Sedang Diproses"
-        private val LABEL_BLOCKED = "Layanan Terblokir"
-        private val LABEL_DEACTIVATED = "Dinonaktifkan"
-        private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
-        private val UOH_AB_TEST_KEY = "uoh_android_v2"
-        private val UOH_AB_TEST_VALUE = "uoh_android_v2"
     }
 }
