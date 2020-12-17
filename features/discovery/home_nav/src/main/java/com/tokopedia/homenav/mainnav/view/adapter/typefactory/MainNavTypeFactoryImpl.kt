@@ -20,8 +20,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
-                             private val userSession: UserSessionInterface,
-                             private val remoteConfig: RemoteConfig)
+                             private val userSession: UserSessionInterface)
     : HomeNavTypeFactory, MainNavTypeFactory {
 
     override fun type(accountHeaderViewModel: AccountHeaderViewModel): Int {
@@ -75,7 +74,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, remoteConfig, userSession)
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
