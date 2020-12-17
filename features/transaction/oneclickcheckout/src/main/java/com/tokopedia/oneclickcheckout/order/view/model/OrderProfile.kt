@@ -35,7 +35,11 @@ data class OrderProfileAddress(
 data class OrderProfileShipment(
         val serviceName: String = "",
         val serviceId: Int = 0,
-        val serviceDuration: String = ""
+        val serviceDuration: String = "",
+        val spId: Int = 0,
+        val recommendationServiceId: Int = 0,
+        val recommendationSpId: Int = 0,
+        val isFreeShippingSelected: Boolean = false
 )
 
 data class OrderProfilePayment(
@@ -45,13 +49,6 @@ data class OrderProfilePayment(
         val gatewayName: String = "",
         val image: String = "",
         val description: String = "",
-        val url: String = "",
-        val minimumAmount: Long = 0,
-        val maximumAmount: Long = 0,
-        val fee: Double = 0.0,
-        val walletAmount: Long = 0,
         val metadata: String = "",
-        val mdr: Float = 0f,
-        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage()
+        val tickerMessage: String = ""
 )

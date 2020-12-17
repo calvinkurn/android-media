@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - description widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{impression widget description - .{1,}}}",
+      "eventLabel": "",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

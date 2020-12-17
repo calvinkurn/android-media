@@ -13,9 +13,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.bugsnag.android.BeforeNotify;
-import com.bugsnag.android.Bugsnag;
-import com.bugsnag.android.Error;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -23,7 +20,9 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -36,7 +35,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -46,19 +47,18 @@ import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
+import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.permission.SlicePermission;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import timber.log.Timber;
-import com.tokopedia.tokopatch.TokoPatch;
 import kotlin.Pair;
-import com.tokopedia.authentication.AuthHelper;
+import timber.log.Timber;
+
+import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -68,9 +68,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         InAppManager.InAppMessageListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
@@ -126,7 +128,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
-        initBugsnag();
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -146,6 +147,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
         initRemoteConfig();
+        initCacheManager();
+
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -153,14 +156,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        PersistentCacheManager.init(this);
-
         TimberWrapper.init(this);
         super.onCreate();
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
 
@@ -168,6 +170,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
+        initSlicePermission();
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void setVersionName(){
@@ -191,31 +199,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
     }
 
-    private void initBugsnag() {
-        Bugsnag.init(this);
-        Bugsnag.beforeNotify(new BeforeNotify() {
-            @Override
-            public boolean run(Error error) {
-                UserSessionInterface userSession = new UserSession(SellerMainApplication.this);
-                error.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
-                error.addToTab("squad", "package", getPackageName(error));
-                return true;
-            }
-
-            private String getPackageName(Error error) {
-                String packageName = "";
-                String errorText = error.getException().getMessage();
-                String startText = "/com.tokopedia.";
-                int startIndex = errorText.indexOf(startText);
-                if (startIndex > 0) {
-                    int endIndex = errorText.indexOf(".", startIndex + startText.length());
-                    packageName = errorText.substring(startIndex + 1, endIndex);
-                }
-                return packageName;
-            }
-        });
-    }
-
     public void initBlockCanary(){
         BlockCanary.install(context, new BlockCanaryContext()).start();
     }
@@ -224,6 +207,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     @Override
@@ -277,6 +261,20 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
     }
+
+    private void initSlicePermission() {
+        if (getSliceRemoteConfig()) {
+            SlicePermission slicePermission = new SlicePermission();
+            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        }
+    }
+
+    private Boolean getSliceRemoteConfig() {
+        return remoteConfig != null
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
+    }
+
+
 
     @Override
     public Class<?> getDeeplinkClass() {

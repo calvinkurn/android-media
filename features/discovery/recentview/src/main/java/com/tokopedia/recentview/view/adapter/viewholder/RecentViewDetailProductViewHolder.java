@@ -15,13 +15,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.recentview.R;
 import com.tokopedia.recentview.view.adapter.LabelsAdapter;
 import com.tokopedia.recentview.view.listener.RecentView;
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel;
 
 /**
  * @author by nisie on 7/4/17.
  */
 
-public class RecentViewDetailProductViewHolder extends AbstractViewHolder<RecentViewDetailProductViewModel> {
+public class RecentViewDetailProductViewHolder extends AbstractViewHolder<RecentViewDetailProductDataModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_product_detail;
@@ -71,7 +71,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     }
 
     @Override
-    public void bind(final RecentViewDetailProductViewModel element) {
+    public void bind(final RecentViewDetailProductDataModel element) {
 
         ImageHandler.LoadImage(productImage, element.getImageSource());
         productName.setText(MethodChecker.fromHtml(element.getName()));

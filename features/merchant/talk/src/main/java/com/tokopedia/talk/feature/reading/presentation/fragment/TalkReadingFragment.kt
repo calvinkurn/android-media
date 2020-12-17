@@ -23,10 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -52,13 +49,13 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
 import javax.inject.Inject
@@ -303,7 +300,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showPageEmpty() {
-        reading_image_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
+        reading_empty_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
         addFloatingActionButton.hide()
         pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
@@ -319,6 +316,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun showPageError() {
         addFloatingActionButton.hide()
         pageError.show()
+        reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
         }
@@ -333,7 +331,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeProductHeader() {
-        viewModel.discussionAggregate.observe(this,  Observer {
+        viewModel.discussionAggregate.observe(viewLifecycleOwner,  Observer {
             when (it) {
                 is Success -> {
                     bindHeader(
@@ -355,7 +353,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
@@ -372,7 +370,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeSortOptions() {
-        viewModel.sortOptions.observe(this, Observer { sortOptions ->
+        viewModel.sortOptions.observe(viewLifecycleOwner, Observer { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
@@ -383,7 +381,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeFilterCategories() {
-        viewModel.filterCategories.observe(this, Observer {
+        viewModel.filterCategories.observe(viewLifecycleOwner, Observer {
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
                 adapter.clearAllElements()
@@ -393,7 +391,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this, Observer {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ViewState.Loading -> {
                     if(it.isRefreshing) {
@@ -511,11 +509,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToWriteActivity(eventAction: String) {
         TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected, availableVariants)
-        if(useOldPage()) {
-            val intent = context?.let { AddTalkActivity.createIntent(it, productId, TalkConstants.READING_SOURCE) }
-            startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
-            return
-        }
         val intent = RouteManager.getIntent(context, Uri.parse(
                 ApplinkConstInternalGlobal.ADD_TALK)
                 .buildUpon()
@@ -594,17 +587,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategoryDisplayName(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
-        }
-        return remoteConfigInstance?.abTestPlatform
-    }
-
-    private fun useOldPage(): Boolean {
-        return getAbTestPlatform()?.getString(TalkConstants.AB_TEST_WRITE_KEY).equals(TalkConstants.WRITE_OLD_FLOW)
     }
 
 }

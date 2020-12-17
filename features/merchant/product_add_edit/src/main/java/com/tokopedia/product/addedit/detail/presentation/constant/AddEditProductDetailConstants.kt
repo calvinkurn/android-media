@@ -7,11 +7,8 @@ class AddEditProductDetailConstants {
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
         const val REQUEST_CODE_CATEGORY = 1
-        const val REQUEST_CODE_DETAIL = 2
-        const val REQUEST_CODE_DETAIL_EDIT = 3
-        const val REQUEST_CODE_DESCRIPTION_EDIT = 4
-        const val REQUEST_CODE_SHIPMENT_EDIT = 5
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 6
+        const val REQUEST_CODE_SHOP_LOCATION = 2
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
@@ -39,6 +36,7 @@ class AddEditProductDetailConstants {
         const val SET_CASHBACK_RESULT = "set_cashback_result"
         const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
         const val EXTRA_CASHBACK_IS_DRAFTING = "extra_is_drafting"
+        const val EXTRA_RESULT_STATUS = "extra_result_status"
         // request key for set fragment result
         const val REQUEST_KEY_ADD_MODE = "request_key_add_mode"
         const val REQUEST_KEY_DESCRIPTION = "request_key_description"

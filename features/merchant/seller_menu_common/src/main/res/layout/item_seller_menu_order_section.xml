@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl3">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardNewOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/containerNewOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/imageNewOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_seller_menu_new_order" />
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/newOrderCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/containerNewOrder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:notificationColor="color_primary"
+            app:notificationTitle="3"
+            app:notificationType="counter_type"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelNewOrder"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/seller_menu_new_order"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/containerNewOrder"
+            app:layout_constraintLeft_toRightOf="@id/containerNewOrder"
+            app:layout_constraintTop_toTopOf="@id/containerNewOrder" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardReadyToShip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cardNewOrder"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/containerReadyToShip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/imageReadyToShip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_seller_menu_delivery" />
+        </com.tokopedia.unifycomponents.CardUnify>
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/readyToShipCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/containerReadyToShip"
+            app:layout_constraintTop_toTopOf="parent"
+            app:notificationColor="color_primary"
+            app:notificationTitle="2"
+            app:notificationType="counter_type"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelDelivery"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/seller_menu_delivery"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/containerReadyToShip"
+            app:layout_constraintLeft_toRightOf="@id/containerReadyToShip"
+            app:layout_constraintTop_toTopOf="@id/containerReadyToShip" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

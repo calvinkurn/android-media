@@ -1,9 +1,11 @@
 package com.tokopedia.attachproduct.view.presenter;
 
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase;
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachcommon.data.ResultProduct;
 import com.tokopedia.attachproduct.view.subscriber.AttachProductGetProductListSubscriber;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
+
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     private final AttachProductUseCase useCase;
     private AttachProductContract.View view;
     private AttachProductContract.Activity activityContract;
-    private List<AttachProductItemViewModel> checkedList;
+    private List<AttachProductItemUiModel> checkedList;
 
     @Inject
     public AttachProductPresenter(AttachProductUseCase useCase) {
@@ -42,7 +44,7 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     }
 
     @Override
-    public void updateCheckedList(List<AttachProductItemViewModel> products) {
+    public void updateCheckedList(List<AttachProductItemUiModel> products) {
         if (checkedList == null) {
             checkedList = new ArrayList<>();
         }
@@ -59,8 +61,14 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
     @Override
     public void completeSelection() {
         ArrayList<ResultProduct> resultProducts = new ArrayList<>();
-        for(AttachProductItemViewModel product:checkedList){
-            resultProducts.add(new ResultProduct(product));
+        for(AttachProductItemUiModel product:checkedList){
+            resultProducts.add(new ResultProduct(
+                    product.getProductId(),
+                    product.getProductUrl(),
+                    product.getProductImage(),
+                    product.getProductPrice(),
+                    product.getProductName()
+            ));
         }
         activityContract.finishActivityWithResult(resultProducts);
     }
@@ -70,5 +78,10 @@ public class AttachProductPresenter implements AttachProductContract.Presenter {
         if(useCase != null) useCase.unsubscribe();
         if(view != null) view = null;
         if(activityContract != null) activityContract = null;
+    }
+
+    @TestOnly
+    public List<AttachProductItemUiModel> getCheckedList() {
+        return checkedList;
     }
 }

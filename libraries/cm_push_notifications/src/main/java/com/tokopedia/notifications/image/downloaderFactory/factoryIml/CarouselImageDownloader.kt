@@ -6,6 +6,7 @@ import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.Carousel
+import timber.log.Timber
 
 class CarouselImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
@@ -17,8 +18,11 @@ class CarouselImageDownloader(baseNotificationModel: BaseNotificationModel)
                 faultyCarouselList.add(carousel)
         }
         baseNotificationModel.carouselList.removeAll(faultyCarouselList)
-        if (baseNotificationModel.carouselList.isEmpty())
+        if (baseNotificationModel.carouselList.isEmpty()) {
             baseNotificationModel.type = CMConstant.NotificationType.GENERAL
+            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download';data='${
+            baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
+        }
     }
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {

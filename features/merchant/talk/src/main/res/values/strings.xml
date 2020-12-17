@@ -7,26 +7,6 @@
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
 
-    <!-- INBOX TALK -->
-    <string name="title_tab_talk_all">Semua</string>
-    <string name="title_tab_talk_my_product">Produk Saya</string>
-    <string name="title_tab_talk_follow">Ikuti</string>
-
-    <string name="filter_all_talk">Semua</string>
-    <string name="filter_not_read">Belum Dibaca</string>
-
-    <!-- ALERT DIALOG -->
-    <string name="follow_talk_dialog_title">Ikuti Diskusi Ini?</string>
-    <string name="follow_talk_dialog_desc">Anda akan menerima notifikasi mengenai diskusi ini</string>
-    <string name="delete_talk_dialog_title">Hapus Diskusi?</string>
-    <string name="delete_talk_dialog_desc">Diskusi akan terhapus selamanya</string>
-    <string name="delete_comment_talk_dialog_title">Hapus Diskusi?</string>
-    <string name="delete_comment_talk_dialog_desc">Diskusi akan terhapus selamanya</string>
-    <string name="unfollow_talk_dialog_title">Berhenti Ikuti Diskusi Ini?</string>
-    <string name="unfollow_talk_dialog_desc">Anda tidak akan menerima notifikasi mengenai diskusi ini lagi</string>
-    <string name="button_follow_talk">Ikuti</string>
-    <string name="button_unfollow_talk">Berhenti Ikuti</string>
-
     <!-- REPORT TALK -->
     <string name="report_talk_question">Bantu Kami Memahami Apa yang Terjadi. Mengapa Anda melaporkan hal ini?</string>
     <string name="talk_report_option_spam">Ini adalah spam</string>
@@ -34,41 +14,6 @@
         dan pelanggaran nilai/norma sosial</string>
     <string name="talk_report_option_others">Lainnya</string>
     <string name="talk_hint_input_reason">Isi alasan disini</string>
-    <string name="success_report_talk">Berhasil melaporkan diskusi.</string>
-    <string name="reply_talk">Balas</string>
-    <string name="menu_delete_talk">Hapus diskusi</string>
-    <string name="menu_unfollow_talk">Berhenti ikuti diskusi</string>
-    <string name="menu_follow_talk">Ikuti diskusi</string>
-    <string name="menu_report_talk">Laporkan Diskusi</string>
-    <string name="menu_report_comment">Laporkan Diskusi</string>
-    <string name="menu_delete_comment">Hapus Diskusi</string>
-    <string name="empty_talk_subtitle">Jadilah yang pertama bertanya dengan penjual atau pengguna
-        lain</string>
-    <string name="empty_inbox_talk_title">Belum ada diskusi</string>
-    <string name="reported_talk_seller_message">Diskusi ini mengandung konten yang tidak relevan. Waspadai tautan yang dicantumkan dan hati-hati dalam membagikan informasi pribadi Anda.</string>
-    <string name="report_this_talk">Laporkan diskusi ini?</string>
-    <string name="yes_report">Ya, laporkan</string>
-    <string name="no_show_talk">Tidak, tampilkan diskusi</string>
-
-    <string name="see_more">Lihat %s jawaban lainnya</string>
-    <string name="any_question">Ada pertanyaan?</string>
-    <string name="discuss_seller">Diskusikan dengan penjual atau pengguna lain</string>
-    <string name="write_question">Tulis Pertanyaan</string>
-    <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="contact_seller">Atau hubungi langsung penjual</string>
-    <string name="chat_seller">Chat Penjual</string>
-    <string name="label_talk_seller">Penjual</string>
-    <string name="what_question">Apa yang ingin Anda tanyakan mengenai produk ini?</string>
-    <string name="error_default_cannot_reply_talk">Maaf, diskusi sedang tidak dapat diakses. Silahkan coba kembali setelah beberapa saat.</string>
-    <string name="hint_send_discussion">Balas diskusi..</string>
-    <string name="success_report_talk_masked_message">Diskusi ini telah anda laporkan sebagai
-        konten yang tidak relevan dan sedang dalam proses peninjauan.</string>
-    <string name="success_send_talk">Diskusi berhasil dikirim</string>
-
-    <string name="success_delete_comment_talk">Diskusi berhasil dihapus</string>
-    <string name="success_unfollow_talk">Berhasil berhenti mengikuti diskusi</string>
-    <string name="success_follow_talk">Berhasil mengikuti diskusi</string>
-    <string name="send">Kirim</string>
 
     <string name="talk_send">Kirim</string>
     <string name="talk_retry">Refresh</string>
@@ -119,6 +64,13 @@
     <string name="reply_empty_subtitle_own_question">Jawaban akan segera datang untukmu</string>
     <string name="reply_empty_title_default">Bantu jawab, yuk!</string>
     <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
+    <string name="reply_product_deleted">Barang ini sudah dihapus</string>
+    <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
+    <string name="reply_unmask_yes">Ya</string>
+    <string name="reply_unmask_no">Tidak</string>
+    <string name="reply_unmask_toaster_negative">Konten tidak ditampilkan.</string>
+    <string name="reply_unmask_toaster_positive">Konten berhasil ditampilkan.</string>
+    <string name="reply_unmask_toaster_error">Ada kesalahan jaringan. Silakan pilih kembali jawabanmu.</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
 
@@ -129,5 +81,17 @@
     <string name="write_submit_error">Pertanyaan tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
     <string name="reply_dot_builder">• %s</string>
+
+    <string name="inbox_read">Sudah Dibaca</string>
+    <string name="inbox_unread">Belum Dibaca</string>
+    <string name="inbox_total_count">%s jawaban</string>
+    <string name="inbox_total_count_empty_seller">Jawab Pertanyaan</string>
+    <string name="inbox_date">• %s</string>
+    <string name="inbox_total_count_empty_buyer">Belum ada jawaban</string>
+    <string name="inbox_empty_title">Lagi nggak ada diskusi</string>
+    <string name="inbox_empty_read_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
+    <string name="inbox_empty_unread_discussion">Semua diskusi yang belum dibaca akan tampil di sini</string>
+    <string name="inbox_all_empty">Belum ada diskusi, nih.</string>
+    <string name="inbox_toaster_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
 
 </resources>

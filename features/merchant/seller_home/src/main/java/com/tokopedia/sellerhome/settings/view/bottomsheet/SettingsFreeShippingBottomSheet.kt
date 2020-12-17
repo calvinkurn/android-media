@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.centralizedpromo.constant.CentralizedPromoUrl
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
 
     companion object {
-        val TAG: String = SettingsFreeShippingBottomSheet::class.java.simpleName
+        val TAG = SettingsFreeShippingBottomSheet::class.java.canonicalName
 
         fun createInstance(): SettingsFreeShippingBottomSheet {
             return SettingsFreeShippingBottomSheet()
@@ -43,7 +43,7 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
         btnFreeShippingDetail.setOnClickListener {
             freeShippingTracker.trackFreeShippingDetailClick()
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
             dismiss()
         }
     }

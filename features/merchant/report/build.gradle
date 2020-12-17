@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -20,11 +20,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.mediauploader)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -45,6 +46,9 @@ dependencies {
     }
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -58,3 +62,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

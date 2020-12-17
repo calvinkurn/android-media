@@ -8,10 +8,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterTitleTextView"
-        android:contentDescription="@string/content_desc_filterTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginTop="@dimen/dp_16"
         app:typographyType="heading_4"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +22,7 @@
         android:contentDescription="@string/content_desc_filterSeeAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         android:text="@string/see_all"
         android:layout_marginTop="@dimen/dp_16"
         android:background="?attr/selectableItemBackground"

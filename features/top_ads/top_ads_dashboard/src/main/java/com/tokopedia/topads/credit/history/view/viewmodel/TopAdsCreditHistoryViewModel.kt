@@ -2,14 +2,20 @@ package com.tokopedia.topads.credit.history.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.Deposit
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,12 +32,14 @@ import javax.inject.Named
 
 class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                        private val userSessionInterface: UserSessionInterface,
+                                                       private val topAdsGetShopDepositUseCase: GraphqlUseCase<Deposit>,
                                                        @Named("Main")
                                                        val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
+    val creditAmount = MutableLiveData<String>()
 
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
@@ -42,7 +50,7 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
+            val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopAdsCreditHistory.CreditsResponse>()
@@ -51,28 +59,44 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 creditsHistory.value = Success(data.response.dataHistory)
             else
                 creditsHistory.value = Fail(ResponseErrorException(data.response.errors))
-        }){
+        }) {
             creditsHistory.value = Fail(it)
         }
     }
 
-    fun getAutoTopUpStatus(rawQuery: String){
+    fun getAutoTopUpStatus(rawQuery: String) {
         val params = mapOf(PARAM_SHOP_ID to userSessionInterface.shopId)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default){
+            val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<AutoTopUpData.Response>()
 
             if (data.response == null)
                 getAutoTopUpStatus.value = Fail(Exception("Gagal mengambil status"))
-             else if (data.response.errors.isEmpty())
+            else if (data.response.errors.isEmpty())
                 getAutoTopUpStatus.value = Success(data.response.data)
             else
                 getAutoTopUpStatus.value = Fail(ResponseErrorException(data.response.errors))
-        }){
+        }) {
             getAutoTopUpStatus.value = Fail(it)
         }
+    }
+
+
+    @GqlQuery("DepositQuery", TopAdsDashboardPresenter.DEPOSIT)
+    fun getShopDeposit() {
+        val params = mapOf(ParamObject.SHOP_id to userSessionInterface.shopId.toIntOrZero(),
+                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
+        topAdsGetShopDepositUseCase.setTypeClass(Deposit::class.java)
+        topAdsGetShopDepositUseCase.setRequestParams(params)
+        topAdsGetShopDepositUseCase.setGraphqlQuery(DepositQuery.GQL_QUERY)
+        topAdsGetShopDepositUseCase.execute({
+            creditAmount.value = it.topadsDashboardDeposits.data.amountFmt
+        }
+                , {
+            it.printStackTrace()
+        })
     }
 
     companion object {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White" />
+
+    <style name="SomFilterDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+</resources>

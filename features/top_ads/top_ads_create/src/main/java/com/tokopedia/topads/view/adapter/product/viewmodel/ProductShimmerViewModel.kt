@@ -1,6 +1,5 @@
 package com.tokopedia.topads.view.adapter.product.viewmodel
 
-import com.tokopedia.topads.data.response.ResponseProductList
 import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactory
 
 /**

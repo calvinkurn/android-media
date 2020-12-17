@@ -7,7 +7,7 @@
         android:right="@dimen/play_placeholder_shadow_padding"
         >
         <shape>
-            <solid android:color="@color/Neutral_N75"/>
+            <solid android:color="@color/Unify_N75"/>
             <corners android:radius="@dimen/play_placeholder_radius"/>
         </shape>
     </item>

@@ -11,6 +11,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
 public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactory> {
     private String userId;
     private String name;
+    private String shopName;
     private String imageUrl;
     private String tokopointTitle;
     private String tokopoint;
@@ -31,6 +32,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private String memberStatus;
     private int progress;
     private boolean isAffiliate;
+    private boolean hasShop;
 
     public BuyerCardViewModel() {
     }
@@ -184,6 +186,22 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.progress = progress;
     }
 
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public boolean isHasShop() {
+        return hasShop;
+    }
+
+    public void setHasShop(boolean hasShop) {
+        this.hasShop = hasShop;
+    }
+
     public boolean isAffiliate() {
         return isAffiliate;
     }
@@ -225,6 +243,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.userId);
         dest.writeString(this.name);
+        dest.writeString(this.shopName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.tokopointTitle);
         dest.writeString(this.tokopoint);
@@ -245,11 +264,13 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         dest.writeString(this.memberStatus);
         dest.writeInt(this.progress);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasShop ? (byte) 1 : (byte) 0);
     }
 
     protected BuyerCardViewModel(Parcel in) {
         this.userId = in.readString();
         this.name = in.readString();
+        this.shopName = in.readString();
         this.imageUrl = in.readString();
         this.tokopointTitle = in.readString();
         this.tokopoint = in.readString();
@@ -270,6 +291,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.memberStatus = in.readString();
         this.progress = in.readInt();
         this.isAffiliate = in.readByte() != 0;
+        this.hasShop = in.readByte() != 0;
     }
 
     public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {

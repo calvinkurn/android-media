@@ -104,7 +104,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun initObserver() {
-        livenessDetectionViewModel.livenessResponseLiveData.observe(this, Observer {
+        livenessDetectionViewModel.livenessResponseLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val intent = Intent()
@@ -129,7 +129,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
-                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
+                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable}'")
                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
                     when (it.throwable) {
                         is SocketTimeoutException -> {
@@ -400,7 +400,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='$error'")
         }
         return ""
     }
@@ -424,7 +424,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='$e'")
         }
         return file
     }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+
+    <View
+        android:id="@+id/outerCircle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/setting_image_circular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/shopScoreLayout"
+        app:layout_constraintWidth_percent="0.225" />
+
+    <RelativeLayout
+        android:id="@+id/innerCircle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/setting_shop_image_border_margin"
+        android:background="@drawable/setting_image_circular_border_inner"
+        app:layout_constraintBottom_toBottomOf="@id/outerCircle"
+        app:layout_constraintEnd_toEndOf="@id/outerCircle"
+        app:layout_constraintStart_toStartOf="@id/outerCircle"
+        app:layout_constraintTop_toTopOf="@id/outerCircle">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shopImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/setting_shop_avatar_border"
+            app:unify_image_type="circle" />
+    </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/shopBadges"
+        app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintTop_toTopOf="@id/innerCircle"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/shopBadges"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/setting_shop_badge_height"
+        app:layout_constraintBottom_toBottomOf="@id/innerCircle"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintTop_toBottomOf="@id/shopName"
+        app:srcCompat="@drawable/ic_power_merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/dot_string"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/shopBadges"
+        app:layout_constraintStart_toEndOf="@id/shopBadges"
+        app:layout_constraintTop_toTopOf="@id/shopBadges"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shopFollowers"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/shopBadges"
+        app:layout_constraintStart_toEndOf="@id/dot"
+        app:layout_constraintTop_toTopOf="@id/shopBadges"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="100 followers" />
+
+    <LinearLayout
+        android:id="@+id/shopScoreLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/settingShopGuidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/outerCircle">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScoreLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/seller_menu_shop_score_label"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="85" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScoreMaxLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/seller_menu_shop_score_max_label"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <ImageView
+            android:id="@+id/shopScoreChevronRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_seller_menu_chevron_right"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/settingShopGuidelineLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.025" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/settingShopGuidelineRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/settingShopGuidelineInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+</androidx.constraintlayout.widget.ConstraintLayout>

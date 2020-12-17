@@ -10,6 +10,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_preference_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement" />
+
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error"
             android:layout_width="match_parent"
@@ -34,7 +42,10 @@
             android:id="@+id/btn_add_preference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/add_preference"
             android:visibility="gone"
             app:unifyButtonVariant="ghost" />

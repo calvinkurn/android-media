@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:id="@+id/reading_image_error"
+        android:id="@+id/reading_empty_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_36"
@@ -26,7 +26,7 @@
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reading_image_error"/>
+        app:layout_constraintTop_toBottomOf="@id/reading_empty_error"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reading_empty_subtitle"

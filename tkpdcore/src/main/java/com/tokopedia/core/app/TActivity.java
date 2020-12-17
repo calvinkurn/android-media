@@ -129,11 +129,11 @@ public abstract class TActivity extends BaseActivity {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core2.R.drawable.ic_webview_back_button
+                    R.drawable.ic_webview_back_button
             );
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, R.style
                 .WebViewToolbarSubtitleText);
     }
 

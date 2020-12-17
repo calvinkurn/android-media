@@ -1,12 +1,17 @@
 package com.tokopedia.home_recom.view.adapter
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.*
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationDataModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
 
 /**
@@ -20,7 +25,7 @@ import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
  */
 class SimilarProductRecommendationAdapter(
         private val adapterTypeFactory: SimilarProductRecommendationTypeFactoryImpl
-) : BaseListAdapter<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
+) : BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
 
     /**
      * This override function from [BaseListAdapter]
@@ -46,6 +51,8 @@ class SimilarProductRecommendationAdapter(
             ErrorNetworkViewHolder.LAYOUT -> layout.isFullSpan = true
             LoadingShimmeringGridViewHolder.LAYOUT -> layout.isFullSpan = true
             SimilarProductLoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
+            RecommendationEmptyDataModel.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }
@@ -61,4 +68,10 @@ class SimilarProductRecommendationAdapter(
      * It return viewType of the viewHolder
      */
     override fun getItemViewType(position: Int): Int = visitables[position].type(adapterTypeFactory)
+
+    fun showRecommendationError(recommendationErrorDataModel: RecommendationErrorDataModel){
+        visitables.clear()
+        visitables.add(recommendationErrorDataModel)
+        notifyDataSetChanged()
+    }
 }

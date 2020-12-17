@@ -22,6 +22,8 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStar
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.toDp
 import java.util.*
 
@@ -57,24 +59,28 @@ class EventPDPTicketItemPackageAdapter(
                 val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
                 val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
                 val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) && items.available.toInt()>=1)
-                if(isSaleStarted && isNotEnded) {
-                    txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
-                    txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
-                } else if(!isSaleStarted && isNotEnded) {
-                    txtPilih_ticket.visibility = View.GONE
-                    txtHabis_ticket.visibility = View.GONE
-                    txtAlreadyEnd.visibility = View.GONE
-                    txtNotStarted.visibility = View.VISIBLE
-                } else if(isSaleStarted && !isNotEnded){
-                    txtPilih_ticket.visibility = View.GONE
-                    txtHabis_ticket.visibility = View.GONE
-                    txtAlreadyEnd.visibility = View.VISIBLE
-                    txtNotStarted.visibility = View.GONE
+                val isRecomended = checkDate(items.dates,onBindItemTicketListener.getSelectedDate())
+                if(isRecomended){
+                    if(isSaleStarted && isNotEnded) {
+                        if(itemIsAvailable){
+                            txtPilih_ticket.show()
+                        } else {
+                            txtHabis_ticket.show()
+                            showSoldOut(itemView)
+                        }
+                    } else if(!isSaleStarted && isNotEnded) {
+                        txtNotStarted.show()
+                    } else if(isSaleStarted && !isNotEnded){
+                        txtAlreadyEnd.show()
+                    }
+                } else {
+                    txtisRecommeded.show()
+                    showSoldOut(itemView)
                 }
 
                 itemView.post {
                     if(position == 0) heightItemView += itemView.height.toDp()
-                    if(onCoachmarkListener.getLocalCache()) {
+                    if(!onCoachmarkListener.getLocalCache()) {
                         if (listItemPackage.size == 1 && position == 0) {
                             onCoachmarkListener.showCoachMark(itemView, 0)
                         } else if (listItemPackage.size >= 2 && position == 1) {
@@ -88,9 +94,10 @@ class EventPDPTicketItemPackageAdapter(
                 quantityEditor.maxValue = items.maxQty.toInt()
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
-                    isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
+                    isError = !((quantityEditor.getValue() >= items.minQty.toInt() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toInt())
+                    val total = if(newValue < items.minQty.toInt()) EMPTY_QTY else newValue
                     onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id, items,
-                            items.salesPrice.toInt()*newValue, newValue.toString(),
+                            items.salesPrice.toInt()*total, total.toString(),
                             isError, items.name, items.productId,items.salesPrice,
                             getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     eventPDPTracking.onClickQuantity()
@@ -139,8 +146,9 @@ class EventPDPTicketItemPackageAdapter(
                             isError = true
                         }
 
-                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*getDigit(txtTotal.toString()),
-                                getDigit(txtTotal.toString()).toString(), isError, items.name, items.productId,items.salesPrice,
+                        val total = if(getDigit(txtTotal.toString()) < items.minQty.toInt()) EMPTY_QTY else getDigit(txtTotal.toString())
+                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*total,
+                                total.toString(), isError, items.name, items.productId,items.salesPrice,
                                 getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     }
                 })
@@ -156,6 +164,10 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
                     eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
                 }
+
+               txtisRecommeded.setOnClickListener {
+                    onBindItemTicketListener.clickRecommendation(items.dates)
+               }
             }
         }
     }
@@ -175,6 +187,17 @@ class EventPDPTicketItemPackageAdapter(
         this.idPackage = idPackage
         this.packageName = packageName
         notifyDataSetChanged()
+    }
+
+    private fun showSoldOut(itemView : View){
+        with(itemView) {
+            bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_sold_out)
+            txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            txtSubtitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            txtPrice_ticket.setText(resources.getString(R.string.ent_pdp_ticket_sold_out))
+            txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        }
     }
 
     companion object {

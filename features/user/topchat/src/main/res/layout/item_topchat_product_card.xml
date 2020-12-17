@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl1"
-    android:background="@drawable/bg_shadow_attach_product"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,10 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_topchat_12"
-        android:paddingLeft="@dimen/dp_topchat_12"
         android:paddingTop="@dimen/dp_topchat_12"
         android:paddingEnd="@dimen/dp_topchat_12"
-        android:paddingRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

@@ -27,13 +27,6 @@
                 app:titleText="@string/title_topchat_chat_banned_seller"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/ticker_seller_migration_topchat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:tickerType="announcement"/>
-
         </LinearLayout>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh

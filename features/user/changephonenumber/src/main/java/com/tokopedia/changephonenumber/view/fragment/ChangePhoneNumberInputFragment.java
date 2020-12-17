@@ -134,7 +134,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
             @Override
             public void afterTextChanged(Editable editable) {
-                presenter.onNewNumberTextChanged(editable, newPhoneNumber.getSelectionStart());
+                presenter.onNewNumberTextChanged(editable.toString(), newPhoneNumber.getSelectionStart());
             }
         };
         newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);

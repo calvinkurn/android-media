@@ -39,6 +39,8 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         const val PARAM_INPUT = "input"
         const val STRING_JOIN_SEPARATOR = "\n"
+        const val QUERY_NAME = "ProductAddV3" // for tracking purpose
+
         @JvmStatic
         fun createRequestParams(param: ProductAddParam): RequestParams {
             val requestParams = RequestParams.create()

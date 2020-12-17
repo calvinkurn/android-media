@@ -1,14 +1,18 @@
 package com.tokopedia.oneclickcheckout.tracking.preference.edit.view
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
@@ -35,7 +39,7 @@ class PreferenceEditActivityTrackingTest {
     }
 
     @get:Rule
-    val activityRule = ActivityTestRule(TestPreferenceEditActivity::class.java, true, false)
+    val activityRule = IntentsTestRule(TestPreferenceEditActivity::class.java, true, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -82,6 +86,8 @@ class PreferenceEditActivityTrackingTest {
                     putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, true)
                 }
         )
+
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
     }
 
     @After
@@ -94,6 +100,7 @@ class PreferenceEditActivityTrackingTest {
     @Test
     fun performPreferenceEditTrackingActions() {
         addressListPage {
+            clickAddButton()
             clickAddress(0)
             clickSimpan()
         }

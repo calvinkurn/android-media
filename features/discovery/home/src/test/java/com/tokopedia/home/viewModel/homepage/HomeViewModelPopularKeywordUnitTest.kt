@@ -14,9 +14,19 @@ import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -32,6 +42,17 @@ class HomeViewModelPopularKeywordUnitTest {
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
+    private val testDispatcher = TestCoroutineDispatcher()
+    @Before
+    fun setup(){
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @After
+    fun tearDown(){
+        Dispatchers.resetMain()
+        testDispatcher.cleanupTestCoroutines()
+    }
 
     @Test
     fun `Test Popular with data keyword`(){
@@ -80,18 +101,20 @@ class HomeViewModelPopularKeywordUnitTest {
     }
 
     @Test
-    fun `Test Popular evaluate data with refresh`(){
+    fun `Test Popular evaluate data with refresh`() = runBlockingTest {
         val popular = PopularKeywordListDataModel()
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-
+        val channel = Channel<HomeDataModel>()
         // Data with popular keyword
         coEvery { getHomeUseCase.getHomeData() } returns flow{
-            emit(HomeDataModel(
+            channel.consumeAsFlow().collect {
+                emit(it)
+            }
+        }
+
+        launch {
+            channel.send(HomeDataModel(
                     isCache = true,
-                    list = listOf(popular)
-            ))
-            delay(5000)
-            emit(HomeDataModel(
                     list = listOf(popular)
             ))
         }
@@ -112,7 +135,11 @@ class HomeViewModelPopularKeywordUnitTest {
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPopularKeywordUseCase = getPopularKeywordUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
-        Thread.sleep(8000)
+        launch {
+            channel.send(HomeDataModel(
+                    list = listOf(popular)
+            ))
+        }
         // Expect popular keyword will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
@@ -123,7 +150,7 @@ class HomeViewModelPopularKeywordUnitTest {
                 homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeLoadingMoreModel } != null
             })
             observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeLoadingMoreModel } == null
+                homeDataModel.list.isNotEmpty()
             })
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.isNotEmpty()
@@ -134,7 +161,7 @@ class HomeViewModelPopularKeywordUnitTest {
             })
         }
         confirmVerified(observerHome)
-
+        channel.close()
     }
 
     @Test

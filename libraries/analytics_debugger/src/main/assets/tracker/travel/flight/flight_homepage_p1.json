@@ -7,7 +7,13 @@
       "eventAction": "click search flight",
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*}}",
-      "sessionIris": "{{.*}}"
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/homepage",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
     },
     {
       "event": "view_item",
@@ -15,6 +21,12 @@
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - \\d* - .*}}",
       "sessionIris": "{{.*}}",
+      "screenName" : "/flight/homepage",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight",
       "promotions": [
         {
           "item_id": "{{.*}}",
@@ -31,6 +43,12 @@
       "eventCategory": "digital - flight",
       "eventLabel": "{{flight - \\d* - .*}}",
       "sessionIris": "{{.*}}",
+      "screenName" : "/flight/homepage",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight",
       "promotions": [
         {
           "item_id": "{{.*}}",

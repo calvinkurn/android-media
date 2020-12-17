@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
 
@@ -28,7 +27,7 @@ object RouteManagerKt{
         if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)) {
             return false
         }
-        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity, Uri.parse(url), url)
+        val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(Uri.parse(url), url)
         if (!TextUtils.isEmpty(registeredNavigation)) {
             val intent = RouteManager.getIntentNoFallback(activity, registeredNavigation)
             if (intent != null) {
@@ -86,8 +85,7 @@ object RouteManagerKt{
                 return RouteManager.route(activity, url)
             }
             DeepLinkChecker.ORDER_LIST -> {
-                RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
-                return true
+                return RouteManager.route(activity, url)
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)

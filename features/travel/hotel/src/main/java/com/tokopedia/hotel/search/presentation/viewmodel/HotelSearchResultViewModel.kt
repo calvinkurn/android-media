@@ -1,7 +1,12 @@
 package com.tokopedia.hotel.search.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
@@ -15,18 +20,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
-        dispatcher: TravelDispatcherProvider,
-        private val searchPropertyUseCase: SearchPropertyUseCase)
+        private val dispatcher: TravelDispatcherProvider,
+        private val searchPropertyUseCase: SearchPropertyUseCase,
+        private val travelTickerUseCase: TravelTickerCoroutineUseCase)
     : BaseViewModel(dispatcher.io()) {
 
     val searchParam: SearchParam = SearchParam()
 
     var selectedSort: Sort = Sort()
 
+    var defaultSort = ""
+
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
     val liveSelectedFilter = MutableLiveData<Pair<List<ParamFilterV2>, Boolean>>()
+
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
 
     var isFilter = false
 
@@ -132,9 +144,24 @@ class HotelSearchResultViewModel @Inject constructor(
         addFilter(selectedFilters.values.toMutableList())
     }
 
+    fun getFilterCount(): Int {
+        var count = 0
+        getSelectedFilter().forEach {
+            count += if (it.name == "price") 1 else it.values.size
+        }
+        if (selectedSort.displayName != defaultSort) count += 1
+        return count
+    }
+
+    fun fetchTickerData() {
+        launch(dispatcher.ui()) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.SEARCH_LIST)
+            mutableTickerData.postValue(tickerData)
+        }
+    }
+
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
-
         private const val DEFAULT_SORT = "popularity"
     }
 }

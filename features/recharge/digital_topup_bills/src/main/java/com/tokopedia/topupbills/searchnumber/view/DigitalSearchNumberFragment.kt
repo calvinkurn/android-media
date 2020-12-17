@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
@@ -72,7 +72,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()

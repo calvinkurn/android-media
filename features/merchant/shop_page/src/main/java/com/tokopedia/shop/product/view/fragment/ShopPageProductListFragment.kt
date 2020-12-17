@@ -2,7 +2,6 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -30,6 +29,10 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -44,41 +47,42 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
-import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
-import com.tokopedia.shop.common.view.viewmodel.ShopSortSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -98,10 +102,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener,
         WishListActionListener,
         ShopProductImpressionListener,
-        ShopProductChangeGridSectionListener {
+        ShopProductChangeGridSectionListener,
+        SortFilterBottomSheet.Callback {
 
     companion object {
-        private const val ETALASE_TO_SHOW = 5
         private const val REQUEST_CODE_USER_LOGIN = 100
         private const val REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101
         private const val REQUEST_CODE_ETALASE = 205
@@ -109,11 +113,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
-        private const val REQUEST_CODE_ADD_ETALASE = 288
         private const val REQUEST_CODE_ADD_PRODUCT = 3697
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
-        private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         const val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         const val SAVED_SHOP_ID = "saved_shop_id"
@@ -122,22 +124,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
-        const val SAVED_NEED_TO_RELOAD = "saved_need_to_reload"
+        const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
         private const val REQUEST_CODE_SORT = 300
-
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
-        const val BUNDLE = "bundle"
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_SHOP_HOME_TYPE = "SHOP_HOME_TYPE"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-        private const val IS_ACTIVITY_DESTROYED = "is_activity_destroyed"
 
         @JvmStatic
         fun createInstance(
@@ -181,8 +176,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var lastQuestId: Int = 0
     private var attribution: String = ""
     private var isLoadingNewProductData = false
-    private var sortId = ""
-    private var sortName = ""
+    private var sortId
+        get() = shopProductFilterParameter?.getSortId().orEmpty()
+        set(value) {
+            shopProductFilterParameter?.setSortId(value)
+        }
+    private val sortName
+        get() = if (::viewModel.isInitialized) {
+            viewModel.getSortNameById(sortId)
+        } else {
+            ""
+        }
     private var urlNeedTobBeProceed: String? = null
     private var shopId: String = ""
     private var shopName: String = ""
@@ -193,22 +197,25 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var selectedEtalaseId = ""
     private var selectedEtalaseName = ""
     private var defaultEtalaseName = ""
+    private var productListName: String = ""
     private var recyclerViewTopPadding = 0
     private var shopSortFilterHeight = 0
-    private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
-    private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
+    private var isOnViewCreated = false
+    private var threeDotsClickShopProductUiModel: ShopProductUiModel? = null
+    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
     private var initialProductListData : GetShopProductUiModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var remoteConfig: RemoteConfig? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
-    private var selectedEtalaseType: Int = SELECTED_ETALASE_TYPE_DEFAULT_VALUE
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
         }
+    private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
 
     override fun chooseProductClicked() {
         context?.let {
@@ -245,7 +252,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllNonDataElement()
         shopProductAdapter.clearProductList()
         showLoading()
-        viewModel.getNewProductListData(shopId, selectedEtalaseId, sortId)
+        viewModel.getNewProductListData(
+                shopId,
+                selectedEtalaseId,
+                shopProductFilterParameter ?: ShopProductFilterParameter()
+        )
     }
 
     private fun initRecyclerView(view: View) {
@@ -313,21 +324,21 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startActivityForResult(intent, REQUEST_CODE_MEMBERSHIP_STAMP)
     }
 
-    override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int) {
-        threeDotsClickShopProductViewModel = shopProductViewModel
+    override fun onThreeDotsClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int) {
+        threeDotsClickShopProductUiModel = shopProductUiModel
         threeDotsClickShopTrackingType = shopTrackType
 
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
                         hasWishlist = true,
-                        isWishlisted = shopProductViewModel.isWishList,
-                        productId = shopProductViewModel.id ?: ""
+                        isWishlisted = shopProductUiModel.isWishList,
+                        productId = shopProductUiModel.id ?: ""
                 )
         )
     }
 
-    override fun onProductClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
+    override fun onProductClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
         if(defaultEtalaseName.isNotEmpty()) {
             when (shopTrackType) {
                 ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickProduct(
@@ -339,16 +350,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopId,
                                 isOfficialStore,
                                 isGoldMerchant,
-                                shopProductViewModel.id,
+                                shopProductUiModel.id,
                                 attribution,
                                 shopRef
                         ),
-                        shopProductViewModel,
+                        shopProductUiModel,
                         productPosition + 1,
                         shopId,
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                         false,
-                        shopProductViewModel.isUpcoming
+                        shopProductUiModel.isUpcoming
                 )
                 ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickProduct(isOwner,
                         isLogin,
@@ -358,47 +369,47 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopId,
                                 isOfficialStore,
                                 isGoldMerchant,
-                                shopProductViewModel.id,
+                                shopProductUiModel.id,
                                 attribution,
                                 shopRef
                         ),
-                        shopProductViewModel,
+                        shopProductUiModel,
                         productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
                         shopId,
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductViewModel.isUpcoming
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.isUpcoming
                 )
                 ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.clickProduct(isOwner,
                         isLogin,
                         getSelectedEtalaseChip(),
-                        if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                        if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
                         CustomDimensionShopPageAttribution.create(
                                 shopId,
                                 isOfficialStore,
                                 isGoldMerchant,
-                                shopProductViewModel.id,
+                                shopProductUiModel.id,
                                 attribution,
                                 shopRef
                         ),
-                        shopProductViewModel,
+                        shopProductUiModel,
                         productPosition + 1,
                         shopId,
-                        shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                        shopProductViewModel.isUpcoming
+                        shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                        shopProductUiModel.isUpcoming
                 )
             }
         }
         goToPDP(
-                shopProductViewModel.id ?: "",
+                shopProductUiModel.id ?: "",
                 attribution,
                 shopPageTracking?.getListNameOfProduct(PRODUCT, getSelectedEtalaseChip())
                         ?: ""
         )
     }
 
-    override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
+    override fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int) {
         when (shopTrackType) {
             ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.impressionProductList(
                     isOwner,
@@ -409,16 +420,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopId,
                             isOfficialStore,
                             isGoldMerchant,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     false,
-                    shopProductViewModel.isUpcoming
+                    shopProductUiModel.isUpcoming
             )
             ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.impressionProductList(isOwner,
                     isLogin,
@@ -428,35 +439,35 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopId,
                             isOfficialStore,
                             isGoldMerchant,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
                     shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.isUpcoming
             )
             ShopTrackProductTypeDef.ETALASE_HIGHLIGHT -> shopPageTracking?.impressionProductList(isOwner,
                     isLogin,
                     getSelectedEtalaseChip(),
-                    if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                    if (isOwner) "" else shopProductAdapter.getEtalaseNameHighLight(shopProductUiModel),
                     CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
                             isGoldMerchant,
-                            shopProductViewModel.id,
+                            shopProductUiModel.id,
                             attribution,
                             shopRef
                     ),
-                    shopProductViewModel,
+                    shopProductUiModel,
                     productPosition + 1,
                     shopId,
-                    shopProductViewModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductAdapter.getEtalaseNameHighLightType(shopProductViewModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
-                    shopProductViewModel.isUpcoming
+                    shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
+                    shopProductUiModel.isUpcoming
             )
         }
     }
@@ -471,12 +482,19 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 if (shopProductAdapter.isLoading) {
                     return
                 }
-                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+
+                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+
+                shopPageTracking?.clickEtalaseChip(
+                        isOwner,
+                        etalaseName,
+                        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+                )
                 shopPageTracking?.clickMoreMenuChip(
                         isOwner,
-                        getSelectedEtalaseChip(),
+                        etalaseName,
                         customDimensionShopPage
                 )
                 if (shopPageTracking != null) {
@@ -519,14 +537,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         return
                     }
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
-                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
-                    shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-                    shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
-                    shopProductAdapter.refreshSticky()
-                    updateInitialProductListSortId(sortId)
+                    changeSortData(sortId)
                     scrollToChangeProductGridSegment()
-                    loadNewProductData()
                 }
             }
             REQUEST_CODE_ADD_PRODUCT -> {
@@ -572,7 +585,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
             onErrorAddToWishList(UserNotLoginException())
         } else {
-            threeDotsClickShopProductViewModel?.let { shopProductViewModel ->
+            threeDotsClickShopProductUiModel?.let { shopProductViewModel ->
                 when (threeDotsClickShopTrackingType) {
                     ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickWishlist(
                             !shopProductViewModel.isWishList,
@@ -619,7 +632,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
         }
 
-        threeDotsClickShopProductViewModel = null
+        threeDotsClickShopProductUiModel = null
         threeDotsClickShopTrackingType = -1
     }
 
@@ -739,12 +752,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun loadInitialData() {
         isLoadingNewProductData = true
         shopProductAdapter.clearAllElements()
-        startMonitoringPltNetworkRequest()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
             viewModel.setInitialProductList(it)
         }
-        viewModel.getEtalaseData(shopId)
+        viewModel.getShopFilterData(shopId)
     }
 
     private fun promoClicked(url: String?) {
@@ -769,12 +783,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
-            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-            bundle.putString(BUNDLE_SHOP_ID, shopId)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(BUNDLE, bundle)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
         }
     }
@@ -784,7 +799,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
-            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
     }
@@ -817,7 +832,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopId,
                 selectedEtalaseId,
                 page,
-                sortId
+                shopProductFilterParameter?: ShopProductFilterParameter()
         )
     }
 
@@ -839,70 +854,93 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         isOfficialStore,
                         isGoldMerchant
                 ))
-                ShopSellerEmptyProductAllEtalaseViewModel()
+                ShopSellerEmptyProductAllEtalaseUiModel()
             } else if (isOwner && selectedEtalaseId == SOLD_ETALASE_ID) {
                 title = getString(R.string.text_shop_no_product_seller)
                 description = getString(R.string.text_shop_no_product_description_seller)
-                ShopEmptyProductViewModel(isOwner, title, description)
+                ShopEmptyProductUiModel(isOwner, title, description)
             } else {
                 title = getString(R.string.shop_product_limited_empty_products_title_owner)
                 description = getString(R.string.shop_product_limited_empty_products_content_owner)
-                ShopEmptyProductViewModel(isOwner, title, description)
+                ShopEmptyProductUiModel(isOwner, title, description)
             }
         } else {
             title = getString(R.string.text_shop_no_product)
             description = getString(R.string.text_shop_no_product_follow)
-            ShopEmptyProductViewModel(isOwner, title, description)
+            ShopEmptyProductUiModel(isOwner, title, description)
         }
     }
 
     override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initPltMonitoring()
+        if (userVisibleHint) {
+            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        }
         super.onCreate(savedInstanceState)
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
-        shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
+        shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
         staggeredGridLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
-    private fun initPltMonitoring() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
-    }
-
-    private fun startMonitoringPltNetworkRequest() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltPreparePage(it)
-                shopPageActivity.startMonitoringPltNetworkRequest(it)
-            }
-        }
-    }
-
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltRenderPage(it)
-            }
-        }
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltRenderPage(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.startMonitoringPltRenderPage(it)
+                }
             }
         }
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltRenderPage(it)
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopMonitoringPltRenderPage(it)
+                }
             }
         }
-        stopPerformanceMonitoring()
+    }
+
+    private fun startMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.startCustomMetric(it, tag)
+                }
+            }
+        }
+    }
+
+    private fun stopMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopCustomMetric(it, tag)
+                }
+            }
+        }
+    }
+
+    private fun invalidateMonitoringPlt() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.invalidateMonitoringPlt(it)
+                }
+            }
+        }
+    }
+
+    private fun stopMonitoringPerformance() {
+        if (!isShowNewShopHomeTab()) {
+            (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -915,6 +953,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
         outState.putString(SAVED_SHOP_SORT_ID, sortId)
         outState.putString(SAVED_SHOP_SORT_NAME, sortName)
+        outState.putParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER, shopProductFilterParameter)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -929,15 +968,27 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopRef = it.getString(SAVED_SHOP_REF).orEmpty()
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
             isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
-            sortId = it.getString(SAVED_SHOP_SORT_ID, "")
-            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+            shopProductFilterParameter = it.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
         }
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
-        loadInitialData()
-        observeShopSortSharedViewModel()
+        isOnViewCreated = true
+        loadInitialDataAfterOnViewCreated(userVisibleHint)
+        observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        loadInitialDataAfterOnViewCreated(isVisibleToUser)
+        super.setUserVisibleHint(isVisibleToUser)
+    }
+
+    private fun loadInitialDataAfterOnViewCreated(isVisibleToUser: Boolean) {
+        if (isVisibleToUser && isOnViewCreated) {
+            loadInitialData()
+            isOnViewCreated = false
+        }
     }
 
     private fun getArgumentsData() {
@@ -958,14 +1009,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
     }
 
-    private fun observeShopSortSharedViewModel() {
-        shopSortSharedViewModel?.sharedSortData?.observe(viewLifecycleOwner, Observer {
+    private fun observeShopProductFilterParameterSharedViewModel() {
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             if (!shopProductAdapter.isLoading) {
-                sortId = it.first
-                sortName = it.second
-                shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
-                shopProductAdapter.refreshSticky()
-                loadNewProductData()
+                shopProductFilterParameter = it
+                changeSortData(sortId)
             }
         })
     }
@@ -973,10 +1021,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onPause() {
         super.onPause()
         shopPageTracking!!.sendAllTrackingQueue()
+        invalidateMonitoringPlt()
     }
 
     override fun onDestroy() {
-        viewModel.etalaseListData.removeObservers(this)
+        viewModel.shopSortFilterData.removeObservers(this)
         viewModel.membershipData.removeObservers(this)
         viewModel.merchantVoucherData.removeObservers(this)
         viewModel.shopProductFeaturedData.removeObservers(this)
@@ -987,17 +1036,19 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.newMerchantVoucherData.removeObservers(this)
         viewModel.shopProductEtalaseTitleData.removeObservers(this)
         viewModel.shopProductChangeProductGridSectionData.removeObservers(this)
+        viewModel.bottomSheetFilterLiveData.removeObservers(this)
+        viewModel.shopProductFilterCountLiveData.removeObservers(this)
         viewModel.flush()
-        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
     private fun observeViewModelLiveData() {
-        viewModel.etalaseListData.observe(viewLifecycleOwner, Observer {
+        viewModel.shopSortFilterData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetEtalaseListData(it.data)
+                    onSuccessGetEtalaseListData(it.data.etalaseList)
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
@@ -1054,10 +1105,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
 
         viewModel.productListData.observe(viewLifecycleOwner, Observer {
+            stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
             startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
+                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
@@ -1065,8 +1119,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
             getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
                     stopMonitoringPltRenderPage()
-                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    stopMonitoringPerformance()
+                    view?.let { view ->
+                        getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         })
@@ -1097,25 +1155,54 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 is Fail -> onErrorGetMerchantVoucher()
             }
         })
+
+        viewModel.bottomSheetFilterLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBottomSheetFilterData(it.data)
+                }
+            }
+        })
+
+        viewModel.shopProductFilterCountLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShopProductFilterCount(it.data)
+                }
+            }
+        })
+
+    }
+
+    private fun onSuccessGetShopProductFilterCount(count: Int) {
+        val countText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                count.thousandFormatted()
+        )
+        sortFilterBottomSheet?.setResultCountText(countText)
+    }
+
+    private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
+        model.defaultSortValue = DEFAULT_SORT_ID
+        sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
     private fun showErrorToasterWithRetry(error: Throwable) {
         hideLoading()
         updateStateScrollListener()
-        if (shopProductAdapter.shopProductViewModelList.size > 0) {
+        if (shopProductAdapter.shopProductUiModelList.size > 0) {
             onGetListErrorWithExistingData(error)
         } else {
             shopProductAdapter.clearAllElements()
             onGetListErrorWithEmptyData(error)
         }
-        stopPerformanceMonitoring()
     }
 
     private fun onErrorGetMerchantVoucher() {
         shopProductAdapter.clearMerchantVoucherData()
     }
 
-    private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopProductViewModel>) {
+    private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopProductUiModel>) {
         hideLoading()
         if (productList.isEmpty()) {
             shopProductAdapter.clearAllNonDataElement()
@@ -1138,7 +1225,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
+    private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleUiModel) {
         if(!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
             shopProductAdapter.setShopProductEtalaseTitleData(data)
         }
@@ -1146,25 +1233,24 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun addShopPageProductChangeGridSection(totalProductData: Int) {
         if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            val data = ShopProductChangeGridSectionUiModel(totalProductData)
-            shopProductAdapter.addShopPageProductChangeGridSection(data)
+            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
         }
     }
 
-    private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightViewModel) {
-        if (data.etalaseHighlightCarouselViewModelList.isNotEmpty()) {
+    private fun onSuccessGetShopProductEtalaseHighlightData(data: ShopProductEtalaseHighlightUiModel) {
+        if (data.etalaseHighlightCarouselUiModelList.isNotEmpty()) {
             shopProductAdapter.setShopProductEtalaseHighlightDataModel(data)
         }
     }
 
-    private fun onSuccessGetShopProductFeaturedData(data: ShopProductFeaturedViewModel) {
+    private fun onSuccessGetShopProductFeaturedData(data: ShopProductFeaturedUiModel) {
         val listFeaturedProduct = data.shopProductFeaturedViewModelList
         if (listFeaturedProduct.isNotEmpty()) {
             shopProductAdapter.setShopProductFeaturedDataModel(data)
         }
     }
 
-    private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherViewModel) {
+    private fun onSuccessGetMerchantVoucherData(data: ShopMerchantVoucherUiModel) {
         shopPageTracking?.impressionUseMerchantVoucher(isOwner, data.shopMerchantVoucherViewModelArrayList, shopId)
         data.shopMerchantVoucherViewModelArrayList?.let {
             if (it.isNotEmpty())
@@ -1172,7 +1258,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun onSuccessGetMembershipData(data: MembershipStampProgressViewModel) {
+    private fun onSuccessGetMembershipData(data: MembershipStampProgressUiModel) {
         if (data.listOfData.isNotEmpty()) {
             shopProductAdapter.setMembershipDataModel(data)
         }
@@ -1195,7 +1281,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 selectedEtalaseId = selectedEtalaseId,
                 selectedEtalaseName = selectedEtalaseName,
                 selectedSortId = sortId,
-                selectedSortName = sortName
+                selectedSortName = sortName,
+                filterIndicatorCounter = getIndicatorCount(
+                        shopProductFilterParameter?.getMapData()
+                )
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
         if (!viewModel.isMyShop(shopId)) {
@@ -1203,9 +1292,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     etalaseItemDataModel,
-                    sortId,
                     isShowNewShopHomeTab(),
-                    initialProductListData
+                    initialProductListData,
+                    shopProductFilterParameter ?: ShopProductFilterParameter()
             )
         }
     }
@@ -1246,15 +1335,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun stopPerformanceMonitoring() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltRenderPage(it)
-            }
-        }
-        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
-    }
-
     fun clearCache() {
         viewModel.clearCache()
     }
@@ -1271,11 +1351,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onEtalaseFilterClicked() {
-        shopPageTracking?.clickEtalaseChip(
-                isOwner,
-                getSelectedEtalaseChip(),
-                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        )
         redirectToEtalasePicker()
     }
 
@@ -1296,31 +1371,39 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 isOwner,
                 customDimensionShopPage
         )
-        sortId = ""
-        sortName = ""
-        shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-        shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
-        shopProductAdapter.refreshSticky()
-        //multiply with 2 to make first dy value on onScroll function greater than rv top padding
-        getRecyclerView(view).smoothScrollBy(0, recyclerViewTopPadding * 2)
-        staggeredGridLayoutManager?.scrollToPositionWithOffset(
-                shopProductAdapter.shopChangeProductGridSegment,
-                shopSortFilterHeight + recyclerViewTopPadding
-        )
-        updateInitialProductListSortId(sortId)
-        loadNewProductData()
+        changeSortData("")
+        scrollToChangeProductGridSegment()
     }
 
     override fun setSortFilterMeasureHeight(measureHeight: Int) {
         shopSortFilterHeight = measureHeight
     }
 
-    fun setInitialProductListData(initialProductListData: GetShopProductUiModel) {
-        this.initialProductListData = initialProductListData
+    override fun onFilterClicked() {
+        shopPageTracking?.clickFilterChips(productListName, customDimensionShopPage)
+        showBottomSheetFilter()
     }
 
-    private fun updateInitialProductListSortId(sortId: String){
-        (parentFragment as? ShopPageFragment)?.updateSortId(sortId)
+    private fun showBottomSheetFilter() {
+        val mapParameter = if (sortId.isNotEmpty())
+            shopProductFilterParameter?.getMapData()
+        else
+            shopProductFilterParameter?.getMapDataWithDefaultSortId()
+        sortFilterBottomSheet = SortFilterBottomSheet()
+        sortFilterBottomSheet?.show(
+                requireFragmentManager(),
+                mapParameter,
+                null,
+                this
+        )
+        sortFilterBottomSheet?.setOnDismissListener {
+            sortFilterBottomSheet = null
+        }
+        viewModel.getBottomSheetFilterData()
+    }
+
+    fun setInitialProductListData(initialProductListData: GetShopProductUiModel) {
+        this.initialProductListData = initialProductListData
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
@@ -1329,13 +1412,60 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
-        val productListName =  shopProductAdapter.shopProductViewModelList.joinToString(","){
+        val productListName =  shopProductAdapter.shopProductUiModelList.joinToString(","){
             it.name.orEmpty()
         }
         shopPageTracking?.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
         changeProductListGridView(gridType)
         scrollToChangeProductGridSegment()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val isResetButtonVisible = sortFilterBottomSheet?.bottomSheetAction?.isVisible
+        sortFilterBottomSheet = null
+        shopProductFilterParameter?.clearParameter()
+        shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
+        if(isResetButtonVisible == false){
+            sortId = ""
+        }
+        changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
+        scrollToChangeProductGridSegment()
+        applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
+    }
+
+    private fun changeSortData(sortId: String){
+        this.sortId = sortId
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
+        shopProductAdapter.changeSelectedSortFilter(this.sortId, sortName)
+        shopProductAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
+                shopProductFilterParameter?.getMapData()
+        ))
+        shopProductAdapter.refreshSticky()
+        loadNewProductData()
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
+        viewModel.getFilterResultCount(
+                shopId,
+                tempShopProductFilterParameter
+        )
+    }
+
+    private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
+        if (selectedSortName.isNotBlank()) {
+            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
+        }
+        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
+        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
     }
 
 }

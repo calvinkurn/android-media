@@ -6,15 +6,14 @@
     android:paddingRight="-16dp"
     android:paddingEnd="-16dp"
     android:paddingLeft="@dimen/layout_lvl0"
-    android:paddingStart="@dimen/layout_lvl0"
-    android:background="@android:color/white">
+    android:paddingStart="@dimen/layout_lvl0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_condition_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product_condition_header"
-        android:textColor="@android:color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_asterisk"
-        android:textColor="@color/Red_R600_96"
+        android:textColor="@color/Unify_R600_96"
         app:layout_constraintLeft_toRightOf="@id/tv_product_condition_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"

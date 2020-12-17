@@ -7,9 +7,9 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.extension.changeConstraint
-import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
+import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.util.extension.compatTransitionName
+import com.tokopedia.play_common.util.extension.doOnPreDraw
 
 /**
  * Created by jegul on 26/05/20

@@ -10,7 +10,7 @@ import org.junit.Test
  * Created by Lukas on 2019-07-15
  */
 class ProductInfoDataModelTest{
-    private val visitor = HomeRecommendationTypeFactoryImpl()
+    private val visitor = HomeRecommendationTypeFactoryImpl(mockk(), mockk(), mockk(), mockk())
     private fun productInfoDataModelFactory(productDetailData: ProductDetailData) = ProductInfoDataModel(productDetailData)
 
     @Test

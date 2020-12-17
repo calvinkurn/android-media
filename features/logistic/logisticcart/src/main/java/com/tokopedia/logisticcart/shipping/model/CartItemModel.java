@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -14,11 +16,12 @@ public class CartItemModel implements Parcelable {
     private long cartId;
     private String shopId;
     private String shopName;
-    private int productId;
+    private long productId;
     private String name;
     private double price;
     private double originalPrice;
     private int currency;
+    private String variant;
 
     private int weightUnit;
     private double weight;
@@ -63,6 +66,12 @@ public class CartItemModel implements Parcelable {
     private boolean isValidTradeIn;
     private int newDevicePrice;
     private int oldDevicePrice;
+    private String deviceModel;
+    private String diagnosticId;
+
+    private List<String> productInformation;
+    private String productAlertMessage;
+    private boolean isWholesalePrice;
 
     public String getPreOrderInfo() {
         return preOrderInfo;
@@ -106,11 +115,11 @@ public class CartItemModel implements Parcelable {
         this.shopName = shopName;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
@@ -370,6 +379,22 @@ public class CartItemModel implements Parcelable {
         this.oldDevicePrice = oldDevicePrice;
     }
 
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
+    }
+
+    public String getDiagnosticId() {
+        return diagnosticId;
+    }
+
+    public void setDiagnosticId(String diagnosticId) {
+        this.diagnosticId = diagnosticId;
+    }
+
     public boolean isProtectionCheckboxDisabled() {
         return protectionCheckboxDisabled;
     }
@@ -410,6 +435,38 @@ public class CartItemModel implements Parcelable {
         this.tickerMessage = tickerMessage;
     }
 
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public String getProductAlertMessage() {
+        return productAlertMessage;
+    }
+
+    public void setProductAlertMessage(String productAlertMessage) {
+        this.productAlertMessage = productAlertMessage;
+    }
+
+    public boolean isWholesalePrice() {
+        return isWholesalePrice;
+    }
+
+    public void setWholesalePrice(boolean wholesalePrice) {
+        isWholesalePrice = wholesalePrice;
+    }
+
+    public List<String> getProductInformation() {
+        return productInformation;
+    }
+
+    public void setProductInformation(List<String> productInformation) {
+        this.productInformation = productInformation;
+    }
+
     public CartItemModel() {
     }
 
@@ -427,6 +484,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice(), that.getPrice())
                 .append(getOriginalPrice(), that.getOriginalPrice())
                 .append(getCurrency(), that.getCurrency())
+                .append(getVariant(), that.getVariant())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
                 .append(getQuantity(), that.getQuantity())
@@ -463,6 +521,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice())
                 .append(getOriginalPrice())
                 .append(getCurrency())
+                .append(getVariant())
                 .append(getWeightUnit())
                 .append(getWeight())
                 .append(getWeightFmt())
@@ -495,11 +554,12 @@ public class CartItemModel implements Parcelable {
         dest.writeLong(this.cartId);
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeInt(this.productId);
+        dest.writeLong(this.productId);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
         dest.writeDouble(this.originalPrice);
         dest.writeInt(this.currency);
+        dest.writeString(this.variant);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
         dest.writeString(this.weightFmt);
@@ -522,22 +582,27 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isValidTradeIn ? (byte) 1 : (byte) 0);
         dest.writeInt(this.newDevicePrice);
         dest.writeInt(this.oldDevicePrice);
+        dest.writeString(this.deviceModel);
+        dest.writeString(this.diagnosticId);
         dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
         dest.writeByte(this.showTicker ? (byte) 1: (byte) 0);
         dest.writeString(this.tickerMessage);
+        dest.writeString(this.productAlertMessage);
+        dest.writeByte(this.isWholesalePrice ? (byte) 1: (byte) 0);
     }
 
     protected CartItemModel(Parcel in) {
         this.cartId = in.readLong();
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.productId = in.readInt();
+        this.productId = in.readLong();
         this.name = in.readString();
         this.price = in.readDouble();
         this.originalPrice = in.readDouble();
         this.currency = in.readInt();
+        this.variant = in.readString();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
         this.weightFmt = in.readString();
@@ -560,11 +625,15 @@ public class CartItemModel implements Parcelable {
         this.isValidTradeIn = in.readByte() != 0;
         this.newDevicePrice = in.readInt();
         this.oldDevicePrice = in.readInt();
+        this.deviceModel = in.readString();
+        this.diagnosticId = in.readString();
         this.protectionCheckboxDisabled = in.readByte() != 0;
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();
         this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
+        this.productAlertMessage = in.readString();
+        this.isWholesalePrice = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

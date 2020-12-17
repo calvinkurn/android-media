@@ -163,6 +163,20 @@
                 }
               },
               "cart_string": "480176-0-2034-4678943",
+              "payment_profile": "",
+              "purchase_protection_plan_data": {
+                "protection_available": false,
+                "protection_type_id": 0,
+                "protection_price_per_product": 0,
+                "protection_price": 0,
+                "protection_title": "",
+                "protection_subtitle": "",
+                "protection_link_text": "",
+                "protection_link_url": "",
+                "protection_opt_in": false,
+                "protection_checkbox_disabled": false,
+                "unit": ""
+              },
               "shop": {
                 "shop_id": 480176,
                 "user_id": 5513284,
@@ -498,7 +512,11 @@
                   "text": "",
                   "link": ""
                 }
-              }
+              },
+              "ticker_message": "",
+              "is_enable_next_button": false,
+              "is_disable_pay_button": false,
+              "is_ovo_only_campaign": false
             },
             "shipment": {
               "service_id": 1104,
@@ -588,6 +606,14 @@
             "profile_code": "TKPD_DEFAULT",
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
             "change_cc_link": ""
+          },
+          "error_ticker": "",
+          "prompt": {
+            "type": "",
+            "title": "",
+            "description": "",
+            "image_url": "",
+            "buttons": []
           }
         }
       }

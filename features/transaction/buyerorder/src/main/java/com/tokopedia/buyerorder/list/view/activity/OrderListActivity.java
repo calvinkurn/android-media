@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
@@ -43,6 +44,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.APPLINK_INTERNAL_ORDER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BELANJA;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_BUYER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_DIGITAL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_FLIGHT;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_HOTEL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.HOST_ORDER_LIST;
+
 public class OrderListActivity extends BaseSimpleActivity
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
     private static final String ORDER_CATEGORY = OrderCategory.KEY_LABEL;
@@ -61,96 +70,14 @@ public class OrderListActivity extends BaseSimpleActivity
     public static final String KEY_TITLE = "title";
     OrderListAnalytics orderListAnalytics;
 
-    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
-    public static Intent getConfirmedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-
-    }
-
-    @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
-    public static Intent getOrderList(Context context, Bundle extras) {
-        Intent intent = new Intent(context, OrderListActivity.class);
-        return intent.putExtras(extras);
-    }
-
-    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
-    public static Intent getProcessedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
-    public static Intent getShippedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
-    public static Intent getDeliveredIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
-    public static Intent getHistoryIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-
-    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
-        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
-        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
-        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
-        Intent intent = new Intent(context, OrderListActivity.class);
-        return intent.putExtras(extras);
-    }
-
-    @DeepLink({ApplinkConst.DEALS_ORDER,
-            ApplinkConst.DIGITAL_ORDER,
-            ApplinkConst.EVENTS_ORDER,
-            ApplinkConst.GIFT_CARDS_ORDER,
-            ApplinkConst.INSURANCE_ORDER,
-            ApplinkConst.MODAL_TOKO_ORDER})
-    public static Intent getOrderListIntent(Context context, Bundle bundle) {
-
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        String link = bundle.getString(DeepLink.URI);
-        String category = link.substring(link.indexOf("//") + 2, link.lastIndexOf("/")).toUpperCase();
-        bundle.putString(ORDER_CATEGORY, category);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.buyer_order_list_toolbar;
     }
 
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_order_list_module;
-    }
-
-    @DeepLink(ApplinkConst.HOTEL_ORDER)
-    public static Intent getHotelOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
-    @DeepLink(ApplinkConst.FLIGHT_ORDER)
-    public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
-        return new Intent(context, OrderListActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
-    @DeepLink({ApplinkConst.MARKETPLACE_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
-    public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
-        Intent intent = new Intent(context, OrderListActivity.class);
-        if (uri != null) {
-            intent.setData(uri.build());
-        }
-        return intent.putExtras(bundle);
     }
 
     public static Intent getInstance(Context context) {
@@ -176,35 +103,85 @@ public class OrderListActivity extends BaseSimpleActivity
                 .build();
     }
 
+    private static Intent getMarketPlaceIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        bundle.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(bundle);
+    }
+
+    public static Intent getOrderListIntent(Context context, String uriStr, Uri uri) {
+        Bundle bundle = new Bundle();
+        String category = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+        bundle.putString(ORDER_CATEGORY, category);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
+    public static Intent getHotelOrderListIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.HOTELS);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
+    public static Intent getFlightOrderListIntent(Context context, Uri uri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri)
+                .putExtras(bundle);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent() != null && getIntent().getData() != null) {
+            String uriStr = String.valueOf(getIntent().getData());
+
+            if (uriStr.contains(HOST_BUYER) || uriStr.contains(HOST_BELANJA)
+                    || uriStr.equalsIgnoreCase(APPLINK_INTERNAL_ORDER) || uriStr.contains(HOST_ORDER_LIST)) {
+                orderCategory = OrderCategory.MARKETPLACE;
+                if (getIntent().getExtras() != null) {
+                    getIntent().getExtras().putString(OrderListContants.ORDER_FILTER_ID, getIntent().getData().getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+                    getIntent().getExtras().putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+                }
+            } else {
+                if (uriStr.contains(BuyerConsts.HOST_DEALS) || uriStr.contains(BuyerConsts.HOST_EVENTS)
+                        || uriStr.contains(BuyerConsts.HOST_GIFTCARDS) || uriStr.contains(BuyerConsts.HOST_INSURANCE)
+                        || uriStr.contains(BuyerConsts.HOST_MODALTOKO)) {
+                    orderCategory = uriStr.substring(uriStr.indexOf("//") + 2, uriStr.lastIndexOf("/")).toUpperCase();
+
+                }  else if (uriStr.contains(HOST_DIGITAL)) {
+                    orderCategory = OrderCategory.DIGITAL;
+
+                } else if (uriStr.contains(HOST_HOTEL)) {
+                    orderCategory = OrderCategory.HOTELS;
+
+                } else if (uriStr.contains(HOST_FLIGHT)) {
+                    orderCategory = OrderCategory.FLIGHTS;
+                }
+            }
+            if (getIntent().getExtras() != null) {
+                getIntent().getExtras().putString(ORDER_CATEGORY, orderCategory);
+            }
+        }
+
         super.onCreate(savedInstanceState);
         initVar();
-        Bundle bundle = getIntent().getExtras();
+
         context = this;
-        if (bundle != null) {
-            String url = bundle.getString("url");
-            if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
-                orderCategory = Uri.parse(url).getQueryParameter("tab");
-            else if (bundle.getString(ORDER_CATEGORY) != null)
-                orderCategory = bundle.getString(ORDER_CATEGORY);
-            else
-                orderCategory = OrderCategory.MARKETPLACE;
-        }
         orderListAnalytics = new OrderListAnalytics();
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             getInitialData(orderCategory);
-            presenter.getTickerInfo();
+            presenter.getTickerInfo(this);
         }
 
-    }
-
-    @Override
-    public Context getAppContext() {
-        return this.getApplicationContext();
     }
 
     @Override
@@ -215,6 +192,11 @@ public class OrderListActivity extends BaseSimpleActivity
         } else {
             return bundle;
         }
+    }
+
+    @Override
+    public Context getActivity() {
+        return this;
     }
 
     @Override
@@ -337,6 +319,7 @@ public class OrderListActivity extends BaseSimpleActivity
     }
 
     public void getInitialData(String orderCategory) {
-        presenter.getInitData(orderCategory);
+        presenter.getInitData(GraphqlHelper.loadRawString(getResources(),
+                R.raw.initorderlist), orderCategory);
     }
 }

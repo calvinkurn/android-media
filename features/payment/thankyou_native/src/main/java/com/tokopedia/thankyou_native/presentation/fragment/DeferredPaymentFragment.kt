@@ -17,6 +17,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
@@ -32,7 +33,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
-
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
@@ -116,7 +117,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             refreshThanksPageData()
-            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         }
         setUpHomeButton(btnShopAgain)
     }
@@ -136,7 +138,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             }
         }
         thankYouPageAnalytics.get()
-                .sendSalinButtonClickEvent(thanksPageData.gatewayName,
+                .sendSalinButtonClickEvent(thanksPageData.profileCode,thanksPageData.gatewayName,
                         thanksPageData.paymentID.toString())
     }
 

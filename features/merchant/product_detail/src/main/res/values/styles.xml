@@ -6,9 +6,6 @@
         <item name="bottomSheetStyle">@style/BottomSheet</item>
     </style>
 
-    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
-
-
     <declare-styleable name="ProductRoundedImageView">
         <attr name="borderRadius" format="dimension" />
     </declare-styleable>

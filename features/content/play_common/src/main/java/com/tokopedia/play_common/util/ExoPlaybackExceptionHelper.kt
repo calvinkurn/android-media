@@ -43,7 +43,7 @@ class ExoPlaybackExceptionParser {
         val isBehindLiveWindowException
             get() = this is KnownException && e is BehindLiveWindowException
         val isInvalidResponseCodeException
-            get() = this is KnownException && e is HttpDataSource.InvalidResponseCodeException && e.responseCode !in blackListExceptionList
+            get() = this is KnownException && e is HttpDataSource.InvalidResponseCodeException
         val isBlackListedException
             get() = this is KnownException && e is HttpDataSource.InvalidResponseCodeException && e.responseCode in blackListExceptionList
         val isConnectException

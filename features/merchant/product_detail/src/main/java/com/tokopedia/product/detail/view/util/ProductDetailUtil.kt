@@ -9,6 +9,8 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
+import androidx.annotation.DimenRes
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -17,7 +19,9 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,17 +31,29 @@ import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
-    private const val MAX_CHAR = 150
-    private const val MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>"
+    private const val MAX_CHAR_OLD = 150
+    private const val MAX_CHAR = 140
+    private const val MORE_DESCRIPTION_OLD = "<font color='#42b549'>Selengkapnya</font>"
+    private const val ALLOW_CLICK = true
 
-    fun reviewDescFormatter(review: String): Spanned {
-        return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
-            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
-            MethodChecker
+    fun reviewDescFormatterOld(review: String): Pair<Spanned, Boolean> {
+        return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
+            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
+            Pair(MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                            + MORE_DESCRIPTION)
+                            + MORE_DESCRIPTION_OLD), ALLOW_CLICK)
         } else {
-            MethodChecker.fromHtml(review)
+            Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
+        }
+    }
+
+    fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
+        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
+        return if (formattedText.length > MAX_CHAR) {
+            val subDescription = formattedText.substring(0, MAX_CHAR)
+            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
+        } else {
+            Pair(formattedText, !ALLOW_CLICK)
         }
     }
 
@@ -82,7 +98,7 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, R.color.green_500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -238,8 +254,8 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
     }
 }
 
-inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit){
-    val data : T? = this.getData<T>(T::class.java)
+inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) {
+    val data: T? = this.getData<T>(T::class.java)
     data?.let {
         listener.invoke(it)
     }
@@ -253,4 +269,37 @@ fun String.goToWebView(context: Context) {
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
+
+fun View?.showToasterSuccess(message: String,
+                             @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+    }
+}
+
+fun View?.showToasterError(message: String,
+                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
+                           ctaMaxWidth: Int? = null,
+                           ctaText: String = "",
+                           ctaListener: (() -> Unit?)? = null) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        ctaMaxWidth?.let {
+            Toaster.toasterCustomCtaWidth = ctaMaxWidth
+        }
+
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        if (ctaText.isNotEmpty()) {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        } else {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        }
+    }
+}
 

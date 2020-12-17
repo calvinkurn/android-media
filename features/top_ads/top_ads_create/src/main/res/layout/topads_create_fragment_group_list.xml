@@ -31,41 +31,19 @@
         app:layout_constraintTop_toBottomOf="@+id/typography12"
         app:typographyType="body_2" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="0dp"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/group_name_input"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:layout_marginTop="@dimen/dp_24"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:text="@string/ketik_nama_group_iklan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography18"
-        app:typographyType="body_2" />
-
-        <EditText
-            android:id="@+id/group_name_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:imeOptions="actionSearch"
-            android:hint="@string/ketik_nama_group_iklan"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/descTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="#AD31353B"
-        android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
+        app:text_field_message="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
+        app:text_field_placeholder="@string/ketik_nama_group_iklan"
+        app:text_field_label_static="true"
+        app:text_field_input_type="text"
+        android:lines="1"
+        android:imeOptions="actionSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_name_input"
-        app:typographyType="body_3" />
+        app:layout_constraintTop_toBottomOf="@+id/typography18"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_text"
@@ -79,27 +57,18 @@
         tools:text="errro....."
         tools:visibility="visible" />
 
-    <com.tokopedia.design.component.RoundFloatingButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/tip_btn"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_submit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:backgroundTint="#FFFCF5"
-        android:gravity="center"
-        android:text="@string/apa_itu_group_iklan"
-        android:textAllCaps="false"
-        app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
+        android:layout_marginBottom="@dimen/dp_24"
+        app:fbType="group"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"
-        style="@style/Button.Submit.Green.Full"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -109,6 +78,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/buat_group_iklan"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

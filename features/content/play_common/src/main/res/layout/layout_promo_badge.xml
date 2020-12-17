@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_banner_promo"
-        android:tint="@android:color/white"
+        android:tint="@color/Unify_N0"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -33,7 +33,7 @@
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/play_banner_carousel_promo"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

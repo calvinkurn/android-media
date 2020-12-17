@@ -2,9 +2,9 @@ package com.tokopedia.manageaddress.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.logisticdata.data.entity.address.AddressModel;
-import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.AddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.GetPeopleAddress;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.manageaddress.domain.model.addressoptions.Paging;
 import com.tokopedia.manageaddress.domain.model.addressoptions.PeopleAddressModel;
 

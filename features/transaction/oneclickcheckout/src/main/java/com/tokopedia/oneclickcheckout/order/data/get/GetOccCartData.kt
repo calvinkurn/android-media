@@ -36,7 +36,11 @@ data class GetOccCartData(
         @SerializedName("payment_additional_data")
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
         @SerializedName("error_ticker")
-        val errorTicker: String = ""
+        val errorTicker: String = "",
+        @SerializedName("prompt")
+        val prompt: OccPromptResponse = OccPromptResponse(),
+        @SerializedName("occ_revamp")
+        val revamp: OccRevampResponse = OccRevampResponse()
 )
 
 data class CartMessages(
@@ -70,4 +74,13 @@ data class PaymentAdditionalData(
         val changeCcLink: String = "",
         @SerializedName("callback_url")
         val callbackUrl: String = ""
+)
+
+data class OccRevampResponse(
+        @SerializedName("enable")
+        val isEnable: Boolean = false,
+        @SerializedName("total_profile")
+        val totalProfile: Int = 0,
+        @SerializedName("change_template_text")
+        val changeTemplateText: String = ""
 )

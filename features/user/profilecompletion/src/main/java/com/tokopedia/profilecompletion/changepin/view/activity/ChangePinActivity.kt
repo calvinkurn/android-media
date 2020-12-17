@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.otp.R
+import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -49,11 +49,11 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_toolbar_back)
+            setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@ChangePinActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@ChangePinActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
         }
     }
 
@@ -69,7 +69,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

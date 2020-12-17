@@ -1,14 +1,10 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
-dependencies {
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
 }
-
-project.ext {
-    artifactId = 'developer-options-noop'
-    groupId = 'com.tokopedia.common'
-    versionName = "0.0.2"
-    artifactName ="developer_options_no_op-release"
-}
-
-apply from: '../../../publish_local.gradle'

@@ -16,9 +16,9 @@
             android:id="@+id/digital_homepage_spotlight_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
             app:typographyType="heading_5" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -27,17 +27,17 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16" />
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4" />
 
     </LinearLayout>
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/digital_homepage_spotlight_shimmering"
-        android:layout_width="@dimen/dp_260"
-        android:layout_height="@dimen/dp_52"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_width="@dimen/spotlight_item_width"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:corners="16" />
 
 </LinearLayout>

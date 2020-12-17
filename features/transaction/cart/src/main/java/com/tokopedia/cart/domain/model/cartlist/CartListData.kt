@@ -1,6 +1,7 @@
 package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -16,7 +17,7 @@ data class CartListData(
         var errorMessage: String? = null,
         var tickerData: TickerData? = null,
         var shopGroupAvailableDataList: List<ShopGroupAvailableData> = ArrayList(),
-        var shopGroupWithErrorDataList: List<ShopGroupWithErrorData> = ArrayList(),
+        var unavailableGroupData: List<UnavailableGroupData> = emptyList(),
         var isPromoCouponActive: Boolean = false,
         var cartTickerErrorData: CartTickerErrorData? = null,
         var defaultPromoDialogTab: String? = null,
@@ -25,7 +26,12 @@ data class CartListData(
         var promoBenefitInfo: String? = null,
         var promoUsageInfo: String? = null,
         var errorDefault: PromoCheckoutErrorDefault? = null,
-        var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null
+        var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null,
+        var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData(),
+        var outOfServiceData: OutOfServiceData = OutOfServiceData(),
+        var showLessUnavailableDataWording: String = "",
+        var showMoreUnavailableDataWording: String = "",
+        var abTestButton: ABTestButton = ABTestButton()
 ) : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -33,7 +39,7 @@ data class CartListData(
             val `object` = other as CartListData?
             return `object`?.isError == isError &&
                     `object`.isAllSelected == isAllSelected &&
-                    `object`.shopGroupWithErrorDataList == shopGroupWithErrorDataList &&
+                    `object`.unavailableGroupData == unavailableGroupData &&
                     `object`.shopGroupAvailableDataList == shopGroupAvailableDataList &&
                     `object`.isShowOnboarding == isShowOnboarding &&
                     `object`.isPromoCouponActive == isPromoCouponActive

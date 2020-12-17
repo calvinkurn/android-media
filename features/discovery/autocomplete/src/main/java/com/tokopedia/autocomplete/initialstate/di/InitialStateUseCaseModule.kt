@@ -6,6 +6,7 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.initialstate.data.InitialStateGqlResponse
 import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
+import com.tokopedia.autocomplete.initialstate.INITIAL_STATE_USE_CASE
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.usecase.UseCase
 import dagger.Module
 import dagger.Provides
 import rx.functions.Func1
+import javax.inject.Named
 
 @InitialStateScope
 @Module
@@ -20,6 +22,7 @@ class InitialStateUseCaseModule {
 
     @InitialStateScope
     @Provides
+    @Named(INITIAL_STATE_USE_CASE)
     internal fun provideInitialStateUseCase(
             @InitialStateContext context: Context,
             initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>

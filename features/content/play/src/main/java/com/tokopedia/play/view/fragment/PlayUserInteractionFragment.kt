@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -27,10 +30,10 @@ import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.DistinctEventObserver
-import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.BufferSource
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
@@ -51,8 +54,10 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -62,6 +67,7 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -72,7 +78,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatcherProvider,
         private val trackingQueue: TrackingQueue
-):
+) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
@@ -150,6 +156,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     private var mMaxTopChatMode: Int? = null
+    private var toasterBottomMargin = 0
 
     /**
      * Animation
@@ -254,6 +261,17 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
         shouldOpenCartPage()
+    }
+
+    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
+        copyToClipboard(content)
+        showLinkCopiedToaster()
+
+        PlayAnalytics.clickCopyLink(
+                channelId = channelId,
+                channelType = playViewModel.channelType,
+                userId = playViewModel.userId
+        )
     }
 
     /**
@@ -495,10 +513,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state == PlayVideoState.Playing) {
+            if (it.state == PlayViewerVideoState.Waiting ||
+                    (it.state is PlayViewerVideoState.Buffer && it.state.bufferSource == BufferSource.Broadcaster)) {
+                triggerImmersive(false)
+            } else if (it.state == PlayViewerVideoState.Play) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
-            }
-            if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
+            } else if (it.state == PlayViewerVideoState.End) showInteractionIfWatchMode()
 
             playButtonViewOnStateChanged(state = it.state)
         })
@@ -507,6 +527,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeChannelInfo() {
         playViewModel.observableCompleteChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
+            toolbarView.setShareInfo(it.channelInfo.shareInfo)
         })
     }
 
@@ -562,13 +583,16 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
+        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
             private var isFirstTime = true
-            override fun onChanged(likeModel: LikeStateUiModel) {
+            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
                 likeView.setEnabled(true)
-                likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
 
-                isFirstTime = false
+                if (result is NetworkResult.Success) {
+                    val likeModel = result.data
+                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
+                    isFirstTime = false
+                }
             }
         })
     }
@@ -623,6 +647,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
+                toolbarView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -666,8 +691,14 @@ class PlayUserInteractionFragment @Inject constructor(
             animation.start(container)
         }
 
+        fun isBroadcasterLoading(): Boolean {
+            val videoState = playViewModel.viewerVideoState
+            return (videoState == PlayViewerVideoState.Waiting ||
+                    (videoState is PlayViewerVideoState.Buffer && videoState.bufferSource == BufferSource.Broadcaster))
+        }
+
         when {
-            playViewModel.isFreezeOrBanned -> {
+            playViewModel.isFreezeOrBanned || isBroadcasterLoading() -> {
                 container.alpha = VISIBLE_ALPHA
                 systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }
@@ -915,18 +946,35 @@ class PlayUserInteractionFragment @Inject constructor(
         return chatListHeightManager!!
     }
 
+    private fun copyToClipboard(content: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-room", content))
+    }
+
+    private fun showLinkCopiedToaster() {
+        if (toasterBottomMargin == 0) {
+            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
+            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
+        }
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+        Toaster.build(
+                container,
+                getString(R.string.play_link_copied),
+                type = Toaster.TYPE_NORMAL).show()
+    }
+
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            state: PlayVideoState
+            state: PlayViewerVideoState
     ) {
         if (!channelType.isVod) {
             playButtonView.hide()
             return
         }
         when (state) {
-            PlayVideoState.Pause -> playButtonView.showPlayButton()
-            PlayVideoState.Ended -> playButtonView.showRepeatButton()
+            PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
+            PlayViewerVideoState.End -> playButtonView.showRepeatButton()
             else -> playButtonView.hide()
         }
     }

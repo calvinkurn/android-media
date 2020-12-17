@@ -27,6 +27,9 @@ import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_
 
 public class FlightDetailOrderActivity extends BaseFlightActivity implements HasComponent<FlightComponent> {
 
+    public static final String EXTRA_INVOICE_ID = "iv";
+
+    private static final String PATH_CANCELLATION = "cancellation";
     private static final int REQUEST_CODE_LOGIN = 6;
 
     @Inject
@@ -34,6 +37,7 @@ public class FlightDetailOrderActivity extends BaseFlightActivity implements Has
 
     FlightOrderDetailPassData passData;
     String isCancellation;
+    boolean isRequestCancellation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +46,18 @@ public class FlightDetailOrderActivity extends BaseFlightActivity implements Has
             passData = new FlightOrderDetailPassData();
             Uri uri = getIntent().getData();
             if (uri != null) {
-                passData.setOrderId(uri.getLastPathSegment());
-                if (uri.getQueryParameter(EXTRA_IS_CANCELLATION) != null && uri.getQueryParameter(EXTRA_IS_CANCELLATION).length() > 0) {
-                    isCancellation = uri.getQueryParameter(EXTRA_IS_CANCELLATION);
+                if (uri.getLastPathSegment().equals(PATH_CANCELLATION)) {
+                    if (uri.getQueryParameter(EXTRA_INVOICE_ID) != null && uri.getQueryParameter(EXTRA_INVOICE_ID).length() > 0) {
+                        passData.setOrderId(uri.getQueryParameter(EXTRA_INVOICE_ID));
+                        isRequestCancellation = true;
+                    } else {
+                        finish();
+                    }
+                } else {
+                    passData.setOrderId(uri.getLastPathSegment());
+                    if (uri.getQueryParameter(EXTRA_IS_CANCELLATION) != null && uri.getQueryParameter(EXTRA_IS_CANCELLATION).length() > 0) {
+                        isCancellation = uri.getQueryParameter(EXTRA_IS_CANCELLATION);
+                    }
                 }
             }
         } else {
@@ -69,7 +82,8 @@ public class FlightDetailOrderActivity extends BaseFlightActivity implements Has
     protected Fragment getNewFragment() {
         return FlightDetailOrderFragment.createInstance(
                 passData,
-                isCancellation != null && isCancellation.equals("1"));
+                isCancellation != null && isCancellation.equals("1"),
+                isRequestCancellation);
     }
 
     @Override

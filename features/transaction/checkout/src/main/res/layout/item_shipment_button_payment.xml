@@ -39,7 +39,7 @@
                     android:text="@string/label_payment_total"
                     android:textColor="@color/text_black"
                     app:typographyType="body_2"
-                    app:typographyWeight="bold"/>
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_total_payment"
@@ -53,24 +53,25 @@
 
             </LinearLayout>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_select_cod"
-                style="@style/button_payment"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_select_cod"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
-                android:background="@drawable/checkout_module_bg_button_white_red_border"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:text="@string/label_pay_cod"
-                android:textColor="@color/price_label"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:typographyType="heading_6"
-                app:typographyWeight="bold"/>
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_select_payment_method"
-                android:contentDescription="@string/content_desc_tv_select_payment_method"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_select_payment_method"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
@@ -78,18 +79,15 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="@dimen/dp_10"
-                android:background="@drawable/checkout_module_red_button_rounded"
-                android:gravity="center"
+                android:contentDescription="@string/content_desc_tv_select_payment_method"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_5"
                 android:text="@string/label_choose_payment"
-                android:textColor="@color/white"
-                app:typographyType="heading_5"
-                app:typographyWeight="bold" />
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="filled" />
 
         </LinearLayout>
 

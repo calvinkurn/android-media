@@ -105,11 +105,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             if (items != null && items.getFreeShipping() != null && items.getFreeShipping().isEligible()) {
                 freeShippingImage.setVisibility(View.VISIBLE);
-                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
             if (items != null) {
                 if (!TextUtils.isEmpty(items.getImageUrl())) {
-                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 }
                 if (!TextUtils.isEmpty(items.getTitle())) {
                     productName.setText(Html.fromHtml(items.getTitle()));
@@ -134,12 +134,12 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 buyBtn.setText(actionButton.getLabel());
                 GradientDrawable shape = new GradientDrawable();
                 shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(context.getResources().getDimensionPixelSize(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4));
                 if (!actionButton.getActionColor().getBackground().equals("")) {
                     shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
                 }
                 if (!actionButton.getActionColor().getBorder().equals("")) {
-                    shape.setStroke(context.getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                    shape.setStroke(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
                 buyBtn.setBackground(shape);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {

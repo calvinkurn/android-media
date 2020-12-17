@@ -25,12 +25,19 @@ class OfficialStoreCategoryViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreCategories>>()
     }
 
-    fun getOfficialStoreCategories() {
+    fun getOfficialStoreCategories(doQueryHashing : Boolean) {
         launchCatchError(block = {
-            val response = withContext(dispatchers.io()) {
-                getOfficialStoreCategoriesUseCase.executeOnBackground()
+            val cacheResponse = withContext(dispatchers.io()) {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
             }
-            _officialStoreCategoriesResult.value = Success(response)
+            cacheResponse.isCache = true
+            _officialStoreCategoriesResult.value = Success(cacheResponse)
+
+            val cloudResponse = withContext(dispatchers.io()) {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
+            }
+            _officialStoreCategoriesResult.value = Success(cloudResponse)
+
         }) {
             _officialStoreCategoriesResult.value = Fail(it)
         }

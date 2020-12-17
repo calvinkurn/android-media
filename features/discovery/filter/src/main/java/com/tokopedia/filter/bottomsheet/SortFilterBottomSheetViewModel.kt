@@ -101,7 +101,9 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     private fun getSelectedSortValue(): String {
-        return mapParameter[SearchApiConst.OB] ?: SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+        return dynamicFilterModel?.let {
+            mapParameter[it.getSortKey()] ?: it.defaultSortValue
+        } ?: ""
     }
 
     fun getSelectedFilterMap(): Map<String, String> {
@@ -139,7 +141,7 @@ internal class SortFilterBottomSheetViewModel {
     private fun isButtonResetVisible() = filterController.isFilterActive() || isSortNotDefault()
 
     private fun isSortNotDefault(): Boolean {
-        return getSelectedSortValue() != SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+        return getSelectedSortValue() != dynamicFilterModel?.defaultSortValue ?: ""
     }
 
     private fun processSortData(dynamicFilterModelData: DataValue) {
@@ -467,6 +469,10 @@ internal class SortFilterBottomSheetViewModel {
         return sortItemViewModel
     }
 
+    private fun SortViewModel.getDefaultSortItemViewModel() = sortItemViewModelList.find { it.isDefault() }
+
+    private fun SortItemViewModel.isDefault() = sort.value == dynamicFilterModel?.defaultSortValue
+
     private fun applySort(sortItemViewModel: SortItemViewModel) {
         sortItemViewModel.isSelected = true
 
@@ -529,7 +535,7 @@ internal class SortFilterBottomSheetViewModel {
 
         if (isSortNotDefault) {
             sortItemViewModelList.forEach {
-                it.isSelected = it.sort.value == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+                it.isSelected = it.sort.value == dynamicFilterModel?.defaultSortValue ?: ""
             }
 
             updateViewInPositionEventMutableLiveData.value = Event(sortIndex)
@@ -592,7 +598,10 @@ internal class SortFilterBottomSheetViewModel {
     private fun resetMapParameter() {
         mutableMapParameter.clear()
         mutableMapParameter.putAll(filterController.getParameter())
-        mutableMapParameter[SearchApiConst.OB] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+
+        dynamicFilterModel?.run {
+            if (hasSort()) mutableMapParameter[getSortKey()] = defaultSortValue
+        }
     }
 
     fun applySortFilter() {

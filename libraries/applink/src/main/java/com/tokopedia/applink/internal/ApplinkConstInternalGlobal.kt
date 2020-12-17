@@ -50,9 +50,29 @@ object ApplinkConstInternalGlobal {
     val PARAM_KTP_PATH = "ktpPath"
     @JvmField
     val PARAM_FACE_PATH = "facePath"
+    @JvmField
+    val PARAM_CTA_TYPE = "ctaType"
+    @JvmField
+    val PARAM_IMG_LINK = "imglink"
+    @JvmField
+    val PARAM_MESSAGE_TITLE = "messageTitle"
+    @JvmField
+    val PARAM_MESSAGE_BODY = "messageBody"
+    @JvmField
+    val PARAM_STATUS = "status"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+
+    @JvmField
+    val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
+
+    @JvmField
+    val PARAM_USER_ID_ENC = "userIdEncrypted"
+    @JvmField
+    val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    @JvmField
+    val PARAM_USER_ID = "userId"
 
     //VerificationActivity Param
     @JvmField
@@ -69,8 +89,11 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_SKIP_OTP = "is_skip_otp"
     @JvmField
     val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
+
     @JvmField
-    val KEY_REDIRECT_SEAMLESS_APPLINK = "redirect_seamless"
+    val PARAM_ENABLE_2FA = "enable_2fa"
+    @JvmField
+    val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -84,10 +107,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // ChangeInactiveFormRequestActivity
-    // tokopedia-android-internal://global/change-inactive-phone-form
+    // InactivePhoneOnboardingActivity
+    // tokopedia-android-internal://global/change-inactive-phone
     @JvmField
-    val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
+    val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
+
+    // TkpdPaySettingActivity
+    // tokopedia-android-internal://global/payment-setting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
 
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
@@ -239,10 +267,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
 
-    // AddEmailActivity
+    // AddPhoneActivity
     // tokopedia-android-internal://global/add-phone
     @JvmField
     val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // AddPhoneActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE_WITH = "$INTERNAL_GLOBAL/add-phone?phone={phone-number}"
 
     // AddBodActivity
     // tokopedia-android-internal://global/add-bod
@@ -273,6 +306,16 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // ReceiverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-receiver
+    @JvmField
+    val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
+
+    // SettingNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-setting
+    @JvmField
+    val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
@@ -464,10 +507,11 @@ object ApplinkConstInternalGlobal {
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 
 
-    // Phone Number Verification Activity
+    //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 
@@ -497,8 +541,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
+    // AccountHomeActivity
+    // tokopedia-android-internal://global/account-home-old
+    @JvmField
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
+
+    // HomeAccountUserActivity
+    // tokopedia-android-internal://global/new-home-account
+    @JvmField
+    val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //FeedbackPageActivity
+    @JvmField
+    val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 }

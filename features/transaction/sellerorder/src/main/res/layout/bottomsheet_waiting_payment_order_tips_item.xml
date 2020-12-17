@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivWaitingOrderTips"
+        android:layout_width="@dimen/waiting_order_tips_icon_size"
+        android:layout_height="@dimen/waiting_order_tips_icon_size" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvWaitingOrderTipsDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
+        tool:text="@string/lorem" />
+
+</LinearLayout>

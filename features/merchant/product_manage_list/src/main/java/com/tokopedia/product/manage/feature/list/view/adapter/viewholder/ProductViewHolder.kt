@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
@@ -34,6 +34,7 @@ class ProductViewHolder(
         showProductImage(product)
         showStockHintImage(product)
         showProductCheckBox(product)
+        showProductTopAdsIcon(product)
 
         setOnClickListeners(product)
     }
@@ -124,6 +125,10 @@ class ProductViewHolder(
     private fun showProductCheckBox(product: ProductViewModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun showProductTopAdsIcon(product: ProductViewModel) {
+        itemView.imageTopAds.showWithCondition(product.hasTopAds())
     }
 
     private fun toggleCheckBox() {

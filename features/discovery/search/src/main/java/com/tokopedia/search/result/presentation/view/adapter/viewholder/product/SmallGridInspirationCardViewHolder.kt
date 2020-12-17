@@ -1,10 +1,13 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
@@ -14,6 +17,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCardLis
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
+import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_small_grid_inspiration_card_layout.view.*
 
 class SmallGridInspirationCardViewHolder(
@@ -28,12 +32,67 @@ class SmallGridInspirationCardViewHolder(
     }
 
     override fun bind(element: InspirationCardViewModel) {
+        val isCurated = element.type == SearchConstant.InspirationCard.TYPE_CURATED
+        setBaseLayout(isCurated)
+        if (isCurated) {
+            setCuratedLayout(element)
+        } else {
+            setDefaultLayout(element)
+        }
+    }
+
+    private fun setBaseLayout(isCurated: Boolean) {
+        if (isCurated) {
+            itemView.smallGridCardViewInspirationCard?.inspirationCard?.visibility = View.GONE
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCurated?.visibility = View.VISIBLE
+        } else {
+            itemView.smallGridCardViewInspirationCard?.inspirationCard?.visibility = View.VISIBLE
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCurated?.visibility = View.GONE
+        }
+    }
+
+    private fun setCuratedLayout(element: InspirationCardViewModel) {
+        val option = element.options.firstOrNull() ?: return
+
+        bindCuratedBackground()
+        bindCuratedIcon(option)
+        bindCuratedTitle(option)
+        bindCuratedListener(option)
+    }
+
+    private fun bindCuratedBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            itemView.inspirationCardCuratedBackground?.setBackgroundResource(R.drawable.search_background_layer_small_grid_curated_cards)
+            itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        }
+        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
+    }
+
+    private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
+        itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+        }
+    }
+
+    private fun bindCuratedTitle(element: InspirationCardOptionViewModel) {
+        itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedTitle?.shouldShowWithAction(element.text.isNotEmpty()) {
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedTitle?.text = element.text
+        }
+    }
+
+    private fun bindCuratedListener(element: InspirationCardOptionViewModel) {
+        itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedButton?.setOnClickListener {
+            inspirationCardListener.onInspirationCardOptionClicked(element)
+        }
+    }
+
+    private fun setDefaultLayout(element: InspirationCardViewModel) {
         bindTitle(element)
         bindContent(element)
     }
 
     private fun bindTitle(element: InspirationCardViewModel) {
-        itemView.smallGridCardViewInspirationCard?.shouldShowWithAction(element.title.isNotEmpty()) {
+        itemView.smallGridCardViewInspirationCard?.inspirationCardTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
             itemView.smallGridCardViewInspirationCard?.inspirationCardTitle?.text = element.title
         }
     }

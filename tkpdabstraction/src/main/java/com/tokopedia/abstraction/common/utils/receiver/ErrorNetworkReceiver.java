@@ -12,12 +12,22 @@ import timber.log.Timber;
 public class ErrorNetworkReceiver extends BroadcastReceiver {
 
     private ReceiveListener mReceiver;
+    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String PATH = "path";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (mReceiver != null && intent != null) {
             String action = intent.getAction();
-            Timber.w("P1#BROADCAST_RECEIVER#ErrorNetworkReceiver;action='%s'", action);
+            String accessToken = "";
+            String path = "";
+            if(intent.getStringExtra(ACCESS_TOKEN) != null) {
+                accessToken = intent.getStringExtra(ACCESS_TOKEN);
+            }
+            if(intent.getStringExtra(PATH) != null) {
+                path = intent.getStringExtra(PATH);
+            }
+            Timber.w("P1#BROADCAST_RECEIVER#ErrorNetworkReceiver;action='%s';accessToken='%s';path='%s'", action, accessToken, path);
             if (action == null) {
                 return;
             }

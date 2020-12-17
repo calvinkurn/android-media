@@ -55,13 +55,6 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_GET_LATEST_TALK)
-    fun provideRawGetLatestTalk(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_latest_talk)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL)
     fun provideRawDiscussionMostHelpful(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_talk_discussion_most_helpful)
@@ -100,13 +93,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_CATALOG)
-    fun provideProductCategory(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
 
     @ProductDetailScope
     @Provides

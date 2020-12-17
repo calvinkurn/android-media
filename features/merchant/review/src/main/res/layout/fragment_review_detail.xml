@@ -100,7 +100,7 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailProductCard"
-                tools:src="@drawable/ic_rating_star_four" />
+                tools:src="@drawable/review_ic_rating_star_four" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewDetailName"

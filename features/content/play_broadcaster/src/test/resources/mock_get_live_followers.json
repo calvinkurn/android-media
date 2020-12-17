@@ -1,0 +1,21 @@
+{
+  "shopFollowerList": {
+    "data": [
+      {
+        "photo": "https://www.tokopedia.com"
+      },
+      {
+        "photo": "https://www.tokopedia.com"
+      }
+    ]
+  },
+  "shopInfoByID": {
+    "result": [
+      {
+        "favoriteData": {
+          "totalFavorite": 2
+        }
+      }
+    ]
+  }
+}

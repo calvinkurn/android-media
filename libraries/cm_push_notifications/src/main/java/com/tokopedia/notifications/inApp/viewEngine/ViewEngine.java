@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMBackground;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton;
@@ -38,6 +40,8 @@ import java.util.List;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
+import timber.log.Timber;
 
 /**
  * @author lalit.singh
@@ -135,6 +139,9 @@ public class ViewEngine {
             handleBackPress(view, cmInApp);
             return inAppView;
         } catch (Exception e) {
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + cmInApp.toString().substring(0, (Math.min(cmInApp.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
             inAppView = null;
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
@@ -341,7 +348,10 @@ public class ViewEngine {
             if (size != null && TextUtils.isEmpty(size.trim()))
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                         Float.parseFloat(size));
-        } catch (NumberFormatException ignored) {
+        } catch (NumberFormatException e) {
+            Timber.w( CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e)
+                    .substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + cmButton.toString().substring(0, (Math.min(cmButton.toString().length(), CMConstant.TimberTags.MAX_LIMIT)))  + "'");
         }
 
         int margin[] = {0, 0, 0, 0};
@@ -529,7 +539,7 @@ public class ViewEngine {
         constraintSet.clear(resCmImage);
         constraintSet.clear(resCmMessage);
 
-        if (!TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (!TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
             constraintSet.constrainHeight(resCmImage, (int) getPXtoDP(80));
             constraintSet.constrainWidth(resCmImage, (int) getPXtoDP(80));
             if (isCLoseButtonVisible)
@@ -580,7 +590,7 @@ public class ViewEngine {
                 ConstraintSet.PARENT_ID, ConstraintSet.END);
 
 
-        if (TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
 
             /*title*/
             constraintSet.connect(resCmTitle, ConstraintSet.START,

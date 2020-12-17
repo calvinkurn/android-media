@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ProfilesItem(
         @SerializedName("profile_id")
         val profileId: Int = 0,
+        @SerializedName("enable")
+        val enable: Boolean = false,
         @SerializedName("status")
         val status: Int = 1,
         @SerializedName("address")

@@ -9,7 +9,6 @@ import org.junit.runners.Suite
 @ExperimentalCoroutinesApi
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-        AutoAdsWidgetViewModelTest::class,
         DailyBudgetViewModelTest::class,
         TopAdsInfoViewModelTest::class
 )

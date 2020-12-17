@@ -1,0 +1,205 @@
+[
+  {
+    "data": {
+      "event_product_detail_v3": {
+        "productDetailData": {
+          "id": "40281",
+          "parent_id": "0",
+          "brand_id": "0",
+          "category_id": "1",
+          "provider_id": "5",
+          "checkout_business_type": 31,
+          "checkout_data_type": "event",
+          "child_category_ids": "6",
+          "provider_product_id": "37027-1-5",
+          "provider_product_code": "",
+          "provider_product_name": "Devano Danendra Inti",
+          "display_name": "Devano Danendra Inti",
+          "title": "Devano Danendra Inti",
+          "action_text": "",
+          "censor": "",
+          "genre": "",
+          "duration": "",
+          "url": "https://booking.tokopedia.com/v1/api/p/devano-danendra-intimate-virtual-concert-40281?cities=",
+          "seo_url": "devano-danendra-intimate-virtual-concert-40281",
+          "image_web": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "thumbnail_web": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "image_app": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/9/15/22166894/22166894_a1075a27-f066-4403-a1be-ce8f624854c7.jpg",
+          "seatmap_image": "",
+          "location": "",
+          "app_url": "tokopedia://events/devano-danendra-intimate-virtual-concert-40281",
+          "web_url": "https://www.tokopedia.com/events/detail/devano-danendra-intimate-virtual-concert-40281",
+          "tnc": "Anda dapat menonton live streaming dengan cara menekan tombol \"Watch on Web\" untuk menonton melalui web LOKET Live ATAU \"Watch on App\" untuk menonton melalui aplikasi GoPlay yang ada di bagian e-voucher.~You can watch live streaming by pressing \"Watch on Web\" button to watch on LOKET Live web OR \"Watch on App\" button to watch on GoPlay app in the e-voucher section~Jangan pernah memberikan link streaming yang ada di e-voucher Anda kepada siapapun.~Never give a streaming link on your e-voucher to anyone~Jika membeli lebih dari 1 tiket , Silahkan COPY URL LIVE STREAMING yang ada pada tiket kedua dan selanjutnya. bagikan kepada Rekan Anda.~If buying more than 1 ticket, please COPY THE LIVE STREAMING URL on the second and subsequent tickets, share it with your colleague.~1 link streaming hanya dapat dibuka dalam 1 jendela browser dalam 1 device.~1 streaming link can only be opened in 1 browser window on 1 device.~Silahkan mengakses link streaming Anda, sesuai dengan waktu yang tertera di e-voucher Anda. Keterlambatan menjadi tanggung jawab Anda.~Please access your streaming link, according to the time printed on your e-voucher. Delay in joining the streaming will be on your responsibility.~Anda tidak diperbolehkan untuk men-download dan juga menduplikasikan seluruh isi konten dalam layanan streaming ini. Pelanggaran hak cipta dari konten yang dipasang diatur dalam undang-undang terkait.~You are not allowed to download and duplicate the entire contents of this streaming. Copyright violation on this content is regulated in related laws.~Kualitas video streaming ditentukan dari bandwidth internet Anda.~Streaming video quality is determined by your internet bandwidth.~Layanan live chat dapat digunakan cara memasukkan nama Anda terlebih dahulu dan untuk melihat obrolan di live chat, Anda dapat mengirimkan chat terlebih dahulu.~Live chat service can be used by entering your name first; and to see conversation in live chat, you must send a chat in advance~Harap tidak menggunakan kata-kata yang berbau SARA dan Pornografi di dalam live chat.~Please do not use words that contain Racial Religion and Pornography in live chat.~Dengan membeli tiket konser event online ini, Anda telah menyetujui pengumpulan, penyimpanan, dan penggunaan data Anda untuk keperluan konser.~By purchasing the concert tickets, you have agreed to data collection, storage, and utilization for concert purposes.~Penyelenggara berhak untuk tidak memberikan izin untuk menonton video streaming apabila syarat-syarat & ketentuan tidak dipenuhi.~The promotor has the right not giving permission to watch video streaming if the terms and condition are not fulfilled.",
+          "offer_text": "",
+          "short_desc": "&lt;p&gt;Devano Danendra Intimate Virtual Concert&lt;/p&gt;",
+          "long_rich_desc": "Devano Danendra Intimate Virtual Concert",
+          "salient_features": "",
+          "meta_title": "Devano Danendra Intimate Virtual Concert: Jual Tiket Event Online Promo",
+          "meta_description": "Beli dan dapatkan tiket Devano Danendra Intimate Virtual Concert lebih praktis di Tokopedia",
+          "meta_keywords": "",
+          "search_tags": "",
+          "display_tags": "",
+          "promotion_text": "",
+          "autocode": "",
+          "convenience_fee": "0",
+          "mrp": "0",
+          "sales_price": "50000",
+          "seat_chart_type": "0",
+          "has_seat_layout": "0",
+          "form": "0",
+          "priority": "0",
+          "quantity": "0",
+          "sold_quantity": "0",
+          "sell_rate": "0",
+          "thumbs_up": "0",
+          "thumbs_down": "0",
+          "is_featured": 0,
+          "is_promo": 0,
+          "is_food_available": 0,
+          "is_searchable": 1,
+          "is_top": 0,
+          "use_pdf": 0,
+          "status": 1,
+          "redirect": 0,
+          "min_start_date": "1601125200",
+          "max_end_date": "1601130600",
+          "sale_start_date": "1598806800",
+          "sale_end_date": "1601128800",
+          "custom_labels": "",
+          "custom_text_1": "0",
+          "custom_text_2": "",
+          "custom_text_3": "",
+          "custom_text_4": "",
+          "custom_text_5": "",
+          "created_at": "",
+          "updated_at": "",
+          "min_start_time": "2020-09-26 13:00:00",
+          "max_end_time": "2020-09-26 14:30:00",
+          "sale_start_time": "2020-08-30 17:00:00",
+          "sale_end_time": "2020-09-26 14:00:00",
+          "date_range": false,
+          "dates": [
+            "1900534740"
+          ],
+          "packages": [
+            {
+              "id": "2624",
+              "name": "Devano Danendra Intimate Virtual Concert",
+              "product_id": "40281",
+              "provider_package_id": "37027",
+              "provider_package_name": "Devano Danendra Intimate Virtual Concert",
+              "description": "&lt;p&gt;Devano Danendra Intimate Virtual Concert&lt;/p&gt;",
+              "status": 0,
+              "start_date": "1598806800",
+              "sales_price": "50000",
+              "dates": [
+                "1900534740"
+              ],
+              "end_date": "1900534740",
+              "package_items": [
+                {
+                  "id": "7608",
+                  "product_id": "40281",
+                  "product_package_id": "2624",
+                  "provider_schedule_id": "37538-1-5",
+                  "provider_ticket_id": "102485-1-5",
+                  "name": "Presale",
+                  "description": "",
+                  "tnc": "",
+                  "convenience_fee": "0",
+                  "mrp": "50000",
+                  "sales_price": "50000",
+                  "available": "100",
+                  "provider_meta_data": "{\"id_ticket\":102485,\"id_ticket_type\":91738,\"ticket_type\":\"Presale\",\"description\":\"\",\"start_sale\":\"2020-08-31 00:00:00\",\"end_sale\":\"2020-09-19 23:59:00\",\"price\":50000,\"quantity\":100,\"available\":false,\"available_qty\":0,\"ticket_seating_chart\":false,\"ticket_color\":\"#000000\",\"hold_end_date\":null,\"hold_message\":null,\"status_ticket\":3,\"status_ticket_name\":\"SOLD OUT\",\"tags\":[],\"max_buy_qty\":0}",
+                  "provider_status": "SOLD OUT",
+                  "status": 1,
+                  "dates": [
+                    "1900534740"
+                  ],
+                  "min_qty": "1",
+                  "max_qty": "4",
+                  "start_date": "1598806800",
+                  "end_date": "1900534740",
+                  "provider_custom_text": ""
+                }
+              ]
+            }
+          ],
+          "facilities": [],
+          "city_name": "Online",
+          "forms": [
+            {
+              "id": "6653",
+              "product_id": "40281",
+              "name": "fullname",
+              "title": "Nama Lengkap",
+              "value": "",
+              "element_type": "text",
+              "help_text": "Nama Lengkap Anda (cth: John Doe)",
+              "required": 1,
+              "validator_regex": "^[a-zA-Z ]{3,}$",
+              "error_message": "Input tidak sesuai format nama",
+              "status": 1,
+              "created_at": "",
+              "updated_at": ""
+            }
+          ],
+          "media": [],
+          "outlets": [
+            {
+              "id": "31886",
+              "product_id": "0",
+              "location_id": "222",
+              "name": "Streaming Loket Live",
+              "search_name": "streaming-loket-live",
+              "meta_title": "",
+              "meta_description": "",
+              "meta_keywords": "",
+              "district": "",
+              "gmap_address": "",
+              "neighbourhood": "Online",
+              "coordinates": "0.000000,0.000000",
+              "state": "Online",
+              "country": "Indonesia",
+              "is_searchable": 0,
+              "location_status": 1,
+              "priority": 0,
+              "created_at": "",
+              "updated_at": ""
+            }
+          ],
+          "remaining_sale_time": "0",
+          "rating": "0",
+          "likes": 0,
+          "is_liked": false,
+          "catalog": {
+            "digital_category_id": "32",
+            "digital_product_id": "1601",
+            "digital_product_code": ""
+          },
+          "saving": "0",
+          "saving_percentage": "",
+          "recommendation_url": "",
+          "brand": {
+            "title": "",
+            "featured_image": "",
+            "featured_thumbnail_image": "",
+            "city_name": ""
+          },
+          "category": [
+            {
+              "id": "6",
+              "title": "Events",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_56f5eba8-4a8e-4835-957d-909a4083f8b1.png",
+              "url": "acara"
+            }
+          ],
+          "message": "",
+          "code": "",
+          "message_error": ""
+        }
+      }
+    }
+  }
+]

@@ -13,7 +13,8 @@ data class ShopProductSortFilterUiModel(
         var selectedEtalaseBadge: String = "",
         var selectedSortId: String = "",
         var selectedSortName: String = "",
-        var isShowSortFilter: Boolean = true
+        var isShowSortFilter: Boolean = true,
+        var filterIndicatorCounter: Int = 0
 ) : Visitable<BaseAdapterTypeFactory> {
     var scrollX: Int = 0
 

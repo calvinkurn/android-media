@@ -1,0 +1,8 @@
+{
+  "broadcasterCreateLivestream": {
+    "mediaID": "1234",
+    "liveStreamID": "12345",
+    "ingestURL": "rtmp://www.tokopedia.com",
+    "streamURL": "https://vod.tokopedia.net"
+  }
+}

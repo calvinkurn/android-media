@@ -1,10 +1,5 @@
 <resources>
     <string name="app_name">GmCommon</string>
-    <string name="bottom_sheet_regular_title">Mau akses fitur %s khusus Power Merchant?</string>
     <string name="bottom_sheet_idle_title">Yaah, Fitur %s hanya dapat diakses Power Merchant aktif</string>
-    <string name="bottom_sheet_regular_desc">Saatnya upgrade jadi Power Merchant untuk menggunakan fitur %s dan optimalkan penjualan tokomu.</string>
     <string name="bottom_sheet_idle_desc">Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan %s dan fitur eksklusif Power Merchant lainnya kembali.</string>
-    <string name="bottom_sheet_regular_btn">Upgrade Sekarang</string>
-    <string name="bottom_sheet_idle_btn">Tip Meningkatkan Poin</string>
-
 </resources>

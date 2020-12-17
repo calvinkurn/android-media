@@ -1,0 +1,75 @@
+{
+  "readme": "P1#LOGINREGISTER - Login page",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": "{{.+}}",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "Login page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - email",
+      "eventLabel": "success",
+      "sessionIris": "{{.*}}",
+      "user_id": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button ubah",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on lupa kata sandi",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button socmed",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button google",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "click"
+    },
+
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click daftar bottom",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

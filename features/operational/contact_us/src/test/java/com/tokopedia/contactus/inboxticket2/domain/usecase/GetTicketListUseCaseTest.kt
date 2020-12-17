@@ -3,8 +3,9 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
-import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +14,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,8 +26,9 @@ class GetTicketListUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     private val contactUsRepository: ContactUsRepository = mockk(relaxed = true)
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
 
-    private var getTicketDetailUseCase = spyk(GetTicketListUseCase(contactUsRepository))
+    private var getTicketDetailUseCase = spyk(GetTicketListUseCase(userSession, contactUsRepository))
 
     @Before
     @Throws(Exception::class)
@@ -41,41 +44,40 @@ class GetTicketListUseCaseTest {
         Dispatchers.resetMain()
     }
 
-    /****************************************** setQueryMap() ***************************************/
+    /****************************************** getRequestParams() ***************************************/
 
     @Test
-    fun `check invocation of setQueryMap with parameters value greater than 0`() {
+    fun `check invocation of getRequestParams with parameters value greater than 0`() {
 
+        val page = 1
         val status = 1
-        val read = 3
         val rating = 5
 
-        val map = getTicketDetailUseCase.setQueryMap(status, read, rating)
+        val map = getTicketDetailUseCase.getRequestParams(page, status, rating)
 
-        assertEquals(map[STATUS], 1)
-        assertEquals(map[READ], 3)
-        assertEquals(map[RATING], 5)
+        assertEquals(map.parameters[STATUS], 1)
+        assertEquals(map.parameters["page"], 1)
+        assertEquals(map.parameters[RATING], 5)
 
     }
 
 
     @Test
-    fun `check invocation of setQueryMap with parameters value less than 0`() {
+    fun `check invocation of getRequestParams with parameters value less than 0`() {
 
+        val page = -2
         val status = -1
-        val read = -3
-        val rating = -5
+        val rating = 0
 
-        val map = getTicketDetailUseCase.setQueryMap(status, read, rating)
+        val map = getTicketDetailUseCase.getRequestParams(page, status, rating)
 
-        assertNull(map[STATUS])
-        assertNull(map[READ])
-        assertNull(map[RATING])
+        assertEquals(map.parameters[STATUS],-1)
+        assertNull(map.parameters[RATING])
+        assertEquals(map.parameters["page"],-2)
 
     }
 
     /****************************************** setQueryMap() ***************************************/
-
 
 
     /*************************************** getTicketListResponse() ********************************/
@@ -84,19 +86,13 @@ class GetTicketListUseCaseTest {
     fun `check function invocation getTicketListResponse`() {
         runBlockingTest {
             coEvery {
-                (contactUsRepository.getRestData(any(),
-                        object : TypeToken<DataResponse<TicketListResponse>>() {}.type,
-                        any(),
-                        any()) as DataResponse<TicketListResponse>).data
+                contactUsRepository.getGQLData<InboxTicketListResponse>(any(),any(),any())
             } returns mockk()
 
-            getTicketDetailUseCase.getTicketListResponse(mockk(),"")
+            getTicketDetailUseCase.getTicketListResponse(mockk(relaxed = true))
 
             coVerify(exactly = 1) {
-                (contactUsRepository.getRestData(any(),
-                        object : TypeToken<DataResponse<TicketListResponse>>() {}.type,
-                        any(),
-                        any()) as DataResponse<TicketListResponse>).data
+                contactUsRepository.getGQLData<InboxTicketListResponse>(any(),any(),any())
             }
         }
     }

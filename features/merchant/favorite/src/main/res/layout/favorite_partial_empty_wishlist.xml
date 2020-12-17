@@ -44,12 +44,12 @@
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_login"
-        android:layout_width="@dimen/button_width"
+        android:layout_width="@dimen/favorite_button_width"
         android:layout_height="wrap_content"
         app:buttonCompatType="primary"
         app:buttonCompatSize="medium"
         android:textAllCaps="false"
-        android:text="@string/empty_button"
+        android:text="@string/favorite_empty_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_24"/>

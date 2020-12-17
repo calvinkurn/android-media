@@ -12,39 +12,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewholder.AccountLoadingMoreViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.AccountRecommendationTitleViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.AddProductViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.BuyerCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.InfoCardViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.LabelledMenuListViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.MenuGridIconNotificationViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.PowerMerchantViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.RekeningPremiumViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.SellerEmptyViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.SellerSaldoViewHolder;
-import com.tokopedia.home.account.presentation.viewholder.ShopCardViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder;
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.RekeningPremiumViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
-import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author okasurya on 7/17/18.
@@ -68,22 +54,12 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new MenuTitleViewHolder(parent);
         } else if (type == MenuGridViewHolder.LAYOUT) {
             return new MenuGridViewHolder(parent, listener);
-        } else if (type == LabelledMenuListViewHolder.Companion.getLAYOUT()) {
-            return new LabelledMenuListViewHolder(parent, listener);
+        } else if (type == MenuGridIconNotificationViewHolder.Companion.getLAYOUT()) {
+            return new MenuGridIconNotificationViewHolder(parent, listener);
         } else if (type == MenuListViewHolder.LAYOUT) {
             return new MenuListViewHolder(parent, listener);
         } else if (type == InfoCardViewHolder.LAYOUT) {
             return new InfoCardViewHolder(parent, listener);
-        } else if (type == ShopCardViewHolder.LAYOUT) {
-            return new ShopCardViewHolder(parent, listener);
-        } else if (type == SellerSaldoViewHolder.LAYOUT) {
-            return new SellerSaldoViewHolder(parent, listener);
-        } else if (type == AddProductViewHolder.LAYOUT) {
-            return new AddProductViewHolder(parent, listener);
-        } else if (type == SellerEmptyViewHolder.LAYOUT) {
-            return new SellerEmptyViewHolder(parent, listener);
-        } else if (type == PowerMerchantViewHolder.Companion.getLAYOUT()) {
-            return new PowerMerchantViewHolder(parent, listener);
         } else if (type == AccountRecommendationTitleViewHolder.Companion.getLAYOUT()) {
             return new AccountRecommendationTitleViewHolder(parent);
         } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
@@ -92,8 +68,6 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new LoadingShimmeringListViewHolder(parent);
         } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
             return new AccountLoadingMoreViewHolder(parent);
-        } else if (type == RekeningPremiumViewHolder.Companion.getLAYOUT()) {
-            return new RekeningPremiumViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -118,32 +92,16 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return MenuGridViewHolder.LAYOUT;
     }
 
+    public int type(MenuGridIconNotificationViewModel vm) {
+        return MenuGridIconNotificationViewHolder.Companion.getLAYOUT();
+    }
+
     public int type(MenuListViewModel vm) {
         return MenuListViewHolder.LAYOUT;
     }
 
     public int type(InfoCardViewModel vm) {
         return InfoCardViewHolder.LAYOUT;
-    }
-
-    public int type(ShopCardViewModel vm) {
-        return ShopCardViewHolder.LAYOUT;
-    }
-
-    public int type(SellerSaldoViewModel vm) {
-        return SellerSaldoViewHolder.LAYOUT;
-    }
-
-    public int type(AddProductViewModel viewModel) {
-        return AddProductViewHolder.LAYOUT;
-    }
-
-    public int type(SellerEmptyViewModel viewModel) {
-        return SellerEmptyViewHolder.LAYOUT;
-    }
-
-    public int type(PowerMerchantCardViewModel viewModel) {
-        return PowerMerchantViewHolder.Companion.getLAYOUT();
     }
 
     public int type(AccountRecommendationTitleViewModel viewModel) {
@@ -154,10 +112,6 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         return RecommendationProductViewHolder.Companion.getLAYOUT();
     }
 
-    public int type(LabelledMenuListUiModel vm) {
-        return LabelledMenuListViewHolder.Companion.getLAYOUT();
-    }
-
     @Override
     public int type(LoadingModel viewModel) {
         return LoadingShimmeringListViewHolder.LAYOUT;
@@ -166,9 +120,5 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public int type(LoadingMoreModel viewModel) {
         return AccountLoadingMoreViewHolder.LAYOUT;
-    }
-
-    public int type(@NotNull RekeningPremiumViewModel rekeningPremiumViewModel) {
-        return RekeningPremiumViewHolder.Companion.getLAYOUT();
     }
 }

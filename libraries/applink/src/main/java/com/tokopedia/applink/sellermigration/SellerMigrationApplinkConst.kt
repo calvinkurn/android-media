@@ -6,4 +6,5 @@ object SellerMigrationApplinkConst {
     const val QUERY_PARAM_FEATURE_NAME = "feature_name"
     const val QUERY_PARAM_IS_AUTO_LOGIN = "is_auto_login"
     const val EXTRA_SCREEN_NAME = "screenName"
+    const val EXTRA_IS_STACK_BUILDER = "stackBuilder"
 }

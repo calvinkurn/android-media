@@ -17,7 +17,7 @@
             android:id="@+id/bg_image_register"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            tools:background="@color/grey_300"
+            tools:background="@color/Unify_N100"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +33,7 @@
             android:gravity="center"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -41,7 +41,7 @@
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_14"
             app:layout_constraintTop_toTopOf="parent"
-            tools:textColor="@color/black"
+            tools:textColor="@color/Unify_N700"
             tools:text="Dapatkan Gratis Ongkir , Cashback, dan Diskon Total senilai 1 juta rupiah" />
 
 

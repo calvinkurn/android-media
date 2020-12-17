@@ -1,0 +1,50 @@
+{
+  "readme": "Rating Product - click filter in bottom sheet then click item product",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - rating product tab",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - filter on rating product page",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - select filter on bottomsheet",
+      "eventLabel" : "{{filterBy:.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "scroll - rating product page",
+      "eventLabel" : "{{filterBy:.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - product on rating product",
+      "eventLabel" : "{{productId:\\d{1,}}}",
+      "position" : "{{\\d{1,};}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    }
+  ]
+}

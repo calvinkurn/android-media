@@ -5,8 +5,9 @@
     <application>
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
-            android:label="@string/shop_settings_manage_shop_info"
+            android:label="@string/shop_settings_info"
             android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -19,12 +20,6 @@
                     android:pathPattern="@string/path_shop_settings_info"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".basicinfo.view.activity.ShopEditBasicInfoActivity"
-            android:label="@string/shop_settings_basic_info"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name=".basicinfo.view.activity.ShopEditScheduleActivity"

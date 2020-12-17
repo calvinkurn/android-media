@@ -14,6 +14,7 @@ interface PromoCheckoutDetailComponent{
     fun inject(promoCheckoutDetailFlightFragment: PromoCheckoutDetailFlightFragment)
     fun inject(promoCheckoutDetailHotelFragment: PromoCheckoutDetailHotelFragment)
     fun inject(promoCheckoutDetailEventFragment: PromoCheckoutDetailEventFragment)
+    fun inject(promoCheckoutDetailDealsFragment: PromoCheckoutDetailDealsFragment)
 
     fun userSession(): UserSession
 }

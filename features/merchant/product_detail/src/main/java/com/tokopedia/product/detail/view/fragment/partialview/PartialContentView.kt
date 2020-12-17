@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -33,6 +34,8 @@ class PartialContentView(private val view: View,
         val basic = product.basic
         val campaign = data.campaign
 
+        txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
+        product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.name))
         product_name.text = MethodChecker.fromHtml(data.name)
 
         img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
@@ -66,14 +69,25 @@ class PartialContentView(private val view: View,
             if (wishlisted) {
                 fab_detail_pdp.hide()
                 fab_detail_pdp.isActivated = true
-                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_filled))
                 fab_detail_pdp.show()
             } else {
                 fab_detail_pdp.hide()
                 fab_detail_pdp.isActivated = false
-                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_wishlist_unfilled))
                 fab_detail_pdp.show()
             }
+        }
+    }
+
+    fun renderShareButton(componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
+        if (!listener.isNavOld()) {
+            share_product_pdp.show()
+            share_product_pdp.setOnClickListener {
+                listener.shareProductFromContent(componentTrackDataModel)
+            }
+        } else {
+            share_product_pdp.hide()
         }
     }
 
@@ -158,7 +172,7 @@ class PartialContentView(private val view: View,
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
         showStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Neutral_N50))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N50))
         setProgressStockBar(campaign, stockWording)
     }
 
@@ -204,8 +218,7 @@ class PartialContentView(private val view: View,
             if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
                 count_down.show()
                 count_down.setup(delta, startDate) {
-                    hideProductCampaign(campaign)
-                    listener.showAlertCampaignEnded()
+                    listener.refreshPage()
                 }
                 discount_timer_holder.show()
             } else {
@@ -219,7 +232,7 @@ class PartialContentView(private val view: View,
     private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDateTimeMs = campaign.getEndDataInt * ONE_SECOND
+            val endDateTimeMs = campaign.getEndDateLong * ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
@@ -260,6 +273,6 @@ class PartialContentView(private val view: View,
 
     private fun hideStockBarAndBackgroundColor() = with(view) {
         hideStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N0))
     }
 }

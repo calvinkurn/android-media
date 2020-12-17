@@ -1,0 +1,9 @@
+<resources>
+
+
+    <dimen name="margin_sm">15dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
+
+    <dimen name="sp_14">14sp</dimen>
+</resources>

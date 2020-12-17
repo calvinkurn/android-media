@@ -21,6 +21,14 @@
             android:background="@android:color/transparent"
             app:elevation="0dp">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerBroadcastChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="visible"
+                app:tickerType="information"
+                app:tickerShapeType="full" />
+
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
                 android:id="@+id/topAdsWidgetFreeClaim"
                 android:layout_width="match_parent"
@@ -93,6 +101,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textMultipleSelect"
+                    android:contentDescription="@string/content_desc_textMultipleSelect"
                     android:textColor="@color/g_500"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -133,6 +142,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnMultiEdit"
+        android:contentDescription="@string/content_desc_btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

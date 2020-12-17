@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class Stats(
         @SerializedName("countReview")
         @Expose
-        val countReview: Int = 0,
+        val countReview: String = "",
 
         @SerializedName("countTalk")
         @Expose
-        val countTalk: Int = 0,
+        val countTalk: String = "",
 
         @SerializedName("rating")
         @Expose

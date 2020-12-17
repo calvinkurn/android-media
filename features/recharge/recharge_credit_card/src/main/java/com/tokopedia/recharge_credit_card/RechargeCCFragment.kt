@@ -177,6 +177,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .needGetCart(true)
+                    .isFromPDP(true)
                     .build()
             checkoutPassDataState = passData
             navigateToCart(passData)

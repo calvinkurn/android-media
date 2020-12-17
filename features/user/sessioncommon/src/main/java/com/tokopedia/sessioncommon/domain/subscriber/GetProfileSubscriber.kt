@@ -11,7 +11,8 @@ import rx.Subscriber
  */
 class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
-                           val onErrorGetProfile: (e: Throwable) -> Unit) :
+                           val onErrorGetProfile: (e: Throwable) -> Unit,
+                           val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -27,6 +28,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         } else {
             onErrorGetProfile(Throwable())
         }
+        onFinished.invoke()
     }
 
     private fun saveProfileData(pojo: ProfilePojo?) {
@@ -44,6 +46,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                     pojo.profileInfo.email,
                     isShopGold(pojo.shopInfo.shopData.shopLevel),
                     pojo.profileInfo.phone)
+            userSession.setIsShopOfficialStore(isOfficialStore(pojo.shopInfo.shopData.shopLevel))
             userSession.shopAvatar = pojo.shopInfo.shopData.shopAvatar
         }
     }
@@ -54,6 +57,11 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         return shopLevel == LEVEL_GOLD  ||  shopLevel == LEVEL_OFFICIAL_STORE
     }
 
+    private fun isOfficialStore(shopLevel: Int): Boolean {
+        val LEVEL_OFFICIAL_STORE = 2
+        return shopLevel == LEVEL_OFFICIAL_STORE
+    }
+
     override fun onCompleted() {
 
     }
@@ -62,6 +70,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         e?.run {
             onErrorGetProfile(this)
         }
+        onFinished.invoke()
     }
 
 

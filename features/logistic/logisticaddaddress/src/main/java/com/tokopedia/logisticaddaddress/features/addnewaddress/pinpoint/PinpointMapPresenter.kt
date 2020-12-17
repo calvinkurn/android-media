@@ -1,12 +1,8 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
-import android.app.Activity
-import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
@@ -16,9 +12,8 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Compan
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import timber.log.Timber
@@ -34,7 +29,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapView>() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
-    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
         SimpleIdlingResource.increment()
@@ -42,7 +36,11 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 .execute(placeId)
                 .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
                     override fun onNext(model: GetDistrictDataUiModel) {
-                        view.onSuccessPlaceGetDistrict(model)
+                        if (model.errorCode == CIRCUIT_BREAKER_ON_CODE) {
+                            view.goToAddNewAddressNegative()
+                        } else {
+                            view.onSuccessPlaceGetDistrict(model)
+                        }
                     }
 
                     override fun onCompleted() {
@@ -69,6 +67,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                         {
                             if (it.messageError.isEmpty()) {
                                 view?.onSuccessAutofill(it.data)
+                            } else if (it.errorCode == CIRCUIT_BREAKER_ON_CODE){
+                                view?.goToAddNewAddressNegative()
                             } else {
                                 val msg = it.messageError[0]
                                 when {
@@ -122,30 +122,4 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         })
     }
 
-    fun requestLocation(activity: Activity) {
-        permissionCheckerHelper?.let { permission ->
-            val locationDetectorHelper = activity.let { act ->
-                LocationDetectorHelper(
-                        permission,
-                        LocationServices.getFusedLocationProviderClient(act),
-                        act)
-            }
-
-            locationDetectorHelper.getLocation(onGetLocation(), activity,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    activity.getString(R.string.rationale_need_location))
-        }
-    }
-
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
-        if (permissionCheckerHelper != null) {
-            this.permissionCheckerHelper = permissionCheckerHelper
-        }
-    }
-
-    private fun onGetLocation(): (DeviceLocation) -> Unit {
-        return {
-            view.showAutoComplete(it.latitude, it.longitude)
-        }
-    }
 }

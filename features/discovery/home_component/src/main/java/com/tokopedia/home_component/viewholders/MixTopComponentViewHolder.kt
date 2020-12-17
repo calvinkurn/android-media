@@ -31,8 +31,8 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -55,6 +55,7 @@ class MixTopComponentViewHolder(
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
     private var adapter: MixTopComponentAdapter? = null
+    private var isCacheData = false
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_top
@@ -76,10 +77,13 @@ class MixTopComponentViewHolder(
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: MixTopDataModel) {
+        isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
-        itemView.addOnImpressionListener(element.channelModel) {
-            mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -88,7 +92,8 @@ class MixTopComponentViewHolder(
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+        if (!isCacheData)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -129,7 +134,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -263,7 +268,8 @@ class MixTopComponentViewHolder(
                             ),
                             isOutOfStock = element.isOutOfStock,
                             ratingCount = element.rating,
-                            reviewCount = element.countReview
+                            reviewCount = element.countReview,
+                            countSoldRating = element.ratingFloat
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

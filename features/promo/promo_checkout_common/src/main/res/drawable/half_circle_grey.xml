@@ -4,7 +4,7 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval"
             android:useLevel="false">
-            <solid android:color="@color/grey_300" />
+            <solid android:color="@color/Unify_N100" />
             <size
                 android:width="30dp"
                 android:height="30dp" />

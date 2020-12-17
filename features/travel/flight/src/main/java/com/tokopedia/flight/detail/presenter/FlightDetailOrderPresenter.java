@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.flight.R;
@@ -86,8 +87,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
     }
 
-    public void getCrossSellingItems(String orderId, String crossSellingQuery) {
-        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
+    public void getCrossSellingItems(String orderId) {
+        crossSellingUseCase.executeRx(TravelCrossSellingGQLQuery.INSTANCE.getQUERY_CROSS_SELLING(), crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override
@@ -109,6 +110,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             } else {
                 getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
             }
+        }
+    }
+
+    @Override
+    public void actionCancelOrderWithoutDialog() {
+        if (isViewAttached() && getView().getFlightOrder() != null) {
+            List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                    .getFlightOrder().getJourneys());
+            getView().navigateToCancellationPage(getView().getFlightOrder().getId(), items);
         }
     }
 
@@ -358,7 +368,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         if (TextUtils.isEmpty(text)) {
             return text;
         }
-        text.setSpan(new RelativeSizeSpan(1.00f),
+        text.setSpan(new RelativeSizeSpan(0.8f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text;
     }
@@ -392,35 +402,35 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private void generateStatus(int status, String statusString) {
         switch (status) {
             case FlightStatusOrderType.EXPIRED:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, true);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_Y500, false, false, false, true);
                 break;
             case FlightStatusOrderType.CONFIRMED:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, true, false, true, false);
                 break;
             case FlightStatusOrderType.FAILED:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, false, false, false, false);
                 break;
             case FlightStatusOrderType.FINISHED:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, true, false, true, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, true, false, true, false);
                 break;
             case FlightStatusOrderType.PROGRESS:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, false, false, false, false);
                 break;
             case FlightStatusOrderType.READY_FOR_QUEUE:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, false, false, false, false);
                 break;
             case FlightStatusOrderType.FLIGHT_CANCELLED:
             case FlightStatusOrderType.REFUNDED:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_PAYMENT:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_Y500, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.font_black_primary_70, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_N700_68, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_TRANSFER:
-                getView().updateViewStatus(statusString, com.tokopedia.design.R.color.deep_orange_500, false, false, false, false);
+                getView().updateViewStatus(statusString, com.tokopedia.unifyprinciples.R.color.Unify_Y500, false, false, false, false);
                 break;
             default:
                 break;

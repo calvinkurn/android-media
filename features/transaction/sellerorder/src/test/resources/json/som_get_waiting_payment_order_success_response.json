@@ -1,0 +1,66 @@
+{
+  "data": {
+    "orderListWaitingPayment": {
+      "list": [
+        {
+          "order_id": 166427360,
+          "buyer_name": "N***********g (Kota Administrasi Jakarta Selatan)",
+          "payment_deadline": "11 Sep, 17:44",
+          "products": [
+            {
+              "product_id": 15293732,
+              "product_name": "Kaos Polos Aja",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
+              "product_qty": 1,
+              "product_price": "Rp 100"
+            },
+            {
+              "product_id": 15332067,
+              "product_name": "Kaos Polos Aja gimana coy",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
+              "product_qty": 1,
+              "product_price": "Rp 9.000"
+            },
+            {
+              "product_id": 15359272,
+              "product_name": "product 1",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+              "product_qty": 1,
+              "product_price": "Rp 1.500"
+            },
+            {
+              "product_id": 15379993,
+              "product_name": "product 10",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/6/8/5479999/5479999_3c9286e7-e942-4be6-bd23-c34999ae350b_315_315",
+              "product_qty": 1,
+              "product_price": "Rp 10.000"
+            },
+            {
+              "product_id": 15405840,
+              "product_name": "abc",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2020/7/7/5b8cdb76-baaa-4541-bfa2-80e89fd31999.jpg",
+              "product_qty": 1,
+              "product_price": "Rp 100"
+            }
+          ]
+        },
+        {
+          "order_id": 166426695,
+          "buyer_name": "N***********g (Kota Administrasi Jakarta Selatan)",
+          "payment_deadline": "11 Sep, 11:25",
+          "products": [
+            {
+              "product_id": 15359272,
+              "product_name": "product 1",
+              "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+              "product_qty": 1,
+              "product_price": "Rp 1.500"
+            }
+          ]
+        }
+      ],
+      "cursor_payment_deadline": 123456,
+      "total_data_per_batch": 2
+    }
+  }
+}

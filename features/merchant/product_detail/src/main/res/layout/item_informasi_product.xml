@@ -9,7 +9,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_info"
-        android:contentDescription="@string/content_desc_title_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/label_pre_order"
@@ -17,7 +16,7 @@
         app:layout_constraintEnd_toStartOf="@+id/pdp_guideline_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:visibility="visible" />
 
@@ -31,7 +30,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc_info"
-        android:contentDescription="@string/content_desc_desc_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -41,7 +39,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_info"
         app:typographyType="body_2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="4 hari"
         tools:visibility="visible" />
 

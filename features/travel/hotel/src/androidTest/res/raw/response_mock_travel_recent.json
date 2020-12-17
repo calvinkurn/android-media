@@ -1,0 +1,25 @@
+[
+  {
+  "data": {
+    "TravelCollectiveRecentSearches": {
+      "items": [ {
+        "product": "HOTEL",
+        "title": "Bali",
+        "subtitle": "17 Sep 2020 - 18 Sep 2020",
+        "prefix": "1 Kamar, 1 Tamu",
+        "prefixStyling": "normal",
+        "value": "",
+        "webURL": "https://www.tokopedia.com/hotel",
+        "appURL": "tokopedia://hotel/result?region_id=34712\\u0026region_name=Bali\\u0026check_in=2020-09-17\\u0026check_out=2020-09-18\\u0026room=1\\u0026adult=1\\u0026type=region\\u0026id=4712\\u0026name=Bali\"",
+        "imageURL": "https://ecs7.tokopedia.net/img/hotel/hotel-region.png"
+      }
+      ],
+      "meta": {
+        "title": "Terakhir dicari",
+        "webURL": "",
+        "appURL": ""
+      }
+    }
+  }
+  }
+]

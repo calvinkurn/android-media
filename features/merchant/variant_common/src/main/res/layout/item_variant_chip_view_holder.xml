@@ -14,7 +14,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtChipVariant"
-        android:contentDescription="@string/content_desc_txtChipVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
@@ -28,13 +27,12 @@
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         tools:text="S" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/promoChipVariant"
-        android:contentDescription="@string/content_desc_promoChipVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"

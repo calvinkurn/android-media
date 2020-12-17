@@ -86,6 +86,7 @@
                 android:layout_marginLeft="@dimen/dp_24"
                 android:layout_marginRight="@dimen/dp_24"
                 android:text="@string/fingerprint_login"
+                android:contentDescription="@string/content_desc_fingerprint_button"
                 android:textAllCaps="false"
                 android:visibility="gone"
                 app:unifyButtonVariant="ghost"
@@ -94,6 +95,7 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/socmed_btn"
+                android:contentDescription="@string/content_desc_socmed_btn_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -106,6 +108,7 @@
 
             <TextView
                 android:id="@+id/register_button"
+                android:contentDescription="@string/content_desc_register_button_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"

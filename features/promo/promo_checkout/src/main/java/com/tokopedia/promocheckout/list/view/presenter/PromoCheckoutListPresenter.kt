@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
@@ -79,7 +79,8 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels)
+                val promos = lastSeenPromoData.promoModels.filter { it.promoCode.isNotEmpty() && it.title.isNotEmpty() }
+                view.renderListLastSeen(promos, false)
             }
         })
     }
@@ -100,6 +101,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
-        private val API_VERSION_VALUE= "2.0.0"
+        private val API_VERSION_VALUE = "2.0.0"
     }
 }

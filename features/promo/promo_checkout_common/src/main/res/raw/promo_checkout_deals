@@ -1,0 +1,20 @@
+query travelCollectiveBanner {
+  travelCollectiveBanner(product: DEALS, countryID: "ID") {
+    banners{
+      id
+      product
+      attributes{
+        description
+        webURL
+        appURL
+        imageURL
+        promoCode
+        }
+    }
+    meta{
+      title
+      webURL
+      appURL
+    }
+  }
+}

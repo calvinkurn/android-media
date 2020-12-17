@@ -4,6 +4,7 @@ query universe_initial_state($params: String!){
       id
       header
       label_action
+      feature_id
       items{
         id
         template

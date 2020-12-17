@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMostHelpfulReviewDataModel(
         val type: String = "",
         val name: String = "",
-        var listOfReviews: List<Review> = listOf(),
+        var listOfReviews: List<Review>? = null,
         var imageReviews: List<ImageReviewItem>? = null,
         var ratingScore:Float = 0F,
         var totalRating:Int = 0

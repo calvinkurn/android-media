@@ -7,5 +7,4 @@ import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAna
 fun setupTotalSizeInterceptor(listToAnalyze: List<String>?) {
     val application = getInstrumentation().targetContext.applicationContext as InstrumentationTestApp
     application.enableSizeDetector(listToAnalyze)
-    GqlNetworkAnalyzerInterceptor.reset()
 }

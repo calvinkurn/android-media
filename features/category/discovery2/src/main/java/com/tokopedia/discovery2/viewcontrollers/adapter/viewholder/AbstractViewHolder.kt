@@ -22,11 +22,11 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         this.parentAbstractViewHolder = parentViewHolder
 
         if (this.discoveryBaseViewModel != null) {
-            if (this.discoveryBaseViewModel !== discoveryBaseViewModel) {
+            if (this.discoveryBaseViewModel != discoveryBaseViewModel) {
                 removeObservers(lifecycleOwner)
                 this.discoveryBaseViewModel?.onDetachToViewHolder()
+                lifecycleOwner?.lifecycle?.removeObserver(this.discoveryBaseViewModel!!)
                 this.discoveryBaseViewModel = discoveryBaseViewModel
-
             }
         } else {
             this.discoveryBaseViewModel = discoveryBaseViewModel
@@ -45,7 +45,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     }
 
     open fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-
+        discoveryBaseViewModel?.let { lifecycleOwner?.lifecycle?.addObserver(it) }
     }
 
     open fun removeObservers(lifecycleOwner: LifecycleOwner?) {
@@ -55,5 +55,4 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     open fun onViewDetachedToWindow() {
 
     }
-
 }

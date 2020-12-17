@@ -81,5 +81,14 @@ propertyDetail(input: $data){
     iconUrl
     propertyPolicyId
   }
+  safetyBadge {
+    show
+    title
+    content
+    icon {
+      dark
+      light
+    }
+  }
 }
 }

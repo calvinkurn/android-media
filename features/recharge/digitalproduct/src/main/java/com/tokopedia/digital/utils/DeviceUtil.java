@@ -13,11 +13,11 @@ import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.digital.newcart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.user.session.UserSession;
 
 import java.net.Inet4Address;

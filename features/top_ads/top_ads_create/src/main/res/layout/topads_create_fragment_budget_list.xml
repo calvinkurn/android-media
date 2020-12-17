@@ -140,18 +140,13 @@
         android:layout_marginBottom="@dimen/dp_10"
         app:layout_constraintBottom_toTopOf="@+id/bottom">
 
-        <com.tokopedia.design.component.RoundFloatingButton
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
             android:id="@+id/tip_btn"
-            style="@style/TextView.Micro.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24"
-            android:backgroundTint="#FFFCF5"
-            android:text="@string/tip_biaya_iklan"
-            android:textAllCaps="false"
-            app:buttonCompatSize="medium"
-            app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
             app:layout_constraintBottom_toTopOf="@+id/view"
+            app:fbType="group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -172,9 +167,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_next"
-            style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
@@ -182,6 +176,8 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
             android:text="@string/lanjutkan"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"
             app:layout_constraintBottom_toBottomOf="@+id/bottom"
             app:layout_constraintEnd_toEndOf="parent" />
 

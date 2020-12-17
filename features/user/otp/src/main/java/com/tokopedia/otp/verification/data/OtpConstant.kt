@@ -22,5 +22,7 @@ object OtpConstant {
         const val REGISTER_PHONE_NUMBER = 116
         const val REGISTER_EMAIL = 126
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
+        const val AFTER_LOGIN_PHONE = 148
+        const val RESET_PIN = 149
     }
 }

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
         google()
     }
@@ -28,7 +28,9 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.list
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

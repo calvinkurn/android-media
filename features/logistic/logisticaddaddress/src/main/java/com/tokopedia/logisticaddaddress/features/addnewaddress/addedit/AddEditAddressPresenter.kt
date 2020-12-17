@@ -9,7 +9,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -72,6 +72,7 @@ class AddEditAddressPresenter
     }
 
     fun getZipCodes(districtId: String) {
+        SimpleIdlingResource.increment()
         zipCodeUseCase.execute(districtId)
                 .subscribe(
                         { response ->
@@ -84,7 +85,7 @@ class AddEditAddressPresenter
                                     }
                                 }
                             }
-                        }, {}, {}
+                        }, {}, { SimpleIdlingResource.decrement() }
                 )
     }
 
@@ -92,7 +93,7 @@ class AddEditAddressPresenter
         autoCompleteUseCase.execute(query)
                 .subscribe(
                         { modelList ->
-                            getDistrict(modelList.first().placeId)
+                            getDistrict(modelList.data.first().placeId)
                         }, { t -> Timber.d(t) }, {})
     }
 

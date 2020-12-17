@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -67,7 +68,10 @@ class ReviewScoreWidget : BaseCustomView {
     }
 
     fun setShopName(shopName: String) {
-        this.reviewDetailScoreShopName.setTextAndCheckShow(shopName)
+        this.reviewDetailScoreShopName.apply {
+            text = MethodChecker.fromHtml(shopName)
+            show()
+        }
     }
 
     fun setExpired() {

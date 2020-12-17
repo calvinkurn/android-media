@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
+    <com.tokopedia.statistic.view.customview.DateTextFieldView
         android:id="@+id/edtStcPerMonth"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

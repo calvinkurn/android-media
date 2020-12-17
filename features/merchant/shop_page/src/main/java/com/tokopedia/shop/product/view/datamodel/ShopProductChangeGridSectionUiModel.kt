@@ -8,7 +8,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  */
 
 data class ShopProductChangeGridSectionUiModel(
-        val totalProduct: Int = 0,
+        var totalProduct: Int = 0,
         var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 ) : BaseShopProductViewModel {
 

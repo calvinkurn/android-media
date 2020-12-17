@@ -26,7 +26,7 @@ import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarning
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 import com.tokopedia.otp.verification.domain.data.OtpConstant;
 import com.tokopedia.user.session.UserSession;
 
@@ -34,8 +34,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.changephonenumber.view.uimodel.WarningUIModel.ACTION_OTP;
+import static com.tokopedia.changephonenumber.view.uimodel.WarningUIModel.BALANCE_THRESHOLD_FOR_WARNING;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -67,7 +67,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
     private TextView withdrawButton;
-    private WarningViewModel viewModel;
+    private WarningUIModel viewModel;
     private String email;
     private String phoneNumber;
     private View mainView;
@@ -195,8 +195,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGetWarningSuccess(WarningViewModel warningViewModel) {
-        this.viewModel = warningViewModel;
+    public void onGetWarningSuccess(WarningUIModel warningUIModel) {
+        this.viewModel = warningUIModel;
         presenter.validateOtpStatus(getUserId());
     }
 

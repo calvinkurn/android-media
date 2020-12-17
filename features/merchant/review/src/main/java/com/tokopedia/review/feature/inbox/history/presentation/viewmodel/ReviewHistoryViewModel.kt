@@ -9,7 +9,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
 import com.tokopedia.review.feature.inbox.history.domain.usecase.ProductrevFeedbackHistoryUseCase
@@ -18,10 +18,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewHistoryViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatcherProvider,
-        private val userSession: UserSessionInterface,
-        private val productrevFeedbackHistoryUseCase: ProductrevFeedbackHistoryUseCase
-) : BaseViewModel(dispatchers.io()) {
+    private val dispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val productrevFeedbackHistoryUseCase: ProductrevFeedbackHistoryUseCase
+) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MediatorLiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>()
     val reviewList: LiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>
@@ -42,7 +42,7 @@ class ReviewHistoryViewModel @Inject constructor(
             _reviewList.value = LoadingView()
         }
         launchCatchError(block = {
-            val response = withContext(dispatchers.io()) {
+            val response = withContext(dispatchers.io) {
                 productrevFeedbackHistoryUseCase.setParams(searchQuery, page)
                 productrevFeedbackHistoryUseCase.executeOnBackground()
             }
@@ -67,9 +67,5 @@ class ReviewHistoryViewModel @Inject constructor(
 
     private fun resetPage() {
         updatePage(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
-    }
-
-    private fun <T> MutableLiveData<T>.notifyObserver() {
-        this.value = this.value
     }
 }

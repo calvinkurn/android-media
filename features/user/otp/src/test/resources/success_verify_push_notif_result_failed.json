@@ -1,0 +1,11 @@
+{
+  "VerifyPushnotif": {
+    "success": false,
+    "message": "Failed",
+    "errorMessage": "Failed",
+    "Imglink": "",
+    "MessageTitle": "",
+    "MessageBody": "",
+    "CtaType": ""
+  }
+}

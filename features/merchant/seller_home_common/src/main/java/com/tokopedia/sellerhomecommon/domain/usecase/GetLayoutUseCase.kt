@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -23,14 +24,14 @@ class GetLayoutUseCase(
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
             val widgetList: List<WidgetModel> = data.layout?.widget.orEmpty()
             if (widgetList.isNotEmpty()) {
-                return mapper.mapRemoteModelToUiModel(widgetList)
+                return mapper.mapRemoteModelToUiModel(widgetList, cacheStrategy.type == CacheType.CACHE_ONLY)
             } else {
                 throw RuntimeException("no widget found")
             }
@@ -50,7 +51,7 @@ class GetLayoutUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}shopID: Int!, ${'$'}page: String!) {
+            query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
                   widgetType
@@ -65,10 +66,22 @@ class GetLayoutUseCase(
                       description
                     }
                   }
+                  showEmpty
+                  postFilter {
+                    name
+                    value
+                  }
                   url
                   applink
                   dataKey
                   ctaText
+                  emptyState {
+                    imageUrl
+                    title
+                    description
+                    ctaText
+                    applink
+                  }
                 }
               }
             }

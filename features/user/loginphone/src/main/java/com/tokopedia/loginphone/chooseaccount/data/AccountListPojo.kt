@@ -45,7 +45,13 @@ data class UserDetail(
         var email: String = "",
         @SerializedName("msisdn_verified")
         @Expose
-        var msisdn_verified: Boolean = false,
+        var msisdnVerified: Boolean = false,
+        @SerializedName("challenge_2fa")
+        @Expose
+        var challenge2Fa: Boolean = false,
+        @SerializedName("user_id_enc")
+        @Expose
+        var userIdEnc: String = "",
         @SerializedName("image")
         @Expose
         var image: String = "",

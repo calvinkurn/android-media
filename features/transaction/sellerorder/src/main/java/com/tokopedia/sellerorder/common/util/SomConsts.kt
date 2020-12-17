@@ -19,6 +19,7 @@ object SomConsts {
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_USER_ROLES = "user_roles"
+    const val PARAM_LOGISTIC_INFO_ALL = "logistic_info_all"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -30,10 +31,12 @@ object SomConsts {
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
     const val FILTER_STATUS_ID = "filter_status_id"
+    const val FILTER_ORDER_TYPE = "filter_order_type"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+    const val FILTER_CANCELLATION_REQUEST = "cancellation_request"
     const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"
@@ -42,6 +45,8 @@ object SomConsts {
     const val STATUS_DONE = "done"
     const val STATUS_ORDER_CANCELLED = "order_canceled"
     const val STATUS_DELIVERED = "delivered"
+
+    const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
     const val DETAIL_HEADER_TYPE = "header"
     const val DETAIL_PRODUCTS_TYPE = "products"
@@ -135,7 +140,7 @@ object SomConsts {
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
-    const val DETAIL_ORDER_SCREEN_NAME = "/myorder/detail/"
+    const val DETAIL_ORDER_SCREEN_NAME = "myorder/detail/"
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
@@ -153,6 +158,27 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
+    const val CHIPS_SORT_DESC = "Paling Baru"
+    const val CHIPS_SORT_ASC = "Paling Lama"
+
+    const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
+    const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
+    const val NOT_YET_PRINTED = 0
+    const val ALREADY_PRINT = 1
+
+    const val TODAY_LABEL = "Hari ini"
+    const val TOMORROW_LABEL = "Besok"
+    const val TODAY_TOMORROW_LABEL = "Lusa"
+    const val TODAY = 1
+    const val TOMORROW = 2
+    const val TODAY_TOMORROW = 3
+
+    const val IS_PRE_ORDER = 1
+    const val IS_SAME_DAY = 2
+    const val IS_NEXT_DAY = 9
+    const val IS_PICKUP_DELIVERY = 3
+    const val IS_PPP = 4
+    const val IS_COD = 8
 
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
     const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
@@ -169,4 +195,30 @@ object SomConsts {
     const val TOPADS_NO_ADS = 2
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
+
+    const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
+    const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
+
+
+    //SOM FILTER LABEL
+    const val FILTER_SORT = "Urutkan"
+    const val FILTER_STATUS_ORDER = "Status Pesanan"
+    const val FILTER_TYPE_ORDER = "Tipe Pesanan"
+    const val FILTER_COURIER = "Kurir"
+    const val FILTER_LABEL = "Label"
+    const val FILTER_DEADLINE = "Jatuh Tempo"
+    const val FILTER_DATE = "Tanggal"
+    const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
+
+    // Order list sort by value
+    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
+    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1
+    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
+
+    // Remote Configs
+    const val ENABLE_NEW_SOM = "android_enable_new_som"
+
+    // Som List Illustration
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
 }

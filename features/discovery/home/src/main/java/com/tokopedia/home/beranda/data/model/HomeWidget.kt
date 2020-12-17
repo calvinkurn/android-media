@@ -52,7 +52,7 @@ class HomeWidget(
             val productCount: String = ""
     )
 
-    data class PopularKeywordQuery(
+    data class  PopularKeywordQuery(
             @Expose
             @SerializedName("popular_keywords")
             val data: PopularKeywordList = PopularKeywordList()

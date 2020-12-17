@@ -12,12 +12,11 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
-import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -42,8 +41,9 @@ class PlayBroadcastSetupModule {
     }
 
     @Provides
-    @PlayBroadcastSetupScope
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider()
+    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
+        return UpdateChannelUseCase(graphqlRepository)
+    }
 
     @Provides
     @PlayBroadcastSetupScope

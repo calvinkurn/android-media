@@ -7,15 +7,13 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.*
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -23,37 +21,41 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
+import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
-import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter
+import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.common.util.FORMAT_DATE
-import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
 import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_power_merchant.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter.View {
-    @Inject
-    lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
+class ShopSettingsInfoFragment : BaseDaggerFragment() {
+
+    companion object {
+        const val EXTRA_MESSAGE = "extra_message"
+        const val EXTRA_IS_CLOSED_NOW = "extra_is_closed_now"
+        const val EXTRA_SHOP_BASIC_DATA_MODEL = "extra_shop_basic_data_model"
+        const val EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID = "extra_save_instance_cache_manager_id"
+        const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
+        const val REQUEST_EDIT_SCHEDULE = 782
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -61,8 +63,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
+    @Inject
+    lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
+
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var snackbar: Snackbar? = null
+    private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
 
@@ -71,13 +78,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        GraphqlClient.init(context!!)
+        GraphqlClient.init(requireContext())
         super.onCreate(savedInstanceState)
+        shopId = userSession.shopId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
     }
 
     private fun showShopStatusManageMenu() {
@@ -87,7 +94,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 menus.setTitle(getString(R.string.shop_settings_manage_status))
 
                 val itemMenusList = ArrayList<Menus.ItemMenus>()
-                if (shopBasicDataModel.isOpen == true) {
+                if (shopBasicDataModel.isOpen) {
                     if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
                     } else {
@@ -109,24 +116,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         }
     }
 
-    fun onItemMenuClicked(itemMenuTitle: String) {
-        when {
-            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.schedule_shop_close), false)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+    private fun onItemMenuClicked(itemMenuTitle: String) {
+        when(itemMenuTitle) {
+            getString(R.string.label_close_shop_now) -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
             }
-            itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.label_close_shop_now), true)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-            }
-            itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.change_schedule), false)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-            }
-            itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
+            getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
                     Dialog(it, Dialog.Type.PROMINANCE).apply {
                         setTitle(getString(R.string.remove_schedule))
@@ -136,12 +131,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         setOnOkClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                            shopSettingsInfoPresenter.updateShopSchedule(
-                                    if (shopBasicDataModel!!.isClosed)
-                                        ShopScheduleActionDef.CLOSED
-                                    else
-                                        ShopScheduleActionDef.OPEN,
-                                    false, "", "", "")
+                            shopSettingsInfoViewModel.updateShopSchedule(
+                                    action = if (shopBasicDataModel!!.isClosed) ShopScheduleActionDef.CLOSED else ShopScheduleActionDef.OPEN,
+                                    closeNow = false,
+                                    closeStart = "",
+                                    closeEnd = "",
+                                    closeNote = ""
+                            )
                             dismiss()
                         }
                         setOnCancelClickListener { dismiss() }
@@ -149,34 +145,61 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                     }
                 }
             }
-            itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
+            getString(R.string.label_open_shop_now) -> {
                 // open now
                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                        "", "", "")
+                shopSettingsInfoViewModel.updateShopSchedule(
+                        action = ShopScheduleActionDef.OPEN,
+                        closeNow = false,
+                        closeStart = "",
+                        closeEnd = "",
+                        closeNote = ""
+                )
+            }
+            else -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
             }
         }
     }
 
-    fun showLoading() {
-        scrollViewContent.visibility = View.GONE
+    private fun showLoading() {
+        viewContent.visibility = View.GONE
         loadingView.visibility = View.VISIBLE
     }
 
-    fun hideLoading() {
-        scrollViewContent.visibility = View.VISIBLE
+    private fun hideLoading() {
+        viewContent.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vgShopInfoContainer.setOnClickListener {
-            val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
-            startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
+
+        setupToolbar()
+        btnChangeShopInfo.setOnClickListener {
+            moveToShopEditBasicInfoFragment()
+            ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
-        vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
+        vgShopStatusContainer.setOnClickListener {
+            showShopStatusManageMenu()
+            ShopSettingsTracking.clickStatusToko(shopId, getShopType())
+        }
+
         loadShopBasicData()
+        shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
+
+        onFragmentResult()
+
+        observeShopBasicData()
+        observeShopStatus()
+        observeOsMerchantData()
+        observeUpdateScheduleData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismissToaster()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,19 +208,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
-                    val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
-                    if (!message.isEmpty()) {
-                        view?.let {
-                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        }
-                    }
-                }
-            }
-            REQUEST_EDIT_BASIC_INFO -> if (resultCode == Activity.RESULT_OK) {
-                needReload = true
-                if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
-                    val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
-                    if (!message.isEmpty()) {
+                    val message: String? = data.getStringExtra(EXTRA_MESSAGE)
+                    if (!message.isNullOrBlank()) {
                         view?.let {
                             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
                         }
@@ -205,6 +217,126 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 }
             }
         }
+    }
+
+    private fun dismissToaster() {
+        snackbar?.dismiss()
+    }
+
+    private fun moveToShopEditBasicInfoFragment() {
+        val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
+            put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
+        }
+        val destination = ShopSettingsInfoFragmentDirections.actionShopSettingsInfoFragmentToShopEditBasicInfoFragment()
+        destination.cacheManagerId = cacheManager.id ?: "0"
+        findNavController().navigate(destination)
+    }
+
+    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
+        val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
+            put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
+            put(EXTRA_IS_CLOSED_NOW, isClosedNow)
+        }
+        val intent = ShopEditScheduleActivity.createIntent(requireContext(), cacheManager.id ?: "0")
+        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+    }
+
+    private fun observeUpdateScheduleData() {
+        shopSettingsInfoViewModel.updateScheduleResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessUpdateShopSchedule(it.data)
+                is Fail -> onErrorUpdateShopSchedule(it.throwable)
+            }
+        })
+    }
+
+    private fun observeShopStatus() {
+        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val shopStatusData = it.data.result.data
+                    userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending()
+                            ?: true))
+
+                    if (shopStatusData.isRegularMerchantOrPending()) {
+                        showRegularMerchantMembership(shopStatusData)
+                    } else {
+                        shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
+                            if (!isOfficialStore) {
+                                showPowerMerchant()
+                            }
+                        }
+                    }
+                }
+                is Fail -> {
+                    view?.let { view ->
+                        snackbar = Toaster.build(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
+                    }
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun observeShopBasicData() {
+        shopSettingsInfoViewModel.shopBasicData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    hideLoading()
+                    val shopBasicData = it.data
+
+                    // Update userSession
+                    val shopName: String = shopBasicData.name ?: ""
+                    val shopAvatar = shopBasicData.logo ?: ""
+                    userSession.shopName = shopName
+                    userSession.shopAvatar = shopAvatar
+
+                    shopBasicDataModel = shopBasicData.apply {
+                        name = MethodChecker.fromHtml(name).toString()
+                        domain = MethodChecker.fromHtml(domain).toString()
+                        description = MethodChecker.fromHtml(description).toString()
+                        tagline = MethodChecker.fromHtml(tagline).toString()
+                    }
+                    setUIShopBasicData(shopBasicData)
+                }
+                is Fail -> {
+                    onErrorGetShopBasicData(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun observeOsMerchantData() {
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    it.data.getIsOfficial.let { osData ->
+                        val errMessage = osData.messageError
+                        val isOS = osData.data.isOfficial
+                        val expiration = osData.data.expiredDate
+
+                        if (errMessage.isEmpty() && isOS) {
+                            showOfficialStore(dateFormatToBeReadable(expiration, OS_FORMAT_DATE, FORMAT_DAY_DATE) ?: "") // Set userSession isOS?
+                        }
+                    }
+                }
+                is Fail -> {
+                    view?.let { view ->
+                        snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
+                    }
+                    ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
+                    ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun setupToolbar() {
+        val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
+        tvSave?.hide()
     }
 
     override fun onResume() {
@@ -217,222 +349,142 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun loadShopBasicData() {
         showLoading()
-        shopSettingsInfoPresenter.getShopData()
+        shopSettingsInfoViewModel.getShopData(
+                shopId,
+                includeOS = false
+        )
+    }
+
+    private fun onFragmentResult() {
+        getNavigationResult(REQUEST_EDIT_BASIC_INFO)?.observe(viewLifecycleOwner, Observer { bundle ->
+            bundle?.let { data ->
+                needReload = true
+                data.getString(EXTRA_MESSAGE)?.apply {
+                    if (this.isNotBlank()) {
+                        view?.let {
+                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
+                        }
+                    }
+                }
+            }
+            removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
+        })
     }
 
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        shopSettingsInfoPresenter.attachView(this)
-    }
-
-    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
-        val (shopBasicDataModel, shopStatusModel) = result
-        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending()
-                ?: true))
-        this.shopBasicDataModel = shopBasicDataModel
-        hideLoading()
-        shopBasicDataModel?.let {
-            setUIShopBasicData(it)
-            setUIStatus(it)
-        }
-        shopStatusModel?.let {
-            setUIMembership(it.result.data)
-        }
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-        tvShopName.text = MethodChecker.fromHtml(shopBasicDataModel.name)
-        tvShopDomain.text = shopBasicDataModel.domain?.let {
-            if (URLUtil.isNetworkUrl(it)) {
-                it
+        shopBasicDataModel.let { shopBasicData ->
+            tvShopName.text = shopBasicData.name
+            tvShopDomain.text = shopBasicData.domain?.let {
+                if (URLUtil.isNetworkUrl(it)) {
+                    it
+                } else {
+                    getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
+                }
+            }
+
+            val logoUrl = shopBasicData.logo
+            if (TextUtils.isEmpty(logoUrl)) {
+                ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
             } else {
-                getString(com.tokopedia.design.R.string.tokopedia_domain) + "/$it"
-            }
-        }
-        if (shopBasicDataModel.tagline.isNullOrBlank()) {
-            tvShopSloganTitle.visibility = View.GONE
-            tvShopSlogan.visibility = View.GONE
-        } else {
-            tvShopSlogan.text = shopBasicDataModel.tagline
-            tvShopSloganTitle.visibility = View.VISIBLE
-            tvShopSlogan.visibility = View.VISIBLE
-        }
-
-        if (shopBasicDataModel.description.isNullOrBlank()) {
-            tvShopDescriptionTitle.visibility = View.GONE
-            tvShopDescription.visibility = View.GONE
-        } else {
-            tvShopDescription.text = shopBasicDataModel.description
-            tvShopDescriptionTitle.visibility = View.VISIBLE
-            tvShopDescription.visibility = View.VISIBLE
-        }
-
-        val logoUrl = shopBasicDataModel.logo
-        if (TextUtils.isEmpty(logoUrl)) {
-            ivShopLogo.setImageDrawable(
-                    MethodChecker.getDrawable(ivShopLogo.getContext(),
-                            com.tokopedia.design.R.drawable.ic_shop_default_empty))
-        } else {
-            ImageHandler.LoadImage(ivShopLogo, logoUrl)
-        }
-    }
-
-    private fun setUIStatus(shopBasicDataModel: ShopBasicDataModel) {
-        if (shopBasicDataModel.isOpen) {
-            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_open)
-
-            val stringBuilder = StringBuilder()
-            val closeScheduleUnixString = shopBasicDataModel.closeSchedule
-            if (!StringUtils.isEmptyNumber(closeScheduleUnixString)) {
-                val closeString = toReadableString(FORMAT_DATE, closeScheduleUnixString!!)
-                stringBuilder.append(getString(R.string.closed_schedule, closeString))
+                ImageHandler.LoadImage(ivShopLogo, logoUrl)
             }
 
-            val closeUntilUnixString = shopBasicDataModel.closeUntil
-            if (!StringUtils.isEmptyNumber(closeUntilUnixString)) {
-                val openString = toReadableString(FORMAT_DATE, closeUntilUnixString!!)
-                stringBuilder.append(" - ")
-                stringBuilder.append(openString)
-            }
-            val closeSchedulString = stringBuilder.toString()
-            if (TextUtils.isEmpty(closeSchedulString)) {
-                tvShopCloseSchedule.visibility = View.GONE
+            if (shopBasicData.tagline.isNullOrBlank()) {
+                tvShopSloganTitle.visibility = View.GONE
+                tvShopSlogan.visibility = View.GONE
             } else {
-                tvShopCloseSchedule.text = stringBuilder.toString()
-                tvShopCloseSchedule.visibility = View.VISIBLE
-            }
-        } else {
-            tvShopStatus.text = getString(com.tokopedia.design.R.string.label_close)
-
-            val openScheduleUnixString = shopBasicDataModel.openSchedule
-            var openScheduleString: String? = null
-            if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
-                val openString = toReadableString(FORMAT_DATE, openScheduleUnixString!!)
-                openScheduleString = getString(R.string.open_schedule, openString)
+                tvShopSloganTitle.visibility = View.VISIBLE
+                tvShopSlogan.visibility = View.VISIBLE
+                tvShopSlogan.text = shopBasicData.tagline
             }
 
-            if (TextUtils.isEmpty(openScheduleString)) {
-                tvShopCloseSchedule.visibility = View.GONE
+            if (shopBasicData.description.isNullOrBlank()) {
+                tvShopDescriptionTitle.visibility = View.GONE
+                tvShopDescription.visibility = View.GONE
             } else {
-                tvShopCloseSchedule.text = openScheduleString
-                tvShopCloseSchedule.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun setUIMembership(shopStatusModel: ShopStatusModel) {
-        if (shopStatusModel.isRegularMerchantOrPending()) {
-            showRegularMerchantMembership(shopStatusModel)
-        } else if (shopStatusModel.isOfficialStore()) {
-            showOfficialStore()
-        } else {
-            showPowerMerchant(shopStatusModel)
-        }
-    }
-
-    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel) {
-        tvManageGmSubscribe.visibility = View.GONE
-        iv_power_merchant_logo.visibility = View.GONE
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
-        tv_shop_status.visibility = View.GONE
-        ticker_container.visibility = View.GONE
-        tv_ticker_info.visibility = View.VISIBLE
-        tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
-        button_activate.visibility = View.VISIBLE
-        button_activate.setOnClickListener {
-            powerMerchantTracking.eventUpgradeShopSetting()
-            navigateToPMSubscribe()
-        }
-    }
-
-    private fun showPowerMerchant(shopStatusModel: ShopStatusModel) {
-        tvManageGmSubscribe.visibility = View.VISIBLE
-        button_activate.visibility = View.GONE
-        tvManageGmSubscribe.setOnClickListener {
-            navigateToPMSubscribe()
-        }
-        iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
-        tv_shop_status.visibility = View.VISIBLE
-        tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {
-            R.string.active_label
-        } else {
-            R.string.inactive_label
-        })
-        ticker_container.visibility = View.VISIBLE
-        setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
-            powerMerchantTracking.eventLearnMoreSetting()
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-        }
-        tv_ticker_info.visibility = View.GONE
-    }
-
-    private fun showOfficialStore() {
-        tvManageGmSubscribe.visibility = View.GONE
-        button_activate.visibility = View.GONE
-        iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
-        tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_official_store)
-        tv_shop_status.visibility = View.GONE
-        ticker_container.visibility = View.GONE
-        tv_ticker_info.visibility = View.GONE
-    }
-
-    private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
-        val spannable = SpannableString(learnMoreString)
-        val indexStart = 0
-        val indexEnd = indexStart + learnMoreString.length
-
-        val color = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
-        spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                onClickLearnMore.invoke()
+                tvShopDescriptionTitle.visibility = View.VISIBLE
+                tvShopDescription.visibility = View.VISIBLE
+                tvShopDescription.text = shopBasicData.description
             }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = color
-            }
+            tvShopStatus.text = if (shopBasicData.isOpen) getString(com.tokopedia.design.R.string.label_open) else getString(com.tokopedia.design.R.string.label_close)
         }
-        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.movementMethod = LinkMovementMethod.getInstance()
-        textView.text = SpannableStringBuilder(previousText).append(" ").append(spannable)
     }
 
-    private fun navigateToPMSubscribe() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
+        shopStatusModel?.let {
+            container_regular_merchant.visibility = View.VISIBLE
+            container_power_merchant.visibility = View.GONE
+            container_official_store.visibility = View.GONE
+            tv_regular_merchant_type.text = getString(com.tokopedia.design.R.string.label_regular_merchant)
+        }
     }
 
-    override fun onErrorGetShopBasicData(throwable: Throwable) {
+    private fun showPowerMerchant() {
+        container_power_merchant.visibility = View.VISIBLE
+        container_regular_merchant.visibility = View.GONE
+        container_official_store.visibility = View.GONE
+        iv_logo_power_merchant.visibility = View.VISIBLE
+        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+        tv_power_merchant_type.text = getString(com.tokopedia.design.R.string.label_power_merchant)
+    }
+
+    private fun showOfficialStore(expirationDate: String) {
+        container_official_store.visibility = View.VISIBLE
+        container_regular_merchant.visibility = View.GONE
+        container_power_merchant.visibility = View.GONE
+        iv_logo_official_store.visibility = View.VISIBLE
+        iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
+        tv_official_store.text = getString(com.tokopedia.design.R.string.label_official_store)
+        tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
+    }
+
+    private fun onErrorGetShopBasicData(throwable: Throwable) {
         hideLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
-    override fun onSuccessUpdateShopSchedule(successMessage: String) {
+    private fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
         view?.let {
-            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar?.show()
         }
         loadShopBasicData()
     }
 
-    override fun onErrorUpdateShopSchedule(throwable: Throwable) {
+    private fun onErrorUpdateShopSchedule(throwable: Throwable) {
         hideSubmitLoading()
         showSnackbarErrorSubmitEdit(throwable)
+        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
+        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar?.show()
+        }
+    }
+
+    private fun getShopType(): String {
+        return when {
+            shopBasicDataModel?.isOfficialStore ?: false -> ShopTypeDef.OFFICIAL_STORE
+            shopBasicDataModel?.isGold ?: false -> ShopTypeDef.GOLD_MERCHANT
+            else -> ShopTypeDef.REGULAR_MERCHANT
         }
     }
 
@@ -457,17 +509,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoPresenter.run { detachView() }
+        shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
+        shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
     }
-
-    companion object {
-        private val URL_GAINS_SCORE_POINT = "https://seller.tokopedia.com/edu/skor-toko"
-        private val REQUEST_EDIT_BASIC_INFO = 781
-        private val REQUEST_EDIT_SCHEDULE = 782
-
-        fun newInstance(): ShopSettingsInfoFragment {
-            return ShopSettingsInfoFragment()
-        }
-    }
-
 }

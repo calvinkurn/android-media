@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationTroubleshooter
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.fragment.dialog.InformationDialog.showInformationDialog
@@ -79,9 +80,15 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     private fun pushNotifValidation() {
-        permissionValidation(
-                isNotificationEnabled(),
-                activationPushNotif(),
+        val isNotificationEnabled = isNotificationEnabled()
+        val notificationAction = if(isNotificationEnabled) {
+            activationTroubleshooter()
+        } else {
+            activationPushNotif()
+        }
+        permissionValidationNotification(
+                isNotificationEnabled,
+                notificationAction,
                 settingStates
         )
     }

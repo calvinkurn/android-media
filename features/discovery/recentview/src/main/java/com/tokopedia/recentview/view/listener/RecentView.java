@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public interface RecentView {
 
         void onEmptyGetRecentView();
 
-        void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel);
+        void sendRecentViewImpressionTracking(List<RecentViewDetailProductDataModel> recentViewModel);
 
-        void sendRecentViewClickTracking(RecentViewDetailProductViewModel element);
+        void sendRecentViewClickTracking(RecentViewDetailProductDataModel element);
 
 
         Context getContext();

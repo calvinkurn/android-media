@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCard.*
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
@@ -19,9 +20,6 @@ class InspirationCardOptionChipViewHolder(
 
     companion object {
         val LAYOUT = R.layout.search_result_product_inspiration_card_option_chip_layout
-        const val TYPE_ANNOTATION = "annotation"
-        const val TYPE_CATEGORY = "category"
-        const val TYPE_GUIDED = "guided"
     }
 
     internal fun bind(option: InspirationCardOptionViewModel) {

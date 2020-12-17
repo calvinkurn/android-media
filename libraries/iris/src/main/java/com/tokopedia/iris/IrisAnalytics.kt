@@ -1,10 +1,6 @@
 package com.tokopedia.iris
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
@@ -12,8 +8,6 @@ import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
-import com.tokopedia.iris.worker.IrisBroadcastReceiver
-import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.iris.worker.IrisWorker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -23,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -38,8 +31,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
-
-    private var currentRunType = 0
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO +
             CoroutineExceptionHandler { _, ex ->
@@ -63,10 +54,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 ?: true
         val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
                 ?: ""
-        val irisWorkManagerEnabled = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_WORK_MANAGER_ENABLE, true)
-                ?: true
 
-        setService(irisConfig, irisEnable, irisWorkManagerEnabled)
+        setService(irisConfig, irisEnable)
     }
 
     override fun initialize() {
@@ -76,7 +65,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         isAlarmOn = false
     }
 
-    override fun setService(config: String, isEnabled: Boolean, isWorkManagerEnabled: Boolean) {
+    override fun setService(config: String, isEnabled: Boolean) {
         try {
             cache.setEnabled(isEnabled)
             val confParse = ConfigurationMapper().parse(config)
@@ -86,7 +75,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 this.configuration = Configuration()
             }
             this.configuration?.isEnabled = isEnabled
-            this.configuration?.isWorkManagerEnabled = isWorkManagerEnabled
         } catch (ignored: Exception) {
         }
     }
@@ -129,8 +117,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         val trackingRepository = TrackingRepository(context)
 
         val eventName = map["event"] as? String
-        val eventCategory = map["eventCategory"] as? String
-        val eventAction = map["eventAction"] as? String
 
         // convert map to json then save as string
         val event = gson.toJson(map)
@@ -138,7 +124,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)) {
             sendEvent(map)
         } else {
-            trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+            trackingRepository.saveEvent(resultEvent.toString(), session)
             setAlarm(true, force = false)
         }
     }
@@ -148,7 +134,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                trackingRepository.sendSingleEvent(gson.toJson(map), session)
+                trackingRepository.sendSingleEvent(gson.toJson(map), session, map["event"] as? String)
             }
         }
     }
@@ -158,52 +144,18 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
      */
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
         if (configuration == null) {
+            if(!::remoteConfig.isInitialized) {
+                remoteConfig = FirebaseRemoteConfigImpl(context)
+            }
             setConfiguration(remoteConfig)
         }
         val conf = configuration ?: return
-        if (conf.isWorkManagerEnabled && (currentRunType == 0 || currentRunType == WORKMANAGER_RUN_TYPE)) {
-            launch(coroutineContext) {
-                if (isTurnOn) {
-                    IrisWorker.scheduleWorker(context, conf, force)
-                    currentRunType = WORKMANAGER_RUN_TYPE
-                } else {
-                    IrisWorker.cancel(context)
-                    currentRunType = NO_TYPE
-                }
-            }
-        } else {
-            if (!force && isTurnOn == isAlarmOn) {
-                return
-            }
-            val pendingIntent: PendingIntent?
-            pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                val intent = Intent(context, IrisService::class.java)
-                intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
-                PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        launch(coroutineContext) {
+            if (isTurnOn) {
+                IrisWorker.scheduleWorker(context, conf, force)
             } else {
-                val intent = Intent(context, IrisBroadcastReceiver::class.java)
-                intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
-                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                IrisWorker.cancel(context)
             }
-
-            pendingIntent?.let {
-                val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                if (isTurnOn) {
-                    alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(),
-                            TimeUnit.MINUTES.toMillis(this.configuration?.intervals
-                                    ?: DEFAULT_SERVICE_TIME), pendingIntent)
-                    if (force) {
-                        val i = Intent(context, IrisService::class.java)
-                        i.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
-                        IrisService.enqueueWork(context, i)
-                    }
-                    currentRunType = SERVICE_RUN_TYPE
-                } else {
-                    alarm.cancel(pendingIntent)
-                    currentRunType = NO_TYPE
-                }
-            }
-            isAlarmOn = isTurnOn
         }
     }
 
@@ -214,10 +166,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     companion object {
 
         const val KEY_REMOTE_CONFIG_SEND_REALTIME = "android_customerapp_iris_realtime"
-
-        private const val WORKMANAGER_RUN_TYPE = 1
-        private const val SERVICE_RUN_TYPE = 2
-        private const val NO_TYPE = 0
 
         private val lock = Any()
 

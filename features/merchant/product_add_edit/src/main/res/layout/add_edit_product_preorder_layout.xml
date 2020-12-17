@@ -2,21 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_activate_preorder_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/action_activate_preorder_state"
-        android:textColor="@android:color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_preorder"
+        android:contentDescription="@string/content_desc_switch_preorder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
@@ -33,6 +33,7 @@
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tfu_duration_unit"
+            android:contentDescription="@string/content_desc_tfu_duration_unit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -47,6 +48,7 @@
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tfu_duration"
+            android:contentDescription="@string/content_desc_tfu_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintHorizontal_weight="2"

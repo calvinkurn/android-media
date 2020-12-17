@@ -32,6 +32,10 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
         var delayWorker: OneTimeWorkRequest? = null
         var immediateWorker: OneTimeWorkRequest? = null
         var isWorkerRunning: Boolean = false
+        var lastSchedule: Long = 0L
+
+        // to prevent burst scheduling
+        val SCHEDULE_MIN_GAP = 10_000L // ms
 
         private fun createNewWorker(conf: Configuration, runImmediate: Boolean): OneTimeWorkRequest {
             // we do not use periodic because it can only run every 15 minutes
@@ -56,19 +60,23 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
                 //to allow the previous running worker update the state
                 delay(DELAY_BETWEEN_SCHEDULE)
 
-                val worker = getOrCreateWorker(conf, runImmediate)
-                WorkManager.getInstance(context).enqueueUniqueWork(
-                        WORKER_NAME,
-                        if (runImmediate) {
-                            if (isWorkerRunning) {
-                                ExistingWorkPolicy.APPEND
+                //Schedule min gap is to prevent burst scheduling
+                if (System.currentTimeMillis() - lastSchedule > SCHEDULE_MIN_GAP) {
+                    val worker = getOrCreateWorker(conf, runImmediate)
+                    WorkManager.getInstance(context).enqueueUniqueWork(
+                            WORKER_NAME,
+                            if (runImmediate) {
+                                if (isWorkerRunning) {
+                                    ExistingWorkPolicy.APPEND
+                                } else {
+                                    ExistingWorkPolicy.REPLACE
+                                }
                             } else {
-                                ExistingWorkPolicy.REPLACE
-                            }
-                        } else {
-                            ExistingWorkPolicy.KEEP
-                        },
-                        worker)
+                                ExistingWorkPolicy.KEEP
+                            },
+                            worker)
+                    lastSchedule = System.currentTimeMillis()
+                }
             } catch (ex: Exception) {
                 Timber.e("P1#IRIS#scheduleError %s", ex.toString())
             }

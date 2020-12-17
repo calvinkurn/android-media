@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_16">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cl_choose_date"
+        android:paddingBottom="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_12"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_choose_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/rv_option"
+        app:layout_constraintBottom_toTopOf="@id/btn_apply">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tf_start_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            app:text_field_label_static="true"
+            app:text_field_label="@string/uoh_custom_start_date"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tf_end_date"
+            app:layout_constraintHorizontal_chainStyle="spread"/>
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tf_end_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:text_field_label_static="true"
+            app:text_field_label="@string/uoh_custom_end_date"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintLeft_toRightOf="@+id/tf_start_date"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_apply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonType="main"
+        android:text="@string/uoh_apply_filter_label"
+        android:textStyle="bold"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

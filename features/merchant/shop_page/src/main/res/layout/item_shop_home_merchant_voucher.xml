@@ -17,6 +17,13 @@
         android:layout_height="wrap_content"
         app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:clipChildren="false"/>
+
+    <include
+        layout="@layout/partial_shop_home_get_failed"/>
+
+    <include
+        layout="@layout/partial_shop_home_voucher_shimmering"/>
 
 </LinearLayout>

@@ -7,7 +7,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,12 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter;
@@ -33,9 +30,11 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent;
 import com.tokopedia.logisticorder.di.TrackingPageComponent;
 import com.tokopedia.logisticorder.di.TrackingPageModule;
 import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
-import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
+import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
@@ -62,6 +61,7 @@ import rx.schedulers.Schedulers;
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final int PER_SECOND = 1000;
+    private static final int LIVE_TRACKING_VIEW_REQ = 1;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
     private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
@@ -72,7 +72,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     private ProgressBar loadingScreen;
     private TextView referenceNumber;
-    private ImageView courierLogo;
     private TextView deliveryDate;
     private TextView storeName;
     private TextView storeAddress;
@@ -91,6 +90,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private TextView retryStatus;
     private CountDownTimer mCountDownTimer;
     private Ticker tickerInfoCourier;
+    private LinearLayout tickerInfoLayout;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -132,7 +132,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
         rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
-        courierLogo = view.findViewById(R.id.courier_logo);
         deliveryDate = view.findViewById(R.id.delivery_date);
         storeName = view.findViewById(R.id.store_name);
         storeAddress = view.findViewById(R.id.store_address);
@@ -150,14 +149,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         retryStatus = view.findViewById(R.id.tv_retry_status);
 
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
+
         tickerInfoCourier = view.findViewById(R.id.ticker_info_courier);
+        tickerInfoLayout = view.findViewById(R.id.ticker_info_layout);
         fetchData();
     }
 
     @Override
     public void populateView(TrackingUiModel model) {
         referenceNumber.setText(model.getReferenceNumber());
-        ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
         if (TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(model.getDeliveryDate()))
             deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
@@ -272,9 +272,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         if (trackingUiModel.getAdditionalInfoList() != null) {
             List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingUiModel.getAdditionalInfoList();
             if (additionalInfoUiModelList.isEmpty()) {
-                tickerInfoCourier.setVisibility(View.GONE);
+                tickerInfoLayout.setVisibility(View.GONE);
             } else {
-                tickerInfoCourier.setVisibility(View.VISIBLE);
+                tickerInfoLayout.setVisibility(View.VISIBLE);
                 if (additionalInfoUiModelList.size() > 1) {
                     List<TickerData> tickerDataList = new ArrayList<>();
                     for (int i=0; i<additionalInfoUiModelList.size(); i++) {
@@ -310,7 +310,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                 }
             }
         } else {
-            tickerInfoCourier.setVisibility(View.GONE);
+            tickerInfoLayout.setVisibility(View.GONE);
         }
     }
 
@@ -358,7 +358,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                         ((BaseMainApplication) getActivity().getApplication())
                                 .getBaseAppComponent()
                 )
-                .trackingPageModule(new TrackingPageModule(this))
+                .trackingPageModule(new TrackingPageModule(this, getContext()))
                 .build();
         component.inject(this);
     }
@@ -391,8 +391,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
-            RouteManager.route(getActivity(), applink);
+            if (getContext() != null) {
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), mTrackingUrl), LIVE_TRACKING_VIEW_REQ);
+            }
         };
     }
 

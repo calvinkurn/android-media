@@ -21,7 +21,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -62,11 +61,11 @@ import com.tokopedia.buyerorder.list.view.presenter.OrderListContract;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -74,6 +73,7 @@ import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -87,6 +87,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -185,7 +186,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Inject
     UserSessionInterface userSession;
 
-    private String selectedFilter = "0";
+    private String selectedFilter = "18";
 
     private CustomViewRounderCornerFilterView quickSingleFilterView;
 
@@ -215,7 +216,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trackingQueue = new TrackingQueue(getAppContext());
+        trackingQueue = new TrackingQueue(getActivity());
         setRetainInstance(isRetainInstance());
         if (getArguments() != null) {
             setupArguments(getArguments());
@@ -385,7 +386,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SUBMIT_SURVEY_REQUEST) {
-                presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
+                presenter.insertSurveyRequest(getContext(), data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3),
+                        data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
         } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
@@ -393,11 +395,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
             if (resultCode == REJECT_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             }
         }
     }
@@ -430,7 +432,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isRecommendation) {
-                    presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), false);
+                    presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), false);
                 } else {
                     page_num++;
                     if (!isLoading) {
@@ -514,21 +516,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 orderListAdapter.setEmptyMarketplaceFilter();
-                presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
+                presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
             }
             filterDate.setVisibility(View.GONE);
             surveyBtn.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override
@@ -635,17 +629,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+        }
     }
 
     @Override
     public void showFailureMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        }
     }
 
     @Override
@@ -891,7 +891,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = true;
         } else if (!isVisible && isSurveyBtnVisible) {
-            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = false;
         }
     }
@@ -945,13 +945,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
                 if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                    presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
                 break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
@@ -980,30 +980,32 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void showPopUpSelesai() {
         orderListAnalytics.sendActionButtonClickEvent("selesai");
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
-            @Override
-            public int layoutResId() {
-                return R.layout.dialog_seller_finish;
-            }
-        };
-        dialog.setTitle(getString(R.string.popup_selesai_title));
-        dialog.setDesc(getString(R.string.popup_selesai_desc));
-        dialog.setBtnOk(getString(R.string.popup_selesai_ok_btn));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                presenter.finishOrder(selectedOrderId, actionButtonUri);
-            }
-        });
-        dialog.setBtnCancel(getString(R.string.popup_selesai_cancel_btn));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        if (getContext() != null) {
+            DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+            View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
+            TextView title = childView.findViewById(R.id.tv_title_dialog);
+            title.setText(getString(R.string.popup_selesai_title));
+
+            TextView desc = childView.findViewById(R.id.tv_desc_dialog);
+            desc.setText(getString(R.string.popup_selesai_desc));
+
+            TextView btnOk = childView.findViewById(R.id.btn_ok_dialog);
+            btnOk.setText(getString(R.string.popup_selesai_ok_btn));
+            btnOk.setOnClickListener(view1 -> {
+                dialogUnify.dismiss();
+                presenter.finishOrderGql(selectedOrderId, presenter.getStatus().status());
+            });
+
+            TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
+            btnCancel.setText(getString(R.string.popup_selesai_cancel_btn));
+            btnCancel.setOnClickListener(view12 -> {
+                dialogUnify.dismiss();
+            });
+
+            dialogUnify.setUnlockVersion();
+            dialogUnify.setChild(childView);
+            dialogUnify.show();
+        }
     }
 
     private void handleDefaultCase(ActionButton actionButton) {
@@ -1027,12 +1029,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("OrderId", selectedOrderId);
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.INSTANCE.showErrorWithAction(mainContent,
+            if (presenter.shouldShowTimeForCancellation() && getView() != null) {
+                Toaster.build(getView(),
                         presenter.getCancelTime(),
-                        Snackbar.LENGTH_LONG,
-                        getResources().getString(R.string.title_ok), v -> {
-                        });
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
+                        }).show();
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
         } else if (status.status().equals(STATUS_CODE_11)) {

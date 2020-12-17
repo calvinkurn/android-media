@@ -25,6 +25,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -241,12 +242,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun showChooseProduct() {
-        if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
-            emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
-            emptyStateProduct?.visible()
-            headerUnify?.actionTextView?.isEnabled = false
-            hideSelectedProductList()
-        }
+        emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
+        emptyStateProduct?.visible()
+        headerUnify?.actionTextView?.isEnabled = false
+        hideSelectedProductList()
     }
 
     override fun onDestroy() {
@@ -282,6 +281,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun initView() {
         showSoftKeyboard()
+        if(!isActionEdit) {
+            showChooseProduct()
+        }
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()
@@ -373,6 +375,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             context?.resources?.getString(R.string.empty_showcase_name_text)?.let {
                 textFieldShowcaseName?.setMessage(it)
             }
+            // since last ux improvement choose product is shown on initial view
+            // it will produce error when click "selesai" and texfield showcase name still empty
+            tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, isSuccess = false)
         } else {
             hideSoftKeyboard()
             if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
@@ -533,7 +538,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                                         // everything is fine, navigate back to showcase list
                                         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                                        intent.putExtra(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
+                                        intent.putExtra(ShopShowcaseParamConstant.EXTRA_EDIT_SHOWCASE_RESULT, SUCCESS_EDIT_SHOWCASE)
                                         activity?.setResult(Activity.RESULT_OK, intent)
                                         activity?.finish()
 

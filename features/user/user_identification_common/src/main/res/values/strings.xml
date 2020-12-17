@@ -19,26 +19,6 @@
 
     <string name="kyc_upload_title">Upload Foto</string>
 
-    <string name="kyc_intro_title">Mari verifikasi data dirimu</string>
-    <string name="kyc_intro_text">Kamu hanya perlu upload foto KTP dan verifikasi wajah.</string>
-    <string name="kyc_intro_button">Mulai</string>
-
-    <string name="kyc_pending_title">Dokumen sedang kami proses</string>
-    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
-    <string name="kyc_pending_button">Mengerti</string>
-
-    <string name="kyc_failed_title">Gagal Verifikasi</string>
-    <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
-    <string name="kyc_failed_text_with_reason">Sistem kami tidak bisa memproses foto identitasmu karena:</string>
-    <string name="kyc_failed_button">Upload Ulang</string>
-
-    <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
-    <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan\ndan terlindungi dengan aman di dalam\nsistem Tokopedia.</string>
-    <string name="kyc_verified_button">Info Selengkapnya</string>
-
-    <string name="kyc_blacklist_button">Kembali</string>
-    <string name="kyc_blacklist_text">Sistem tidak dapat membaca informasi\nyang terdapat pada dokumen anda.</string>
-
     <string name="ktp_title">Foto bagian depan KTP</string>
     <string name="ktp_subtitle"><![CDATA[Yuk, ikuti cara berikut!]]> </string>
     <string name="ktp_body">"<![CDATA[<font color='#dbdee2'>\u25CF</font> &nbsp Gunakan KTP asli yang masih berlaku.<br>
@@ -83,8 +63,6 @@
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
     <string name="title_kyc_form_face">Verifikasi Wajah</string>
     <string name="title_kyc_form_upload">Kirim Dokumen</string>
-
-    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
 
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
         (%s)</string>

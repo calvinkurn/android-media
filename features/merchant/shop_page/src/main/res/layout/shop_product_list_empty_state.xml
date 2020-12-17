@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:padding="@dimen/dp_16">
 
         <ImageView
@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_toEndOf="@id/no_result_image"
             android:layout_toRightOf="@id/no_result_image"
-            android:textColor="@color/font_black_primary_70"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="heading_4" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -41,7 +41,7 @@
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/no_result_image"
             android:layout_toRightOf="@id/no_result_image"
-            android:textColor="@color/font_black_secondary_54"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 

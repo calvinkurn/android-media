@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
@@ -60,6 +61,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageProductBannerViewHolder.LAYOUT
     }
 
+    fun type(productCardCustomModel: RechargeProductCardCustomBannerModel): Int {
+        return RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -76,6 +81,10 @@ class RechargeHomepageAdapterTypeFactory(
         return ReminderWidgetViewHolder.LAYOUT
     }
 
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int{
+        return 0
+    }
+
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
         return 0
     }
@@ -88,20 +97,32 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return 0
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return RechargeHomepageLoadingViewholder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
+            // Home Components
+            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(parent, reminderWidgetCallback)
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, dynamicLegoBannerCallback, dynamicLegoBannerCallback)
+            // Recharge
             RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
             RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
             RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
             RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent, listener)
-            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(parent, reminderWidgetCallback)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
             RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
             RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, dynamicLegoBannerCallback, dynamicLegoBannerCallback)
             RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
             RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
+            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

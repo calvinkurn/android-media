@@ -1,50 +1,30 @@
 package com.tokopedia.seller_migration_common.presentation.util
 
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
 import android.view.View
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
-import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
+import com.tokopedia.seller_migration_common.presentation.model.AccountSettingData
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.parcel.Parcelize
 
-@SuppressLint("ClickableViewAccessibility")
-internal fun Fragment.setupMigrationFooter(view: View?,
-                                           trackGoToSellerApp: () -> Unit = {},
-                                           trackGoToPlayStore: () -> Unit = {},
-                                           trackLearnMore: () -> Unit = {},
-                                           goToSellerAppFeature: () -> Unit = { goToSellerApp(trackGoToSellerApp, trackGoToPlayStore) }) {
-    val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
-    sellerMigrationBottomSheetButton?.setOnClickListener {
-        goToSellerAppFeature()
-    }
-    val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
-    sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-    sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
-        goToInformationWebview(it, trackLearnMore)
-    })
-}
-
-private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
-                                   trackGoToPlayStore: () -> Unit) {
+fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit = {},
+                           trackGoToPlayStore: () -> Unit = {}) {
     with(SellerMigrationConstants) {
         try {
             val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
@@ -63,92 +43,80 @@ private fun Fragment.goToSellerApp(trackGoToSellerApp: () -> Unit,
     }
 }
 
-private fun Fragment.goToInformationWebview(link: String,
-                                            trackLearnMore: () -> Unit): Boolean {
+fun Fragment.goToInformationWebview(link: String,
+                                    trackLearnMore: () -> Unit = {}): Boolean {
     trackLearnMore()
     return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
 }
 
-@Parcelize
-data class BenefitPoints(val benefitPointsList: List<CharSequence>): Parcelable
-
-/**
- * Fragment extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
- *
- * @param   bottomSheet         SellerMigrationCommunicationBottomSheet to be displayed
- * @param   ticker              ticker view that should display migration info
- * @param   communicationInfo   type of migration communication (broadcast chat, topads, etc.)
- */
-fun Fragment.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
-                                                          ticker: Ticker?,
-                                                          communicationInfo: CommunicationInfo,
-                                                          tickerAction: () -> Unit = { ticker?.show() }) {
+fun Fragment.initializeSellerMigrationAccountSettingTicker(ticker: Ticker?) {
     ticker?.run {
-        if (isSellerMigrationEnabled(context)) {
-            tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
-            val remoteConfigDate = getSellerMigrationDate(context).let { date ->
-                if (date.isEmpty()) {
-                    getString(R.string.seller_migration_bottom_sheet_redirected_dates_abbv)
-                } else {
-                    date
-                }
-            }
-            val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
-            setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDismiss() {}
+        if (isSellerMigrationEnabled(requireContext())) {
+            tickerTitle = requireContext().getString(AccountSettingData.titleRes)
+            setHtmlDescription(requireContext().getString(AccountSettingData.descRes))
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet(bottomSheet)
+                    val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalSellerapp.SELLER_MENU)
+                    intent.putExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, true)
+                    startActivity(intent)
                 }
+
+                override fun onDismiss() {}
             })
-            tickerAction()
+            show()
         } else {
-            gone()
+            hide()
         }
     }
 }
 
-private fun Fragment.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
-    bottomSheet?.show(childFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
-}
-
-/**
- * FragmentActivity extension function to initialize phase 3 redirection ticker, which will show bottomsheet if spanned string is clicked
- *
- * @param   bottomSheet         SellerMigrationCommunicationBottomSheet to be displayed
- * @param   ticker              ticker view that should display migration info
- * @param   communicationInfo   type of migration communication (broadcast chat, topads, etc.)
- */
-fun FragmentActivity.initializeSellerMigrationCommunicationTicker(bottomSheet: SellerMigrationCommunicationBottomSheet?,
-                                                                  ticker: Ticker?,
-                                                                  communicationInfo: CommunicationInfo,
-                                                                  tickerAction: () -> Unit = { ticker?.show() }) {
-    ticker?.run {
-        if (isSellerMigrationEnabled(context)) {
-            tickerTitle = context?.getString(R.string.seller_migration_ticker_title).orEmpty()
-            val remoteConfigDate = getSellerMigrationDate(context).let { date ->
-                if (date.isEmpty()) {
-                    getString(R.string.seller_migration_bottom_sheet_redirected_dates_abbv)
-                } else {
-                    date
-                }
-            }
-            val featureString = context?.getString(communicationInfo.tickerMessagePrefixRes).orEmpty()
-            setHtmlDescription(context?.getString(R.string.seller_migration_ticker_desc, featureString, remoteConfigDate).orEmpty())
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDismiss() {}
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet(bottomSheet)
-                }
-            })
-            tickerAction()
-        } else {
-            gone()
-        }
+fun Typography.setOnClickLinkSpannable(htmlString: String,
+                                       redirectPage: () -> Unit = {},
+                                       trackGoToSellerApp: () -> Unit = {}) {
+    val htmlLinkString = HtmlLinkHelper(context, htmlString)
+    text = htmlLinkString.spannedString
+    htmlLinkString.urlList.firstOrNull()?.setOnClickListener {
+        trackGoToSellerApp()
+        redirectPage()
     }
 }
 
-private fun FragmentActivity.openSellerMigrationBottomSheet(bottomSheet: SellerMigrationCommunicationBottomSheet?) {
-    bottomSheet?.show(supportFragmentManager, SellerMigrationCommunicationBottomSheet::class.java.name)
+fun Fragment.setupBottomSheetFeedSellerMigration(goToCreateAffiliate: () -> Unit = {},
+                                                 onGoToLink: Intent) {
+    val viewBottomSheet = View.inflate(context, R.layout.bottom_sheet_feed_content_seller_migration, null)
+    val postInSeller: LinearLayout = viewBottomSheet.findViewById(R.id.groupPostShopSeller)
+    val postFavorite: Typography = viewBottomSheet.findViewById(R.id.tvPostFavorite)
+    val bottomSheet = BottomSheetUnify()
+    bottomSheet.setChild(viewBottomSheet)
+
+    postFavorite.setOnClickListener {
+        goToCreateAffiliate()
+        bottomSheet.dismiss()
+    }
+
+    postInSeller.setOnClickListener {
+        startActivity(onGoToLink)
+        bottomSheet.dismiss()
+    }
+
+    bottomSheet.apply {
+        showCloseIcon = true
+        setCloseClickListener {
+            dismiss()
+        }
+    }
+
+    fragmentManager?.let {
+        bottomSheet.show(it, "")
+    }
 }
 
+fun getRegisteredMigrationApplinks(@SellerMigrationFeatureName featureName: String): ArrayList<String> =
+    when(featureName) {
+        SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
+            arrayListOf(
+                ApplinkConstInternalSellerapp.SELLER_HOME_CHAT,
+                ApplinkConstInternalMarketplace.CHAT_SETTING)
+        }
+        else -> arrayListOf()
+    }

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.bookingV3.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -54,6 +55,7 @@ import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -330,7 +332,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
-                bookingViewModel.getFlightPriceModel().comboKey)
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
     }
 
     private fun sendCheckOutTracking(pid: String) {
@@ -338,7 +341,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
                 bookingViewModel.getSearchParam(),
-                bookingViewModel.getFlightPriceModel().comboKey ?: "")
+                bookingViewModel.getFlightPriceModel().comboKey,
+                userSession.userId)
 
         flightAnalytics.eventBranchCheckoutFlight(
                 "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
@@ -351,7 +355,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.make(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay), View.OnClickListener { /* do nothing */ })
+            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.flight_booking_action_okay),
+                    View.OnClickListener { /* do nothing */ }).show()
         }
     }
 
@@ -817,6 +823,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
     }
 
+    @SuppressLint("DialogUnifyUsage")
     private fun showErrorDialog(e: FlightError, action: () -> Unit) {
         if (activity != null) {
             if (e.id != null) {
@@ -967,7 +974,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
                 val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
                 loadingDialog.setChild(loadingView)
-                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
                 loadingText.text = list[0]
 
                 loadingDialog.show()
@@ -1064,13 +1071,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun getDepartureId(): String = bookingViewModel.getDepartureId()
     private fun getReturnId(): String = bookingViewModel.getReturnId()
-    private fun getAtcQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart)
-    private fun getGetCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart)
-    private fun getCheckVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher)
-    private fun getVerifyCartQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart)
-    private fun getCheckoutQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart)
+    private fun getAtcQuery(): String = FlightBookingQuery.QUERY_ADD_TO_CART
+    private fun getGetCartQuery(): String = FlightBookingQuery.QUERY_GET_CART
+    private fun getCheckVoucherQuery(): String = FlightBookingQuery.QUERY_CHECK_VOUCHER
+    private fun getVerifyCartQuery(): String = FlightBookingQuery.QUERY_VERIFY_CART
+    private fun getCheckoutQuery(): String = FlightBookingQuery.QUERY_CHECKOUT_CART
     private fun getProfileQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
-    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+    private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightBookingTicker)

@@ -359,7 +359,28 @@
     <string name="button_direct_login">Masuk</string>
     <string name="button_use_another_acc">Gunakan Akun Lain</string>
     <string name="seamless_footer_text">Akun toko ini adalah akun yang terhubung di aplikasi Tokopedia mu</string>
-  
+
     <!-- TERM & CONDITION | PRIVACY-->
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
+
+    <!--  CONTENT DESCRIPTION  -->
+    <string name="content_desc_input_email_phone">input email phone</string>
+    <string name="content_desc_password">input password</string>
+    <string name="content_desc_register_btn">button submit</string>
+    <string name="content_desc_socmed_btn_phone">button akun media sosial phone</string>
+    <string name="content_desc_socmed_btn_register">button akun media sosial register initial</string>
+    <string name="content_desc_register_button_phone">text daftar phone</string>
+    <string name="content_desc_register_button_register">text daftar register initial</string>
+    <string name="content_desc_login_button">text masuk</string>
+    <string name="content_desc_forgot_pass">text lupa password</string>
+    <string name="content_desc_fingerprint_button">fingerprint button content</string>
+    <string name="content_desc_provider_name">button sosial media</string>
+    <string name="content_desc_wrapper_pass_partial">wrapper password partial register</string>
+
+    <!-- POPUP ERROR -->
+    <string name="popup_error_title">Permintaanmu gagal diproses</string>
+    <string name="popup_error_desc">Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.</string>
+    <string name="check_full_information">Cek Informasi Lengkap</string>
+    <string name="close_popup">Tutup</string>
+
 </resources>

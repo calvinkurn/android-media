@@ -7,10 +7,10 @@ import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -32,26 +32,32 @@ class CMPushNotificationManager : CoroutineScope {
 
     private var cmUserHandler: CMUserHandler? = null
 
+    private val cmRemoteConfigUtils by lazy { CMRemoteConfigUtils(applicationContext) }
+
     private val isBackgroundTokenUpdateEnabled: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_token_capture_background_enable", true)
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig("app_cm_token_capture_background_enable", true)
 
     private val remoteDelaySeconds: Long
-        get() = (applicationContext as CMRouter).getLongRemoteConfig("app_token_send_delay", 60)
+        get() = cmRemoteConfigUtils.getLongRemoteConfig("app_token_send_delay", 60)
 
 
     private val isForegroundTokenUpdateEnabled: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
     private val isPushEnable: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, false) || BuildConfig.DEBUG
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, false) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
                 false) || BuildConfig.DEBUG
 
     val cmPushEndTimeInterval: Long
-        get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
+        get() = cmRemoteConfigUtils.getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
                 HOURS_24_IN_MILLIS * 7)
+
+    val sellerAppCmAddTokenEnabled: Boolean
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
+                false)
 
     /**
      * initialization of push notification library
@@ -143,21 +149,25 @@ class CMPushNotificationManager : CoroutineScope {
         if (null == remoteMessage)
             return
 
-        if (null == remoteMessage.data)
-            return
+        val data = remoteMessage.data ?: return
 
+        val dataString = data.toString()
         try {
-            if (isFromCMNotificationPlatform(remoteMessage.data)) {
-                val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
-                val bundle = PayloadConverter.convertMapToBundle(remoteMessage.data)
+            if (isFromCMNotificationPlatform(data)) {
+                val confirmationValue = data[CMConstant.PayloadKeys.SOURCE]
+                val bundle = PayloadConverter.convertMapToBundle(data)
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
                     PushController(applicationContext).handleNotificationBundle(bundle)
+                } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
+                    take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
 
     }

@@ -48,6 +48,15 @@ query PropertySearch($data:PropertySearchRequest!){
           longitude
         }
         isDirectPayment
+        safetyBadge {
+            show
+            title
+            content
+            icon {
+              dark
+              light
+            }
+          }
       }
       propertyDisplayInfo{
         filter{

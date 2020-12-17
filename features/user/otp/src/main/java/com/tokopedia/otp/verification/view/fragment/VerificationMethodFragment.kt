@@ -25,14 +25,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
-import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
-import com.tokopedia.otp.verification.common.IOnBackPressed
-import com.tokopedia.otp.verification.common.di.VerificationComponent
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
@@ -46,12 +47,13 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
+class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
-    lateinit var analytics: TrackingValidatorUtil
+    lateinit var analytics: TrackingOtpUtil
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -64,9 +66,9 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override var viewBound = VerificationMethodViewBinding()
 
-    override fun getScreenName(): String = TrackingValidatorConstant.Screen.SCREEN_VERIFICATION_METHOD
+    override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_VERIFICATION_METHOD
 
-    override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +104,7 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
 
-                if (modeList.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
+                if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {
                     (activity as VerificationActivity).goToVerificationPage(modeList)
@@ -115,12 +117,18 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun getVerificationMethod() {
         showLoading()
-        viewmodel.getVerificationMethod(
-                otpType = otpData.otpType.toString(),
-                userId = otpData.userId,
-                msisdn = otpData.msisdn,
-                email = otpData.email
-        )
+        val otpType = otpData.otpType.toString()
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+                && otpData.userIdEnc.isNotEmpty()) {
+            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+        } else {
+            viewmodel.getVerificationMethod(
+                    otpType = otpType,
+                    userId = otpData.userId,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email
+            )
+        }
     }
 
     private fun initObserver() {
@@ -136,12 +144,13 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         return { otpModeListData ->
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
-                if(!otpData.isShowChooseMethod) {
+
+                if (!otpData.isShowChooseMethod) {
                     val modeList = otpModeListData.modeList.singleOrNull {
                         it.modeText == otpData.otpMode
                     }
 
-                    if(modeList != null) {
+                    if (modeList != null) {
                         skipView(modeList)
                     } else {
                         showListView(otpModeListData)
@@ -160,6 +169,8 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
+        loadTickerTrouble(otpModeListData)
+
         when (otpModeListData.linkType) {
             TYPE_HIDE_LINK -> onTypeHideLink()
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
@@ -197,12 +208,14 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.phoneInactive?.setOnClickListener {
             context?.let {
                 analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
-                val intent = RouteManager.getIntent(it,
-                        ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_USER_ID,
-                        userSession.temporaryUserId)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_OLD_PHONE,
-                        userSession.tempPhoneNumber)
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+                if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
+                } else {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
+                }
                 startActivity(intent)
             }
         }
@@ -235,6 +248,15 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
 
+    }
+
+    private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
+        if (otpModeListData.enableTicker) {
+            viewBound.ticker?.show()
+            viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
+        } else {
+            viewBound.ticker?.hide()
+        }
     }
 
     private fun showLoading() {

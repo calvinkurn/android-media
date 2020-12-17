@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class PostMapper @Inject constructor() {
 
-    fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>): List<PostListDataUiModel> {
+    fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>, isFromCache: Boolean): List<PostListDataUiModel> {
         return widgetDataList.map {
             PostListDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
@@ -24,7 +24,8 @@ class PostMapper @Inject constructor() {
                                 postItem.subtitle.orEmpty()
                         )
                     }.orEmpty(),
-                    error = it.error.orEmpty()
+                    error = it.error.orEmpty(),
+                    isFromCache = isFromCache
             )
         }
     }

@@ -3,7 +3,6 @@ package com.tokopedia.encryption.security
 import android.util.Base64
 import com.tokopedia.encryption.utils.Constants
 import com.tokopedia.encryption.utils.Constants.CBC_ALGORITHM
-import com.tokopedia.encryption.utils.Utils
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec

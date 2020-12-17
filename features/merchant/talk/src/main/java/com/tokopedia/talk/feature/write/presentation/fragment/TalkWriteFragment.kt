@@ -37,13 +37,14 @@ import com.tokopedia.talk.feature.write.presentation.decorator.SpacingItemDecora
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.widget_talk_write_header.*
 import javax.inject.Inject
 
@@ -179,6 +180,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             submitNewQuestion()
         }
         talkConnectionErrorRetryButton.setOnClickListener {
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             viewModel.refresh()
             showLoading()
         }
@@ -214,7 +216,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
         )
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         activity?.finish()
     }

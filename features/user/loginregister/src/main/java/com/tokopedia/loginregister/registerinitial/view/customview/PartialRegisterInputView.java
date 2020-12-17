@@ -27,6 +27,7 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -301,14 +302,15 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void showLoginEmailView(@NotNull String email) {
         isButtonValidatorActived = false;
 
+        showForgotPassword();
+
         wrapperPassword.setVisibility(View.VISIBLE);
-        btnForgotPassword.setVisibility(View.VISIBLE);
         btnChange.setVisibility(View.VISIBLE);
         tvMessage.setVisibility(GONE);
 
         tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
-        btnAction.setText(btnAction.getContext().getString(R.string.login));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn));
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
@@ -317,8 +319,9 @@ public class PartialRegisterInputView extends BaseCustomView {
     public void showDefaultView() {
         isButtonValidatorActived = true;
 
+        hideForgotPassword();
+
         wrapperPassword.setVisibility(View.GONE);
-        btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
         tvMessage.setVisibility(VISIBLE);
 
@@ -342,6 +345,18 @@ public class PartialRegisterInputView extends BaseCustomView {
     private void hideEmailExtension() {
         if (emailExtension != null) {
             emailExtension.setVisibility(View.GONE);
+        }
+    }
+
+    public void showForgotPassword() {
+        if(btnForgotPassword != null) {
+            btnForgotPassword.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideForgotPassword() {
+        if(btnForgotPassword != null) {
+            btnForgotPassword.setVisibility(View.GONE);
         }
     }
 }

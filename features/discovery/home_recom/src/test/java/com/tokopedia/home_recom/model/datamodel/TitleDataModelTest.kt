@@ -12,8 +12,8 @@ import org.junit.runners.JUnit4
  */
 @RunWith(JUnit4::class)
 class TitleDataModelTest{
-    private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun titleDataModelFactory(title: String) = TitleDataModel(title, "", "", mockk())
+    private val visitor = HomeRecommendationTypeFactoryImpl(mockk(), mockk(), mockk(), mockk())
+    private fun titleDataModelFactory(title: String) = TitleDataModel(title, "", "")
 
     @Test
     fun test(){

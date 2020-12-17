@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_black_text">#F531353B</color>
+    <color name="setting_title_color">#AD31353B</color>
+
+    <color name="setting_green">#03AC0E</color>
+    <color name="setting_grey_text">#AD31353B</color>
+    <color name="setting_red_text">#EF144A</color>
+    <color name="setting_image_border">#E5E7E9</color>
+</resources>

@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.common.di.ShopPageContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.search.ShopSearchProductConstant.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.shop.search.di.scope.ShopSearchProductScope
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -47,4 +49,10 @@ class ShopSearchProductModule {
     @ShopSearchProductScope
     @Provides
     fun provideTrackingQueue(@ShopPageContext context: Context) = TrackingQueue(context)
+
+    @ShopSearchProductScope
+    @Provides
+    fun getCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
+    }
 }

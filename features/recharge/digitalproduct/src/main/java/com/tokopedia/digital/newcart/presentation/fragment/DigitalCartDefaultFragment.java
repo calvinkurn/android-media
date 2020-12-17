@@ -14,11 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDefaultPresenter;
 
 import javax.inject.Inject;
@@ -53,7 +53,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, subParams);
         fragment.setArguments(bundle);
         return fragment;
-
     }
 
 
@@ -83,6 +82,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     protected void setupView(View view) {
         progressBar = view.findViewById(R.id.progress_bar);
+        errorView = view.findViewById(R.id.view_error);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
         detailHolderView = view.findViewById(R.id.view_cart_detail);
@@ -114,6 +114,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     public void hideFullPageLoading() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String message) {
+        progressBar.setVisibility(View.GONE);
+        super.showError(message);
     }
 
     @Override

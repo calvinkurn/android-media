@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/settingTitleIcon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/settingTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/sah_dimen_20dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Pengatiran Toko" />
+
+</LinearLayout>

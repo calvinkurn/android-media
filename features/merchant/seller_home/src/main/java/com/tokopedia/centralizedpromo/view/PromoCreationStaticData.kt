@@ -3,9 +3,9 @@ package com.tokopedia.centralizedpromo.view
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.centralizedpromo.constant.CentralizedPromoUrl
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
 
@@ -42,7 +42,7 @@ object PromoCreationStaticData {
 
         if(freeShippingEnabled) {
             val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
 
             promoItems.add(PromoCreationUiModel(
                 R.drawable.ic_sah_free_shipping,

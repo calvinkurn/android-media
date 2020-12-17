@@ -17,13 +17,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -31,6 +32,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_TYPE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
@@ -48,8 +50,8 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyPr
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
-import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -75,15 +77,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
         const val NOT_IN_VIEWHOLDER = false
         const val MINIMUM_TEXT_LENGTH = 5
+        const val SOURCE_TALK = "talk"
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String, inboxType: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
-                    arguments = Bundle()
-                    arguments?.apply {
+                    arguments = Bundle().apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
                         putString(PARAM_SOURCE, source)
+                        putString(PARAM_TYPE, inboxType)
                     }
                 }
     }
@@ -95,12 +98,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var shopId = ""
     private var productId = ""
     private var source = ""
-    private var didUserWriteQuestion = false
     private var hideSuccessToaster = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
+    private var inboxType = ""
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -143,6 +146,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeDeleteQuestionResponse()
         observeCreateNewCommentResponse()
         observeAttachedProducts()
+        observeUnmaskComment()
+        observeUnmaskQuestion()
+        observeReportComment()
+        observeReportTalk()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -156,10 +163,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     }
                 }
                 ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE -> {
-                    if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
+                    if (!it.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
                         return
                     }
-                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                     setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)
@@ -194,6 +201,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.followUnfollowResult)
         removeObservers(viewModel.createNewCommentResult)
         removeObservers(viewModel.attachedProducts)
+        removeObservers(viewModel.markCommentNotFraudResult)
+        removeObservers(viewModel.markNotFraudResult)
+        removeObservers(viewModel.reportCommentResult)
+        removeObservers(viewModel.reportTalkResult)
         super.onDestroy()
     }
 
@@ -250,7 +261,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopId: String) {
         if(isSeller) {
             goToShopPageActivity(shopId)
             return
@@ -266,8 +277,31 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return RouteManager.route(context, link)
     }
 
-    override fun onProductClicked() {
+    override fun onUnmaskCommentOptionSelected(commentId: String) {
+        showPageLoading()
+        if(commentId.isNotBlank()) {
+            viewModel.markCommentNotFraud(questionId, commentId)
+            return
+        }
+        viewModel.markQuestionNotFraud(questionId)
+    }
+
+    override fun onDismissUnmaskCard(commentId: String) {
+        showPageLoading()
+        if(commentId.isNotBlank()) {
+            viewModel.reportComment(commentId)
+            return
+        }
+        viewModel.reportTalk(questionId)
+    }
+
+    override fun onProductCardClicked(productName: String, position: Int) {
+        TalkReplyTracking.eventClickCard(inboxType, viewModel.userId, productName, productId, position)
         goToPdp(productId)
+    }
+
+    override fun onProductCardImpressed(productName: String, position: Int) {
+        TalkReplyTracking.eventImpressCard(inboxType, viewModel.userId, productName, productId, position)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -280,7 +314,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToAttachProductActivity() {
-        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", viewModel.isMyShop, AttachProductActivity.SOURCE_TALK) }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, viewModel.isMyShop)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TALK)
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
 
@@ -294,8 +332,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToShopPageActivity(shopId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
-        startActivity(intent)
+        startActivity(RouteManager.getIntent(context, ApplinkConst.SHOP, shopId))
     }
 
     private fun goToProfileActivity(userId: String) {
@@ -320,6 +357,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
+        pageError.reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
             showPageLoading()
             hidePageError()
@@ -400,7 +438,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.delete_toaster_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         adapter?.clearAllElements()
         getDiscussionData()
-        didUserWriteQuestion = true
     }
 
     private fun onFailDeleteComment() {
@@ -434,7 +471,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
-        didUserWriteQuestion = true
     }
 
     private fun onFailCreateComment(errorMessage: String?) {
@@ -444,6 +480,29 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             errorMessage
         }
         showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    }
+
+    private fun onSuccessUnmaskQuestion() {
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        adapter?.clearAllElements()
+        getDiscussionData()
+    }
+
+    private fun onSuccessUnmaskComment() {
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_positive), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        adapter?.clearAllElements()
+        getDiscussionData()
+    }
+
+    private fun onHideReportedContent() {
+        adapter?.clearAllElements()
+        getDiscussionData()
+        showSuccessToaster(getString(R.string.reply_unmask_toaster_negative), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    }
+
+    private fun onFailUnmaskCommentOrQuestion() {
+        hidePageLoading()
+        showErrorToaster(getString(R.string.reply_unmask_toaster_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
@@ -459,7 +518,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeFollowUnfollowResponse() {
-        viewModel.followUnfollowResult.observe(this, Observer {
+        viewModel.followUnfollowResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     showFollowingSuccess()
@@ -472,7 +531,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     with(it.data) {
@@ -482,7 +541,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
-                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
+                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             showAnswers(this, viewModel.userId)
                         } else {
@@ -499,6 +558,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                             hideSuccessToaster = true
                             showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
                         }
+                        shopId = discussionDataByQuestionID.shopID
                     }
                 }
                 else -> {
@@ -509,7 +569,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDeleteQuestionResponse() {
-        viewModel.deleteTalkResult.observe(this, Observer {
+        viewModel.deleteTalkResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessDeleteQuestion()
                 else -> onFailDeleteQuestion()
@@ -518,7 +578,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeDeleteCommentResponse() {
-        viewModel.deleteCommentResult.observe(this, Observer {
+        viewModel.deleteCommentResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessDeleteComment()
                 else -> onFailDeleteComment()
@@ -527,7 +587,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeCreateNewCommentResponse() {
-        viewModel.createNewCommentResult.observe(this, Observer {
+        viewModel.createNewCommentResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
                 is Fail -> onFailCreateComment(it.throwable.message)
@@ -536,12 +596,48 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun observeAttachedProducts() {
-        viewModel.attachedProducts.observe(this, Observer {
+        viewModel.attachedProducts.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
                 attachedProductAdapter?.setData(it)
                 showAttachedProduct()
             } else {
                 hideAttachedProduct()
+            }
+        })
+    }
+
+    private fun observeUnmaskComment() {
+        viewModel.markCommentNotFraudResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessUnmaskComment()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeUnmaskQuestion() {
+        viewModel.markNotFraudResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessUnmaskQuestion()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeReportComment() {
+        viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onHideReportedContent()
+                is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeReportTalk() {
+        viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onHideReportedContent()
+                is Fail -> onFailUnmaskCommentOrQuestion()
             }
         })
     }
@@ -675,8 +771,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
             source = it.getString(PARAM_SOURCE, "")
+            inboxType = it.getString(PARAM_TYPE, "")
         }
-        viewModel.setIsMyShop(shopId)
     }
 
     private fun resetTextBox() {
@@ -724,7 +820,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     fun getDidUserWriteQuestion(): Boolean {
-        return didUserWriteQuestion || isFromWrite()
+        return isFromWrite()
     }
 
     fun goToReading() {
@@ -734,6 +830,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
 }

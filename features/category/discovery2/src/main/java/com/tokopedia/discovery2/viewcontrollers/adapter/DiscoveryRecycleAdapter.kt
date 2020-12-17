@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -37,9 +39,12 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
-        setViewSpanType(holder)
-        holder.bindView(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
+        setViewSpanType(holder, componentList[position].properties?.template)
+        with(viewHolderListModel.getViewHolderModel(
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position)) {
+            holder.bindView(this, parentComponent)
+        }
+
     }
 
 
@@ -81,20 +86,20 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         super.onViewDetachedFromWindow(holder)
     }
 
-    private fun setViewSpanType(holder: AbstractViewHolder) {
-
+    private fun setViewSpanType(holder: AbstractViewHolder, template: String?) {
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = when (holder) {
                 is ProductCardItemViewHolder -> false
-                is ShimmerProductCardViewHolder -> false
+                is MasterProductCardItemViewHolder -> template == LIST
+                is ShimmerProductCardViewHolder -> template == LIST
                 else -> true
             }
         }
 
     }
 
-    fun clearListViewModel() {
+    private fun clearListViewModel() {
         viewHolderListModel.clearList()
     }
 
@@ -103,7 +108,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun isStickyHeaderView(it: Int): Boolean {
-        return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it))
+        return DiscoveryHomeFactory.isStickyHeader(getItemViewType(it)) || componentList[it].isSticky
     }
 }
 

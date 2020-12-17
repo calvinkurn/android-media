@@ -21,11 +21,8 @@ import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.service.ErrorNetworkReceiver;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DialogForceLogout;
+import com.tokopedia.core.util.ErrorNetworkReceiver;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -58,26 +55,19 @@ public class BaseActivity extends AppCompatActivity implements
 
     protected UserSessionInterface userSessionInterface;
 
-    protected GCMHandler gcmHandler;
-
     private Boolean isPause = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    protected GlobalCacheManager globalCacheManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getApplicationComponent().inject(this);
-
 
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
 
         userSessionInterface = new UserSession(getBaseContext());
-        gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        globalCacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -120,8 +110,6 @@ public class BaseActivity extends AppCompatActivity implements
                 screenName = this.getClass().getSimpleName();
             }
         }
-        gcmHandler = null;
-        globalCacheManager = null;
     }
 
     @Override

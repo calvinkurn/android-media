@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
@@ -419,11 +420,19 @@ class ModelBuilder {
 
     private val totalLikeCount = """
         {
-            "like": {
-                "fmt": "48",
-                "value": 48
+        "broadcasterReportSummariesBulk": {
+          "reportData": [
+            {
+              "channel": {
+                "metrics": {
+                  "totalLike": "48",
+                  "totalLikeFmt": "48"
+                }
+              }
             }
+          ]
         }
+      }
     """.trimIndent()
 
     private val isLike = """
@@ -879,7 +888,7 @@ class ModelBuilder {
 
     fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Data::class.java)
+    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
     fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
@@ -947,7 +956,7 @@ class ModelBuilder {
 //            moderatorName, contentId, contentType, likeType, isShowCart)
 
     fun buildVideoPropertyUiModel(
-            state: PlayVideoState = PlayVideoState.Playing
+            state: PlayViewerVideoState = PlayViewerVideoState.Play
     ) = VideoPropertyUiModel(state = state)
 
     fun buildVideoStreamUiModel(
@@ -1202,4 +1211,20 @@ class ModelBuilder {
     fun <T>buildPlayResultSuccess(
             data: T
     ) = PlayResult.Success(data)
+
+    fun buildShareInfoUiModel(channel: Channel): ShareInfoUiModel {
+        val fullShareContent = try {
+            channel.share.text.replace("${'$'}{url}", channel.share.redirectUrl)
+        } catch (e: Throwable) {
+            "${channel.share.text}/n${channel.share.redirectUrl}"
+        }
+
+        return ShareInfoUiModel(
+                content = fullShareContent,
+                isShowButton = channel.share.isShowButton
+                        && channel.share.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
 }

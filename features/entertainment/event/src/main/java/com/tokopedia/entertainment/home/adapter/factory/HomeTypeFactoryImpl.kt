@@ -3,15 +3,18 @@ package com.tokopedia.entertainment.home.adapter.factory
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewholder.*
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
+import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 
 /**
  * Author errysuprayogi on 29,January,2020
  */
-class HomeTypeFactoryImpl(val action:((data: EventItemModel,
-                                       onSuccess: (EventItemModel)->Unit,
-                                       onError: (Throwable)->Unit) -> Unit)) : HomeTypeFactory {
+class HomeTypeFactoryImpl(val action: ((data: EventItemModel,
+                                        onSuccess: (EventItemModel) -> Unit,
+                                        onError: (Throwable) -> Unit) -> Unit),
+                          val trackingListener: TrackingListener) : HomeTypeFactory {
 
     override fun type(model: BannerModel): Int {
         return BannerEventViewHolder.LAYOUT
@@ -36,15 +39,15 @@ class HomeTypeFactoryImpl(val action:((data: EventItemModel,
     override fun createViewHolder(view: ViewGroup, type: Int): HomeEventViewHolder<*> {
         val creatEventViewHolder: HomeEventViewHolder<*>
         creatEventViewHolder = if (type == BannerEventViewHolder.LAYOUT) {
-            BannerEventViewHolder(view)
+            BannerEventViewHolder(view, trackingListener)
         } else if (type == CategoryEventViewHolder.LAYOUT) {
-            CategoryEventViewHolder(view)
+            CategoryEventViewHolder(view, trackingListener)
         } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view, action)
+            EventGridEventViewHolder(view, action, trackingListener)
         } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view, action)
+            EventCarouselEventViewHolder(view, action, trackingListener)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
-            EventLocationEventViewHolder(view)
+            EventLocationEventViewHolder(view, trackingListener)
         } else {
             throw TypeNotSupportedException.create("Layout not supported")
         }

@@ -103,6 +103,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         super.onCreate(savedInstanceState)
         initInjector()
         initViewModel()
+        viewModel.topAdsBannerNextPageToken = homeCategoryListener?.getTopAdsBannerNextPageToken()?:""
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

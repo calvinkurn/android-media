@@ -3,14 +3,15 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.Tab
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -23,6 +24,7 @@ object ProductMapper {
             val minPrice = it.price?.min
             val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
+            val topAdsInfo = TopAdsInfo(it.isTopAds(), it.isAutoAds())
 
             ProductViewModel(
                 id = it.id,
@@ -44,7 +46,8 @@ object ProductMapper {
                 cashBack = it.cashback,
                 multiSelectActive = multiSelectActive,
                 isChecked = false,
-                hasStockReserved = it.hasStockReserved
+                hasStockReserved = it.hasStockReserved,
+                topAdsInfo = topAdsInfo
             )
         } ?: emptyList()
     }

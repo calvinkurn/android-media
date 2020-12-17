@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="@string/hotel_search_filter_rating_title" />
@@ -40,6 +40,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_7"
-        android:paddingRight="@dimen/dp_7" />
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl1" />
 </LinearLayout>

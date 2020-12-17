@@ -1,0 +1,443 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenu": [
+        {
+          "name": "subhome-telco",
+          "label": "Prabayar & Pascabayar",
+          "app_link": "",
+          "sub_menu": [
+            {
+              "id": 92,
+              "name": "subhome-telco-pulsa-android",
+              "label": "Pulsa",
+              "app_link": "tokopedia://digital/form?category_id=1",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 91,
+              "name": "subhome-telco-paketdata-android",
+              "label": "Paket Data",
+              "app_link": "tokopedia://digital/form?category_id=2",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 89,
+              "name": "subhome-telco-roaming-android",
+              "label": "Roaming",
+              "app_link": "tokopedia://digital/form?category_id=20",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_c6018c91-3d78-4fbb-94ce-47a9367468d4.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 90,
+              "name": "subhome-telco-pascabayar-android",
+              "label": "Pascabayar",
+              "app_link": "tokopedia://digital/form?category_id=9",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_53682a49-5247-4374-82c0-4c2a8d3bdbea.png",
+              "category_ids": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "subhome-bayar",
+          "label": "Bayar",
+          "app_link": "",
+          "sub_menu": [
+            {
+              "id": 49,
+              "name": "subhome-bayar-biayapendidikan",
+              "label": "Biaya Pendidikan",
+              "app_link": "tokopedia://digital/form?category_id=52",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/8/26/47197032/47197032_3e4b1f4b-706c-4c4a-8986-945d8bb54516.png",
+              "category_ids": [
+                52
+              ]
+            },
+            {
+              "id": 249,
+              "name": "langganan",
+              "label": "Langganan",
+              "app_link": "tokopedia://webview?url=https://www.tokopedia.com/langganan",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/9/18/76737423/76737423_cad7ad32-010f-475f-9189-dc51f8bdff50.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 247,
+              "name": "subhome-invoicing",
+              "label": "E-Invoicing",
+              "app_link": "tokopedia://digital/form?category_id=54",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/6/2/47231715/47231715_3f25aefc-9454-4004-991e-de04895382b8.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 248,
+              "name": "bayar-properti",
+              "label": "Cicilan Properti",
+              "app_link": "tokopedia://digital/form?category_id=124&menu_id=248&template=general",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/7/30/47231715/47231715_f21fcfa4-bb2b-4e79-a756-bf31100da301.png",
+              "category_ids": [
+                124
+              ]
+            },
+            {
+              "id": 36,
+              "name": "subhome-bayar-angsuran",
+              "label": "Angsuran Kredit",
+              "app_link": "tokopedia://digital/form?category_id=7",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_a40bc9db-8fd8-426f-985f-9930fe83711a.png",
+              "category_ids": [
+                7
+              ]
+            },
+            {
+              "id": 35,
+              "name": "subhome-bayar-pdam",
+              "label": "Air PDAM",
+              "app_link": "tokopedia://digital/form?category_id=5",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_e6ba12cd-1255-4c3c-972f-074628571dc2.png",
+              "category_ids": [
+                5
+              ]
+            },
+            {
+              "id": 34,
+              "name": "subhome-bayar-kartukredit",
+              "label": "Tagihan Kartu Kredit",
+              "app_link": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Ftagihan%2Fkartu-kredit%2F%3Fispulsa%3D1",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/6/5/47197032/47197032_1edffc51-b255-4465-80db-a1e0761ea2ea.png",
+              "category_ids": [
+                26
+              ]
+            },
+            {
+              "id": 28,
+              "name": "subhome-bayar-pgn",
+              "label": "Gas PGN",
+              "app_link": "tokopedia://digital/form?category_id=14",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_9a42acc2-efe8-43b3-94ce-00730b8811ea.png",
+              "category_ids": [
+                14
+              ]
+            },
+            {
+              "id": 118,
+              "name": "subhome-bayar-ipl",
+              "label": "Tagihan IPL",
+              "app_link": "tokopedia://digital/form?category_id=53",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/4/47231715/47231715_d195e90c-6cd3-4090-a48c-69959e18eef4.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 243,
+              "name": "subhome-add-on",
+              "label": "Upgrade Internet & TV",
+              "app_link": "tokopedia://digital/form?category_id=37",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/2/26/72763743/72763743_b13ae812-dfaa-41d5-bc9f-f04f32e22744.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 29,
+              "name": "subhome-bayar-tvkabel",
+              "label": "Internet dan TV Kabel",
+              "app_link": "tokopedia://digital/form?category_id=8",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_2d836405-757b-443f-b110-7f45d168d62b.png",
+              "category_ids": [
+                8
+              ]
+            },
+            {
+              "id": 37,
+              "name": "subhome-bayar-asuransi",
+              "label": "Premi Asuransi",
+              "app_link": "tokopedia://digital/form?category_id=50",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_fa9c2a02-6c92-49e2-91bb-458c5680bb53.png",
+              "category_ids": [
+                50
+              ]
+            },
+            {
+              "id": 33,
+              "name": "subhome-bayar-bpjs",
+              "label": "BPJS",
+              "app_link": "tokopedia://digital/form?category_id=4",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/4/28/38012427/38012427_cfc788fa-aef3-4205-bdcb-469ac95ef298.png",
+              "category_ids": [
+                4
+              ]
+            },
+            {
+              "id": 27,
+              "name": "subhome-bayar-telkom",
+              "label": "Telkom",
+              "app_link": "tokopedia://digital/form?category_id=10",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/1/23/47197032/47197032_0de76bd3-0481-4ee2-8c52-9700cbbc3ae7.png",
+              "category_ids": [
+                10
+              ]
+            },
+            {
+              "id": 245,
+              "name": "subhome-bayar-pln-tagihan-listrik",
+              "label": "Tagihan Listrik",
+              "app_link": "tokopedia://digital/form?category_id=3",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 114,
+              "name": "subhome-bayar-bridestorypay",
+              "label": "Bridestory Pay",
+              "app_link": "tokopedia://digital/form?category_id=302&operator_id=1197",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/7/3/47197032/47197032_8f0f3919-b87f-49ce-aab2-8972ca5f6aec.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 48,
+              "name": "subhome-regist-tvkabel",
+              "label": "Pasang TV Kabel",
+              "app_link": "tokopedia://webview?url=https://www.tokopedia.com/pasang-tv-kabel/",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/8/29/21181130/21181130_1e3a1c64-d274-4823-8b15-acbc4f9a49d7.png",
+              "category_ids": [
+                104
+              ]
+            }
+          ]
+        },
+        {
+          "name": "subhome-layananpemerintah",
+          "label": "Layanan Pemerintah",
+          "app_link": "",
+          "sub_menu": [
+            {
+              "id": 203,
+              "name": "subhome-kartu-prakerja",
+              "label": "Kartu Prakerja",
+              "app_link": "tokopedia://digital/form?category_id=126",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/3/20/21181130/21181130_f34e8708-1d12-49fe-b152-ef3eeab4dd4b.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 30,
+              "name": "subhome-bayar-pbb",
+              "label": "Pajak PBB",
+              "app_link": "tokopedia://digital/form?category_id=22",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_92642452-e110-49f4-9e09-f170620b3e21.png",
+              "category_ids": [
+                22
+              ]
+            },
+            {
+              "id": 31,
+              "name": "subhome-bayar-retribusi",
+              "label": "Retribusi",
+              "app_link": "tokopedia://digital/form?category_id=25",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_73d63728-b040-42ce-9417-7dfe63d14f2f.png",
+              "category_ids": [
+                25
+              ]
+            },
+            {
+              "id": 32,
+              "name": "subhome-bayar-esamsat",
+              "label": "E-samsat",
+              "app_link": "tokopedia://digital/form?category_id=49",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_1ad96e5e-b0be-4c33-9654-3d679da19895.png",
+              "category_ids": [
+                49
+              ]
+            },
+            {
+              "id": 38,
+              "name": "subhome-bayar-mpn",
+              "label": "Penerimaan Negara",
+              "app_link": "tokopedia://digital/form?category_id=116",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/12/21181130/21181130_bafd0cec-f46c-43a9-b98f-e1e6964ce05e.png",
+              "category_ids": [
+                116
+              ]
+            },
+            {
+              "id": 98,
+              "name": "subhome-layananpemerintah-bayarpaspor",
+              "label": "Bayar Paspor",
+              "app_link": "tokopedia://digital/form?category_id=116&operator_id=868",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/23/47197032/47197032_ba41a396-5646-4d68-a303-49cdb3b4aa8f.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 99,
+              "name": "subhome-layananpemerintah-bayarsim",
+              "label": "Bayar SIM",
+              "app_link": "tokopedia://digital/form?category_id=116&operator_id=868",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/23/47197032/47197032_5fe4de57-76a0-4bec-957d-618f019a0053.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 100,
+              "name": "subhome-layananpemerintah-bayarkua",
+              "label": "Bayar KUA",
+              "app_link": "tokopedia://digital/form?category_id=116&operator_id=868",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/23/47197032/47197032_e92814d2-d8d5-4a29-b0a3-5b6ba00ea12f.png",
+              "category_ids": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "subhome-topup",
+          "label": "Isi Ulang",
+          "app_link": "",
+          "sub_menu": [
+            {
+              "id": 42,
+              "name": "subhome-topup-mtix",
+              "label": "M-tix",
+              "app_link": "tokopedia://digital/form?category_id=31",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/28/21181130/21181130_05e2d998-f89f-4748-87fa-013829e1e46d.png",
+              "category_ids": [
+                31
+              ]
+            },
+            {
+              "id": 157,
+              "name": "subhome-topup-brizzi",
+              "label": "Brizzi",
+              "app_link": "tokopedia://digital/form?category_id=34&operator_id=1015",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/1/21/47197032/47197032_d096157d-b73b-4a06-af52-d87e782c3268.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 41,
+              "name": "subhome-topup-emoney",
+              "label": "E-money",
+              "app_link": "tokopedia://digital/form?category_id=34&operator_id=578",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/2/6/47197032/47197032_906ba298-c49f-4f34-9b6e-197a2a66cc9a.png",
+              "category_ids": [
+                34
+              ]
+            },
+            {
+              "id": 94,
+              "name": "subhome-topup-vouchergames",
+              "label": "Voucher Games",
+              "app_link": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fvoucher-game%2Fhome%3Fispulsa%3D1",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_fa52cbc3-016e-4b04-ac8b-dbef10c2b923.png",
+              "category_ids": [
+                6
+              ]
+            },
+            {
+              "id": 163,
+              "name": "subhome-topup-vouchers",
+              "label": "Food & Voucher",
+              "app_link": "tokopedia://deals",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/3/18/42857236/42857236_f7796b1d-e76a-43b4-96f0-00c2230711da.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 244,
+              "name": "subhome-bayar-pln-token-listrik",
+              "label": "Token Listrik",
+              "app_link": "tokopedia://digital/form?category_id=3",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+              "category_ids": [
+                0
+              ]
+            },
+            {
+              "id": 95,
+              "name": "subhome-topup-streaming",
+              "label": "Streaming",
+              "app_link": "tokopedia://digital/form?category_id=13",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_24537ec1-d294-4e11-a59c-d7c45c74cee7.png",
+              "category_ids": [
+                13
+              ]
+            },
+            {
+              "id": 40,
+              "name": "subhome-topup-ovo",
+              "label": "Topup OVO",
+              "app_link": "tokopedia://digital/form?category_id=48",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_0653d8df-0bb4-4714-9267-b987298c0420.png",
+              "category_ids": [
+                48
+              ]
+            },
+            {
+              "id": 43,
+              "name": "subhome-topup-belajar",
+              "label": "Belajar",
+              "app_link": "tokopedia://digital/form?category_id=111",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_8b856c38-412a-46b0-9665-d3bc7b34ce21.png",
+              "category_ids": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "subhome-donation",
+          "label": "Donasi & Zakat",
+          "app_link": "",
+          "sub_menu": [
+            {
+              "id": 46,
+              "name": "subhome-donation-zakat",
+              "label": "Zakat",
+              "app_link": "tokopedia://webview?url=https://www.tokopedia.com/s/zakat-maal",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/9/3/47197032/47197032_b5e6b0e3-6c92-46dc-80c5-228fbf34ad4a.png",
+              "category_ids": [
+                16
+              ]
+            },
+            {
+              "id": 45,
+              "name": "subhome-donation-donasi",
+              "label": "Donasi",
+              "app_link": "tokopedia://digital/form?category_id=12",
+              "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_7db2ab4f-cd56-48d8-bc38-6efa1184d1fd.png",
+              "category_ids": [
+                12
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

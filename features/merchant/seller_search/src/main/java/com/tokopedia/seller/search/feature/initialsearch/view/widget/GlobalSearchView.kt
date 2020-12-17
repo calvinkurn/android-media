@@ -33,12 +33,11 @@ class GlobalSearchView : BaseCustomView {
 
     private var activity: AppCompatActivity? = null
 
-    var compositeSubscription: CompositeSubscription? = null
-
-    var mHandler: Handler? = null
-
     private var searchViewListener: GlobalSearchViewListener? = null
     private var searchTextBoxListener: SearchTextBoxListener? = null
+
+    var compositeSubscription: CompositeSubscription? = null
+    var mHandler: Handler? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -86,6 +85,10 @@ class GlobalSearchView : BaseCustomView {
         searchViewListener?.onQueryTextChangeListener(searchKeyword)
     }
 
+    fun setPlaceholder(placeholder: String) {
+        searchBarView?.searchBarPlaceholder = placeholder
+    }
+
     private fun initCompositeSubscriber() {
         compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
         compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->
@@ -127,13 +130,13 @@ class GlobalSearchView : BaseCustomView {
 
     private fun showKeyboard(view: View) {
         view.requestFocus()
-        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, 0)
+        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(view, 0)
     }
 
     private fun hideKeyboard(view: View) {
-        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun clearFocus() {

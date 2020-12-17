@@ -21,7 +21,6 @@ internal class SearchShopUseCaseModule {
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
     fun provideSearchShopFirstPageUseCase(): UseCase<SearchShopModel> {
         return SearchShopFirstPageUseCase(
-                getSearchShopFirstPageQuery(),
                 GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
                 GraphqlInteractor.getInstance().graphqlRepository
         )
@@ -32,7 +31,6 @@ internal class SearchShopUseCaseModule {
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
     fun provideSearchShopLoadMoreUseCase(): UseCase<SearchShopModel> {
         return SearchShopLoadMoreUseCase(
-                getSearchShopLoadMoreQuery(),
                 GraphqlCacheStrategy.Builder(CacheType.NONE).build(),
                 GraphqlInteractor.getInstance().graphqlRepository
         )

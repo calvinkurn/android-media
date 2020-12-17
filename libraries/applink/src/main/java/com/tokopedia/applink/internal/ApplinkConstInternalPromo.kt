@@ -18,6 +18,13 @@ object ApplinkConstInternalPromo {
     const val PROMO_CAMPAIGN_SHAKE_LANDING = "${PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX}/{is_long_shake}/"
 
     /**
+     * PromoCheckoutListDealsActivity
+     * PromoCheckoutDetailDealsActivity
+     */
+    const val PROMO_LIST_DEALS = "$INTERNAL_PROMO/list/deals"
+    const val PROMO_DETAIL_DEALS = "$INTERNAL_PROMO/detail/deals"
+
+    /**
      * PromoCheckoutListHotelActivity
      * PromoCheckoutDetailHotelActivity
      */
@@ -28,7 +35,6 @@ object ApplinkConstInternalPromo {
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
 
     const val PROMO_CHECKOUT_MARKETPLACE = "${INTERNAL_PROMO}/checkout-marketplace"
-
 
     private const val HOST_TOKOPOINTS = "tokopoints"
     const val INTERNAL_TOKOPOINTS = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOPOINTS}"

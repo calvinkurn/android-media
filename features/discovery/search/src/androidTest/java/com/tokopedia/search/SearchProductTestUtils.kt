@@ -67,6 +67,11 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option) {}
     }
 }
 
@@ -75,6 +80,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
+        override fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel) {}
     }
 }
 
@@ -101,14 +107,9 @@ internal fun createEmptyStateListener(): EmptyStateListener {
         override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
-    }
-}
-
-internal fun createBannedProductsEmptySearch(): BannedProductsRedirectToBrowserListener {
-    return object: BannedProductsRedirectToBrowserListener {
-        override fun onGoToBrowserClicked(isEmptySearch: Boolean, liteUrl: String) {}
     }
 }
 

@@ -11,5 +11,4 @@ class CampaignSubscribeGQLRepository @Inject constructor(val getGQLString: (Int)
     override suspend fun subscribeToCampaign(campaignNotifyMeRequest: CampaignNotifyMeRequest): CampaignNotifyMeResponse {
         return getGQLData(getGQLString(R.raw.campaign_notify_me_gql), CampaignNotifyMeResponse::class.java, mapOf("para" to campaignNotifyMeRequest))
     }
-
 }

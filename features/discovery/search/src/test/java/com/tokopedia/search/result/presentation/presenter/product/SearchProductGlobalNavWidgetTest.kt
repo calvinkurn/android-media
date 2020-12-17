@@ -130,4 +130,40 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Given Search Result Page is landing page`() {
         every { productListView.isLandingPage } returns true
     }
+
+    @Test
+    fun `Do not show global nav widget there is filter`() {
+        `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is true`()
+        `Given product list view has active filter`()
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then verify visitable list does not have global nav widget`()
+    }
+
+    private fun `Given product list view has active filter`() {
+        every { productListView.isAnyFilterActive } returns true
+    }
+
+    private fun `Then verify visitable list does not have global nav widget`() {
+        val visitableList = visitableListSlot.captured
+
+        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+    }
+
+    @Test
+    fun `Do not show global nav widget there is sort`() {
+        `Given Search Product API will return SearchProductModel with Global Nav Widget and CPM, and showTopAds is true`()
+        `Given product list view has active sort`()
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then verify visitable list does not have global nav widget`()
+    }
+
+    private fun `Given product list view has active sort`() {
+        every { productListView.isAnySortActive } returns true
+    }
 }

@@ -29,6 +29,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
@@ -85,7 +86,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var productName = ""
 
     private fun subscribeUi() {
-        topupBillsViewModel.enquiryData.observe(this, Observer {
+        topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processEnquiry(it.data)
@@ -101,7 +102,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.menuDetailData.observe(this, Observer {
+        topupBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processMenuDetail(it.data)
@@ -110,7 +111,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.catalogPluginData.observe(this, Observer {
+        topupBillsViewModel.catalogPluginData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processCatalogPluginData(it.data)
@@ -119,7 +120,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.favNumberData.observe(this, Observer {
+        topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processFavoriteNumbers(it.data)
@@ -128,7 +129,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.checkVoucherData.observe(this, Observer {
+        topupBillsViewModel.checkVoucherData.observe(viewLifecycleOwner, Observer {
             it.run {
                 promoTicker?.toggleLoading(false)
                 when (it) {
@@ -138,7 +139,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.expressCheckoutData.observe(this, Observer {
+        topupBillsViewModel.expressCheckoutData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> {
@@ -464,6 +465,18 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+    }
+
+    protected fun getDefaultCheckoutPassDataBuilder(): DigitalCheckoutPassData.Builder {
+        return DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .instantCheckout("0")
+                .utmContent(GlobalConfig.VERSION_NAME)
+                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .voucherCodeCopied("")
+                .isFromPDP(true)
     }
 
     companion object {

@@ -6,9 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -19,8 +17,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
-import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +28,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN
  */
-class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
+class ProductDetailActivity : BaseSimpleActivity() {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -43,6 +40,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
         private const val PARAM_LAYOUT_ID = "layoutID"
+        const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY = "isVariant"
+        private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
+        private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -78,13 +78,16 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var userSessionInterface: UserSessionInterface? = null
 
     //Performance Monitoring
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+
     //Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
+
+    var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
@@ -134,7 +137,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         performanceMonitoringFull?.stopTrace()
     }
 
-    fun startMonitoringPltNetworkRequest(){
+    fun startMonitoringPltNetworkRequest() {
         pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
@@ -144,9 +147,15 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
     }
 
-    fun stopMonitoringPltRenderPage() {
+    fun stopMonitoringPltRenderPage(isVariant: Boolean) {
+        if (isVariant) {
+            pageLoadTimePerformanceMonitoring?.addAttribution(PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY, PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE)
+        } else {
+            pageLoadTimePerformanceMonitoring?.addAttribution(PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY, PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE)
+        }
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        productDetailLoadTimeMonitoringListener?.onStopPltListener()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
@@ -168,9 +177,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             productKey, isFromDeeplink,
             isFromAffiliate, trackerAttribution,
             trackerListName, affiliateString, deeplinkUrl, layoutId)
-
-    override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 

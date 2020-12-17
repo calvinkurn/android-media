@@ -15,6 +15,9 @@
     <string name="path_promo_list_hotel" translatable="false">/list/hotel</string>
     <string name="path_promo_detail_hotel" translatable="false">/detail/hotel</string>
 
+    <string name="path_promo_list_deals" translatable="false">/list/deals</string>
+    <string name="path_promo_detail_deals" translatable="false">/detail/deals</string>
+
     <string name="path_promo_list_marketplace" translatable="false">/list/marketplace</string>
     <string name="path_promo_detail_marketplace" translatable="false">/detail/marketplace</string>
 
@@ -46,5 +49,8 @@
     <string name="path_gift_60s">/gamification_gift_60s</string>
     <string name="path_smc_referral">/smc-referral</string>
     <string name="internet_title_gamification">Gamification</string>
+
+    <!--promo checkout-->
+    <string name="title_promo_checkout">Promo Checkout</string>
 
 </resources>

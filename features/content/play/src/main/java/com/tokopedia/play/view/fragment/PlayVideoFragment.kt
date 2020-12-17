@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.fragment
 
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,22 +12,31 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.util.event.DistinctEventObserver
+import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.util.video.PlayVideoUtil
+import com.tokopedia.play.util.video.state.BufferSource
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
+import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.util.blur.ImageBlurUtil
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -36,13 +44,23 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val playVideoUtil: PlayVideoUtil
-): TkpdBaseV4Fragment(), PlayFragmentContract {
+        dispatchers: CoroutineDispatcherProvider
+) : TkpdBaseV4Fragment(), PlayFragmentContract {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.immediate + job)
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
-    private val videoLoadingView by viewComponent { EmptyViewComponent(it, R.id.view_video_loading) }
+    private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
+
+    private val blurUtil: ImageBlurUtil by lifecycleBound (
+            creator = { ImageBlurUtil(it.requireContext()) },
+            onLifecycle = whenLifecycle {
+                onDestroy { it.close() }
+            }
+    )
 
     private val cornerRadius = 16f.dpToPx()
 
@@ -80,6 +98,11 @@ class PlayVideoFragment @Inject constructor(
         initView(view)
         setupView()
         setupObserve()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onPause() {
@@ -124,6 +147,17 @@ class PlayVideoFragment @Inject constructor(
         observeEventUserInfo()
     }
 
+    private fun showVideoThumbnail() {
+        val currentThumbnail = videoView.getCurrentBitmap()
+        currentThumbnail?.let {
+            scope.launch {
+                videoView.showThumbnail(
+                        blurUtil.blurImage(it, radius = BLUR_RADIUS)
+                )
+            }
+        }
+    }
+
     //region observe
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
@@ -145,8 +179,9 @@ class PlayVideoFragment @Inject constructor(
             }
 
             when (it.state) {
-                PlayVideoState.Buffering -> videoLoadingView.show()
-                PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.NoMedia, PlayVideoState.Pause -> videoLoadingView.hide()
+                PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
+                is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = it.state.bufferSource)
+                PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
             }
 
             if (!playViewModel.channelType.isVod) {
@@ -154,7 +189,7 @@ class PlayVideoFragment @Inject constructor(
                 return@DistinctObserver
             }
             when (it.state) {
-                PlayVideoState.Ended -> overlayVideoView.show()
+                PlayViewerVideoState.End -> overlayVideoView.show()
                 else -> overlayVideoView.hide()
             }
         })
@@ -186,19 +221,19 @@ class PlayVideoFragment @Inject constructor(
     }
     //endregion
 
-    private fun handleVideoStateChanged(state: PlayVideoState) {
+    private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {
-            PlayVideoState.Playing, PlayVideoState.Pause -> {
-                videoView.showThumbnail(null)
+            is PlayViewerVideoState.Buffer -> {
+                if (state.bufferSource == BufferSource.Broadcaster) showVideoThumbnail()
+                else videoView.hideThumbnail()
             }
-            PlayVideoState.Ended -> {
-                videoView.getCurrentBitmap()?.let { saveEndImage(it) }
+            PlayViewerVideoState.Play,
+            PlayViewerVideoState.Pause,
+            PlayViewerVideoState.Waiting,
+            PlayViewerVideoState.End -> {
+                videoView.hideThumbnail()
             }
         }
-    }
-
-    private fun saveEndImage(bitmap: Bitmap) {
-        playVideoUtil.saveEndImage(bitmap)
     }
 
     //region OnStateChanged
@@ -212,4 +247,8 @@ class PlayVideoFragment @Inject constructor(
         } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
     }
     //endregion
+
+    companion object {
+        private const val BLUR_RADIUS = 25f
+    }
 }

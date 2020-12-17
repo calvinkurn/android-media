@@ -8,7 +8,7 @@ import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.ElementFilter
 
-open class AnnotatedModelClass(
+open class AnnotatedModelClass  (
     val element: TypeElement,
     val pack: String,
     val nameAsKey: Boolean,

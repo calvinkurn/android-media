@@ -1,6 +1,6 @@
 package com.tokopedia.talk.feature.reply.data.mapper
 
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
@@ -8,15 +8,16 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHe
 
 object TalkReplyMapper {
 
-    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean): TalkReplyHeaderModel {
+    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper): TalkReplyHeaderModel {
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.apply {
             return TalkReplyHeaderModel(
                     createTimeFormatted,
                     content,
                     questionState.isFollowed,
-                    questionState.allowFollow.and(!isMyShop),
+                    questionState.allowFollow,
                     questionState.allowReport,
                     questionState.allowDelete,
+                    questionState.allowUnmask,
                     questionState.isMasked,
                     maskedContent,
                     userThumbnail,

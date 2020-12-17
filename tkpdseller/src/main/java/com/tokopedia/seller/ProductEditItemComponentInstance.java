@@ -2,10 +2,10 @@ package com.tokopedia.seller;
 
 import android.app.Application;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.common.di.module.ProductModule;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.seller.manageitem.di.component.DaggerProductComponent;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
+import com.tokopedia.seller.manageitem.di.module.ProductModule;
 
 /**
  * Created by nakama on 11/12/17.
@@ -16,8 +16,9 @@ public class ProductEditItemComponentInstance {
 
     public static ProductComponent getComponent(Application application) {
         if (productEditItemComponent == null) {
-            productEditItemComponent = DaggerProductComponent.builder().productModule(
-                    new ProductModule()).appComponent(((MainApplication) application).getApplicationComponent()).build();
+            productEditItemComponent = DaggerProductComponent.builder()
+                    .productModule(new ProductModule())
+                    .baseAppComponent(((BaseMainApplication) application).getBaseAppComponent()).build();
         }
         return productEditItemComponent;
     }

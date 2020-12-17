@@ -17,15 +17,18 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
-import com.tokopedia.buyerorder.detail.data.Body;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
@@ -35,17 +38,17 @@ import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
+import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
-import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -54,6 +57,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -96,8 +100,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     List<ActionButton> actionButtonList;
     @Inject
     PostCancelReasonUseCase postCancelReasonUseCase;
-    @Inject
-    FinishOrderUseCase finishOrderUseCase;
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
@@ -108,12 +110,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     RequestCancelInfo requestCancelInfo;
     @Inject
     SendEventNotificationUseCase sendEventNotificationUseCase;
+    @Inject
+    AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
+    @Inject
+    UserSessionInterface userSessionInterface;
+    @Inject
+    FinishOrderGqlUseCase finishOrderGqlUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
     private boolean isdownloadable = false;
     private OrderDetails details;
-    private List<Body> retryBody = new ArrayList<>();
     ArrayList<Integer> categoryList;
     String category;
 
@@ -124,119 +131,129 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
-        if (getView() == null || getView().getAppContext() == null)
-            return;
+        if (getView() != null && getView().getActivity() != null) {
+            this.orderCategory = orderCategory;
+            this.fromPayment = fromPayment;
+            this.orderId = orderId;
+            getView().showProgressBar();
+            GraphqlRequest graphqlRequest;
+            Map<String, Object> variables = new HashMap<>();
+            if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                if (orderId != null && !orderId.isEmpty()) {
+                    variables.put("orderCategory", orderCategory);
+                    variables.put(ORDER_ID, orderId);
+                    graphqlRequest = new
+                            GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                            R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
 
-        this.orderCategory = orderCategory;
-        this.fromPayment = fromPayment;
-        this.orderId = orderId;
-        getView().showProgressBar();
-        GraphqlRequest graphqlRequest;
-        Map<String, Object> variables = new HashMap<>();
-        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            if (orderId != null && !orderId.isEmpty()) {
-                variables.put("orderCategory", orderCategory);
-                variables.put(ORDER_ID, orderId);
-                graphqlRequest = new
-                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                        R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+                } else {
+                    variables.put("orderCategory", orderCategory);
+                    variables.put(PAYMENT_ID, paymentId);
+                    variables.put(CART_STRING, cartString);
+                    graphqlRequest = new
+                            GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                            R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+                }
 
             } else {
-                variables.put("orderCategory", orderCategory);
-                variables.put(PAYMENT_ID, paymentId);
-                variables.put(CART_STRING, cartString);
+                variables.put(ORDER_CATEGORY, orderCategory);
+                variables.put(ORDER_ID, orderId);
+                variables.put(DETAIL, 1);
+                variables.put(ACTION, 1);
+                variables.put(UPSTREAM, upstream != null ? upstream : "");
                 graphqlRequest = new
-                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                        R.raw.orderdetails), DetailsData.class, variables, false);
             }
 
-        } else {
-            variables.put(ORDER_CATEGORY, orderCategory);
-            variables.put(ORDER_ID, orderId);
-            variables.put(DETAIL, 1);
-            variables.put(ACTION, 1);
-            variables.put(UPSTREAM, upstream != null ? upstream : "");
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetails), DetailsData.class, variables, false);
-        }
 
+            orderDetailsUseCase.addRequest(graphqlRequest);
 
-        orderDetailsUseCase.addRequest(graphqlRequest);
-        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
-        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+            GraphqlRequest requestRecomm = makegraphqlRequestForRecommendation();
+            if (requestRecomm != null) {
+                orderDetailsUseCase.addRequest(requestRecomm);
+                orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
-                    Timber.d("error occured" + e);
-                    getView().hideProgressBar();
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                if (response != null) {
-                    DetailsData data = response.getData(DetailsData.class);
-                    setDetailsData(data.orderDetails());
-                    orderDetails = data.orderDetails();
-
-                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-                        List<Items> list = orderDetails.getItems();
-                        categoryList = new ArrayList<>();
-                        for (Items item : list) {
-                            categoryList.add(item.getCategoryID());
-                            categoryList.add(item.getCategoryL1());
-                            categoryList.add(item.getCategoryL2());
-                            categoryList.add(item.getCategoryL3());
-                        }
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            category = String.join(",", category);
-                        } else {
-                            category = category.toString().substring(1, category.toString().length() - 1);
-                        }
-                    } else {
-                        RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
-                        getView().setRecommendation(rechargeWidgetResponse);
                     }
-                }
-                getRecommendation();
-            }
-        });
 
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getView() != null && getView().getActivity() != null) {
+                            Timber.d("error occured" + e);
+                            getView().hideProgressBar();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse response) {
+                        if (response != null) {
+                            DetailsData data = response.getData(DetailsData.class);
+                            if (data != null) {
+                                setDetailsData(data.orderDetails());
+                                orderDetails = data.orderDetails();
+                            }
+
+                            if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                                List<Items> list = orderDetails.getItems();
+                                categoryList = new ArrayList<>();
+                                for (Items item : list) {
+                                    categoryList.add(item.getCategoryID());
+                                    categoryList.add(item.getCategoryL1());
+                                    categoryList.add(item.getCategoryL2());
+                                    categoryList.add(item.getCategoryL3());
+                                }
+
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                    category = String.join(",", category);
+                                } else {
+                                    category = category.substring(1, category.length() - 1);
+                                }
+                            } else {
+                                RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                                if (getView() != null) {
+                                    getView().setRecommendation(rechargeWidgetResponse);
+                                }
+                            }
+                        }
+                        getRecommendation();
+                    }
+                });
+            }
+        }
     }
 
     public void getRecommendation() {
-        orderDetailsUseCase = new GraphqlUseCase();
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
-        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+        GraphqlRequest graphqlRequest = makegraphqlRequestForMPRecommendation();
+        if (graphqlRequest != null) {
+            orderDetailsUseCase = new GraphqlUseCase();
+            orderDetailsUseCase.clearRequest();
+            orderDetailsUseCase.addRequest(graphqlRequest);
+            orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
-            }
+                @Override
+                public void onError(Throwable e) {
+                }
 
-            @Override
-            public void onNext(GraphqlResponse response) {
-                RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
-                getView().setRecommendation(recommendationResponse);
-
-            }
-        });
+                @Override
+                public void onNext(GraphqlResponse response) {
+                    RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
+                    if (getView() != null) {
+                        getView().setRecommendation(recommendationResponse);
+                    }
+                }
+            });
+        }
     }
 
     @Override
-    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, RelativeLayout actionButtonLayout){
-        if (actionButton.getName().equalsIgnoreCase("customer_notification")){
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, RelativeLayout actionButtonLayout) {
+        if (actionButton.getName().equalsIgnoreCase("customer_notification")) {
             sendEventNotificationUseCase.setPath(actionButton.getUri());
             sendEventNotificationUseCase.setBody(metadata);
             sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -247,28 +264,28 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                 @Override
                 public void onError(Throwable e) {
-                    if (getView() != null && getView().getAppContext() != null) {
+                    if (getView() != null) {
                         getView().showSuccessMessageWithAction(e.getMessage());
                     }
                 }
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                        if (getView() != null && getView().getAppContext() != null) {
-                            Type token = new TypeToken<SendEventEmail>() {
-                            }.getType();
-                            RestResponse restResponse = typeDataResponseMap.get(token);
-                            actionButtonLayout.setClickable(false);
-                            if(restResponse.getCode()==200 && restResponse.getErrorBody()==null) {
-                                actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
-                                getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
-                            } else {
-                                Gson gson = new Gson();
-                                actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_fail));
-                                SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
-                                getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
-                            }
+                    if (getView() != null && getView().getActivity() != null) {
+                        Type token = new TypeToken<SendEventEmail>() {
+                        }.getType();
+                        RestResponse restResponse = typeDataResponseMap.get(token);
+                        actionButtonLayout.setClickable(false);
+                        if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
+                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_success));
+                            getView().showSuccessMessageWithAction(getView().getActivity().getString(R.string.event_voucher_code_copied));
+                        } else {
+                            Gson gson = new Gson();
+                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_fail));
+                            SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
+                            getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
                         }
+                    }
                 }
             });
         }
@@ -282,61 +299,68 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         orderDetailsUseCase = new GraphqlUseCase();
 
+        if (getView() != null && getView().getActivity() != null) {
+            GraphqlRequest graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.tapactions), ActionButtonList.class, variables, false);
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tapactions), ActionButtonList.class, variables, false);
+            orderDetailsUseCase.clearRequest();
+            orderDetailsUseCase.setRequest(graphqlRequest);
+            orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<GraphqlResponse>() {
+                        @Override
+                        public void onCompleted() {
 
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.setRequest(graphqlRequest);
-        orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GraphqlResponse>() {
-                    @Override
-                    public void onCompleted() {
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d("error occured" + e);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("error occured" + e);
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse response) {
-                        if (view != null) {
-                            if (response != null) {
-                                ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null)
-                                    if (flag) {
-                                        view.setTapActionButton(position, actionButtonList);
-                                        for (int i=0; i< actionButtonList.size();i++) {
-                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH))
-                                            {
-                                                actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                        @Override
+                        public void onNext(GraphqlResponse response) {
+                            if (view != null) {
+                                if (response != null) {
+                                    ActionButtonList data = response.getData(ActionButtonList.class);
+                                    if (data != null) {
+                                        actionButtonList = data.getActionButtonList();
+                                        if (actionButtonList != null)
+                                            if (flag) {
+                                                view.setTapActionButton(position, actionButtonList);
+                                                for (int i = 0; i < actionButtonList.size(); i++) {
+                                                    if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
+                                                        actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                                    }
+                                                }
+                                            } else {
+                                                view.setActionButton(position, actionButtonList);
                                             }
-                                        }
-                                    } else {
-                                        view.setActionButton(position, actionButtonList);
                                     }
-                            }
-                        } else {
-                            if (response != null) {
-                                ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null && actionButtonList.size() > 0)
-                                getView().setActionButtons(actionButtonList);
+                                }
+                            } else {
+                                if (response != null) {
+                                    ActionButtonList data = response.getData(ActionButtonList.class);
+                                    if (data != null) {
+                                        actionButtonList = data.getActionButtonList();
+                                        if (actionButtonList != null && actionButtonList.size() > 0 && getView() != null)
+                                            getView().setActionButtons(actionButtonList);
+                                    }
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     public static final String PRODUCT_ID = "product_id";
     public static final String QUANTITY = "quantity";
     public static final String NOTES = "notes";
     public static final String SHOP_ID = "shop_id";
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String CATEGORY = "category";
+    public static final String PRODUCT_NAME = "product_name";
 
 
     private JsonArray generateInputQueryBuyAgain(List<Items> items) {
@@ -344,15 +368,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            int productId = 0;
+            long productId = 0;
             int quantity = 0;
             int shopId = 0;
             String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
                 shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
@@ -360,6 +390,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, notes);
             passenger.addProperty(SHOP_ID, shopId);
+            passenger.addProperty(PRODUCT_PRICE, price);
+            passenger.addProperty(CATEGORY, category);
+            passenger.addProperty(PRODUCT_NAME, productName);
             jsonArray.add(passenger);
         }
         return jsonArray;
@@ -375,51 +408,40 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         onBuyAgainItems(orderDetails.getItems(), eventActionLabel, statusCode);
     }
 
-    private GraphqlUseCase buyAgainUseCase;
-
     @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
-        Map<String, Object> variables = new HashMap<>();
-        JsonObject passenger = new JsonObject();
-        variables.put(PARAM, generateInputQueryBuyAgain(items));
+        if (getView() != null && getView().getActivity() != null) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put(PARAM, generateInputQueryBuyAgain(items));
+            addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+            addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
+                @Override
+                public void onCompleted() {
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
-
-        buyAgainUseCase = new GraphqlUseCase();
-        buyAgainUseCase.clearRequest();
-        buyAgainUseCase.addRequest(graphqlRequest);
-
-        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
-                    getView().hideProgressBar();
-                    getView().showErrorMessage(e.getMessage());
                 }
-            }
 
-            @Override
-            public void onNext(GraphqlResponse objects) {
-                if (getView() != null && getView().getAppContext() != null) {
-                    getView().hideProgressBar();
-                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
-                    } else {
-                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null) {
+                        getView().hideProgressBar();
+                        getView().showErrorMessage(e.getMessage());
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel, statusCode);
                 }
 
-            }
-        });
+                @Override
+                public void onNext(AtcMultiData atcMultiData) {
+                    if (getView() != null) {
+                        getView().hideProgressBar();
+                        if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                            getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
+                        } else {
+                            getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
+                        }
+                        orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -447,229 +469,235 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
-        if (getView() == null || getView().getAppContext() == null)
-            return;
-        this.details = details;
-        getView().hideProgressBar();
-        getView().setStatus(details.status());
-        getView().clearDynamicViews();
-        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
-            getView().setConditionalInfo(details.conditionalInfo());
-        }
-        for (Title title : details.title()) {
-            getView().setTitle(title);
-        }
-        getView().setInvoice(details.invoice());
-        getView().setOrderToken(details.orderToken());
-        for (int i = 0; i < details.detail().size(); i++) {
-            if ((orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
-                if (i == 2) {
-                    if (details.getDriverDetails() != null) {
-                        getView().showDriverInfo(details.getDriverDetails());
+        if (getView() != null) {
+            this.details = details;
+            getView().hideProgressBar();
+            getView().setStatus(details.status());
+            getView().clearDynamicViews();
+            if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
+                getView().setConditionalInfo(details.conditionalInfo());
+            }
+            for (Title title : details.title()) {
+                getView().setTitle(title);
+            }
+            getView().setInvoice(details.invoice());
+            getView().setOrderToken(details.orderToken());
+            for (int i = 0; i < details.detail().size(); i++) {
+                if ((orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+                    if (i == 2) {
+                        if (details.getDriverDetails() != null) {
+                            getView().showDriverInfo(details.getDriverDetails());
+                        }
+                    }
+                    if (i == details.detail().size() - 1) {
+                        if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                            getView().showDropshipperInfo(details.getDropShipper());
+                        }
                     }
                 }
-                if (i == details.detail().size() - 1) {
-                    if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
-                        getView().showDropshipperInfo(details.getDropShipper());
+                getView().setDetail(details.detail().get(i));
+            }
+
+            if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+                if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
+                    getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+                }
+            }
+            getView().setBoughtDate(details.getBoughtDate());
+            if (details.getShopInfo() != null) {
+                getView().setShopInfo(details.getShopInfo());
+            }
+            if (details.getItems() != null && details.getItems().size() > 0) {
+                Flags flags = details.getFlags();
+                if (flags != null)
+                    getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+                else
+                    getView().setItems(details.getItems(), false, details);
+            }
+            if (details.additionalInfo().size() > 0) {
+                getView().setAdditionInfoVisibility(View.VISIBLE);
+            }
+            for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+
+                getView().setAdditionalInfo(additionalInfo);
+            }
+
+            if (details.getAdditionalTickerInfos() != null
+                    && details.getAdditionalTickerInfos().size() > 0) {
+                String url = null;
+                for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                    if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                        String formattedTitle = formatTitleHtml(
+                                tickerInfo.getNotes(),
+                                tickerInfo.getUrlDetail(),
+                                tickerInfo.getUrlText()
+                        );
+                        tickerInfo.setNotes(formattedTitle);
+                        url = tickerInfo.getUrlDetail();
                     }
                 }
+                getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
             }
-            getView().setDetail(details.detail().get(i));
-        }
 
-        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-            if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
-                getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+            if (details.getTickerInfo() != null) {
+                getView().setTickerInfo(details.getTickerInfo());
             }
-        }
-        getView().setBoughtDate(details.getBoughtDate());
-        if (details.getShopInfo() != null) {
-            getView().setShopInfo(details.getShopInfo());
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            Flags flags = details.getFlags();
-            if (flags != null)
-                getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
-            else
-                getView().setItems(details.getItems(), false, details);
-        }
-        if (details.additionalInfo().size() > 0) {
-            getView().setAdditionInfoVisibility(View.VISIBLE);
-        }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
 
-            getView().setAdditionalInfo(additionalInfo);
-        }
-
-        if (details.getAdditionalTickerInfos() != null
-                && details.getAdditionalTickerInfos().size() > 0) {
-            String url = null;
-            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
-                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
-                    String formattedTitle = formatTitleHtml(
-                            tickerInfo.getNotes(),
-                            tickerInfo.getUrlDetail(),
-                            tickerInfo.getUrlText()
-                    );
-                    tickerInfo.setNotes(formattedTitle);
-                    url = tickerInfo.getUrlDetail();
-                }
+            for (PayMethod payMethod : details.getPayMethods()) {
+                if (!TextUtils.isEmpty(payMethod.getValue()))
+                    getView().setPayMethodInfo(payMethod);
             }
-            getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
-        }
 
-        if (details.getTickerInfo() != null) {
-            getView().setTickerInfo(details.getTickerInfo());
-        }
+            for (Pricing pricing : details.pricing()) {
+                getView().setPricing(pricing);
+            }
 
-        for (PayMethod payMethod : details.getPayMethods()) {
-            if (!TextUtils.isEmpty(payMethod.getValue()))
-                getView().setPayMethodInfo(payMethod);
-        }
-
-        for (Pricing pricing : details.pricing()) {
-            getView().setPricing(pricing);
-        }
-        getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.getHelpLink());
-
-        if(details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
-            getView().setActionButtonsVisibility(View.GONE, View.GONE);
-        } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
-            if (details.actionButtons().size() == 2) {
-                ActionButton leftActionButton = details.actionButtons().get(0);
-                ActionButton rightActionButton = details.actionButtons().get(1);
-                getView().setTopActionButton(leftActionButton);
-                getView().setBottomActionButton(rightActionButton);
-            } else if (details.actionButtons().size() == 1) {
-                ActionButton actionButton = details.actionButtons().get(0);
-                getView().setButtonMargin();
-                if (actionButton.getLabel().equals(INVOICE)) {
-                    getView().setBottomActionButton(actionButton);
-                    getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+            if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+                if (details.discounts() != null && details.discounts().size() > 0) {
+                    getView().setDiscountVisibility(View.VISIBLE);
+                    for (Discount discount : details.discounts()) {
+                        getView().setDiscount(discount);
+                    }
                 } else {
-                    getView().setTopActionButton(actionButton);
-                    getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
+                    getView().setDiscountVisibility(View.GONE);
+                }
+            }
 
+            getView().setPaymentData(details.paymentData());
+            getView().setContactUs(details.contactUs(), details.getHelpLink());
+
+            if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
+                getView().setActionButtonsVisibility(View.GONE, View.GONE);
+            } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+                if (details.actionButtons().size() == 2) {
+                    ActionButton leftActionButton = details.actionButtons().get(0);
+                    ActionButton rightActionButton = details.actionButtons().get(1);
+                    getView().setTopActionButton(leftActionButton);
+                    getView().setBottomActionButton(rightActionButton);
+                } else if (details.actionButtons().size() == 1) {
+                    ActionButton actionButton = details.actionButtons().get(0);
+                    getView().setButtonMargin();
+                    if (actionButton.getLabel().equals(INVOICE)) {
+                        getView().setBottomActionButton(actionButton);
+                        getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
+                    } else {
+                        getView().setTopActionButton(actionButton);
+                        getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
+
+                    }
+                } else {
+                    getView().setActionButtonsVisibility(View.GONE, View.GONE);
                 }
             } else {
-                getView().setActionButtonsVisibility(View.GONE, View.GONE);
+                getView().setActionButtons(details.actionButtons());
             }
-        } else {
-            getView().setActionButtons(details.actionButtons());
+            getView().setMainViewVisible(View.VISIBLE);
+            this.requestCancelInfo = details.getRequestCancelInfo();
         }
-        getView().setMainViewVisible(View.VISIBLE);
-        this.requestCancelInfo = details.getRequestCancelInfo();
     }
 
 
     public void updateOrderCancelReason(String cancelReason, String orderId,
                                         int cancelOrReplacement, String url) {
-        if (getView() == null || getView().getAppContext() == null)
-            return;
+        if (getView() != null && getView().getActivity() != null) {
+            UserSession userSession = new UserSession(getView().getActivity());
+            String userId = userSession.getUserId();
 
-        UserSession userSession = new UserSession(getView().getAppContext());
-        String userId = userSession.getUserId();
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString("reason_cancel", cancelReason);
+            requestParams.putString("user_id", userId);
+            requestParams.putString("order_id", orderId);
+            requestParams.putString("device_id", userSession.getDeviceId());
+            if (cancelOrReplacement != 1) {
+                requestParams.putInt("r_code", cancelOrReplacement);
+            }
+            getView().showProgressBar();
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("reason_cancel", cancelReason);
-        requestParams.putString("user_id", userId);
-        requestParams.putString("order_id", orderId);
-        requestParams.putString("device_id", userSession.getDeviceId());
-        if (cancelOrReplacement != 1) {
-            requestParams.putInt("r_code", cancelOrReplacement);
+            postCancelReasonUseCase.setRequestParams(requestParams);
+            postCancelReasonUseCase.cancelOrReplaceOrder(url);
+            postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                                                @Override
+                                                public void onCompleted() {
+
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    if (getView() != null) {
+                                                        Timber.d(e);
+                                                        getView().showErrorMessage(e.getMessage());
+                                                        getView().hideProgressBar();
+                                                        getView().finishOrderDetail();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                                                    if (getView() != null) {
+                                                        Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
+                                                        }.getType();
+                                                        RestResponse restResponse = typeDataResponseMap.get(token);
+                                                        DataResponseCommon dataResponse = restResponse.getData();
+                                                        CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
+                                                        if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
+                                                            getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
+                                                        else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
+                                                            getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
+                                                        else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
+                                                            getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
+                                                        getView().hideProgressBar();
+                                                        getView().finishOrderDetail();
+                                                    }
+                                                }
+                                            }
+            );
         }
-        getView().showProgressBar();
-
-        postCancelReasonUseCase.setRequestParams(requestParams);
-        postCancelReasonUseCase.cancelOrReplaceOrder(url);
-        postCancelReasonUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                                            @Override
-                                            public void onCompleted() {
-
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                if (getView() != null && getView().getAppContext() != null) {
-                                                    Timber.d(e);
-                                                    getView().showErrorMessage(e.getMessage());
-                                                    getView().hideProgressBar();
-                                                    getView().finishOrderDetail();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                                                if (getView() != null && getView().getAppContext() != null) {
-                                                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                                                    }.getType();
-                                                    RestResponse restResponse = typeDataResponseMap.get(token);
-                                                    DataResponseCommon dataResponse = restResponse.getData();
-                                                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                                                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
-                                                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                                                        getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                                                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
-                                                    getView().hideProgressBar();
-                                                    getView().finishOrderDetail();
-                                                }
-                                            }
-                                        }
-        );
     }
 
-    public void finishOrder(String orderId, String url) {
-        if (getView() == null || getView().getAppContext() == null)
-            return;
-        UserSession userSession = new UserSession(getView().getAppContext());
-        String userId = userSession.getUserId();
+    public void finishOrderGql(String orderId, String actionStatus) {
+        if (getView() != null && getView().getActivity() != null) {
+            UohFinishOrderParam uohFinishOrderParam = new UohFinishOrderParam();
+            uohFinishOrderParam.setOrderId(orderId);
+            uohFinishOrderParam.setAction(actionStatus);
+            uohFinishOrderParam.setUserId(userSessionInterface.getUserId());
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("user_id", userId);
-        requestParams.putString("order_id", orderId);
-        requestParams.putString("device_id", userSession.getDeviceId());
-        getView().showProgressBar();
+            Map<String, Object> variables = new HashMap<>();
+            variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
+            finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
+            finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
+                @Override
+                public void onCompleted() {
 
-        finishOrderUseCase.setRequestParams(requestParams);
-        finishOrderUseCase.setEndPoint(url);
-        finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
-                    Timber.d(e);
-                    getView().hideProgressBar();
-                    getView().showErrorMessage(e.getMessage());
-                    getView().finishOrderDetail();
                 }
-            }
 
-            @Override
-            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView() != null && getView().getAppContext() != null) {
-                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                    }.getType();
-                    RestResponse restResponse = typeDataResponseMap.get(token);
-                    DataResponseCommon dataResponse = restResponse.getData();
-                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
-                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                        getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
-                    getView().hideProgressBar();
-                    getView().finishOrderDetail();
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null) {
+                        Timber.d(e);
+                        getView().hideProgressBar();
+                        getView().showErrorMessage(e.getMessage());
+                        getView().finishOrderDetail();
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onNext(UohFinishOrder.Data data) {
+                    if (getView() != null) {
+                        if (data.getFinishOrderBuyer().getSuccess() == 1) {
+                            if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                                getView().showSuccessMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                            }
+                        } else {
+                            if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                                getView().showErrorMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                            }
+                        }
+                        getView().hideProgressBar();
+                        getView().finishOrderDetail();
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -678,21 +706,19 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (postCancelReasonUseCase != null) {
             postCancelReasonUseCase.unsubscribe();
         }
-        if (finishOrderUseCase != null) {
-            finishOrderUseCase.unsubscribe();
+        if (finishOrderGqlUseCase != null) {
+            finishOrderGqlUseCase.unsubscribe();
         }
-        if (buyAgainUseCase != null) {
-            buyAgainUseCase.unsubscribe();
-        }
+        addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
     }
 
     public void onClick(String uri) {
         pdfUri = uri;
-        if (isdownloadable(uri)) {
+        if (isdownloadable(uri) && getView() != null) {
             getView().askPermission();
         } else {
-            if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
+            if (getView() != null && getView().getActivity() != null) {
                 RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
@@ -700,13 +726,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @SuppressLint("MissingPermission")
     public void permissionGrantedContinueDownload() {
-        DownloadHelper downloadHelper = new DownloadHelper(getView().getAppContext(), pdfUri, Insurance_File_Name, () -> {
-            // download success call back
+        if (getView().getActivity() != null) {
+            DownloadHelper downloadHelper = new DownloadHelper(getView().getActivity(), pdfUri, Insurance_File_Name, () -> {
+                // download success call back
 
-        });
-        downloadHelper.downloadFile(this::isdownloadable);
+            });
+            downloadHelper.downloadFile(this::isdownloadable);
+        }
     }
-    private Boolean isdownloadable(String uri ) {
+
+    private Boolean isdownloadable(String uri) {
         Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
         Matcher matcher = pattern.matcher(uri);
         return (matcher.find() || this.isdownloadable);
@@ -721,9 +750,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
                 paymentMethod = details.getPayMethods().get(0).getValue();
             }
-            if(categoryType==3){
+            if (categoryType == 3) {
                 orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
-            }else {
+            } else {
                 orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
             }
         }
@@ -743,32 +772,36 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo.getRequestCancelNote();
     }
 
-    public boolean shouldShowTimeForCancellation(){
+    public boolean shouldShowTimeForCancellation() {
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 
 
     private GraphqlRequest makegraphqlRequestForRecommendation() {
-        GraphqlRequest graphqlRequestForRecommendation;
+        GraphqlRequest graphqlRequestForRecommendation = null;
         Map<String, Object> variablesWidget = new HashMap<>();
         variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
-        graphqlRequestForRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        if (getView() != null && getView().getActivity() != null) {
+            graphqlRequestForRecommendation = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        }
         return graphqlRequestForRecommendation;
     }
 
     private GraphqlRequest makegraphqlRequestForMPRecommendation() {
         if (TextUtils.isEmpty(category)) category = "";
-        GraphqlRequest graphqlRequestForMPRecommendation;
+        GraphqlRequest graphqlRequestForMPRecommendation = null;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
         variable.put(CATEGORY_IDS, category);
         variable.put(MP_CATEGORY_IDS, categoryList);
-        graphqlRequestForMPRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        if (getView() != null && getView().getActivity() != null) {
+            graphqlRequestForMPRecommendation = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        }
         return graphqlRequestForMPRecommendation;
     }
 
@@ -800,9 +833,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public void showRetryButtonToaster(String message) {
-        if (getView() == null)
-            return;
-
-        getView().showSuccessMessageWithAction(message);
+        if (getView() != null) {
+            getView().showSuccessMessageWithAction(message);
+        }
     }
 }

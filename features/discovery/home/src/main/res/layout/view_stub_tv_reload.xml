@@ -11,7 +11,7 @@
     android:gravity="end"
     android:lineSpacingExtra="3sp"
     android:text="@string/text_reload"
-    android:textColor="@color/medium_green"
+    android:textColor="@color/Unify_G500"
     android:textSize="13sp"
     android:textStyle="normal"
     app:layout_constraintBottom_toBottomOf="parent"

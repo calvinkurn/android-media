@@ -33,6 +33,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
     private String tokopediaCornerFlag;
     private String isFulfillment;
     private boolean isDiscountedPrice;
+    private int campaignId;
 
     public void setProductId(String productId) {
         this.productId = productId;
@@ -234,6 +235,14 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         isDiscountedPrice = discountedPrice;
     }
 
+    public int getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(int campaignId) {
+        this.campaignId = campaignId;
+    }
+
     public AnalyticsProductCheckoutData() {
     }
 
@@ -263,6 +272,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         tokopediaCornerFlag = in.readString();
         isFulfillment = in.readString();
         isDiscountedPrice = in.readByte() != 0;
+        campaignId = in.readInt();
     }
 
     @Override
@@ -292,6 +302,7 @@ public class AnalyticsProductCheckoutData implements Parcelable {
         dest.writeString(tokopediaCornerFlag);
         dest.writeString(isFulfillment);
         dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
+        dest.writeInt(campaignId);
     }
 
     @Override

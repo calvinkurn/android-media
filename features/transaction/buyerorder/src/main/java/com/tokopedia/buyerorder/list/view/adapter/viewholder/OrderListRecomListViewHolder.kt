@@ -21,7 +21,7 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
         var LAYOUT = R.layout.bom_item_recomnedation
     }
     private var recommendationCardView = itemView?.findViewById<RecommendationCardView>(R.id.bomRecommendationCardView)
-    private val wishlist = recommendationCardView?.findViewById<ImageView>(R.id.btn_wishlist)
+    private val wishlist = recommendationCardView?.findViewById<ImageView>(com.tokopedia.productcard.R.id.btn_wishlist)
     private var recomTitle : String = "none/other"
     private var isSelected: Boolean = false
 
@@ -42,9 +42,9 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
 
     private fun setWishlistDrawable() {
         if(isSelected){
-            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.product_card_ic_wishlist_red))
+            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.productcard.R.drawable.product_card_ic_wishlist_red))
         } else {
-            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.product_card_ic_wishlist))
+            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.productcard.R.drawable.product_card_ic_wishlist))
         }
     }
 

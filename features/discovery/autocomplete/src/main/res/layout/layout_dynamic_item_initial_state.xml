@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/initialStateDynamicItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/initialStateDynamicIcon"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_13"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/initialStateDynamicItemTitle"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/dummy_recent_search_two_lines"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/initialStateDynamicItemSubtitle"
+        app:layout_constraintLeft_toRightOf="@id/initialStateDynamicIcon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/initialStateDynamicIcon"
+        app:layout_goneMarginTop="@dimen/dp_13"
+        app:layout_goneMarginBottom="@dimen/dp_13"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/initialStateDynamicItemSubtitle"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/dummy_recent_search_subtitle"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/initialStateDynamicIcon"
+        app:layout_constraintLeft_toRightOf="@id/initialStateDynamicIcon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/initialStateDynamicItemTitle"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

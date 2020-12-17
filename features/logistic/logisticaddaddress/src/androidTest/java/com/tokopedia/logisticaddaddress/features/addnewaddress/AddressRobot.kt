@@ -6,16 +6,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import org.hamcrest.MatcherAssert
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
@@ -26,14 +25,15 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(withId(R.id.et_search))
+        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
-                .perform (typeText(keyword), closeSoftKeyboard())
+                .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        Thread.sleep(500L)
+        waitForData()
     }
 
     fun selectFirstItem() {
@@ -47,13 +47,48 @@ class AddressRobot {
         onView(withId(R.id.btn_choose_location)).perform(click())
     }
 
+    fun clickCity() {
+        onView(withId(R.id.et_kota_kecamatan_mismatch)).perform(click())
+    }
+
+    fun searchCityWithKeyword(keyword: String) {
+        onView(withId(R.id.et_search_district_recommendation))
+                .check(matches(isDisplayed()))
+                .perform(typeText(keyword), closeSoftKeyboard())
+        waitForData()
+    }
+
+    fun selectFirstCityItem() {
+        onView(withId(R.id.rv_list_district))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun zipCode() {
+        onView(withId(R.id.et_kode_pos_mismatch)).perform(click())
+    }
+
+    fun selectFirstZipCode() {
+        onView(withId(R.id.rv_kodepos_chips_mismatch))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun address(address: String) {
+        onView(withId(R.id.et_alamat_mismatch))
+                .perform(click(), typeText(address), closeSoftKeyboard())
+    }
+
     fun receiver(receiver: String) {
         onView(withId(R.id.et_receiver_name))
-                .perform(typeText(receiver), closeSoftKeyboard())
+                .perform(click(), typeText(receiver), closeSoftKeyboard())
     }
 
     fun phoneNumber(phone: String) {
-        onView(withId(R.id.et_phone)).perform(typeText(phone), closeSoftKeyboard())
+        onView(withId(R.id.et_phone))
+                .perform(scrollTo(), click(), typeText(phone), closeSoftKeyboard())
+    }
+
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {

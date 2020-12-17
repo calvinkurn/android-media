@@ -7,16 +7,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_hierarchycal_social_proof.view.*
-import kotlinx.android.synthetic.main.item_social_proof_with_divider.view.*
+import kotlinx.android.synthetic.main.shimmering_social_proof.view.*
 
 /**
  * Created by Yehezkiel on 18/05/20
@@ -28,11 +28,11 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
     }
 
     override fun bind(element: ProductMiniSocialProofDataModel) {
-        val availableData = element.getLastThreeHirarchyData
-
         if (!element.shouldRenderSocialProof) {
+            setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
         } else {
+            val availableData = element.getLastThreeHirarchyData
             view.run {
                 if (availableData.isEmpty()) {
                     layoutParams.height = 0
@@ -49,19 +49,64 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 rootView.removeAllViews()
 
                 if (element.shouldShowSingleViewSocialProof()) {
-                    val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                    generateSingleTextSocialProof(availableData.firstOrNull()
-                            ?: Pair("", 0), socProofView)
-                    rootView.addView(socProofView, 0)
+                    val socProofView: View = inflater.inflate(R.layout.social_proof_item, null)
+                    renderSingleSocialProof(element.generateSingleView(context), socProofView, rootView)
                 } else {
-                    availableData.forEachIndexed { index, i ->
-                        val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                        renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
-                        rootView.addView(socProofView, index)
+                    availableData.forEachIndexed { index, pairValue ->
+                        if (element.isFirstData(pairValue)) {
+                            val firstSocProofView: View = inflater.inflate(R.layout.social_proof_item, null)
+                            renderFirstSocialProof(element, firstSocProofView)
+                            rootView.addView(firstSocProofView, index)
+                        } else {
+                            val clickedSocialProof: View = inflater.inflate(R.layout.chip_social_proof_item, null)
+                            renderClickedSocialProof(pairValue, clickedSocialProof, element.rating
+                                    ?: 0F, getComponentTrackData(element))
+                            rootView?.addView(clickedSocialProof, index)
+                        }
                     }
+                }
+
+            }
+        }
+    }
+
+    private fun renderSingleSocialProof(value: String, view: View, rootView: ViewGroup) {
+        val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
+        firstSocialProofTxt.text = value
+        rootView.addView(view, 0)
+    }
+
+    private fun renderClickedSocialProof(value: Pair<String, Int>, clickedSocialProof: View, rating: Float, componentTrackDataModel: ComponentTrackDataModel) {
+        val firstSocialProofTxt = clickedSocialProof.findViewById<Typography>(R.id.chip_social_proof_title)
+        val firstSocialProofValue = clickedSocialProof.findViewById<Typography>(R.id.chip_social_proof_value)
+        when (value.first) {
+            ProductMiniSocialProofDataModel.RATING -> {
+                clickedSocialProof.isClickable = true
+                clickedSocialProof.setOnClickListener { listener.onReviewClick() }
+                firstSocialProofTxt?.run {
+                    text = rating.toString()
+                    setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
+                }
+                firstSocialProofValue?.run {
+                    text = view.context.getString(R.string.bracket_formated, value.second.productThousandFormatted())
+                }
+            }
+            ProductMiniSocialProofDataModel.TALK -> {
+                clickedSocialProof.isClickable = true
+                clickedSocialProof.setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
+                firstSocialProofTxt?.run {
+                    text = view.context.getString(R.string.product_detail_discussion_label)
+                }
+                firstSocialProofValue?.run {
+                    text = view.context.getString(R.string.bracket_formated, value.second.productThousandFormatted())
                 }
             }
         }
+    }
+
+    private fun renderFirstSocialProof(element: ProductMiniSocialProofDataModel, view: View) = with(view) {
+        val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
+        firstSocialProofTxt.text = element.generateFirstSocialProofText(context)
     }
 
     private fun showLoading() = with(view) {
@@ -74,71 +119,11 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         pdp_shimmering_social_proof.hide()
     }
 
-    private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View) {
-        val textSocialProofValue = view.txt_soc_proof_value
-        val socProofDivider = view.social_proof_horizontal_separator
-        val socProofTitle = view.txt_soc_proof_title
-        socProofDivider?.hide()
-        socProofTitle?.hide()
-
-        when (element.first) {
-            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
-                textSocialProofValue?.text = view.context.getString(R.string.terjual_single_text_template_builder, element.second.productThousandFormatted())
-            }
-            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
-                textSocialProofValue?.text = view.context.getString(R.string.product_view_single_text__template_builder, element.second.productThousandFormatted())
-            }
-        }
-    }
-
-    private fun renderSocialProofData(element: Pair<String, Int>, rating: Float, data: ProductMiniSocialProofDataModel, view: View, index: Int) {
-        val textSocialProofValueView = view.txt_soc_proof_value
-        val textSocialProofTitleView = view.txt_soc_proof_title
-        val socProofDivider = view.social_proof_horizontal_separator
-        var textSocialProofValue = ""
-        var textSocialProofTitle = ""
-        socProofDivider.showWithCondition(index != 0)
-
-        when (element.first) {
-            ProductMiniSocialProofDataModel.RATING -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onReviewClick() }
-                textSocialProofTitleView?.run {
-                    setTextColor(MethodChecker.getColor(view.context, R.color.light_N700_96))
-                    setWeight(Typography.BOLD)
-                    setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
-                }
-
-                textSocialProofTitle = rating.toString()
-                textSocialProofValue = view.context.getString(R.string.bracket_formated, element.second.productThousandFormatted())
-            }
-            ProductMiniSocialProofDataModel.TALK -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onDiscussionClicked(getComponentTrackData(data)) }
-                textSocialProofTitleView.setWeight(Typography.BOLD)
-                textSocialProofTitleView.setTextColor(MethodChecker.getColor(view.context, R.color.light_N700_96))
-                textSocialProofTitle = view.context.getString(R.string.label_qna)
-                textSocialProofValue = element.second.productThousandFormatted()
-            }
-            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
-                view.isClickable = false
-                textSocialProofTitle = view.context.getString(R.string.label_terjual)
-                textSocialProofValue = element.second.productThousandFormatted()
-            }
-            ProductMiniSocialProofDataModel.WISHLIST -> {
-                view.isClickable = false
-                textSocialProofTitle = view.context.getString(R.string.label_wishlist)
-                textSocialProofValue = element.second.productThousandFormatted()
-            }
-            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
-                view.isClickable = false
-                textSocialProofTitle = view.context.getString(R.string.label_seen)
-                textSocialProofValue = element.second.productThousandFormatted()
-            }
-        }
-
-        textSocialProofValueView?.text = MethodChecker.fromHtml(textSocialProofValue)
-        textSocialProofTitleView?.text = MethodChecker.fromHtml(textSocialProofTitle)
+    private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(view) {
+        if (shouldShowSingleSocialProof)
+            pdp_shimmering_social_proof.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
+        else
+            pdp_shimmering_social_proof.setPadding(16.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)

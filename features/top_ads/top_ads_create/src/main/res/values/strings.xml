@@ -75,7 +75,6 @@
     <string name="add_keywords">Tambah Kata Kunci</string>
     <string name="bid_range">Rp %s - Rp %s</string>
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
-     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="group_name_step">Buat Grup Iklan</string>
     <string name="bid_info_step">Atur Biaya Iklan</string>
     <string name="summary_page_step">Ringkasan Iklan</string>
@@ -101,4 +100,23 @@
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
     <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
     <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_onboarding_button1">Lanjut</string>
+    <string name="topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
+    <string name="topads_create_onboarding_action_text">Lewati</string>
+    <string name="topads_create_onboarding_title">Mulai Beriklan</string>
+    <string name="topads_create_onboarding_screen_title1">Terdepan dengan TopAds</string>
+    <string name="topads_create_onboarding_screen_desc1">Gunakan kata kunci agar produkmu tampil teratas di halaman pencarian dan lebih mudah ditemukan jutaan calon pembeli.</string>
+    <string name="topads_create_onboarding_screen_title2">Tingkatkan daya saing</string>
+    <string name="topads_create_onboarding_screen_desc2">Dengan TopAds, produkmu dapat menjangkau  lebih banyak calon pembeli dan berpotensi meningkatkan penjualan.</string>
+    <string name="topads_create_onboarding_screen_title3">Beriklan tanpa ribet</string>
+    <string name="topads_create_onboarding_screen_desc3">Cukup bayar sesuai hasil, produkmu akan diiklankan lebih efektif dan tepat sasaran. Lebih mudah beriklan hanya dengan 1x klik.</string>
+
+
+
+    <string-array name="sort_product_list_array">
+        <item>Terlaris</item>
+        <item>Terbaru</item>
+        <item>Harga Tertinggi</item>
+        <item>Harga Terendah</item>
+    </string-array>
 </resources>

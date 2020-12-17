@@ -40,7 +40,10 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
@@ -71,6 +74,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
+    private var UOH_AB_TEST_KEY = "uoh_android_v2"
+    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +99,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
+        swipe_refresh_layout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
@@ -233,7 +238,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
             }
         }
 
@@ -306,7 +311,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName, product.clickUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
@@ -318,7 +323,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
         activity?.let {
-            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl)
+            if (product.isTopAds) TopAdsUrlHitter(it).hitImpressionUrl(it::class.qualifiedName, product.trackerImageUrl, product.productId.toString(), product.name, product.imageUrl, COMPONENT_NAME_TOP_ADS)
         }
     }
 
@@ -481,6 +486,23 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         return recommendationList
     }
 
+    private fun getAbTestingRemoteConfig(): RemoteConfig {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    private fun useUoh(): Boolean {
+        return try {
+            val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
+            (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     companion object {
         val TAG = BuyerAccountFragment::class.java.simpleName
         private val BUYER_DATA = "buyer_data"
@@ -496,6 +518,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
 
         private val DEFAULT_SPAN_COUNT = 2
+
+        private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
 
         fun newInstance(): Fragment {
             val fragment = BuyerAccountFragment()

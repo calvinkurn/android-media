@@ -12,6 +12,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/brand_recom_iv"
+        android:contentDescription="@string/content_desc_brand_recom_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

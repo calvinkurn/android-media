@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.viewmodel.shopshowcaseadd
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.AppendShopShowcaseProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.RemoveShopShowcaseProductUseCase
@@ -12,7 +13,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 
@@ -42,7 +42,7 @@ abstract class ShopShowCaseAddViewModelTestFixture {
     protected lateinit var shopShowCaseAddViewModel: ShopShowcaseAddViewModel
 
     private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
+        CoroutineTestDispatchersProvider
     }
 
     @Before

@@ -22,7 +22,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/logistic_promo_info_title"
         android:textColor="@color/Neutral_N700_32"

@@ -60,7 +60,7 @@ class GetPendingCasbackUseCase @Inject constructor(@param:ApplicationContext pri
             pendingCashback.amountText = pendingCashbackEntity.balanceText
             return pendingCashback
         }
-        throw RuntimeException("Error")
+        throw RuntimeException("Get Pending Cashback Failed")
     }
 
     override fun unsubscribe() {

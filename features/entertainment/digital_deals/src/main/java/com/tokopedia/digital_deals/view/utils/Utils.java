@@ -43,7 +43,7 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;

@@ -83,7 +83,7 @@ public class SeeAllView extends BottomSheets {
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_belanja,
                 getContext().getString(R.string.title_menu_market_place),
-                ApplinkConst.MARKETPLACE_ORDER,
+                ApplinkConst.BELANJA_ORDER,
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)

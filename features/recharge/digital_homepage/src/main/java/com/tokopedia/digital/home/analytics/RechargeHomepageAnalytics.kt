@@ -28,11 +28,24 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameCon
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.VIEW_ITEM
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.TOPUP_BILLS
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
 class RechargeHomepageAnalytics {
+
+    fun eventHomepageLaunched(userId: String) {
+        val linkerData = LinkerData().apply {
+            this.userId = userId
+        }
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
+                LinkerConstants.EVENT_DIGITAL_HOMEPAGE, linkerData
+        ))
+    }
 
     fun eventClickOrderList() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)

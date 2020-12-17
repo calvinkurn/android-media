@@ -15,15 +15,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.gson.GsonSingleton
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
-import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -33,12 +29,16 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
+import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -59,10 +59,21 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var ivShareLink: ImageView
     private lateinit var flEdit: FrameLayout
 
+    private val actionBarView by viewComponent {
+        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+            override fun onCameraIconClicked() {
+                parentViewModel.switchCamera()
+                analytic.clickSwitchCameraOnFinalSetupPage()
+            }
+
+            override fun onCloseIconClicked() {
+                activity?.onBackPressed()
+            }
+        })
+    }
+
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
-
-    private lateinit var exitDialog: DialogUnify
 
     private var toasterBottomMargin = 0
 
@@ -104,17 +115,13 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeCreateChannel()
         observeProductList()
         observeCover()
+        observeLiveInfo()
     }
 
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
         analytic.openFinalSetupPage()
-    }
-
-    override fun onBackPressed(): Boolean {
-        showDialogWhenActionClose()
-        return true
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -145,7 +152,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
+        actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
             startStreaming()
             analytic.clickStartStreamingOnFinalSetupPage()
@@ -209,9 +216,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
-                    openBroadcastLivePage(it.data)
-                    btnStartLive.setLoading(false)
-                    parentViewModel.startCountDown()
+                    parentViewModel.startPushStream(manualStartTimer = true)
                 }
                 is NetworkResult.Fail -> {
                     showToaster(
@@ -224,6 +229,10 @@ class PlayBeforeLiveFragment @Inject constructor(
             }
         })
     }
+
+    private fun observeLiveInfo() {
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
+    }
     //endregion
 
     private fun populateSavedData(savedInstanceState: Bundle) {
@@ -232,10 +241,27 @@ class PlayBeforeLiveFragment @Inject constructor(
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
-    private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
+    private fun handleLiveInfoState(state: LivePusherState) {
+        if (!isVisible) return
+        when (state) {
+            is LivePusherState.Started -> {
+                openBroadcastLivePage()
+                btnStartLive.setLoading(false)
+                parentViewModel.setFirstTimeLiveStreaming()
+            }
+            is LivePusherState.Error -> {
+                showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
+                        type = Toaster.TYPE_ERROR)
+                btnStartLive.setLoading(false)
+                analytic.viewErrorOnFinalSetupPage(getString(R.string.play_live_broadcast_connect_fail))
+            }
+        }
+    }
+
+    private fun openBroadcastLivePage() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
+                    putBoolean(PlayBroadcastUserInteractionFragment.KEY_START_COUNTDOWN, true)
                 })
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }
@@ -270,29 +296,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun startStreaming() {
         prepareViewModel.createLiveStream()
-    }
-
-    private fun getExitDialog(): DialogUnify {
-        if (!::exitDialog.isInitialized) {
-            exitDialog = requireContext().getDialog(
-                    actionType = DialogUnify.HORIZONTAL_ACTION,
-                    title = getString(R.string.play_prepare_broadcast_dialog_end_title),
-                    desc = getString(R.string.play_prepare_broadcast_dialog_end_desc),
-                    primaryCta = getString(R.string.play_prepare_broadcast_dialog_end_primary),
-                    primaryListener = { dialog -> dialog.dismiss() },
-                    secondaryCta = getString(R.string.play_broadcast_exit),
-                    secondaryListener = { _ ->
-                        analytic.clickExitOnDialogFinalSetupPage()
-                        activity?.finish()
-                    }
-            )
-        }
-        return exitDialog
-    }
-
-    private fun showDialogWhenActionClose() {
-        getExitDialog().show()
-        analytic.viewExitDialogOnFinalSetupPage()
     }
 
     private fun showToaster(

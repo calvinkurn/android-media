@@ -11,12 +11,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.BidInfoDataItem
-import com.tokopedia.topads.data.response.DataSuggestions
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
@@ -25,6 +26,8 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import java.util.*
@@ -54,7 +57,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var isEnable = false
     private var userID: String = ""
     private var shopID = ""
-
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -89,7 +93,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun onClickItem(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
-        sheet.show(fragmentManager!!, "")
+        sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, type, position ->
             bidInfoAdapter.typeList[position] = type
             (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid.toInt()
@@ -99,6 +103,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         sheet.onDelete = { position ->
             stepperModel?.selectedKeywords?.removeAt(position)
             stepperModel?.selectedSuggestBid?.removeAt(position)
+            bidInfoAdapter.typeList.removeAt(position)
             bidInfoAdapter.items.removeAt(position)
             bidInfoAdapter.notifyItemRemoved(position)
         }
@@ -109,7 +114,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val bundle = Bundle()
         bundle.putInt(MAX_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.maxBid)
         bundle.putInt(MIN_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.minBid)
-        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos)!!)
+        bundle.putInt(SUGGESTION_BID, stepperModel?.selectedSuggestBid?.get(pos) ?: 0)
         bundle.putString(KEYWORD_NAME, stepperModel?.selectedKeywords?.get(pos))
         if ((bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType == SPECIFIC_TYPE) {
             bundle.putInt(CURRENT_KEY_TYPE, EXACT_POSITIVE)
@@ -168,7 +173,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (stepperModel?.selectedKeywordType?.isNotEmpty()!!) {
+        if (stepperModel?.selectedKeywordType?.isNotEmpty() != false) {
             setRestoreValue()
         }
         val dummyId: MutableList<Int> = mutableListOf()
@@ -243,10 +248,19 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         btn_next?.setOnClickListener {
             gotoNextPage()
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
 
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            TipSheetBudgetList.newInstance(it.context).show()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
+            var tipSheetBugList = TipSheetBudgetList.newInstance()
+            tipSheetBugList.show(fragmentManager!!, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
         }
 
         budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->

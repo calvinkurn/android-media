@@ -41,7 +41,7 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.usecase.RequestParams;
@@ -175,8 +175,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
 
     @Override
     public void setDefaultLocation() {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-        });
+        Toaster.INSTANCE.build(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        }).show();
         selectedLocationListener.setDefaultLocationOnHomePage();
         getFragmentManager().popBackStack();
     }

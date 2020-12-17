@@ -11,7 +11,6 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,7 +29,6 @@ class ProductCardRevampViewModel(val application: Application, val components: C
 
 
     init {
-        initDaggerInject()
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
             val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
@@ -42,19 +40,12 @@ class ProductCardRevampViewModel(val application: Application, val components: C
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)
+            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
-
 }

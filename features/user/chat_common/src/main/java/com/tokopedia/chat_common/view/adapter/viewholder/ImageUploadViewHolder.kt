@@ -24,11 +24,11 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     : BaseChatViewHolder<ImageUploadViewModel>(itemView) {
 
     private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
-    private val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
+    protected val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val name: TextView? = itemView?.findViewById(getChatNameId())
     private val label: TextView? = itemView?.findViewById(getLabelId())
     private val dot: TextView? = itemView?.findViewById(getDotId())
-    private val action: ImageView?= itemView?.findViewById(getLeftActionId())
+    private val action: ImageView? = itemView?.findViewById(getLeftActionId())
     protected val progressBarSendImage: View? = itemView?.findViewById(getProgressBarSendImageId())
     protected val attachment: ImageView? = itemView?.findViewById(getImageId())
 

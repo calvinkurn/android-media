@@ -259,7 +259,15 @@ class TopChatViewStateImpl constructor(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
+        initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
+    }
+
+    private fun initListPadding(viewModel: ChatroomViewModel) {
+        if (!viewModel.replyable) {
+            val bottomPadding = recyclerView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            recyclerView.setPadding(0, 0, 0, bottomPadding.toInt())
+        }
     }
 
     private fun updateBlockStatus(viewModel: ChatroomViewModel) {
@@ -573,15 +581,36 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    fun setTemplate(listTemplate: List<Visitable<Any>>?) {
+    override fun updateTemplateState() {
+        if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
+            showTemplateChat()
+        }
+    }
+
+    fun setTemplate(
+            listTemplate: List<Visitable<Any>>?,
+            isLastMessageBroadcast: Boolean = false,
+            amIBuyer: Boolean = true
+    ) {
+        val isLastMsgFromBroadcastAndIamBuyer = isLastMessageBroadcast && amIBuyer
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            templateRecyclerView.showWithCondition(templateAdapter.hasTemplateChat())
-            if (attachmentPreviewContainer.isVisible) {
-                addBottomPaddingTemplateChat(8.toPx())
+            if (templateAdapter.hasTemplateChat() && !isLastMsgFromBroadcastAndIamBuyer) {
+                showTemplateChat()
+            } else {
+                hideTemplateChat()
             }
         }
+    }
+
+    private fun showTemplateChat() {
+        templateRecyclerView.show()
+        addBottomPaddingTemplateChat(8.toPx())
+    }
+
+    private fun hideTemplateChat() {
+        templateRecyclerView.hide()
     }
 
     fun addTemplateString(message: String) {

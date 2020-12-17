@@ -12,7 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.cart.view.CartItemDecoration
+import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.graphql.coroutines.data.Interactor
@@ -25,15 +25,15 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -85,7 +85,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
@@ -98,7 +97,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
@@ -132,13 +130,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("shopGroupSimplifiedQuery")
-    fun provideGetCartListSimplifiedQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_shop_group_simplified)
-    }
-
-    @Provides
-    @CartScope
     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
@@ -155,23 +146,28 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("UpdateReloadUseCase")
-    fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
-                                            cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(queryString, GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
+
+    @Provides
+    @CartScope
+    fun provideSetCartlistCheckboxStateUseCase(): SetCartlistCheckboxStateUseCase =
+            SetCartlistCheckboxStateUseCase(GraphqlUseCase(), DefaultSchedulers)
 
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
+                                  undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
+                                  addCartToWishlistUseCase: AddCartToWishlistUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
                                   clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                  getRecentViewUseCase: GetRecentViewUseCase,
+                                  getRecentViewUseCase: GetRecommendationUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
                                   addToCartUseCase: AddToCartUseCase,
@@ -183,16 +179,18 @@ class CartModule {
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                  setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+                                  followShopUseCase: FollowShopUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, compositeSubscription,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
+                addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
                 updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                validateUsePromoRevampUseCase, schedulers
+                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase, schedulers
         )
     }
 
@@ -208,6 +206,13 @@ class CartModule {
     @Named(AtcConstant.MUTATION_ATC_EXTERNAL)
     fun provideAddToCartExternalMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_external)
+    }
+
+    @Provides
+    @CartScope
+    @Named(FollowShopUseCase.MUTATION_NAME)
+    fun provideFollowShopMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
     }
 
 }

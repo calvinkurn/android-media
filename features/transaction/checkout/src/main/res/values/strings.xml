@@ -2,7 +2,6 @@
 <resources>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
     <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
     <string name="brand_tokopedia_corner">Tokopedia Corner</string>
@@ -45,7 +44,7 @@
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_showcase_address_title">Alamat Pengiriman</string>
     <string name="label_showcase_address_message">Pastikan alamat pengiriman sudah sesuai dengan yang kamu inginkan</string>
-    <string name="lebal_trade_in_address_mode">Pilih Metode Pengambilan</string>
+    <string name="lebal_trade_in_address_mode">Opsi Penukaran</string>
     <string name="label_tab_trade_in_address_deliver">Antar</string>
     <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
     <string name="label_button_change_pickup_point">Ubah Titik Ambil</string>
@@ -112,14 +111,11 @@
     <string name="order_prioritas_label">Biaya Order Prioritas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
-    <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
     <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
     <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
-    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
-    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
@@ -128,19 +124,51 @@
     <string name="label_check">Cek</string>
     <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
     <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
-    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman terpilih</string>
+    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>
     <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
-    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman terpilih</string>
+    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman</string>
     <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
     <string name="content_desc_iv_detail_option_chevron">image detail subtotal</string>
-    <string name="content_desc_tv_total_item_price_subtotal">text total harga subtotal</string>
-    <string name="content_desc_tv_shipping_fee_price_subtotal">text ongkos kirim subtotal</string>
-    <string name="content_desc_tv_insurance_fee_price_subtotal">text biaya asuransi subtotal</string>
-    <string name="content_desc_tv_total_item_price_summary">text total harga ringkasan</string>
-    <string name="content_desc_tv_insurance_fee_summary">text biaya asuransi ringkasan</string>
-    <string name="content_desc_tv_shipping_fee_summary">text ongkos kirim ringkasan</string>
+    <string name="content_desc_tv_sub_total_price">text subtotal harga keseluruhan</string>
+    <string name="content_desc_tv_total_item_price_subtotal">text subtotal harga barang</string>
+    <string name="content_desc_tv_shipping_fee_price_subtotal">text subtotal ongkir</string>
+    <string name="content_desc_tv_insurance_fee_price_subtotal">text subtotal asuransi</string>
+    <string name="content_desc_tv_total_item_price_summary">text ringkasan harga barang</string>
+    <string name="content_desc_tv_insurance_fee_summary">text ringkasan asuransi</string>
+    <string name="content_desc_tv_shipping_fee_summary">text ringkasan ongkir</string>
+    <string name="content_desc_tv_total_payment">text total tagihan</string>
     <string name="content_desc_tv_select_payment_method">button pilih pembayaran</string>
     <string name="content_desc_img_insurance_info">image info asuransi</string>
     <string name="content_desc_cb_insurance">checkbox asuransi</string>
     <string name="content_desc_cb_insurance_disabled">checkbox asuransi disabled</string>
+    <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
+    <string name="label_fulfilment">Dilayani Tokopedia</string>
+    <string name="label_order_counter">Pesanan %d</string>
+    <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
+    <string name="checkout_trade_in_default_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir akan mengantarkan pesanan ke alamatmu <b>1 hari setelah</b> pesanan diambil dari toko.<br/><br/>
+        3. Ketika sampai, kurir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        4. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        5. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="checkout_trade_in_drop_off_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir IndoPaket akan <b>mengantarkan pesananmu ke Indomaret</b> yang kamu pilih<br/><br/>
+        3. Kamu akan menerima pesan notifikasi dan email saat pesanan tiba di Indomaret. Kamu punya waktu 2 hari untuk proses tukar tambah.<br/><br/>
+        4. Di Indomaret, kasir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        5. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        6. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="title_trade_in_default_address">Ditukar di Alamatmu</string>
+    <string name="title_trade_in_drop_off_address">Ditukar di Indomaret</string>
+    <string name="label_drop_off_empty_title">Cari Indomaret, yuk!</string>
+    <string name="label_drop_off_empty_description">Aktifkan dulu lokasimu untuk bisa cari Indomaret terdekat</string>
+    <string name="label_drop_off_cta">Cari Indomaret</string>
 </resources>

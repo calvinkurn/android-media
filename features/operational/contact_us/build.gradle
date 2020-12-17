@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
         jcenter()
     }
@@ -30,9 +30,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.graphql)
@@ -59,6 +61,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 
     //test
@@ -78,3 +82,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

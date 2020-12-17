@@ -10,6 +10,9 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topads.UrlConstant
+import com.tokopedia.topads.UrlConstant.BASE_REST_URL
+import com.tokopedia.topads.UrlConstant.PATH_GROUP_VALIDATE
+import com.tokopedia.topads.UrlConstant.PATH_PRODUCT_LIST
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -21,9 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
-import com.tokopedia.topads.UrlConstant.BASE_REST_URL
-import com.tokopedia.topads.UrlConstant.PATH_GROUP_VALIDATE
-import com.tokopedia.topads.UrlConstant.PATH_PRODUCT_LIST
 
 /**
  * Author errysuprayogi on 08,November,2019

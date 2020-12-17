@@ -1,0 +1,21 @@
+{
+  "readme": "Login Branch IO Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "customProperties": {
+        "nameValuePairs": {
+          "email": "{{.*}}",
+          "userId": "{{\\w+}}",
+          "phone": "{{.*}}"
+        }
+      },
+      "eventName": "login",
+      "buoList": [],
+      "isStandardEvent": "{{true|false}}",
+      "standardProperties": {
+        "nameValuePairs": {}
+      }
+    }
+  ]
+}

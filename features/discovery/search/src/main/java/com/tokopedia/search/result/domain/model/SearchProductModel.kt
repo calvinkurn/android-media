@@ -28,7 +28,7 @@ data class SearchProductModel(
         @Expose
         val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
 
-        @SerializedName("searchInspirationCarousel")
+        @SerializedName("searchInspirationCarouselV2")
         @Expose
         val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel(),
 
@@ -176,14 +176,6 @@ data class SearchProductModel(
             @Expose
             val imageUrl: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
-
             @SerializedName("url")
             @Expose
             val url: String = "",
@@ -208,10 +200,24 @@ data class SearchProductModel(
             @Expose
             val badgeList: List<OtherRelatedProductBadge> = listOf(),
 
+            @SerializedName("ratingAverage")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("labelGroups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
             @SerializedName("freeOngkir")
             @Expose
-            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir()
-    )
+            val freeOngkir: OtherRelatedProductFreeOngkir = OtherRelatedProductFreeOngkir(),
+
+            @SerializedName("ads")
+            @Expose
+            val ads: ProductAds = ProductAds()
+    ) {
+            fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
+    }
 
     data class OtherRelatedProductShop(
             @SerializedName("city")
@@ -310,17 +316,9 @@ data class SearchProductModel(
             @Expose
             val categoryName: String = "",
 
-            @SerializedName("rating")
-            @Expose
-            val rating: Int = 0,
-
             @SerializedName("ratingAverage")
             @Expose
             val ratingAverage: String = "",
-
-            @SerializedName("countReview")
-            @Expose
-            val countReview: Int = 0,
 
             @SerializedName("originalPrice")
             @Expose
@@ -346,13 +344,25 @@ data class SearchProductModel(
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),
 
+            @SerializedName("labelGroupVariant")
+            @Expose
+            val labelGroupVariantList: List<ProductLabelGroupVariant> = listOf(),
+
             @SerializedName("badges")
             @Expose
             val badgeList: List<ProductBadge> = listOf(),
 
             @SerializedName("wishlist")
             @Expose
-            val isWishlist: Boolean = false
+            val isWishlist: Boolean = false,
+
+            @SerializedName("minOrder")
+            @Expose
+            val minOrder: Int = 1,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -387,7 +397,23 @@ data class SearchProductModel(
 
             @SerializedName("city")
             @Expose
-            val city: String = ""
+            val city: String = "",
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("isOfficial")
+            @Expose
+            val isOfficial: Boolean = false,
+
+            @SerializedName("isPowerBadge")
+            @Expose
+            val isPowerBadge: Boolean = false,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductFreeOngkir(
@@ -411,7 +437,29 @@ data class SearchProductModel(
 
             @SerializedName("type")
             @Expose
-            val type: String = ""
+            val type: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
+    )
+
+    data class ProductLabelGroupVariant(
+           @SerializedName("title")
+           @Expose
+           val title: String = "",
+
+           @SerializedName("type")
+           @Expose
+           val type: String = "",
+
+           @SerializedName("type_variant")
+           @Expose
+           val typeVariant: String = "",
+
+           @SerializedName("hex_color")
+           @Expose
+           val hexColor: String = ""
     )
 
     data class ProductBadge(
@@ -555,6 +603,18 @@ data class SearchProductModel(
             @Expose
             val applink: String = "",
 
+            @SerializedName("banner_image_url")
+            @Expose
+            val bannerImageUrl: String = "",
+
+            @SerializedName("banner_link_url")
+            @Expose
+            val bannerLinkUrl: String = "",
+
+            @SerializedName("banner_applink_url")
+            @Expose
+            val bannerApplinkUrl: String = "",
+
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
@@ -603,7 +663,23 @@ data class SearchProductModel(
 
             @SerializedName("description")
             @Expose
-            val description: List<String> = listOf()
+            val description: List<String> = listOf(),
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("label_groups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("original_price")
+            @Expose
+            val originalPrice: String = "",
+
+            @SerializedName("discount_percentage")
+            @Expose
+            val discountPercentage: Int = 0
     )
 
     data class SearchInspirationWidget(

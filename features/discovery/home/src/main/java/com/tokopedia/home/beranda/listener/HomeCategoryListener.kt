@@ -2,16 +2,11 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -109,13 +104,9 @@ interface HomeCategoryListener {
 
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
 
-    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
-
     fun removeViewHolderAtPosition(position: Int)
 
-    fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
+    fun onDynamicChannelRetryClicked()
 
-    fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
-
-    fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
+    fun getTopAdsBannerNextPageToken(): String
 }

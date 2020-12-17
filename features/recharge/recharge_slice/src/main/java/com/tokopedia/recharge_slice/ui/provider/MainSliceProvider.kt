@@ -56,6 +56,7 @@ class MainSliceProvider : SliceProvider() {
 
     var loadString: String? = ""
     var alreadyLoadData: Boolean = false
+    var isError: Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
@@ -106,51 +107,60 @@ class MainSliceProvider : SliceProvider() {
                 if (userSession.isLoggedIn) {
                     if (!alreadyLoadData)
                         getData(sliceUri)
+                    if(alreadyLoadData  && isError){
+                        return sliceNoAccess(sliceUri)
+                    }
                     return list(contextNonNull, sliceUri, INFINITY) {
-                        setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                        setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                            if (recommendationModel?.get(0)?.productName.isNullOrEmpty())
+                            if (recommendationModel.isNullOrEmpty() && !alreadyLoadData)
                                 subtitle = contextNonNull.resources.getString(R.string.slice_loading)
-                            else
-                                subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName?.capitalizeWords())
-                            primaryAction = SliceAction.create(
-                                    mainPendingIntent,
-                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                    ICON_IMAGE,
-                                    contextNonNull.resources.getString(R.string.slice_search_title)
-                            )
+                            else if (recommendationModel.isNullOrEmpty() && alreadyLoadData) {
+                                title = contextNonNull.resources.getString(R.string.slice_empty_data)
+                                primaryAction = createPendingIntentNoAccess()?.let {
+                                    SliceAction.create(
+                                            it,
+                                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
+                                            SMALL_IMAGE,
+                                            ""
+                                    )
+                                }
+                            }
+                            else subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
                         }
                         recommendationModel?.indices?.let { recomRange ->
-                            var listProduct: MutableList<Product> = mutableListOf()
-                            for (i in recomRange) {
-                                if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
-                                        && recommendationModel?.get(i)?.productPrice != 0) {
-                                    var product = Product()
-                                    row {
-                                        setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
-                                        recommendationModel.let {
-                                            it?.let {
-                                                product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
-                                                listProduct.add(i, product)
+                            if (!recommendationModel.isNullOrEmpty()) {
+                                var listProduct: MutableList<Product> = mutableListOf()
+                                for (i in recomRange) {
+                                    if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
+                                            && recommendationModel?.get(i)?.productPrice != 0) {
+                                        var product = Product()
+                                        row {
+                                            setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
+                                            recommendationModel.let {
+                                                it?.let {
+                                                    product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
+                                                    listProduct.add(i, product)
+                                                }
+                                                it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                             }
-                                            it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
-                                            it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
-                                        }
-                                        primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
-                                            SliceAction.create(
-                                                    it,
-                                                    createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
-                                                    SMALL_IMAGE,
-                                                    ""
-                                            )
+                                            primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
+                                                SliceAction.create(
+                                                        it,
+                                                        createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
+                                                        SMALL_IMAGE,
+                                                        ""
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            if (alreadyLoadData && listProduct.isNotEmpty()) {
-                                val trackingImpression = TrackingData(listProduct)
-                                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                                if (alreadyLoadData && listProduct.isNotEmpty()) {
+                                    val trackingImpression = TrackingData(listProduct)
+                                    Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                                }
                             }
                         }
                     }
@@ -169,13 +179,13 @@ class MainSliceProvider : SliceProvider() {
     private fun sliceNotLogin(sliceUri: Uri): Slice {
         Timber.w("""${contextNonNull.resources.getString(R.string.slice_track_timber_impression)}${contextNonNull.resources.getString(R.string.slice_user_not_login)}""")
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_login)
                 primaryAction = createPendingIntentLogin()?.let {
                     SliceAction.create(
                             it,
-                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             SMALL_IMAGE,
                             ""
                     )
@@ -187,13 +197,13 @@ class MainSliceProvider : SliceProvider() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            setAccentColor(ContextCompat.getColor(contextNonNull,com.tokopedia.unifyprinciples.R.color.Green_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_access)
                 primaryAction = createPendingIntentNoAccess()?.let {
                     SliceAction.create(
                             it,
-                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            createWithResource(contextNonNull, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             SMALL_IMAGE,
                             ""
                     )
@@ -217,6 +227,8 @@ class MainSliceProvider : SliceProvider() {
                 alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
+                isError = true
+                updateSlice(sliceUri)
                 Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
             }
         }

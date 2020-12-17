@@ -238,7 +238,8 @@ class KolPostDetailPresenter @Inject constructor(
         val isShopEmpty = postTagItem.shop.isEmpty()
         if (!isShopEmpty) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text, price = postTagItem.price),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text,
+                            price = postTagItem.price, userId = userSession.userId),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onCompleted() {
 

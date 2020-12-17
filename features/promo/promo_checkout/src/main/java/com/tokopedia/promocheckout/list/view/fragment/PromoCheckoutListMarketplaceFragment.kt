@@ -45,6 +45,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
 
     private var containerParent: ViewGroup? = null
+
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
     val marketplacePromoLastSeenAdapter: MarketplacePromoLastSeenAdapter by lazy { MarketplacePromoLastSeenAdapter(arrayListOf(), this) }
@@ -87,9 +88,9 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
         textInputCoupon.setText(promoCode)
-        view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()))
         // Change last seen promo text style
         promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)
         initViewExchangeCoupon(view)
@@ -97,7 +98,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
 
     private fun initViewExchangeCoupon(view: View) {
         context?.let { context ->
-            val dividerDrawable = ContextCompat.getDrawable(context, R.drawable.divider_horizontal_custom_quick_filter)
+            val dividerDrawable = ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)
             dividerDrawable?.let { drawable ->
                 val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
                 dividerItemDecoration.setDrawable(drawable)

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_category_grid"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center|top"
+    android:layout_alignParentTop="true">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_horizontal"
+        app:layout_constraintHorizontal_bias="0.5">
+
+        <com.tokopedia.iconnotification.IconNotification
+            android:id="@+id/icon_notification"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_35"
+            android:layout_marginLeft="@dimen/dp_35"
+            android:layout_marginRight="@dimen/dp_35"
+            android:layout_marginEnd="@dimen/dp_35"
+            android:layout_marginBottom="@dimen/dp_8"
+            tools:src="@drawable/ic_big_notif_customerapp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/icon_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:lines="2"
+            android:maxWidth="@dimen/dp_80"
+            android:gravity="top|center_horizontal"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -16,6 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/hotelSearchResultTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/shimmer_quick_filter_sort_filter"
@@ -44,16 +56,5 @@
                 android:scrollbars="vertical" />
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-
-    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-        android:id="@+id/bottom_action_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:fbType="group"
-        app:layout_anchor="@+id/recycler_view"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        app:layout_behavior="com.tokopedia.hotel.common.presentation.behaviour.QuickReturnFooterBehaviour" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

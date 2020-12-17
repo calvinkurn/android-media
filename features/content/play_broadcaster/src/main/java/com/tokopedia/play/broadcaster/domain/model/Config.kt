@@ -34,5 +34,7 @@ data class Config(
         @SerializedName("countdown_sec")
         val countdownSec: Long = 0,
         @SerializedName("max_title_length")
-        val maxTitleLength: Int = 0
+        val maxTitleLength: Int = 0,
+        @SerializedName("complete_draft")
+        val completeDraft: Boolean = false
 )

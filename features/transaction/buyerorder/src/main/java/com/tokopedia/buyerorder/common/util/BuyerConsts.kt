@@ -9,6 +9,7 @@ object BuyerConsts {
     const val PARAM_SHOP_NAME = "param_shop_name"
     const val PARAM_LIST_PRODUCT = "param_list_product"
     const val PARAM_INVOICE = "param_invoice"
+    const val PARAM = "param"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
     const val PARAM_URI = "uri"
@@ -46,4 +47,18 @@ object BuyerConsts {
     const val TICKER_TYPE_WARNING = "warning"
 
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
+    const val HOST_DEALS = "deals"
+    const val HOST_DIGITAL = "digital"
+    const val HOST_EVENTS = "events"
+    const val HOST_GIFTCARDS = "giftcards"
+    const val HOST_INSURANCE = "insurance"
+    const val HOST_MODALTOKO = "modaltoko"
+    const val HOST_BUYER = "buyer"
+    const val HOST_BELANJA = "belanja"
+    const val HOST_ORDER_LIST = "order_list"
+    const val APPLINK_INTERNAL_ORDER = "tokopedia-android-internal://order"
+    const val HOST_HOTEL = "hotel"
+    const val HOST_FLIGHT = "pesawat"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
 }

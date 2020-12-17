@@ -5,9 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -38,8 +40,9 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                             productImageUrl = element.product.imageUrl,
                             isTopAds = element.product.isTopads,
                             discountPercentage = if (element.product.discountPercentage > 0) "${element.product.discountPercentage}%" else "",
-                            reviewCount = element.product.countReview,
                             ratingCount = element.product.rating,
+                            reviewCount = element.product.countReview,
+                            countSoldRating = element.product.ratingFloat,
                             shopLocation = element.product.shop.city,
                             isWishlistVisible = true,
                             isWishlisted = element.product.isWishlist,

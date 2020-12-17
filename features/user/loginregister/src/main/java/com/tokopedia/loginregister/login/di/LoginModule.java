@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers;
  */
 @Module
 public class LoginModule {
+
     public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
     @LoginScope

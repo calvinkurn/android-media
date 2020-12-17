@@ -9,7 +9,7 @@
         android:id="@+id/category_image"
         android:layout_width="124dp"
         android:layout_height="105dp"
-        tools:background="@color/bg_corner_red"
+        tools:background="@color/Unify_R200"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

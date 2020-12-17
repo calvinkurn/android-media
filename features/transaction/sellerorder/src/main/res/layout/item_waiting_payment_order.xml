@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/waiting_order_product_height">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivProduct"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_13"
+        android:lineSpacingExtra="@dimen/layout_lvl0"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tvProductQuantityAndPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivProduct"
+        app:layout_constraintTop_toTopOf="@id/ivProduct"
+        app:typographyType="heading_6"
+        tool:text="*BROOKS* swallow swallow titanium (honey) C 17 | Brown" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductQuantityAndPrice"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_13"
+        android:lineSpacingExtra="@dimen/layout_lvl0"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/ivProduct"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivProduct"
+        app:layout_constraintTop_toBottomOf="@id/tvProductName"
+        app:typographyType="body_3"
+        tool:text="1 x Rp220.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

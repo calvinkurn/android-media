@@ -26,10 +26,6 @@ data class AccountDataModel(
         @Expose
         var userProfileCompletion: UserProfileCompletion = UserProfileCompletion(),
 
-        @SerializedName("userShopInfo")
-        @Expose
-        var shopInfo: UserShopInfoDataModel = UserShopInfoDataModel(),
-
         @SerializedName("tokopoints")
         @Expose
         var tokopoints: TokopointsModel = TokopointsModel(),
@@ -81,6 +77,10 @@ data class AccountDataModel(
         @SerializedName("balance")
         @Expose
         var saldo: DepositDataModel = DepositDataModel(),
+
+        @SerializedName("uohOrderCount")
+        @Expose
+        var uohOrderCount: UohCounterDataModel = UohCounterDataModel(),
 
         var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

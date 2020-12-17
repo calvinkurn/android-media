@@ -11,7 +11,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
@@ -31,7 +31,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey_200" />
+                android:background="@color/Unify_N50" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/indicator"
@@ -40,14 +40,14 @@
                 android:layout_height="?attr/actionBarSize"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/black_70"
+                app:tabSelectedTextColor="@color/Unify_N700_68"
                 app:tabTextAppearance="@style/TitlePageWhiteIndicator"
-                app:tabTextColor="@color/tab_text_unselected" />
+                app:tabTextColor="@color/Unify_N700_32" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey_200" />
+                android:background="@color/Unify_N50" />
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>

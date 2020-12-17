@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Data (
-        @SerializedName("departmentID")
+        @SerializedName("categoryID")
         @Expose
-        var departmentID: Int = 0,
+        var categoryID: Int = 0,
         @SerializedName("variantIDCombinations")
         @Expose
         var variantIDCombinations: List<List<Int>> = emptyList(),

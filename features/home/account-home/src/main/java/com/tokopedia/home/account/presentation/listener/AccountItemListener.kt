@@ -26,17 +26,15 @@ interface AccountItemListener {
 
     fun onMenuGridItemClicked(item: MenuGridItemViewModel)
 
+    fun onMenuGridBackgroundItemClicked(item: MenuGridIconNotificationItemViewModel)
+
     fun onMenuGridLinkClicked(item: MenuGridViewModel)
+
+    fun onMenuGridBackgroundLinkClicked(item: MenuGridIconNotificationViewModel)
 
     fun onInfoCardClicked(item: InfoCardViewModel, adapterPosition: Int)
 
     fun onMenuListClicked(item: MenuListViewModel)
-
-    fun onShopAvatarClicked(element: ShopCardViewModel)
-
-    fun onShopNameClicked(element: ShopCardViewModel)
-
-    fun onAddProductClicked()
 
     fun onTokopediaPayLeftItemClicked(label: String, applink: String, bsData: TokopediaPayBSModel,
                                       isLinked: Boolean, walletType: String)
@@ -45,8 +43,6 @@ interface AccountItemListener {
                                       isLinked: Boolean, walletType: String)
 
     fun onTokopediaPayRightItemClicked(isRightSaldo: Boolean, label: String, vccStatus: String, applink: String, bsData: TokopediaPayBSModel)
-
-    fun onDepositClicked(element: SellerSaldoViewModel)
 
     fun onTopadsInfoClicked()
 
@@ -83,8 +79,6 @@ interface AccountItemListener {
     fun onAccountItemImpression(data: HashMap<String, Any>)
 
     fun getTrackingQueue(): TrackingQueue
-
-    fun openRekeningPremiumWebLink(rekeningPremiumViewModel: RekeningPremiumViewModel)
 
     fun getRemoteConfig(): RemoteConfig
 }

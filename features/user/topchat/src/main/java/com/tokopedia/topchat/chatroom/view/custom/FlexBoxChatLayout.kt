@@ -19,16 +19,16 @@ import com.tokopedia.topchat.R
 
 class FlexBoxChatLayout : FrameLayout {
 
+    var checkMark: ImageView? = null
+        private set
     private var message: TextView? = null
     private var status: LinearLayout? = null
-    private var checkMark: ImageView? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
     private var info: TextView? = null
 
-    private val defaultShowCheckMark = true
-
-    private var showCheckMark = defaultShowCheckMark
+    private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
+    private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -56,6 +56,14 @@ class FlexBoxChatLayout : FrameLayout {
         initConfig(context, attrs)
     }
 
+    override fun setBackground(background: Drawable?) {
+        val pl = paddingLeft
+        val pt = paddingTop
+        val pr = paddingRight
+        val pb = paddingBottom
+        super.setBackground(background)
+        setPadding(pl, pt, pr, pb)
+    }
 
     private fun initConfig(context: Context?, attrs: AttributeSet?) {
         initAttr(context, attrs)
@@ -70,7 +78,8 @@ class FlexBoxChatLayout : FrameLayout {
                 0
         )?.apply {
             try {
-                showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, defaultShowCheckMark)
+                showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                useMaxWidth = getBoolean(R.styleable.FlexBoxChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -155,7 +164,7 @@ class FlexBoxChatLayout : FrameLayout {
             totalHeight += infoHeight
         }
 
-        if (totalWidth > maxWidth) {
+        if (totalWidth > maxWidth || useMaxWidth) {
             totalWidth = maxWidth
         }
 
@@ -195,5 +204,10 @@ class FlexBoxChatLayout : FrameLayout {
 
     fun showInfo() {
         info?.show()
+    }
+
+    companion object {
+        private const val DEFAULT_USE_MAX_WIDTH = false
+        private const val DEFAULT_SHOW_CHECK_MARK = true
     }
 }

@@ -34,9 +34,9 @@
         android:id="@+id/btnCreateVoucher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_48"
+        android:layout_marginStart="@dimen/spacing_lvl8"
         android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/dp_48"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
         android:text="@string/action_attachvoucher_create_voucher"
         app:unifyButtonSize="large" />
 </LinearLayout>

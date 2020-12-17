@@ -40,6 +40,12 @@ data class RechargeHomepageSections(
             @SerializedName("app_link")
             @Expose
             val applink: String = "",
+            @SerializedName("media_url")
+            @Expose
+            val mediaUrl: String = "",
+            @SerializedName("label_1")
+            @Expose
+            val label1: String = "#FFFFFF",
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
@@ -282,4 +288,20 @@ data class RechargeHomepageProductBannerModel(val section: RechargeHomepageSecti
         } else false
     }
 
+}
+
+data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSections.Section): RechargeHomepageSectionModel {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    override fun visitableId(): Int {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageProductBannerModel) {
+            section == b.section
+        } else false
+    }
 }

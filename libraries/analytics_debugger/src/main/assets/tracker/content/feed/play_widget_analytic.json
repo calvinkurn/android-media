@@ -1,0 +1,74 @@
+{
+  "readme": "Play Widget Small in Feed - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickFeed",
+      "eventCategory": "feed updates - cmp",
+      "eventAction": "click view all",
+      "eventLabel": "{{0 - Tokopedia Play - \\d+}}",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "feed updates - cmp",
+      "eventAction": "click",
+      "eventLabel": "{{click channel - (live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false)}}",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{\\d+}}",
+          "creative_url": "{{.*}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{feed - play sgc channel - \\d+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickFeed",
+      "eventCategory": "feed updates - cmp",
+      "eventAction": "click other content",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "viewFeedIris",
+      "eventCategory": "feed updates - cmp",
+      "eventAction": "impression on play sgc banner",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "feed updates - cmp",
+      "eventAction": "impression on play sgc channel",
+      "eventLabel": "{{(live|vod|upcoming) - \\d+ - \\d+ - \\d+ - is autoplay (true|false)}}",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{\\d+}}",
+          "creative_url": "{{.*}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{feed - play sgc channel - \\d+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

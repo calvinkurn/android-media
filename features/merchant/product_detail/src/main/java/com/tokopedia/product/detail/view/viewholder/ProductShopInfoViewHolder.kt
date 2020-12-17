@@ -11,7 +11,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataMode
 import com.tokopedia.product.detail.view.fragment.partialview.PartialDynamicShopInfoView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_shop_info.view.*
-import kotlinx.android.synthetic.main.partial_product_shop_info.view.base_shop_view
 import kotlinx.android.synthetic.main.shimmering_shop_info.view.pdp_shimmering_shop_info
 
 class ProductShopInfoViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductShopInfoDataModel>(view) {

@@ -11,7 +11,6 @@ import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
-import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
@@ -43,7 +42,6 @@ class DeeplinkMatcher() {
     init {
         matcherList = mutableListOf<Pair<Pattern, Int>>().apply {
             add(Pattern(GT, 0, mapOf(0 to "play")) to PLAY)
-            add(Pattern(GT, 0, mapOf(0 to "groupchat")) to GROUPCHAT)
             add(Pattern(GT, 0, mapOf(0 to "flight")) to FLIGHT)
             add(Pattern(EQ, 2, mapOf(0 to "promo")) to PROMO_DETAIL)
             add(Pattern(GT, 0, mapOf(0 to "promo")) to PROMO_LIST)

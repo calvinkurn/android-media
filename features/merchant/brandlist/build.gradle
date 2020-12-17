@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -35,6 +35,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -60,13 +61,11 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    kapt rootProject.ext.miscDependencies.parceler
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    api (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }

@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_16">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <View
         android:id="@+id/voucher_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-        android:id="@+id/merchantVoucherListWidget"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_merchant_voucher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_8"
-        android:textColor="@color/black_70"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:mvlwTitleString="@string/promo"
-        app:mvlwTitleTextSize="@dimen/sp_16" />
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/voucher_separator"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-</LinearLayout>
+    <include
+        layout="@layout/item_shimmer_shop_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/voucher_separator"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

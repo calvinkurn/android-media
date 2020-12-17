@@ -3,7 +3,6 @@
     android:id="@+id/createReviewTextAreaContainer"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_90"
-    android:background="@drawable/bg_review_create_text_area_default"
     android:layout_marginStart="@dimen/layout_lvl2"
     android:layout_marginEnd="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">

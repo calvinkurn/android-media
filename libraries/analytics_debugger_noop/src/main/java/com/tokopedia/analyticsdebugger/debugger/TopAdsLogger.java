@@ -2,8 +2,6 @@ package com.tokopedia.analyticsdebugger.debugger;
 
 import android.content.Context;
 
-import org.jetbrains.annotations.NotNull;
-
 
 public class TopAdsLogger {
 
@@ -18,8 +16,8 @@ public class TopAdsLogger {
                 }
 
                 @Override
-                public void save(@NotNull String url, @NotNull String eventType, @NotNull String sourceName,
-                        @NotNull String productId, @NotNull String productName, @NotNull String imageUrl, @NotNull String componentName) {
+                public void save(String url, String eventType, String sourceName, String productId,
+                                 String productName, String imageUrl, String componentName) {
 
                 }
 

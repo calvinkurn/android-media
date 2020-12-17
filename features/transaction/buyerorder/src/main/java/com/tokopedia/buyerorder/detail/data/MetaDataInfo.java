@@ -122,6 +122,18 @@ public class MetaDataInfo {
     @Expose
     private String productAppUrl;
 
+    @SerializedName("custom_link_app_url")
+    @Expose
+    private String customLinkAppUrl;
+
+    @SerializedName("custom_link_label")
+    @Expose
+    private String customLinkLabel;
+
+    @SerializedName("custom_link_type")
+    @Expose
+    private String customLinkType;
+
 
     public String getEndDate() {
         return endDate;
@@ -312,4 +324,10 @@ public class MetaDataInfo {
     public String getEmail(){return email;}
 
     public String getProductAppUrl(){return productAppUrl;}
+
+    public String getCustomLinkAppUrl(){ return customLinkAppUrl;}
+
+    public String getCustomLinkLabel(){ return customLinkLabel;}
+
+    public String getCustomLinkType(){ return customLinkType;}
 }

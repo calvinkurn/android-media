@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.processor.ProductListClickBundler
 import com.tokopedia.abstraction.processor.ProductListClickProduct
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.orderhistory.data.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -93,9 +92,6 @@ class OrderHistoryAnalytic @Inject constructor() {
                 null
         )
 
-        context?.let {
-            IrisAnalytics.getInstance(it).saveEvent(bundle)
-        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, bundle
         )

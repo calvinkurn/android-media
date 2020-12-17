@@ -8,6 +8,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by mzennis on 13/07/20.
  * https://docs.google.com/spreadsheets/d/1efo8NsCI_ECqvd77pdy6F0J_053drVjmGbAb4hJOKlg/edit#gid=292707357
  * Row 8 - 69
+ * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
  */
 class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
 
@@ -399,30 +400,12 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     * View Exit Modal on Preparation Page
-     */
-    fun viewExitDialogOnFinalSetupPage() {
-        viewGeneralEvent(
-                action = "popup message exit on preparation page"
-        )
-    }
-
-    /**
-     * Click `Keluar` on Exit Modal Preparation Page
-     */
-    fun clickExitOnDialogFinalSetupPage() {
-        clickGeneralEvent(
-                action = "keluar on preparation page"
-        )
-    }
-
-    /**
      * View Error Message (:Param) on Preparation Page
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
-        viewGeneralEvent(
+        viewCustomGeneralEvent(
                 action = "error state on preparation page",
-                label = " - $errorMessage"
+                label = "- $errorMessage"
         )
     }
 
@@ -551,16 +534,6 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     * Click Selesai on Report Page
-     */
-    fun clickDoneOnReportPage(channelId: String, titleChannel: String) {
-        clickGeneralEvent(
-                "selesai on report page",
-                "- $channelId - $titleChannel"
-        )
-    }
-
-    /**
      * View Error Message on Report Page
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
@@ -571,8 +544,45 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     *
+     * Click save vod on Report Page
      */
+    fun clickSaveVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "save vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete vod on Report Page
+     */
+    fun clickDeleteVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * View confirm on pop up delete on Report Page
+     */
+    fun viewConfirmDeleteOnReportPage(channelId: String) {
+        viewGeneralEvent(
+                "confirm on pop up delete",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete on pop up delete on Report Page
+     */
+    fun clickDeleteOnPopupOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete on pop up delete",
+                "- $channelId"
+        )
+    }
+
     private fun viewGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_VIEW)

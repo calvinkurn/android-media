@@ -19,8 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -45,6 +43,8 @@ import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -103,15 +103,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomDetailViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
+        roomDetailViewModel.addCartResponseResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     val cartId = it.data.response.cartId
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
-                                addToCartParam.destinationType, addToCartParam.destinationName,
-                                addToCartParam.roomCount, addToCartParam.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
                     }
                 }
                 is Fail -> {
@@ -121,7 +119,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                             showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
-                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                        else -> view?.let { v ->
+                            Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
                     }
                 }
             }
@@ -175,7 +176,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = room_detail_detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         room_detail_collapsing_toolbar.title = ""
@@ -189,11 +190,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     room_detail_collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }

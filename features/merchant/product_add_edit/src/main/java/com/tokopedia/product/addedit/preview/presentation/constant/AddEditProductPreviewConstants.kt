@@ -16,6 +16,10 @@ class AddEditProductPreviewConstants {
         const val EXTRA_FROM_NOTIF_SUCCESS = "FROM_NOTIF_SUCCESS"
         const val EXTRA_FROM_NOTIF_EDIT_PRODUCT = "FROM_NOTIF_EDIT_PRODUCT"
         const val EXTRA_FROM_UPLOADING = "EXTRA_UPLOADING"
+        const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
+        const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
+        const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
+        const val TIMBER_PREFIX_LOCATION_VALIDATION = "SHOP_LOCATION_VALIDATOR"
         const val TYPE_ACTIVE = 1
         const val TYPE_ACTIVE_LIMITED = 2
         const val TYPE_WAREHOUSE = 3
@@ -28,5 +32,15 @@ class AddEditProductPreviewConstants {
         const val BUNDLE_DRAFT_ID = "draftId"
         const val BUNDLE_PRODUCT_ID = "productId"
         const val BUNDLE_IS_PRODUCT_DUPLICATE = "isProductDuplicate"
+        const val DELAY_CLOSE_ACTIVITY = 300L
+        const val TITLE_ERROR_UPLOAD_IMAGE = "Error upload image"
+        const val TITLE_ERROR_SAVING_DRAFT = "Error saving draft"
+        const val DRAFT_SHOWCASE_ID = "0"
+        const val SHOP_ID = "shop_id"
+        const val POSTAL_CODE = "postal_code"
+        const val COURIER_ORIGIN = "courier_origin"
+        const val ADDRESS_STREET = "addr_street"
+        const val LATITUDE = "latitude"
+        const val LONGITUDE = "longitude"
     }
 }

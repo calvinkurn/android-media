@@ -10,34 +10,22 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
-import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.ViewCompat
 import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.pxToDp
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -134,7 +122,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.design.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(android.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }
@@ -185,7 +173,7 @@ class TokoPointToolbar : Toolbar {
             if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
                     && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
                 viewCntainer.notif_dynamic.visibility = View.VISIBLE
-                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             it.container_scrolledState.addView(viewCntainer, param)
             return viewCntainer

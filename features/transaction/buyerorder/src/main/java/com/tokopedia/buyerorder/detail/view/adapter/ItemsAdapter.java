@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,14 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
@@ -34,7 +36,8 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -273,9 +276,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Map.Entry<String, String> entry = it.next();
                 DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
                 doubleTextView.setTopText(entry.getKey());
-                doubleTextView.setTopTextColor(context.getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 doubleTextView.setBottomText(entry.getValue());
-                doubleTextView.setBottomTextColor(context.getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
                 statusDetail.addView(doubleTextView);
@@ -283,6 +286,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
 
+        @SuppressLint("SetTextI18n")
         void bindData(final OrderDetails details, final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
@@ -294,9 +298,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (metaDataInfo != null) {
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -307,9 +311,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 if(itemType == ITEM_EVENTS){
                     if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -321,9 +325,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_INSURANCE) {
 
                     if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), R.color.grey_1100, R.color.grey_1100);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -356,6 +360,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
+                    setEventDetails.setDealsBanner(item);
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
@@ -570,10 +575,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(Color.WHITE);
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -581,7 +586,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!actionButton.getActionColor().getBackground().equals("")) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (!actionButton.getActionColor().getBorder().equals("")) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -590,17 +595,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!actionButton.getActionColor().getTextColor().equals("")) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(Color.WHITE);
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             }
 
             tapActionTextView.setBackground(shape);
@@ -637,6 +642,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setPassengerEvent(Items item);
 
         void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
+
+        void setDealsBanner(Items item);
 
     }
 
@@ -820,10 +827,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(Color.WHITE);
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -831,7 +838,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -840,17 +847,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(Color.WHITE);
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             }
 
             tapActionTextView.setBackground(shape);

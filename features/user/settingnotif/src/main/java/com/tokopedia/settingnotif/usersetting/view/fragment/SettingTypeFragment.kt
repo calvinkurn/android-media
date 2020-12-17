@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N700_96
+import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.showcase.*
@@ -70,9 +72,13 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     private fun showShowCaseIfNeeded() {
+        var skipShowCase = false
+        activity?.intent?.data?.let {
+            skipShowCase = it.getQueryParameter(UserNotificationSettingActivity.PUSH_NOTIFICATION_PAGE) != null
+        }
         val tag = javaClass.name + BROADCAST_MESSAGE
         val hasBeenShown = ShowCasePreference.hasShown(context, tag)
-        if (hasBeenShown) return
+        if (hasBeenShown || skipShowCase) return
         showShowCase(tag)
     }
 
@@ -85,7 +91,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
                 .backgroundContentColorRes(Neutral_N700_96)
-                .shadowColorRes(R.color.shadow)
+                .shadowColorRes(R.color.settingnotif_shadow)
                 .textColorRes(R.color.grey_400)
                 .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
                 .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
@@ -112,6 +118,12 @@ class SettingTypeFragment : BaseDaggerFragment() {
     companion object {
         private const val ILLEGAL_EXCEPTION_MESSAGE = "The activity must implement SettingTypeContract interface"
         private const val BROADCAST_MESSAGE = ".BroadcastMessage"
+
+        fun createInstance(bundle: Bundle? = Bundle()): Fragment {
+            val fragment = SettingTypeFragment()
+            fragment.arguments = bundle ?: Bundle()
+            return fragment
+        }
     }
 
 }

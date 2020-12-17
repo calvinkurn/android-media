@@ -2,10 +2,21 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.data.createEditVariantResult
-import com.tokopedia.product.manage.data.createProduct
-import com.tokopedia.product.manage.data.createProductViewModel
-import com.tokopedia.product.manage.feature.filter.data.model.*
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaWrapper
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
+import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Data
+import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
+import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
+import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.data.*
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
@@ -14,22 +25,21 @@ import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.S
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
-import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
-import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Header
-import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.verification.verifyErrorEquals
-import com.tokopedia.product.manage.verification.verifySuccessEquals
-import com.tokopedia.product.manage.verification.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsCategory.AUTO_ADS
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.ShopInfoTopAds
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.*
@@ -296,8 +306,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             viewModel.getProductList(shopId)
 
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductViewModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice))
+                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
             val expectedProductList = Success(productViewModelList)
 
             viewModel.productListResult
@@ -369,13 +380,18 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val shopDomain = "http://www.tokopedia.com/#1"
             val shopCore = ShopCore(domain = shopDomain)
             val goldOS = ShopInfo.GoldOS(isGold = 1, isOfficial = 1)
+
             val shopInfoResponse = ShopInfo(shopCore = shopCore, goldOS = goldOS)
+            val shopInfoTopAdsData = ShopInfoTopAds(Data(AUTO_ADS, "auto ads"))
+            val shopInfoTopAdsResponse = ShopInfoTopAdsResponse(shopInfoTopAdsData)
 
             onGetShopInfo_thenReturn(shopInfoResponse)
+            onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse)
 
             viewModel.getGoldMerchantStatus()
 
-            val expectedResult = Success(ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore))
+            val data = ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
+            val expectedResult = Success(data)
 
             viewModel.shopInfoResult
                 .verifySuccessEquals(expectedResult)
@@ -687,6 +703,51 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `when get variants success should set live data value success`() {
+        runBlocking {
+            val productName = "Tokopedia"
+            val variantList = listOf(
+                    createProductVariantResponse(combination = listOf(0, 1)),
+                    createProductVariantResponse(combination = listOf(1, 0))
+            )
+            val firstOption = listOf(
+                    createOptionResponse(value = "Biru"),
+                    createOptionResponse(value = "Hijau")
+            )
+            val secondOption = listOf(
+                    createOptionResponse(value = "S"),
+                    createOptionResponse(value = "M")
+            )
+            val selections = listOf(
+                    createSelectionResponse(options = firstOption),
+                    createSelectionResponse(options = secondOption)
+            )
+            val response = createGetVariantResponse(
+                    productName,
+                    products = variantList,
+                    selections = selections
+            )
+
+            val productId = "1400068494"
+
+            onGetVariants_thenReturn(response)
+
+            viewModel.getProductVariants(productId)
+
+            val productVariants = listOf(
+                    createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
+                    createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
+            )
+            val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
+            val expectedSuccessResult = Success(expectedResult)
+
+            verifyGetVariantsCalled()
+
+            viewModel.getProductVariantsResult.verifySuccessEquals(expectedSuccessResult)
+        }
+    }
+
+    @Test
     fun `when get popups info error should set live data value fail`() {
         val error = NullPointerException()
 
@@ -711,6 +772,14 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
         }
+    }
+
+    private fun onGetVariants_thenReturn(response: GetProductVariantResponse) {
+        coEvery { getProductVariantUseCase.execute(any()) } returns response
+    }
+
+    private fun verifyGetVariantsCalled() {
+        coVerify { getProductVariantUseCase.execute(any())}
     }
 
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
@@ -755,6 +824,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun onGetShopInfo_thenReturn(shopInfoResponse: ShopInfo) {
         coEvery { gqlGetShopInfoUseCase.executeOnBackground() } returns shopInfoResponse
+    }
+
+    private fun onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse: ShopInfoTopAdsResponse) {
+        coEvery { geetShopInfoTopAdsUseCase.execute(any()) } returns shopInfoTopAdsResponse
     }
 
     private fun onGetShopInfo_thenError(error: Throwable) {

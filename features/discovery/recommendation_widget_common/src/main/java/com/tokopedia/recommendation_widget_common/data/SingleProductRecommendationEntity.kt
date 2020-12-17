@@ -65,6 +65,8 @@ class SingleProductRecommendationEntity {
         var departmentId: Int = 0
         @SerializedName("rating")
         var rating: Int = 0
+        @SerializedName("ratingAverage")
+        var ratingAverage: String = ""
         @SerializedName("countReview")
         var countReview: Int = 0
         @SerializedName("recommendationType")

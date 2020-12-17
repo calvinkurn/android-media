@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.util.GlobalSearchConfig
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
@@ -26,6 +28,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.initial_search_fragment.*
 import kotlinx.android.synthetic.main.initial_search_with_history_section.*
 import javax.inject.Inject
+
 
 class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
@@ -77,7 +80,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(!remoteConfig.isGlobalSearchEnabled()) {
+        if (!remoteConfig.isGlobalSearchEnabled()) {
             activity?.finish()
         }
         initRecyclerView()
@@ -127,9 +130,11 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     private fun observeLiveData() {
         viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
+            (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     setHistorySearch(it.data)
+                    stopSearchResultPagePerformanceMonitoring()
                 }
             }
         })
@@ -150,7 +155,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
             initialSearchAdapter.removeHistory(positionHistory)
         }
 
-        if(initialSearchAdapter.itemCount.isZero()) {
+        if (initialSearchAdapter.itemCount.isZero()) {
             sectionSearchHistory?.hide()
             initialSearchAdapter.addNoHistoryState()
         }
@@ -169,6 +174,16 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         historyViewUpdateListener?.showHistoryView()
     }
 
+    private fun stopSearchResultPagePerformanceMonitoring() {
+        rvSearchHistorySeller?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                        rvSearchHistorySeller.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
+    }
+
     fun setHistoryViewUpdateListener(historyViewUpdateListener: HistoryViewUpdateListener) {
         this.historyViewUpdateListener = historyViewUpdateListener
         this.historyViewUpdateListener?.setUserIdFromFragment(userId)
@@ -176,6 +191,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     fun historySearch(keyword: String) {
         this.searchKeyword = keyword
+        (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startNetworkPerformanceMonitoring()
         viewModel.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
 
@@ -187,4 +203,6 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         }
         historyViewUpdateListener?.showHistoryView()
     }
+
+
 }

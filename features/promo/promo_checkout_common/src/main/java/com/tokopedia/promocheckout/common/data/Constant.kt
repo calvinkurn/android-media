@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.data
 
 val REQUEST_CODE_PROMO_LIST = 232
 val REQUEST_CODE_PROMO_DETAIL = 233
+val REQUEST_CODE_PROMO_DEALS = 15
 
 val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
 val PROMO_CODE = "PROMO_CODE"

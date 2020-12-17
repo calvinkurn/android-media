@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -49,7 +48,7 @@ import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.locationmanager.DeviceLocation;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;

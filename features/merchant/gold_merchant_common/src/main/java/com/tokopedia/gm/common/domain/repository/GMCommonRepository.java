@@ -1,10 +1,5 @@
 package com.tokopedia.gm.common.domain.repository;
 
-import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
-import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-
-import java.util.List;
-
 import rx.Observable;
 
 /**

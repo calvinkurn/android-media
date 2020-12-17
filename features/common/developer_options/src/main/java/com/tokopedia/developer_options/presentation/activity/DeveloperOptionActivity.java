@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,11 +28,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -49,7 +52,9 @@ import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenS
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -72,7 +77,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
-    public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -88,6 +92,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private View sendTimberButton;
     private EditText editTextTimberMessage;
+
+    private View sendFirebaseCrash;
+    private EditText editTextFirebaseCrash;
 
     private View routeManagerButton;
     private EditText editTextRouteManager;
@@ -107,13 +114,12 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
+    private CheckBox toggleDarkMode;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
     private CheckBox toggleTopAdsNotif;
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
-
-    private CheckBox toggleUiBlockDebugger;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -129,7 +135,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
-    private EditText etUIBlockDelay;
 
     @Override
     public String getScreenName() {
@@ -139,14 +144,14 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
             userSession = new UserSession(this);
 
             Uri uri = getIntent().getData();
             boolean isChangeUrlApplink
                     = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
 
-            if(isChangeUrlApplink) {
+            if (isChangeUrlApplink) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -160,9 +165,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void handleUri(Uri uri) {
-        if(uri.getLastPathSegment().startsWith(STAGING)){
+        if (uri.getLastPathSegment().startsWith(STAGING)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
-        } else if (uri.getLastPathSegment().startsWith(LIVE)){
+        } else if (uri.getLastPathSegment().startsWith(LIVE)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
         }
         TokopediaUrl.Companion.deleteInstance();
@@ -206,14 +211,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
+        toggleDarkMode = findViewById(R.id.toggle_dark_mode);
         toggleAnalytics = findViewById(R.id.toggle_analytics);
         toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
         toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
-
-        etUIBlockDelay = findViewById(R.id.et_block_canary_delay);
-        toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -228,6 +231,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+
+        editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
+        sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
 
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
@@ -251,6 +257,50 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+
+        Button buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
+        Button alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
+        Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+
+        String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
+        String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
+
+        buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPrefs = getSharedPreferences(
+                        KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+                sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, true)
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, true)
+                        .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, false).apply();
+
+                Toast.makeText(DeveloperOptionActivity.this, "Onboarding reset ssuccessfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+
+        alwaysOldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_OLD);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Old", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initListener() {
@@ -303,7 +353,20 @@ public class DeveloperOptionActivity extends BaseActivity {
                 } else {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String crashMessage = editTextFirebaseCrash.getText().toString();
+                if (TextUtils.isEmpty(crashMessage)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Crash message should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseCrashlytics.getInstance().recordException(new DeveloperOptionException(crashMessage));
                 }
             }
         });
@@ -368,11 +431,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        reviewNotifBtn.setOnClickListener(v ->{
+        reviewNotifBtn.setOnClickListener(v -> {
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777,notifReview);
-                });
+            notificationManagerCompat.notify(777, notifReview);
+        });
+
+        toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
+        toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
 
         toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
         toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
@@ -417,21 +483,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToIrisSendLogDB.setOnClickListener(v -> {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
-        });
-
-        toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
-            String delayStr = etUIBlockDelay.getText().toString();
-            int delay = toInt(delayStr);
-            if (delay <= 0) {
-                delay = DEFAULT_DELAY_UI_BLOCK;
-            }
-            if (state) {
-                Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
-            }
         });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
@@ -486,12 +537,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse.setOnClickListener(v -> {
             new FakeResponseActivityProvider().startActivity(this);
         });
+
     }
 
     private int toInt(String str) {
         try {
             return Integer.parseInt(str);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -558,5 +610,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void initTranslator() {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+    }
+
+    private class DeveloperOptionException extends RuntimeException{
+        public DeveloperOptionException(String message) {
+            super(message);
+        }
     }
 }

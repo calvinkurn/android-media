@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel
 
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.autoads.AutoAdsItemsAdapterTypeFactory
 
 /**

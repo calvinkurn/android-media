@@ -4,17 +4,19 @@ package com.tokopedia.topchat.common.analytics;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.collection.ArrayMap;
+
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
+import com.tokopedia.abstraction.processor.beta.AddToCartBundler;
+import com.tokopedia.abstraction.processor.beta.AddToCartProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -86,6 +89,8 @@ public class TopChatAnalytics {
         String EVENT_NAME_ATC = "addToCart";
         String EVENT_NAME_PRODUCT_PREVIEW = "productView";
 
+        String CLICK_CHAT_DETAIL = "ClickChatDetail";
+
     }
 
     public interface Action {
@@ -127,6 +132,7 @@ public class TopChatAnalytics {
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
         String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
+        String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
     }
 
     public interface Label {
@@ -300,7 +306,7 @@ public class TopChatAnalytics {
                 null,
                 getFrom(product),
                 PRODUCT_INDEX,
-                new HashMap<>()
+                new ArrayMap<>()
         );
         products.add(topChatProduct);
 
@@ -314,7 +320,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, bundle
         );
@@ -339,7 +344,8 @@ public class TopChatAnalytics {
                 getFrom(product),
                 getFrom(product),
                 null,
-                null
+                null,
+                new ArrayMap<>()
         );
         products.add(product1);
 
@@ -351,9 +357,9 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_PRODUCT_PREVIEW,
                 null,
-                null
+                null,
+                new ArrayMap<>()
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
@@ -394,7 +400,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
@@ -411,8 +416,18 @@ public class TopChatAnalytics {
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+                getEventClickChatAttachedProductImage()
         );
+    }
+
+    private Map<String, Object> getEventClickChatAttachedProductImage() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Name.CLICK_CHAT_DETAIL);
+        eventTracking.put("eventCategory", Category.CHAT_DETAIL);
+        eventTracking.put("eventAction", Action.CLICK_PRODUCT_REAL_IMAGE);
+        eventTracking.put("eventLabel", "");
+
+        return eventTracking;
     }
 
     // #AP7
@@ -638,33 +653,37 @@ public class TopChatAnalytics {
             @NotNull String shopName,
             @NotNull String cartId
     ) {
+
+        List<AddToCartProduct> addToCartProducts
+                = new ArrayList<AddToCartProduct>() {{
+            add(new AddToCartProduct(
+                    product.getIdString(),
+                    product.getProductName(),
+                    "",
+                    product.getCategory(),
+                    product.getVariants().toString(),
+                    product.getPriceInt(),
+                    product.getMinOrder(),
+                    cartId,
+                    DataLayer.mapStringsOf(
+                            "dimension79", product.getShopId() + "",
+                            "dimension81", shopType,
+                            "dimension80", shopName,
+                            "dimension40", getFrom(product))
+            ));
+        }};
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, Name.EVENT_NAME_ATC,
-                        EVENT_CATEGORY, Category.CHAT_DETAIL,
-                        EVENT_ACTION, Action.CLICK_OCC_PRODUCT_THUMBNAIL,
-                        EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "add", DataLayer.mapOf(
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", product.getProductName(),
-                                                        "id", product.getIdString(),
-                                                        "price", product.getPriceInt(),
-                                                        "brand", "",
-                                                        "category", product.getCategory(),
-                                                        "variant", product.getVariants().toString(),
-                                                        "quantity", product.getMinOrder(),
-                                                        "dimension79", product.getShopId(),
-                                                        "dimension81", shopType,
-                                                        "dimension80", shopName,
-                                                        "dimension45", cartId,
-                                                        "dimension40", getFrom(product)
-                                                )
-                                        )
-                                )
-                        )
+                AddToCartBundler.KEY,
+                AddToCartBundler.getBundle(
+                        addToCartProducts,
+                        AddToCartBundler.KEY,
+                        Action.CLICK_OCC_PRODUCT_THUMBNAIL,
+                        null,
+                        Category.CHAT_DETAIL,
+                        null,
+                        null,
+                        new ArrayMap<>()
                 )
         );
     }

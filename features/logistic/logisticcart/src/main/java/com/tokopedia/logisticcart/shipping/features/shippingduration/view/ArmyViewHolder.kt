@@ -15,11 +15,32 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_army
+        const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener) {
         itemView.tv_title.text = data.title
         itemView.tv_info.text = MethodChecker.fromHtml(data.description)
+
+        if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
+            itemView.tv_eta.visibility = View.VISIBLE
+            itemView.tv_eta.text = data.etaData.textEta
+        } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
+            itemView.tv_eta.visibility = View.VISIBLE
+            itemView.tv_eta.text = ESTIMASI_TIDAK_TERSEDIA
+        } else {
+            itemView.tv_eta.visibility = View.GONE
+        }
+
+        if (data.codData.isCodAvailable == 1) {
+            itemView.lbl_cod_available_eta.apply {
+                visibility = View.VISIBLE
+                text = data.codData.codText
+            }
+        } else {
+            itemView.lbl_cod_available_eta.visibility = View.GONE
+        }
+
         if (data.description.isEmpty()) itemView.tv_info.visibility = View.GONE
         ImageHandler.LoadImage(itemView.img_logo, data.imageUrl)
 

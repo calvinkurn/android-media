@@ -11,15 +11,22 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.user.session.UserSessionInterface
 
 class SellerHomeNavigator(
     private val context: Context,
     private val fm: FragmentManager,
-    private val sellerHomeRouter: SellerHomeRouter?
+    private val sellerHomeRouter: SellerHomeRouter?,
+    private val userSession: UserSessionInterface
 ) {
+
+    companion object {
+        private const val ERROR_NAVIGATOR = "Error when using navigator."
+    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -38,7 +45,9 @@ class SellerHomeNavigator(
     fun start(@FragmentType page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
-        addAllPages(fragment, transaction)
+        if (fm.fragments.isEmpty()) {
+            addAllPages(fragment, transaction)
+        }
 
         fragment?.let {
             showFragment(it, transaction)
@@ -54,7 +63,6 @@ class SellerHomeNavigator(
             val fragment = getPageFragment(page)
 
             fragment?.let {
-                hideCurrentPage(transaction)
                 showFragment(it, transaction)
                 setSelectedPage(page)
             }
@@ -70,7 +78,7 @@ class SellerHomeNavigator(
             val fragment = setupPageFromAppLink(page)
 
             fragment?.let { selectedPage ->
-                val tag = page::class.java.simpleName
+                val tag = page::class.java.canonicalName
                 val transaction = fm.beginTransaction()
                 val fragments = fm.fragments
 
@@ -80,15 +88,14 @@ class SellerHomeNavigator(
                         showFragment(selectedPage, transaction)
                     }
                     currentPage != selectedPage -> {
+                        hideAllPages(transaction)
+
                         transaction
                             .remove(currentPage)
                             .add(R.id.sahContainer, selectedPage, tag)
                             .commit()
                     }
-                    else -> {
-                        hideCurrentPage(transaction)
-                        showFragment(fragment, transaction)
-                    }
+                    else -> showFragment(fragment, transaction)
                 }
 
                 setSelectedPage(type)
@@ -99,12 +106,22 @@ class SellerHomeNavigator(
 
     fun getPageTitle(@FragmentType pageType: Int): String? {
         return when(pageType) {
-            FragmentType.HOME -> pages[homeFragment]
+            FragmentType.HOME -> getHomeTitle()
             FragmentType.PRODUCT -> pages[productManageFragment]
             FragmentType.CHAT -> pages[chatFragment]
             FragmentType.ORDER -> pages[somListFragment]
             else -> pages[otherSettingsFragment]
         }
+    }
+
+    fun cleanupNavigator() {
+        val transaction = fm.beginTransaction()
+        fm.fragments.forEach {
+            if (it.isAdded) {
+                transaction.remove(it)
+            }
+        }
+        transaction.commitAllowingStateLoss()
     }
 
     private fun setupPageFromAppLink(selectedPage: PageFragment?): Fragment? {
@@ -139,11 +156,15 @@ class SellerHomeNavigator(
         return currentSelectedPage == FragmentType.HOME
     }
 
+    fun getCurrentSelectedPage(): Int {
+        return currentSelectedPage ?: FragmentType.HOME
+    }
+
     private fun initFragments() {
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0)
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -156,34 +177,40 @@ class SellerHomeNavigator(
     private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
         pages.keys.forEach {
             it?.let {
-                val tag = it::class.java.simpleName
+                val tag = it::class.java.canonicalName
+                val fragmentToBeAdded = fm.findFragmentByTag(tag) ?: it
                 transaction.add(R.id.sahContainer, it, tag)
 
-                if(it != selectedPage) {
-                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                if(fragmentToBeAdded != selectedPage) {
+                    try {
+                        transaction.setMaxLifecycle(fragmentToBeAdded, Lifecycle.State.CREATED)
+                    } catch (e: Exception) {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
+                    }
                 }
-
-                transaction.hide(it)
             }
         }
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
-        val tag = fragment::class.java.simpleName
-        val isAttached = fm.findFragmentByTag(tag) != null
-        val currentState = fragment.lifecycle.currentState
+        val tag = fragment::class.java.canonicalName
+        val fragmentByTag = fm.findFragmentByTag(tag)
+        val selectedFragment = fragmentByTag ?: fragment
+        val currentState = selectedFragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
 
-        if(isFragmentNotResumed && isAttached && fragment.isAdded) {
+        if(isFragmentNotResumed) {
             try {
-                transaction.setMaxLifecycle(fragment, Lifecycle.State.RESUMED)
+                transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
             } catch (e: Exception) {
-                e.printStackTrace()
+                SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
             }
         }
 
+        hideAllPages(transaction)
+
         transaction
-            .show(fragment)
+            .show(selectedFragment)
             .commit()
     }
 
@@ -193,7 +220,8 @@ class SellerHomeNavigator(
             FragmentType.PRODUCT -> productManageFragment
             FragmentType.CHAT -> chatFragment
             FragmentType.ORDER -> somListFragment
-            else -> otherSettingsFragment
+            FragmentType.OTHER -> otherSettingsFragment
+            else -> null
         }
     }
 
@@ -230,7 +258,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType)
         return somListFragment
     }
 
@@ -238,12 +266,8 @@ class SellerHomeNavigator(
         fragment?.let { pages[it] = title }
     }
 
-    private fun hideCurrentPage(transaction: FragmentTransaction) {
-        currentSelectedPage?.let {
-            getPageFragment(it)?.let { currentPage ->
-                transaction.hide(currentPage)
-            }
-        }
+    private fun hideAllPages(transaction: FragmentTransaction) {
+        fm.fragments.forEach { transaction.hide(it) }
     }
 
     private fun setSelectedPage(@FragmentType page: Int) {
@@ -253,5 +277,14 @@ class SellerHomeNavigator(
     private fun isActivityResumed(): Boolean {
         val state = (context as? AppCompatActivity)?.lifecycle?.currentState
         return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
+    }
+
+    private fun getHomeTitle(): String? {
+        val shopName = userSession.shopName
+        return if(shopName.isNullOrEmpty()) {
+            pages[homeFragment]
+        } else {
+            shopName
+        }
     }
 }

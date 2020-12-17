@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.buyerorder.detail.data.Datum;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
@@ -287,7 +287,7 @@ public class OrderListAnalytics {
     }
 
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel, String statusCode) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel, String statusCode) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -310,11 +310,12 @@ public class OrderListAnalytics {
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
-            for (Datum datum : responseBuyAgainList)
-                if (datum.getProductId() == item.getId()) {
-                    cartId = String.valueOf(datum.getCartId());
+            for (AtcMultiData.AtcMulti.BuyAgainData.AtcProduct atcProduct : responseBuyAgainList) {
+                if (atcProduct.getProductId() == item.getId()) {
+                    cartId = String.valueOf(atcProduct.getCartId());
                     break;
                 }
+            }
             product.put(KEY_CART_ID, cartId);
             product.put(KEY_DIMENSION_45, cartId);
             product.put(KEY_DIMENSION_40, ORDER_LIST + " - " + statusCode);

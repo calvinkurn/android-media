@@ -1,12 +1,12 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcaseproductadd
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 
@@ -25,7 +25,7 @@ abstract class ShowcaseProductAddViewModelTestFixture {
     protected lateinit var showcaseProductAddViewModel: ShowcaseProductAddViewModel
 
     private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
+        CoroutineTestDispatchersProvider
     }
 
     @Before

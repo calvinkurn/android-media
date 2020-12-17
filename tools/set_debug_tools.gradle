@@ -28,12 +28,3 @@ def allowDistributionLocal() {
     return "false";
 }
 preBuild.dependsOn configDebugTools
-
-ext {
-    isDebugable = {Project project->
-        if (project.hasProperty('enableDebug') && enableDebug == "true") {
-            return "true";
-        }
-        return "false";
-    }
-}

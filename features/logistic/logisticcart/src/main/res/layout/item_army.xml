@@ -51,12 +51,22 @@
             app:typographyWeight="bold"
             tools:text="Bebas Ongkir (2 - 4 hari)" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_cod_available_eta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_below="@+id/tv_title"
+            android:visibility="visible"
+            android:text="@string/tersedia_bayar_di_tempat"
+            app:labelType="general_light_green" />
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
+            android:layout_below="@+id/lbl_cod_available_eta"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="4dp"
@@ -65,6 +75,20 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_eta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_info"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="4dp"
+            android:layout_toStartOf="@id/img_check"
+            android:layout_toLeftOf="@id/img_check"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Estimasi tiba" />
 
     </RelativeLayout>
 

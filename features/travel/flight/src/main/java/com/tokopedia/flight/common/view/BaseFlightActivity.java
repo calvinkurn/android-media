@@ -31,7 +31,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     @Inject
     public FlightAnalytics flightAnalytics;
     @Inject
-    UserSessionInterface userSession;
+    public UserSessionInterface userSession;
 
     private FlightComponent component;
 

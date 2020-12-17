@@ -18,6 +18,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_confirm_shipping"
+            android:contentDescription="@string/content_desc_btn_confirm_shipping"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:unifyButtonVariant="filled"
@@ -30,6 +31,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_no_resi"
+        android:contentDescription="@string/content_desc_tf_no_resi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
@@ -49,6 +51,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_change_courier"
+        android:contentDescription="@string/content_desc_switch_change_courier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,9 +95,8 @@
             app:layout_constraintEnd_toStartOf="@id/iv_choose_courier"
             app:layout_constraintTop_toTopOf="@id/courier_label"
             app:layout_constraintBottom_toBottomOf="@id/courier_label"
-            android:textColor="@color/g_500"
+            android:textColor="@color/Unify_G500"
             tools:text="@string/courier_choosen_example"
-            android:layout_marginRight="@dimen/dp_15"
             android:layout_marginEnd="@dimen/dp_15"
             app:typographyWeight="reguler"
             app:typographyType="body_2"/>
@@ -103,7 +105,7 @@
             android:id="@+id/confirm_divider_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N75"
+            android:background="@color/Unify_N75"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
@@ -137,9 +139,8 @@
             app:layout_constraintEnd_toStartOf="@id/iv_choose_courier_service"
             app:layout_constraintTop_toTopOf="@id/courier_service_label"
             app:layout_constraintBottom_toBottomOf="@id/courier_service_label"
-            android:textColor="@color/g_500"
+            android:textColor="@color/Unify_G500"
             tools:text="@string/courier_service_choosen_example"
-            android:layout_marginRight="@dimen/dp_15"
             android:layout_marginEnd="@dimen/dp_15"
             app:typographyWeight="reguler"
             app:typographyType="body_2"/>
@@ -148,7 +149,7 @@
             android:id="@+id/confirm_divider_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N75"
+            android:background="@color/Unify_N75"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"

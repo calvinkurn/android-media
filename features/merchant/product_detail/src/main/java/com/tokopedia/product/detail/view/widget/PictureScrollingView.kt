@@ -6,11 +6,10 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -37,16 +36,20 @@ class PictureScrollingView @JvmOverloads constructor(
         (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.pauseVideo()
     }
 
-    fun renderData(media: List<MediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
+    fun renderData(media: List<MediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
                    componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null,
                    lifecycle: Lifecycle) {
         if (!::pagerAdapter.isInitialized) {
+            setPageControl(media)
             pdp_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
-                    val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                    imageSliderCounter?.setCurrentCounter(position + 1)
-                    onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
+                    imageSliderPageControl?.setCurrentIndicator(position)
+                    pagerAdapter.media[position].run {
+                        if (position != lastPosition) {
+                            onSwipePictureListener.invoke(type, urlOriginal, position, componentTrackData)
+                        }
+                    }
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
                     lastPosition = position
@@ -59,7 +62,6 @@ class PictureScrollingView @JvmOverloads constructor(
 
         if (!::pagerAdapter.isInitialized || shouldRenderViewPager) {
             val mediaList = processMedia(media)
-            imageSliderCounter?.setView(1, mediaList.size)
             pagerAdapter = VideoPicturePagerAdapter(mediaList, onPictureClickListener, fragmentManager, componentTrackData
                     ?: ComponentTrackDataModel(), onPictureClickTrackListener, lifecycle)
             pdp_view_pager.adapter = pagerAdapter
@@ -69,18 +71,15 @@ class PictureScrollingView @JvmOverloads constructor(
         }
     }
 
-    fun showImageReview(shouldShow:Boolean, onReviewMediaClicked : () -> Unit) {
-        imageFromUser?.shouldShowWithAction(shouldShow) {
-            imageFromUser?.setOnClickListener {
-                onReviewMediaClicked.invoke()
-            }
-            imageFromUser?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_chevron_right_black_24dp), null)
-        }
-    }
-
     fun updateImage(listOfImage: List<MediaDataModel>?) {
         pagerAdapter.setData(listOfImage ?: listOf())
         resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
+    }
+
+    private fun setPageControl(media: List<MediaDataModel>?) {
+        imageSliderPageControl?.setIndicator(media?.size ?: 0)
+        imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
+        imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
@@ -97,12 +96,7 @@ class PictureScrollingView @JvmOverloads constructor(
     }
 
     private fun resetViewPagerToFirstPosition(countIndicator: Int) {
-        imageSliderCounter?.setView(1, countIndicator)
+        imageSliderPageControl?.setIndicator(countIndicator)
         pdp_view_pager.setCurrentItem(0, false)
-    }
-
-    companion object {
-        private const val SWIPE_RIGHT_DIRECTION = "right"
-        private const val SWIPE_LEFT_DIRECTION = "left"
     }
 }

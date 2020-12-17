@@ -25,7 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
@@ -382,7 +382,8 @@ class ShopOpenRevampQuisionerFragment :
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation) {
-                    activity?.finish()
+                    // Should have stayed in the feature instead of finish the feature
+                    hideLoader()
                 } else {
                     hideLoader()
                     showExitOrPickLocationDialog()

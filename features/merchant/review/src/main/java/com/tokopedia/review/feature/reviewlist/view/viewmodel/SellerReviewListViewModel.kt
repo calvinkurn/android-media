@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCase
@@ -19,10 +19,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerReviewListViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
-        private val getReviewProductListUseCase: GetReviewProductListUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
+    private val getReviewProductListUseCase: GetReviewProductListUseCase
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _reviewProductList = MutableLiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>()
     val reviewProductList: LiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>
@@ -35,7 +35,7 @@ class SellerReviewListViewModel @Inject constructor(
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
 
-            val productRatingOverall = asyncCatchError(dispatcherProvider.io(),
+            val productRatingOverall = asyncCatchError(dispatcherProvider.io,
                     block = {
                         getProductRatingOverall(filterBy)
                     }, onError = {
@@ -43,7 +43,7 @@ class SellerReviewListViewModel @Inject constructor(
                         null }
             )
 
-            val reviewProductList = asyncCatchError(dispatcherProvider.io(),
+            val reviewProductList = asyncCatchError(dispatcherProvider.io,
                     block = {
                         getProductReviewList(
                                 sortBy = sortBy,
@@ -65,7 +65,7 @@ class SellerReviewListViewModel @Inject constructor(
 
     fun getNextProductReviewList(sortBy: String, filterBy: String, page: Int) {
         launchCatchError(block = {
-            val productReviewList = withContext(dispatcherProvider.io()) {
+            val productReviewList = withContext(dispatcherProvider.io) {
                 getProductReviewList(sortBy, filterBy, page)
             }
             _reviewProductList.postValue(Success(productReviewList))

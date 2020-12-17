@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.addname.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
@@ -253,7 +254,14 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         activity?.run {
             dismissLoading()
             analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)
-            setResult(Activity.RESULT_OK)
+
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtras(Bundle().apply {
+                    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
+                    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, registerInfo.enableSkip2Fa)
+                })
+            })
+
             finish()
         }
     }

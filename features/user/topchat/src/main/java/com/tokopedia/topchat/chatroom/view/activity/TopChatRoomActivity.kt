@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -12,11 +13,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
-class TopChatRoomActivity : BaseChatToolbarActivity() {
+open class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -30,22 +32,20 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             bundle.putAll(intent.extras)
         }
 
-        return TopChatRoomFragment.createInstance(bundle)
+        return createChatRoomFragment(bundle)
     }
+
+    protected open fun createChatRoomFragment(bundle: Bundle) = TopChatRoomFragment.createInstance(bundle)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
         useLightNotificationBar()
         initWindowBackground()
-        initTopchatToolbar()
     }
 
     private fun initWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
-    }
-
-    private fun initTopchatToolbar() {
-        supportActionBar?.setBackgroundDrawable(null)
+        val color = ContextCompat.getColor(this, R.color.topchat_chatroom_background)
+        window.decorView.setBackgroundColor(color)
     }
 
     private fun useLightNotificationBar() {

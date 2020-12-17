@@ -6,5 +6,5 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 data class OrderPromo(
         var lastApply: LastApplyUiModel? = null,
         var promoErrorDefault: PromoCheckoutErrorDefault? = null,
-        var state: ButtonBayarState = ButtonBayarState.DISABLE
+        var state: OccButtonState = OccButtonState.DISABLE
 )

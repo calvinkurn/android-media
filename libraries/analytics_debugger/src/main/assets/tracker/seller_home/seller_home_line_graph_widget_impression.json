@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - trend line widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{impression widget trend line - .{1,}}}",
+      "eventLabel": "{{.{1,}}}",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 package com.tokopedia.review.feature.historydetails
 
 import com.tokopedia.review.common.data.*
+import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputation
+import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
 import io.mockk.coEvery
@@ -40,6 +42,32 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     @Test
+    fun `when getReviewDetail success should execute expected usecase`() {
+        val feedbackId = anyInt()
+        val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
+
+        onGetReviewDetails_thenReturn(expectedNetworkResponse)
+
+        viewModel.getReviewDetails(feedbackId, false)
+
+        verifyProductrevGetReviewDetailUseCaseCalled()
+        verifyReviewDetailsSuccess(Success(expectedNetworkResponse.productrevGetReviewDetail))
+    }
+
+    @Test
+    fun `when getReviewDetail Fail should set expected failure`() {
+        val feedbackId = anyInt()
+        val expectedNetworkResponse = Throwable()
+
+        onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
+
+        viewModel.getReviewDetails(feedbackId, false)
+
+        verifyProductrevGetReviewDetailUseCaseCalled()
+        verifyReviewDetailsError(Fail(expectedNetworkResponse))
+    }
+
+    @Test
     fun `when retry() should execute usecase again`() {
         val feedbackId = anyInt()
 
@@ -63,6 +91,48 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         Assert.assertEquals(expectedFeedbackId, actualFeedbackId)
     }
 
+    @Test
+    fun `when submitReputation should execute expected usecase`() {
+        val reputationId = anyInt()
+        val reputationScore = anyInt()
+        val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 1))
+
+        onSubmitReputation_thenReturn(expectedResponse)
+
+        viewModel.submitReputation(reputationId, reputationScore)
+
+        verifySubmitReputationUseCaseCalled()
+        verifyInboxReviewInsertReputationSuccess(Success(reputationScore))
+    }
+
+    @Test
+    fun `when submitReputation fail due to backend should return expected error`() {
+        val reputationId = anyInt()
+        val reputationScore = anyInt()
+        val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 0))
+
+        onSubmitReputation_thenReturn(expectedResponse)
+
+        viewModel.submitReputation(reputationId, reputationScore)
+
+        verifySubmitReputationUseCaseCalled()
+        verifyInboxReviewInsertReputationError(Fail(Throwable()))
+    }
+
+    @Test
+    fun `when submitReputation fails due to network should execute expected usecase and throw expected throwable`() {
+        val reputationId = anyInt()
+        val reputationScore = anyInt()
+        val expectedResponse = Throwable()
+
+        onSubmitReputationFails_thenReturn(expectedResponse)
+
+        viewModel.submitReputation(reputationId, reputationScore)
+
+        verifySubmitReputationUseCaseCalled()
+        verifyInboxReviewInsertReputationError(Fail(expectedResponse))
+    }
+
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {
         coEvery { productrevGetReviewDetailUseCase.executeOnBackground() } returns response
     }
@@ -75,8 +145,28 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         coVerify { productrevGetReviewDetailUseCase.executeOnBackground() }
     }
 
+    private fun onSubmitReputation_thenReturn(response: InboxReviewInsertReputationResponseWrapper) {
+        coEvery { inboxReviewInsertReputationUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onSubmitReputationFails_thenReturn(throwable: Throwable) {
+        coEvery { inboxReviewInsertReputationUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun verifySubmitReputationUseCaseCalled() {
+        coVerify { inboxReviewInsertReputationUseCase.executeOnBackground() }
+    }
+
     private fun verifyFeedbackIdEquals(feedbackId: Int) {
         Assert.assertEquals(feedbackId, viewModel.feedbackId)
+    }
+
+    private fun verifyInboxReviewInsertReputationSuccess(viewState: Success<Int>) {
+        viewModel.submitReputationResult.verifySuccessEquals(viewState)
+    }
+
+    private fun verifyInboxReviewInsertReputationError(viewState: Fail<Int>) {
+        viewModel.submitReputationResult.verifyErrorEquals(viewState)
     }
 
     private fun verifyReviewDetailsSuccess(viewState: Success<ProductrevGetReviewDetail>) {

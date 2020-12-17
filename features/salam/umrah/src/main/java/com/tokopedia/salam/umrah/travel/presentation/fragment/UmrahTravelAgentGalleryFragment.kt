@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesInput
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleryImageMapper
@@ -97,7 +98,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahTravelGalleryViewModel.galleryResult.observe(this, Observer {
+        umrahTravelGalleryViewModel.galleryResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetResult(it.data.umrahGalleries)
@@ -181,7 +182,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
     private fun requestData(page: Int) {
         slugName?.let {
             umrahTravelGalleryViewModel.getDataGallery(page, it,
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_agent_gallery))
+                    UmrahQuery.UMRAH_TRAVEL_AGENT_GALLERY)
         }
     }
 

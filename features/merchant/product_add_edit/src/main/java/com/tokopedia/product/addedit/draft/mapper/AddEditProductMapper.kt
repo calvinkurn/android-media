@@ -2,19 +2,23 @@ package com.tokopedia.product.addedit.draft.mapper
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
-import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
-import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
+import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
 
     private fun mapProductInputModelPictureListToDraftPictureList(pictureList: List<PictureInputModel>) = pictureList.map {
-        com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel(
+        com.tokopedia.product.manage.common.feature.draft.data.model.detail.PictureInputModel(
                 picID = it.picID,
                 description = it.description,
                 filePath = it.filePath,
@@ -29,7 +33,7 @@ object AddEditProductMapper {
         )
     }
 
-    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel>) =
+    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.feature.draft.data.model.detail.PictureInputModel>) =
             pictureList.map {
                 PictureInputModel(
                         picID = it.picID,
@@ -51,13 +55,14 @@ object AddEditProductMapper {
         productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
+        productDraft.detailInputModel.currentProductName = productInputModel.detailInputModel.currentProductName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
         productDraft.detailInputModel.categoryName = productInputModel.detailInputModel.categoryName
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
         productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
         productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
-        productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
-        productDraft.detailInputModel.sku = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.condition = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.sku = productInputModel.detailInputModel.sku
         productDraft.detailInputModel.imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
         productDraft.detailInputModel.pictureList = mapProductInputModelPictureListToDraftPictureList(productInputModel.detailInputModel.pictureList)
         productDraft.detailInputModel.preorder.apply {
@@ -68,6 +73,10 @@ object AddEditProductMapper {
         productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
             DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
+            ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
+        }
+        productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkListModel>()
@@ -98,13 +107,14 @@ object AddEditProductMapper {
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
+            currentProductName = productDraft.detailInputModel.currentProductName
             categoryId = productDraft.detailInputModel.categoryId
             categoryName = productDraft.detailInputModel.categoryName
             price = productDraft.detailInputModel.price
             stock = productDraft.detailInputModel.stock
             minOrder = productDraft.detailInputModel.minOrder
-            condition = productDraft.detailInputModel.sku
-            sku = productDraft.detailInputModel.condition
+            condition = productDraft.detailInputModel.condition
+            sku = productDraft.detailInputModel.sku
             imageUrlOrPathList = productDraft.detailInputModel.imageUrlOrPathList
             pictureList = mapDraftPictureListToProductInputModelPictureList(productDraft.detailInputModel.pictureList)
         }
@@ -116,6 +126,10 @@ object AddEditProductMapper {
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
             WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
+            ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
+        }
+        productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkModel>()
@@ -135,6 +149,15 @@ object AddEditProductMapper {
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel
+    }
+
+    fun mapProductDraftToProductDraftUiModel(draft: ProductDraft): ProductDraftUiModel {
+        return ProductDraftUiModel(
+                draft.draftId,
+                draft.detailInputModel.imageUrlOrPathList.firstOrNull() ?: "",
+                draft.detailInputModel.productName,
+                AddEditProductDraftMapper.getCompletionPercent(draft),
+        )
     }
 
     private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {

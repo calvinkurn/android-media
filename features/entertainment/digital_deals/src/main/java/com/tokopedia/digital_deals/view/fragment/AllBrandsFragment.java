@@ -13,7 +13,6 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +36,7 @@ import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 
@@ -107,8 +106,8 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void showErrorMessage() {
-        Toaster.INSTANCE.showNormalWithAction(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-        });
+        Toaster.INSTANCE.build(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        }).show();
     }
 
     public void getLocations(String selectedLocation) {

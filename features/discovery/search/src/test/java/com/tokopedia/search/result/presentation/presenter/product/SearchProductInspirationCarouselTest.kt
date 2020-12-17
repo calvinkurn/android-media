@@ -18,6 +18,7 @@ private const val inFirstPage = "searchproduct/inspirationcarousel/in-first-page
 private const val inFirstPageNoTopads = "searchproduct/inspirationcarousel/in-first-page-no-topads.json"
 private const val inPosition9 = "searchproduct/inspirationcarousel/in-position-9.json"
 private const val samePosition = "searchproduct/inspirationcarousel/same-position.json"
+private const val unknownLayout = "searchproduct/inspirationcarousel/unknown-layout.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -93,32 +94,42 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         // 11 -> product
         // 12 -> product
         // 13 -> product
-        // 14 -> inspiration carousel list (position 12)
+        // 14 -> inspiration carousel grid (position 12)
         // 15 -> product
         // 16 -> product
         visitableList.size shouldBe 17
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 4) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
-                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
-                    "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
+            when (index) {
+                4 -> {
+                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                            "visitable list at index $index should be InspirationCarouselViewModel"
+                    )
+                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
+                    }
                 }
-            }
-            else if (index == 9 || index == 14) {
-                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
-                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST) {
-                    "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST}"
+                9 -> {
+                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                            "visitable list at index $index should be InspirationCarouselViewModel"
+                    )
+                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST) {
+                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST}"
+                    }
                 }
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
-                        "visitable list at index $index should be ProductItemViewModel"
-                )
+                14 -> {
+                    visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                            "visitable list at index $index should be InspirationCarouselViewModel"
+                    )
+                    assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
+                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID}"
+                    }
+                }
+                else -> {
+                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                            "visitable list at index $index should be ProductItemViewModel"
+                    )
+                }
             }
         }
     }
@@ -397,31 +408,50 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     @Test
-    fun `Tracker Impression Inspiration Carousel`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(inFirstPage.jsonToObject())
+    fun `Hide Inspiration Carousel with unknown layout type`() {
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(unknownLayout.jsonToObject())
+        `Given Mechanism to save and get product position from cache`()
 
         `When Load Data`()
 
         `Then verify view set product list`()
+        `Then verify visitable list does not render unknown carousel layout`()
+    }
 
-
-        // POSITION
-        // 4 -> inspiration carousel info (position 4)
-        // 14 -> inspiration carousel list (position 12)
+    private fun `Then verify visitable list does not render unknown carousel layout`() {
         val visitableList = visitableListSlot.captured
-        `Then verify interaction for Inspiration Carousel Info impression`(visitableList[4] as InspirationCarouselViewModel)
-        `Then verify interaction for Inspiration Carousel List impression`(visitableList[14] as InspirationCarouselViewModel)
-    }
 
-    private fun `Then verify interaction for Inspiration Carousel Info impression`(data: InspirationCarouselViewModel) {
-        verify {
-            productListView.sendImpressionInspirationCarouselInfo(data)
-        }
-    }
+        // 0 -> product
+        // 1 -> product
+        // 2 -> product
+        // 3 -> product
+        // 4 -> product
+        // 5 -> product
+        // 6 -> product
+        // 7 -> product
+        // 8 -> inspiration carousel list (position 8)
+        // 9 -> product
+        // 10 -> product
+        // 11 -> product
+        // 12 -> product
+        // 13 -> product
+        // 14 -> product
+        visitableList.size shouldBe 15
 
-    private fun `Then verify interaction for Inspiration Carousel List impression`(data: InspirationCarouselViewModel) {
-        verify {
-            productListView.sendImpressionInspirationCarouselList(data)
+        visitableList.forEachIndexed { index, visitable ->
+            if (index == 8) {
+                visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
+                        "visitable list at index $index should be InspirationCarouselViewModel"
+                )
+                assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                    "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
+                }
+            }
+            else {
+                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                        "visitable list at index $index should be ProductItemViewModel"
+                )
+            }
         }
     }
 }

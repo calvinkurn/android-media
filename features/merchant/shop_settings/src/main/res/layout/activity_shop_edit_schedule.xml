@@ -2,74 +2,91 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/vgRoot"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:descendantFocusability="beforeDescendants"
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
-    <include layout="@layout/partial_toolbar_save_button" />
-
-    <ScrollView
-        android:id="@+id/scrollViewContent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        android:background="@android:color/transparent"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance"
+        tools:targetApi="lollipop">
 
-        <LinearLayout
-            android:id="@+id/vgContent"
+        <TextView
+            android:id="@+id/tvSave"
+            style="@style/TextView.Title.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_8"
+            android:text="@string/label_save"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_shadow" />
+
+    <com.tokopedia.shop.settings.common.widget.ImageLabelView
+        android:id="@+id/labelStartClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ilv_content_hint="@string/hint_date"
+        app:ilv_drawable="@drawable/ic_calendar_grey"
+        app:ilv_title="@string/date_start_shop_close" />
+
+    <com.tokopedia.shop.settings.common.widget.ImageLabelView
+        android:id="@+id/labelEndClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ilv_content_hint="@string/hint_date"
+        app:ilv_drawable="@drawable/ic_calendar_grey"
+        app:ilv_title="@string/date_end_shop_close" />
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/tilShopCloseNote"
+        style="@style/HintTextInputLayout"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:hint="@string/shop_close_note">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etShopCloseNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16">
+            android:inputType="textNoSuggestions|textMultiLine"
+            android:maxLength="@integer/max_slogan_char" />
 
-            <com.tokopedia.shop.settings.common.widget.ImageLabelView
-                android:id="@+id/labelStartClose"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:ilv_content_hint="@string/hint_date"
-                app:ilv_drawable="@drawable/ic_calendar_grey"
-                app:ilv_title="@string/date_start_shop_close" />
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-            <com.tokopedia.shop.settings.common.widget.ImageLabelView
-                android:id="@+id/labelEndClose"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:ilv_content_hint="@string/hint_date"
-                app:ilv_drawable="@drawable/ic_calendar_grey"
-                app:ilv_title="@string/date_end_shop_close" />
-
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/tilShopCloseNote"
-                style="@style/HintTextInputLayout"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:hint="@string/shop_close_note">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/etShopCloseNote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textNoSuggestions|textMultiLine"
-                    android:maxLength="@integer/max_slogan_char" />
-
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-            <TextView
-                style="@style/TextView.Micro.BlackDisabled"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
-                android:text="@string/closed_note_information" />
-
-        </LinearLayout>
-    </ScrollView>
+    <TextView
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:text="@string/closed_note_information" />
 
 </LinearLayout>

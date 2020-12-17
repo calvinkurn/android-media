@@ -3,11 +3,9 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.Spannable
 import android.text.method.ArrowKeyMovementMethod
-import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.widget.TextView
-import com.tokopedia.product.detail.view.listener.ProductFullDescriptionListener
 
 /**
  * Created by Yehezkiel on 05/05/20

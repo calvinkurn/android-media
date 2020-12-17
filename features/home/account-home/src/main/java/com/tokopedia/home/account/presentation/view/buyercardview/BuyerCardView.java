@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.view.buyercardview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,10 +13,20 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author okasurya on 7/17/18.
@@ -24,7 +35,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     private ImageView imageProfileCompleted;
     private ImageView icByme;
-    private ImageView eggImage;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointTitle;
@@ -45,6 +55,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
     private CardView widget;
+    private CardUnify sellerAccountCard;
+    private CardUnify sellerOpenShopCard;
+    private SellerMenuTracker sellerMenuTracker;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -84,6 +97,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         dividerTwo = view.findViewById(R.id.divider2);
         ivMemberBadge = view.findViewById(R.id.ivMemberBadge);
         widget = view.findViewById(R.id.cardView);
+        sellerAccountCard = view.findViewById(R.id.sellerAccountCard);
+        sellerOpenShopCard = view.findViewById(R.id.sellerOpenShopCard);
+        sellerMenuTracker = new SellerMenuTracker(TrackApp.getInstance().getGTM(), new UserSession(getContext()));
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
     }
@@ -236,5 +252,32 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
             ivMemberBadge.setVisibility(VISIBLE);
             ImageHandler.loadImageCircle2(getContext(), ivMemberBadge, eggImageUrl, R.drawable.placeholder_grey);
         }
+    }
+
+    @Override
+    public void showSellerAccountCard(String shopName) {
+        Typography shopNameTxt = sellerAccountCard.findViewById(R.id.shopName);
+        FrameLayout iconContainer = sellerAccountCard.findViewById(R.id.iconContainer);
+        shopNameTxt.setText(MethodChecker.fromHtml(getContext().getString(R.string.account_home_shop_name_card, shopName)));
+        iconContainer.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_open_shop_ellipse));
+
+        sellerAccountCard.setOnClickListener(v -> {
+            RouteManager.route(getContext(), ApplinkConstInternalSellerapp.SELLER_MENU);
+            sellerMenuTracker.sendEventClickMyShop();
+        });
+
+        sellerAccountCard.setVisibility(View.VISIBLE);
+        sellerOpenShopCard.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showShopOpenCard() {
+        sellerOpenShopCard.setOnClickListener(v -> {
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.LANDING_SHOP_CREATION);
+            sellerMenuTracker.sendEventCreateShop();
+        });
+
+        sellerAccountCard.setVisibility(View.GONE);
+        sellerOpenShopCard.setVisibility(View.VISIBLE);
     }
 }

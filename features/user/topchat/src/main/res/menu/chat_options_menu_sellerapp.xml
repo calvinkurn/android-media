@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_chat_search"
+        android:icon="@drawable/topchat_ic_search_grey_sellerapp"
+        android:title="@string/menu_chat_search"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_chat_filter"
+        android:icon="@drawable/ic_chat_filter_sellerapp"
+        android:title="@string/menu_chat_filter"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_chat_setting"
+        android:icon="@drawable/ic_gear_grey_sellerapp"
+        android:title="@string/menu_chat_setting"
+        app:showAsAction="ifRoom" />
+</menu>

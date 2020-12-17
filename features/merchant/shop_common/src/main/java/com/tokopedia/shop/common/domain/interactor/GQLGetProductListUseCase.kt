@@ -9,6 +9,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapp
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.data.source.cloud.query.GetProductList
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -33,9 +34,11 @@ class GQLGetProductListUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_FILTER = "filter"
         private const val PARAM_SORT = "sort"
+        private const val PARAM_EXTRA_INFO = "extraInfo"
 
         /**
          * Create request params for GetProductList GQL
+         * Documentation: https://tokopedia.atlassian.net/wiki/spaces/MC/pages/656903551/GQL+ProductList
          *
          * Example:
          * val shopId = "4516"
@@ -48,13 +51,15 @@ class GQLGetProductListUseCase @Inject constructor(
          * @param shopId required, get product list by shopId.
          * @param filterOptions optional, support multiple values.
          * @param sortOption optional, support only single value.
+         * @param extraInfoOptions optional, support multiple values.
          *
          * @return GetProductRequestParams required to execute GetProductListUseCase
          */
         fun createRequestParams(
             shopId: String,
             filterOptions: List<FilterOption>? = null,
-            sortOption: SortOption? = null
+            sortOption: SortOption? = null,
+            extraInfoOptions: List<ExtraInfo>? = null
         ): RequestParams {
             return RequestParams().apply {
                 putString(PARAM_SHOP_ID, shopId)
@@ -67,6 +72,11 @@ class GQLGetProductListUseCase @Inject constructor(
                 sortOption?.let {
                     val sortParam = FilterMapper.mapToRequestParam(it)
                     putObject(PARAM_SORT, sortParam)
+                }
+
+                extraInfoOptions?.let { extraInfo ->
+                    val extraInfoParams = extraInfo.map { it.value }
+                    putObject(PARAM_EXTRA_INFO, extraInfoParams)
                 }
             }
         }

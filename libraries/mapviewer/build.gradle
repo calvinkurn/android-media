@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -13,17 +14,17 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.locationmanager)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
 
+    implementation project(rootProject.ext.libraries.tkpddesign)
 }
 
 project.ext {

@@ -41,7 +41,7 @@ class HomeViewModelDynamicChannelTest{
         )
 
         // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+        getHomeUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf(dynamicChannelViewModel)
         )
 
@@ -90,7 +90,7 @@ class HomeViewModelDynamicChannelTest{
         )
 
         // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+        getHomeUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
         )
 
@@ -138,7 +138,7 @@ class HomeViewModelDynamicChannelTest{
         )
 
         // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+        getHomeUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf()
         )
 
@@ -174,7 +174,7 @@ class HomeViewModelDynamicChannelTest{
         )
 
         // dynamic data returns success
-        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+        getHomeUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf()
         )
 

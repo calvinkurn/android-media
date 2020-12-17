@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
-import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.IrisAnalyticsEvents
-import com.tokopedia.notifications.common.PayloadConverter
-import com.tokopedia.notifications.common.launchCatchError
+import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -18,6 +15,7 @@ import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class PushController(val context: Context) : CoroutineScope {
@@ -25,10 +23,12 @@ class PushController(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
-    private val isOfflinePushEnabled
-        get() = (context.applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+    private val cmRemoteConfigUtils by lazy { CMRemoteConfigUtils(context) }
 
-    fun handleNotificationBundle(bundle: Bundle) {
+    private val isOfflinePushEnabled
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+
+    fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {
             //todo event notification received offline
             launchCatchError(
@@ -36,6 +36,7 @@ class PushController(val context: Context) : CoroutineScope {
                         Log.d("PUSHController", "Code update")
 
                         val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
+                        if (isAmplification) baseNotificationModel.isAmplification = true
                         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
                             if (isOfflinePushEnabled)
                                 onOfflinePushPayloadReceived(baseNotificationModel)
@@ -43,26 +44,37 @@ class PushController(val context: Context) : CoroutineScope {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }
                     }, onError = {
-                Log.d("PUSHController", it.message)
+                Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}'")
             })
 
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
 
     fun handleNotificationAmplification(payloadJson: String) {
         try {
             launchCatchError(block = {
-                val toModel = Gson().fromJson(
+                val model = Gson().fromJson(
                         payloadJson,
                         BaseNotificationModel::class.java
                 )
-                if (!isOfflineNotificationActive(toModel.notificationId)) {
+                if (!isOfflineNotificationActive(model.notificationId)) {
                     val bundle = jsonToBundle(payloadJson)
-                    handleNotificationBundle(bundle)
+                    handleNotificationBundle(bundle, true)
                 }
-            }, onError = {})
-        } catch (e: Exception) { }
+            }, onError = {
+                Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            })
+        } catch (e: Exception) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        }
     }
 
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
@@ -141,9 +153,9 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
-            Log.d(
-                    "PushController", e.message
-            )
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${baseNotificationModel.toString()
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
     }
 

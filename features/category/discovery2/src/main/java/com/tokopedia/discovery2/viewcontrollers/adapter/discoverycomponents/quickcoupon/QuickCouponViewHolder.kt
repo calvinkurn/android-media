@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -37,6 +38,7 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickCouponViewModel = discoveryBaseViewModel as QuickCouponViewModel
+        getSubComponent().inject(quickCouponViewModel)
     }
 
     private fun initView() {
@@ -117,7 +119,11 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         if (!it) {
             val message = quickCouponViewModel.getCouponAddedFailMessage()
             if (message.isNotEmpty()) {
-                Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                try {
+                    Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

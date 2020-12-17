@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,15 +10,19 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
+import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
@@ -29,6 +34,10 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
     lateinit var thanksPageData: ThanksPageData
+
+    private val dialogController: DialogController by lazy {
+        DialogController(GratificationPresenter(this))
+    }
 
     fun getHeader(): HeaderUnify = thank_header
 
@@ -69,13 +78,30 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
-        showAppFeedbackBottomSheet(thanksPageData)
+        decideDialogs(fragment, thanksPageData)
         postEventOnThankPageDataLoaded(thanksPageData)
     }
 
-    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
+    private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
+        if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.AbstractGratifPopupCallback() {
+                override fun onIgnored(reason: Int) {
+                    showAppFeedbackBottomSheet(thanksPageData)
+                }
+
+            }, selectedFragment::class.java.name)
+        } else {
+            showAppFeedbackBottomSheet(thanksPageData)
+        }
+    }
+
+    fun cancelGratifDialog() {
+        dialogController.cancelJob()
+    }
+
+    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData) {
         val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
-        if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
+        if (paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
             InAppReviewHelper.launchInAppReview(this, null)
         }
     }
@@ -139,8 +165,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        if(::thanksPageData.isInitialized)
-            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
+        if (::thanksPageData.isInitialized)
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -168,6 +195,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val SCREEN_NAME = "Finish Transaction"
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
+        const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
+    }
+
+    private fun isGratifDisabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(REMOTE_GRATIF_DISABLED, false)
+        } catch (e: Exception) {
+            false
+        }
     }
 }
 

@@ -15,6 +15,8 @@ class AttachmentType {
 
         //TOPCHAT
         const val TYPE_IMAGE_DUAL_ANNOUNCEMENT = "4"
+        const val TYPE_IMAGE_CAROUSEL = "991"
+        const val TYPE_MESSAGE = "0"
 
         //CHATBOT
         const val TYPE_INVOICES_SELECTION = "6"

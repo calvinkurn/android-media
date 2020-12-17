@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.view;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
@@ -27,15 +27,13 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeAddress();
 
-    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel, String cartIds);
-
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   int cartPosition);
 
     void onTotalPaymentChange(String totalPayment);
 
-    void onFinishChoosingShipment();
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -105,7 +103,9 @@ public interface ShipmentAdapterActionListener {
 
     boolean isTradeInByDropOff();
 
-    void onTradeInAddressTabChanged(int position);
+    boolean hasSelectTradeInLocation();
+
+    void onTradeInAddressTabChanged(int addressPosition);
 
     void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel);
 
@@ -116,4 +116,10 @@ public interface ShipmentAdapterActionListener {
     void onCheckShippingCompletionClicked();
 
     void onShowTickerShippingCompletion();
+
+    void onClickTradeInInfo();
+
+    void onClickSwapInIndomaret();
+
+    void onSwapInUserAddress();
 }

@@ -3,7 +3,6 @@ package com.tokopedia.cart.domain.usecase
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
@@ -13,14 +12,12 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Irfan Khoirul on 2019-10-18.
  */
 
-class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifiedQuery") private val queryString: String,
-                                                       private val graphqlUseCase: GraphqlUseCase,
+class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                        private val cartSimplifiedMapper: CartSimplifiedMapper,
                                                        private val schedulers: ExecutorSchedulers) : UseCase<CartListData>() {
 
@@ -39,6 +36,7 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
                 PARAM_KEY_SELECTED_CART_ID to cartId
         )
 
+        val queryString = getQueryCartRevamp()
         val graphqlRequest = GraphqlRequest(queryString, ShopGroupSimplifiedGqlResponse::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -62,4 +60,5 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
     }
+
 }

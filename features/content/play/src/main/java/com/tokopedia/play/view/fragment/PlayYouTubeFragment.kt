@@ -14,15 +14,15 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
@@ -91,7 +91,7 @@ class PlayYouTubeFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
-        youtubeView.setFullScreenButton(orientation.isLandscape)
+        youtubeView.setIsFullScreen(orientation.isLandscape)
     }
 
     /**
@@ -107,7 +107,7 @@ class PlayYouTubeFragment @Inject constructor(
         exitFullscreen()
     }
 
-    override fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayVideoState) {
+    override fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayViewerVideoState) {
         handleYouTubeVideoState(state)
     }
 
@@ -134,7 +134,7 @@ class PlayYouTubeFragment @Inject constructor(
             orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
     }
 
-    private fun handleYouTubeVideoState(state: PlayVideoState) {
+    private fun handleYouTubeVideoState(state: PlayViewerVideoState) {
         if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
     }
 

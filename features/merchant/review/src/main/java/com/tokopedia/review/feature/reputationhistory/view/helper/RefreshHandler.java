@@ -5,7 +5,7 @@ import android.view.View;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.core2.R;
+import com.tokopedia.review.R;
 
 /**
  * modify by mnormansyah 18 feb 2017

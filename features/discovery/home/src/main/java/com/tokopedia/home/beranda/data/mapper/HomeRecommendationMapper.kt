@@ -19,7 +19,7 @@ class HomeRecommendationMapper {
         val productStack = Stack<HomeRecommendationItemDataModel>()
         //reverse stack because to get the first in
         Collections.reverse(productStack)
-        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, tabName, pageNumber))
+        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, tabName, pageNumber))
 
         val bannerStack = Stack<BannerRecommendationDataModel>()
         //reverse stack because to get the first in
@@ -69,12 +69,12 @@ class HomeRecommendationMapper {
         return bannerFeedViewModels
     }
 
-    private fun convertToHomeProductFeedModel(products: List<Product>, tabName: String, pageNumber: Int): List<HomeRecommendationItemDataModel> {
+    private fun convertToHomeProductFeedModel(products: List<Product>, pageName: String, tabName: String, pageNumber: Int): List<HomeRecommendationItemDataModel> {
         val homeFeedViewModels = ArrayList<HomeRecommendationItemDataModel>()
         for (position in products.indices) {
             val product = products[position]
 
-            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, (((pageNumber-1) * products.size) + position + 1), tabName))
+            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, pageName, (((pageNumber-1) * products.size) + position + 1), tabName))
         }
         return homeFeedViewModels
     }

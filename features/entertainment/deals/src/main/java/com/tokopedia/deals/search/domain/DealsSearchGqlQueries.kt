@@ -6,7 +6,6 @@ package com.tokopedia.deals.search.domain
 
 object DealsSearchGqlQueries {
 
-
     fun getEventSearchQuery() = """
         query (${'$'}params: [MapParamData]!){
           event_search(searchParams:${'$'}params)

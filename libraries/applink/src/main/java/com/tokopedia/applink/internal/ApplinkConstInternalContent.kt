@@ -7,7 +7,7 @@ object ApplinkConstInternalContent {
     const val HOST_AFFILIATE = "affiliate"
 
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
-    private const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
+    const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
 
     const val INTERNAL_CONTENT_CREATE_POST = "$INTERNAL_CONTENT/create_post/"
     const val INTERNAL_CONTENT_DRAFT_POST = "$INTERNAL_CONTENT/draft/"

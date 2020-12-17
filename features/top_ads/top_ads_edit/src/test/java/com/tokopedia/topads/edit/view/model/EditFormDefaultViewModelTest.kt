@@ -2,10 +2,15 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.SingleAdInFo
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.edit.data.response.*
 import com.tokopedia.topads.edit.usecase.*
+import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
@@ -15,8 +20,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Matchers.any
 
 
 @ExperimentalCoroutinesApi
@@ -32,7 +35,9 @@ class EditFormDefaultViewModelTest {
     private val editSingleAdUseCase: EditSingleAdUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
+    private val singleAdInfoUseCase: GraphqlUseCase<SingleAdInFo> = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
+    private val userSession:UserSession = mockk()
     private var groupId = 123
 
     @Before
@@ -43,7 +48,7 @@ class EditFormDefaultViewModelTest {
                 bidInfoUseCase,
                 getAdsUseCase,
                 getAdKeywordUseCase,
-                groupInfoUseCase, editSingleAdUseCase, topAdsCreateUseCase
+                groupInfoUseCase, editSingleAdUseCase,singleAdInfoUseCase,userSession, topAdsCreateUseCase
         )
     }
 
@@ -109,7 +114,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAds(groupId) {}
+        viewModel.getAds(1, groupId) { _:List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _:Int, _:Int ->}
 
         verify {
             getAdsUseCase.executeQuerySafeMode(any(), any())
@@ -190,6 +195,21 @@ class EditFormDefaultViewModelTest {
         }
     }
 
+    @Test
+    fun getSingleAdInfo() {
+        val adId = 121
+        val mockThrowable = mockk<Throwable>(relaxed = true)
+        every { userSession.shopId } returns "123"
+        every {
+            singleAdInfoUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getSingleAdInfo(adId) {}
+
+        verify { singleAdInfoUseCase.execute(any(), any()) }
+
+    }
 
     @Test
     fun onClearedTest() {
@@ -201,5 +221,6 @@ class EditFormDefaultViewModelTest {
         verify { groupInfoUseCase.cancelJobs() }
         verify { topAdsCreateUseCase.cancelJobs() }
         verify { editSingleAdUseCase.cancelJobs() }
+        verify {singleAdInfoUseCase.cancelJobs()}
     }
 }
