@@ -37,7 +37,7 @@ object AnalyticsTrackerUtil {
         eventDataLayer.putString(EventKeys.EVENT_LABEL, label)
         eventDataLayer.putString(EventKeys.EVENT_BUSINESSUNIT, businessUnit)
         eventDataLayer.putString(EventKeys.EVENT_CURRENTSITE, currentSite)
-        getTracker().sendEnhanceEcommerceEvent(HOME_PAGE_SCREEN_NAME, eventDataLayer)
+        getTracker().sendEnhanceEcommerceEvent(event, eventDataLayer)
     }
 
     fun sendECommerceEvent(context: Context?, event: String, category: String,
