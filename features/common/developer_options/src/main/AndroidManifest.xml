@@ -32,12 +32,6 @@
 
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
 
-        <receiver android:name=".receiver.DevOpsMediaButtonReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>

@@ -34,6 +34,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.receiver.DevOpsMedia;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -172,13 +173,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initBlockCanary();
         TokoPatch.init(this);
         SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
-        initDevOptsReceiver();
-    }
-
-    private void initDevOptsReceiver(){
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            DevOpsMedia.initReceiver(this);
-        }
     }
 
     private void initCacheManager(){
@@ -216,6 +210,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
