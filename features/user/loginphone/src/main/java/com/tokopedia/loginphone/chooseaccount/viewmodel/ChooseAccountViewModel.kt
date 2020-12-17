@@ -20,7 +20,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -41,7 +41,7 @@ class ChooseAccountViewModel @Inject constructor(
         @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
-        private val getAdminInfoUseCase: GetAdminInfoUseCase,
+        private val getAdminTypeUseCase: GetAdminTypeUseCase,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -152,16 +152,16 @@ class ChooseAccountViewModel @Inject constructor(
         getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo(),
-                getAdminInfoUseCase,
+                getAdminTypeUseCase,
                 showLocationAdminPopUp(),
-                showLocationAdminError()))
+                showGetAdminTypeError()))
     }
 
     private fun showLocationAdminPopUp(): (() -> Unit) = {
         mutableShowAdminLocationPopUp.value = Success(true)
     }
 
-    private fun showLocationAdminError(): ((e: Throwable) -> Unit) = {
+    private fun showGetAdminTypeError(): ((e: Throwable) -> Unit) = {
         mutableShowAdminLocationPopUp.value = Fail(it)
     }
 
