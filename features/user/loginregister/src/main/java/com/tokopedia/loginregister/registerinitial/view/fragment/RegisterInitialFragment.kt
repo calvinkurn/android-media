@@ -34,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
@@ -1029,14 +1030,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             activity?.runOnUiThread {
                 val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                 dialog.setTitle(getString(R.string.email_already_registered))
-                dialog.setDesc(
-                        String.format(resources.getString(
+                dialog.setDesc(String.format(resources.getString(
                                 R.string.email_already_registered_info), email))
                 dialog.setBtnOk(getString(R.string.already_registered_yes))
                 dialog.setOnOkClickListener { v ->
                     registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                     dialog.dismiss()
-                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, email, "", source)
+                    startActivity(intent)
                     it.finish()
                 }
                 dialog.setBtnCancel(getString(R.string.already_registered_no))

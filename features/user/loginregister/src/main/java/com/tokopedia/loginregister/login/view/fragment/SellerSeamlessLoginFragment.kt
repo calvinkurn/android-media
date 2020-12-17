@@ -199,7 +199,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
         context?.run {
-            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            val i = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivity(i)
         }
     }
