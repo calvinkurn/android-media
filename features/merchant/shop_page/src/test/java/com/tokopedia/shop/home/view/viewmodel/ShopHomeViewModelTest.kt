@@ -113,7 +113,8 @@ class ShopHomeViewModelTest {
                     true,
                     1,
                     1,
-                    2
+                    2,
+                    1
             ),
             true,
             listOf()

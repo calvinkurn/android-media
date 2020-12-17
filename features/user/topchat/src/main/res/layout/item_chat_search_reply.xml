@@ -17,7 +17,7 @@
         android:layout_height="@dimen/dp_topchat_52"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/red_400" />
+        tools:src="@color/Unify_Y500" />
 
     <ImageView
         android:id="@+id/ivPin"
@@ -64,7 +64,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@+id/time"
             app:layout_constraintStart_toEndOf="@+id/img_product_icon"
@@ -87,7 +87,7 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0"
@@ -122,7 +122,7 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +138,7 @@
         android:background="@drawable/circle_red_notification"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"
@@ -157,7 +157,7 @@
         android:background="@drawable/circle_blue_notification"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

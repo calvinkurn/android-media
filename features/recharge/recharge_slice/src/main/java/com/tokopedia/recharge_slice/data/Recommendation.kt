@@ -39,5 +39,8 @@ data class Recommendation(
     val type: String = "",
     @SerializedName("productPrice")
     @Expose
-    val productPrice: Int = 0
+    val productPrice: Int = 0,
+    @SerializedName("operatorName")
+    @Expose
+    val operatorName: String = ""
 )
