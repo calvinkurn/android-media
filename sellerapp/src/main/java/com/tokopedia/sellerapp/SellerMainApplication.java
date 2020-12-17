@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.URLUtil;
@@ -175,7 +176,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     private void initDevOptsReceiver(){
-        if (GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             DevOpsMedia.initReceiver(this);
         }
     }

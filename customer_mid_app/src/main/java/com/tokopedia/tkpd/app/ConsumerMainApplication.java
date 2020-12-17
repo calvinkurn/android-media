@@ -145,7 +145,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initDevOptsReceiver(){
-        if (GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             DevOpsMedia.initReceiver(this);
         }
     }
