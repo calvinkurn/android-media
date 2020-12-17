@@ -38,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 /**
  * Created by stevenfredian on 10/19/17.
@@ -277,6 +276,10 @@ class ChatItemListViewModel @Inject constructor(
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
+    }
+
+    fun hasFilter(): Boolean {
+        return filter != PARAM_FILTER_ALL
     }
 
     companion object {

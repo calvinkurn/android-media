@@ -40,4 +40,19 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = ""): BaseI
         return contact?.tag.toEmptyStringIfNull()
     }
 
+    fun isFromBuyer(myBuyerId: String): Boolean {
+        return (getTag() == ROLE_BUYER &&
+                getContactId() != myBuyerId)
+    }
+
+    fun isFromSeller(myBuyerId: String): Boolean {
+        return (getTag() == ROLE_SELLER &&
+                getContactId() != myBuyerId)
+    }
+
+    fun isFromMyselfAsSeller(myBuyerId: String): Boolean {
+        return (getTag() == ROLE_SELLER &&
+                getContactId() == myBuyerId)
+    }
+
 }

@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -32,25 +31,25 @@ import javax.inject.Inject
  * Created by stevenfredian on 10/19/17.
  */
 
-class WebSocketViewModel @Inject constructor(
-        private val dispatchers: TopchatCoroutineContextProvider,
-        private val userSession: UserSessionInterface,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor
+open class WebSocketViewModel @Inject constructor(
+        protected val dispatchers: TopchatCoroutineContextProvider,
+        protected val userSession: UserSessionInterface,
+        protected val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        protected val fingerprintInterceptor: FingerprintInterceptor
 ) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
 
-    val client = OkHttpClient()
-    private val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+    protected val client = OkHttpClient()
+    protected val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
             "?os_type=1" +
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
-    private var easyWS: EasyWS? = null
-    private var isOnStop = false
-    private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
+    protected var easyWS: EasyWS? = null
+    protected var isOnStop = false
+    protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
 
-    fun connectWebSocket() {
+    open fun connectWebSocket() {
         launch {
             client.run {
                 newBuilder().addInterceptor(tkpdAuthInterceptor)
@@ -81,7 +80,7 @@ class WebSocketViewModel @Inject constructor(
         }
     }
 
-    private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
+    protected fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
         val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
@@ -101,7 +100,7 @@ class WebSocketViewModel @Inject constructor(
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
 
-    private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
+    protected fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
         val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData?.msgId.toString()
