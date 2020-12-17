@@ -596,16 +596,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
     }
 
-    public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
-                email.getText().toString(),
-                registerPassword.getText().toString(),
-                source
-        );
-        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
-    }
-
     public void dropKeyboard() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }

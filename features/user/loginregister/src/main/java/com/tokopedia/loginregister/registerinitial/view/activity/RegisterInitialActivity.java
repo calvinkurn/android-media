@@ -2,22 +2,16 @@ package com.tokopedia.loginregister.registerinitial.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by nisie on 10/2/18.
@@ -27,7 +21,6 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-
         if(getIntent().getExtras()!= null){
             bundle.putAll(getIntent().getExtras());
         }
@@ -37,23 +30,6 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, RegisterInitialActivity.class);
-    }
-
-    @DeepLink({ApplinkConst.REGISTER})
-    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        UserSessionInterface userSession = new UserSession(context);
-        if (userSession.isLoggedIn()) {
-            if (context.getApplicationContext() instanceof ApplinkRouter) {
-                return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent
-                        (context, ApplinkConst.HOME);
-            } else {
-                throw new RuntimeException("Applinks intent unsufficient");
-            }
-        } else {
-            Intent intent = getCallingIntent(context);
-            return intent.setData(uri.build());
-        }
     }
 
     @Override
