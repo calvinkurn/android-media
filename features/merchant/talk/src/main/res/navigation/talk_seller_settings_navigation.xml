@@ -10,6 +10,11 @@
         android:name="com.tokopedia.talk.feature.sellersettings.settings.presentation.fragment.TalkSettingsFragment"
         tools:layout="@layout/fragment_talk_settings">
 
+        <argument
+            android:name="navigation"
+            app:argType="string"
+            android:defaultValue="" />
+
         <action
             android:id="@+id/action_talkSettingsFragment_to_talkSmartReplySettingsFragment"
             app:destination="@id/talkSmartReplySettingsFragment" />

@@ -12,6 +12,12 @@ import com.tokopedia.talk.R
 
 class TalkSellerSettingsActivity : BaseSimpleActivity() {
 
+    companion object {
+        const val KEY_NAVIGATION_PARAM = "navigation"
+    }
+
+    private var navigationParam: String = ""
+
     override fun getParentViewResourceID(): Int {
         return R.id.talk_seller_settings_parent_view
     }
@@ -24,6 +30,7 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getDataFromApplink()
         setupNavController()
     }
 
@@ -31,6 +38,10 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
         val navController = findNavController(R.id.talk_seller_settings_parent_view)
         val listener = AppBarConfiguration.OnNavigateUpListener {
             navController.navigateUp()
+        }
+
+        val bundle = Bundle().apply {
+            putString(KEY_NAVIGATION_PARAM, navigationParam)
         }
 
         findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)?.let {
@@ -41,7 +52,12 @@ class TalkSellerSettingsActivity : BaseSimpleActivity() {
         }
 
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
-        navController.setGraph(R.navigation.talk_seller_settings_navigation)
+        navController.setGraph(R.navigation.talk_seller_settings_navigation, bundle)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+    }
+
+    private fun getDataFromApplink() {
+        val uri = intent.data
+        navigationParam = uri?.getQueryParameter(KEY_NAVIGATION_PARAM) ?: ""
     }
 }
