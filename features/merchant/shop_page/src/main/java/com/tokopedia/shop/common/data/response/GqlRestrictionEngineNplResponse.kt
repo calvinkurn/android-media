@@ -30,7 +30,7 @@ data class RestrictValidateRestriction (
 data class RestrictionEngineDataResponse (
         @SerializedName("productID")
         @Expose
-        val productId : Int = 0,
+        val productId : Long = 0,
         @SerializedName("status")
         @Expose
         val status : String = "",
