@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
@@ -27,8 +28,13 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         private val LAYOUT = R.layout.bottom_sheet_product_manage
         private val TAG: String = ProductManageBottomSheet::class.java.simpleName
 
-        fun createInstance(): ProductManageBottomSheet {
+        private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
+
+        fun createInstance(access: ProductManageAccess): ProductManageBottomSheet {
             return ProductManageBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_FEATURE_ACCESS, access)
+                }
                 clearContentPadding = true
             }
         }
@@ -108,31 +114,54 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         setChild(itemView)
     }
 
-    private fun createProductManageMenu(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean): List<Visitable<*>> {
-        return mutableListOf<Visitable<*>>().apply {
-            add(Preview(product))
-            add(Duplicate(product))
-            if (GlobalConfig.isSellerApp()) {
-                add(StockReminder(product))
-            }
-            add(Delete(product))
-            if (GlobalConfig.isSellerApp()) {
-                add(ProductItemDivider)
+    private fun createProductManageMenu(
+        product: ProductViewModel,
+        isPowerMerchantOrOfficialStore: Boolean
+    ): List<Visitable<*>> {
+        val menuList = mutableListOf<Visitable<*>>()
 
-                when {
-                    product.hasTopAds() -> add(SeeTopAds(product))
-                    else -> add(SetTopAds(product))
+        arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS)?.let { access ->
+            menuList.apply {
+                add(Preview(product))
+
+                if(access.duplicateProduct) {
+                    add(Duplicate(product))
                 }
 
-                add(SetCashBack(product))
+                if (GlobalConfig.isSellerApp() && access.setStockReminder) {
+                    add(StockReminder(product))
+                }
 
-                if(product.isFeatured == true && isPowerMerchantOrOfficialStore) {
-                    add(RemoveFeaturedProduct(product))
-                } else if(product.isActive()) {
-                    add(SetFeaturedProduct(product))
+                if(access.deleteProduct) {
+                    add(Delete(product))
+                }
+
+                if (GlobalConfig.isSellerApp()) {
+                    add(ProductItemDivider)
+
+                    if(access.setTopAds) {
+                        when {
+                            product.hasTopAds() -> add(SeeTopAds(product))
+                            else -> add(SetTopAds(product))
+                        }
+                    }
+
+                    if(access.setCashBack) {
+                        add(SetCashBack(product))
+                    }
+
+                    if(product.isFeatured == true && isPowerMerchantOrOfficialStore && access.setFeatured) {
+                        add(RemoveFeaturedProduct(product))
+                    }
+
+                    if(product.isActive() && access.setFeatured) {
+                        add(SetFeaturedProduct(product))
+                    }
                 }
             }
         }
+
+        return menuList
     }
 
     fun init(

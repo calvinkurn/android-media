@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
@@ -29,6 +30,8 @@ class ProductViewHolder(
 
         showProductLabel(product)
         showVariantLabel(product)
+
+        setupButtonStyle(product)
         showProductButton(product)
 
         showProductImage(product)
@@ -80,6 +83,20 @@ class ProductViewHolder(
             itemView.btnEditStock.showWithCondition(product.isNotViolation())
             itemView.btnMoreOptions.showWithCondition(product.isNotViolation())
         }
+
+        itemView.btnEditPrice.isEnabled = product.hasEditPriceAccess()
+    }
+
+    private fun setupButtonStyle(product: ProductViewModel) {
+        itemView.btnEditPrice.apply {
+            if (product.hasEditPriceAccess()) {
+                buttonType = UnifyButton.Type.ALTERNATE
+                buttonVariant = UnifyButton.Variant.GHOST
+            } else {
+                buttonType = UnifyButton.Type.MAIN
+                buttonVariant = UnifyButton.Variant.FILLED
+            }
+        }
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
@@ -112,13 +129,17 @@ class ProductViewHolder(
     }
 
     private fun setOnItemClickListener(product: ProductViewModel) {
-        itemView.setOnClickListener {
-            if (product.multiSelectActive) {
-                toggleCheckBox()
-                onClickCheckBox()
-            } else {
-                onClickProductItem(product)
+        if(product.hasEditProductAccess()) {
+            itemView.setOnClickListener {
+                if (product.multiSelectActive) {
+                    toggleCheckBox()
+                    onClickCheckBox()
+                } else {
+                    onClickProductItem(product)
+                }
             }
+        } else {
+            itemView.setOnClickListener(null)
         }
     }
 

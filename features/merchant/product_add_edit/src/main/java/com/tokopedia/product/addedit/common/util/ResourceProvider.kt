@@ -170,6 +170,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
+    // admin multi location string properties
+
+    fun getAddProductMultiLocationMessage(): String? {
+        return getString(R.string.message_add_product_stock_only_main_location)
+    }
+
+    fun getEditProductMultiLocationMessage(): String? {
+        return getString(R.string.message_edit_product_stock_only_main_location)
+    }
+
     // Network errors
 
     fun getGqlErrorMessage(): String? {

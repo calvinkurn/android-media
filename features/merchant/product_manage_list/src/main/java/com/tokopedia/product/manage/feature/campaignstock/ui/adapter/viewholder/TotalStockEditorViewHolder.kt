@@ -58,6 +58,16 @@ class TotalStockEditorViewHolder(itemView: View?,
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
+        setStockEditorAccess(element)
+    }
+
+    private fun setStockEditorAccess(element: TotalStockEditorUiModel) {
+        itemView.qte_campaign_stock_amount?.apply {
+            val canEditStock = element.access?.updateStock == true
+            addButton.isEnabled = canEditStock
+            subtractButton.isEnabled = canEditStock
+            editText.isEnabled = canEditStock
+        }
     }
 
     private fun QuantityEditorUnify.toggleQuantityEditorBtn(stock: Int) {

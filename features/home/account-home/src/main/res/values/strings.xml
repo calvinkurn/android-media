@@ -228,6 +228,7 @@
     <string name="clear_cache">clear cache</string>
     <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<strong>%1$s</strong>]]></string>
+    <string name="account_home_role_name_card">Peran Saya: <![CDATA[<strong>%1$s</strong>]]></string>
 
     <string name="feedback_form">Feedback Form</string>
 

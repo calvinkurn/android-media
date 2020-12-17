@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -620,6 +619,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.show()
             submitLoadingIndicator?.hide()
         }
+
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupDefaultStockAllocationMessage()
 
         enableProductNameField()
         onFragmentResult()

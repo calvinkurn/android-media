@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
@@ -19,11 +20,14 @@ import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVar
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
@@ -70,6 +74,7 @@ class ProductManageViewModel @Inject constructor(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val multiEditProductUseCase: MultiEditProductUseCase,
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -114,6 +119,10 @@ class ProductManageViewModel @Inject constructor(
         get() = _productFiltersTab
     val onClickPromoTopAds: LiveData<TopAdsPage>
         get() = _onClickPromoTopAds
+    val productManageAccess: LiveData<Result<ProductManageAccess>>
+        get() = _productManageAccess
+    val deleteProductDialog: LiveData<DeleteProductDialogType>
+        get() = _deleteProductDialog
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -133,6 +142,8 @@ class ProductManageViewModel @Inject constructor(
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
+    private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
+    private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -238,14 +249,18 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
                 productListResponse?.data
             }
 
-            if(isRefresh) { refreshList() }
+            if(isRefresh) {
+                refreshList()
+            }
+
+            showStockTicker()
             showProductList(productList)
             hideProgressDialog()
         }, onError = {
@@ -277,6 +292,20 @@ class ProductManageViewModel @Inject constructor(
             }
             _productFiltersTab.value = Fail(it)
         }).let { getFilterTabJob = it }
+    }
+
+    fun getProductManageAccess() {
+        launchCatchError(block = {
+            val access = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId
+                val response = getProductManageAccessUseCase.execute(shopId)
+                ProductManageAccessMapper.mapToProductManageAccess(response)
+            }
+
+            _productManageAccess.value = Success(access)
+        }) {
+            _productManageAccess.value = Fail(it)
+        }
     }
 
     fun getFeaturedProductCount(shopId: String) {
@@ -520,6 +549,16 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteSingleProduct(productName: String, productId: String) {
+        val isMultiLocationShop = userSessionInterface.isMultiLocationShop
+        _deleteProductDialog.value = SingleProduct(productId, productName, isMultiLocationShop)
+    }
+
+    fun onDeleteMultipleProducts() {
+        val isMultiLocationShop = userSessionInterface.isMultiLocationShop
+        _deleteProductDialog.value = MultipleProduct(isMultiLocationShop)
+    }
+
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
@@ -530,8 +569,18 @@ class ProductManageViewModel @Inject constructor(
 
     private fun showProductList(products: List<Product>?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToViewModels(products, isMultiSelectActive)
+        val productManageAccess = (_productManageAccess.value as? Success)?.data
+        val productList = mapToViewModels(products, productManageAccess, isMultiSelectActive)
         _productListResult.value = Success(productList)
+    }
+
+    private fun showStockTicker() {
+        val isInitialLoad = _productListResult.value == null
+        val isMultiLocationShop = userSessionInterface.isMultiLocationShop
+
+        if(isInitialLoad && isMultiLocationShop) {
+            _viewState.value = ShowStockTicker
+        }
     }
 
     private fun setProductListFeaturedOnly(productsSize: Int){

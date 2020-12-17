@@ -58,9 +58,18 @@ class ProductVariantStockViewHolder(
         setAddButtonClickListener(variant)
         setSubtractButtonClickListener(variant)
         addStockEditorTextChangedListener(variant)
+        setStockEditorAccess(variant)
+    }
+
+    private fun setStockEditorAccess(variant: ProductVariant) {
+        val canEditStock = variant.access.editStock
+        itemView.quantityEditorStock.addButton.isEnabled = canEditStock
+        itemView.quantityEditorStock.subtractButton.isEnabled = canEditStock
+        itemView.quantityEditorStock.editText.isEnabled = canEditStock
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {
+        val canEditProduct = variant.access.editProduct
         itemView.switchStatus.setOnCheckedChangeListener(null)
         itemView.switchStatus.isChecked = variant.isActive()
         itemView.switchStatus.setOnCheckedChangeListener { _, isChecked ->
@@ -74,6 +83,7 @@ class ProductVariantStockViewHolder(
                 listener.onStatusChanged(variant.id, status)
             }, STATUS_SWITCH_DELAY)
         }
+        itemView.switchStatus.isEnabled = canEditProduct
     }
 
     private fun setupStatusLabel(variant: ProductVariant) {

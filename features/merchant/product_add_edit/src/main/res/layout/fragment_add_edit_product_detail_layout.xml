@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_add_edit_admin_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerType="information"
+            app:tickerShapeType="full"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <include
             android:id="@+id/add_edit_product_photo_layout"
             layout="@layout/add_edit_product_photo_layout"
@@ -22,7 +31,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/ticker_add_edit_admin_info"/>
 
         <include
             android:id="@+id/add_edit_product_name_layout"

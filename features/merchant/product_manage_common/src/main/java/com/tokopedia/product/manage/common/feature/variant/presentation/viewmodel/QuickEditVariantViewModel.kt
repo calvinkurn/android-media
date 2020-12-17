@@ -5,6 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
@@ -13,11 +19,14 @@ import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVari
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class QuickEditVariantViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -33,31 +42,53 @@ class QuickEditVariantViewModel @Inject constructor(
     val showErrorView: LiveData<Boolean>
         get() = _showErrorView
 
-    val showStockTicker: LiveData<Boolean>
-        get() = _showStockTicker
+    val showSaveBtn: LiveData<Boolean>
+        get() = _showSaveBtn
+
+    val tickerList: LiveData<List<ProductManageTicker>>
+        get() = _tickerList
 
     private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _editVariantResult = MutableLiveData<EditVariantResult>()
+    private val _productManageAccess = MutableLiveData<ProductManageAccess>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showErrorView = MutableLiveData<Boolean>()
-    private val _showStockTicker = MutableLiveData<Boolean>()
+    private val _showSaveBtn = MutableLiveData<Boolean>()
+    private val _tickerList = MutableLiveData<List<ProductManageTicker>>()
 
-    fun getProductVariants(productId: String) {
+    fun getData(productId: String) {
+        hideErrorView()
+        showProgressBar()
+        getTickerList()
+
+        launchCatchError(block = {
+            val access = getProductManageAccess()
+            _productManageAccess.value = access
+            getProductVariants(productId, access)
+        }) {
+            hideProgressBar()
+            showErrorView()
+        }
+    }
+
+    private fun getProductVariants(productId: String, access: ProductManageAccess) {
         hideErrorView()
         showProgressBar()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val requestParams = GetProductVariantUseCase.createRequestParams(productId)
                 val response = getProductVariantUseCase.execute(requestParams)
-
                 val variant = response.getProductV3
-                mapToVariantsResult(variant)
+                mapToVariantsResult(variant, access)
             }
+            val variants = result.variants
+            val variantNotEmpty = variants.isNotEmpty()
+            setShowSaveButton(access, variantNotEmpty)
 
-            if (result.variants.isNotEmpty()) {
-                setShowStockTicker(result)
-                setEditVariantResult(productId, result)
+            if (variantNotEmpty) {
                 _getProductVariantsResult.value = result
+                setEditVariantResult(productId, result)
+                getTickerList()
             } else {
                 showErrorView()
             }
@@ -67,6 +98,25 @@ class QuickEditVariantViewModel @Inject constructor(
             hideProgressBar()
             showErrorView()
         }
+    }
+
+    private suspend fun getProductManageAccess(): ProductManageAccess {
+        return withContext(dispatchers.io) {
+            if(userSession.isShopOwner) {
+                ProductManageAccessMapper.mapProductManageOwnerAccess()
+            } else {
+                val response = getProductManageAccessUseCase.execute(userSession.shopId)
+                ProductManageAccessMapper.mapToProductManageAccess(response)
+            }
+        }
+    }
+
+    private fun setShowSaveButton(access: ProductManageAccess, variantNotEmpty: Boolean) {
+        val hasEditStockAccess = access.editStock
+        val hasEditProductAccess = access.editProduct
+        val shouldShow = (hasEditStockAccess || hasEditProductAccess) && variantNotEmpty
+
+        _showSaveBtn.value = shouldShow
     }
 
     fun setVariantPrice(variantId: String, price: Int) {
@@ -81,15 +131,26 @@ class QuickEditVariantViewModel @Inject constructor(
         updateVariant(variantId) { it.copy(status = status) }
     }
 
-    fun setStockWarningTicker() {
+    fun setTickerList() {
         _editVariantResult.value?.run {
-            val showTicker = _showStockTicker.value ?: false
+            val tickerList = _tickerList.value?.toMutableList()
             val isAllStockEmpty = isAllStockEmpty()
 
-            if(showTicker != isAllStockEmpty) {
-                _showStockTicker.value = isAllStockEmpty
+            if(isAllStockEmpty) {
+                tickerList?.add(EmptyStockTicker)
+            } else {
+                tickerList?.remove(EmptyStockTicker)
             }
+
+            _tickerList.value = tickerList
         }
+    }
+
+    private fun getTickerList() {
+        val multiLocationShop = userSession.isMultiLocationShop
+        val canEditStock = _productManageAccess.value?.editStock == true
+        val isAllStockEmpty = _editVariantResult.value?.isAllStockEmpty() == true
+        _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, isAllStockEmpty)
     }
 
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {
@@ -101,12 +162,6 @@ class QuickEditVariantViewModel @Inject constructor(
 
     private fun setEditVariantResult(productId: String, result: GetVariantResult) {
         _editVariantResult.value = mapVariantsToEditResult(productId, result)
-    }
-
-
-    private fun setShowStockTicker(result: GetVariantResult) {
-        val allStockEmpty = result.isAllStockEmpty()
-        _showStockTicker.value = allStockEmpty
     }
 
     private fun showProgressBar() {

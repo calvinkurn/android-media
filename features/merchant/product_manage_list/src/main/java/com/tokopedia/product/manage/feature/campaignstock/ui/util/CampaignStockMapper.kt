@@ -31,7 +31,9 @@ object CampaignStockMapper {
                             productId = sellable.productId,
                             productName = sellable.productName,
                             stock = sellable.stock,
-                            isActive = variant.status == ProductStatus.ACTIVE)
+                            isActive = variant.status == ProductStatus.ACTIVE,
+                            access = variant.access
+                        )
                 }
                 .toList()
     }

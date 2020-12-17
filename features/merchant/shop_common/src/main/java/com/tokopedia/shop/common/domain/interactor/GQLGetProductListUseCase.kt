@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListData
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -27,7 +28,15 @@ class GQLGetProductListUseCase @Inject constructor(
 
     suspend fun execute(requestParams: RequestParams): ProductListData {
         setRequestParams(requestParams.parameters)
-        return executeOnBackground()
+        val response = executeOnBackground()
+        val header = response.productList?.header
+        val errorCode = header?.errorCode
+
+        if(errorCode?.isNotEmpty() == true) {
+            throw MessageErrorException()
+        }
+
+        return response
     }
 
     companion object {

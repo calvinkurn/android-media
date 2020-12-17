@@ -29,6 +29,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,7 +41,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
         private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -66,6 +68,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAddingWholeSale = false
 
     var isAddingValidationWholeSale = false
+
+    private var stockAllocationDefaultMessage = ""
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
@@ -319,7 +323,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductStockInputError.value = true
             return
         }
-        productStockMessage = ""
+
+        productStockMessage = stockAllocationDefaultMessage
         mIsProductStockInputError.value = false
     }
 
@@ -460,4 +465,23 @@ class AddEditProductDetailViewModel @Inject constructor(
             mShopShowCases.value = Fail(it)
         })
     }
+
+    fun setupDefaultStockAllocationMessage() {
+        stockAllocationDefaultMessage =
+                (userSession.isShopAdmin || userSession.isShopOwner).let { shouldDisplayDifferentMessage ->
+                    if (shouldDisplayDifferentMessage) {
+                        getStockAllocationMessage()
+                    } else {
+                        ""
+                    }
+                }
+    }
+
+    private fun getStockAllocationMessage(): String =
+            when {
+                userSession.isMultiLocationShop && isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
+                userSession.isMultiLocationShop && isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
+                else -> ""
+            }
+
 }

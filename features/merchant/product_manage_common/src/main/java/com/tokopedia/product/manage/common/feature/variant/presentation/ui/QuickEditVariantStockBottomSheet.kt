@@ -8,11 +8,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.common.feature.variant.adapter.factory.ProductVariantStockAdapterFactoryImpl
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 class QuickEditVariantStockBottomSheet(
     private val onSaveVariantsStock: (EditVariantResult) -> Unit = {}
@@ -41,6 +43,12 @@ class QuickEditVariantStockBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewState()
+        initView()
+    }
+
+    private fun initView() {
+        val emptyTicker = listOf<TickerData>()
+        variantStockAdapter.showTicker(emptyTicker)
     }
 
     override fun getTitle(): String {
@@ -58,7 +66,7 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onStockBtnClicked() {
-        viewModel.setStockWarningTicker()
+        viewModel.setTickerList()
     }
 
     override fun onStockChanged(variantId: String, stock: Int) {
@@ -73,13 +81,12 @@ class QuickEditVariantStockBottomSheet(
     }
 
     private fun observeViewState() {
-        observe(viewModel.showStockTicker) { showStockTicker ->
-            if (showStockTicker) {
-                variantStockAdapter.showStockTicker()
-                variantStockAdapter.hideStockHint()
+        observe(viewModel.tickerList) { data ->
+            if(data.isNotEmpty()) {
+                val tickerList = mapToTickerData(context, data)
+                variantStockAdapter.showTicker(tickerList)
             } else {
-                variantStockAdapter.hideStockTicker()
-                variantStockAdapter.showStockHint()
+                variantStockAdapter.hideTicker()
             }
         }
     }
