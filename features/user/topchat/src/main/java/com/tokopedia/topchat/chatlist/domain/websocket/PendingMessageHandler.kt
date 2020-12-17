@@ -19,8 +19,7 @@ class PendingMessageHandler @Inject constructor(
             message.isFromBuyer(userSession.userId) -> RoleType.BUYER
             message.isFromSeller(userSession.userId) -> RoleType.SELLER
             else -> null
-        }
-        if (appointedTo == null || role == appointedTo) return
+        } ?: return
         var occurrence = 0
         if (pendingMessages.containsKey(message.messageId)) {
             occurrence = pendingMessages[message.messageId]?.count ?: 0

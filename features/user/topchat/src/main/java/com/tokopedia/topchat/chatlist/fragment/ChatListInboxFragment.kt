@@ -118,6 +118,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var filterMenu = FilterMenu()
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
+    private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
     private lateinit var broadCastButton: FloatingActionButton
@@ -415,17 +416,13 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             newChat: IncomingChatWebSocketModel,
             counterIncrement: Int = 1
     ) {
-        adapter?.let { adapter ->
-            val chatIndex = adapter.list.indexOfFirst { chat ->
-                return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
-            }
-            if (chatIndex == RecyclerView.NO_POSITION && viewModel.hasFilter()) return
-            updateItemOnIndex(
-                    index = chatIndex,
-                    newChat = newChat,
-                    counterIncrement = counterIncrement
-            )
-        }
+        val chatIndex = rvAdapter?.findChat(newChat) ?: return
+        if (chatIndex == RecyclerView.NO_POSITION && viewModel.hasFilter()) return
+        updateItemOnIndex(
+                index = chatIndex,
+                newChat = newChat,
+                counterIncrement = counterIncrement
+        )
     }
 
     private fun updateItemOnIndex(
@@ -526,7 +523,9 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatListAdapter(this, adapterTypeFactory)
+        return ChatListAdapter(this, adapterTypeFactory).also {
+            rvAdapter = it
+        }
     }
 
     override fun getAdapter(): ChatListAdapter? {

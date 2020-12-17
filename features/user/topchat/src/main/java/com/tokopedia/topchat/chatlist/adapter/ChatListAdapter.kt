@@ -229,4 +229,10 @@ class ChatListAdapter constructor(
         }
     }
 
+    fun findChat(newChat: IncomingChatWebSocketModel): Int {
+        return list.indexOfFirst { chat ->
+            return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
+        }
+    }
+
 }
