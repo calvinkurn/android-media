@@ -22,6 +22,7 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.devicefingerprint.submitdevice.model.Screen
 import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
+import com.tokopedia.encryption.security.sha256
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.io.File
@@ -93,7 +94,8 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 mcc = getMcc(),
                 mnc = getMnc(),
                 bootCount = getBootCount(),
-                permissions = getPermissions(context)
+                permissions = getPermissions(context),
+                appList = getEncodedInstalledApps(context).joinToString(separator = ",")
         )
     }
 
@@ -117,6 +119,20 @@ class DeviceInfoPayloadCreator @Inject constructor(
             }
         } else {
             return null
+        }
+    }
+
+    private fun getEncodedInstalledApps(context: Context): List<String> {
+        return try {
+            val pm = context.packageManager
+            val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            val packageList = mutableListOf<String>()
+            for (packageInfo in packages) {
+                packageList.add(packageInfo.packageName.sha256())
+            }
+            return packageList
+        } catch (e: Exception) {
+            listOf()
         }
     }
 

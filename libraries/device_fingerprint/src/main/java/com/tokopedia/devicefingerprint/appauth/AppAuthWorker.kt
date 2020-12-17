@@ -60,7 +60,8 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
     companion object {
         const val WORKER_NAME = "APP_AUTH_WORKER"
 
-        var hasSuccessSendInt = 0
+        // TODO: should be set 0; 1 is to disable.
+        var hasSuccessSendInt = 1
         var PREF = "app_auth"
         var KEY_SUCCESS = "scs"
 

@@ -1,7 +1,7 @@
 package com.tokopedia.devicefingerprint.di
 
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
-import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceInfoService
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component
 
@@ -9,6 +9,6 @@ import dagger.Component
 @Component(modules = [DeviceFingerprintModule::class])
 interface DeviceFingerprintComponent {
     fun inject(appAuthWorker: AppAuthWorker)
-    fun inject(service: SubmitDeviceInfoService)
+    fun inject(submitDeviceWorker: SubmitDeviceWorker)
     fun getGraphQlRepo(): GraphqlRepository
 }

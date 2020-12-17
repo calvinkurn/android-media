@@ -8,8 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 class SubmitDeviceInfoUseCase @Inject constructor(
-    repository: GraphqlRepository,
-    private val  insertDeviceInfoPayloadCreator: InsertDeviceInfoPayloadCreator
+    repository: GraphqlRepository
 ): GraphqlUseCase<SubmitDeviceInfoResponse>(repository) {
 
     companion object {
@@ -28,16 +27,11 @@ class SubmitDeviceInfoUseCase @Inject constructor(
         setTypeClass(SubmitDeviceInfoResponse::class.java)
     }
 
-    private fun setParams(payload: InsertDeviceInfoPayload) {
+    fun setParams(payload: InsertDeviceInfoPayload) {
         val params: Map<String, Any?> = mutableMapOf(
                 PARAM_INPUT to payload
         )
         setRequestParams(params)
-    }
-
-    override suspend fun executeOnBackground(): SubmitDeviceInfoResponse {
-        setParams(insertDeviceInfoPayloadCreator.create())
-        return super.executeOnBackground()
     }
 
 }
