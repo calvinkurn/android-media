@@ -418,7 +418,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             hideLoading()
             when(it) {
                 is Success -> {
-                    Log.d("SHOP SETTINGS", "$allowChangesTime")
+                    Log.d("SHOP SETTINGS", "${System.currentTimeMillis() - allowChangesTime}")
                     val data = it.data
                     showShopEditShopInfoTicker(data)
                     showShopNameDomainTextField(data)
