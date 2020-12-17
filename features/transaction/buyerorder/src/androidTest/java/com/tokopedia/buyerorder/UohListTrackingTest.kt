@@ -57,12 +57,12 @@ class UohListTrackingTest {
             clickBeliLagi()
             clickOrderCard()
             doSearch("product 17")
-            clickFilterDate()
-            doApplyFilterDate()
             clickFilterStatus()
             doApplyFilterStatus()
             clickFilterCategory()
             doApplyFilterCategory()
+            clickFilterDate()
+            doApplyFilterDate()
         } submit {
             hasPassedAnalytics(gtmLogDBSource, query)
         }
