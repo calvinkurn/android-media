@@ -52,11 +52,38 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 } else {
                     item.dataObject.receiverPhone
                 }
-                tv_receiver_name.text = item.dataObject.receiverName
-                tv_receiver_number.text = numberPhone
-                tv_receiver_street.text = item.dataObject.receiverStreet
-                tv_receiver_district.text = item.dataObject.receiverDistrict
-                tv_receiver_province.text = item.dataObject.receiverProvince
+
+                with(item.dataObject) {
+                    tv_receiver_name.text = receiverName
+                    if(numberPhone.isNotBlank()) {
+                        tv_receiver_number.show()
+                        tv_receiver_number.text = numberPhone
+                    } else {
+                        tv_receiver_number.hide()
+                    }
+
+                    if(receiverStreet.isNotBlank()) {
+                        tv_receiver_street.show()
+                        tv_receiver_street.text = receiverStreet
+                    } else {
+                        tv_receiver_street.hide()
+                    }
+
+
+                    if(receiverDistrict.isNotBlank() || !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                        tv_receiver_district.show()
+                        tv_receiver_district.text = receiverDistrict
+                    } else {
+                        tv_receiver_district.hide()
+                    }
+
+                    if(receiverProvince.isNotBlank()) {
+                        tv_receiver_province.show()
+                        tv_receiver_province.text = receiverProvince
+                    } else {
+                        tv_receiver_province.hide()
+                    }
+                }
 
                 shipping_address_copy.apply {
                     setOnClickListener {
@@ -171,5 +198,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
     companion object {
         const val NUMBER_PHONE_SIX_TWO = "62"
         const val NUMBER_PHONE_ZERO = "0"
+        const val CONTAINS_COMMA = ","
     }
 }

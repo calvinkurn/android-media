@@ -275,13 +275,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_number"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:lineSpacingMultiplier="1"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/tv_receiver_name"
         app:layout_constraintTop_toBottomOf="@id/tv_receiver_name"
         app:typographyType="body_3"
@@ -289,7 +288,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_street"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
@@ -307,7 +306,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_district"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_8"
         android:inputType="none"
@@ -344,7 +343,7 @@
         android:id="@+id/tv_som_dropshipper_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/som_dropshipper_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
@@ -356,7 +355,7 @@
         android:id="@+id/tv_som_dropshipper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@id/tv_som_dropshipper_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
