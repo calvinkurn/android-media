@@ -236,15 +236,8 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                 switch.setOnClickListener {
                     val manual = ManualAdsConfirmationCommonSheet.newInstance()
                     manual.show((view.context as FragmentActivity).supportFragmentManager, "")
-                    manual.manualClick = {
-                        widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                                TOGGLE_OFF,
-                                CHANNEL,
-                                currentBudget,
-                                userSession.shopId.toInt(),
-                                SOURCE))
-                        )
-                    }
+                    manual.dismissed = { switch.isChecked = true }
+                    manual.manualClick = { switchToManual() }
                 }
             }
             ENTRY_FROM_DETAIL_SHEET -> {
@@ -333,6 +326,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                         val man = ManualAdsConfirmationCommonSheet.newInstance()
                         man.show((view.context as FragmentActivity).supportFragmentManager, "")
                         man.dismissed = { it.btn_switch.isChecked = true }
+                        man.manualClick = { switchToManual() }
                     }
                 }
                 ENTRY_FROM_DETAIL_SHEET -> {
@@ -354,6 +348,16 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
         (context as BaseActivity).startActivityForResult(intent, AUTO_ADS_DISABLED)
+    }
+
+    private fun switchToManual() {
+        widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
+                TOGGLE_OFF,
+                CHANNEL,
+                currentBudget,
+                userSession.shopId.toInt(),
+                SOURCE))
+        )
     }
 
     fun loadData(fromEdit: Int) {

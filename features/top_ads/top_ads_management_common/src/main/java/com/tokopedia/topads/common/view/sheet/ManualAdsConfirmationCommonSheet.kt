@@ -23,16 +23,15 @@ class ManualAdsConfirmationCommonSheet : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupView(view)
+        setupView()
     }
 
-    private fun setupView(view: View) {
-        btn_close.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_group_close))
+    private fun setupView() {
         btn_start_manual_ads?.setOnClickListener {
+            manualAdsBtnClicked = true
             dismiss()
             manualClick?.invoke()
         }
-        btn_close?.setOnClickListener { dismiss() }
         cancel_btn_start_manual_ads?.setOnClickListener { dismiss() }
 
         setOnDismissListener {
