@@ -564,7 +564,6 @@ object ApplinkConstInternalGlobal {
      * TermPrivacyActivity
      * @applink : tokopedia-android-internal://global/term-privacy/{page}
      **/
-
     @JvmField
     val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}"
     @JvmField
