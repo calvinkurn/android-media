@@ -79,4 +79,8 @@ interface ActionListener {
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
 
     fun onRecentViewProductImpression(element: CartRecentViewItemHolderData)
+
+    fun onGlobalCheckboxCheckedChange(isChecked: Boolean, isCheckUncheckDirectAction: Boolean)
+
+    fun onGlobalDeleteClicked()
 }

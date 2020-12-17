@@ -45,7 +45,7 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery)) {
+            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                 productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 syncData.value = true
             }

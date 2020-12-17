@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/replyUserImage"
@@ -46,7 +46,7 @@
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             app:layout_goneMarginStart="@dimen/layout_lvl0"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/labelMyQuestion"
             app:layout_constraintTop_toTopOf="@id/labelMyQuestion"
             app:layout_constraintBottom_toBottomOf="@id/labelMyQuestion"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@+id/replyUserName"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -144,7 +144,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_32"
+        android:textColor="@color/Unify_N700_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

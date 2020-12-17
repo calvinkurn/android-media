@@ -10,8 +10,17 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 
-fun convertToBitmap(path: String): Bitmap {
-    return modifyOrientation(BitmapFactory.decodeFile(path), path)
+fun convertToBitmap(path: String): Bitmap? {
+    val file = File(path)
+    if (file.exists()) {
+        val bmOptions = BitmapFactory.Options()
+        bmOptions.inSampleSize = 2
+        bmOptions.inJustDecodeBounds = false
+        val bitmap =  BitmapFactory.decodeFile(file.absolutePath, bmOptions)
+        return modifyOrientation(bitmap, file.absolutePath)
+    }
+
+    return null
 }
 
 @Throws(IOException::class)

@@ -24,5 +24,7 @@ data class PurchaseProtectionPlanDataResponse(
     @SerializedName("protection_checkbox_disabled")
     var protectionCheckboxDisabled: Boolean = false,
     @SerializedName("unit")
-    val unit: String = ""
+    val unit: String = "",
+    @SerializedName("source")
+    val source: String = ""
 )

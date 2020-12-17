@@ -71,7 +71,7 @@ class PlayBroadcastSummaryViewModelTest {
                 .assertThat(result)
                 .isEqualTo(
                         NetworkResult.Success(
-                                playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats)
+                                playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics)
                         )
                 )
     }
