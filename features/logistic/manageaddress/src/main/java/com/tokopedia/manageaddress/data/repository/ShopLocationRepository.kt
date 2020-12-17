@@ -17,9 +17,15 @@ class ShopLocationRepository @Inject constructor(private val gql: GraphqlReposit
         return gql.getResponse(request)
     }
 
-    suspend fun setShopLocationStatus(): SetShopLocationStatusResponse {
+    suspend fun setShopLocationStatus(warehouseId: Int, status: Int): SetShopLocationStatusResponse {
+        val param = mapOf(
+                "inputShopLocSetStatus" to listOf(mapOf(
+                        "warehouse_id" to warehouseId,
+                        "status" to status)
+                )
+        )
         val request = GraphqlRequest(ShopLocationQuery.setShopLocationStatus,
-                GetShopLocationResponse::class.java)
+                SetShopLocationStatusResponse::class.java, param)
         return gql.getResponse(request)
     }
 

@@ -87,7 +87,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
                 listener.onShopLocationStateStatusClicked(shopLocation)
             }
             btnEditocation.setOnClickListener {
-                listener.onShopLocationStateStatusClicked(shopLocation)
+                listener.onShopEditAddress(shopLocation)
             }
         }
     }

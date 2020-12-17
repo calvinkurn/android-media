@@ -8,6 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.data.repository.ShopLocationRepository
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
+import com.tokopedia.manageaddress.domain.response.shoplocation.ShopLocationSetStatusResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,8 +23,8 @@ class ShopLocationViewModel @Inject constructor(
     val shopLocation: LiveData<ShopLocationState<List<Warehouse>>>
         get() = _shopLocation
 
-    private val _result = MutableLiveData<ShopLocationState<String>>()
-    val result: LiveData<ShopLocationState<String>>
+    private val _result = MutableLiveData<ShopLocationState<ShopLocationSetStatusResponse>>()
+    val result: LiveData<ShopLocationState<ShopLocationSetStatusResponse>>
         get() = _result
 
     fun getShopLocationList(shopId: Int?) {
@@ -37,9 +38,9 @@ class ShopLocationViewModel @Inject constructor(
     fun setShopLocationState(warehouseId: Int, status: Int) {
         _result.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorSetShopLocation) {
-            val setShopLocationStatus = repo.setShopLocationStatus()
+            val getShopLocationStatus = repo.setShopLocationStatus(warehouseId, status)
             shopLocationStateStatus = true
-            _result.value = ShopLocationState.Success("success")
+            _result.value = ShopLocationState.Success(getShopLocationStatus.shopLocationSetStatus)
         }
     }
 
