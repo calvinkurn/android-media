@@ -553,23 +553,4 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun setInitialProductList(
-            shopId: String,
-            initialProductListData: ShopProduct.GetShopProduct?) {
-        initialProductListData?.let{shopProduct ->
-            val isHasNextPage = ShopUtil.isHasNextPage(1, ShopPageConstant.DEFAULT_PER_PAGE, shopProduct.totalData)
-            val productListUiModelData = shopProduct.data.map {
-                ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
-                        it,
-                        ShopUtil.isMyShop(shopId, userSessionShopId)
-                )
-            }
-            val totalProductListData = shopProduct.totalData
-            _productListData.postValue(Success(GetShopHomeProductUiModel(
-                    isHasNextPage,
-                    productListUiModelData,
-                    totalProductListData
-            )))
-        }
-    }
 }

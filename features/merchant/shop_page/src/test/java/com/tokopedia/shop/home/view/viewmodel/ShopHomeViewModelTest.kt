@@ -33,6 +33,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -101,6 +102,22 @@ class ShopHomeViewModelTest {
                 )
         )
     }
+    private val playWidgetUiModelMockData  = PlayWidgetUiModel.Small(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2
+            ),
+            true,
+            listOf()
+    )
 
     @Before
     fun setup() {
@@ -126,29 +143,39 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `check whether response get home layout success is not null`() {
+    fun `check whether home layout and product list response is success if initial product list data is null`() {
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget()
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
-
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, null)
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
             getShopProductUseCase.executeOnBackground()
         }
-
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
-        assertTrue(viewModel.initialProductListData.value is Success)
+        assertTrue(viewModel.productListData.value is Success)
         assertNotNull(viewModel.shopHomeLayoutData.value)
-        assertNotNull(viewModel.initialProductListData.value)
+        assertNotNull(viewModel.productListData.value)
     }
 
     @Test
-    fun `check whether response get home layout error is null`() {
+    fun `check whether home layout and product list response is success if initial product list data is not null`() {
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget()
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        coVerify {
+            getShopPageHomeLayoutUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.shopHomeLayoutData.value is Success)
+        assertTrue(viewModel.productListData.value is Success)
+        assertNotNull(viewModel.shopHomeLayoutData.value)
+        assertNotNull(viewModel.productListData.value)
+    }
+
+    @Test
+    fun `check whether home layout and product list value is fail if response throw exception`() {
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } throws Exception()
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, null)
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
@@ -156,7 +183,7 @@ class ShopHomeViewModelTest {
         }
 
         assert(viewModel.shopHomeLayoutData.value is Fail)
-        assertNull(viewModel.initialProductListData.value)
+        assertNull(viewModel.productListData.value)
     }
 
     @Test
@@ -171,8 +198,8 @@ class ShopHomeViewModelTest {
             getShopProductUseCase.executeOnBackground()
         }
 
-        assertTrue(viewModel.newProductListData.value is Success)
-        assertNotNull(viewModel.newProductListData.value)
+        assertTrue(viewModel.productListData.value is Success)
+        assertNotNull(viewModel.productListData.value)
     }
 
     @Test
@@ -185,7 +212,7 @@ class ShopHomeViewModelTest {
             getShopProductUseCase.executeOnBackground()
         }
 
-        assertTrue(viewModel.newProductListData.value is Fail)
+        assertTrue(viewModel.productListData.value is Fail)
     }
 
     @Test
@@ -202,7 +229,7 @@ class ShopHomeViewModelTest {
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
 
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, true)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
@@ -489,7 +516,7 @@ class ShopHomeViewModelTest {
                     name  = mockSortName
                 }
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, true)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
         assert(viewModel.getSortNameById(mockSortId) == mockSortName)
     }
 
@@ -506,7 +533,7 @@ class ShopHomeViewModelTest {
                     name  = mockSortName
                 }
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, true)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
         assert(viewModel.getSortNameById("").isEmpty())
     }
 
@@ -517,24 +544,9 @@ class ShopHomeViewModelTest {
                 listWidget = listOf(ShopLayoutWidget.Widget(type ="dynamic" ))
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns PlayWidgetUiModel.Small(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
-                        true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2
-                ),
-                true,
-                listOf()
-        )
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
         viewModel.getPlayWidget(mockShopId)
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
@@ -543,7 +555,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether playWidgetObservable value is null when shopHomeLayoutData value is fail`() {
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } throws Exception()
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
         viewModel.getPlayWidget(mockShopId)
         assert(viewModel.playWidgetObservable.value == null)
     }
@@ -556,7 +568,7 @@ class ShopHomeViewModelTest {
                         data = listOf(ShopLayoutWidget.Widget.Data())
                 ))
         )
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter)
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
         viewModel.getPlayWidget(mockShopId)
         assert(viewModel.playWidgetObservable.value == null)
     }
@@ -603,6 +615,48 @@ class ShopHomeViewModelTest {
                 listWidget = listOf(ShopHomeNewProductLaunchCampaignUiModel(data = null)))
         )
         assert(!viewModelSpykData.isCampaignFollower(mockCampaignId))
+    }
+
+    @Test
+    fun `check play widget success delete channel`() {
+        val channelId = "123"
+        val playWidgetMock = PlayWidget()
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+                listWidget = listOf(ShopLayoutWidget.Widget(type ="dynamic" ))
+        )
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        coEvery {
+            playWidgetTools.updateDeletedChannel(any(), channelId)
+        } returns playWidgetUiModelMockData
+        viewModel.deleteChannel("123")
+        coVerify {
+            playWidgetTools.deleteChannel(channelId, any())
+        }
+        assert(viewModel.playWidgetObservable.value?.actionEvent?.peekContent() is CarouselPlayWidgetUiModel.Action.Delete)
+    }
+
+    @Test
+    fun `check play widget fail delete channel`() {
+        val channelId = "123"
+        val playWidgetMock = PlayWidget()
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+                listWidget = listOf(ShopLayoutWidget.Widget(type ="dynamic" ))
+        )
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct())
+        coEvery {
+            playWidgetTools.updateDeletedChannel(any(), channelId)
+        } throws Exception()
+        viewModel.deleteChannel("123")
+        coVerify {
+            playWidgetTools.deleteChannel(channelId, any())
+        }
+        assert(viewModel.playWidgetObservable.value?.actionEvent?.peekContent() is CarouselPlayWidgetUiModel.Action.DeleteFailed)
     }
 
 }
