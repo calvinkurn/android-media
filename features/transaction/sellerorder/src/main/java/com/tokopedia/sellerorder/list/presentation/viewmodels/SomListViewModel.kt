@@ -293,8 +293,7 @@ class SomListViewModel @Inject constructor(
         if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
             getAdminPermissionJob = launchCatchError(
                     block = {
-                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
+                        adminPermissionUseCase.execute(AdminPermissionGroup.ORDER).let { isEligible ->
                             _isAdminEligible.postValue(Success(isEligible ?: false))
                             _canShowOrderData.postValue(isEligible)
                         }

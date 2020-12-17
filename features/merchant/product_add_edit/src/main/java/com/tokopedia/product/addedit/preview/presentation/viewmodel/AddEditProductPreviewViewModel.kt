@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -312,11 +311,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
             getAdminPermissionJob =
                     launchCatchError(
                             block = {
-                                val requestParams =
-                                        AdminPermissionUseCase.createRequestParams(
-                                                userSession.shopId.toIntOrZero())
                                 mIsManageProductAdmin.value = Success(withContext(dispatcher.io) {
-                                    adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.PRODUCT) ?: false
+                                    adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) ?: false
                                 })
                                 mIsLoading.value = false
                             },
