@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant
@@ -28,6 +29,8 @@ class ChatListWebSocketViewModel @Inject constructor(
 ), LifecycleObserver {
 
     val pendingMessages get() = pendingMessageHandler.pendingMessages
+
+    var role: Int = RoleType.BUYER
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun connectListener() {
@@ -74,7 +77,11 @@ class ChatListWebSocketViewModel @Inject constructor(
     }
 
     private fun queueIncomingMessage(data: IncomingChatWebSocketModel) {
-        pendingMessageHandler.addQueue(data)
+        pendingMessageHandler.addQueue(data, role)
+    }
+
+    fun onRoleChanged(role: Int) {
+        this.role = role
     }
 
 }
