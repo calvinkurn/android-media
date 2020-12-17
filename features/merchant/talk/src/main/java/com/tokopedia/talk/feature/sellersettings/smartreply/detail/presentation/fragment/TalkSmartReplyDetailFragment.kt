@@ -162,6 +162,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             when(it) {
                 is Success -> {
                     showToaster(it.data, false)
+                    isTemplateEdited = true
                 }
                 is Fail -> {
                     showToaster(it.throwable.message ?: getString(R.string.inbox_toaster_connection_error), true)
@@ -184,8 +185,13 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun initButton() {
-        talkSmartReplyDetailSubmitButton.setOnClickListener {
-            saveSmartReplySettings()
+        talkSmartReplyDetailSubmitButton.apply {
+            setOnClickListener {
+                saveSmartReplySettings()
+            }
+            if(viewModel.isSmartReplyOn) {
+                show()
+            }
         }
     }
 

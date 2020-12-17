@@ -491,7 +491,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         settingsChip.listener = {
             goToSellerSettings()
         }
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter)
         }
         return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter, settingsChip)
@@ -565,16 +565,17 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun isShowCoachMark(): Boolean {
         return context?.let {
             sharedPrefs = it.getSharedPreferences(DISCUSSION_PREF, Context.MODE_PRIVATE)
-            val result = sharedPrefs?.getBoolean(KEY_SHOW_COACH_MARK, COACH_MARK_INITIAL_VALUE) ?: false
+            val result = sharedPrefs?.getBoolean(KEY_SHOW_COACH_MARK, COACH_MARK_INITIAL_VALUE)
+                    ?: false
             result
         } ?: false
     }
 
     private fun initCoachmark() {
-        if(isShowCoachMark()) {
+        if (isShowCoachMark()) {
             val coachMarkItem = ArrayList<CoachMark2Item>()
             val coachMark = context?.let { CoachMark2(it) }
-            if(talkInboxSortFilter?.chipItems !=  null) {
+            if (talkInboxSortFilter?.chipItems != null) {
                 coachMarkItem.addAll(listOf(
                         getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
                         getCoachMarkItem(talkInboxSortFilter.chipItems.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
@@ -602,7 +603,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupTicker() {
-        if(GlobalConfig.isSellerApp() && !isOldView()) {
+        if (GlobalConfig.isSellerApp() && !isOldView()) {
             talkInboxTicker.apply {
                 tickerTitle = getString(R.string.inbox_ticker_title)
                 setTextDescription(getString(R.string.inbox_ticker_description))
@@ -621,9 +622,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupToolbar() {
-        if(GlobalConfig.isSellerApp() && !isOldView()) {
-            headerTalkInbox.apply {
-                setTitle(R.string.title_talk_discuss)
+        headerTalkInbox.apply {
+            setTitle(R.string.title_talk_discuss)
+            if (GlobalConfig.isSellerApp() && !isOldView()) {
                 addRightIcon(0).apply {
                     clearImage()
                     setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))

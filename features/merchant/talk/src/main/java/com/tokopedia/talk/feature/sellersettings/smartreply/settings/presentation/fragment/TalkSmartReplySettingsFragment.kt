@@ -165,11 +165,10 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
             it?.let {
                 if(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "") == TalkSellerSettingsConstants.VALUE_ADD_EDIT) {
                     getSmartReplyData()
+                    showLoading()
                 }
             }
             removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
-            getSmartReplyData()
-            showLoading()
         })
     }
 
