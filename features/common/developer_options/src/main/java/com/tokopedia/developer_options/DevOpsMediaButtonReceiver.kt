@@ -7,12 +7,12 @@ import androidx.media.session.MediaButtonReceiver
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 
 
-object DevOpsMediaButtonReceiver : MediaButtonReceiver() {
+class DevOpsMediaButtonReceiver : MediaButtonReceiver() {
     private val TRIGGER_SEQUENCE = intArrayOf(KeyEvent.ACTION_UP, KeyEvent.ACTION_UP,
             KeyEvent.ACTION_DOWN, KeyEvent.ACTION_DOWN)
     var triggerSequenceStep = 0
     var lastButtonClickTimeStamp = 0L
-    const val MAX_INTERVAL = 2000L // 2 seconds
+    val MAX_INTERVAL = 2000L // 2 seconds
 
     override fun onReceive(context: Context?, intent: Intent?) {
         try {

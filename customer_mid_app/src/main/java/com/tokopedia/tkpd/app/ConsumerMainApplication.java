@@ -144,7 +144,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initDevOptsReceiver(){
         if (GlobalConfig.isAllowDebuggingTools()) {
-            registerReceiver(DevOpsMediaButtonReceiver.INSTANCE,
+            registerReceiver(new DevOpsMediaButtonReceiver(),
                     new IntentFilter(Intent.ACTION_MEDIA_BUTTON));
         }
     }

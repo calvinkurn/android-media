@@ -177,7 +177,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private void initDevOptsReceiver(){
         if (GlobalConfig.isAllowDebuggingTools()) {
-            registerReceiver(DevOpsMediaButtonReceiver.INSTANCE,
+            registerReceiver(new DevOpsMediaButtonReceiver(),
                     new IntentFilter(Intent.ACTION_MEDIA_BUTTON));
         }
     }
