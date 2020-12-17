@@ -68,7 +68,6 @@ public class ImageHandler {
 
     public static final int IMAGE_WIDTH_HD = 1280;
     public static final int IMAGE_WIDTH_MIN = 480;
-    private static int IMAGE_QUALITY = 95;
 
     public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
         Matrix matrix = new Matrix();
@@ -447,17 +446,6 @@ public class ImageHandler {
                     .error(R.drawable.error_drawable)
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
-    }
-
-    public static void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap){
-        Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
-    }
-
-
-    private static byte[] bitmapToByte(Bitmap bitmap){
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
-        return stream.toByteArray();
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, String url) {

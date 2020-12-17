@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraException;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -67,6 +69,8 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     public String finalCameraResultFilePath;
     protected ImageView cameraOverlayImage;
     protected TextView headerText;
+
+    private static int IMAGE_QUALITY = 95;
 
     @Override
     protected void initInjector() {
@@ -210,9 +214,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
                     if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
                         Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
                         myBitmap.recycle();
-                        ImageHandler.loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
+                        loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
                     } else {
-                        ImageHandler.loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
+                        loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
                     }
                 }
             }
@@ -222,6 +226,31 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
         reset();
 
+    }
+
+    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap){
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
+        if(loadFitCenter)
+            Glide.with(context).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
+        else
+            Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
+    }
+
+
+    private byte[] bitmapToByte(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
+        return stream.toByteArray();
     }
 
 
