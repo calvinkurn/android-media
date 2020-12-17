@@ -30,17 +30,15 @@ class DevOptsVolumeListener(activity: Activity) : DebugVolumeListener {
             else -> null
         }
         if (input != null) {
+            triggerSequenceStep++
+            inputList.add(input)
             if (TRIGGER_SEQUENCE[triggerSequenceStep] == input) {
-                triggerSequenceStep++
-                inputList.add(input)
                 if (triggerSequenceStep == TRIGGER_SEQUENCE.size) {
                     triggerSequenceStep = 0
                     inputList.clear()
                     goToDeveloperOptions()
                 }
             } else {
-                inputList.add(input)
-                triggerSequenceStep++
                 while (triggerSequenceStep > 0) {
                     inputList.removeFirst()
                     triggerSequenceStep--
