@@ -3,7 +3,6 @@ package com.tokopedia.shop.settings.basicinfo.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
@@ -89,8 +88,9 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getAllowShopNameDomainChanges() {
         launch {
-            flow { emit(getAllowShopNameDomainChangesUseCase.executeOnBackground()) }
-                    .flowOn(dispatchers.io)
+            flow {
+                emit(getAllowShopNameDomainChangesUseCase.executeOnBackground())
+            }       .flowOn(dispatchers.io)
                     .catch {
                         _allowShopNameDomainChanges.value = Fail(it)
                     }
@@ -102,11 +102,9 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getShopBasicData() {
         launch {
-            flow { emit(RequestParams.EMPTY) }
-                    .map {
-                        getShopBasicDataUseCase.getData(it)
-                    }
-                    .flowOn(dispatchers.io)
+            flow {
+                emit(getShopBasicDataUseCase.getData(RequestParams.EMPTY))
+            }       .flowOn(dispatchers.io)
                     .catch {
                         _shopBasicData.value = Fail(it)
                     }
@@ -124,12 +122,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String
     ) {
         launch {
-            flow { emit(imagePath) }
-                    .map {
-                        val requestParams = UploadShopImageUseCase.createRequestParams(it)
-                        uploadShopImageUseCase.getData(requestParams)
-                    }
-                    .flowOn(dispatchers.io)
+            flow {
+                val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
+                emit(uploadShopImageUseCase.getData(requestParams))
+            }       .flowOn(dispatchers.io)
                     .catch {
                         _uploadShopImage.value = Fail(it)
                     }
@@ -208,12 +204,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun getShopDomainSuggestion(shopName: String) {
         launch {
-            flow { emit(shopName) }
-                    .map {
-                        getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(it)
-                        getShopDomainNameSuggestionUseCase.executeOnBackground()
-                    }
-                    .flowOn(dispatchers.io)
+            flow {
+                getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
+                emit(getShopDomainNameSuggestionUseCase.executeOnBackground())
+            }       .flowOn(dispatchers.io)
                     .conflate()
                     .catch {
                         _shopDomainSuggestion.value = Fail(it)
@@ -226,12 +220,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private fun updateShopBasicData(requestParams: RequestParams) {
         launch {
-            flow { emit(requestParams) }
-                    .map {
-                        updateShopBasicDataUseCase.setParams(it)
-                        updateShopBasicDataUseCase.executeOnBackground()
-                    }
-                    .flowOn(dispatchers.io)
+            flow {
+                updateShopBasicDataUseCase.setParams(requestParams)
+                emit(updateShopBasicDataUseCase.executeOnBackground())
+            }       .flowOn(dispatchers.io)
                     .catch {
                         _updateShopBasicData.value = Fail(it)
                     }
