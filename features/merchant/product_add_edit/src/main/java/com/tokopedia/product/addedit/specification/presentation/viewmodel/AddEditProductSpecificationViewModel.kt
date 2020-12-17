@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -17,8 +18,13 @@ class AddEditProductSpecificationViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val mProductInputModel = MutableLiveData<ProductInputModel>()
-    val productInputModel: LiveData<ProductInputModel>
-        get() = mProductInputModel
+    val productInputModel: LiveData<ProductInputModel> get() = mProductInputModel
+
+    private val mAnnotationCategoryData = MutableLiveData<List<AnnotationCategoryData>>()
+    val annotationCategoryData: LiveData<List<AnnotationCategoryData>> get() = mAnnotationCategoryData
+
+    private val mErrorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = mErrorMessage
 
     fun getSpecifications(categoryId: String) {
         launchCatchError(block = {
@@ -26,8 +32,9 @@ class AddEditProductSpecificationViewModel @Inject constructor(
                 annotationCategoryUseCase.setParamsCategoryId(categoryId)
                 annotationCategoryUseCase.executeOnBackground()
             })
+            mAnnotationCategoryData.value = result.data.drogonAnnotationCategoryV2.data
         }, onError = {
-           // no-op
+            mErrorMessage.value = it.localizedMessage
         })
     }
 

@@ -52,15 +52,15 @@ data class Header (
 data class AnnotationCategoryData (
 		@SerializedName("sortOrder")
 		@Expose
-		val sortOrder : Int,
+		val sortOrder : Int = 0,
 
 		@SerializedName("variant")
 		@Expose
-		val variant : String,
+		val variant : String = "",
 
 		@SerializedName("values")
 		@Expose
-		val data : List<Values>
+		val data : List<Values> = emptyList()
 )
 
 data class Values (

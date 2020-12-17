@@ -5,22 +5,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.viewholder.SpecificationValueViewHolder
 import com.tokopedia.product.addedit.specification.presentation.dialog.SpecificationDataBottomSheet
 
-class SpecificationValueAdapter(
-        private val onSpecificationValueAdapterClickListener: OnSpecificationValueAdapterClickListener,
-        private val fragmentManager: FragmentManager?
-) :
+class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         RecyclerView.Adapter<SpecificationValueViewHolder>(),
         SpecificationValueViewHolder.OnSpecificationValueViewHolderClickListener,
         SpecificationDataBottomSheet.SpecificationDataListener {
 
-    interface OnSpecificationValueAdapterClickListener {
-        fun onSpecificationValueTextClicked(position: Int)
-    }
-
-    private var items: MutableList<String> = mutableListOf()
+    private var items: MutableList<AnnotationCategoryData> = mutableListOf()
+    private var itemsSelected: MutableList<String> = mutableListOf()
     private var editedPosition: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecificationValueViewHolder {
@@ -34,42 +29,52 @@ class SpecificationValueAdapter(
 
     override fun onBindViewHolder(holder: SpecificationValueViewHolder, position: Int) {
         val item = getData(position)
-        holder.bindData(item, item.reversed())
+        val itemValue = getDataSelected(position)
+        holder.bindData(item.variant, itemValue)
     }
 
-    fun setData(items: List<String>) {
+    fun setData(items: List<AnnotationCategoryData>) {
         this.items = items.toMutableList()
+        if (itemsSelected.isEmpty()) itemsSelected = items.map { "" }.toMutableList() // generate item to collect input data
         notifyDataSetChanged()
     }
 
-    fun setData(position: Int, item: String) {
+    fun setData(items: List<AnnotationCategoryData>, itemsSelected: List<String>) {
+        this.itemsSelected = itemsSelected.toMutableList()
+        setData(items)
+    }
+
+    fun setDataSelected(position: Int, itemData: String) {
         if (position in 0 until itemCount) {
-            this.items[position] = item
+            itemsSelected[position] = itemData
             notifyItemChanged(position)
         }
     }
 
-    fun addData(item: String) {
-        this.items.add(item)
-        notifyDataSetChanged()
+    fun getData(position: Int): AnnotationCategoryData {
+        return items.getOrNull(position) ?: AnnotationCategoryData()
     }
 
-    fun getData(position: Int): String {
-        return items.getOrNull(position).orEmpty()
+    fun getDataSelected(position: Int): String {
+        return itemsSelected.getOrNull(position).orEmpty()
     }
 
     override fun onSpecificationValueTextClicked(position: Int) {
-        val dummy = mutableListOf("nomo 1", "nomo 2", "sa", "asas", "asasa", "asasas", "asasas", "asasd", "nomo 1", "nomo 2", "sa", "asas", "asasa", "asasas", "asasas", "asasd", "nomo 1", "nomo 2", "sa", "asas", "asasa", "asasas", "asasas", "asasd")
-        val bottomSheet = SpecificationDataBottomSheet("Jenis", dummy, this)
+        items.getOrNull(position)?.let { annotationData ->
+            val bottomSheet = SpecificationDataBottomSheet(
+                    title = annotationData.variant,
+                    data = annotationData.data.map { it.name },
+                    selectedData = getDataSelected(position),
+                    specificationDataListener = this)
 
-        editedPosition = position
-        bottomSheet.show(fragmentManager)
-        onSpecificationValueAdapterClickListener.onSpecificationValueTextClicked(position)
+            editedPosition = position
+            bottomSheet.show(fragmentManager)
+        }
     }
 
-    override fun onSpecificationDataSelected(position: Int, specificationData: String) {
+    override fun onSpecificationDataSelected(specificationData: String) {
         editedPosition?.let {
-            setData(it, specificationData)
+            setDataSelected(it, specificationData)
         }
     }
 }

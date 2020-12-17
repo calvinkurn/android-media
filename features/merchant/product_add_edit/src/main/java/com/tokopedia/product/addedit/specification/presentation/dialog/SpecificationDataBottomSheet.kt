@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.add_edit_product_specification_data_bottom
 class SpecificationDataBottomSheet(
         private val title: String,
         private val data: List<String>,
+        private val selectedData: String?,
         private val specificationDataListener: SpecificationDataListener? = null
 ): BottomSheetUnify() {
 
@@ -26,7 +27,7 @@ class SpecificationDataBottomSheet(
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
 
     interface SpecificationDataListener {
-        fun onSpecificationDataSelected(position: Int, specificationData: String)
+        fun onSpecificationDataSelected(specificationData: String)
     }
 
     init {
@@ -48,6 +49,7 @@ class SpecificationDataBottomSheet(
     }
 
     private fun setupSearch() {
+        searchBarData.searchBarPlaceholder = getString(R.string.label_specification_search) + title
         searchBarData.searchBarTextField.afterTextChanged { text ->
             val filteredList = dataList.filter { listItem ->
                 listItem.listTitleText.startsWith(text)
@@ -72,7 +74,7 @@ class SpecificationDataBottomSheet(
     }
 
     private fun initChildLayout() {
-        setTitle(title)
+        setTitle(getString(R.string.title_specification_bottom_sheet) + title)
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_specification_data_bottom_sheet_content, null)
@@ -88,16 +90,16 @@ class SpecificationDataBottomSheet(
                 selectedItem.listRightRadiobtn?.performClick()
             }
 
-            dataList.forEachIndexed { position, listItemUnify ->
+            dataList.forEach { listItemUnify ->
                 var res = android.R.color.transparent
-                if (position % 2 == 0) {
+                if (listItemUnify.listTitleText == selectedData) {
                     res = com.tokopedia.unifycomponents.R.drawable.ic_check_green
                 }
                 listItemUnify.listChevron?.setImageResource(res)
 
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    specificationDataListener?.onSpecificationDataSelected(listItemUnify.listTitleText)
                     dismiss()
-                    specificationDataListener?.onSpecificationDataSelected(position, listItemUnify.listTitleText)
                 }
             }
         }

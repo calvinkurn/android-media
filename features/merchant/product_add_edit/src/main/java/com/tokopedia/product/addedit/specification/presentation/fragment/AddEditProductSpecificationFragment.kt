@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.specification.presentation.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,14 +20,14 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
-import com.tokopedia.product.addedit.specification.presentation.dialog.SpecificationDataBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_add_edit_product_specification.*
 import javax.inject.Inject
 
-class AddEditProductSpecificationFragment: BaseDaggerFragment(),
-        SpecificationValueAdapter.OnSpecificationValueAdapterClickListener {
+class AddEditProductSpecificationFragment: BaseDaggerFragment() {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -73,28 +72,37 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(),
 
         // setup UI
         setupToolbarActions()
-        setupSpecificationAdapter()
 
         // setup observers
         observeProductInputModel()
+        observeAnnotationCategoryData()
+        observeErrorMessage()
     }
 
-    private fun setupSpecificationAdapter() {
-        val adapter = SpecificationValueAdapter(this, fragmentManager)
+    private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>) {
+        val adapter = SpecificationValueAdapter(fragmentManager)
         rvSpecification.adapter = adapter
         setRecyclerViewToVertical(rvSpecification)
-
-        for (i in 0 until 15) {
-            val ggg = (200 * i).toLong()
-            Handler().postDelayed({
-                adapter.addData("item $i")
-            }, ggg)
-        }
+        adapter.setData(annotationCategoryData)
     }
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             viewModel.getSpecifications(it.detailInputModel.categoryId)
+        })
+    }
+
+    private fun observeErrorMessage() {
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+            view?.apply {
+                Toaster.build(this, errorMessage, type = Toaster.TYPE_ERROR).show()
+            }
+        })
+    }
+
+    private fun observeAnnotationCategoryData() {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer {
+            setupSpecificationAdapter(it)
         })
     }
 
@@ -118,9 +126,5 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment(),
             tvDeleteAll = actionTextView
             tvDeleteAll?.isEnabled = false
         }
-    }
-
-    override fun onSpecificationValueTextClicked(position: Int) {
-        //
     }
 }
