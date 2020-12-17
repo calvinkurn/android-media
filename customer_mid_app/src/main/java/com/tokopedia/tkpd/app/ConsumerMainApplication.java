@@ -49,6 +49,7 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
+import com.tokopedia.developer_options.DevOpsMediaButtonReceiver;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.data.AmplificationDataSource;
@@ -138,6 +139,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
+        initDevOptsReceiver();
+    }
+
+    private void initDevOptsReceiver(){
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerReceiver(DevOpsMediaButtonReceiver.INSTANCE,
+                    new IntentFilter(Intent.ACTION_MEDIA_BUTTON));
+        }
     }
 
     private void checkAppSignatureAsync(){
@@ -283,10 +292,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        if (GlobalConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+            }
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
 

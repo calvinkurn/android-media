@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOpsMediaButtonReceiver;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -170,6 +172,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initBlockCanary();
         TokoPatch.init(this);
         SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        initDevOptsReceiver();
+    }
+
+    private void initDevOptsReceiver(){
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerReceiver(DevOpsMediaButtonReceiver.INSTANCE,
+                    new IntentFilter(Intent.ACTION_MEDIA_BUTTON));
+        }
     }
 
     private void initCacheManager(){
@@ -205,7 +215,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
