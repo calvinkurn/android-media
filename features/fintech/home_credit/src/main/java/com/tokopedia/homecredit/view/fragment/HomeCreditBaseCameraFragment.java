@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -200,18 +201,18 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     protected void onSuccessImageTakenFromCamera(File imgFile) {
         String imagePath = imgFile.getAbsolutePath();
-
         finalCameraResultFilePath = imagePath;
         try {
             File file = new File(imagePath);
             if (file.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-
                 if (myBitmap != null) {
                     if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
-                        imageCaptured.setImageBitmap(ImageHandler.flip(myBitmap, true, false));
+                        Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
+                        myBitmap.recycle();
+                        ImageHandler.loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
                     } else {
-                        imageCaptured.setImageBitmap(myBitmap);
+                        ImageHandler.loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
                     }
                 }
             }
@@ -222,6 +223,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         reset();
 
     }
+
 
     private void reset() {
         mCapturingPicture = false;
