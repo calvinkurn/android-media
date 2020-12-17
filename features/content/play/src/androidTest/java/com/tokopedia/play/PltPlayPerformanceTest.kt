@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.data.PlayMockModelConfig
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.TestRepeatRule
@@ -39,8 +40,8 @@ class PltPlayPerformanceTest {
             private var callback: IdlingResource.ResourceCallback? = null
 
             override fun isIdleNow(): Boolean {
-                val textView = activityTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
-                val isIdle =  !TextUtils.isEmpty(textView.text.toString())
+                val textView = activityTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_follow)
+                val isIdle =  textView.isVisible
                 if (isIdle) callback?.onTransitionToIdle()
                 return isIdle
             }
@@ -63,6 +64,7 @@ class PltPlayPerformanceTest {
         IdlingRegistry.getInstance().register(idlingResource)
 
         onIdle()
+        Thread.sleep(2000)
         getPerformanceReport()
 
         clearTask()
