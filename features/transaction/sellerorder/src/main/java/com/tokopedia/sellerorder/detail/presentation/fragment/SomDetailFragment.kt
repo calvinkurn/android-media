@@ -76,6 +76,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INVOICE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
@@ -111,7 +112,10 @@ import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrappe
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -556,11 +560,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         detailResponse?.run {
             val dataShipping = SomDetailShipping(
                     shipment.name + " - " + shipment.productName,
-                    receiver.name,
-                    receiver.phone,
-                    receiver.street,
-                    detailResponse?.receiver?.district + ", " + receiver.city + " " + receiver.postal,
-                    receiver.province,
+                    receiverName = receiver.name,
+                    receiverPhone = receiver.phone,
+                    receiverStreet = receiver.street,
+                    receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
+                    receiverProvince = receiver.province,
                     flagOrderMeta.flagFreeShipping,
                     bookingInfo.driver.photo,
                     bookingInfo.driver.name,
@@ -946,6 +950,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
                     val orderRejectRequest = SomRejectRequestParam(
                             orderId = detailResponse?.orderId?.toString().orEmpty(),
                             rCode = "0",
@@ -955,6 +960,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
 
                 override fun onRejectCancelRequest() {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse?.statusCode.orZero()}", detailResponse?.statusText.orEmpty())
                     rejectCancelOrder()
                 }
             })
@@ -983,10 +989,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         openWebview(awbUploadUrl)
     }
 
-    override fun onSeeInvoice(url: String) {
+    override fun onSeeInvoice(url: String, invoice: String) {
         SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
+            putExtra(PARAM_INVOICE, invoice)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
             putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
             startActivity(this)
