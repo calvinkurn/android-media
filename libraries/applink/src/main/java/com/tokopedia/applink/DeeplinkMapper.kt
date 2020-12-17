@@ -5,6 +5,7 @@ import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.ApplinkConst.Navigation.MAIN_NAV
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
+import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
@@ -230,6 +231,7 @@ object DeeplinkMapper {
             DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) },
                     targetDeeplink = { _, _, deeplink -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink) }),
             DLP(logic = {_, uri, _ -> (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW) }, targetDeeplink = { _, uri, _ -> getRegisteredNavigationProductDetailReview(uri) }),
+            DLP.startWith(ApplinkConst.ACCOUNT) {ctx, _, deeplink-> DeeplinkMapperAccount.getAccountInternalApplink(ctx, deeplink)},
             DLP.exact(ApplinkConst.BELANJA_ORDER) { ctx, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER) { ctx, _, deeplink-> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.startWith(ApplinkConst.MARKETPLACE_ORDER_SUB) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },

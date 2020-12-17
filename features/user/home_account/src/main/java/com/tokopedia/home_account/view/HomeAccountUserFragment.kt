@@ -192,9 +192,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.walletData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
-                    val mappedMember = mapper.mapToFinancialData(it.data).toMutableList()
+                    val mappedMember = mapper.mapToFinancialData(activity, it.data).toMutableList()
                     viewModel.internalBuyerData?.run {
-                        val saldo = mapper.mapSaldo(this).items
+                        val saldo = mapper.mapSaldo(activity, this).items
                         mappedMember.addAll(saldo)
                     }
                     financialAdapter?.addItems(mappedMember)
@@ -265,7 +265,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if(adapter?.getItem(0) is ProfileDataView) {
                 adapter?.removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(activity, buyerAccount))
             adapter?.notifyDataSetChanged()
         }
         hideLoading()
