@@ -35,13 +35,13 @@ class ChatListWebSocketViewModel @Inject constructor(
     var role: Int = RoleType.BUYER
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun connectListener() {
+    fun onLifeCycleStart() {
         isOnStop = false
         activeRoom = ""
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun disconnectListener() {
+    fun onLifeCycleStop() {
         isOnStop = true
     }
 
