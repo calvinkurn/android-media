@@ -336,6 +336,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val LAYOUT_CATEGORY_ICON: String = "category_icon"
+            const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }
@@ -454,7 +455,7 @@ data class DynamicHomeChannel(
             val recommendationType: String = "",
             @Expose
             @SerializedName("campaignCode")
-            val campaignCode: String = "",
+            val campaignCode: String = ""
     )
 
     data class Benefit(

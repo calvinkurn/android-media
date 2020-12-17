@@ -12,8 +12,10 @@ object LegoBannerTracking : BaseTrackerConst() {
     private const val CLICK_ON_LEGO_3 = "lego banner 3 image click"
     private const val CLICK_ON_LEGO_4 = "lego banner 4 image click"
     private const val CLICK_ON_LEGO_6 = "lego banner click"
+    private const val CLICK_ON_LEGO_6_AUTO = "lego banner 6 auto click"
 
     private const val CLICK_VIEW_ALL_ON_LEGO_6 = "lego banner click view all"
+    private const val CLICK_VIEW_ALL_ON_LEGO_6_AUTO = "lego banner 6 auto click view all"
     private const val CLICK_VIEW_ALL_ON_LEGO_4 = "lego banner 4 image click view all"
     private const val CLICK_VIEW_ALL_ON_LEGO_3 = "lego banner 3 image click view all"
 
@@ -22,6 +24,7 @@ object LegoBannerTracking : BaseTrackerConst() {
     private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
     private const val LEGO_BANNER_3_IMAGE_NAME = "lego banner 3 image"
     private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
+    private const val LEGO_BANNER_6_AUTO_IMAGE_NAME = "lego banner 6 auto"
 
 
     fun getHomeBannerImpression(promotionObjects: List<Any>) : Map<String, Any> {
@@ -41,6 +44,10 @@ object LegoBannerTracking : BaseTrackerConst() {
         getTracker().sendEnhanceEcommerceEvent(getLegoBannerSixClick(channelModel, channelGrid, position))
     }
 
+    fun sendLegoBannerSixAutoClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+        getTracker().sendEnhanceEcommerceEvent(getLegoBannerSixClick(channelModel, channelGrid, position, true))
+    }
+
     fun sendLegoBannerFourClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(getLegoBannerFourClick(channelModel, channelGrid, position))
     }
@@ -53,6 +60,10 @@ object LegoBannerTracking : BaseTrackerConst() {
         getTracker().sendGeneralEvent(getLegoBannerSixViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
+    fun sendLegoBannerSixAutoClickViewAll(channelModel: ChannelModel, channelId: String, userId: String) {
+        getTracker().sendGeneralEvent(getLegoBannerSixViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId, true))
+    }
+
     fun sendLegoBannerFourClickViewAll(channelModel: ChannelModel, channelId: String, userId: String) {
         getTracker().sendGeneralEvent(getLegoBannerFourViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
@@ -61,22 +72,25 @@ object LegoBannerTracking : BaseTrackerConst() {
         getTracker().sendGeneralEvent(getLegoBannerThreeViewAllClick(channelModel, channelModel.channelHeader.name, channelId, userId))
     }
 
-    private fun getLegoBannerSixViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CLICK_VIEW_ALL_ON_LEGO_6,
-            Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
-            ChannelId.KEY, channelId,
-            Label.ATTRIBUTION_LABEL, channelModel.channelBanner.attribution,
-            Label.AFFINITY_LABEL, channelModel.trackingAttributionModel.persona,
-            Label.CATEGORY_LABEL, channelModel.trackingAttributionModel.categoryId,
-            Label.SHOP_LABEL, channelModel.trackingAttributionModel.brandId,
-            Label.CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode,
-            Screen.KEY, Screen.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
-    ) as HashMap<String, Any>
+    private fun getLegoBannerSixViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String, isAuto: Boolean = false): HashMap<String, Any> {
+        val legoSixClickAllActionName = if (isAuto) CLICK_VIEW_ALL_ON_LEGO_6_AUTO else CLICK_VIEW_ALL_ON_LEGO_6
+        return DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, legoSixClickAllActionName,
+                Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
+                ChannelId.KEY, channelId,
+                Label.ATTRIBUTION_LABEL, channelModel.channelBanner.attribution,
+                Label.AFFINITY_LABEL, channelModel.trackingAttributionModel.persona,
+                Label.CATEGORY_LABEL, channelModel.trackingAttributionModel.categoryId,
+                Label.SHOP_LABEL, channelModel.trackingAttributionModel.brandId,
+                Label.CAMPAIGN_CODE, channelModel.trackingAttributionModel.campaignCode,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                UserId.KEY, userId,
+                BusinessUnit.KEY, BusinessUnit.DEFAULT
+        ) as HashMap<String, Any>
+    }
 
     private fun getLegoBannerFourViewAllClick(channelModel: ChannelModel, headerName: String, channelId: String, userId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
@@ -112,12 +126,13 @@ object LegoBannerTracking : BaseTrackerConst() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     ) as HashMap<String, Any>
 
-    private fun getLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) : Map<String, Any> {
+    private fun getLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, isAuto: Boolean = false) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
+        val legoSixClickActionName = if (isAuto) CLICK_ON_LEGO_6_AUTO else CLICK_ON_LEGO_6
         return trackerBuilder.constructBasicPromotionClick(
                     event = Event.PROMO_CLICK,
                     eventCategory = Category.HOMEPAGE,
-                    eventAction = CLICK_ON_LEGO_6,
+                    eventAction = legoSixClickActionName,
                     eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
                     promotions = listOf(channelGrid.convertToHomePromotionModel(channelModel, position)))
                 .appendChannelId(channelModel.id)
@@ -205,12 +220,13 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .build()
     }
 
-    fun getLegoBannerSixImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false): Map<String, Any> {
+    fun getLegoBannerSixImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false, isAuto: Boolean = false): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
+        val legoSixImageName = if (isAuto) LEGO_BANNER_6_AUTO_IMAGE_NAME else LEGO_BANNER_6_IMAGE_NAME
         return trackerBuilder.constructBasicPromotionView(
                 event = if (isToIris) Event.PROMO_VIEW_IRIS else PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION.format(LEGO_BANNER_6_IMAGE_NAME),
+                eventAction = Action.IMPRESSION.format(legoSixImageName),
                 eventLabel = Label.NONE,
                 promotions = channel.channelGrids.mapIndexed { index, grid ->
                     Promotion(
