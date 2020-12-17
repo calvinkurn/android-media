@@ -50,7 +50,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
-import com.tokopedia.buyerorder.list.view.activity.OrderListActivity
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
@@ -1776,9 +1775,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
                 listParamAtcMulti.add(AddToCartMultiParam(
-                        productId = objParam.get(PRODUCT_ID).asInt,
+                        productId = objParam.get(PRODUCT_ID).asLong,
                         productName = objParam.get(PRODUCT_NAME).asString,
-                        productPrice = objParam.get(PRODUCT_PRICE).asInt,
+                        productPrice = objParam.get(PRODUCT_PRICE).asLong,
                         qty = objParam.get(QUANTITY).asInt,
                         notes = objParam.get(NOTES).asString,
                         shopId = objParam.get(SHOP_ID).asInt,
