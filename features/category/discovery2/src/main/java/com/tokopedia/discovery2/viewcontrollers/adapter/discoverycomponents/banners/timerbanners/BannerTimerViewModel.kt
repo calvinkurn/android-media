@@ -18,7 +18,6 @@ class BannerTimerViewModel(val application: Application, val components: Compone
         bannerTimeData.value = components
     }
 
-    //    fun getComponentData(): LiveData<ComponentsItem> = bannerTimeData
     fun getBannerUrlHeight() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile)
     fun getBannerUrlWidth() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile, "width")
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
