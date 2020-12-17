@@ -1,12 +1,10 @@
 package com.tokopedia.sellerapp;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,8 +33,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.developer_options.receiver.DevOpsMediaButtonReceiver;
-import com.tokopedia.developer_options.receiver.DevOpsMediaKt;
+import com.tokopedia.developer_options.receiver.DevOpsMedia;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -179,7 +176,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private void initDevOptsReceiver(){
         if (GlobalConfig.isAllowDebuggingTools()) {
-            DevOpsMediaKt.initReceiver(this);
+            DevOpsMedia.initReceiver(this);
         }
     }
 

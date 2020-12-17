@@ -1,3 +1,4 @@
+@file:JvmName("DevOpsMedia")
 package com.tokopedia.developer_options.receiver
 
 import android.content.ComponentName
