@@ -40,6 +40,13 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
+    fun getRegisteredNavigationSellerReviewDetail(deeplink: String): String {
+        if (deeplink == ApplinkConst.SELLER_REVIEW) {
+            return ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL
+        }
+        return deeplink
+    }
+
     fun isShopPage(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SHOP) && uri.pathSegments.size == SHOP_PAGE_SEGMENT_SIZE

@@ -1,15 +1,20 @@
 package com.tokopedia.review.feature.reviewdetail.view.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
@@ -24,6 +29,7 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkIfMainApp()
         startPerformanceMonitoring()
     }
 
@@ -87,6 +93,12 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun checkIfMainApp() {
+        if (!GlobalConfig.isSellerApp()) {
+            RouteManager.route(this, Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(ReviewInboxConstants.PARAM_TAB, ReviewInboxConstants.SELLER_TAB).build().toString())
+        }
     }
 
 }
