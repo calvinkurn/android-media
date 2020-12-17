@@ -13,6 +13,7 @@ class BannerTimerViewModel(val application: Application, val components: Compone
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
     private val SHOW_DAYS: Boolean = true
+    private var isTimerStopped = false
 
     init {
         bannerTimeData.value = components
@@ -49,12 +50,21 @@ class BannerTimerViewModel(val application: Application, val components: Compone
 
     override fun onStop() {
         stopTimer()
+        isTimerStopped = true
         super.onStop()
     }
 
     override fun onDestroy() {
         stopTimer()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        if (isTimerStopped) {
+            startTimer()
+            isTimerStopped = false
+        }
+        super.onResume()
     }
 
     fun checkTimerEnd(timerDataModel: TimerDataModel) {
