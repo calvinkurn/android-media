@@ -3,6 +3,7 @@ package com.tokopedia.abstraction.base.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -30,7 +31,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     protected abstract int getLayoutRes();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupStatusBar();
         setupLayout(savedInstanceState);

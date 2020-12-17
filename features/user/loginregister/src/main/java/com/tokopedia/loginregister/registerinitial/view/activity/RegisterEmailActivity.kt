@@ -26,10 +26,6 @@ class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<Any?> {
         return createInstance(bundle)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun setupLayout(savedInstanceState: Bundle) {
         super.setupLayout(savedInstanceState)
         toolbar.setPadding(0, 0, 30, 0)
