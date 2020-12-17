@@ -162,7 +162,7 @@ class ChatListAdapter constructor(
             readStatus: Int,
             pinnedMsgId: Set<String>,
             counterIncrement: Int = 1,
-            isFromMySelf: Boolean = false
+            shouldUpdateReadStatus: Boolean = false
     ) {
         val isChatPinned = pinnedMsgId.contains(newChat.msgId)
         val newChatIndex = if (isChatPinned) {
@@ -170,7 +170,13 @@ class ChatListAdapter constructor(
         } else {
             pinnedMsgId.size
         }
-        updateChatPojo(index, newChat, readStatus, counterIncrement, isFromMySelf)
+        updateChatPojo(
+                index = index,
+                newChat = newChat,
+                readStatus = readStatus,
+                counterIncrement = counterIncrement,
+                shouldUpdateReadStatus = shouldUpdateReadStatus
+        )
         if (index != newChatIndex) {
             visitables.moveTo(index, newChatIndex)
             notifyItemMoved(index, newChatIndex)
@@ -209,7 +215,7 @@ class ChatListAdapter constructor(
             newChat: IncomingChatWebSocketModel,
             readStatus: Int,
             counterIncrement: Int = 1,
-            isFromMySelf: Boolean = false
+            shouldUpdateReadStatus: Boolean = false
     ) {
         if (index >= visitables.size) return
         visitables[index].apply {
@@ -221,7 +227,7 @@ class ChatListAdapter constructor(
                     listener.increaseNotificationCounter()
                 }
                 attributes?.lastReplyMessage = newChat.message
-                if (!isFromMySelf) {
+                if (shouldUpdateReadStatus) {
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + counterIncrement
                     attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + counterIncrement
                     attributes?.readStatus = readStatus

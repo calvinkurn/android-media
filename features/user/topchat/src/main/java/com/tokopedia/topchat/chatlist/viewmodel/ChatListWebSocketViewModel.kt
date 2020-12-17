@@ -29,6 +29,7 @@ class ChatListWebSocketViewModel @Inject constructor(
         fingerprintInterceptor
 ), LifecycleObserver {
 
+    var activeRoom: String = ""
     val pendingMessages get() = pendingMessageHandler.pendingMessages
 
     var role: Int = RoleType.BUYER
@@ -36,6 +37,7 @@ class ChatListWebSocketViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun connectListener() {
         isOnStop = false
+        activeRoom = ""
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -80,7 +82,9 @@ class ChatListWebSocketViewModel @Inject constructor(
     }
 
     private fun queueIncomingMessage(data: IncomingChatWebSocketModel) {
-        pendingMessageHandler.addQueue(data, role)
+        val isReplyFromActiveRoom = data.messageId == activeRoom
+                && !data.isFromMySelf(role, userSession.userId)
+        pendingMessageHandler.addQueue(role, data, isReplyFromActiveRoom)
     }
 
     fun onRoleChanged(role: Int) {

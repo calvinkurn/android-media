@@ -12,8 +12,9 @@ class PendingMessageHandler @Inject constructor(
     val pendingMessages = LinkedHashMap<String, PendingMessageOccurrence>()
 
     fun addQueue(
+            @RoleType currentRole: Int,
             message: IncomingChatWebSocketModel,
-            @RoleType currentRole: Int
+            isReplyFromActiveRoom: Boolean
     ) {
         if (message.isForOtherRole(currentRole, userSession.userId)) return
         var occurrence = 0
@@ -22,7 +23,9 @@ class PendingMessageHandler @Inject constructor(
             pendingMessages.remove(message.messageId)
         }
         occurrence++
-        pendingMessages[message.messageId] = PendingMessageOccurrence(message, occurrence)
+        pendingMessages[message.messageId] = PendingMessageOccurrence(
+                message, occurrence, isReplyFromActiveRoom
+        )
     }
 
     fun hasPendingMessage(): Boolean {
@@ -34,5 +37,6 @@ class PendingMessageHandler @Inject constructor(
 
 data class PendingMessageOccurrence(
         val message: IncomingChatWebSocketModel,
-        val count: Int = 1
+        val count: Int = 1,
+        val isReplyFromActiveRoom: Boolean = false
 )

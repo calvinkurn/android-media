@@ -174,7 +174,11 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private fun processPendingMessage() {
         webSocket.pendingMessages.entries.removeAll { entry ->
             val pendingMessage = entry.value
-            processIncomingMessage(pendingMessage.message, pendingMessage.count)
+            processIncomingMessage(
+                    newChat = pendingMessage.message,
+                    counterIncrement = pendingMessage.count,
+                    isReplyFromActiveRoom = pendingMessage.isReplyFromActiveRoom
+            )
             true
         }
     }
@@ -415,7 +419,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     private fun processIncomingMessage(
             newChat: IncomingChatWebSocketModel,
-            counterIncrement: Int = 1
+            counterIncrement: Int = 1,
+            isReplyFromActiveRoom: Boolean = false
     ) {
         if (newChat.isForOtherRole(role, userSession.userId)) return
         val chatIndex = rvAdapter?.findChat(newChat) ?: return
@@ -423,7 +428,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         updateItemOnIndex(
                 index = chatIndex,
                 newChat = newChat,
-                counterIncrement = counterIncrement
+                counterIncrement = counterIncrement,
+                isReplyFromActiveRoom = isReplyFromActiveRoom
         )
     }
 
@@ -431,7 +437,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             index: Int,
             newChat: IncomingChatWebSocketModel,
             readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD,
-            counterIncrement: Int = 1
+            counterIncrement: Int = 1,
+            isReplyFromActiveRoom: Boolean = false
     ) {
         adapter?.let { adapter ->
             when {
@@ -446,13 +453,15 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
                 //found on list, not the first
                 index >= 0 -> {
+                    val shouldUpdateReadStatus = !newChat.isFromMySelf(role, userSession.userId)
+                            && !isReplyFromActiveRoom
                     adapter.onNewIncomingChatMessage(
                             index = index,
                             newChat = newChat,
                             readStatus = readStatus,
                             pinnedMsgId = viewModel.pinnedMsgId,
                             counterIncrement = counterIncrement,
-                            isFromMySelf = newChat.isFromMySelf(role, userSession.userId)
+                            shouldUpdateReadStatus = shouldUpdateReadStatus
                     )
                 }
             }
@@ -596,9 +605,12 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                         if (isTabSeller()) ChatListActivity.SELLER_ANALYTICS_LABEL
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
-            val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            startActivity(intent)
+            webSocket.activeRoom = element.msgId
+            RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            }.let { intent ->
+                startActivity(intent)
+            }
             it.overridePendingTransition(0, 0)
         }
     }
