@@ -63,6 +63,7 @@ data class ItemChatListPojo(
 
     fun markAsRead() {
         attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_READ
+        attributes?.unreadReply = 0
     }
 
     fun hasTheSameMsgId(state: ChatStateItem): Boolean {
