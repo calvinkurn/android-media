@@ -102,6 +102,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private fun View.renderStockLabel(productCardModel: ProductCardModel) {
         textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             textViewStockLabel.text = productCardModel.stockBarLabel
+            if(productCardModel.stockBarLabelColor.isNotEmpty()){
+                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
+            }
         }
     }
 
