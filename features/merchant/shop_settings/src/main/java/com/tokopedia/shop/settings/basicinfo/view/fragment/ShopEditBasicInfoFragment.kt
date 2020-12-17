@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,6 +80,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private var tvSave: TextView? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
+    private var allowChangesTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -364,6 +366,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun getAllowShopNameDomainChanges() {
+        allowChangesTime = System.currentTimeMillis()
         showLoading()
         viewModel.getAllowShopNameDomainChanges()
     }
@@ -415,6 +418,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             hideLoading()
             when(it) {
                 is Success -> {
+                    Log.d("SHOP SETTINGS", "$allowChangesTime")
                     val data = it.data
                     showShopEditShopInfoTicker(data)
                     showShopNameDomainTextField(data)
