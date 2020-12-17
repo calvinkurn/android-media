@@ -652,7 +652,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (progressBar?.timer != null) {
             progressBar?.timer!!.cancel()
         }
-        val timerValue = item.activePeriod?.toLong()
         val flipTimer = view?.findViewById<ViewFlipper>(R.id.flip_timer)
         val couponExpire = view?.findViewById<Typography>(R.id.text_timer_value)
 
@@ -669,6 +668,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         } else {
             flipTimer?.displayedChild = 1
             couponExpire?.text = item.activePeriodDate
+        }
+
+        progressBar?.apply {
+            onFinish = {
+                flipTimer?.displayedChild = 1
+                couponExpire?.text = resources.getString(R.string.tp_catalog_timer_expire)
+            }
         }
     }
 
