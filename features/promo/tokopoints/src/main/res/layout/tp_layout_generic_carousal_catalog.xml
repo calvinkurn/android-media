@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:ellipsize="end"
         android:lineSpacingExtra="6sp"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textColor="@color/tp_loyalty_color"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
