@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options
+package com.tokopedia.developer_options.receiver
 
 import android.content.Context
 import android.content.Intent

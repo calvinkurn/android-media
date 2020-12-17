@@ -51,7 +51,8 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
-import com.tokopedia.developer_options.DevOpsMediaButtonReceiver;
+import com.tokopedia.developer_options.receiver.DevOpsMediaButtonReceiver;
+import com.tokopedia.developer_options.receiver.DevOpsMediaKt;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.data.AmplificationDataSource;
@@ -146,9 +147,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initDevOptsReceiver(){
         if (GlobalConfig.isAllowDebuggingTools()) {
-            AudioManager am = (AudioManager)getSystemService(AUDIO_SERVICE);
-            ComponentName componentName = new ComponentName(this, DevOpsMediaButtonReceiver.class);
-            am.registerMediaButtonEventReceiver(componentName);
+            DevOpsMediaKt.initReceiver(this);
         }
     }
 
