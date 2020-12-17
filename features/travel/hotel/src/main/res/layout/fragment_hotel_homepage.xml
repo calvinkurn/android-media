@@ -56,33 +56,21 @@
                         android:layout_gravity="center"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_destination"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination_hint"
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination"
                         app:srcCompat="@drawable/ic_hotel_location" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_hotel_homepage_destination_hint"
-                        android:layout_width="@dimen/layout_lvl0"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/unify_space_12"
-                        android:layout_marginLeft="@dimen/unify_space_12"
-                        android:text="@string/hotel_homepage_destination"
-                        android:textColor="@color/Unify_N700_44"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/iv_hotel_homepage_location"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:typographyType="body_3" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_destination"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:hint="@string/hotel_homepage_destination_hint"
-                        android:inputType="textNoSuggestions"
+                        android:layout_marginStart="@dimen/hotel_10dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_destination_hint" />
+                        app:layout_constraintStart_toEndOf="@id/iv_hotel_homepage_location"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:text_field_label="@string/hotel_homepage_destination"
+                        app:text_field_label_static="true"
+                        app:text_field_placeholder="@string/hotel_homepage_destination_hint"
+                        tools:layout_height="@dimen/spacing_lvl4" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/layout_lvl3"
@@ -92,58 +80,42 @@
                         android:layout_marginRight="@dimen/hotel_12dp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_checkin_date"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_checkin_date_hint"
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_checkin_date"
                         app:srcCompat="@drawable/ic_hotel_calendar_check_in" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_hotel_homepage_checkin_date_hint"
-                        android:layout_width="@dimen/layout_lvl0"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_lvl5"
-                        android:text="@string/hotel_homepage_check_in"
-                        android:textColor="@color/Unify_N700_44"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_destination"
-                        app:typographyType="body_3" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_checkin_date"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl5"
                         android:layout_marginEnd="@dimen/spacing_lvl3"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:inputType="textNoSuggestions"
                         app:layout_constraintEnd_toStartOf="@id/layout_hotel_homepage_night_count"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_checkin_date_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkin_date_hint"
-                        tools:text="18 Des 2018" />
+                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination"
+                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_destination"
+                        app:text_field_label="@string/hotel_homepage_check_in"
+                        app:text_field_label_static="true"
+                        tools:layout_height="@dimen/spacing_lvl4" />
 
                     <RelativeLayout
                         android:id="@+id/layout_hotel_homepage_night_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/layout_lvl1"
-                        android:layout_marginRight="@dimen/layout_lvl1"
-                        android:background="@drawable/hotel_bg_round_grey"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/hotel_6dp"
-                        android:paddingTop="@dimen/spacing_lvl1"
-                        android:paddingRight="@dimen/hotel_6dp"
-                        android:paddingBottom="@dimen/spacing_lvl1"
+                        android:paddingBottom="@dimen/spacing_lvl3"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_checkin_date"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_checkin_date"
-                        android:layout_marginTop="@dimen/spacing_lvl4">
+                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkin_date">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_hotel_homepage_night_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
                             android:layout_gravity="center"
+                            android:background="@drawable/hotel_bg_round_grey"
+                            android:paddingLeft="@dimen/hotel_6dp"
+                            android:paddingTop="@dimen/spacing_lvl1"
+                            android:paddingRight="@dimen/hotel_6dp"
+                            android:paddingBottom="@dimen/spacing_lvl1"
                             android:textColor="@color/Unify_N700_68"
                             app:drawableLeftCompat="@drawable/ic_hotel_night"
                             app:typographyType="body_3" />
@@ -158,32 +130,19 @@
                         android:layout_marginRight="@dimen/hotel_12dp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_checkout_date"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_checkout_date_hint"
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_checkout_date"
                         app:srcCompat="@drawable/ic_hotel_calendar_check_out" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_hotel_homepage_checkout_date_hint"
-                        android:layout_width="@dimen/layout_lvl0"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_lvl5"
-                        android:text="@string/hotel_homepage_check_out"
-                        android:textColor="@color/Unify_N700_68"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkin_date"
-                        app:typographyType="body_3" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_checkout_date"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:inputType="textNoSuggestions"
+                        android:layout_marginTop="@dimen/spacing_lvl5"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_checkout_date_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkout_date_hint"
-                        tools:text="28 Des 2018" />
+                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination"
+                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkin_date"
+                        app:text_field_label="@string/hotel_homepage_check_out"
+                        app:text_field_label_static="true" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="@dimen/layout_lvl3"
@@ -193,32 +152,19 @@
                         android:layout_marginRight="@dimen/hotel_10dp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_guest_info"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_guest_info_hint"
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_guest_info"
                         app:srcCompat="@drawable/ic_hotel_guest_room" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_hotel_homepage_guest_info_hint"
-                        android:layout_width="@dimen/layout_lvl0"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_lvl5"
-                        android:text="@string/hotel_homepage_guest_info"
-                        android:textColor="@color/Unify_N700_44"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkout_date"
-                        app:typographyType="body_3" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_guest_info"
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:inputType="textNoSuggestions"
+                        android:layout_marginTop="@dimen/spacing_lvl5"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_guest_info_hint"
-                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_guest_info_hint"
-                        tools:text="1 kamar, 1 dewasa, 1 anak" />
+                        app:layout_constraintStart_toStartOf="@id/tv_hotel_homepage_destination"
+                        app:layout_constraintTop_toBottomOf="@id/tv_hotel_homepage_checkout_date"
+                        app:text_field_label="@string/hotel_homepage_guest_info"
+                        app:text_field_label_static="true" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
                         android:id="@+id/btn_hotel_homepage_search"

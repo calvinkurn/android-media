@@ -348,10 +348,28 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun initView() {
         checkCheckInAndCheckOutDate()
-        tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
-        tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
-        tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
+
+        tv_hotel_homepage_destination.textFieldInput.isClickable = true
+        tv_hotel_homepage_destination.textFieldInput.isFocusable = false
+        tv_hotel_homepage_destination.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_destination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
+
+        tv_hotel_homepage_checkin_date.textFieldInput.isClickable = true
+        tv_hotel_homepage_checkin_date.textFieldInput.isFocusable = false
+        tv_hotel_homepage_checkin_date.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_checkin_date.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
+
+        tv_hotel_homepage_checkout_date.textFieldInput.isClickable = true
+        tv_hotel_homepage_checkout_date.textFieldInput.isFocusable = false
+        tv_hotel_homepage_checkout_date.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_checkout_date.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
+
+        tv_hotel_homepage_guest_info.textFieldInput.isClickable = true
+        tv_hotel_homepage_guest_info.textFieldInput.isFocusable = false
+        tv_hotel_homepage_guest_info.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
+
+
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
         tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST) }
 
@@ -369,11 +387,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun renderView() {
         btn_hotel_homepage_search.isEnabled = hotelHomepageModel.locName.isNotEmpty()
-        tv_hotel_homepage_destination.setText(hotelHomepageModel.locName)
-        tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
-        tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
-        tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
-        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+        tv_hotel_homepage_destination.textFieldInput.setText(hotelHomepageModel.locName)
+        tv_hotel_homepage_checkin_date.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
+        tv_hotel_homepage_checkout_date.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
+        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter, hotelHomepageModel.nightCounter))
+        tv_hotel_homepage_guest_info.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
     }
 
