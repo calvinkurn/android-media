@@ -161,9 +161,9 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
             holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), R.color.tp_new_coupon_background_color))
             holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), R.color.tp_new_coupon_background_color))
         } else {
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), R.color.Unify_N0))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), R.color.Unify_N0))
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), R.color.Unify_N0))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.usage != null) {

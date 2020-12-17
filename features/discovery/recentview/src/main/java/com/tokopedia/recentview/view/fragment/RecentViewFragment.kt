@@ -128,7 +128,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         recyclerView?.setHasFixedSize(true)
         val dividerItemDecoration = DividerItemDecoration(recyclerView?.context, DividerItemDecoration.VERTICAL)
         context?.let { context ->
-            val drawable = ContextCompat.getDrawable(context, R.drawable.bg_line_separator)
+            val drawable = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.bg_line_separator)
             drawable?.let { dividerItemDecoration.setDrawable(it) }
         }
         recyclerView?.addItemDecoration(dividerItemDecoration)

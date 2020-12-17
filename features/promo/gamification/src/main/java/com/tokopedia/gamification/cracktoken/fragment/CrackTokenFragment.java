@@ -430,7 +430,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 if (getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
                     return;
                 }
-                setToolbarColor(getResources().getColor(R.color.Unify_N0), getResources().getColor(com.tokopedia.design.R.color.transparent));
+                setToolbarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), getResources().getColor(com.tokopedia.design.R.color.transparent));
                 widgetCrackResult.showCrackResult(crackResult);
 
             }
@@ -639,7 +639,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (activeNetwork == null || !activeNetwork.isConnected()) {
             loadNetworkConnectionErrorBottomSheet();
         } else {
-            setToolbarColor(getResources().getColor(R.color.Unify_N0), getResources().getColor(com.tokopedia.design.R.color.transparent));
+            setToolbarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), getResources().getColor(com.tokopedia.design.R.color.transparent));
             widgetCrackResult.showCrackResult(crackResult);
         }
     }

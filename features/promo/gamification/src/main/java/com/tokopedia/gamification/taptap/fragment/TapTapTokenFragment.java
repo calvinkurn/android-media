@@ -197,8 +197,8 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_N0));
-        toolbarTitle.setTextColor(getResources().getColor(R.color.Unify_N0));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        toolbarTitle.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {
@@ -377,11 +377,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private int getButtonTextColor(String backgroundColor) {
         if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
-            return R.color.Unify_N0;
+            return com.tokopedia.unifyprinciples.R.color.Unify_N0;
         } else if (TapTapConstants.ButtonColor.WHITE.equalsIgnoreCase(backgroundColor)) {
             return com.tokopedia.design.R.color.black_70;
         } else {
-            return R.color.Unify_N0;
+            return com.tokopedia.unifyprinciples.R.color.Unify_N0;
         }
     }
 
