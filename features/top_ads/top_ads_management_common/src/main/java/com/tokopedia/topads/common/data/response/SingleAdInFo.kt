@@ -1,7 +1,9 @@
 package com.tokopedia.topads.common.data.response
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class SingleAdInFo(
         @SerializedName("topAdsGetPromo")
@@ -12,77 +14,57 @@ data class TopAdsGetPromo(
         @SerializedName("data")
         val `data`: List<SingleAd> = listOf(),
         @SerializedName("errors")
-        val errors: List<Any> = listOf()
+        val errors: List<Error> = listOf()
 )
 
+@Parcelize
 data class SingleAd(
         @SerializedName("adEndDate")
-        var adEndDate: String,
+        var adEndDate: String = "",
         @SerializedName("adEndTime")
-        var adEndTime: String,
+        var adEndTime: String = "",
         @SerializedName("adID")
-        var adID: String,
+        var adID: String = "",
         @SerializedName("adImage")
-        var adImage: String,
+        var adImage: String = "",
         @SerializedName("adStartDate")
-        var adStartDate: String,
+        var adStartDate: String = "",
         @SerializedName("adStartTime")
-        var adStartTime: String,
+        var adStartTime: String = "",
         @SerializedName("adTitle")
-        var adTitle: String,
+        var adTitle: String = "",
         @SerializedName("adType")
-        var adType: String,
+        var adType: String = "",
         @SerializedName("cpmDetails")
-        var cpmDetails: List<CpmDetail>,
+        var cpmDetails: List<CpmDetail> = listOf(),
         @SerializedName("groupID")
-        var groupID: String,
+        var groupID: String = "",
         @SerializedName("itemID")
-        var itemID: String,
+        var itemID: String = "",
         @SerializedName("priceBid")
-        var priceBid: Int,
+        var priceBid: Int = 0,
         @SerializedName("priceDaily")
-        var priceDaily: Int,
+        var priceDaily: Int = 0,
         @SerializedName("shopID")
-        var shopID: String,
+        var shopID: String = "",
         @SerializedName("status")
-        var status: String
-)
+        var status: String = ""
+) : Parcelable
 
+@Parcelize
 data class CpmDetail(
         @SerializedName("description")
-        var description: Description,
+        var description: Description = Description(),
         @SerializedName("link")
-        var link: String,
+        var link: String = "",
         @SerializedName("product")
-        var product: List<Product>,
+        var product: List<TopAdsProductModel> = listOf(),
         @SerializedName("title")
-        var title: String
-)
+        var title: String = ""
+) : Parcelable
 
+@Parcelize
 data class Description(
         @SerializedName("slogan")
-        var slogan: String
-)
-
-data class Product(
-        @SerializedName("departmentID")
-        var departmentID: Int,
-        @SerializedName("departmentName")
-        var departmentName: String,
-        @SerializedName("productActive")
-        var productActive: Int,
-        @SerializedName("productID")
-        var productID: String,
-        @SerializedName("productImage")
-        var productImage: String,
-        @SerializedName("productName")
-        var productName: String,
-        @SerializedName("productPrice")
-        var productPrice: String,
-        @SerializedName("productRating")
-        var productRating: Int,
-        @SerializedName("productReviewCount")
-        var productReviewCount: Int,
-        @SerializedName("productURL")
-        var productURL: String
-)
+        var slogan: String = ""
+) : Parcelable

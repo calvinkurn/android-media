@@ -3,7 +3,7 @@ package com.tokopedia.topads.view.adapter.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.view.adapter.product.viewholder.ProductViewHolder
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductShimmerViewModel
@@ -44,8 +44,8 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
         notifyDataSetChanged()
     }
 
-    fun getSelectedItems(): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
-        val selected = mutableListOf<ResponseProductList.Result.TopadsGetListProduct.Data>()
+    fun getSelectedItems(): List<TopAdsProductModel> {
+        val selected = mutableListOf<TopAdsProductModel>()
         selected.clear()
         items.forEach { productViewModel ->
             if((productViewModel is ProductItemViewModel) && productViewModel.isChecked )

@@ -19,6 +19,7 @@
             android:layout_height="@dimen/dp_148"
             android:layout_margin="@dimen/dp_4"
             android:adjustViewBounds="true"
+            app:corners="15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

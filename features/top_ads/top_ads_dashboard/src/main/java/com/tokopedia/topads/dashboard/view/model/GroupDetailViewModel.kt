@@ -6,13 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
@@ -47,31 +48,21 @@ class GroupDetailViewModel @Inject constructor(
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
-    fun getGroupProductData(resources: Resources, page: Int, groupId: Int, search: String, sort: String, status: Int?,
-                            startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
-        topAdsGetGroupProductDataUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if(nonGroupResponse.data.isEmpty()) {
-                    onEmpty()
-                } else {
-                    onSuccess(nonGroupResponse)
+    fun getGroupProductData(page: Int, groupId: Int, search: String, sort: String, status: Int?, startDate: String,
+                            endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
+        topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, userSession.shopId.toIntOrZero())
+        topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
+                {
+                    if(it.data.isEmpty()) {
+                        onEmpty()
+                    } else {
+                        onSuccess(it)
+                    }
+                },
+                {
+                    it.printStackTrace()
                 }
-            }
-        })
+        )
     }
 
     fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
@@ -214,7 +205,7 @@ class GroupDetailViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
+        topAdsGetGroupProductDataUseCase.cancelJobs()
         topAdsKeywordsActionUseCase.cancelJobs()
         topAdsProductActionUseCase.cancelJobs()
         topAdsGetGroupListUseCase.cancelJobs()

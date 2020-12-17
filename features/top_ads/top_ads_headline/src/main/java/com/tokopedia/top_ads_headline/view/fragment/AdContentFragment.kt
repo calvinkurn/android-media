@@ -23,7 +23,7 @@ import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,7 +36,7 @@ private const val MIN_PROMOTIONAL_MSG_COUNT = 20
 
 class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
-    private var selectedTopAdsProducts = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
+    private var selectedTopAdsProducts = ArrayList<TopAdsProductModel>()
 
     companion object {
         fun newInstance() = AdContentFragment()
@@ -180,7 +180,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>
+            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<TopAdsProductModel>>
                     ?: HashMap()
             selectedTopAdsProducts = getSelectedProducts()
             if (data?.getBooleanExtra(IS_EDITED, false) == true) {
@@ -223,8 +223,8 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         }
     }
 
-    private fun getSelectedProducts(): ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data> {
-        val result = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
+    private fun getSelectedProducts(): ArrayList<TopAdsProductModel> {
+        val result = ArrayList<TopAdsProductModel>()
         stepperModel?.selectedTopAdsProductMap?.forEach { (_, value) ->
             if (value.size > SINGLE_SELECTION) {
                 result.addAll(value)

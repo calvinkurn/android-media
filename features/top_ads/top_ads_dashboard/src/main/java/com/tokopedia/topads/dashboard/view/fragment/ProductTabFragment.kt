@@ -148,10 +148,10 @@ class ProductTabFragment : BaseDaggerFragment() {
         loader.visibility = View.VISIBLE
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
-        viewModel.getGroupProductData(resources, page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId()
-                , startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+        viewModel.getGroupProductData(page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate
+                , endDate, ::onProductFetch, ::onEmptyProduct)
     }
 
 
@@ -306,9 +306,9 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
 
-        viewModel.getGroupProductData(resources, 1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+        viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onProductFetch, ::onEmptyProduct)
     }
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {

@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
@@ -279,7 +279,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+    private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)

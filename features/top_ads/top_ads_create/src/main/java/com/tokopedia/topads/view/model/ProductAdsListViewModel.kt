@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.ResponseEtalase
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,7 +38,7 @@ class ProductAdsListViewModel @Inject constructor(
         }
     }
 
-    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) -> Unit),
+    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launch {
             topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId.toIntOrZero())

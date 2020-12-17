@@ -2,16 +2,24 @@ package com.tokopedia.top_ads_headline.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.EditHeadlineAdsModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
+import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.constant.Constants
+import com.tokopedia.topads.common.constant.Constants.GROUP_ID
 import com.tokopedia.topads.common.constant.Constants.TAB_POSITION
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_edit_headline_activity.*
 import javax.inject.Inject
@@ -26,14 +34,52 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var groupId: String = ""
+    private var adId: Int  = 0
+
+    private lateinit var editFormHeadlineViewModel: EditFormHeadlineViewModel
+    private lateinit var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel
+    private var editHeadlineAdsModel: EditHeadlineAdsModel = EditHeadlineAdsModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_edit_headline_activity)
+        setUpToolbar()
+        getDataFromIntent()
+        setUpObservers()
+        fetchAdDetails()
+        renderTabAndViewPager()
+    }
+
+    private fun setUpObservers() {
+        editFormHeadlineViewModel = ViewModelProvider(this, viewModelFactory).get(EditFormHeadlineViewModel::class.java)
+        sharedEditHeadlineViewModel = ViewModelProvider(this, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+        sharedEditHeadlineViewModel.getGroupItemLiveData().observe(this, Observer {
+            editHeadlineAdsModel.groupDataItem = it
+            sharedEditHeadlineViewModel.getHeadlineAdDetail(it.adId, userSession.shopId.toIntOrZero(), this::onError)
+        })
+        sharedEditHeadlineViewModel.getHeadlineAdDetailLiveData().observe(this, Observer {
+            editHeadlineAdsModel.headlineAdDetail = it
+        })
+    }
+
+    private fun onError(message:String){
+        Toaster.build(root, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    }
+
+    private fun fetchAdDetails() {
+        sharedEditHeadlineViewModel.getHeadlineAdId(groupId.toIntOrZero(), userSession.shopId.toIntOrZero())
+    }
+
+    private fun getDataFromIntent() {
+        groupId = intent.getStringExtra(GROUP_ID) ?: ""
+    }
+
+    private fun setUpToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
         }
-        renderTabAndViewPager()
     }
 
     private fun renderTabAndViewPager() {

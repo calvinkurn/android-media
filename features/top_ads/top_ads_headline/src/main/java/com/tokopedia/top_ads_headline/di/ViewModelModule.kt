@@ -38,6 +38,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(SharedEditHeadlineViewModel::class)
+    internal abstract fun provideSharedEditHeadlineViewModel(viewModel: SharedEditHeadlineViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(EditFormHeadlineViewModel::class)
     internal abstract fun provideEditFormHeadlineViewModel(viewModel: EditFormHeadlineViewModel): ViewModel
 

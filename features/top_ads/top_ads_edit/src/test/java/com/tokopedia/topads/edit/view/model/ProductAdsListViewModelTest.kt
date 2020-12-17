@@ -2,6 +2,7 @@ package com.tokopedia.topads.edit.view.model
 
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import io.mockk.*
@@ -54,7 +55,7 @@ class ProductAdsListViewModelTest {
             onSuccess.invoke(data)
         }
         viewModel.productList("key", "123", "", "", 1, 1,
-                { _: List<ResponseProductList.Result.TopadsGetListProduct.Data>, b: Boolean -> }, {}, {})
+                { _: List<TopAdsProductModel>, b: Boolean -> }, {}, {})
         verify {
             getProductUseCase.execute(any(), any())
         }
