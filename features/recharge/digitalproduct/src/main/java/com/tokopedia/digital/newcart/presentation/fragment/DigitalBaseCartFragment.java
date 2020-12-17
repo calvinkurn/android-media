@@ -454,7 +454,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public long getOrderId() {
         String orderIdString = cartPassData.getOrderId();
         try {
-            return TextUtils.isEmpty(orderIdString) ? 0 : Long.parseLong(orderIdString);
+            return TextUtils.isEmpty(orderIdString) ? 0L : Long.parseLong(orderIdString);
         } catch (Exception e) {
             return 0L;
         }
