@@ -89,10 +89,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getAllowShopNameDomainChanges() {
         launchCatchError(dispatchers.io, block = {
-            val allowChanges = async(start = CoroutineStart.LAZY) {
-                getAllowShopNameDomainChangesUseCase.executeOnBackground()
-            }.await()
-            _allowShopNameDomainChanges.postValue(Success(allowChanges.data))
+            _allowShopNameDomainChanges.postValue(Success(getAllowShopNameDomainChangesAsync().await()))
         }, onError = {
             _allowShopNameDomainChanges.postValue(Fail(it))
         })
@@ -228,6 +225,18 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     .collectLatest {
                         _updateShopBasicData.value = Success(it)
                     }
+        }
+    }
+
+    private fun getAllowShopNameDomainChangesAsync(): Deferred<AllowShopNameDomainChangesData> {
+        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
+            var allowChanges = AllowShopNameDomainChangesData()
+            try {
+                allowChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground().data
+            } catch (t: Throwable) {
+                _allowShopNameDomainChanges.postValue(Fail(t))
+            }
+            allowChanges
         }
     }
 
