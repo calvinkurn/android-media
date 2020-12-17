@@ -492,8 +492,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
             } else {
                 collapsingToolbarLayout.setTitle(" ");
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.Unify_N0));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.Unify_N0));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
         });
     }

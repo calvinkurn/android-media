@@ -374,14 +374,14 @@ class VideoDetailFragment:
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, com.tokopedia.unifyprinciples.Unify_N0)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, com.tokopedia.unifyprinciples.Unify_N0)
+                        MethodChecker.getColor(likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 )
             }
         }

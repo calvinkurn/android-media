@@ -225,7 +225,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
         coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(com.tokopedia.digital_deals.R.string.coachicon_title_location), getString(com.tokopedia.digital_deals.R.string.coachicon_description_location)));
         coachItems.add(new CoachMarkItem(searchInputView, getString(com.tokopedia.digital_deals.R.string.coachicon_title_searchbar), getString(com.tokopedia.digital_deals.R.string.coachicon_description_searchbar)));
-        coachItems.add(new CoachMarkItem(cvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.unifyprinciples.Unify_N0, nestedScrollView));
+        coachItems.add(new CoachMarkItem(cvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.unifyprinciples.R.color.Unify_N0, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
         coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
             @Override

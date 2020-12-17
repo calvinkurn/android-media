@@ -78,7 +78,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         val container = itemView.findViewById<View>(R.id.container_nonlogin)
         val imgNonLogin = itemView.findViewById<AppCompatImageView>(R.id.bg_container_nonlogin)
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, com.tokopedia.unifyprinciples.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, com.tokopedia.unifyprinciples.R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
         Glide.with(itemView.context.applicationContext)
@@ -98,7 +98,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
         )
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
-        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, com.tokopedia.unifyprinciples.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
+        containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, com.tokopedia.unifyprinciples.R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
@@ -412,7 +412,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL)
                         tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                     }
-                    tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.Unify_N0))
+                    tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 } else {
                     tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
