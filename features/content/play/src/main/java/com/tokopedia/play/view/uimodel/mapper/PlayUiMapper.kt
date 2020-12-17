@@ -16,7 +16,6 @@ object PlayUiMapper {
 
     fun createCompleteInfoModel(
             channel: Channel,
-            partnerName: String,
             isBanned: Boolean,
             exoPlayer: ExoPlayer
     ) = PlayCompleteInfoUiModel(
@@ -30,11 +29,11 @@ object PlayUiMapper {
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
-                    partnerName,
+                    channel.partner.name,
                     channel.pinnedMessage
             ),
             pinnedProduct = mapPinnedProduct(
-                    partnerName,
+                    channel.partner.name,
                     channel.configuration),
             quickReply = mapQuickReply(channel.quickReplies),
             totalView = mapTotalViews(channel.stats.view.formatted),

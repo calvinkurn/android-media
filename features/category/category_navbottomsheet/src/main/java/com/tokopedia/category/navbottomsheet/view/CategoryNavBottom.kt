@@ -8,13 +8,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.category.navbottomsheet.viewmodel.CategoryNavBottomViewModel
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.di.DaggerCategoryNavigationBottomSheetComponent
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.category.navbottomsheet.model.CategoryNavStateModel
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryLevelTwoExpandableAdapter
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryNavLevelOneAdapter
+import com.tokopedia.category.navbottomsheet.viewmodel.CategoryNavBottomViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -212,11 +212,19 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
             Handler().postDelayed({
                 if (childPosition == 0)
                     categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id?.let {
-                        listener?.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
+                        listener?.onCategorySelected(it,
+                                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink,
+                                2,
+                                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.name
+                                        ?: "")
                     }
                 else
                     categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.id?.let {
-                        listener?.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
+                        listener?.onCategorySelected(it,
+                                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink,
+                                3,
+                                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.name
+                                        ?: "")
                         gtmListener?.onL3Clicked(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.name)
                     }
                 dismiss()
@@ -240,7 +248,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     }
 
     interface CategorySelected {
-        fun onCategorySelected(catId: String, appLink: String?, depth: Int)
+        fun onCategorySelected(catId: String, appLink: String?, depth: Int, catName : String)
     }
 
     /**

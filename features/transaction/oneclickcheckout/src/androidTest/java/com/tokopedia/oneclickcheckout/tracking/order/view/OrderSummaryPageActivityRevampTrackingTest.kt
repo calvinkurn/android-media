@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.tracking.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
@@ -88,7 +87,7 @@ class OrderSummaryPageActivityRevampTrackingTest {
             }
 
             clickChangeAddressRevamp()
-            Espresso.pressBack()
+            closeBottomSheet()
 
             clickChangeDurationRevamp {
                 chooseDurationWithText("Next Day (1 hari)")

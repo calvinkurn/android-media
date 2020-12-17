@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -61,6 +62,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
