@@ -378,6 +378,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
+            hideLoading()
             when(it) {
                 is Fail -> {
                     it.throwable.cause?.apply {
@@ -391,6 +392,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
+            hideLoading()
             when(it) {
                 is Success -> {
                     it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->

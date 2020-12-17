@@ -89,9 +89,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getAllowShopNameDomainChanges() {
         launch {
-            flow {
-                emit(getAllowShopNameDomainChangesUseCase.executeOnBackground())
-            }.flowOn(dispatchers.io)
+            flow { emit(getAllowShopNameDomainChangesUseCase.executeOnBackground()) }
+                    .flowOn(dispatchers.io)
                     .catch {
                         _allowShopNameDomainChanges.value = Fail(it)
                     }
@@ -103,12 +102,11 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getShopBasicData() {
         launch {
-            flow {
-                emit(RequestParams.EMPTY)
-            }.flowOn(dispatchers.io)
+            flow { emit(RequestParams.EMPTY) }
                     .map {
                         getShopBasicDataUseCase.getData(it)
                     }
+                    .flowOn(dispatchers.io)
                     .catch {
                         _shopBasicData.value = Fail(it)
                     }
@@ -126,13 +124,12 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         description: String
     ) {
         launch {
-            flow {
-                emit(imagePath)
-            }.flowOn(dispatchers.io)
+            flow { emit(imagePath) }
                     .map {
                         val requestParams = UploadShopImageUseCase.createRequestParams(it)
                         uploadShopImageUseCase.getData(requestParams)
                     }
+                    .flowOn(dispatchers.io)
                     .catch {
                         _uploadShopImage.value = Fail(it)
                     }
@@ -171,14 +168,15 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun initShopNameValidation() {
-        viewModelScope.launch {
+        launch {
             shopNameValidation.asFlow()
-                    .flowOn(dispatchers.io)
                     .debounce(INPUT_DELAY)
                     .map {
                         validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParams(it)
                         validateDomainShopNameUseCase.executeOnBackground()
-                    }.catch {
+                    }
+                    .flowOn(dispatchers.io)
+                    .catch {
                         _validateShopName.value = Fail(it)
                     }.collectLatest {
                         _validateShopName.value = Success(it)
@@ -187,14 +185,15 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun initShopDomainValidation() {
-        viewModelScope.launch {
+        launch {
             shopDomainValidation.asFlow()
-                    .flowOn(dispatchers.io)
                     .debounce(INPUT_DELAY)
                     .map {
                         validateDomainShopNameUseCase.params = ValidateDomainShopNameUseCase.createRequestParam(it)
                         validateDomainShopNameUseCase.executeOnBackground()
-                    }.catch {
+                    }
+                    .flowOn(dispatchers.io)
+                    .catch {
                         _validateShopDomain.value = Fail(it)
                     }.collectLatest {
                         if(!it.validateDomainShopName.isValid) {
@@ -208,14 +207,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun getShopDomainSuggestion(shopName: String) {
-        viewModelScope.launch {
-            shopNameValidation.asFlow()
-                    .flowOn(dispatchers.io)
-                    .debounce(INPUT_DELAY)
+        launch {
+            flow { emit(shopName) }
                     .map {
                         getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(it)
                         getShopDomainNameSuggestionUseCase.executeOnBackground()
                     }
+                    .flowOn(dispatchers.io)
                     .conflate()
                     .catch {
                         _shopDomainSuggestion.value = Fail(it)
@@ -227,14 +225,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     private fun updateShopBasicData(requestParams: RequestParams) {
-        viewModelScope.launch {
-            flow {
-                emit(requestParams)
-            }.flowOn(dispatchers.io)
+        launch {
+            flow { emit(requestParams) }
                     .map {
                         updateShopBasicDataUseCase.setParams(it)
                         updateShopBasicDataUseCase.executeOnBackground()
                     }
+                    .flowOn(dispatchers.io)
                     .catch {
                         _updateShopBasicData.value = Fail(it)
                     }
