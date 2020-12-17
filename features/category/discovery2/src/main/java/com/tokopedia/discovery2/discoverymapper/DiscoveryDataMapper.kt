@@ -4,6 +4,12 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
+import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
+import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -13,15 +19,12 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
-private const val SALE_PRODUCT_STOCK = 100
-private const val PRODUCT_STOCK = 0
-private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
-private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 
 class DiscoveryDataMapper {
 
@@ -208,7 +211,7 @@ class DiscoveryDataMapper {
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
-                pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
+                pdpViewCount = getPDPViewCount(dataItem.pdpView),
                 labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
                 },
@@ -220,6 +223,15 @@ class DiscoveryDataMapper {
                 hasNotifyMeButton =  dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
+    }
+
+    private fun getPDPViewCount(pdpView: String): String {
+        val pdpViewData = pdpView.toDoubleOrZero()
+        return if (pdpViewData >= PDP_VIEW_THRESHOLD) {
+            Utils.getCountView(pdpViewData)
+        } else {
+            ""
+        }
     }
 
     private fun setStockProgress(dataItem: DataItem): Int {
