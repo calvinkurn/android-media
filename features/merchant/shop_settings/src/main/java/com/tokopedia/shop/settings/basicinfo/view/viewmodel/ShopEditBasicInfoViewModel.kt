@@ -9,6 +9,7 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMut
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
@@ -87,17 +88,14 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     }
 
     fun getAllowShopNameDomainChanges() {
-        launch {
-            flow {
-                emit(getAllowShopNameDomainChangesUseCase.executeOnBackground())
-            }       .flowOn(dispatchers.io)
-                    .catch {
-                        _allowShopNameDomainChanges.value = Fail(it)
-                    }
-                    .collectLatest {
-                        _allowShopNameDomainChanges.value = Success(it.data)
-                    }
-        }
+        launchCatchError(dispatchers.io, block = {
+            val allowChanges = async(start = CoroutineStart.LAZY) {
+                getAllowShopNameDomainChangesUseCase.executeOnBackground()
+            }.await()
+            _allowShopNameDomainChanges.postValue(Success(allowChanges.data))
+        }, onError = {
+            _allowShopNameDomainChanges.postValue(Fail(it))
+        })
     }
 
     fun getShopBasicData() {
