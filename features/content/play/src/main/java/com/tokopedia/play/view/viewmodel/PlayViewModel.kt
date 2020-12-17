@@ -183,21 +183,6 @@ class PlayViewModel @Inject constructor(
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(observablePartnerInfo) {
-            val currentMessageValue = _observablePinnedMessage.value
-            if (currentMessageValue != null) {
-                _observablePinnedMessage.value = currentMessageValue.copy(
-                        partnerName = it.name
-                )
-            }
-
-            val currentProductValue = _observablePinnedProduct.value
-            if (currentProductValue != null) {
-                _observablePinnedProduct.value = currentProductValue.copy(
-                        partnerName = it.name
-                )
-            }
-        }
         addSource(observableProductSheetContent) {
             _observablePinned.value = getPinnedModel(
                     pinnedMessage = _observablePinnedMessage.value,
@@ -462,7 +447,6 @@ class PlayViewModel @Inject constructor(
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
-                        partnerName = _observablePartnerInfo.value?.name.orEmpty(),
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
                 )

@@ -21,6 +21,7 @@ object SomListNavigator {
     const val REQUEST_FILTER = 998
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
+    const val REQUEST_CHANGE_COURIER = 995
 
     fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel, userRolesResult: Result<SomGetUserRoleUiModel>?) {
         fragment.run {
@@ -61,6 +62,16 @@ object SomListNavigator {
             Intent(context, SomConfirmReqPickupActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, REQUEST_CONFIRM_REQUEST_PICKUP)
+            }
+        }
+    }
+
+    fun goToChangeCourierPage(fragment: SomListFragment, orderId: String) {
+        fragment.run {
+            Intent(activity, SomConfirmShippingActivity::class.java).apply {
+                putExtra(SomConsts.PARAM_ORDER_ID, orderId)
+                putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, true)
+                startActivityForResult(this, REQUEST_CHANGE_COURIER)
             }
         }
     }
