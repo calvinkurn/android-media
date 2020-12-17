@@ -2,8 +2,8 @@ package com.tokopedia.shop.common.data.source.cloud.query
 
 object AdminPermissionList {
 
-    val QUERY = "query AdminPermission(\$source: String!, \$shopId: Int!) {\n" +
-            "  getAdminInfo(source: \$source, shop_id: \$shopId) {\n" +
+    val QUERY = "query AdminPermission {\n" +
+            "  getAdminType(source:  \"akw-testing\") {\n" +
             "    admin_data {\n" +
             "      permission_list {\n" +
             "        permission_id\n" +
