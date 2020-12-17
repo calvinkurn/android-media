@@ -72,7 +72,7 @@ object VariantMapper {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
-                productID = newData?.productId.toString(),
+                productID = newData?.productId ?: "",
                 sku = newData?.sku ?: "",
                 minOrder = newData?.getFinalMinOrder() ?: 0,
                 status = if (newData?.isBuyable == true) {
@@ -107,7 +107,7 @@ object VariantMapper {
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
                     ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = (newData.productId + System.nanoTime()).toString()
+                id = (newData.productId + System.nanoTime())
             }
 
             copyOfOldMedia?.add(0, newMedia)
