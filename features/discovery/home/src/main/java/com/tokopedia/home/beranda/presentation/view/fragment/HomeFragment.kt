@@ -588,7 +588,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run {
-                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+                bottomSheet.show(this, "onboarding navigation")
             }
             saveFirstViewNavigation(false)
         }

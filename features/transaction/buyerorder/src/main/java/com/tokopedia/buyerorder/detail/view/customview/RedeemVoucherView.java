@@ -36,6 +36,7 @@ public class RedeemVoucherView extends LinearLayout {
     private Body body;
     private int mPos;
     OrderListDetailPresenter presenter;
+    private ItemsAdapter.SetEventDetails setEventDetails;
 
     public RedeemVoucherView(Context context) {
         super(context);
@@ -52,7 +53,7 @@ public class RedeemVoucherView extends LinearLayout {
         initView();
     }
 
-    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals) {
+    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails) {
         super(context);
         this.context = context;
         this.voucherCount = voucherNumber;
@@ -62,6 +63,7 @@ public class RedeemVoucherView extends LinearLayout {
         this.presenter = presenter;
         this.mPos = position;
         this.setTapActionDeals = setTapActionDeals;
+        this.setEventDetails = setEventDetails;
         initView();
     }
 
@@ -169,12 +171,12 @@ public class RedeemVoucherView extends LinearLayout {
                     }
                 }, 30000);
                 if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals)) {
-                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_deals));
+                    setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_deals));
                 } else {
-                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_event));
+                    setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_event));
                 }
             } else {
-                presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_success));
+                setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_success));
             }
         }
     }

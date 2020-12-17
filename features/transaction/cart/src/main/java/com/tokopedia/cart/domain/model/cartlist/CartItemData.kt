@@ -28,7 +28,7 @@ data class CartItemData(
 
     @Parcelize
     data class OriginData(
-            var cartId: Int = 0,
+            var cartId: Long = 0,
             var parentId: String? = null,
             var productId: String? = null,
             var productName: String? = null,

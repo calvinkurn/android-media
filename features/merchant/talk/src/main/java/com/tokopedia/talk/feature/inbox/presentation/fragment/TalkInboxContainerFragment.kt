@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -23,6 +24,7 @@ import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.setNotification
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_inbox_container.*
 import javax.inject.Inject
 
@@ -71,6 +73,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         setupViewPager()
         setupAdapter()
         setupTabLayout()
@@ -158,4 +161,13 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         }
     }
 
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkInboxContainer)
+                headerTalkInboxContainer?.title = getString(R.string.title_talk_discuss)
+            }
+        }
+    }
 }

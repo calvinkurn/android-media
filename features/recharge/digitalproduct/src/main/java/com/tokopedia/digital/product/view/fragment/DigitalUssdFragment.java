@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
@@ -49,6 +48,7 @@ import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.UssdProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -459,7 +459,9 @@ public class DigitalUssdFragment extends BaseDaggerFragment
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (view != null) {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 

@@ -35,10 +35,6 @@ import javax.inject.Inject
 * */
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
-    init {
-        initActivityCallbacks(appContext)
-    }
-
     @Inject
     lateinit var presenter: Lazy<DialogManagerPresenter>
 
@@ -366,13 +362,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         } catch (th: Throwable) {
         }
     }
-
-    private fun initActivityCallbacks(appContext: Context) {
-        if (appContext is Application) {
-            GratifCmInitializer.start(appContext)
-        }
-    }
-
 }
 
 data class GratificationData(val popSlug: String, val page: String)
