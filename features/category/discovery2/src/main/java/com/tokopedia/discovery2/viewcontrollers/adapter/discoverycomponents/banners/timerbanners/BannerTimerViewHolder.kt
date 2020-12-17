@@ -11,15 +11,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.parsedColor
 import com.tokopedia.discovery2.Utils.Companion.setTimerBoxDynamicBackground
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-
-private const val TIME_DISPLAY_FORMAT = "%1$02d"
 
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView, fragment.viewLifecycleOwner) {
 
@@ -81,11 +79,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {lifecycle ->
-//            bannerTimerViewModel.getComponentData().observe(it, { componentItem ->
-//                if (!componentItem.data.isNullOrEmpty()) {
-//                    bannerTimerViewModel.startTimer()
-//                }
-//            })
             bannerTimerViewModel.getTimerData().observe(lifecycle, {
                 daysTextView.text = String.format(TIME_DISPLAY_FORMAT, it.days)
                 hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
@@ -104,7 +97,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
             bannerTimerViewModel.stopTimer()
-//            bannerTimerViewModel.getComponentData().removeObservers(it)
             bannerTimerViewModel.getTimerData().removeObservers(it)
             bannerTimerViewModel.getSyncPageLiveData().removeObservers(it)
         }

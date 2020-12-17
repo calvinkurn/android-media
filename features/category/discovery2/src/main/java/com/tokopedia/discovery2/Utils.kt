@@ -31,7 +31,8 @@ const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
-val TIME_DISPLAY_FORMAT = "%1$02d"
+const val TIME_DISPLAY_FORMAT = "%1$02d"
+const val DEFAULT_TIME_DATA : Long = 0
 
 class Utils {
 
@@ -198,10 +199,10 @@ class Utils {
                         return it.time - currentSystemTime.time
                     }
                 } catch (e: Exception) {
-                    return 0
+                    return DEFAULT_TIME_DATA
                 }
             }
-            return 0
+            return DEFAULT_TIME_DATA
         }
     }
 }
