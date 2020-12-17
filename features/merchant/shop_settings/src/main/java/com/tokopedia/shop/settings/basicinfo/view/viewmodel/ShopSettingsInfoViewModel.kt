@@ -16,11 +16,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 
@@ -32,27 +32,43 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
     val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
         get() = _checkOsMerchantTypeData
-
-    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
+    val updateScheduleResult: LiveData<Result<String>>
+        get() = _updateScheduleResult
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
-
-    private val _shopStatusData = MutableLiveData<Result<GoldGetPmOsStatus>>()
     val shopStatusData: LiveData<Result<GoldGetPmOsStatus>>
         get() = _shopStatusData
 
+    private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
+    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
+    private val _shopStatusData = MutableLiveData<Result<GoldGetPmOsStatus>>()
     private val _updateScheduleResult = MutableLiveData<Result<String>>()
-    val updateScheduleResult: LiveData<Result<String>>
-        get() = _updateScheduleResult
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        launchCatchError(dispatchers.io, block = {
-            _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))
-            _shopStatusData.postValue(Success(getShopStatusAsync(shopId, includeOS).await()))
-        }, onError = {})
+        launch {
+            flow {
+                emit(getShopBasicDataUseCase.getData(RequestParams.EMPTY))
+            }       .flowOn(dispatchers.io)
+                    .catch {
+                        _shopBasicData.value = Fail(it)
+                    }
+                    .collectLatest {
+                        _shopBasicData.value = Success(it)
+                    }
+
+            flow {
+                val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
+                emit(getShopStatusUseCase.getData(requestParams))
+            }       .flowOn(dispatchers.io)
+                    .catch {
+                        _shopStatusData.value = Fail(it)
+                    }
+                    .collectLatest {
+                        _shopStatusData.value = Success(it)
+                    }
+            }
     }
 
     fun updateShopSchedule(
@@ -62,58 +78,38 @@ class ShopSettingsInfoViewModel @Inject constructor (
             closeEnd: String,
             closeNote: String
     ) {
-        launchCatchError(dispatchers.io, block = {
-            val requestParams = UpdateShopScheduleUseCase.createRequestParams(
-                    action = action,
-                    closeNow = closeNow,
-                    closeStart = closeStart,
-                    closeEnd = closeEnd,
-                    closeNote = closeNote
-            )
-            val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
-            _updateScheduleResult.postValue(Success(updateScheduleResponse))
-        }) {
-            _updateScheduleResult.postValue(Fail(it))
-        }
-    }
-
-    private fun getShopBasicDataAsync(): Deferred<ShopBasicDataModel> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            var shopBasicData = ShopBasicDataModel()
-            try {
-                shopBasicData = getShopBasicDataUseCase.getData(RequestParams.EMPTY) // getShopBasicDataUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                _shopBasicData.postValue(Fail(t))
-            }
-            shopBasicData
-        }
-    }
-
-    private fun getShopStatusAsync(shopId: String, includeOS: Boolean): Deferred<GoldGetPmOsStatus> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            var shopStatusData = GoldGetPmOsStatus()
-            try {
-                val requestParams = GetShopStatusUseCase.createRequestParams(shopId, includeOS)
-                shopStatusData = getShopStatusUseCase.getData(requestParams)
-            } catch (t: Throwable) {
-                _shopStatusData.postValue(Fail(t))
-            }
-            shopStatusData
+        launch {
+            flow {
+                val requestParams = UpdateShopScheduleUseCase.createRequestParams(
+                        action = action,
+                        closeNow = closeNow,
+                        closeStart = closeStart,
+                        closeEnd = closeEnd,
+                        closeNote = closeNote
+                )
+                emit(updateShopScheduleUseCase.getData(requestParams))
+            }       .flowOn(dispatchers.io)
+                    .catch {
+                        _updateScheduleResult.value = Fail(it)
+                    }
+                    .collectLatest {
+                        _updateScheduleResult.value = Success(it)
+                    }
         }
     }
 
     fun validateOsMerchantType(shopId: Int) {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
-                        .createRequestParam(shopId)
-                val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
-                osMerchantChecker.let {
-                    _checkOsMerchantTypeData.postValue(Success(it))
-                }
-            }
-        }) {
-            _checkOsMerchantTypeData.value = Fail(it)
+        launch {
+            flow {
+                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase.createRequestParam(shopId)
+                emit(checkOsMerchantUseCase.executeOnBackground())
+            }       .flowOn(dispatchers.io)
+                    .catch {
+                        _checkOsMerchantTypeData.value = Fail(it)
+                    }
+                    .collectLatest {
+                        _checkOsMerchantTypeData.value = Success(it)
+                    }
         }
     }
 }

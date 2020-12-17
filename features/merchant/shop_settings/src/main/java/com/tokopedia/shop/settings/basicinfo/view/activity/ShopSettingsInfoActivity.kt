@@ -2,7 +2,6 @@ package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -35,7 +34,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
             supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
