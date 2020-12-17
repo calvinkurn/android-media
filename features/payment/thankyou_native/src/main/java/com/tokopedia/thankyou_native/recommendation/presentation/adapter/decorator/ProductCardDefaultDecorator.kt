@@ -18,7 +18,7 @@ class ProductCardDefaultDecorator : RecyclerView.ItemDecoration() {
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.left = 0
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.unify_space_16)
+            outRect.right = view.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         }
     }
 }

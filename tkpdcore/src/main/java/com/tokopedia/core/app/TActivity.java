@@ -119,7 +119,7 @@ public abstract class TActivity extends BaseActivity {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(R.color.white);
         } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
         if (drawable != null)

@@ -271,7 +271,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.unify_space_8))
+                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
@@ -342,7 +342,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
                 else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.kol_green_g500 else R.color.Unify_N0 ) }
+                    if (footer.isLiked) R.color.kol_green_g500 else com.tokopedia.unifyprinciples.Unify_N0 ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)

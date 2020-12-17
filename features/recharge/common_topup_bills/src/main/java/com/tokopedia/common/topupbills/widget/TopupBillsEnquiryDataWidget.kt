@@ -90,6 +90,6 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     companion object {
-        val ITEM_DECORATOR_SIZE = R.dimen.unify_space_4
+        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.unify_space_4
     }
 }

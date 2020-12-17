@@ -251,7 +251,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
 
                 if (HexValidator.validate(timeRemaining.getBorderColor())) {
-                    drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.unify_space_4), Color.parseColor(timeRemaining.getBorderColor()));
+                    drawable.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4), Color.parseColor(timeRemaining.getBorderColor()));
                 }
 
                 if (HexValidator.validate(timeRemaining.getBackgroundColor())) {

@@ -71,7 +71,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .getColor(R.color.digital_voucher_copied_color));
                 bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
-                        .getColor(R.color.Unify_N0));
+                        .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
                         context.getResources().getDrawable(

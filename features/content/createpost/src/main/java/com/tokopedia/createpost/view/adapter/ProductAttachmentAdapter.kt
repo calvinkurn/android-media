@@ -36,7 +36,7 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
 
     inner class ProductAttachmentViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val fullWidth = with(itemView.context.resources){
-            displayMetrics.widthPixels - getDimensionPixelSize(R.dimen.unify_space_16) * 2
+            displayMetrics.widthPixels - getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) * 2
         }
 
         private val standardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_260)

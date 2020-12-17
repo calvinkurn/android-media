@@ -361,7 +361,7 @@ public class ProductListFragment
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
-        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.unify_space_16));
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
     }
 
     @Override

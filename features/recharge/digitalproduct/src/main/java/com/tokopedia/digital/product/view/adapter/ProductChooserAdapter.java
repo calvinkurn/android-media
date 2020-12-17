@@ -133,7 +133,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(R.color.Unify_N0));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);
@@ -206,7 +206,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(R.color.Unify_N0));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);
@@ -282,7 +282,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(R.color.Unify_N0));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);

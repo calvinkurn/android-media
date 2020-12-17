@@ -701,7 +701,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
-            val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(R.dimen.unify_space_40)
+            val translationY = imageFrontTop - imageBoxFront.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
         }

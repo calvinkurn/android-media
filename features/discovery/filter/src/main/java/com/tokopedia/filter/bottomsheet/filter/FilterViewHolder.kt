@@ -35,8 +35,8 @@ internal class FilterViewHolder(
             .build()
 
     private val spacingItemDecoration = ChipSpacingItemDecoration(
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_8),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_8)
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
 
     init {

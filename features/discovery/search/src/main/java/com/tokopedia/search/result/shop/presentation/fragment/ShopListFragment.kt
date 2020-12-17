@@ -157,10 +157,10 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(R.dimen.unify_space_16),
-                activity.resources.getDimensionPixelSize(R.dimen.unify_space_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         )
     }
 

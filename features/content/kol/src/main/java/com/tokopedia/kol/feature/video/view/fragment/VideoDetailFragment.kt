@@ -292,10 +292,10 @@ class VideoDetailFragment:
             if (it.avatarBadgeImage.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.avatarBadgeImage)
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.unify_space_4), 0, authorTitle.getDimens(R.dimen.unify_space_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4), 0, authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0)
             } else {
                 authorBadge.hide()
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.unify_space_8), 0, authorTitle.getDimens(R.dimen.unify_space_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0)
             }
 
             authorTitle.text = it.avatarTitle
@@ -374,14 +374,14 @@ class VideoDetailFragment:
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.Unify_N0)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.unifyprinciples.Unify_N0)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, R.color.Unify_N0)
+                        MethodChecker.getColor(likeIcon.context, com.tokopedia.unifyprinciples.Unify_N0)
                 )
             }
         }

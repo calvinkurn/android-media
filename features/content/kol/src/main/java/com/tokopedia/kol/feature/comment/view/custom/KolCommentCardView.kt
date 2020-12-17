@@ -69,7 +69,7 @@ class KolCommentCardView : LinearLayout {
             btnReply = findViewById(R.id.btn_reply)
         }
         orientation = VERTICAL
-        setBackgroundColor(MethodChecker.getColor(context, R.color.Unify_N0))
+        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.Unify_N0))
     }
 
     override fun getLayoutParams(): ViewGroup.LayoutParams {

@@ -135,7 +135,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             containerLayout.setElevation(60);
-            containerLayout.setBackgroundResource(R.color.Unify_N0);
+            containerLayout.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
             containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
@@ -310,7 +310,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.unify_space_8), 0, 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );

@@ -12,7 +12,7 @@ import com.tokopedia.atc_variant.R
 class NormalCheckoutItemDecorator : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val dimen: Int? = view.context?.resources?.getDimension(R.dimen.unify_space_8)?.toInt()
+        val dimen: Int? = view.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)?.toInt()
         val position = parent.getChildAdapterPosition(view)
         when (position) {
             (parent.adapter?.itemCount)?.minus(1) -> {

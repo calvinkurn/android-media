@@ -315,7 +315,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             recyclerViewDeals.setVisibility(View.VISIBLE);
             if (deals != null && deals.size() > 1) {
                 recyclerViewDeals.setClipToPadding(false);
-                recyclerViewDeals.setPadding(0, getContext().getResources().getDimensionPixelOffset(R.dimen.unify_space_16), 0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_100));
+                recyclerViewDeals.setPadding(0, getContext().getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), 0, getContext().getResources().getDimensionPixelOffset(R.dimen.dp_100));
             }
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -345,7 +345,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     private void setBrandsAdapter(List<Brand> brandList) {
-        int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(com.tokopedia.digital_deals.R.dimen.dp_66) + getResources().getDimension(R.dimen.unify_space_8));//Divide by item width including margin
+        int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(com.tokopedia.digital_deals.R.dimen.dp_66) + getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));//Divide by item width including margin
         int maxBrands = Math.min(brandList.size(), itemCount);
         recyclerViewBrands.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));

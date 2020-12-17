@@ -105,11 +105,11 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
 
         if (element.isOfficial()) {
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_badge_authorize));
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.resources.common.R.drawable.ic_badge_authorize));
             shopLocation.setText(itemView.getContext().getString(R.string.title_badge_authorized));
         } else {
             shopLocation.setText(element.getShopLocation());
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_icon_location_grey));
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.resources.common.R.drawable.ic_icon_location_grey));
         }
 
         mainView.setOnClickListener(new View.OnClickListener() {

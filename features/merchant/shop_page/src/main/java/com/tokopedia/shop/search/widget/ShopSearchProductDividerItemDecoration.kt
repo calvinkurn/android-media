@@ -16,7 +16,7 @@ class ShopSearchProductDividerItemDecoration(
             val childCount = parent.childCount
             for (i in 0 until childCount) {
                 val left = if (getItemViewType(i) == ShopSearchProductFixResultViewHolder.LAYOUT) {
-                    parent.context.resources.getDimensionPixelOffset(R.dimen.unify_space_16)
+                    parent.context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
                 } else {
                     parent.context.resources.getDimensionPixelOffset(R.dimen.dp_72)
                 }

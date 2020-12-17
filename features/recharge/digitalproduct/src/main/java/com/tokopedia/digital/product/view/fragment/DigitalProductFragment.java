@@ -1249,13 +1249,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .customView(R.layout.view_digital_showcase)
-                .titleTextColorRes(R.color.Unify_N0)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .spacingRes(R.dimen.digital_spacing_show_case)
                 .arrowWidth(R.dimen.digital_arrow_width_show_case)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                .backgroundContentColorRes(R.color.Unify_Static_Black)
-                .textSizeRes(R.dimen.unify_space_12)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
+                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                 .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .prevStringRes(R.string.digital_navigate_back_showcase)
                 .nextStringRes(com.tokopedia.showcase.R.string.next)
@@ -1376,15 +1376,15 @@ public class DigitalProductFragment extends BaseDaggerFragment
             checkETollBalanceView.setElevation(10);
             containerPromo.setElevation(10);
 
-            holderCheckBalance.setBackgroundResource(R.color.Unify_N0);
-            holderProductDetail.setBackgroundResource(R.color.Unify_N0);
-            checkETollBalanceView.setBackgroundResource(R.color.Unify_N0);
-            containerPromo.setBackgroundResource(R.color.Unify_N0);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            holderProductDetail.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
+            containerPromo.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
-            holderCheckBalance.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            holderProductDetail.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            checkETollBalanceView.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-            containerPromo.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            holderCheckBalance.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
+            holderProductDetail.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
+            checkETollBalanceView.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
+            containerPromo.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 

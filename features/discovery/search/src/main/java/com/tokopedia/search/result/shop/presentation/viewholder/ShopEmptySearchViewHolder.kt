@@ -85,7 +85,7 @@ internal class ShopEmptySearchViewHolder(
     }
 
     private fun createSelectedFilterRecyclerViewItemDecoration(): RecyclerView.ItemDecoration {
-        return SpacingItemDecoration(context.resources.getDimensionPixelOffset(R.dimen.unify_space_8))
+        return SpacingItemDecoration(context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
     }
 
     private fun populateSelectedFilterToRecylerView(selectedFilterAdapter: SelectedFilterAdapter) {

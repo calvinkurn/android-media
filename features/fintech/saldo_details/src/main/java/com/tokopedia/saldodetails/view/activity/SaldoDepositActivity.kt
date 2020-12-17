@@ -104,7 +104,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         } else {
             toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_icon_back_black)
         }
-        toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, resources.getDimensionPixelOffset(R.dimen.unify_space_12), toolbar.paddingBottom)
+        toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12), toolbar.paddingBottom)
         setSupportActionBar(toolbar)
 
         supportActionBar?.let {

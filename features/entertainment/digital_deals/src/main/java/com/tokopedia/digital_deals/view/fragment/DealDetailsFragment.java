@@ -241,9 +241,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     private void setCardViewElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cardView.setCardElevation(getResources().getDimension(R.dimen.unify_space_8));
+            cardView.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
         } else {
-            cardView.setCardElevation(getResources().getDimension(R.dimen.unify_space_0));
+            cardView.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0));
         }
     }
 
@@ -492,8 +492,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
             } else {
                 collapsingToolbarLayout.setTitle(" ");
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_N0));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_N0));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.Unify_N0));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.Unify_N0));
             }
         });
     }

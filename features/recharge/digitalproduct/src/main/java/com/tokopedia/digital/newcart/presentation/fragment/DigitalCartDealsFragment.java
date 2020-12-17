@@ -332,9 +332,9 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.Unify_Static_Black)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
                 .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
-                .titleTextColorRes(R.color.Unify_N0)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
@@ -361,7 +361,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         checkoutContainer.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             checkoutContainer.setElevation(60);
-            checkoutContainer.setBackgroundResource(R.color.Unify_N0);
+            checkoutContainer.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
             checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }

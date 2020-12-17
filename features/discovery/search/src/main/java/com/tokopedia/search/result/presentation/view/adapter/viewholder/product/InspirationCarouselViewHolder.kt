@@ -161,10 +161,10 @@ class InspirationCarouselViewHolder(
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
-                itemView.context?.resources?.getDimensionPixelSize(R.dimen.unify_space_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(R.dimen.unify_space_12) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(R.dimen.unify_space_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(R.dimen.unify_space_16) ?: 0
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) ?: 0
         )
     }
 

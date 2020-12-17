@@ -225,7 +225,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
             @Override
             public void onCrackResultCleared() {
-                setToolbarColor(getResources().getColor(R.color.Unify_Static_Black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
+                setToolbarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
             }
 
             @Override
@@ -296,7 +296,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.Unify_Static_Black));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_Static_Black));
     }
 
     private void setToolbarColor(int titleColor, int toolbarBackgroundColor) {
@@ -603,7 +603,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessGetToken(TokenDataEntity tokenData) {
-        setToolbarColor(getResources().getColor(R.color.Unify_Static_Black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
+        setToolbarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), getResources().getColor(com.tokopedia.gamification.R.color.toolbar_color));
         if (tokenData.getSumToken() == 0) {
             listener.directPageToCrackEmpty(tokenData);
         } else {

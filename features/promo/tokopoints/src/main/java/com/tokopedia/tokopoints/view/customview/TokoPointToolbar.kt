@@ -67,7 +67,7 @@ class TokoPointToolbar : Toolbar {
             val v = getChildAt(NAV_ICON_POSITION)
             if (v != null && v.layoutParams is LayoutParams && v is AppCompatImageButton) {
                 val lp = v.getLayoutParams() as LayoutParams
-                lp.width = context.resources.getDimensionPixelSize(R.dimen.unify_space_48)
+                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
                 v.setLayoutParams(lp)
                 v.invalidate()
                 v.requestLayout()

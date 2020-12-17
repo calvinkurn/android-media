@@ -238,7 +238,7 @@ public class ActivationFragment extends BaseDaggerFragment
                 if (s.length() == 5) {
                     activateButton.setEnabled(true);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
+                            MethodChecker.getDrawable(getActivity(), com.tokopedia.resources.common.R.drawable.green_button_rounded));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
                 } else {
                     activateButton.setEnabled(false);

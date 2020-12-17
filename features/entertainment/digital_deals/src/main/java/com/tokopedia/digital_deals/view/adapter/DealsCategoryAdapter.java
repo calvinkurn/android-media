@@ -515,7 +515,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 brandName.setVisibility(View.GONE);
                 Drawable img = MethodChecker.getDrawable(getActivity(), com.tokopedia.digital_deals.R.drawable.ic_location);
                 dealavailableLocations.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.unify_space_8));
+                dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
 
             }
             int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());

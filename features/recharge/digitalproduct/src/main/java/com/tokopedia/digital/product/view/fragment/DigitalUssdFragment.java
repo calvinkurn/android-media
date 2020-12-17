@@ -348,7 +348,7 @@ public class DigitalUssdFragment extends BaseDaggerFragment
                     ussdMobileNumber = DeviceUtil.formatPrefixClientNumber(ussdMobileNumber);
                     renderOperatorData();
                     tvPhoneNumber.setText(ussdMobileNumber);
-                    tvPhoneNumber.setTextColor(getResources().getColor(R.color.Unify_Static_Black));
+                    tvPhoneNumber.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_Black));
                     presenter.storeUssdPhoneNumber(selectedSimIndex, ussdMobileNumber);
 
                 }

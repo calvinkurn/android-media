@@ -69,13 +69,13 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
 
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = resources.getDimension(R.dimen.unify_space_4)
+            toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
         }
     }
 
     override fun hideToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = resources.getDimension(R.dimen.unify_space_0)
+            toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
     }
 
