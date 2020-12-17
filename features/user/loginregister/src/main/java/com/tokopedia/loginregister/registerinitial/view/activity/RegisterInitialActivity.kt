@@ -17,7 +17,7 @@ import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitial
 /**
  * @author by nisie on 10/2/18.
  */
-class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Any?> {
+class RegisterInitialActivity : BaseSimpleActivity(), HasComponent {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -27,7 +27,7 @@ class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Any?> {
         return createInstance(bundle)
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         toolbar.setPadding(0, 0, 30, 0)
     }

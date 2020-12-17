@@ -31,7 +31,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     protected abstract int getLayoutRes();
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupStatusBar();
         setupLayout(savedInstanceState);
