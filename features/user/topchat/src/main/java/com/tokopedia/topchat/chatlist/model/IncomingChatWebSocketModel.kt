@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.model
 
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 
@@ -7,7 +8,7 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 /**
  * @author : Steven 2019-08-09
  */
-data class IncomingChatWebSocketModel constructor(val msgId: String = ""): BaseIncomingItemWebSocketModel(msgId){
+data class IncomingChatWebSocketModel constructor(val msgId: String = "") : BaseIncomingItemWebSocketModel(msgId) {
 
     var message: String = ""
     var unreadCounter: Int = 0
@@ -17,7 +18,7 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = ""): BaseI
     constructor(messageId: String,
                 message: String,
                 time: String,
-                contact: ItemChatAttributesContactPojo): this(messageId) {
+                contact: ItemChatAttributesContactPojo) : this(messageId) {
         this.message = message
         this.time = time
         this.contact = contact
@@ -32,27 +33,33 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = ""): BaseI
         this.time = time
     }
 
+    // fromUid
     override fun getContactId(): String {
         return contact?.contactId.toEmptyStringIfNull()
     }
 
+    // role
     override fun getTag(): String {
         return contact?.tag.toEmptyStringIfNull()
     }
 
-    fun isFromBuyer(myBuyerId: String): Boolean {
+    fun isFromBuyer(userId: String): Boolean {
         return (getTag() == ROLE_BUYER &&
-                getContactId() != myBuyerId)
+                getContactId() != userId)
     }
 
-    fun isFromSeller(myBuyerId: String): Boolean {
+    fun isFromSeller(userId: String): Boolean {
         return (getTag() == ROLE_SELLER &&
-                getContactId() != myBuyerId)
+                getContactId() != userId)
     }
 
-    fun isFromMyselfAsSeller(myBuyerId: String): Boolean {
-        return (getTag() == ROLE_SELLER &&
-                getContactId() == myBuyerId)
+    fun isFromMySelf(@RoleType role: Int, userId: String): Boolean {
+        val fromRole = when (getTag()) {
+            ROLE_BUYER -> RoleType.BUYER
+            ROLE_SELLER -> RoleType.SELLER
+            else -> null
+        } ?: return false
+        return fromRole == role && getContactId() == userId
     }
 
 }

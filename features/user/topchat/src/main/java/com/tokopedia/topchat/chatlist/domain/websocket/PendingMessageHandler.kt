@@ -15,11 +15,6 @@ class PendingMessageHandler @Inject constructor(
             message: IncomingChatWebSocketModel,
             @RoleType role: Int
     ) {
-        val appointedTo = when {
-            message.isFromBuyer(userSession.userId) -> RoleType.BUYER
-            message.isFromSeller(userSession.userId) -> RoleType.SELLER
-            else -> null
-        } ?: return
         var occurrence = 0
         if (pendingMessages.containsKey(message.messageId)) {
             occurrence = pendingMessages[message.messageId]?.count ?: 0

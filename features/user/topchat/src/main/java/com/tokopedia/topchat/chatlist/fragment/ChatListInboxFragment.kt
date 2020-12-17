@@ -448,7 +448,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                             newChat = newChat,
                             readStatus = readStatus,
                             pinnedMsgId = viewModel.pinnedMsgId,
-                            counterIncrement = counterIncrement
+                            counterIncrement = counterIncrement,
+                            isFromMySelf = newChat.isFromMySelf(role, userSession.userId)
                     )
                 }
             }

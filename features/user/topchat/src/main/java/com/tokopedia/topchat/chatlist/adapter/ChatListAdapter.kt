@@ -161,7 +161,8 @@ class ChatListAdapter constructor(
             newChat: IncomingChatWebSocketModel,
             readStatus: Int,
             pinnedMsgId: Set<String>,
-            counterIncrement: Int = 1
+            counterIncrement: Int = 1,
+            isFromMySelf: Boolean = false
     ) {
         val isChatPinned = pinnedMsgId.contains(newChat.msgId)
         val newChatIndex = if (isChatPinned) {
@@ -169,7 +170,7 @@ class ChatListAdapter constructor(
         } else {
             pinnedMsgId.size
         }
-        updateChatPojo(index, newChat, readStatus, counterIncrement)
+        updateChatPojo(index, newChat, readStatus, counterIncrement, isFromMySelf)
         if (index != newChatIndex) {
             visitables.moveTo(index, newChatIndex)
             notifyItemMoved(index, newChatIndex)
@@ -207,7 +208,8 @@ class ChatListAdapter constructor(
             index: Int,
             newChat: IncomingChatWebSocketModel,
             readStatus: Int,
-            counterIncrement: Int = 1
+            counterIncrement: Int = 1,
+            isFromMySelf: Boolean = false
     ) {
         if (index >= visitables.size) return
         visitables[index].apply {
@@ -219,9 +221,11 @@ class ChatListAdapter constructor(
                     listener.increaseNotificationCounter()
                 }
                 attributes?.lastReplyMessage = newChat.message
-                attributes?.unreads = attributes?.unreads.toZeroIfNull() + counterIncrement
-                attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + counterIncrement
-                attributes?.readStatus = readStatus
+                if (!isFromMySelf) {
+                    attributes?.unreads = attributes?.unreads.toZeroIfNull() + counterIncrement
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + counterIncrement
+                    attributes?.readStatus = readStatus
+                }
                 attributes?.lastReplyTimeStr = newChat.time
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 attributes?.label = ""
