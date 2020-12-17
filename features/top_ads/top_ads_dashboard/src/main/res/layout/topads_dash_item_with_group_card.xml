@@ -77,7 +77,7 @@
             app:layout_constraintTop_toBottomOf="@id/group_title"
             app:typographyType="small" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_total"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -85,7 +85,6 @@
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/label"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_dashboard_total"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16" />
 
@@ -100,7 +99,7 @@
             app:typographyType="small"
             tools:text="400" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_key"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -108,7 +107,6 @@
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@id/total_item"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_dashboard_key"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16" />
 
@@ -123,7 +121,7 @@
             app:typographyType="small"
             tools:text="4" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/scheduleImg"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
@@ -132,7 +130,6 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/key_count"
             app:layout_constraintTop_toBottomOf="@id/group_title"
-            app:srcCompat="@drawable/topads_ic_calendar"
             tools:layout_height="@dimen/dp_16"
             tools:layout_width="@dimen/dp_16"
             tools:visibility="visible" />

@@ -47,6 +47,9 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
+            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
+            view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
+            view.scheduleImg.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
