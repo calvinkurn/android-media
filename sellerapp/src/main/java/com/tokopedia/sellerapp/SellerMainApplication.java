@@ -1,11 +1,13 @@
 package com.tokopedia.sellerapp;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -177,8 +179,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private void initDevOptsReceiver(){
         if (GlobalConfig.isAllowDebuggingTools()) {
-            registerReceiver(new DevOpsMediaButtonReceiver(),
-                    new IntentFilter(Intent.ACTION_MEDIA_BUTTON));
+            AudioManager am = (AudioManager)getSystemService(AUDIO_SERVICE);
+            ComponentName componentName = new ComponentName(this, DevOpsMediaButtonReceiver.class);
+            am.registerMediaButtonEventReceiver(componentName);
         }
     }
 
