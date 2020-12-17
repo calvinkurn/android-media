@@ -12,18 +12,19 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.util.Patterns
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -33,15 +34,16 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
-import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,35 +67,29 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     var TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0"
     var PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1"
     var redirectView: View? = null
-    var email: AutoCompleteTextView? = null
-    var registerPassword: TextInputEditText? = null
     var registerButton: UnifyButton? = null
-    var wrapperName: TkpdHintTextInputLayout? = null
-    var wrapperEmail: TkpdHintTextInputLayout? = null
-    var wrapperPassword: TkpdHintTextInputLayout? = null
-    var name: EditText? = null
+    var wrapperName: TextFieldUnify? = null
+    var wrapperEmail: TextFieldUnify? = null
+    var wrapperPassword: TextFieldUnify? = null
     var registerNextTAndC: Typography? = null
     var progressBar: LoaderUnify? = null
     var source = ""
     var token = ""
 
-    @JvmField
     @Inject
-    var analytics: LoginRegisterAnalytics? = null
+    lateinit var analytics: LoginRegisterAnalytics
 
-    @JvmField
     @Inject
-    var registerAnalytics: RegisterAnalytics? = null
+    lateinit var registerAnalytics: RegisterAnalytics
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @JvmField
     @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
-    var viewModelProvider: ViewModelProvider? = null
-    var registerInitialViewModel: RegisterInitialViewModel? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelProvider: ViewModelProvider
+    lateinit var registerInitialViewModel: RegisterInitialViewModel
 
     //** see fragment_register_email
     private val REGISTER_BUTTON_IME = 123321
@@ -105,7 +101,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val daggerLoginComponent = DaggerRegisterInitialComponent
+        val daggerLoginComponent: DaggerRegisterInitialComponent = DaggerRegisterInitialComponent
                 .builder()
                 .loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
                 .build() as DaggerRegisterInitialComponent
@@ -125,13 +121,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_register_with_email, parent, false)
         redirectView = view.findViewById(R.id.redirect_reset_password)
-        email = view.findViewById(R.id.register_email)
-        registerPassword = view.findViewById(R.id.register_password)
         registerButton = view.findViewById(R.id.register_button)
         wrapperName = view.findViewById(R.id.wrapper_name)
         wrapperEmail = view.findViewById(R.id.wrapper_email)
         wrapperPassword = view.findViewById(R.id.wrapper_password)
-        name = view.findViewById(R.id.name)
         progressBar = view.findViewById(R.id.progress_bar)
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p)
         prepareView()
@@ -141,10 +134,11 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {}
     private fun prepareView() {
-        arguments?.run {
-            email?.setText(getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))
-            token = getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "")
-            source = getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
+        if (arguments != null) {
+            wrapperEmail?.textFieldInput?.setText(arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))
+            wrapperEmail?.textFieldInput?.isEnabled = false
+            token = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "") ?: ""
+            source = arguments?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "") ?: ""
         }
         initObserver()
         val sourceString = activity?.getString(R.string.bottom_info_terms_and_privacy2)
@@ -152,35 +146,31 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         val clickableSpanTermCondition: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 registerAnalytics?.trackClickTermConditionButton()
-                activity?.run {
+                if (activity != null) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(TERM_CONDITION_URL)
-                    startActivity(intent)
+                    activity?.startActivity(intent)
                 }
             }
 
             override fun updateDrawState(textPaint: TextPaint) {
                 super.updateDrawState(textPaint)
-                registerNextTAndC?.context?.run {
-                    textPaint.color = ContextCompat.getColor(this, R.color.green_nob)
-                }
+                textPaint.color = MethodChecker.getColor(registerNextTAndC?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
         val clickableSpanPrivacyPolicy: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 registerAnalytics?.trackClickPrivacyPolicyButton()
-                activity?.run {
+                if (activity != null) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(PRIVACY_POLICY_URL)
-                    startActivity(intent)
+                    activity?.startActivity(intent)
                 }
             }
 
             override fun updateDrawState(textPaint: TextPaint) {
                 super.updateDrawState(textPaint)
-                registerNextTAndC?.context?.run {
-                    textPaint.color = ContextCompat.getColor(this, R.color.green_nob)
-                }
+                textPaint.color = MethodChecker.getColor(registerNextTAndC?.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
         sourceString?.run {
@@ -198,17 +188,17 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initObserver() {
         registerInitialViewModel?.registerRequestResponse?.observe(viewLifecycleOwner, Observer { registerRequestDataResult: Result<RegisterRequestData>? ->
-            if (registerRequestDataResult is Success<*>) {
-                val data = (registerRequestDataResult as Success<RegisterRequestData>).data
+            if (registerRequestDataResult is Success) {
+                val data = (registerRequestDataResult).data
                 userSession?.clearToken()
                 userSession?.setToken(data.accessToken, data.tokenType, data.refreshToken)
                 onSuccessRegister()
-                activity?.run {
+                if (activity != null) {
                     val intent = Intent()
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.action)
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-                    setResult(Activity.RESULT_OK, intent)
-                    finish()
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
                 }
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
@@ -221,8 +211,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                             onErrorRegister(throwable.message)
                         }
                     }
-                }
-                else {
+                } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
@@ -243,7 +232,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {}
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = resources.getColor(R.color.tkpd_main_green)
+                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
                 , sourceString.indexOf(hyperlinkString)
@@ -255,84 +244,87 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            name?.setText(savedInstanceState.getString(NAME, ""))
-            email?.setText(savedInstanceState.getString(EMAIL, ""))
-            registerPassword?.setText(savedInstanceState.getString(PASSWORD, ""))
+            wrapperName?.textFieldInput?.setText(savedInstanceState.getString(NAME, ""))
+            wrapperEmail?.textFieldInput?.setText(savedInstanceState.getString(EMAIL, ""))
+            wrapperEmail?.textFieldInput?.isEnabled = false
+            wrapperPassword?.textFieldInput?.setText(savedInstanceState.getString(PASSWORD, ""))
         }
     }
 
     override fun onResume() {
         super.onResume()
-        email?.addTextChangedListener(emailWatcher(wrapperEmail))
-        registerPassword?.addTextChangedListener(passwordWatcher(wrapperPassword))
-        name?.addTextChangedListener(nameWatcher(wrapperName))
+        wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
+        wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
+        wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
         if (activity != null && userSession?.isLoggedIn == true) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
     }
 
-    private fun nameWatcher(wrapper: TkpdHintTextInputLayout?): TextWatcher {
+    private fun nameWatcher(wrapper: TextFieldUnify?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length > 0) {
-                    setWrapperError(wrapper, null)
+                if (s.isNotEmpty()) {
+                    setWrapperErrorNew(wrapper, null)
                 }
             }
 
             override fun afterTextChanged(s: Editable) {
                 showNameHint()
-                if (s.length == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required))
-                } else if (s.length < 3) {
-                    setWrapperError(wrapper, getString(R.string.error_minimal_name))
-                } else if (RegisterUtil.checkRegexNameLocal(name?.text.toString())) {
-                    setWrapperError(wrapper, getString(R.string.error_illegal_character))
-                } else if (RegisterUtil.isExceedMaxCharacter(name?.text.toString())) {
-                    setWrapperError(wrapper, getString(R.string.error_max_35_character))
+                when {
+                    s.isEmpty() -> setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
+                    s.length < 3 -> setWrapperErrorNew(wrapper, getString(R.string.error_minimal_name))
+
+                    RegisterUtil.checkRegexNameLocal(wrapperName?.textFieldInput?.text.toString()) -> {
+                        setWrapperErrorNew(wrapper, getString(R.string.error_illegal_character))
+                    }
+                    RegisterUtil.isExceedMaxCharacter(wrapperName?.textFieldInput?.text.toString()) -> {
+                        setWrapperErrorNew(wrapper, getString(R.string.error_max_35_character))
+                    }
                 }
                 checkIsValidForm()
             }
         }
     }
 
-    private fun passwordWatcher(wrapper: TkpdHintTextInputLayout?): TextWatcher {
+    private fun passwordWatcher(wrapper: TextFieldUnify?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length > 0) {
-                    setWrapperError(wrapper, null)
+                if (s.isNotEmpty()) {
+                    setWrapperErrorNew(wrapper, null)
                 }
             }
 
             override fun afterTextChanged(s: Editable) {
                 showPasswordHint()
-                if (s.length == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required))
-                } else if (registerPassword?.text.toString().length < PASSWORD_MINIMUM_LENGTH) {
-                    setWrapperError(wrapper, getString(R.string.error_minimal_password))
+                if (s.isEmpty()) {
+                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
+                } else if (wrapperPassword?.textFieldInput?.text.toString().length < PASSWORD_MINIMUM_LENGTH) {
+                    setWrapperErrorNew(wrapper, getString(R.string.error_minimal_password))
                 }
                 checkIsValidForm()
             }
         }
     }
 
-    private fun emailWatcher(wrapper: TkpdHintTextInputLayout?): TextWatcher {
+    private fun emailWatcher(wrapper: TextFieldUnify?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length > 0) {
-                    setWrapperError(wrapper, null)
+                    setWrapperErrorNew(wrapper, null)
                 }
             }
 
             override fun afterTextChanged(s: Editable) {
                 showEmailHint()
                 if (s.length == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required))
-                } else if (!Patterns.EMAIL_ADDRESS.matcher(email?.text.toString()).matches()) {
-                    setWrapperError(wrapper, getString(R.string.wrong_email_format))
+                    setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(wrapperEmail?.textFieldInput?.text.toString()).matches()) {
+                    setWrapperErrorNew(wrapper, getString(R.string.wrong_email_format))
                 }
                 checkIsValidForm()
             }
@@ -354,13 +346,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
-        email?.setOnTouchListener { v: View?, event: MotionEvent? ->
-            if (email?.isPopupShowing == false) {
-                email?.showDropDown()
-            }
-            false
-        }
-        registerPassword?.setOnEditorActionListener { v: TextView?, id: Int, event: KeyEvent? ->
+        wrapperPassword?.textFieldInput?.setOnEditorActionListener { v: TextView?, id: Int, event: KeyEvent? ->
             if (id == REGISTER_BUTTON_IME || id == EditorInfo.IME_NULL) {
                 registerEmail()
                 return@setOnEditorActionListener true
@@ -374,39 +360,16 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         showLoadingProgress()
         registerAnalytics?.trackClickSignUpButtonEmail()
         registerInitialViewModel?.registerRequest(
-                email?.text.toString(),
-                registerPassword?.text.toString(),
-                name?.text.toString(),
+                wrapperEmail?.textFieldInput?.text.toString(),
+                wrapperPassword?.textFieldInput?.text.toString(),
+                wrapperName?.textFieldInput?.text.toString(),
                 token
         )
     }
 
-    fun isCanRegister(name: String?, email: String?, password: String): Boolean {
-        var isValid = true
-        if (TextUtils.isEmpty(password)) {
-            isValid = false
-        } else if (password.length < PASSWORD_MINIMUM_LENGTH) {
-            isValid = false
-        }
-        if (TextUtils.isEmpty(name)) {
-            isValid = false
-        } else if (RegisterUtil.checkRegexNameLocal(name)) {
-            isValid = false
-        } else if (RegisterUtil.isBelowMinChar(name)) {
-            isValid = false
-        } else if (RegisterUtil.isExceedMaxCharacter(name)) {
-            isValid = false
-        }
-        if (TextUtils.isEmpty(email)) {
-            isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            isValid = false
-        }
-        return isValid
-    }
 
     private fun checkIsValidForm() {
-        if (isCanRegister(name?.text.toString(), email?.text.toString(), registerPassword?.text.toString())) {
+        if (RegisterUtil.isCanRegister(wrapperName?.textFieldInput?.text.toString(), wrapperEmail?.textFieldInput?.text.toString(), wrapperPassword?.textFieldInput?.text.toString())) {
             setRegisterButtonEnabled()
         } else {
             setRegisterButtonDisabled()
@@ -425,39 +388,44 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setWrapperError(wrapper: TkpdHintTextInputLayout?, s: String?) {
-        wrapper?.run {
-            setHelperEnabled(false)
-            setHelper(null)
-            if (s == null) {
-                error = null
-                setErrorEnabled(false)
-            } else {
-                setErrorEnabled(true)
-                error = s
-            }
+    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
+        wrapper.setHelperEnabled(false)
+        wrapper.setHelper(null)
+        if (s == null) {
+            wrapper.error = null
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.error = s
         }
     }
 
-    private fun setWrapperHint(wrapper: TkpdHintTextInputLayout?, s: String) {
-        wrapper?.run {
-            setErrorEnabled(false)
-            setHelperEnabled(true)
-            setHelper(s)
+    private fun setWrapperErrorNew(wrapper: TextFieldUnify?, s: String?) {
+        if (s == null) {
+            wrapper?.setMessage("")
+            wrapper?.setError(false)
+        } else {
+            wrapper?.setError(true)
+            wrapper?.setMessage(s)
         }
+    }
+
+    private fun setWrapperHint(wrapper: TextFieldUnify?, s: String) {
+        wrapper?.setError(false)
+        wrapper?.setMessage(s)
     }
 
     fun resetError() {
-        setWrapperError(wrapperName, null)
-        setWrapperError(wrapperEmail, null)
-        setWrapperError(wrapperPassword, null)
+        setWrapperErrorNew(wrapperName, null)
+        setWrapperErrorNew(wrapperEmail, null)
         showPasswordHint()
         showEmailHint()
         showNameHint()
     }
 
     fun showPasswordHint() {
-        setWrapperHint(wrapperPassword, resources.getString(R.string.minimal_8_character))
+        wrapperPassword?.setError(false)
+        wrapperPassword?.setMessage(resources.getString(R.string.minimal_8_character))
     }
 
     fun showNameHint() {
@@ -469,9 +437,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     fun setActionsEnabled(isEnabled: Boolean) {
-        email?.isEnabled = isEnabled
-        name?.isEnabled = isEnabled
-        registerPassword?.isEnabled = isEnabled
+        wrapperEmail?.textFieldInput?.isEnabled = isEnabled
+        wrapperName?.textFieldInput?.isEnabled = isEnabled
+        wrapperPassword?.textFieldInput?.isEnabled = isEnabled
         registerButton?.isEnabled = isEnabled
     }
 
@@ -496,7 +464,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-
     fun onErrorRegister(errorMessage: String?) {
         dismissLoadingProgress()
         onFailedRegisterEmail(errorMessage)
@@ -514,9 +481,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     fun lostViewFocus() {
-        email?.clearFocus()
-        name?.clearFocus()
-        registerPassword?.clearFocus()
+        wrapperEmail?.textFieldInput?.clearFocus()
+        wrapperName?.textFieldInput?.clearFocus()
+        wrapperPassword?.textFieldInput?.clearFocus()
         registerButton?.clearFocus()
     }
 
@@ -526,7 +493,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             var result = false
             if (list.size > 0) {
                 for (e in list) {
-                    if (e == email?.text.toString()) {
+                    if (e == wrapperEmail?.textFieldInput?.text.toString()) {
                         result = true
                         break
                     }
@@ -538,7 +505,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     fun showInfo() {
         dismissLoadingProgress()
         val view: Typography? = redirectView?.findViewById(R.id.body)
-        val emailString = email?.text.toString()
+        val emailString = wrapperEmail?.textFieldInput?.text.toString()
         val text = getString(R.string.account_registered_body, emailString)
         val part = getString(R.string.account_registered_body_part)
         val spannable = getSpannable(text, part)
@@ -560,15 +527,11 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         ForbiddenActivity.startActivity(activity)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(NAME, name?.text.toString())
-        outState.putString(EMAIL, email?.text.toString())
-        outState.putString(PASSWORD, registerPassword?.text.toString())
+        outState.putString(NAME, wrapperName?.textFieldInput?.text.toString())
+        outState.putString(EMAIL, wrapperEmail?.textFieldInput?.text.toString())
+        outState.putString(PASSWORD, wrapperPassword?.textFieldInput?.text.toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -614,7 +577,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         private const val STATUS_ACTIVE = 1
         private const val STATUS_PENDING = -1
         private const val STATUS_INACTIVE = 0
-        @JvmStatic
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {
             val fragment = RegisterEmailFragment()
             fragment.arguments = bundle

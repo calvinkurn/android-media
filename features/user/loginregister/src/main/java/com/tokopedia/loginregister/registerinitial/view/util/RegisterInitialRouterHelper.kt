@@ -17,7 +17,7 @@ import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitial
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class RegisterInitialRouter {
+class RegisterInitialRouterHelper {
 
     var source = ""
 
