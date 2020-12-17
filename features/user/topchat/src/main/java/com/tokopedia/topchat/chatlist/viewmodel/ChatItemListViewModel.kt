@@ -36,6 +36,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -72,6 +73,10 @@ class ChatItemListViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
     var filter: String = PARAM_FILTER_ALL
+        set(value) {
+            field = value
+            cancelAllUseCase()
+        }
 
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
     val mutateChatList: LiveData<Result<ChatListPojo>>
@@ -117,6 +122,7 @@ class ChatItemListViewModel @Inject constructor(
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
         getChatListUseCase.getChatList(page, filter, tab,
                 { chats, pinChats, unpinChats ->
+                    if (filter != this.filter) return@getChatList
                     if (page == 1) {
                         pinnedMsgId.addAll(pinChats)
                     }
@@ -280,6 +286,15 @@ class ChatItemListViewModel @Inject constructor(
 
     fun hasFilter(): Boolean {
         return filter != PARAM_FILTER_ALL
+    }
+
+    fun reset() {
+        filter = PARAM_FILTER_ALL
+    }
+
+    private fun cancelAllUseCase() {
+        getChatListUseCase.cancelRunningOperation()
+        coroutineContext.cancelChildren()
     }
 
     companion object {

@@ -55,10 +55,6 @@ class ChatFilterView : LinearLayout {
         initViewInflation(context)
     }
 
-    fun showFilter(data: List<ChatFilterUiModel>) {
-        rvFilterAdapter?.showFilter(data)
-    }
-
     fun setFilterListener(filterListener: FilterListener) {
         rvFilterAdapter?.filterListener = filterListener
     }
@@ -66,7 +62,6 @@ class ChatFilterView : LinearLayout {
     fun reset() {
         rvFilterAdapter?.reset()
     }
-
 
     fun init(isSeller: Boolean) {
         this.isSeller = isSeller

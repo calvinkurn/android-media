@@ -148,9 +148,11 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onRoleChanged(role: Int) {
         if (assignRole(role)) {
-            loadInitialData()
+            viewModel.reset()
+            chatFilter?.reset()
             chatFilter?.onRoleChanged(isTabSeller())
             webSocket.onRoleChanged(role)
+            loadInitialData()
         }
     }
 

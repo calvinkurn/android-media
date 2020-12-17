@@ -7,6 +7,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -66,6 +67,10 @@ open class GetChatListMessageUseCase @Inject constructor(
 
     fun reset() {
         hasNext = false
+    }
+
+    fun cancelRunningOperation() {
+        coroutineContext.cancelChildren()
     }
 
     val query = """
