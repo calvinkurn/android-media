@@ -122,7 +122,6 @@ class ChatItemListViewModel @Inject constructor(
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
         getChatListUseCase.getChatList(page, filter, tab,
                 { chats, pinChats, unpinChats ->
-                    if (filter != this.filter) return@getChatList
                     if (page == 1) {
                         pinnedMsgId.addAll(pinChats)
                     }
