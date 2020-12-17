@@ -416,6 +416,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             newChat: IncomingChatWebSocketModel,
             counterIncrement: Int = 1
     ) {
+        if (newChat.isForOtherRole(role, userSession.userId)) return
         val chatIndex = rvAdapter?.findChat(newChat) ?: return
         if (chatIndex == RecyclerView.NO_POSITION && viewModel.hasFilter()) return
         updateItemOnIndex(

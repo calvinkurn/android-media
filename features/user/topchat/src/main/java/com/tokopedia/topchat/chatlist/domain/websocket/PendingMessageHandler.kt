@@ -13,8 +13,9 @@ class PendingMessageHandler @Inject constructor(
 
     fun addQueue(
             message: IncomingChatWebSocketModel,
-            @RoleType role: Int
+            @RoleType currentRole: Int
     ) {
+        if (message.isForOtherRole(currentRole, userSession.userId)) return
         var occurrence = 0
         if (pendingMessages.containsKey(message.messageId)) {
             occurrence = pendingMessages[message.messageId]?.count ?: 0

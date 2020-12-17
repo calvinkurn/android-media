@@ -38,7 +38,7 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = "") : Base
         return contact?.contactId.toEmptyStringIfNull()
     }
 
-    // role
+    // fromRole
     override fun getTag(): String {
         return contact?.tag.toEmptyStringIfNull()
     }
@@ -54,12 +54,25 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = "") : Base
     }
 
     fun isFromMySelf(@RoleType role: Int, userId: String): Boolean {
-        val fromRole = when (getTag()) {
-            ROLE_BUYER -> RoleType.BUYER
-            ROLE_SELLER -> RoleType.SELLER
-            else -> null
-        } ?: return false
+        val fromRole = mapWsRoleToRoleType() ?: return false
         return fromRole == role && getContactId() == userId
     }
 
+    fun isForOtherRole(@RoleType currentRole: Int, userId: String): Boolean {
+        val fromRole = mapWsRoleToRoleType() ?: return true
+        val oppositeRole = when (currentRole) {
+            RoleType.BUYER -> RoleType.SELLER
+            RoleType.SELLER -> RoleType.BUYER
+            else -> null
+        } ?: return true
+        return fromRole == oppositeRole && getContactId() == userId
+    }
+
+    private fun mapWsRoleToRoleType(): Int? {
+        return when (getTag()) {
+            ROLE_BUYER -> RoleType.BUYER
+            ROLE_SELLER -> RoleType.SELLER
+            else -> null
+        }
+    }
 }
