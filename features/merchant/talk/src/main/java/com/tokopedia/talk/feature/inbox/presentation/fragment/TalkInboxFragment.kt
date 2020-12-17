@@ -463,7 +463,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             SortFilterItem(getString(R.string.inbox_problem))
         }
         val autoRepliedFilter = SortFilterItem(getString(R.string.inbox_auto_replied))
-        val settingsChip = SortFilterItem("Settings")
+        val settingsChip = SortFilterItem("", context?.let { com.tokopedia.iconunify.getIconUnifyDrawable(it, IconUnify.SETTING, ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700)) })
         unrespondedFilter.listener = {
             unrespondedFilter.toggle()
             selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter())
@@ -490,6 +490,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
         settingsChip.listener = {
             goToSellerSettings()
+        }
+        if(GlobalConfig.isSellerApp()) {
+            return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter)
         }
         return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter, settingsChip)
     }
@@ -628,6 +631,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         goToSellerSettings()
                     }
                 }
+                show()
             }
         }
     }

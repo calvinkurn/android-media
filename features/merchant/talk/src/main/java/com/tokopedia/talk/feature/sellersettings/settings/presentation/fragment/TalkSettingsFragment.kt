@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
@@ -50,26 +52,26 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun goToTemplate() {
-//        if(!GlobalConfig.isSellerApp()) {
-//            goToSellerMigration()
-//            return
-//        }
+        if(!GlobalConfig.isSellerApp()) {
+            goToSellerMigration()
+            return
+        }
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkTemplateListFragment()
         destination.isSeller = true
         NavigationController.navigate(this@TalkSettingsFragment, destination)
     }
 
     private fun goToSmartReply() {
-//        if(!GlobalConfig.isSellerApp()) {
-//            goToSellerMigration()
-//            return
-//        }
+        if(!GlobalConfig.isSellerApp()) {
+            goToSellerMigration()
+            return
+        }
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkSmartReplySettingsFragment()
         NavigationController.navigate(this@TalkSettingsFragment, destination)
     }
 
     private fun goToSellerMigration() {
-        val intent = context?.let { SellerMigrationActivity.createIntent(it, SellerMigrationFeatureName.FEATURE_DISCUSSION, "", arrayListOf()) }
+        val intent = context?.let { SellerMigrationActivity.createIntent(it, SellerMigrationFeatureName.FEATURE_DISCUSSION, "", arrayListOf(ApplinkConstInternalGlobal.TALK_SELLER_SETTINGS)) }
         startActivity(intent)
     }
 
