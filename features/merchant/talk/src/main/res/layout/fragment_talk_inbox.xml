@@ -63,7 +63,7 @@
         layout="@layout/partial_talk_connection_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
         android:visibility="gone" />
 
     <include

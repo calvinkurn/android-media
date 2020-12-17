@@ -147,6 +147,9 @@
     <string name="smart_reply_dummy_seller_reply_time">• beberapa saat lalu</string>
     <string name="smart_reply_label">SmartReply</string>
     <string name="smart_reply_dummy_reply">Ready. Yuk, beli sekarang!😄</string>
+    <string name="smart_reply_success_deactivate">Smart Reply berhasil dinonaktifkan.</string>
+    <string name="smart_reply_success_activate">Smart Reply berhasil dinaktifkan.</string>
+    <string name="smart_reply_success_saved">Pesan Smart Reply berhasil disimpan.</string>
 
     <string name="template_list_title">Template Balasan</string>
     <string name="template_list_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>

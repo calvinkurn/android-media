@@ -105,7 +105,10 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             viewModel.setSmartReply()
             if(isChecked) {
                 talkSmartReplyDetailCardContainer.hide()
-                talkSmartReplyDetailSubmitButton.show()
+                talkSmartReplyDetailSubmitButton.apply {
+                    show()
+                    isEnabled = isChecked
+                }
             } else {
                 setCardData()
             }
@@ -161,6 +164,17 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    when {
+                        viewModel.isSmartReplyOn && !talkSmartReplyDetailSubmitButton.isEnabled -> {
+                            showToaster(getString(R.string.smart_reply_success_activate), false)
+                        }
+                        !viewModel.isSmartReplyOn -> {
+                            showToaster(getString(R.string.smart_reply_success_deactivate), false)
+                        }
+                        viewModel.isSmartReplyOn && talkSmartReplyDetailSubmitButton.isEnabled -> {
+                            showToaster(getString(R.string.smart_reply_success_saved), false)
+                        }
+                    }
                     showToaster(it.data, false)
                     isTemplateEdited = true
                 }
