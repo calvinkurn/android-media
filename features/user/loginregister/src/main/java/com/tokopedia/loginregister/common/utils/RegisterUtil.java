@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.registerinitial.view.util;
+package com.tokopedia.loginregister.common.utils;
 
 
 /**

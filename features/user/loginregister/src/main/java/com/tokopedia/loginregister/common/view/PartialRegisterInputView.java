@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.registerinitial.view.customview;
+package com.tokopedia.loginregister.common.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
