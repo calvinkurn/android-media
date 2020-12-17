@@ -106,7 +106,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 header_see_invoice?.setOnClickListener {
-                    actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
+                    actionListener?.onSeeInvoice(item.dataObject.invoiceUrl, item.dataObject.invoice)
                 }
 
                 // labels

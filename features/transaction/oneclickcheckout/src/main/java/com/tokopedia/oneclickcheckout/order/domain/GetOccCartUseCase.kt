@@ -208,6 +208,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           protection_opt_in
           protection_checkbox_disabled
           unit
+          source
         }
         shop {
           shop_id
