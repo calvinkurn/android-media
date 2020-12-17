@@ -380,9 +380,9 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
-            hideLoading()
             when(it) {
                 is Fail -> {
+                    hideLoading()
                     onErrorUpdateShopBasicData(it.throwable)
                 }
                 else -> {/* no op */}
