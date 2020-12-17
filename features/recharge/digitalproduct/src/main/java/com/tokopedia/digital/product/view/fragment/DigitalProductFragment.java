@@ -276,7 +276,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
-        if(rechargeParamFromSlice!=null || !rechargeParamFromSlice.isEmpty()){
+        if(rechargeParamFromSlice != null && !rechargeParamFromSlice.isEmpty()){
             digitalAnalytics.onOpenPageFromSlice();
             digitalAnalytics.onClickSliceRecharge(userSession.getUserId(), rechargeParamFromSlice);
         }
