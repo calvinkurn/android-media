@@ -13,6 +13,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProv
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
@@ -59,7 +60,9 @@ class ChatListWebSocketViewModel @Inject constructor(
                             if (!isOnStop && !pendingMessageHandler.hasPendingMessage()) {
                                 _itemChat.postValue(chat)
                             } else {
-                                queueIncomingMessage(data)
+                                withContext(dispatchers.Main) {
+                                    queueIncomingMessage(data)
+                                }
                             }
                         }
                         ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING -> {

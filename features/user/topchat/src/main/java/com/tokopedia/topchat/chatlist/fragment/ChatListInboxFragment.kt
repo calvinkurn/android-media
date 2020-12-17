@@ -172,9 +172,10 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun processPendingMessage() {
-        for ((messageId, pendingMessage) in webSocket.pendingMessages) {
+        webSocket.pendingMessages.entries.removeAll { entry ->
+            val pendingMessage = entry.value
             processIncomingMessage(pendingMessage.message, pendingMessage.count)
-            webSocket.pendingMessages.remove(messageId)
+            true
         }
     }
 
@@ -439,6 +440,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
                 //not found on list
                 index == RecyclerView.NO_POSITION -> {
+                    if (newChat.isFromMySelf(role, userSession.userId)) return
                     adapter.onNewItemChatMessage(newChat, viewModel.pinnedMsgId)
                     increaseNotificationCounter()
                 }
