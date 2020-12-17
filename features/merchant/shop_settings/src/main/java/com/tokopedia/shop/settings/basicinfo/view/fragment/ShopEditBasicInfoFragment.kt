@@ -53,8 +53,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class ShopEditBasicInfoFragment: Fragment() {
 
@@ -381,9 +383,7 @@ class ShopEditBasicInfoFragment: Fragment() {
             hideLoading()
             when(it) {
                 is Fail -> {
-                    it.throwable.cause?.apply {
-                        onErrorUploadShopImage(this)
-                    }
+                    onErrorUpdateShopBasicData(it.throwable)
                 }
                 else -> {/* no op */}
             }
@@ -587,8 +587,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
 
     private fun onSuccessUpdateShopBasicData(successMessage: String) {
-        hideLoading()
-
         val bundle = Bundle().apply {
             putString(EXTRA_MESSAGE, successMessage)
         }
@@ -597,7 +595,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
-        hideLoading()
         showSnackBarErrorSubmitEdit(throwable)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
@@ -605,7 +602,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(message: String) {
-        hideLoading()
         showSnackBarErrorSubmitEdit(message)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(message)
@@ -679,12 +675,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             loadShopBasicData()
         })
         snackbar?.show()
-    }
-
-    private fun onErrorUploadShopImage(throwable: Throwable) {
-        showSnackBarErrorSubmitEdit(throwable)
-        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
-        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
