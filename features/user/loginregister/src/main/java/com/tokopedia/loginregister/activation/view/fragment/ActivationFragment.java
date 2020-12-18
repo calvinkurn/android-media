@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
@@ -51,6 +52,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL;
 
 /**
  * Created by nisie on 1/31/17.
@@ -351,15 +354,11 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
         registerAnalytics.trackSuccessClickActivationButton();
-        Intent autoLoginIntent = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalUserPlatform.LOGIN_EMAIL,
                 email,
                 password,
                 source);
-        startActivityForResult(
-                autoLoginIntent,
-                REQUEST_AUTO_LOGIN
-        );
+        startActivityForResult(intent, REQUEST_AUTO_LOGIN);
     }
 
     @Override

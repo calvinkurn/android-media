@@ -28,7 +28,7 @@
                 app:tickerShapeType="full"
                 app:tickerType="announcement" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/banner_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
             android:visibility="gone"/>
     </RelativeLayout>
 
-  <com.tokopedia.loginregister.common.view.EmailExtension
+  <com.tokopedia.loginregister.common.view.emailextension.EmailExtension
     android:id="@+id/emailExtension"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

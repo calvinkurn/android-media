@@ -44,6 +44,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_FACEBOOK
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
@@ -65,8 +68,8 @@ import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
-import com.tokopedia.loginregister.common.data.DynamicBannerConstant
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
@@ -80,7 +83,10 @@ import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
+import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
+import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -97,6 +103,7 @@ import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -159,7 +166,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var partialActionButton: UnifyButton
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var bannerLogin: ImageView
+    private lateinit var bannerLogin: ImageUnify
     private lateinit var callTokopediaCare: Typography
     private lateinit var sharedPrefs: SharedPreferences
 
@@ -281,18 +288,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         fetchRemoteConfig()
         clearData()
         prepareView()
-        if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
-            emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
-        } else if (isAutoLogin) {
-            when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
-                LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
-                LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-                LoginActivity.METHOD_EMAIL -> onLoginEmailClick()
-                else -> showSmartLock()
-            }
-        } else {
-            showSmartLock()
-        }
+        prepareArgData()
 
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
@@ -306,6 +302,31 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+    }
+
+    private fun prepareArgData() {
+        arguments?.let {
+            val phone = it.getString(PARAM_PHONE, "")
+            val email = it.getString(PARAM_EMAIL, "")
+            val method = it.getString(PARAM_LOGIN_METHOD, "")
+
+            if (phone.isNotEmpty()) {
+                emailPhoneEditText.setText(phone)
+            } else if(email.isNotEmpty()) {
+                emailPhoneEditText.setText(email)
+            }
+
+            if (isAutoLogin) {
+                when(method) {
+                    METHOD_LOGIN_FACEBOOK -> onLoginFacebookClick()
+                    METHOD_LOGIN_GOOGLE -> onLoginGoogleClick()
+                    METHOD_LOGIN_EMAIL -> onLoginEmailClick()
+                    else -> showSmartLock()
+                }
+            } else {
+                showSmartLock()
+            }
+        }
     }
 
     private fun fetchRemoteConfig() {
@@ -1590,7 +1611,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     companion object {
 
         const val IS_AUTO_LOGIN = "auto_login"
-        const val AUTO_LOGIN_METHOD = "method"
 
         const val AUTO_LOGIN_EMAIL = "email"
         const val AUTO_LOGIN_PASS = "pw"
