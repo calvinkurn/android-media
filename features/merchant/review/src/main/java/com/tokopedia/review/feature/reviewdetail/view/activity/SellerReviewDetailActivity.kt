@@ -134,7 +134,9 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
     private fun getDataFromApplink() {
         val uri = intent.data
         productId = uri?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
-        intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId.toIntOrZero())
+        if(productId.isNotBlank()) {
+            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId.toIntOrZero())
+        }
     }
 
     private fun isSellerAppInstalled(): Boolean {
