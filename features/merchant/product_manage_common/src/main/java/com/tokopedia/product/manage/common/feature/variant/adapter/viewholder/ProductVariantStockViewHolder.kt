@@ -44,7 +44,6 @@ class ProductVariantStockViewHolder(
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
-        setupStockHint(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -89,11 +88,6 @@ class ProductVariantStockViewHolder(
     private fun setupStatusLabel(variant: ProductVariant) {
         val shouldShow = variant.isInactive() || variant.isEmpty()
         itemView.labelInactive.showWithCondition(shouldShow)
-    }
-
-    private fun setupStockHint(variant: ProductVariant) {
-        val shouldShow = variant.isEmpty() && !variant.isAllStockEmpty
-        itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
     private fun setStockMinMaxValue() {
@@ -181,7 +175,6 @@ class ProductVariantStockViewHolder(
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
-                setupStockHint(variant)
                 setupStatusLabel(variant)
             }
         }
@@ -207,7 +200,6 @@ class ProductVariantStockViewHolder(
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
-                setupStockHint(variant)
                 setupStatusLabel(variant)
             }
         }

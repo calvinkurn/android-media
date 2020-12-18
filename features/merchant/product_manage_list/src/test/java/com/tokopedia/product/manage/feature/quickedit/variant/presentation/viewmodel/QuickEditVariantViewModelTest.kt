@@ -123,8 +123,8 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         viewModel.setVariantStock("1", 4)
 
         val productVariants = listOf(
-            createProductVariant(id = "1", stock = 4, isAllStockEmpty = false),
-            createProductVariant(id = "2", stock = 5, isAllStockEmpty = false)
+            createProductVariant(id = "1", stock = 4),
+            createProductVariant(id = "2", stock = 5)
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 

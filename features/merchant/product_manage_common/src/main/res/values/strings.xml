@@ -24,7 +24,6 @@
     <string name="content_desc_quickEditStockQuantityEditor">input stok</string>
     <string name="content_desc_quickEditStockSaveButton">button simpan stok</string>
 
-    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
     <string name="product_manage_stock_warning_ticker_description">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
     <string name="product_manage_stock_ticker_description"><![CDATA[<b>1.</b> Hanya menampilkan stok di lokasi utama. Atur alokasi stok di lokasi lain lewat desktop. <br><br> <b>2.</b> Perubahan status berlaku untuk semua lokasi.]]></string>
     <string name="product_manage_closable_stock_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
