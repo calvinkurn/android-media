@@ -795,7 +795,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         multiSelectContainer.showWithCondition(productNotEmpty)
         textMultipleSelect.showWithCondition(shouldShow)
 
-        if (shouldEnableMultiEdit) {
+        if (shouldEnableMultiEdit && hasMultiSelectAccess) {
             shouldEnableMultiEdit = false
             textMultipleSelect.performClick()
         }
