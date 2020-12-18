@@ -70,12 +70,8 @@ object OrderWidgetSuccessState {
             registerAppLinkIntent(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
             registerAppLinkIntent(context, R.id.imgSawSmallOrderAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
 
-            val trackingInstance = AppWidgetTracking.getInstance(context)
-            if (readyToShipCount > 0) {
-                trackingInstance.sendEventImpressionSmallSuccessStateReadyToShipOrderWidget()
-            } else {
-                trackingInstance.sendEventImpressionSmallSuccessStateNewOrderWidget()
-            }
+            AppWidgetTracking.getInstance(context)
+                    .sendEventImpressionSmallSuccessStateNewOrderWidget()
         }
     }
 

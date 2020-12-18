@@ -129,14 +129,6 @@ class AppWidgetTracking(context: Context) {
         }
     }
 
-    fun sendEventImpressionSmallSuccessStateReadyToShipOrderWidget() {
-        val action = TrackingConstant.Action.IMPRESSION_READY_TO_SHIP_SMALL_ORDER
-        sendEventOnceADayOrder(action) {
-            val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
-        }
-    }
-
     fun sendEventImpressionEmptyStateOrderWidget() {
         val action = TrackingConstant.Action.IMPRESSION_EMPTY_STATE
         sendEventOnceADayOrder(action) {
