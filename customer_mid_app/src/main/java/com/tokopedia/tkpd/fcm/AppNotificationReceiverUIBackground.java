@@ -218,8 +218,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        return ((TkpdCoreRouter) mContext.getApplicationContext())
-                .isSupportedDelegateDeepLink(applink);
+        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(applink);
 
     }
 

@@ -246,12 +246,6 @@ public abstract class SellerRouterApplication extends MainApplication
         userSession.logoutSession();
     }
 
-    @Override
-    public boolean isSupportedDelegateDeepLink(String appLinks) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLinks);
-    }
-
     @NonNull
     @Override
     public Intent getSplashScreenIntent(@NonNull Context context) {

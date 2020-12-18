@@ -290,21 +290,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
-     *
-     * @param appLinks
-     * @return
-     */
-    @Deprecated
-    public boolean isSupportedDelegateDeepLink(String appLinks) {
-        return isSupportApplink(appLinks);
-    }
-
-    public Intent getIntentDeepLinkHandlerActivity() {
-        return new Intent(this, DeeplinkHandlerActivity.class);
-    }
-
     @Override
     public boolean getEnableFingerprintPayment() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
