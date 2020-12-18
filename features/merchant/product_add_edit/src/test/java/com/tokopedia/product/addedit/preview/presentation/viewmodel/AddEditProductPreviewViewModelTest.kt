@@ -373,7 +373,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
-        coEvery { adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT) } returns isEligible
+        coEvery { adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) } returns isEligible
     }
 
     private fun onGetIsShopAdmin_thenReturn(isShopAdmin: Boolean) {
@@ -393,24 +393,24 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun onGetAdminProductPermission_thenFailed() {
-        coEvery { adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT) } throws MessageErrorException("")
+        coEvery { adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) } throws MessageErrorException("")
     }
 
     private fun verifyGetAdminProductPermissionCalled() {
         coVerify {
-            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
         }
     }
 
     private fun verifyGetAdminProductPermissionCalledOnlyOnce() {
         coVerify(exactly = 1) {
-            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
         }
     }
 
     private fun verifyGetAdminProductPermissionNotCalled() {
         coVerify(exactly = 0) {
-            adminPermissionUseCase.execute(any(), AdminPermissionGroup.PRODUCT)
+            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
         }
     }
 
