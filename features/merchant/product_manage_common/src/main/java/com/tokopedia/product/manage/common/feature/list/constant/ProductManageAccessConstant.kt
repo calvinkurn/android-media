@@ -8,7 +8,6 @@ object ProductManageAccessConstant {
     const val MULTI_SELECT = "107"
     const val EDIT_STOCK = "124"
     const val EDIT_PRICE = "121"
-    const val UPDATE_STOCK = "108"
     const val DUPLICATE_PRODUCT = "123"
     const val STOCK_REMINDER = "109"
     const val DELETE_PRODUCT = "16"

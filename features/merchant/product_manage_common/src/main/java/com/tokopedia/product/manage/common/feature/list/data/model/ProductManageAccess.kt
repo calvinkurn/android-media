@@ -11,7 +11,6 @@ data class ProductManageAccess(
     val multiSelect: Boolean,
     val editPrice: Boolean,
     val editStock: Boolean,
-    val updateStock: Boolean,
     val duplicateProduct: Boolean,
     val setStockReminder: Boolean,
     val deleteProduct: Boolean,

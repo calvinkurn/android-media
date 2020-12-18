@@ -13,7 +13,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAc
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_FEATURED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_TOP_ADS
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.STOCK_REMINDER
-import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.UPDATE_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse.*
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 
@@ -29,7 +28,6 @@ object ProductManageAccessMapper {
             accessIds.contains(MULTI_SELECT),
             accessIds.contains(EDIT_PRICE),
             accessIds.contains(EDIT_STOCK),
-            accessIds.contains(UPDATE_STOCK),
             accessIds.contains(DUPLICATE_PRODUCT),
             accessIds.contains(STOCK_REMINDER),
             accessIds.contains(DELETE_PRODUCT),
@@ -48,7 +46,6 @@ object ProductManageAccessMapper {
             multiSelect = true,
             editPrice = true,
             editStock = true,
-            updateStock = false,
             duplicateProduct = true,
             setStockReminder = true,
             deleteProduct = true,

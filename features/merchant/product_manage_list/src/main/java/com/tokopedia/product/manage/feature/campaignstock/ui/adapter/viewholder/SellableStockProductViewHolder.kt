@@ -101,7 +101,7 @@ class SellableStockProductViewHolder(itemView: View?,
     }
 
     private fun QuantityEditorUnify.setEditStockAccess(element: SellableStockProductUIModel) {
-        val canEditStock = element.access.updateStock
+        val canEditStock = element.access.editStock
         editText.isEnabled = canEditStock
         addButton.isEnabled = canEditStock
         subtractButton.isEnabled = canEditStock

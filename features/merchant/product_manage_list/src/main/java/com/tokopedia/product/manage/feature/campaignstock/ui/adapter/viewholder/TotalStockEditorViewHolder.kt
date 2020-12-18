@@ -63,7 +63,7 @@ class TotalStockEditorViewHolder(itemView: View?,
 
     private fun setStockEditorAccess(element: TotalStockEditorUiModel) {
         itemView.qte_campaign_stock_amount?.apply {
-            val canEditStock = element.access?.updateStock == true
+            val canEditStock = element.access?.editStock == true
             addButton.isEnabled = canEditStock
             subtractButton.isEnabled = canEditStock
             editText.isEnabled = canEditStock
