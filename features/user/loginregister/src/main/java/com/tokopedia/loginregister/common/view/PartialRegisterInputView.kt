@@ -23,10 +23,11 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils.Companion.getType
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils.Companion.isValidEmail
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils.Companion.isValidPhone
-import com.tokopedia.loginregister.common.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener
+import com.tokopedia.loginregister.common.view.emailextension.EmailExtension
+import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
