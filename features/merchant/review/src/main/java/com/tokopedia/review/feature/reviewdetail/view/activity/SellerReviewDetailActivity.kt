@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -31,6 +32,9 @@ import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigr
  */
 class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
 
+    companion object {
+        const val APPLINK_PARAM_PRODUCT_ID = "productId"
+    }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var productId: String = ""
 
@@ -108,7 +112,7 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
             if (isSellerAppInstalled()) {
                 val appLink = ApplinkConst.SELLER_REVIEW
                 val parameterizedAppLinks = Uri.parse(appLink).buildUpon()
-                        .appendQueryParameter(SellerReviewDetailFragment.PRODUCT_ID, productId)
+                        .appendQueryParameter(APPLINK_PARAM_PRODUCT_ID, productId)
                         .toString()
                 val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
                         .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
@@ -123,13 +127,14 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
                 return
             }
             RouteManager.route(this, Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(ReviewInboxConstants.PARAM_TAB, ReviewInboxConstants.SELLER_TAB).build().toString())
+            finish()
         }
     }
 
     private fun getDataFromApplink() {
         val uri = intent.data
-        productId = uri?.getQueryParameter(SellerReviewDetailFragment.PRODUCT_ID) ?: ""
-        intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
+        productId = uri?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
+        intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId.toIntOrZero())
     }
 
     private fun isSellerAppInstalled(): Boolean {
