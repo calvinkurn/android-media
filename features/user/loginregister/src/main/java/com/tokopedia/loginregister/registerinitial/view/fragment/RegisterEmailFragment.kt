@@ -27,6 +27,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -146,10 +149,9 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         val clickableSpanTermCondition: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 registerAnalytics?.trackClickTermConditionButton()
-                if (activity != null) {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(TERM_CONDITION_URL)
-                    activity?.startActivity(intent)
+                activity?.let {
+                    val intent = RouteManager.getIntent(it, TERM_PRIVACY, PAGE_TERM_AND_CONDITION);
+                    it.startActivity(intent)
                 }
             }
 
@@ -165,6 +167,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(PRIVACY_POLICY_URL)
                     activity?.startActivity(intent)
+                }
+                activity?.let {
+                    val intent = RouteManager.getIntent(it, TERM_PRIVACY, PAGE_PRIVACY_POLICY);
+                    it.startActivity(intent)
                 }
             }
 

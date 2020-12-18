@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.common.data;
 
 import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo;
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo;
 import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.Map;
@@ -33,10 +32,5 @@ public interface LoginRegisterApi {
     @FormUrlEncoded
     @POST(LoginRegisterUrl.CHANGE_EMAIL)
     Observable<Response<DataResponse<ActionPojo>>> changeEmail(@FieldMap Map<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(LoginRegisterUrl.PATH_REGISTER_VALIDATION)
-    Observable<Response<DataResponse<RegisterValidationPojo>>> validateRegister(@FieldMap Map<String, Object>
-                                                                parameters);
 
 }
