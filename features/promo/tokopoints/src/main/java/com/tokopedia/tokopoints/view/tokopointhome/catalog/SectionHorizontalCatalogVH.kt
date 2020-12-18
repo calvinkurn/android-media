@@ -1,11 +1,10 @@
 package com.tokopedia.tokopoints.view.tokopointhome.catalog
 
 import android.text.TextUtils
-import android.text.format.DateFormat
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -23,6 +22,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BAC
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
+
 
 class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeViewModel)
     : RecyclerView.ViewHolder(view) {
@@ -75,6 +75,16 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             countDownView?.hide()
             timerMessage.hide()
         }
+
+        if ((content.layoutCatalogAttr.countdownInfo == null || content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown != null
+                && !content.layoutCatalogAttr.countdownInfo?.isShown!!) && content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
+            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.text_see_all_column, ConstraintSet.TOP, R.id.text_title_column, ConstraintSet.TOP, 0)
+            constraintSet.applyTo(constraintLayout)
+        }
+
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_column)
             btnSeeAll.visibility = View.VISIBLE

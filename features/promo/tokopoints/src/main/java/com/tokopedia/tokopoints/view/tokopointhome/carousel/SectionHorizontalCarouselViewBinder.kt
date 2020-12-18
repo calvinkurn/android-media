@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -43,6 +45,14 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
             return
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+        if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty){
+            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.text_see_all_carousel, ConstraintSet.TOP, R.id.text_title_carousel, ConstraintSet.TOP, 0)
+            constraintSet.applyTo(constraintLayout)
+        }
+
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_carousel)
             btnSeeAll.visibility = View.VISIBLE

@@ -3,6 +3,8 @@ package com.tokopedia.tokopoints.view.tokopointhome.coupon
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -26,6 +28,15 @@ class SectionHorizontalViewHolder(val view: View)
             view.visibility = View.GONE
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+
+        if ( content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
+            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.text_see_all, ConstraintSet.TOP, R.id.text_title, ConstraintSet.TOP, 0)
+            constraintSet.applyTo(constraintLayout)
+        }
+
         if (content.countdownAttr != null &&
                 content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
             val countDownView = view.findViewById<TimerUnify>(R.id.tp_count_down_view)
