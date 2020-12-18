@@ -325,7 +325,8 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     private fun setupBottomSheet() {
         val horizontalSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
         val topSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, 0)
+        val bottomSpacing = context?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3).orZero()
+        bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, bottomSpacing)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
