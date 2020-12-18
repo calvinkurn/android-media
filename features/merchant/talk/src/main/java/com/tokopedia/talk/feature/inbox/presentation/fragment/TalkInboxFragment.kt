@@ -24,7 +24,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
@@ -232,7 +231,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initToolbar()
         initSortFilter()
         initErrorPage()
         initSortFilter()
@@ -521,27 +519,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             ChipsUnify.TYPE_NORMAL
         }
     }
-
-    private fun initToolbar() {
-        if(!userSession.hasShop() && !GlobalConfig.isSellerApp()) {
-            setupToolbar()
-        } else if(userSession.hasShop() && GlobalConfig.isSellerApp()) {
-            setupToolbar()
-        } else {
-            headerTalkInbox?.hide()
-        }
-    }
-
-    private fun setupToolbar() {
-        activity?.run {
-            (this as? AppCompatActivity)?.run {
-                supportActionBar?.hide()
-                setSupportActionBar(headerTalkInbox)
-                headerTalkInbox?.title = getString(R.string.title_talk_discuss)
-            }
-        }
-    }
-
 
     private fun setInboxType() {
         if (isOldView()) {
