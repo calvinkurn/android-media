@@ -25,7 +25,7 @@ data class EditVariantResult(
         }
     }
 
-    fun hasEmptyStock(): Boolean {
-        return variants.any { it.isEmpty() }
+    fun isAllStockEmpty(): Boolean {
+        return variants.all { it.isEmpty() }
     }
 }

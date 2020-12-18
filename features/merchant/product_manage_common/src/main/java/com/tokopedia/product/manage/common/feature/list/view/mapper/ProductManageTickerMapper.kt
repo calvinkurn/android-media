@@ -24,7 +24,7 @@ object ProductManageTickerMapper {
     fun mapToTickerList(
         multiLocationShop: Boolean,
         canEditStock: Boolean,
-        hasEmptyStock: Boolean
+        isAllStockEmpty: Boolean
     ): List<ProductManageTicker> {
         val tickerList = mutableListOf<ProductManageTicker>()
 
@@ -34,7 +34,7 @@ object ProductManageTickerMapper {
             else -> NoTicker
         }
 
-        if (hasEmptyStock) {
+        if (isAllStockEmpty) {
             tickerList.add(EmptyStockTicker)
         }
 
