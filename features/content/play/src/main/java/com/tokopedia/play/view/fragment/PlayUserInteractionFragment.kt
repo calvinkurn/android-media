@@ -1138,12 +1138,7 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!playViewModel.isPiPAllowed) {
-            pipView.hide()
-            return
-        }
-
-        if (!videoPlayer.isGeneral || isFreezeOrBanned) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
             pipView.hide()
             return
         }
