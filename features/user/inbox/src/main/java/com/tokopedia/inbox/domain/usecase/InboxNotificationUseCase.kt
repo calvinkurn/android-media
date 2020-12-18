@@ -44,6 +44,11 @@ class InboxNotificationUseCase @Inject constructor(
     private val query = """
         query notifications_inbox_counter {
           notifications{
+            chat{
+              unreads
+              unreadsSeller
+              unreadsUser
+            }
             inbox_counter{
               all{
                 total_int
