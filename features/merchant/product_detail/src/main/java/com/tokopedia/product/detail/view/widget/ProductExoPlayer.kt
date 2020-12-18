@@ -40,7 +40,7 @@ class ProductExoPlayer(val context: Context) {
     private val isConnectedToWifi: Boolean = DeviceConnectionInfo.isConnectWifi(context)
 
     init {
-        exoPlayer.volume = 0F
+        exoPlayer.volume = MUTE_VOLUME
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 val isPlaying = playWhenReady && playbackState == Player.STATE_READY
@@ -60,7 +60,7 @@ class ProductExoPlayer(val context: Context) {
                     else -> videoStateListener?.onVideoBuffering()
                 }
 
-                if (!playWhenReady && exoPlayer.currentPosition != 0L && playbackState == ExoPlayer.STATE_READY) {
+                if (!playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION && playbackState == ExoPlayer.STATE_READY) {
                     //Track only when video stop
                     videoStateListener?.onVideoStateChange(exoPlayer.currentPosition, exoPlayer.duration)
                 }
@@ -86,7 +86,7 @@ class ProductExoPlayer(val context: Context) {
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
 
-        if (lastVideoPosition != 0L && shouldPrepare) {
+        if (lastVideoPosition != VIDEO_AT_FIRST_POSITION && shouldPrepare) {
             exoPlayer.seekTo(lastVideoPosition)
         }
         toggleVideoVolume(isMute)
@@ -104,7 +104,7 @@ class ProductExoPlayer(val context: Context) {
     }
 
     fun resumeAndSeekTo(lastVideoPosition: Long) {
-        if (lastVideoPosition != 0L) {
+        if (lastVideoPosition != VIDEO_AT_FIRST_POSITION) {
             exoPlayer.seekTo(lastVideoPosition)
         }
         exoPlayer.playWhenReady = false
@@ -116,19 +116,19 @@ class ProductExoPlayer(val context: Context) {
 
     fun toggleVideoVolume(isMute: Boolean) {
         if (isMute) {
-            exoPlayer.volume = 0F
+            exoPlayer.volume = MUTE_VOLUME
         } else {
-            exoPlayer.volume = 1F
+            exoPlayer.volume = UNMUTE_VOLUME
         }
         videoStateListener?.configureVolume(isMute)
     }
 
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
-    fun isMute(): Boolean = exoPlayer.volume == 0F
+    fun isMute(): Boolean = exoPlayer.volume == MUTE_VOLUME
 
     private fun prepareIfVideoDifferent(mediaSource: MediaSource, lastVideoPosition: Long, shouldPrepare: Boolean) {
-        if (shouldPrepare) exoPlayer.prepare(mediaSource, lastVideoPosition == 0L, false)
+        if (shouldPrepare) exoPlayer.prepare(mediaSource, lastVideoPosition == VIDEO_AT_FIRST_POSITION, false)
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
@@ -155,6 +155,11 @@ class ProductExoPlayer(val context: Context) {
 
         //Min video You want to buffer when user resumes video
         private const val MIN_PLAYBACK_RESUME_BUFFER = 2000
+
+        const val MUTE_VOLUME = 0F
+        const val UNMUTE_VOLUME = 1F
+
+        const val VIDEO_AT_FIRST_POSITION = 0L
     }
 }
 

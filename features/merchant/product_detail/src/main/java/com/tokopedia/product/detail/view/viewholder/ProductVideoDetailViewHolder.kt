@@ -25,6 +25,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
 
     companion object {
         val LAYOUT = R.layout.pdp_video_detail_view_holder
+        const val PORTRAIT_VALUE = 1.7
     }
 
     private var mPlayer: ProductExoPlayer? = null
@@ -34,7 +35,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     private val videoListener: VideoListener = object : VideoListener {
         override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
             val data = height.toFloat() / width.toFloat()
-            if (data > 1.7.toFloat()) {
+            if (data > PORTRAIT_VALUE.toFloat()) {
                 view.pdp_main_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             } else {
                 view.pdp_main_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT

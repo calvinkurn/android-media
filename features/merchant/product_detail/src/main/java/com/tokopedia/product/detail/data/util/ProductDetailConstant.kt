@@ -183,4 +183,10 @@ object ProductDetailConstant {
 
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
+
+    //View Constant
+    const val SHOW_VALUE = 1F
+    const val HIDE_VALUE = 0F
+    const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
+
 }

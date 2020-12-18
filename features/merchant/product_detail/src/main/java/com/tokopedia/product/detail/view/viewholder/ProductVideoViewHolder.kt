@@ -10,6 +10,9 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.FADE_IN_VIDEO_THUMBNAIL_DURATION
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.HIDE_VALUE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
@@ -57,12 +60,12 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
 
     private fun setThumbnail() = with(view) {
         pdp_video_overlay.loadImageWithoutPlaceholder(thumbnail)
-        pdp_video_overlay.alpha = 1F
+        pdp_video_overlay.alpha = SHOW_VALUE
         pdp_video_overlay.show()
     }
 
     private fun removeThumbnail() = with(view) {
-        pdp_video_overlay.animate().alpha(0F).setListener(object : Animator.AnimatorListener {
+        pdp_video_overlay.animate().alpha(HIDE_VALUE).setListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator?) {
             }
 
@@ -76,7 +79,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
             override fun onAnimationRepeat(animation: Animator?) {
             }
 
-        }).duration = 200
+        }).duration = FADE_IN_VIDEO_THUMBNAIL_DURATION
     }
 
     private fun showBufferLoading() = with(view) {

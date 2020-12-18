@@ -31,7 +31,7 @@ class VideoPictureView @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.widget_video_picture, this)
-        pdp_view_pager.offscreenPageLimit = 3
+        pdp_view_pager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
 
     fun setup(media: List<MediaDataModel>, listener: DynamicProductDetailListener?,
@@ -130,5 +130,9 @@ class VideoPictureView @JvmOverloads constructor(
             mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
         } else
             media.toMutableList()
+    }
+
+    companion object {
+        private const val VIDEO_PICTURE_PAGE_LIMIT = 3
     }
 }
