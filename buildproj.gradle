@@ -88,6 +88,8 @@ subprojects {
                 substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
                 substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")
+                substitute module('androidx.fragment:fragment') with module("androidx.fragment:fragment:${androidxFragmentVersion}")
+                substitute module('androidx.activity:activity') with module("androidx.activity:activity:${androidxActivityVersion}")
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
                 }
