@@ -42,14 +42,14 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         setWhiteStatusBarIfSellerApp()
         removeBackButtonIfSellerApp()
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
     }
