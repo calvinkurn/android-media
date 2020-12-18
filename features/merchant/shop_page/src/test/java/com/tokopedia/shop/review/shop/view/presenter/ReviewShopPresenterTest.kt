@@ -158,6 +158,33 @@ class ReviewShopPresenterTest : ReviewShopPresenterTestFixture() {
         Assert.assertFalse(reviewShopPresenter.isMyShop(shopId))
     }
 
+    @Test
+    fun `check whether isLogin return same value as mocked userSession isLoggedIn value`() {
+        every {
+            userSession.isLoggedIn
+        } answers {
+            true
+        }
+        Assert.assertTrue(reviewShopPresenter.isLogin)
+        every {
+            userSession.isLoggedIn
+        } answers {
+            false
+        }
+        Assert.assertFalse(reviewShopPresenter.isLogin)
+    }
+
+    @Test
+    fun `check whether required function is called when onDestroy`() {
+        reviewShopPresenter.onDestroy()
+        verify {
+            shopReviewUseCase.unsubscribe()
+            likeDislikeReviewUseCase.unsubscribe()
+            deleteReviewResponseUseCase.unsubscribe()
+        }
+    }
+
+
     private fun verifyDeleteReviewResponseUseCaseCalled() {
         verify { deleteReviewResponseUseCase.execute(any(), any()) }
     }

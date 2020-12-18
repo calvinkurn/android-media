@@ -6,11 +6,11 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.SingleAd
-import com.tokopedia.topads.common.data.response.SingleAdInFo
-import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.edit.data.response.*
+import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -63,7 +63,7 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
         bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT)
         bidInfoUseCase.executeQuerySafeMode(
                 {
@@ -119,7 +119,7 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
         bidInfoUseCase.setParams(suggestions, KEYWORD)
         bidInfoUseCase.executeQuerySafeMode(
                 {

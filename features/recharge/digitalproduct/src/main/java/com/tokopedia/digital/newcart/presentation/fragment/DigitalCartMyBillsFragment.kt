@@ -129,6 +129,12 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun isEgoldChecked(): Boolean = mybillEgold.isChecked()
 
     override fun renderMyBillsSusbcriptionView(headerTitle: String?, description: String?, checked: Boolean, isSubscribed: Boolean) {
+        mybillSubscription.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+            run {
+                presenter.onSubcriptionCheckedListener(isChecked)
+            }
+        })
+
         // If user is already subsrcibed, hide checkbox for subscribing
         if (isSubscribed) {
             mybillSubscription.getSubscriptionCheckbox().visibility = View.GONE
@@ -154,20 +160,22 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun renderMyBillsEgoldView(data: FintechProduct?) {
         if (data != null) {
             with(data) {
+                mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+                    run {
+                        presenter.onEgoldCheckedListener(isChecked)
+                    }
+                })
+
                 if (checkBoxDisabled) {
                     mybillEgold.getSubscriptionCheckbox().visibility = View.GONE
                 } else {
                     mybillEgold.getSubscriptionCheckbox().visibility = View.VISIBLE
                     mybillEgold.setChecked(data.optIn)
                 }
+
                 mybillEgold.hasMoreInfo(true)
                 info?.title?.let { title -> mybillEgold.setHeaderTitle(title) }
                 info?.subtitle?.let { desc -> mybillEgold.setDescription(desc) }
-                mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
-                    run {
-                        presenter.onEgoldCheckedListener(isChecked)
-                    }
-                })
             }
             mybillEgold.visibility = View.VISIBLE
         } else {

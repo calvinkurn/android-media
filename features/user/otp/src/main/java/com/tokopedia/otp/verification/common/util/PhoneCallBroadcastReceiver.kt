@@ -22,9 +22,21 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     private var lastState = TelephonyManager.CALL_STATE_IDLE
     private var isIncomingCall = false
 
+    var isRegistered = false
+
     fun registerReceiver(context: Context?, listener: OnCallStateChange) {
-        this.listener = listener
-        context?.registerReceiver(this, getIntentFilter())
+        if (!isRegistered) {
+            this.listener = listener
+            context?.registerReceiver(this, getIntentFilter())
+            isRegistered = true
+        }
+    }
+
+    fun unregisterReceiver(context: Context?) {
+        if (isRegistered) {
+            context?.unregisterReceiver(this)
+            isRegistered = false
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {

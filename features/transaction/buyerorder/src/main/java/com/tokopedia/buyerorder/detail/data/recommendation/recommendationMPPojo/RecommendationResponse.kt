@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.detail.data.recommendationMPPojo
+package com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo
 
 import com.google.gson.annotations.SerializedName
 

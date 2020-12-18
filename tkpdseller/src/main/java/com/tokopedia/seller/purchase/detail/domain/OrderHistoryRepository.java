@@ -2,10 +2,11 @@ package com.tokopedia.seller.purchase.detail.domain;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.seller.purchase.detail.model.history.response.OrderHistoryResponse;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryData;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,7 +27,7 @@ public class OrderHistoryRepository implements IOrderHistoryRepository{
     }
 
     @Override
-    public Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, Object> params) {
+    public Observable<OrderHistoryData> requestOrderHistoryData(HashMap<String, Object> params) {
         return service.getApi().getOrderHistory(params).map(new Func1<Response<String>, OrderHistoryData>() {
             @Override
             public OrderHistoryData call(Response<String> stringResponse) {

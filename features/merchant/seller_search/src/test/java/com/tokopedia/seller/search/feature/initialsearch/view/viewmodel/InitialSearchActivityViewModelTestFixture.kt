@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse.SellerSearchPlaceholder
-import com.tokopedia.seller.search.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -27,7 +27,7 @@ open class InitialSearchActivityViewModelTestFixture {
 
         viewModel = InitialSearchActivityViewModel(
             getSearchPlaceholderUseCase,
-            TestCoroutineDispatchers
+            CoroutineTestDispatchersProvider
         )
     }
 

@@ -40,7 +40,7 @@
         android:background="@drawable/bg_corner"
         android:clickable="true"
         android:focusable="true"
-        android:textColorHint="@android:color/darker_gray"
+        android:textColorHint="@color/Unify_N200"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
         app:siv_search_hint="@string/hint_search_product"
@@ -226,7 +226,7 @@
         android:id="@+id/scrollViewErrorState"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

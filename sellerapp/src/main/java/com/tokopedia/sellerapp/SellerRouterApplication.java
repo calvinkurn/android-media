@@ -43,14 +43,9 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
-import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -81,6 +76,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
@@ -96,7 +92,6 @@ public abstract class SellerRouterApplication extends MainApplication
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
-        PhoneVerificationRouter,
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
@@ -104,8 +99,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
-    private DaggerShopComponent.Builder daggerShopBuilder;
-    private ShopComponent shopComponent;
     private TetraDebugger tetraDebugger;
     protected CacheManager cacheManager;
 
@@ -114,7 +107,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onCreate() {
         super.onCreate();
-        initializeDagger();
+        Hansel.init(this);
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
@@ -149,10 +142,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initializeRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
-    }
-
-    private void initializeDagger() {
-        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
 
@@ -195,12 +184,6 @@ public abstract class SellerRouterApplication extends MainApplication
             topAdsComponent = TopAdsComponentInstance.getComponent(this);
         }
         return topAdsComponent;
-    }
-
-    @Override
-    public void resetAddProductCache(Context context) {
-        EtalaseUtils.clearEtalaseCache(context);
-        EtalaseUtils.clearDepartementCache(context);
     }
 
     @Override
@@ -335,11 +318,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
 
-    }
-
-    @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
     }
 
     @Override

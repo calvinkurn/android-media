@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:text="@string/detail_pengiriman"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/kurir_pengiriman"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shipping_title"
         app:typographyType="body_3"
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/kurir_label"
         app:layout_constraintStart_toEndOf="@+id/shipping_title"
         app:layout_constraintTop_toBottomOf="@+id/shipping_title"
@@ -57,10 +57,10 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:text="@string/kode_booking"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kurir_label"
-        android:text="@string/kode_booking"
-        android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="@string/kode_booking" />
@@ -74,9 +74,9 @@
         android:inputType="none"
         android:textColor="@color/Unify_G500"
         android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/booking_code_title"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/tv_shipping_name"
-        app:layout_constraintBottom_toBottomOf="@+id/booking_code_title"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="ABCDEFHIJK >" />
@@ -143,7 +143,7 @@
             android:layout_below="@+id/tv_driver_phone"
             android:layout_toStartOf="@+id/driver_call_btn"
             android:layout_toEndOf="@+id/iv_driver"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_driver_license_example" />
@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:text="@string/nomor_resi"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/nomor_resi" />
@@ -206,12 +206,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/card_driver"
-        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
-        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         android:inputType="none"
         android:textColor="@color/Unify_N700"
         android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
+        app:layout_constraintTop_toBottomOf="@id/card_driver"
         app:typographyType="body_3"
         tools:text="TJNE-8K4LFVPNMT6 >" />
 
@@ -221,7 +221,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/alamat_pengiriman"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
         app:typographyType="body_3"
@@ -242,7 +242,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:labelTitle="@string/sudah_dicetak"
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
@@ -253,10 +253,8 @@
         android:id="@+id/barrierShippingPrinted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="shippingPrintedLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
 
@@ -266,46 +264,58 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/barrierShippingPrinted"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="AS Misbeh (0812345678)" />
+        tools:text="AS Misbeh beh beh beh beh beh beh beh beh beh beh" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_receiver_number"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1"
+        android:textColor="@color/Unify_N700_96"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_receiver_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_receiver_name"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_street"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_receiver_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_receiver_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_receiver_number"
+        app:layout_constraintTop_toBottomOf="@+id/tv_receiver_number"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Wisma 77 Tower 2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_district"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_8"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tv_receiver_street"
         app:layout_constraintTop_toBottomOf="@+id/tv_receiver_street"
         app:typographyType="body_3"
@@ -314,54 +324,57 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_province"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_receiver_district"
+        app:layout_constraintStart_toStartOf="@+id/tv_receiver_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_receiver_district"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Slipi, Jakarta Barat 14410" />
+        tools:text="DKI Jakarta" />
 
-    <RelativeLayout
-        android:id="@+id/rl_drop_shipper"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_som_dropshipper_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/som_dropshipper_label"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_receiver_province">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_som_dropshipper_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:text="@string/som_dropshipper_label"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
-
-    </RelativeLayout>
+        app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_som_dropshipper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/tv_som_dropshipper_label"
         app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
-        app:layout_constraintBottom_toBottomOf="@id/rl_drop_shipper"
         app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="alibaba" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_dropshipper_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1"
+        android:textColor="@color/Unify_N700_96"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/tv_som_dropshipper_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_som_dropshipper_name"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

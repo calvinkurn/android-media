@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
 
-            <LinearLayout
+            <com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

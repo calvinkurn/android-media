@@ -8,11 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
@@ -85,12 +81,26 @@ class PostListViewHolder(
         }
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(element: PostListWidgetUiModel) {
         with(itemView) {
             rvPostList.gone()
+            tvPostListSeeDetails.gone()
+            icPostListSeeDetails.gone()
             imgShcPostEmpty.visible()
-            tvShcPostEmptyTitle.visible()
-            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, IMG_EMPTY_STATE)
+            tvShcPostEmptyTitle.run {
+                text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title_post_list)
+                visible()
+            }
+            tvShcPostEmptyDescription.run {
+                text = element.emptyState.description
+                showWithCondition(element.emptyState.description.isNotBlank())
+            }
+            btnShcPostEmpty.run {
+                text = element.emptyState.ctaText
+                showWithCondition(element.emptyState.ctaText.isNotBlank())
+                setOnClickListener { goToSellerEducationCenter(element) }
+            }
+            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: IMG_EMPTY_STATE)
         }
     }
 
@@ -103,6 +113,8 @@ class PostListViewHolder(
     private fun showSuccessState(element: PostListWidgetUiModel) {
         with(itemView) {
             tvShcPostEmptyTitle.gone()
+            tvShcPostEmptyDescription.gone()
+            btnShcPostEmpty.gone()
             imgShcPostEmpty.gone()
             rvPostList.visible()
         }
@@ -113,13 +125,13 @@ class PostListViewHolder(
             setupTooltip(element.tooltip)
             itemView.tvPostListTitle.text = element.title
             setupPostFilter(element)
-            showCtaButtonIfNeeded(element.ctaText, element.appLink)
+            showCtaButtonIfNeeded(element)
             showListLayout()
-            addImpressionTracker(element.dataKey, element.impressHolder)
+            addImpressionTracker(element)
 
             val isEmpty = items.isNullOrEmpty()
             if (isEmpty) {
-                showEmptyState()
+                showEmptyState(element)
             } else {
                 setupPostList(items)
             }
@@ -144,10 +156,10 @@ class PostListViewHolder(
         }
     }
 
-    private fun addImpressionTracker(dataKey: String, impressHolder: ImpressHolder) {
-        this@PostListViewHolder.dataKey = dataKey
-        itemView.addOnImpressionListener(impressHolder) {
-            listener.sendPostListImpressionEvent(dataKey)
+    private fun addImpressionTracker(element: PostListWidgetUiModel) {
+        this@PostListViewHolder.dataKey = element.dataKey
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.sendPostListImpressionEvent(element)
         }
     }
 
@@ -187,17 +199,17 @@ class PostListViewHolder(
         }
     }
 
-    private fun showCtaButtonIfNeeded(ctaText: String, appLink: String) {
-        val isCtaVisible = ctaText.isNotEmpty() && appLink.isNotEmpty()
+    private fun showCtaButtonIfNeeded(element: PostListWidgetUiModel) {
+        val isCtaVisible = element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()
         if (isCtaVisible) {
-            setupCtaButton(ctaText, appLink)
+            setupCtaButton(element)
         }
         toggleCtaButtonVisibility(isCtaVisible)
     }
 
-    private fun setupCtaButton(ctaText: String, appLink: String) {
-        itemView.tvPostListSeeDetails.text = ctaText
-        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(appLink) }
+    private fun setupCtaButton(element: PostListWidgetUiModel) {
+        itemView.tvPostListSeeDetails.text = element.ctaText
+        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(element) }
     }
 
     private fun toggleCtaButtonVisibility(isShow: Boolean) = with(itemView) {
@@ -217,9 +229,15 @@ class PostListViewHolder(
         listener.onTooltipClicked(tooltip)
     }
 
-    private fun goToDetails(appLink: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendPostListCtaClickEvent(dataKey)
+    private fun goToDetails(element: PostListWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.appLink)) {
+            listener.sendPostListCtaClickEvent(element)
+        }
+    }
+
+    private fun goToSellerEducationCenter(element: PostListWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.emptyState.appLink)) {
+            listener.sendPostListEmptyStateCtaClickEvent(element)
         }
     }
 
@@ -250,11 +268,13 @@ class PostListViewHolder(
 
         fun sendPosListItemClickEvent(dataKey: String, title: String) {}
 
-        fun sendPostListCtaClickEvent(dataKey: String) {}
+        fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {}
 
-        fun sendPostListImpressionEvent(dataKey: String) {}
+        fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {}
 
         fun sendPostListFilterClick(element: PostListWidgetUiModel) {}
+
+        fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
         fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
     }

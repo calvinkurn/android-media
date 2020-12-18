@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
@@ -52,6 +53,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

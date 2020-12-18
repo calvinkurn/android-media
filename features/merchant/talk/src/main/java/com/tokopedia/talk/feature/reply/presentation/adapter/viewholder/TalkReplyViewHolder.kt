@@ -20,7 +20,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedPr
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREEN
 import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY
@@ -46,7 +46,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     override fun bind(element: TalkReplyUiModel) {
-        itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
+        itemView.talkReplyContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         element.answer.apply {
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
             showDisplayName(userName, userId, isSeller, element.shopId)
@@ -125,14 +125,14 @@ class TalkReplyViewHolder(view: View,
         if(isMasked) {
             itemView.replyMessage.apply {
                 text = if(allowUnmask) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 show()
             }
             return
         }
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 text = HtmlLinkHelper(context, answer).spannedString
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {

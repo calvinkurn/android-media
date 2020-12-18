@@ -20,6 +20,7 @@ object SomConsts {
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_USER_ROLES = "user_roles"
     const val PARAM_LOGISTIC_INFO_ALL = "logistic_info_all"
+    const val PARAM_INVOICE = "invoice"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -140,7 +141,7 @@ object SomConsts {
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
-    const val DETAIL_ORDER_SCREEN_NAME = "/myorder/detail/"
+    const val DETAIL_ORDER_SCREEN_NAME = "myorder/detail/"
     const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 

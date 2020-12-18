@@ -448,20 +448,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
     }
 
-    override fun sendPostListImpressionEvent(dataKey: String) {
-        SellerHomeTracking.sendImpressionPostEvent(dataKey)
+    override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendImpressionPostEvent(element, userSession.userId)
     }
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         SellerHomeTracking.sendClickPostItemEvent(dataKey, title)
     }
 
-    override fun sendPostListCtaClickEvent(dataKey: String) {
-        SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+    override fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendClickPostSeeMoreEvent(element, userSession.userId)
     }
 
     override fun sendPostListFilterClick(element: PostListWidgetUiModel) {
         SellerHomeTracking.sendPostListFilterClick(element, userSession.userId)
+    }
+
+    override fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendPostEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
@@ -479,6 +483,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
         SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+    }
+
+    override fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {
+        SellerHomeTracking.sendTableEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -501,6 +509,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {
         SellerHomeTracking.sendMultiLineGraphCtaClick(element, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {
@@ -589,35 +601,42 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.sahGlobalError?.gone()
         recyclerView.visible()
 
-        // somehow the recyclerview won't show the items if we use diffutil when the adapter is still empty
-        if (adapter.data.isEmpty()) {
-            super.renderList(widgets)
-            view?.swipeRefreshLayout?.isRefreshing = true
-        } else {
-            val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
-            val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
-            mostWidgetData.forEachIndexed { i, widget ->
-                widgets.getOrNull(i)?.let { newWidget ->
-                    // "if" is true only on the first load, "else" is always true when we reload
-                    if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
-                        widget.apply { isFromCache = false }
-                        newWidgets.add(widget)
-                    } else {
-                        newWidgets.add(newWidget)
-                    }
+        adapter.hideLoading()
+        hideSnackBarRetry()
+        updateScrollListenerState(false)
+
+        val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
+        val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+        mostWidgetData.forEachIndexed { i, widget ->
+            widgets.getOrNull(i)?.let { newWidget ->
+                // "if" is true only on the first load, "else" is always true when we reload
+                if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
+                    widget.apply { isFromCache = false }
+                    newWidgets.add(widget)
+                } else {
+                    newWidgets.add(newWidget)
                 }
             }
-
-            val diffUtilCallback = SellerHomeDiffUtilCallback(
-                    adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                    newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
-            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-            diffUtilResult.dispatchUpdatesTo(adapter)
-            adapter.data.clear()
-            adapter.data.addAll(newWidgets)
         }
 
-        requestVisibleWidgetsData()
+        val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+        diffUtilResult.dispatchUpdatesTo(adapter)
+        adapter.data.clear()
+        adapter.data.addAll(newWidgets)
+
+        val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
+        if (!isAnyWidgetFromCache) {
+            view?.swipeRefreshLayout?.isEnabled = true
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
+
+        recyclerView.post {
+            requestVisibleWidgetsData()
+        }
+
         setProgressBarVisibility(false)
     }
 
@@ -809,7 +828,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading }
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()

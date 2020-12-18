@@ -51,7 +51,7 @@
             android:text="@string/ent_pdp_see_map"
             app:typographyWeight="bold"
             app:typographyType="body_3"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

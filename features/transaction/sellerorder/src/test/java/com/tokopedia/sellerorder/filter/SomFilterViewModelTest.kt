@@ -5,7 +5,6 @@ import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
-import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.sellerorder.util.observeAwaitValue
@@ -50,10 +49,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         assertNotNull(somFilterViewModel.getSomFilterUiModel())
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Test
-    fun `when get som filter data should return success`() {
+    fun `when get som filter data should return success and select request cancel filter`() {
         runBlocking {
-            val baseSomFilterList = mutableListOf<BaseSomFilter>()
+            val baseSomFilterList = mutableListOf<BaseSomFilter>(requestCancelFilterModel)
             val mockCancelFilterApplied = true
             coEvery {
                 getSomOrderFilterUseCase.execute()
@@ -64,9 +64,34 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
+            somFilterViewModel.updateFilterSelected.observeAwaitValue()
             assertTrue(somFilterViewModel.filterResult.observeAwaitValue() is Success)
             assertNotNull(somFilterViewModel.filterResult.observeAwaitValue())
             assertEquals(mockCancelFilterApplied, somFilterViewModel.isRequestCancelFilterApplied())
+            assertEquals(true, (somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `when get som filter data should return success and should not select request cancel filter`() {
+        runBlocking {
+            val baseSomFilterList = mutableListOf<BaseSomFilter>(requestCancelFilterModel)
+            val mockCancelFilterApplied = false
+            coEvery {
+                getSomOrderFilterUseCase.execute()
+            } returns baseSomFilterList
+
+            somFilterViewModel.setIsRequestCancelFilterApplied(mockCancelFilterApplied)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            coVerify {
+                getSomOrderFilterUseCase.execute()
+            }
+            somFilterViewModel.updateFilterSelected.observeAwaitValue()
+            assertTrue(somFilterViewModel.filterResult.observeAwaitValue() is Success)
+            assertNotNull(somFilterViewModel.filterResult.observeAwaitValue())
+            assertEquals(mockCancelFilterApplied, somFilterViewModel.isRequestCancelFilterApplied())
+            assertEquals(false, (somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected)
         }
     }
 
