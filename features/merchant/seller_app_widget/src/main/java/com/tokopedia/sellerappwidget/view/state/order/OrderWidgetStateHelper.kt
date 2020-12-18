@@ -39,6 +39,7 @@ object OrderWidgetStateHelper : AppWidgetStateHelper() {
             }
             setInt(R.id.tvSawSmallOrderCommonCta, Const.Method.SET_VISIBILITY, ctaVisibility)
             setInt(R.id.btnSawSmallOrderRefreshCommon, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
+            setInt(R.id.btnSawSmallOrderRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
             setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<OrderAppWidget>(context, this, R.id.btnSawSmallOrderRefreshCommon, data.widgetId)

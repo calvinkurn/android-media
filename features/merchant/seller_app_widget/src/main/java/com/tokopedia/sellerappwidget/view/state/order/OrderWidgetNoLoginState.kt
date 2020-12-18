@@ -51,7 +51,7 @@ object OrderWidgetNoLoginState {
                 appLink = ApplinkConst.LOGIN
         )
         OrderWidgetStateHelper.setupSmallCommonWidget(context, remoteView, data)
-        remoteView.setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+        remoteView.setInt(R.id.btnSawSmallOrderRefreshCommon, Const.Method.SET_VISIBILITY, View.INVISIBLE)
     }
 
     private fun setupViewNormalWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
