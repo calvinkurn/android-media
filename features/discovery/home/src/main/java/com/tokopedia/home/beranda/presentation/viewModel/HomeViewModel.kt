@@ -50,6 +50,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -57,15 +60,10 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recharge_component.model.WidgetSource
-import com.tokopedia.recharge_component.model.RechargePerso
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -95,7 +93,6 @@ open class HomeViewModel @Inject constructor(
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-        private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
         private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
         private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
@@ -132,7 +129,6 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
-    private var navRollanceType: String = ""
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
@@ -1341,34 +1337,18 @@ open class HomeViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-        getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
-            launchCatchError(coroutineContext, block = {
-                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
-                        isTokoPointDataError = false
-                )
-            }){
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+            updateHeaderViewModel(
+                    tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
+                    tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
+                    isTokoPointDataError = false
+            )
+        }){
+            updateHeaderViewModel(
+                    tokopointsDrawer = null,
+                    isTokoPointDataError = true
+            )
         }
     }
 
@@ -1555,9 +1535,5 @@ open class HomeViewModel @Inject constructor(
         launch(coroutineContext) {
             refreshHomeData()
         }
-    }
-
-    fun setRollanceNavigationType(type: String) {
-        navRollanceType = type
     }
 }

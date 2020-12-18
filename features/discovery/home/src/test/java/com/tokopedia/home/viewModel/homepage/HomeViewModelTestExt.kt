@@ -1,9 +1,7 @@
 package com.tokopedia.home.viewModel.homepage
 
 import android.app.Activity
-import android.app.Application
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -25,7 +23,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -77,38 +74,37 @@ fun createHomeViewModel(
 ): HomeViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeViewModel(
+            homeUseCase = Lazy{ getHomeUseCase },
+            userSession = Lazy{userSessionInterface},
+            closeChannelUseCase = Lazy{closeChannelUseCase},
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
+            getAtcUseCase = Lazy{getAtcUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
+            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
-            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
             getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
+            getRecommendationUseCase = Lazy{ getRecommendationUseCase},
+            getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
             getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{ dispatchers },
-            homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
             stickyLoginUseCase = Lazy{getStickyLoginUseCase},
-            getAtcUseCase = Lazy{getAtcUseCase},
-            userSession = Lazy{userSessionInterface},
-            closeChannelUseCase = Lazy{closeChannelUseCase},
             injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
-            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
             getRechargeBUWidget = Lazy{getRechargeBUWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
-            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
-            getRecommendationUseCase = Lazy{ getRecommendationUseCase},
-            getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
-            playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor }
+            homeDispatcher = Lazy{ dispatchers },
+            homeProcessor = Lazy{ homeProcessor },
+            playWidgetTools = Lazy { playWidgetTools }
     )
 }
 

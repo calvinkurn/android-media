@@ -80,7 +80,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
@@ -164,7 +163,6 @@ import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -326,7 +324,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun createDaggerComponent(){
         val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
         if(enableAsyncDaggerCompInit) {
-            var homeDaggerWeave = object : WeaveInterface {
+            val homeDaggerWeave = object : WeaveInterface {
                 override fun execute(): Any {
                     return initHomePageFlows()
                 }
@@ -527,8 +525,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun showNavigationOnboarding() {
         activity?.let {
             val bottomSheet = BottomSheetUnify()
-            val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-            onboardingView.onboarding_button.setOnClickListener {
+            val onBoardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
+            onBoardingView.onboarding_button.setOnClickListener {
                 showCoachMark(bottomSheet)
             }
 
@@ -538,7 +536,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
             bottomSheet.setTitle("")
             bottomSheet.setFullPage(false)
-            bottomSheet.setChild(onboardingView)
+            bottomSheet.setChild(onBoardingView)
             bottomSheet.clearAction()
             bottomSheet.setCloseClickListener {
                 bottomSheet.dismiss()
@@ -590,13 +588,6 @@ open class HomeFragment : BaseDaggerFragment(),
         return false
     }
 
-    private val afterInflationCallable: Callable<Any?>
-        private get() = Callable<Any?> {
-            calculateSearchbarView(0)
-            observeSearchHint()
-            null
-        }
-
     private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
         if (homeRecyclerView?.itemDecorationCount == 0) {
@@ -617,24 +608,29 @@ open class HomeFragment : BaseDaggerFragment(),
             )
         }
         //status bar background compability, we show view background for android >= Kitkat
-//because in that version, status bar can't forced to dark mode, we must set background
-//to keep status bar icon visible
+        //because in that version, status bar can't forced to dark mode, we must set background
+        //to keep status bar icon visible
         statusBarBackground.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground.visibility = View.INVISIBLE
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            statusBarBackground.visibility = View.VISIBLE
-        } else {
-            statusBarBackground.visibility = View.GONE
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                statusBarBackground.visibility = View.INVISIBLE
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                statusBarBackground.visibility = View.VISIBLE
+            }
+            else -> {
+                statusBarBackground.visibility = View.GONE
+            }
         }
         //initial condition for status and searchbar
         setStatusBarAlpha(0f)
     }
 
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
-//because later we will disable scroll up for this parent recyclerview
-//and makes refresh layout think we can't scroll up (which actually can! we only disable
-//scroll so that feed recommendation section can scroll its content)
+    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) {
+        //set refresh layout to only enabled when reach 0 offset
+        //because later we will disable scroll up for this parent recyclerview
+        //and makes refresh layout think we can't scroll up (which actually can! we only disable
+        //scroll so that feed recommendation section can scroll its content)
         if (recyclerView.computeVerticalScrollOffset() == 0) {
             refreshLayout.setCanChildScrollUp(false)
         } else {
@@ -695,7 +691,6 @@ open class HomeFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
-        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun scrollToRecommendList() {
@@ -735,10 +730,6 @@ open class HomeFragment : BaseDaggerFragment(),
         if(!fragmentCreatedForFirstTime) {
             getHomeViewModel().refresh(isFirstInstall())
         }
-    }
-
-    private fun adjustStatusBarColor() {
-
     }
 
     private fun createAndCallSendScreen() {
@@ -1035,10 +1026,6 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isDataValid(visitables: List<HomeVisitable?>): Boolean {
-        return containsInstance(visitables, HomepageBannerDataModel::class.java)
-    }
-
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
         return instance.isNotEmpty()
@@ -1049,35 +1036,6 @@ open class HomeFragment : BaseDaggerFragment(),
         if (floatingEggButtonFragment != null) {
             updateEggBottomMargin(floatingEggButtonFragment)
             floatingEggButtonFragment.loadEggData()
-        }
-    }
-
-    private fun calculateSearchbarView(offset: Int) {
-        val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
-        val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
-        //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
-        //2.5 is maximum
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
-        }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 150) {
-                oldToolbar?.switchToDarkToolbar()
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                oldToolbar?.switchToLightToolbar()
-                if (!isLightThemeStatusBar) requestStatusBarLight()
-            }
-        }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
-        }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-                oldToolbar?.setBackgroundAlpha(offsetAlpha)
-                setStatusBarAlpha(offsetAlpha)
-            }
         }
     }
 
@@ -1368,8 +1326,9 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
-//animation to keep our performance
+    override fun onRefresh() {
+        //on refresh most likely we already lay out many view, then we can reduce
+        //animation to keep our performance
         adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
@@ -1597,7 +1556,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 firstInstallCacheValue += (30 * 60000).toLong()
                 val now = Date()
                 val firstInstallTime = Date(firstInstallCacheValue)
-                if (now.compareTo(firstInstallTime) <= 0) {
+                if (now <= firstInstallTime) {
                     return true
                 } else {
                     saveFirstInstallTime()
@@ -1638,35 +1597,21 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun placeholderToHint(data: SearchPlaceholder.Data): ArrayList<HintData> {
-        var hints = arrayListOf(HintData(data.placeholder ?: "", data.keyword ?: ""))
-        data.placeholders?.let { placeholders ->
-            if (placeholders.isNotEmpty()) {
-                hints = arrayListOf()
-                placeholders.forEach { placeholder ->
-                    hints.add(HintData(placeholder.placeholder ?: "", placeholder.keyword ?: ""))
-                }
-            }
-        }
-        return hints
-    }
-
     private fun addImpressionToTrackingQueue(visitables: List<Visitable<*>>) {
         if (visitables != null) {
             val combinedTracking: MutableList<Any> = ArrayList()
             for (visitable in visitables) {
                 if (visitable is HomeVisitable) {
-                    val homeVisitable = visitable
-                    if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
+                    if (visitable.isTrackingCombined && visitable.trackingDataForCombination != null) {
                         getTrackingQueueObj()?.putEETracking(
-                                LegoBannerTracking.getHomeBannerImpression(homeVisitable.trackingDataForCombination) as HashMap<String, Any>
+                                LegoBannerTracking.getHomeBannerImpression(visitable.trackingDataForCombination) as HashMap<String, Any>
                         )
-                    } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
-                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
+                    } else if (!visitable.isTrackingCombined && visitable.trackingData != null) {
+                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), visitable.trackingData)
                     }
                 }
             }
-            if (!combinedTracking.isEmpty()) {
+            if (combinedTracking.isNotEmpty()) {
                 HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), combinedTracking)
             }
         }
@@ -1814,12 +1759,6 @@ open class HomeFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
-    }
-
-    private fun restartBanner(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && view != null && adapter != null) {
-            adapter?.notifyDataSetChanged()
-        }
     }
 
     private fun resetAutoPlay(isVisibleToUser: Boolean){
