@@ -372,6 +372,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                     }
                 }
             }
+            // TODO: Add logic when admin info request fails. Still asking PM. For now we will only preserve current user session value
         }
     }
 
