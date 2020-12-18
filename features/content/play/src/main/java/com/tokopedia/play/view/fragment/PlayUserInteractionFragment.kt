@@ -411,6 +411,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
+
+        if (playViewModel.isPiPAllowed) pipView.show()
+        else pipView.hide()
     }
 
     private fun setupInsets(view: View) {
@@ -1135,7 +1138,7 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!videoPlayer.isGeneral || isFreezeOrBanned) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
             pipView.hide()
             return
         }

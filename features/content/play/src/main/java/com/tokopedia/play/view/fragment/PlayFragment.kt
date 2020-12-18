@@ -46,8 +46,8 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.PiPMode
+import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -195,10 +195,12 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onEnterPiPMode(pipMode: PiPMode) {
-        childFragmentManager.fragments
-                .forEach {
-                    if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
-                }
+        if (playViewModel.isPiPAllowed) {
+            childFragmentManager.fragments
+                    .forEach {
+                        if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
+                    }
+        }
     }
 
     /**
