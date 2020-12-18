@@ -14,7 +14,7 @@ object ProductManageTickerMapper {
             val descriptionResId = when (it) {
                 is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
                 is MultiLocationNoAccessTicker -> R.string.product_manage_multi_location_stock_no_access_description
-                is EmptyStockTicker -> R.string.power_merchant_stock_warning_ticker_description
+                is EmptyStockTicker -> R.string.product_manage_stock_warning_ticker_description
                 is CampaignStockTicker -> R.string.product_manage_campaign_stock_open_campaign
                 else -> R.string.product_manage_stock_ticker_description
             }
