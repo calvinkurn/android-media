@@ -175,7 +175,6 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                             showToaster(getString(R.string.smart_reply_success_saved), false)
                         }
                     }
-                    showToaster(it.data, false)
                     isTemplateEdited = true
                 }
                 is Fail -> {
