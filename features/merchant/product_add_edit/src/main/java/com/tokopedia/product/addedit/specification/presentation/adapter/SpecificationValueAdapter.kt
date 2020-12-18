@@ -8,6 +8,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.viewholder.SpecificationValueViewHolder
 import com.tokopedia.product.addedit.specification.presentation.dialog.SpecificationDataBottomSheet
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 
 class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         RecyclerView.Adapter<SpecificationValueViewHolder>(),
@@ -15,7 +16,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         SpecificationDataBottomSheet.SpecificationDataListener {
 
     private var items: MutableList<AnnotationCategoryData> = mutableListOf()
-    private var itemsSelected: MutableList<String> = mutableListOf()
+    private var itemsSelected: MutableList<SpecificationInputModel> = mutableListOf()
     private var editedPosition: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecificationValueViewHolder {
@@ -29,24 +30,50 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
 
     override fun onBindViewHolder(holder: SpecificationValueViewHolder, position: Int) {
         val item = getData(position)
-        val itemValue = getDataSelected(position)
+        val itemValue = getDataSelected(position).data
         holder.bindData(item.variant, itemValue)
+    }
+
+    override fun onSpecificationValueTextClicked(position: Int) {
+        items.getOrNull(position)?.let { annotationData ->
+            val bottomSheet = SpecificationDataBottomSheet(
+                    title = annotationData.variant,
+                    ids = annotationData.data.map { it.id.toString() },
+                    data = annotationData.data.map { it.name },
+                    selectedId = getDataSelected(position).id,
+                    specificationDataListener = this)
+
+            editedPosition = position
+            bottomSheet.show(fragmentManager)
+        }
+    }
+
+    override fun onSpecificationDataSelected(specificationId: String, specificationData: String) {
+        editedPosition?.let {
+            setDataSelected(it, specificationId, specificationData)
+        }
     }
 
     fun setData(items: List<AnnotationCategoryData>) {
         this.items = items.toMutableList()
-        if (itemsSelected.isEmpty()) itemsSelected = items.map { "" }.toMutableList() // generate item to collect input data
+        // generate item to collect input data
+        if (itemsSelected.isEmpty()) {
+            itemsSelected = MutableList(itemCount) {
+                SpecificationInputModel()
+            }
+        }
         notifyDataSetChanged()
     }
 
-    fun setData(items: List<AnnotationCategoryData>, itemsSelected: List<String>) {
+    fun setData(items: List<AnnotationCategoryData>, itemsSelected: List<SpecificationInputModel>) {
         this.itemsSelected = itemsSelected.toMutableList()
         setData(items)
     }
 
-    fun setDataSelected(position: Int, itemData: String) {
-        if (position in 0 until itemCount) {
-            itemsSelected[position] = itemData
+    fun setDataSelected(position: Int, itemId: String, itemData: String) {
+        itemsSelected.getOrNull(position)?.apply {
+            id = itemId
+            data = itemData
             notifyItemChanged(position)
         }
     }
@@ -55,26 +82,11 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         return items.getOrNull(position) ?: AnnotationCategoryData()
     }
 
-    fun getDataSelected(position: Int): String {
-        return itemsSelected.getOrNull(position).orEmpty()
+    fun getDataSelected(position: Int): SpecificationInputModel {
+        return itemsSelected.getOrNull(position) ?: SpecificationInputModel()
     }
 
-    override fun onSpecificationValueTextClicked(position: Int) {
-        items.getOrNull(position)?.let { annotationData ->
-            val bottomSheet = SpecificationDataBottomSheet(
-                    title = annotationData.variant,
-                    data = annotationData.data.map { it.name },
-                    selectedData = getDataSelected(position),
-                    specificationDataListener = this)
-
-            editedPosition = position
-            bottomSheet.show(fragmentManager)
-        }
-    }
-
-    override fun onSpecificationDataSelected(specificationData: String) {
-        editedPosition?.let {
-            setDataSelected(it, specificationData)
-        }
+    fun getDataSelectedList(): List<SpecificationInputModel> {
+        return itemsSelected
     }
 }

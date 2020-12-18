@@ -40,6 +40,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModel: AddEditProductSpecificationViewModel
     private var tvDeleteAll: TextView? = null
+    private var specificationValueAdapter: SpecificationValueAdapter? = null
 
     override fun getScreenName(): String = ""
 
@@ -72,18 +73,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
 
         // setup UI
         setupToolbarActions()
+        setupSubmitButton()
 
         // setup observers
         observeProductInputModel()
         observeAnnotationCategoryData()
         observeErrorMessage()
-    }
-
-    private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>) {
-        val adapter = SpecificationValueAdapter(fragmentManager)
-        rvSpecification.adapter = adapter
-        setRecyclerViewToVertical(rvSpecification)
-        adapter.setData(annotationCategoryData)
     }
 
     private fun observeProductInputModel() {
@@ -106,13 +101,6 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         })
     }
 
-    private fun setRecyclerViewToVertical(recyclerView: RecyclerView) {
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
-        }
-    }
-
     private fun setupToolbarActions() {
         activity?.findViewById<HeaderUnify>(R.id.toolbar_specification)?.apply {
             headerTitle = getString(R.string.title_specification_activity)
@@ -125,6 +113,29 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
             actionTextView?.text = getString(R.string.title_specification_activity_action)
             tvDeleteAll = actionTextView
             tvDeleteAll?.isEnabled = false
+        }
+    }
+
+    private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>) {
+        specificationValueAdapter = SpecificationValueAdapter(fragmentManager)
+        rvSpecification.adapter = specificationValueAdapter
+        setRecyclerViewToVertical(rvSpecification)
+        specificationValueAdapter?.setData(annotationCategoryData)
+    }
+
+    private fun setupSubmitButton() {
+        btnSpecification.setOnClickListener {
+            specificationValueAdapter?.apply {
+                val specificationList = specificationValueAdapter?.getDataSelectedList()
+                viewModel.updateProductInputModelSpecifications(specificationList.orEmpty())
+            }
+        }
+    }
+
+    private fun setRecyclerViewToVertical(recyclerView: RecyclerView) {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }
     }
 }

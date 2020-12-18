@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -40,6 +41,12 @@ class AddEditProductSpecificationViewModel @Inject constructor(
 
     fun setProductInputModel(productInputModel: ProductInputModel?) {
         mProductInputModel.value = productInputModel
+    }
+
+    fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
+        mProductInputModel.value?.detailInputModel?.specifications = specificationList
+                .filter { it.id.isNotEmpty() }
+                .map { it.id }
     }
 
 }
