@@ -14,7 +14,7 @@
         android:background="@color/Neutral_N0"
         android:orientation="vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivPaylaterPartner"
             android:layout_width="@dimen/unify_space_48"
             android:layout_height="@dimen/unify_space_48"

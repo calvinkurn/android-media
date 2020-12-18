@@ -1,5 +1,7 @@
 package com.tokopedia.paylater.data.mapper
 
+import android.content.Context
+import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 
 const val STATUS_APPROVED = "Approved"

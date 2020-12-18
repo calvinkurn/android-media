@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +14,8 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
-import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_simulation.*
 import javax.inject.Inject
 
@@ -38,6 +32,8 @@ class SimulationFragment : BaseDaggerFragment() {
     private val simulationViewFactory: SimulationTableViewFactory by lazy {
         SimulationTableViewFactory(context)
     }
+
+    private var registerPayLaterCallback: RegisterPayLaterCallback? = null
 
     override fun initInjector() {
         getComponent(PayLaterComponent::class.java).inject(this)
@@ -57,20 +53,12 @@ class SimulationFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
+        /*payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onApplicationStatusLoaded(it.data)
                 is Fail -> onApplicationStatusLoadingFail(it.throwable)
             }
-        })
-    }
-
-    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-
-    }
-
-    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-
+        })*/
     }
 
     override fun getScreenName(): String {
@@ -94,18 +82,18 @@ class SimulationFragment : BaseDaggerFragment() {
 
     private fun initListeners() {
         btnDaftarPayLater.setOnClickListener {
-            PayLaterSignupBottomSheet.show(Bundle(), childFragmentManager)
+            registerPayLaterCallback?.onRegisterPayLaterClicked()
+            //PayLaterSignupBottomSheet.show(setPayLaterOptions(), childFragmentManager)
         }
         paylaterDaftarWidget.setOnClickListener {
-            PayLaterSignupBottomSheet.show(Bundle(), childFragmentManager)
+            registerPayLaterCallback?.onRegisterPayLaterClicked()
+            //PayLaterSignupBottomSheet.show(setPayLaterOptions(), childFragmentManager)
         }
     }
 
     private fun populateRowHeaders() {
         context?.let {
             val layoutParam = ViewGroup.LayoutParams(it.dpToPx(ROW_HEADER_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
-
-
             llPayLaterPartner.apply {
                 for (i in 0..4) {
                     when (i) {
@@ -167,6 +155,10 @@ class SimulationFragment : BaseDaggerFragment() {
         return installmentColumnHeader.initUI(position == 0)
     }
 
+    fun setPayLaterClickedListener(registerPayLaterCallback: RegisterPayLaterCallback) {
+        this.registerPayLaterCallback = registerPayLaterCallback
+    }
+
     companion object {
         const val ROW_HEADER_WIDTH = 84
         const val TABLE_ITEM_HEIGHT = 54
@@ -175,5 +167,9 @@ class SimulationFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance() =
                 SimulationFragment()
+    }
+
+    interface RegisterPayLaterCallback {
+        fun onRegisterPayLaterClicked()
     }
 }

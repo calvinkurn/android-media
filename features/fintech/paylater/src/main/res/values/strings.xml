@@ -24,4 +24,24 @@
 
     <!-- BottomSheet title-->
     <string name="paylater_find_out_more_heading">Hal yang sering ditanyakan</string>
+    <string name="payLater_how_to_register">Cara daftar</string>
+    <string name="payLater_how_to_use">Cara gunakan</string>
+
+    <!-- Verification Bottom Sheet Description -->
+    <string name="payLater_verification_description_waiting">Pengajuanmu masih dalam proses verifikasi. Tunggu kabar selanjutnya ya. \n Verifikasi hingga:</string>
+    <string name="payLater_verification_description_rejected">Pengajuanmu belum disetujui. Yuk coba daftar pilihan PayLater lainnya atau tunggu hingga bisa ajukan ulang \n Ajukan ulang pada:</string>
+
+    <!-- PayLater Signup Bottom Sheet -->
+    <string name="payLater_registration_submit_subtitle">Ajukan ketika pembayaran</string>
+    <string name="payLater_create_account_subtitle">Buat akun di aplikasi</string>
+    <string name="payLater_verification_until_subtitle">Verifikasi hingga:</string>
+    <string name="payLater_reapply_on_subtitle">Ajukan ulang pada:</string>
+    <string name="payLater_reapply_now_subtitle">Ajukan ulang sekarang</string>
+
+    <!-- Application Status -->
+    <string name="payLater_status_active">Aktif</string>
+    <string name="payLater_status_waiting">Menunggu</string>
+    <string name="payLater_status_rejected">Ditolak</string>
+    <string name="payLater_status_cancelled">Dibatalkan</string>
+
 </resources>

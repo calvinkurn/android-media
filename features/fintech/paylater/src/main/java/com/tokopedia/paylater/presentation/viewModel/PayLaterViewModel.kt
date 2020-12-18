@@ -3,6 +3,8 @@ package com.tokopedia.paylater.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
+import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.domain.usecase.PayLaterApplicationStatusUseCase
@@ -54,6 +56,22 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onPayLaterDataSuccess(productDataList: PayLaterProductData) {
         payLaterActivityResultLiveData.value = Success(productDataList)
+    }
+
+    fun getPayLaterOptions(): ArrayList<PayLaterItemProductData> {
+        payLaterActivityResultLiveData.value?.let {
+            if (it is Success) {
+                return it.data.productList
+            }
+        }
+        return arrayListOf()
+    }
+
+    fun getApplicationStatusData(): ArrayList<PayLaterApplicationDetail> {
+        payLaterApplicationStatusResultLiveData.value?.let {
+            if (it is Success) return it.data.applicationDetailList
+        }
+        return ArrayList()
     }
 
     override fun onCleared() {

@@ -11,13 +11,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterPartnerFaq
 import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_card_faq_bottomsheet_widget.*
+import kotlinx.android.synthetic.main.paylater_verification_bottomsheet_widget.*
 
 class PayLaterVerificationBottomSheet : BottomSheetUnify() {
+
+    private val applicationDetail: PayLaterApplicationDetail? by lazy {
+        arguments?.getParcelable(APPLICATION_STATUS)
+    }
 
     init {
         setShowListener {
@@ -41,13 +47,11 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         setDefaultParams()
         initBottomSheet()
-        getArgumentData()
     }
 
-    private fun getArgumentData() {
-        arguments?.let {
-            //faqUrl = it.getString(FAQ_SEE_MORE_URL) ?: ""
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tvApplicationStatus.text = "${context?.getString(R.string.payLater_verification_description_waiting)} ${applicationDetail?.payLaterExpirationDate}"
     }
 
     private fun initBottomSheet() {
@@ -58,7 +62,7 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
 
 
     private fun setDefaultParams() {
-        setTitle(TITLE)
+        setTitle("Daftar ${applicationDetail?.payLaterGatewayName ?: ""}")
         isDragable = true
         isHideable = true
         showCloseIcon = true
@@ -69,8 +73,8 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
 
 
     companion object {
-        private const val TITLE = "Daftar Kredivo"
         private const val TAG = "FT_TAG"
+        const val APPLICATION_STATUS = "application_status"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val payLaterFaqBottomSheet = PayLaterVerificationBottomSheet().apply {

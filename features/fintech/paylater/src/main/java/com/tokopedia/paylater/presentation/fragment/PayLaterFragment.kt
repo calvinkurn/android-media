@@ -15,15 +15,19 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
+import com.tokopedia.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.PayLaterSignupBottomSheet
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater.*
-import java.text.FieldPosition
 import javax.inject.Inject
 
 
-class PayLaterFragment : BaseDaggerFragment() {
+class PayLaterFragment : BaseDaggerFragment(), SimulationFragment.RegisterPayLaterCallback {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -32,6 +36,9 @@ class PayLaterFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
+
+    private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
+    private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
 
     override fun getScreenName(): String {
         return "PayLater & Cicilan"
@@ -47,17 +54,39 @@ class PayLaterFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_paylater, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeViewModel()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
         initListeners()
         payLaterViewModel.getPayLaterData()
-        payLaterViewModel.getPayLaterApplicationStatus()
+    }
+
+    private fun observeViewModel() {
+        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onApplicationStatusLoaded(it.data)
+                is Fail -> onApplicationStatusLoadingFail(it.throwable)
+            }
+        })
+    }
+
+    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
+        payLaterDataList = payLaterViewModel.getPayLaterOptions()
+    }
+
+    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+        payLaterDataList = payLaterViewModel.getPayLaterOptions()
+        applicationStatusList = data.applicationDetailList
     }
 
     private fun initListeners() {
         paylaterDaftarWidget.setOnClickListener {
-            PayLaterSignupBottomSheet.show(Bundle(), childFragmentManager)
+            onRegisterPayLaterClicked()
         }
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -99,7 +128,9 @@ class PayLaterFragment : BaseDaggerFragment() {
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list = mutableListOf<Fragment>()
-        list.add(SimulationFragment.newInstance())
+        val simulationFragment = SimulationFragment.newInstance()
+        simulationFragment.setPayLaterClickedListener(this)
+        list.add(simulationFragment)
         list.add(PayLaterOffersFragment.newInstance())
         val pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
         pagerAdapter.setList(list)
@@ -108,9 +139,22 @@ class PayLaterFragment : BaseDaggerFragment() {
 
     companion object {
         const val SIMULATION_TAB_INDEX = 0
+        const val PAY_LATER_PRODUCT_DETAIL_TAB_INDEX = 1
 
         @JvmStatic
         fun newInstance() =
                 PayLaterFragment()
+    }
+
+    override fun onRegisterPayLaterClicked() {
+        PayLaterSignupBottomSheet.show(setPayLaterOptions(), requireFragmentManager())
+    }
+
+    private fun setPayLaterOptions(): Bundle {
+        val payLaterBundle = Bundle()
+        if (applicationStatusList.isNotEmpty())
+            payLaterBundle.putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
+        payLaterBundle.putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
+        return payLaterBundle
     }
 }

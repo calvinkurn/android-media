@@ -12,10 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
-import com.tokopedia.paylater.domain.model.OfferDescriptionItem
-import com.tokopedia.paylater.domain.model.OfferListResponse
-import com.tokopedia.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.paylater.domain.model.PayLaterProductData
+import com.tokopedia.paylater.domain.model.*
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +30,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
+    private val pagerAdapter: PayLaterOfferPagerAdapter by lazy {
+        PayLaterOfferPagerAdapter(childFragmentManager, 0)
+    }
+
     override fun initInjector() {
         getComponent(PayLaterComponent::class.java).inject(this)
     }
@@ -44,6 +45,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        renderTabAndViewPager()
         observeViewModel()
     }
 
@@ -54,56 +56,46 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                 is Fail -> onPayLaterDataLoadingFail(it.throwable)
             }
         })
+
+        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onPayLaterApplicationStatusLoaded(it.data)
+                is Fail -> onPayLaterApplicationLoadingFail(it.throwable)
+            }
+        })
     }
 
     override fun getScreenName(): String {
         return "Detail Penawaran"
     }
 
-    private fun renderTabAndViewPager(productList: ArrayList<PayLaterItemProductData>) {
+    private fun renderTabAndViewPager() {
         context?.let {
-            paymentOptionViewPager.adapter = getViewPagerAdapter(productList)
+            paymentOptionViewPager.adapter = pagerAdapter
             paymentOptionViewPager.pageMargin = 16.dpToPx(it.resources.displayMetrics)
         }
-
-    }
-
-    private fun getViewPagerAdapter(productList: ArrayList<PayLaterItemProductData>): PagerAdapter {
-        val list: ArrayList<Fragment> = ArrayList()
-        // for dummy data
-        productList.add(productList[0])
-        productList.add(productList[0])
-
-        for (productData in productList) {
-            val bundle = Bundle().apply {
-                putParcelable(PaymentOptionsFragment.PAY_LATER_DATA, productData)
-            }
-            list.add(PaymentOptionsFragment.newInstance(bundle))
-        }
-        return PayLaterOfferPagerAdapter(context!!, childFragmentManager, 0, list)
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
         // hide loading
-        if (!data.productList.isNullOrEmpty()) {
-            renderTabAndViewPager(data.productList)
-        }
+        payLaterViewModel.getPayLaterApplicationStatus()
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
         // show error layout
     }
 
-    private fun populateDummyData(): ArrayList<OfferListResponse> {
-        val data = ArrayList<OfferListResponse>()
-        val descList = ArrayList<OfferDescriptionItem>()
-        for (i in 1..3)
-            descList.add(OfferDescriptionItem("Bunga 0% untuk bayar dalam 30 hari", true))
-        for (i in 4..8)
-            descList.add(OfferDescriptionItem("Daftar 5 menit, waktu persetujuan maksimal 1 x 24 jam.", false))
-        for (i in 1..4)
-            data.add(OfferListResponse("Kredivo", descList))
-        return data
+    private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+        // set payLater + application status data in pager adapter
+        val list = payLaterViewModel.getPayLaterOptions()
+        list.add(list[0])
+        list.add(list[0])
+        pagerAdapter.setPaymentData(list, data.applicationDetailList)
+    }
+
+    private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
+        // set payLater data in view pager
+        pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
     }
 
     companion object {
