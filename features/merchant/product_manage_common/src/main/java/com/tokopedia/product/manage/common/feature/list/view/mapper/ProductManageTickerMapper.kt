@@ -11,8 +11,7 @@ object ProductManageTickerMapper {
     fun mapToTickerData(context: Context?, tickerList: List<ProductManageTicker>): List<TickerData> {
         return tickerList.map {
             val descriptionResId = when (it) {
-                is SingleLocationNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
-                is MultiLocationNoAccessTicker -> R.string.product_manage_multi_location_stock_no_access_description
+                is ManageStockNoAccessTicker -> R.string.product_manage_single_location_stock_no_access_description
                 is EmptyStockTicker -> R.string.product_manage_stock_warning_ticker_description
                 is CampaignStockTicker -> R.string.product_manage_campaign_stock_open_campaign
                 else -> R.string.product_manage_stock_ticker_description
@@ -31,8 +30,7 @@ object ProductManageTickerMapper {
 
         val adminTicker = when {
             multiLocationShop && canEditStock -> MultiLocationTicker
-            !multiLocationShop && !canEditStock -> SingleLocationNoAccessTicker
-            multiLocationShop && !canEditStock -> MultiLocationNoAccessTicker
+            multiLocationShop && !canEditStock -> ManageStockNoAccessTicker
             else -> NoTicker
         }
 
