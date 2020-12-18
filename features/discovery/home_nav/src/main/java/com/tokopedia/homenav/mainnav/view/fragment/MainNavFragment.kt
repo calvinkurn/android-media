@@ -245,7 +245,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
         var windowHeight = 0

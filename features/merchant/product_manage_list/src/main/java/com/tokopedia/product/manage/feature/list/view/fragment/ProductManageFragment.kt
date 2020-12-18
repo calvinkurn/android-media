@@ -1445,8 +1445,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 ProductManageTracking.eventClickBroadcastChat(userId = userSession.userId, productId = productId, isCarousel = false)
             }
         }
-
-        productManageBottomSheet?.dismiss()
+        productManageBottomSheet?.dismiss(childFragmentManager)
     }
 
     private fun goToProductViolationHelpPage() {
@@ -1652,7 +1651,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             productManageAddEditMenuBottomSheet.dismiss()
         }
         if (productManageBottomSheet?.isVisible == true) {
-            productManageBottomSheet?.dismiss()
+            productManageBottomSheet?.dismiss(childFragmentManager)
         }
     }
 

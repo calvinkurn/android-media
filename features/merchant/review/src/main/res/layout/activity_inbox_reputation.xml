@@ -1,24 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="@dimen/spacing_lvl2">
+        android:background="@color/transparent"
+        app:elevation="@dimen/layout_lvl0">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/headerInboxReputation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="?toolbarTheme"
-            app:elevation="0dp"
-            app:layout_collapseMode="pin" />
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="false" />
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/indicator_unify"
@@ -27,15 +27,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager_reputation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-            android:id="@+id/pager_reputation"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

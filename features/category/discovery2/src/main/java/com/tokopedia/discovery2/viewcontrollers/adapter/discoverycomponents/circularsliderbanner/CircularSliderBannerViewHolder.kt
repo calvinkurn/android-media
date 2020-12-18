@@ -26,24 +26,22 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
     private lateinit var sliderBannerViewModel: CircularSliderBannerViewModel
     private lateinit var bannerCircularAdapter: BannerCircularAdapter
-    private var circularModelList = ArrayList<CircularModel>()
     private val cvSliderBanner: CircularViewPager = itemView.findViewById(R.id.circular_slider_banner)
     private val sliderIndicator: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         sliderBannerViewModel = discoveryBaseViewModel as CircularSliderBannerViewModel
-        bannerCircularAdapter = BannerCircularAdapter(circularModelList, this)
-        cvSliderBanner.setAdapter(bannerCircularAdapter)
         sliderBannerViewModel.getItemsList()?.let {
+            bannerCircularAdapter = BannerCircularAdapter(it, this)
+            cvSliderBanner.setAdapter(bannerCircularAdapter)
             setSlideProperties(it)
-            cvSliderBanner.setItemList(it)
             setUpIndicator(it)
         }
         sendBannerImpression()
     }
 
     private fun setSlideProperties(item: ArrayList<CircularModel>) {
-        bannerCircularAdapter.setIsInfinite(item.size != 1)
+        bannerCircularAdapter.setIsInfinite(item.size > 1)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

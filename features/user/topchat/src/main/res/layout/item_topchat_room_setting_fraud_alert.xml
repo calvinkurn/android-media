@@ -10,7 +10,7 @@
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:layout_marginBottom="@dimen/spacing_lvl4"
     android:gravity="center"
-    android:textColor="@color/topchat_black_44"
+    android:textColor="@color/Unify_N700_44"
     app:typographyType="body_3"
     tools:text="Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia. Cek panduan keamanan disini">
 
