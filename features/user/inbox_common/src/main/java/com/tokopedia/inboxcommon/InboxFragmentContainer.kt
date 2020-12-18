@@ -9,4 +9,6 @@ interface InboxFragmentContainer {
     val role: Int
 
     fun clearNotificationCounter()
+    fun decreaseChatUnreadCounter()
+    fun increaseChatUnreadCounter()
 }

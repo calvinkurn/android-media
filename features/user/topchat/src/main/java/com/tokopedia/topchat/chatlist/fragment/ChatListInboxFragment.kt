@@ -631,6 +631,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun increaseNotificationCounter() {
+        containerListener?.increaseChatUnreadCounter()
         when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
@@ -638,6 +639,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun decreaseNotificationCounter() {
+        containerListener?.decreaseChatUnreadCounter()
         when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()

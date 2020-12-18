@@ -112,6 +112,22 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
     }
 
+    override fun decreaseChatUnreadCounter() {
+        val notificationRole = inboxBadgeCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
+        notificationRole.chatInt -= 1
+        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
+    }
+
+    override fun increaseChatUnreadCounter() {
+        val notificationRole = inboxBadgeCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
+        notificationRole.chatInt += 1
+        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
+    }
+
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
