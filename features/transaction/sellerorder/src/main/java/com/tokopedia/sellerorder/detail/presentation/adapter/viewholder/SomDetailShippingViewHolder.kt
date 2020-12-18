@@ -108,8 +108,8 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                                 ""
                             }
 
-                            actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (receiverName +
-                                    numberPhoneText +
+                            actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman),
+                                    (numberPhoneText +
                                     receiverStreetText +
                                     receiverDistrictText +
                                     receiverProvinceText))
