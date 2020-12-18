@@ -175,8 +175,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Vie
 
     @Override
     public void setDefaultLocation() {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-        });
+        Toaster.INSTANCE.build(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        }).show();
         selectedLocationListener.setDefaultLocationOnHomePage();
         getFragmentManager().popBackStack();
     }

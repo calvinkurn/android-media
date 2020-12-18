@@ -16,6 +16,7 @@ import android.view.Window;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
@@ -156,10 +158,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         adapter = new InboxReputationDetailAdapter(typeFactory);
     }
 
-    private void setToolbar(String title, String subtitle){
-        Toolbar toolbar = getActivity().findViewById(com.tokopedia.abstraction.R.id.toolbar);
-        toolbar.setTitle(title);
-        toolbar.setSubtitle(subtitle);
+    private void setToolbar(String title, String subtitle) {
+        if (getActivity() != null) {
+            if(((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+            }
+            HeaderUnify toolbar = getActivity().findViewById(R.id.headerInboxReputationDetail);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            toolbar.setTitle(title);
+            toolbar.setHeaderSubTitle(subtitle);
+        }
     }
 
     @Override
@@ -211,7 +219,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                     reputationId,
                     getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
             );
-        }else{
+        } else {
             getActivity().finish();
         }
     }
@@ -234,7 +242,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
-        if(progressDialog != null && getActivity() != null) {
+        if (progressDialog != null && getActivity() != null) {
             adapter.removeLoading();
             adapter.notifyDataSetChanged();
         }
@@ -245,7 +253,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                                         List<Visitable> list) {
 
         role = inboxReputationItemUiModel.getRole();
-        if(!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemUiModel) {
+        if (!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemUiModel) {
             orderId = ((InboxReputationDetailItemUiModel) list.get(0)).getOrderId();
         }
         setToolbar(inboxReputationItemUiModel.getInvoice(), inboxReputationItemUiModel.getCreateTime());
@@ -272,7 +280,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoadingDialog() {
-        if(progressDialog.isShowing() && progressDialog != null && getContext() != null)
+        if (progressDialog.isShowing() && progressDialog != null && getContext() != null)
             progressDialog.dismiss();
     }
 
@@ -283,14 +291,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRefreshInboxDetail(Throwable throwable) {
-        if(getActivity() != null)
+        if (getActivity() != null)
             NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable));
     }
 
     @Override
     public void onSuccessRefreshGetInboxDetail(InboxReputationItemUiModel inboxReputationViewModel,
                                                List<Visitable> list) {
-        if(!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemUiModel) {
+        if (!list.isEmpty() && list.get(0) instanceof InboxReputationDetailItemUiModel) {
             orderId = ((InboxReputationDetailItemUiModel) list.get(0)).getOrderId();
         }
         adapter.clearList();
@@ -441,22 +449,22 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProductDetail(String productId, String productAvatar, String productName) {
-        if (getContext()!= null) {
-            Intent intent = RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        if (getContext() != null) {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
             getContext().startActivity(intent);
         }
     }
 
     @Override
     public void onSmoothScrollToReplyView(int adapterPosition) {
-        if(adapterPosition > -1 && adapterPosition < adapter.getList().size()
+        if (adapterPosition > -1 && adapterPosition < adapter.getList().size()
                 && adapter.getList().get(adapterPosition) instanceof InboxReputationDetailItemUiModel) {
             listProduct.smoothScrollToPosition(adapterPosition);
         }
     }
 
     @Override
-    public void onGoToProfile(int reviewerId) { ;
+    public void onGoToProfile(int reviewerId) {
         startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(reviewerId)));
     }
 
@@ -541,7 +549,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(callbackManager!= null) {
+        if (callbackManager != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 

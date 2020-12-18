@@ -526,14 +526,15 @@ class ShopHomeViewModelTest {
                 "title",
                 "action title",
                 "applink",
-                "weblink",
+                true,
                 PlayWidgetConfigUiModel(
                         true,
                         1000,
                         true,
                         1,
                         1,
-                        2
+                        2,
+                        1
                 ),
                 true,
                 listOf()

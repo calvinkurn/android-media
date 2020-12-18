@@ -578,7 +578,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     productIDs = productIdsString,
                                     xSource = ProductDetailConstant.DEFAULT_X_SOURCE
                             )
-                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground())
+                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
                         }
 
                         val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(

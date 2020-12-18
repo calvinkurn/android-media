@@ -6,10 +6,7 @@ import com.tokopedia.home.analytics.v2.HomePlayWidgetAnalyticListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 
 /**
  * Created by mzennis on 19/10/20.
@@ -29,22 +26,29 @@ class CarouselPlayWidgetViewHolder(
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {
-        if (element == null) return
-        setupAnalyticVariable(element)
-        playWidgetViewHolder.bind(element.widgetUiModel)
+        element?.let {
+            setupAnalyticVariable(element)
+            playWidgetViewHolder.bind(element.widgetUiModel)
+        }
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?, payloads: MutableList<Any>) {
-        if (element == null || payloads.size <= 0) return
-        val payload = payloads[0]
+        element?.let {
+            if (payloads.size > 0) {
+                val payload = payloads[0]
 
-        val widgetUiModel = element.widgetUiModel
-        if (widgetUiModel !is PlayWidgetUiModel.Medium) return
+                val widgetUiModel = element.widgetUiModel
 
-        if (payload is PlayWidgetReminderUiModel) {
-            playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
-        } else if (payload is PlayWidgetTotalViewUiModel) {
-            playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
+                if (payload is PlayWidgetReminderUiModel && widgetUiModel is PlayWidgetUiModel.Medium) {
+                    playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
+                } else if (payload is PlayWidgetTotalViewUiModel && widgetUiModel is PlayWidgetUiModel.Medium) {
+                    playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
+                } else {
+                    playWidgetViewHolder.bind(element.widgetUiModel)
+                }
+            } else {
+                playWidgetViewHolder.bind(element.widgetUiModel)
+            }
         }
     }
 
@@ -77,7 +81,7 @@ class CarouselPlayWidgetViewHolder(
         if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
             playWidgetAnalyticListener.widgetId = element.homeChannel.id
             playWidgetAnalyticListener.widgetName = element.widgetUiModel.title
-            playWidgetAnalyticListener.setWidgetPosition(element.homeChannel.getPosition())
+            playWidgetAnalyticListener.setBusinessWidgetPosition(element.widgetUiModel.config.businessWidgetPosition)
         }
     }
 
