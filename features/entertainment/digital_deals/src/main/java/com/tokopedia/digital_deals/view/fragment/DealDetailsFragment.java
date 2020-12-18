@@ -551,7 +551,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @SuppressLint("Range")
     @Override
     public void showLoginSnackbar(String message, int position) {
-        Toaster.INSTANCE.build(mainContent, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        Toaster.build(rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                 getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
@@ -727,7 +728,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     private Unit showErrorMessage(){
-        NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.how_to_redeem_error));
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        Toaster.build(rootView, getResources().getString(R.string.how_to_redeem_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show();
         return Unit.INSTANCE;
     }
 
