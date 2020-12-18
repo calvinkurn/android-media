@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
+import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
