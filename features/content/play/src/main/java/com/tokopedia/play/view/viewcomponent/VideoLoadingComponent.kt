@@ -18,7 +18,7 @@ class VideoLoadingComponent(
         @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {
 
-    private val ivLoading = findViewById<LoaderUnify>(R.id.iv_loading)
+//    private val ivLoading = findViewById<LoaderUnify>(R.id.iv_loading)
     private val ivLoadingText = findViewById<Typography>(R.id.iv_loading_text)
 
     fun showWaitingState() {
