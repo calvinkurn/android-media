@@ -56,22 +56,24 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
-        if (userSession.isShopOwner) {
-            true
-        } else {
-            val adminRoleType = async {
-                sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
-                    adminDataResponse.data.detail.roleType.also { roleType ->
-                        updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
+        when {
+            userSession.isShopOwner -> true
+            userSession.isLocationAdmin -> false
+            else -> {
+                val adminRoleType = async {
+                    sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
+                        adminDataResponse.data.detail.roleType.also { roleType ->
+                            updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
+                        }
                     }
                 }
-            }
-            val isRoleEligible = async {
-                adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
-            }
-            _isOrderShopAdmin.value = isRoleEligible.await()
-            adminRoleType.await().run {
-                isShopOwner || !isLocationAdmin
+                val isRoleEligible = async {
+                    adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+                }
+                _isOrderShopAdmin.value = isRoleEligible.await()
+                adminRoleType.await().run {
+                    isShopOwner || !isLocationAdmin
+                }
             }
         }
     }
