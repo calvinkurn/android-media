@@ -32,9 +32,11 @@ import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigr
 class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProductDetailComponent>, ReviewSellerPerformanceMonitoringListener {
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var productId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getDataFromApplink()
         isMainApp()
         startPerformanceMonitoring()
     }
@@ -105,7 +107,9 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
         if (!GlobalConfig.isSellerApp()) {
             if (isSellerAppInstalled()) {
                 val appLink = ApplinkConst.SELLER_REVIEW
-                val parameterizedAppLinks = Uri.parse(appLink).buildUpon().toString()
+                val parameterizedAppLinks = Uri.parse(appLink).buildUpon()
+                        .appendQueryParameter(SellerReviewDetailFragment.PRODUCT_ID, productId)
+                        .toString()
                 val sellerHomeAppLink = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME).buildUpon()
                         .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
                         .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
@@ -120,6 +124,12 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
             }
             RouteManager.route(this, Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(ReviewInboxConstants.PARAM_TAB, ReviewInboxConstants.SELLER_TAB).build().toString())
         }
+    }
+
+    private fun getDataFromApplink() {
+        val uri = intent.data
+        productId = uri?.getQueryParameter(SellerReviewDetailFragment.PRODUCT_ID) ?: ""
+        intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
     }
 
     private fun isSellerAppInstalled(): Boolean {
