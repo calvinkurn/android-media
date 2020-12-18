@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 
 class CampaignStockTickerViewHolder(
     itemView: View?
-): AbstractViewHolder<CampaignStockTickerUiModel>(itemView) {
+) : AbstractViewHolder<CampaignStockTickerUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -19,8 +19,10 @@ class CampaignStockTickerViewHolder(
     }
 
     override fun bind(data: CampaignStockTickerUiModel) {
-        setupLayout()
-        setupTicker(data)
+        initView {
+            setupLayout()
+            setupTicker(data)
+        }
     }
 
     private fun setupTicker(data: CampaignStockTickerUiModel) {
@@ -32,8 +34,16 @@ class CampaignStockTickerViewHolder(
     }
 
     private fun setupLayout() {
-        val topMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-        val horizontalMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-        itemView.setMargin(horizontalMargin, topMargin, horizontalMargin, 0)
+        itemView.findViewById<Ticker>(R.id.ticker).apply {
+            val topMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+            val horizontalMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+            setMargin(horizontalMargin, topMargin, horizontalMargin, 0)
+        }
+    }
+
+    private fun initView(block: () -> Unit) {
+        itemView.findViewById<Ticker>(R.id.ticker).post {
+            block.invoke()
+        }
     }
 }
