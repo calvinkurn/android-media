@@ -77,7 +77,7 @@ class PlayFragment @Inject constructor(
         PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
-    private lateinit var loaderPage: LoaderUnify
+//    private lateinit var loaderPage: LoaderUnify
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -317,7 +317,7 @@ class PlayFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-            loaderPage = findViewById(R.id.loader_page)
+//            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
@@ -360,19 +360,19 @@ class PlayFragment @Inject constructor(
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
                 NetworkResult.Loading -> {
-                    if (!hasFetchedChannelInfo) loaderPage.show()
-                    else loaderPage.hide()
+//                    if (!hasFetchedChannelInfo) loaderPage.show()
+//                    else loaderPage.hide()
 
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
                 is NetworkResult.Success -> {
                     hasFetchedChannelInfo = true
-                    loaderPage.hide()
+//                    loaderPage.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 }
                 is NetworkResult.Fail -> {
-                    loaderPage.hide()
+//                    loaderPage.hide()
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
