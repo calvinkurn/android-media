@@ -792,7 +792,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
         val shouldShow = productNotEmpty && GlobalConfig.isSellerApp() && hasMultiSelectAccess
 
-        multiSelectContainer.showWithCondition(shouldShow)
+        multiSelectContainer.showWithCondition(productNotEmpty)
         textMultipleSelect.showWithCondition(shouldShow)
 
         if (shouldEnableMultiEdit) {
