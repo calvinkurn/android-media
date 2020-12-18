@@ -240,6 +240,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("++ onCreate UohListFragment")
         userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             initialLoad()
@@ -433,7 +434,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
-                    userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
+                    userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
                 }
             }
 
@@ -523,7 +524,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 }
                             }
                         }
-                        userSession?.isLoggedIn?.let { it1 -> userSession?.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
+                        userSession.isLoggedIn?.let { it1 -> userSession.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
                     } else {
                         if (currPage == 1) {
                             loadRecommendationList()
@@ -834,7 +835,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             resetFilter()
             refreshHandler?.startRefresh()
-            userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
+            userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
         }
 
         filter1?.refChipUnify?.setChevronClickListener { onClickFilterDate() }
@@ -1102,7 +1103,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                         }
 
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         val labelTrackingStatus: String
@@ -1117,7 +1118,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter2?.title = ALL_STATUS
                             labelTrackingStatus = ALL_STATUS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
                         val labelTrackingCategory: String
@@ -1132,7 +1133,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter3?.title = ALL_PRODUCTS
                             labelTrackingCategory = ALL_PRODUCTS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
                     }
                 }
                 bottomSheetOption?.dismiss()
@@ -1177,19 +1178,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var actionStatus = ""
                 if (status.isNotEmpty() && status.toIntOrZero() < 600) actionStatus = ACTION_FINISH_ORDER
 
-                val paramFinishOrder = userSession?.userId?.let { it1 ->
+                val paramFinishOrder = userSession.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
 
-                userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
-                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1265,7 +1266,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                 uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_train), param)
             }
-            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
+            userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1352,13 +1353,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                     }
                 }
-                userSession?.userId?.let { UohAnalytics.clickDateFilterChips(it) }
+                userSession.userId?.let { UohAnalytics.clickDateFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
                 tempFilterStatusKey = label
                 tempFilterStatusLabel = value
                 paramUohOrder.status = label
-                userSession?.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
+                userSession.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
                 tempFilterCategoryKey = label
@@ -1368,7 +1369,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 } else {
                     paramUohOrder.verticalCategory = label
                 }
-                userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
+                userSession.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
         }
     }
@@ -1466,7 +1467,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
                 RouteManager.route(context, ApplinkConst.CART)
-                userSession?.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
             }).show()
         }
     }
@@ -1474,7 +1475,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
         showBottomSheetKebabMenu(orderIndex)
         uohBottomSheetKebabMenuAdapter.addList(order)
-        userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
+        userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
     override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
@@ -1519,7 +1520,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
         }
-        userSession?.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
+        userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
     }
 
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
@@ -1555,7 +1556,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
-        userSession?.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+        userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
@@ -1593,13 +1594,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
         }
 
-        userSession?.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
     }
 
     override fun onEmptyResultResetBtnClicked() {
         resetFilter()
         refreshHandler?.startRefresh()
-        userSession?.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
+        userSession.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
     }
 
     override fun onTickerDetailInfoClicked(url: String) {
@@ -1645,7 +1646,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onMulaiBelanjaBtnClicked() {
         RouteManager.route(context, ApplinkConst.HOME)
-        userSession?.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
+        userSession.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
     }
 
     override fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -1661,7 +1662,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession?.userId?.let {
+        userSession.userId?.let {
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                     name = productName,
                     id = recommendationItem.productId.toString(),
@@ -1680,7 +1681,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        userSession?.userId?.let {
+        userSession.userId?.let {
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                     name = productName,
                     id = recommendationItem.productId.toString(),
@@ -1736,7 +1737,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -1787,7 +1788,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            uohListViewModel.doAtcMulti(userSession?.userId
+            uohListViewModel.doAtcMulti(userSession.userId
                     ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
@@ -1802,7 +1803,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         dimension79 = objProduct.get(EE_SHOP_ID).asString
                 ))
             }
-            userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
+            userSession.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
         }
     }
 }
