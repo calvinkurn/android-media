@@ -5,8 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
@@ -56,6 +55,8 @@ class FlightHomepageActivityTest {
 
     @Test
     fun validateFlightHomepageP1Tracking() {
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+
         validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
         validateFlightHomepageSearchClick()
@@ -70,7 +71,7 @@ class FlightHomepageActivityTest {
     }
 
     private fun validateFlightHomepageBannerDisplayedAndScrollable() {
-        Thread.sleep(4000)
+        Thread.sleep(2000)
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
             Thread.sleep(1000)
