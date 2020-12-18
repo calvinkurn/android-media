@@ -41,21 +41,6 @@ object ProductManageTickerMapper {
             tickerList.add(adminTicker)
         }
 
-        if (isAllStockEmpty) {
-            tickerList.add(EmptyStockTicker)
-        }
-
-        return tickerList
-    }
-
-    fun mapToReservedStockTickerList(multiLocationShop: Boolean): List<ProductManageTicker> {
-        val tickerList = mutableListOf<ProductManageTicker>()
-
-        if(multiLocationShop) {
-            tickerList.add(MultiLocationTicker)
-        }
-
-        tickerList.add(CampaignStockTicker)
         return tickerList
     }
 }
