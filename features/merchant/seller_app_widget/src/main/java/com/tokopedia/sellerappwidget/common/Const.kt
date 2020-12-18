@@ -11,6 +11,11 @@ object Const {
         const val READY_TO_SHIP = 400
     }
 
+    object OrderListSortBy {
+        const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
+        const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
+    }
+
     object Extra {
         const val BUNDLE = "extra_bundle"
         const val SELLER_ORDER = "seller_order"

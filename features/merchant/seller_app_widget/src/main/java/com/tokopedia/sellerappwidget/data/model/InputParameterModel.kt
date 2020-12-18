@@ -2,6 +2,7 @@ package com.tokopedia.sellerappwidget.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerappwidget.common.Const
 
 data class InputParameterModel(
         @SerializedName("search")
@@ -27,7 +28,7 @@ data class InputParameterModel(
         val orderTypeList: List<Int> = arrayListOf(),
         @SerializedName("sort_by")
         @Expose
-        val sortBy: Int = SORT_BY_PAYMENT_DATE_DESCENDING,
+        val sortBy: Int = Const.OrderListSortBy.SORT_BY_PAYMENT_DATE_ASCENDING,
         @SerializedName("is_mobile")
         @Expose
         val isMobile: Boolean = true,
@@ -49,8 +50,4 @@ data class InputParameterModel(
         @SerializedName("deadline")
         @Expose
         val deadline: Int = 0
-) {
-    companion object {
-        private const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
-    }
-}
+)

@@ -19,8 +19,6 @@ import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetOrderWorker
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 import java.util.*
 
@@ -43,8 +41,11 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
     }
 
     private val viewModel by lazy {
-        val getOrderUseCase = GetOrderUseCase(GraphqlInteractor.getInstance().graphqlRepository, OrderMapper())
-        return@lazy OrderAppWidgetViewModel(getOrderUseCase, CoroutineDispatchersProvider)
+        val gqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+        val mapper = OrderMapper()
+        val getNewOrderUseCase = GetOrderUseCase(gqlRepository, mapper)
+        val getReadyToShipOrderUseCase = GetOrderUseCase(gqlRepository, mapper)
+        return@lazy OrderAppWidgetViewModel(getNewOrderUseCase, getReadyToShipOrderUseCase, CoroutineDispatchersProvider)
     }
     private val sharedPref: SellerAppWidgetPreferences by lazy {
         SellerAppWidgetPreferences.getInstance(context)
@@ -63,17 +64,17 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         viewModel.getOrderList(startDateFmt, endDateFmt)
     }
 
-    override fun onSuccessGetOrderList(result: Success<OrderUiModel>) {
+    override fun onSuccessGetOrderList(result: OrderUiModel) {
         sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
-        OrderAppWidget.setOnSuccess(context, result.data, orderStatusId)
+        OrderAppWidget.setOnSuccess(context, result, orderStatusId)
         GetOrderWorker.runWorker(context)
         viewModel.unbind()
     }
 
-    override fun onFailedGetOrderList(fail: Fail) {
+    override fun onFailedGetOrderList(t: Throwable) {
         OrderAppWidget.setOnError(context)
         GetOrderWorker.runWorker(context)
-        Timber.e(fail.throwable)
+        Timber.e(t)
         viewModel.unbind()
     }
 

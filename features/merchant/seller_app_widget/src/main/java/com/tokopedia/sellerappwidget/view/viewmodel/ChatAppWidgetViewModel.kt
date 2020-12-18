@@ -21,12 +21,12 @@ class ChatAppWidgetViewModel(
     fun getChatList() {
         launchCatchError(block = {
             getChatUseCase.params = GetChatUseCase.creteParams()
-            val result = Success(withContext(dispatchers.io) {
+            val result = withContext(dispatchers.io) {
                 return@withContext getChatUseCase.executeOnBackground()
-            })
+            }
             view?.onSuccessGetOrderList(result)
         }, onError = {
-            view?.onFailedGetOrderList(Fail(it))
+            view?.onFailedGetOrderList(it)
         })
     }
 }

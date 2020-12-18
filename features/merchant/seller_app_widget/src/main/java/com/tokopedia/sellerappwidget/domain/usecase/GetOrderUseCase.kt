@@ -40,11 +40,12 @@ class GetOrderUseCase(
          * @param endDateFmt should be date with format dd/MM/yyyy
          * @return `RequestParams`
          * */
-        fun createParams(startDateFmt: String, endDateFmt: String): RequestParams {
+        fun createParams(startDateFmt: String, endDateFmt: String, statusId: Int, sortBy: Int): RequestParams {
             val input = InputParameterModel(
                     startDate = startDateFmt,
                     endDate = endDateFmt,
-                    statusList = listOf(Const.OrderStatusId.READY_TO_SHIP, Const.OrderStatusId.NEW_ORDER)
+                    sortBy = sortBy,
+                    statusList = listOf(statusId)
             )
             return RequestParams.create().apply {
                 putObject(KEY_INPUT, input)
