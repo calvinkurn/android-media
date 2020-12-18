@@ -668,9 +668,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun updateCartAfterDetached() {
         val hasChanges = dPresenter.dataHasChanged()
         try {
-            val cartItemDataList = getAllSelectedCartDataList()
+            val cartItemDataList = getAllAvailableCartDataList()
             activity?.let {
-                if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
+                if (hasChanges && cartItemDataList.isNotEmpty() && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                     dPresenter.processUpdateCartData(true)
                 }
             }
