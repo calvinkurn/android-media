@@ -64,6 +64,7 @@
         android:id="@+id/horLineSawOrderItem"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:visibility="invisible"
         android:layout_below="@+id/imgSawOrderItemProduct"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:background="@color/Unify_N50" />

@@ -56,5 +56,6 @@
         android:layout_height="1dp"
         android:layout_below="@+id/tvSawChatItemMessage"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_N50"
+        android:visibility="invisible" />
 </RelativeLayout>

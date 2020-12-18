@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
@@ -19,6 +20,7 @@ import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.ChatWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
+import kotlin.math.absoluteValue
 
 /**
  * Created By @ilhamsuaib on 02/12/20
@@ -27,17 +29,20 @@ import com.tokopedia.user.session.UserSessionInterface
 object ChatWidgetSuccessState {
 
     fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, chat: ChatUiModel, widgetId: Int) {
-        val awm = AppWidgetManager.getInstance(context)
         ChatWidgetStateHelper.updateViewOnSuccess(remoteViews)
 
         val totalChats = "${chat.unreads} " + context.getString(R.string.saw_new_chat)
         with(remoteViews) {
             setTextViewText(R.id.tvSawChatTotalChat, totalChats)
             setTextViewText(R.id.tvSawChatShopName, userSession.shopName)
+            val headerHeight = 64
+            val widgetItemHeight = 56
+            val widgetHeight = AppWidgetHelper.getAppWidgetHeight(context, widgetId).minus(headerHeight)
+            val itemCount = (widgetHeight/widgetItemHeight).absoluteValue
 
             //setup chat list
             val randomNumber = (Math.random() * 10000).toInt()
-            val chatItems = ArrayList(chat.chats)
+            val chatItems = ArrayList(chat.chats.take(itemCount))
             val intent = Intent(context, ChatWidgetRemoteViewService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
