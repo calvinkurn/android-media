@@ -49,6 +49,12 @@ sealed class ProductMenuViewModel(
         product
     )
 
+    data class CreateBroadcastChat(override val product: ProductViewModel): ProductMenuViewModel(
+            R.string.product_manage_create_broadcast_chat,
+            R.drawable.ic_bc_chat,
+            product
+    )
+
     data class SetCashBack(override val product: ProductViewModel): ProductMenuViewModel(
         R.string.product_manage_menu_set_cashback,
         IconUnify.DISCOUNT,

@@ -17,11 +17,11 @@ import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -31,33 +31,32 @@ import javax.inject.Inject
  * Created by stevenfredian on 10/19/17.
  */
 
-class WebSocketViewModel
-@Inject constructor(dispatcher: CoroutineDispatcher,
-                    private val userSession: UserSessionInterface,
-                    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-                    private val fingerprintInterceptor: FingerprintInterceptor) : BaseViewModel(dispatcher), LifecycleObserver {
+open class WebSocketViewModel @Inject constructor(
+        protected val dispatchers: TopchatCoroutineContextProvider,
+        protected val userSession: UserSessionInterface,
+        protected val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        protected val fingerprintInterceptor: FingerprintInterceptor
+) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
 
-    val client = OkHttpClient()
-    private val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+    protected val client = OkHttpClient()
+    protected val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
             "?os_type=1" +
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
-    private var easyWS: EasyWS? = null
-    private var isOnStop = false
-    private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
+    protected var easyWS: EasyWS? = null
+    protected var isOnStop = false
+    protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
 
-    fun connectWebSocket() {
+    open fun connectWebSocket() {
         launch {
             client.run {
                 newBuilder().addInterceptor(tkpdAuthInterceptor)
                         .addInterceptor(fingerprintInterceptor)
             }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
-
             Timber.d(" Open: ${easyWS?.response}")
-
             easyWS?.let {
                 for (response in it.textChannel) {
                     Timber.d(" Response: $response")
@@ -65,15 +64,15 @@ class WebSocketViewModel
                     when (response.code) {
                         EVENT_TOPCHAT_REPLY_MESSAGE -> {
                             val chat = Success(mapToIncomingChat(response))
-                            _itemChat.value = chat
+                            _itemChat.postValue(chat)
                         }
                         EVENT_TOPCHAT_TYPING -> {
                             val stateTyping = Success(mapToIncomingTypeState(response, true))
-                            _itemChat.value = stateTyping
+                            _itemChat.postValue(stateTyping)
                         }
                         EVENT_TOPCHAT_END_TYPING -> {
                             val stateEndTyping = Success(mapToIncomingTypeState(response, false))
-                            _itemChat.value = stateEndTyping
+                            _itemChat.postValue(stateEndTyping)
                         }
                     }
                 }
@@ -81,7 +80,7 @@ class WebSocketViewModel
         }
     }
 
-    private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
+    protected fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
         val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
@@ -101,7 +100,7 @@ class WebSocketViewModel
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
 
-    private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
+    protected fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
         val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData?.msgId.toString()

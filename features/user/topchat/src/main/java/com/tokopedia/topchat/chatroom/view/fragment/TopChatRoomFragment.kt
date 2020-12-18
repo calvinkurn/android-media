@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.fragment
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -30,6 +29,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
@@ -37,8 +37,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -94,6 +94,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.MessageTextWatcher
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -126,8 +127,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener,
-        BroadcastSpamHandlerViewHolder.Listener, RoomSettingFraudAlertViewHolder.Listener {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
+        SearchListener, BroadcastSpamHandlerViewHolder.Listener,
+        RoomSettingFraudAlertViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -180,6 +182,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
     private var chatBackground: ImageView? = null
+    private var textWatcher: MessageTextWatcher? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -194,21 +197,27 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initReplyTextWatcher()
             initStickerView()
             initFbNewUnreadMessage()
             initTextComposeBackground()
         }
     }
 
+    private fun initReplyTextWatcher() {
+        textWatcher = MessageTextWatcher(this)
+        composeArea?.addTextChangedListener(textWatcher)
+    }
+
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
                 composeArea,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
-                R.color.topchat_message_shadow,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER
@@ -825,6 +834,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendMessage(message: String? = null) {
+        textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
@@ -1218,7 +1228,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(com.tokopedia.merchantvoucher.R.string.close), { snackbar.dismiss() })
-            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.setActionTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
     }

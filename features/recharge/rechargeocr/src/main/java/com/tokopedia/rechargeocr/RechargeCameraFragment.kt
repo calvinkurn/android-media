@@ -65,7 +65,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        uploadImageviewModel.resultDataOcr.observe(this, Observer { ocrData ->
+        uploadImageviewModel.resultDataOcr.observe(viewLifecycleOwner, Observer { ocrData ->
             hideLoading()
             rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
             activity?.let {
@@ -76,11 +76,11 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             }
         })
 
-        uploadImageviewModel.errorActionOcr.observe(this, Observer {
+        uploadImageviewModel.errorActionOcr.observe(viewLifecycleOwner, Observer {
             hideLoading()
             showCameraView()
             rechargeCameraAnalytics.scanIdCard(it)
-            Toaster.make(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            Toaster.build(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         })
     }
 
@@ -118,11 +118,11 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                     PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE),
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
-
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
                         }
 
                         override fun onNeverAskAgain(permissionText: String) {
-
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
                         }
 
                         override fun onPermissionGranted() {

@@ -168,6 +168,7 @@ class SearchProductFirstPageGqlUseCase(
                             gold_shop
                             gold_shop_badge
                             shop_is_official
+                            merchant_vouchers
                             product {
                                 id
                                 name
@@ -257,6 +258,9 @@ class SearchProductFirstPageGqlUseCase(
                             title
                             url
                             applink
+                            banner_image_url
+                            banner_link_url
+                            banner_applink_url
                             product {
                                 id
                                 name
@@ -268,6 +272,15 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
+                                rating_average
+                                label_groups {
+                                    title
+                                    type
+                                    position
+                                    url
+                                }
+                                original_price
+                                discount_percentage
                             }
                         }
                     }

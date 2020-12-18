@@ -78,30 +78,33 @@ open class BaseChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-        replyWatcher = EventsWatcher.text(replyEditText)
 
-        replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
-
-        val onError = Action1<Throwable> { it.printStackTrace() }
-
-        replyIsTyping.subscribe(Action1 {
-            if (it && !isTyping) {
-                typingListener.onStartTyping()
-                isTyping = true
+        if (useDefaultReplyWatcher()) {
+            replyWatcher = EventsWatcher.text(replyEditText)
+            replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
+            val onError = Action1<Throwable> { it.printStackTrace() }
+            replyIsTyping.subscribe(Action1 {
+                if (it && !isTyping) {
+                    typingListener.onStartTyping()
+                    isTyping = true
+                }
+            }, onError)
+            val onChatDeBounceSubscriber = Action1<Boolean> {
+                typingListener.onStopTyping()
+                isTyping = false
             }
-        }, onError)
-
-        val onChatDeBounceSubscriber = Action1<Boolean> {
-            typingListener.onStopTyping()
-            isTyping = false
+            replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                    .skip(1)
+                    .subscribe(onChatDeBounceSubscriber, onError)
         }
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .skip(1)
-                .subscribe(onChatDeBounceSubscriber, onError)
 
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
         setupChatMenu()
+    }
+
+    protected open fun useDefaultReplyWatcher(): Boolean {
+        return true
     }
 
     protected open fun setupChatMenu() {
@@ -200,17 +203,17 @@ open class BaseChatViewStateImpl(
         when {
             labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Green_G400))
                 label.visibility = View.VISIBLE
             }
             labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
                 label.visibility = View.VISIBLE
             }
             labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Yellow_Y400))
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE

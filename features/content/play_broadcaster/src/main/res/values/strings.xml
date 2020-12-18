@@ -105,12 +105,13 @@
     <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
     <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
-    <string name="play_live_broadcast_system_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="play_broadcaster_default_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
-    <string name="play_summary_button_finish">Selesai</string>
+    <string name="play_summary_button_save_video">Simpan Video di Halaman Toko</string>
+    <string name="play_summary_button_delete_video">Hapus Video</string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
     <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
@@ -120,6 +121,10 @@
     <string name="play_summary_new_followers">Followers Baru</string>
     <string name="play_summary_error_desc">Yuk, coba lagi untuk menampilkan laporannya.</string>
     <string name="play_summary_error_title">Laporanmu gagal ditampilkan</string>
+    <string name="play_summary_delete_dialog_title">Yakin ingin hapus video?</string>
+    <string name="play_summary_delete_dialog_message">Live streaming tidak akan\njadi video di Halaman Toko\njika kamu ingin menghapusnya.</string>
+    <string name="play_summary_delete_dialog_action_delete">Hapus</string>
+    <string name="play_summary_delete_dialog_action_back">Kembali</string>
 
     <string name="play_terms_condition_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
     <string name="play_terms_condition">Syarat &amp; Ketentuan</string>
@@ -146,4 +151,5 @@
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
+    <string name="mock_report_live_duration">00:00</string>
 </resources>

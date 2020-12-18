@@ -3,13 +3,14 @@ package com.tokopedia.talk.feature.reply.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
@@ -56,6 +57,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
@@ -651,12 +653,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initView() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         initAdapter()
         initAttachedProductAdapter()
         initRecyclerView()
         initAttachedProductRecyclerView()
         initSwipeRefresh()
+        initToolbar()
     }
 
     private fun initAdapter() {
@@ -844,5 +847,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         )
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkReply)
+                headerTalkReply?.title = getString(R.string.title_reply_page)
+            }
+        }
     }
 }

@@ -141,6 +141,7 @@
     <string name="product_manage_remove_featured_menu">Hapus dari Produk Unggulan</string>
     <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
     <string name="product_manage_see_promo_ads_menu">Lihat Performa Iklan</string>
+    <string name="product_manage_create_broadcast_chat">Buat Brodcast Chat</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
@@ -269,6 +270,12 @@
     <string name="label_delete">Delete</string>
 
     <string name="courier_option">Atur Layanan Kurir</string>
+    
+    <!--broadcast chat-->
+    <string name="broadcast_chat_error_state_message_empty_stock">Broadcast Chat hanya bisa dibuat untuk produk yang masih tersedia.</string>
+    <string name="broadcast_chat_error_state_message_empty_variant">Oops, Broadcast Chat gagal dibuat. Yuk, coba lagi!</string>
+    <string name="broadcast_chat_error_state_action_oke">Oke</string>
+    <string name="broadcast_chat_error_state_action_retry">Ulangi</string>
 
     <!--content desc-->
     <string name="content_desc_btnEditPrice">button ubah harga</string>
@@ -288,4 +295,6 @@
     <string name="content_desc_quickEditPriceSaveButton">button simpan harga</string>
     <string name="content_desc_checkBoxSelect">checkbox produk</string>
     <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
+    <string name="ticker_broadcast_chat">Promosikan produkmu dengan buat Broadcast Chat lewat Atur Produk, yuk!</string>
+    <string name="message_loading_progress_dialog">Loading</string>
 </resources>

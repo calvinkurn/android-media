@@ -114,6 +114,7 @@
     <!-- Broadcast chat -->
     <string name="seller_migration_tab_ads_broadcast_chat_title">BROADCAST CHAT</string>
     <string name="seller_migration_tab_ads_broadcast_chat_description">Kirim pesan promosi langsung ke banyak calon pembeli.</string>
+    <string name="seller_migration_entry_point_broadcast_chat_description">Kirim chat ke berbagai calon pembeli untuk promosikan produkmu.</string>
 
     <!-- Discussion Template -->
     <string name="seller_migration_template_title">Template BALASAN</string>

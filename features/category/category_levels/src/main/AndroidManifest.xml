@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.categorylevels.view.activity.CategoryNavActivity"
+            android:name="com.tokopedia.categorylevels.view.activity.CategoryRevampActivity"
             android:label="@string/label_category"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

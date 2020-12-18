@@ -57,6 +57,9 @@ abstract class CreateReviewViewModelTestFixture {
     protected val shopId = ArgumentMatchers.anyInt()
     protected val reputationScore = ArgumentMatchers.anyInt()
     protected val rating = ArgumentMatchers.anyInt()
+    protected val review = ArgumentMatchers.anyString()
+    protected val isAnonymous = ArgumentMatchers.anyBoolean()
+    protected val utmSource = ArgumentMatchers.anyString()
 
     @Before
     fun setup() {

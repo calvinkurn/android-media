@@ -19,4 +19,12 @@ data class InboxCounter(
             else -> null
         }
     }
+
+    fun getByRoleOpposite(role: Int): BaseNotification? {
+        return when (role) {
+            RoleType.BUYER -> seller
+            RoleType.SELLER -> buyer
+            else -> null
+        }
+    }
 }

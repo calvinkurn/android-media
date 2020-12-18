@@ -270,10 +270,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
 
-    // AddEmailActivity
+    // AddPhoneActivity
     // tokopedia-android-internal://global/add-phone
     @JvmField
     val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // AddPhoneActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE_WITH = "$INTERNAL_GLOBAL/add-phone?phone={phone-number}"
 
     // AddBodActivity
     // tokopedia-android-internal://global/add-bod
@@ -505,10 +510,11 @@ object ApplinkConstInternalGlobal {
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 
 
-    // Phone Number Verification Activity
+    //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 
