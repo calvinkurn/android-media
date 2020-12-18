@@ -138,7 +138,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun setupAdapterModels(isVariant: Boolean) {
         val isAllStockEmpty = sellableProductList.all { it.isStockEmpty() }
-        val tickerUiModel = createTickerUiModel(access, isAllStockEmpty)
+        val tickerUiModel = createTickerUiModel(isAllStockEmpty)
 
         if (isVariant) {
             val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
@@ -158,7 +158,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         }
     }
 
-    private fun createTickerUiModel(access: ProductManageAccess?, isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
+    private fun createTickerUiModel(isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
         val isMultiLocationShop = userSession.isMultiLocationShop
         val canEditStock = access?.editStock == true
 
@@ -193,7 +193,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
         adapter.data.firstOrNull { it is CampaignStockTickerUiModel }?.let {
-            val tickerUiModel = createTickerUiModel(access, shouldShowWarning)
+            val tickerUiModel = createTickerUiModel(shouldShowWarning)
             val index = adapter.data.indexOf(it)
             adapter.data[index] = tickerUiModel
             adapter.notifyItemChanged(index)
