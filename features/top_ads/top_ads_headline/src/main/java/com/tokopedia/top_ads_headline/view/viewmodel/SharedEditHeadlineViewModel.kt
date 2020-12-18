@@ -4,9 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.top_ads_headline.data.Category
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.topads.common.data.response.SingleAd
-import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
-import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import kotlinx.coroutines.launch
@@ -16,26 +17,23 @@ private const val TYPE_BANNER = "banner"
 
 class SharedEditHeadlineViewModel @Inject constructor(
         private val topAdsGetGroupProductUseCase: TopAdsGetGroupProductDataUseCase,
-        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
-        private val getAdKeywordUseCase: GetAdKeywordUseCase
-) : ViewModel() {
+        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase) : ViewModel() {
 
-    private var groupItemLiveData: MutableLiveData<WithoutGroupDataItem> = MutableLiveData()
-    private var headlineAdDetailLiveData: MutableLiveData<SingleAd> = MutableLiveData()
+    private val editHeadlineAdLiveData: MutableLiveData<HeadlineAdStepperModel> = MutableLiveData()
 
-    fun getGroupItemLiveData(): LiveData<WithoutGroupDataItem> = groupItemLiveData
-    fun getHeadlineAdDetailLiveData(): LiveData<SingleAd> = headlineAdDetailLiveData
+    fun getEditHeadlineAdLiveData(): LiveData<HeadlineAdStepperModel> = editHeadlineAdLiveData
 
-    fun getHeadlineAdId(groupId: Int, shopId: Int) {
+    fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
         viewModelScope.launch {
             topAdsGetGroupProductUseCase.setParams(groupId, 0, "", "", null, "", "", shopId, TYPE_BANNER)
             topAdsGetGroupProductUseCase.executeQuerySafeMode(
                     {
                         if (it.data.isNotEmpty()) {
-                            groupItemLiveData.value = it.data.first()
+                            getHeadlineAdDetail(it.data.first().adId.toString(), shopId.toString(), onError)
                         }
                     },
                     {
+                        onError(it.message ?: "")
                         it.printStackTrace()
                     }
             )
@@ -43,13 +41,13 @@ class SharedEditHeadlineViewModel @Inject constructor(
         }
     }
 
-    fun getHeadlineAdDetail(adId: Int, shopId: Int, onError: (message: String) -> Unit) {
+    private fun getHeadlineAdDetail(adId: String, shopId: String, onError: (message: String) -> Unit) {
         viewModelScope.launch {
             topAdsGetPromoUseCase.setParams(adId, shopId)
             topAdsGetPromoUseCase.execute(
                     {
                         if (it.topAdsGetPromo.data.isNotEmpty()) {
-
+                            setEditAdHeadlineData(it.topAdsGetPromo.data.first())
                         } else if (it.topAdsGetPromo.errors.isNotEmpty()) {
                             onError(it.topAdsGetPromo.errors.first().detail)
                         }
@@ -62,17 +60,27 @@ class SharedEditHeadlineViewModel @Inject constructor(
         }
     }
 
-    fun getAdKeyword(adId: Int, cursor: String, shopId: Int) {
-        viewModelScope.launch {
-            getAdKeywordUseCase.setParams(adId, cursor, shopId)
-            getAdKeywordUseCase.execute(
-                    {
-
-                    },
-                    {
-
-                    }
-            )
+    private fun setEditAdHeadlineData(ad: SingleAd) {
+        val editHeadlineAdModel = HeadlineAdStepperModel()
+        ad.cpmDetails.firstOrNull()?.let {
+            editHeadlineAdModel.groupName = it.title
+            editHeadlineAdModel.slogan = it.description.slogan
+            val selectedProductMap = HashMap<Category, ArrayList<TopAdsProductModel>>()
+            it.product.forEach { product ->
+                editHeadlineAdModel.selectedProductIds.add(product.productID)
+                val category = Category(product.departmentID.toString(), product.departmentName)
+                if (selectedProductMap[category] != null) {
+                    selectedProductMap[category]?.add(product)
+                } else {
+                    val arrayList: ArrayList<TopAdsProductModel> = ArrayList()
+                    arrayList.add(product)
+                    selectedProductMap[category] = arrayList
+                }
+                editHeadlineAdModel.selectedTopAdsProductMap = selectedProductMap
+            }
+            editHeadlineAdModel.selectedTopAdsProducts = it.product as ArrayList<TopAdsProductModel>
         }
+        editHeadlineAdLiveData.value = editHeadlineAdModel
     }
+
 }

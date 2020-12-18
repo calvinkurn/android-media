@@ -65,7 +65,7 @@ class TopAdsGetPromoUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         setGraphqlQuery(TopAdsGetPromoQuery.GQL_QUERY)
     }
 
-    fun setParams(adId:Int, shopId:Int) {
+    fun setParams(adId:String, shopId:String) {
         val queryMap = mutableMapOf(
                 ParamObject.AD_ID to adId,
                 ParamObject.SHOP_ID to shopId

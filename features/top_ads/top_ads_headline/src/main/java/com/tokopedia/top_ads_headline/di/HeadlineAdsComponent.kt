@@ -15,4 +15,6 @@ interface HeadlineAdsComponent {
     fun inject(topAdsProductListFragment: TopAdsProductListFragment)
     fun inject(editFormHeadlineActivity: EditFormHeadlineActivity)
     fun inject(editAdContentFragment: EditAdContentFragment)
+    fun inject(editAdCostFragment: EditAdCostFragment)
+    fun inject(editAdOthersFragment: EditAdOthersFragment)
 }

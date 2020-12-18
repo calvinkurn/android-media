@@ -61,7 +61,7 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun getGroupId(shopId: String, adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
-        topAdsGetGroupIdUseCase.setParams(adId.toIntOrNull() ?: 0, shopId.toIntOrNull() ?: 0)
+        topAdsGetGroupIdUseCase.setParams(adId, shopId)
         topAdsGetGroupIdUseCase.execute({
             onSuccess(it.topAdsGetPromo.data)
         }, {

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
@@ -40,7 +40,7 @@ import javax.inject.Inject
 private const val KEY_LIMIT = 50
 const val SEARCH_NOT_AVAILABLE = "-1"
 
-class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

@@ -7,9 +7,10 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-open class CreateHeadlineAdsStepperModel(
+open class HeadlineAdStepperModel(
         var groupName: String = "",
         var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> = HashMap(),
+        var selectedTopAdsProducts: ArrayList<TopAdsProductModel> = ArrayList(),
         var selectedProductIds: MutableList<Int> = mutableListOf(),
         var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var manualSelectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),

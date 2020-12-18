@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
@@ -34,9 +34,9 @@ private const val SELECT_PRODUCT_REQUEST_CODE = 1001
 private const val MAX_PRODUCT_PREVIEW = 3
 private const val MIN_PROMOTIONAL_MSG_COUNT = 20
 
-class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
+class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
-    private var selectedTopAdsProducts = ArrayList<TopAdsProductModel>()
+//    private var selectedTopAdsProducts = ArrayList<TopAdsProductModel>()
 
     companion object {
         fun newInstance() = AdContentFragment()
@@ -87,9 +87,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun getAdItems(): MutableList<Int> {
-        return selectedTopAdsProducts.map {
+        return stepperModel?.selectedTopAdsProducts?.map {
             it.productID
-        }.toMutableList()
+        }?.toMutableList() ?: mutableListOf()
     }
 
     override fun updateToolBar() {
@@ -101,10 +101,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun populateView() {
         setUpSelectedText()
         productImagePreviewWidget.setTopAdsImagePreviewClick(this)
-        if (selectedTopAdsProducts.isNotEmpty()) {
+        if (stepperModel?.selectedTopAdsProducts?.isNotEmpty() == true) {
             onProductsSelectionChange()
         }
-        promotionalMessageInputText.textFieldInput.setText(stepperModel?.slogan ?: getString(R.string.topads_headline_promotional_dummy_message))
+        promotionalMessageInputText.textFieldInput.setText(stepperModel?.slogan
+                ?: getString(R.string.topads_headline_promotional_dummy_message))
         promotionalMessageInputText.textFieldInput.isFocusable = false
         promotionalMessageInputText.textFieldInput.setOnClickListener {
             openPromotionalMessageBottomSheet()
@@ -116,7 +117,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun onClickSubmit() {
-        selectedTopAdsProducts = getSelectedProducts()
+        stepperModel?.selectedTopAdsProducts = getSelectedProducts()
         when {
             ifLessProductSelected() -> {
                 productPickerErrorText.show()
@@ -125,7 +126,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
                     Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
             }
-            selectedTopAdsProducts.size > MAX_PRODUCT_SELECTION -> {
+            stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
                     Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
@@ -138,7 +139,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun ifLessProductSelected(): Boolean {
-        if (selectedTopAdsProducts.isEmpty()) {
+        if (stepperModel?.selectedTopAdsProducts?.isEmpty() == true) {
             return true
         } else {
             stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
@@ -151,9 +152,13 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun showTopAdsBannerPreview() {
-        val cpmModel = cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
-                ?: "")
-        stepperModel?.cpmModel = cpmModel
+        val cpmModel = stepperModel?.selectedTopAdsProducts?.take(MAX_PRODUCT_PREVIEW)?.let {
+            cpmModelMapper.getCpmModelResponse(it, stepperModel?.slogan
+                    ?: "")
+        }
+        if (cpmModel != null) {
+            stepperModel?.cpmModel = cpmModel
+        }
         topAdsBannerView.displayAdsWithProductShimmer(stepperModel?.cpmModel, true)
     }
 
@@ -174,7 +179,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun setUpSelectedText() {
-        contentSelectedText.text = getString(R.string.topads_headline_product_selected, selectedTopAdsProducts.size.toString())
+        contentSelectedText.text = getString(R.string.topads_headline_product_selected, stepperModel?.selectedTopAdsProducts?.size.toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -182,11 +187,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         if (requestCode == SELECT_PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<TopAdsProductModel>>
                     ?: HashMap()
-            selectedTopAdsProducts = getSelectedProducts()
+            stepperModel?.selectedTopAdsProducts = getSelectedProducts()
             if (data?.getBooleanExtra(IS_EDITED, false) == true) {
                 onProductsSelectionChange()
             }
-            if (selectedTopAdsProducts.isNotEmpty()) {
+            if (stepperModel?.selectedTopAdsProducts?.isNotEmpty() == true) {
                 productPickerErrorText.hide()
             }
         }
@@ -194,10 +199,10 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     private fun onProductsSelectionChange() {
         val imageList = ArrayList<String>()
-        selectedTopAdsProducts.forEach {
+        stepperModel?.selectedTopAdsProducts?.forEach {
             imageList.add(it.productImage)
         }
-        if (selectedTopAdsProducts.size >= MAX_PRODUCT_PREVIEW - 1) {
+        if (stepperModel?.selectedTopAdsProducts?.size ?: 0 >= MAX_PRODUCT_PREVIEW - 1) {
             showTopAdsBannerPreview()
         }
         productImagePreviewWidget.setSelectedProductList(imageList)
@@ -205,13 +210,13 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun onDeletePreview(position: Int) {
-        val product = selectedTopAdsProducts[position]
+        val product = stepperModel?.selectedTopAdsProducts?.getOrNull(position)
         stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
             if (arrayList.contains(product)) {
                 arrayList.remove(product)
             }
         }
-        selectedTopAdsProducts.removeAt(position)
+        stepperModel?.selectedTopAdsProducts?.removeAt(position)
         setUpSelectedText()
     }
 

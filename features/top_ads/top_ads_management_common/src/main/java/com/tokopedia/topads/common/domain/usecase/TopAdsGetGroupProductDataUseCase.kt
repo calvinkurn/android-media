@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
@@ -45,11 +44,10 @@ const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
 
 @GqlQuery("TopadsDashboardGroupProductsQuery", TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY)
 class TopAdsGetGroupProductDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<NonGroupResponse.TopadsDashboardGroupProducts>(graphqlRepository) {
+    : GraphqlUseCase<NonGroupResponse>(graphqlRepository) {
 
     fun setParams(groupId: Int?, page: Int, search: String, sort: String, status: Int?, startDate: String,
-                  endDate: String, shopId: Int, type: String = ""): RequestParams {
-        val requestParams = RequestParams.create()
+                  endDate: String, shopId: Int, type: String = "") {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = shopId
         queryMap[ParamObject.GROUP] = groupId
@@ -60,8 +58,7 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(graphqlRepository: Gr
         queryMap[ParamObject.KEYWORD] = search
         queryMap[ParamObject.STATUS] = status
         queryMap[ParamObject.TYPE] = type
-        requestParams.putAll(mapOf(ParamObject.QUERY_INPUT to queryMap))
-        return requestParams
+        setRequestParams(mapOf(ParamObject.QUERY_INPUT to queryMap))
     }
 
     private fun getQuery(): String {
@@ -72,11 +69,11 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(graphqlRepository: Gr
             .Builder(CacheType.CLOUD_THEN_CACHE).build()
 
     fun executeQuerySafeMode(onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onError: (Throwable) -> Unit) {
-        setTypeClass(NonGroupResponse.TopadsDashboardGroupProducts::class.java)
+        setTypeClass(NonGroupResponse::class.java)
         setGraphqlQuery(getQuery())
         setCacheStrategy(cacheStrategy)
         execute({
-            onSuccess(it)
+            onSuccess(it.topadsDashboardGroupProducts)
 
         }, onError)
     }

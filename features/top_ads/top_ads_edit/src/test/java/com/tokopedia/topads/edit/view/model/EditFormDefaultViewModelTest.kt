@@ -205,7 +205,7 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun getSingleAdInfo() {
-        val adId = 121
+        val adId = "121"
         val mockThrowable = mockk<Throwable>(relaxed = true)
         every { userSession.shopId } returns "123"
         every {

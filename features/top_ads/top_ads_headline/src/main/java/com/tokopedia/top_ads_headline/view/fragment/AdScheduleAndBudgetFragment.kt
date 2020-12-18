@@ -12,7 +12,7 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
@@ -52,7 +52,7 @@ private const val MAX_DAILY_BUDGET = "1.000.000.000.000"
 private const val MINUTE_INTERVAL = 30
 private const val MULTIPLIER = 3
 
-class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     private val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
     private var selectedStartDate: Calendar? = null

@@ -145,8 +145,8 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getSingleAdInfo(adId: Int, onSuccess: ((List<SingleAd>) -> Unit)) {
-        getAdInfoUseCase.setParams(adId, userSession.shopId.toIntOrZero())
+    fun getSingleAdInfo(adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
+        getAdInfoUseCase.setParams(adId, userSession.shopId)
         getAdInfoUseCase.execute(
                 {
                     onSuccessGroup(onSuccess)
