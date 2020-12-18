@@ -969,9 +969,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
         return {
             stopTrace()
-
             if (isEmailNotActive(it, email)) {
                 onGoToActivationPage(email)
+                view?.let { view ->
+                    if (!it.message.isNullOrEmpty()) {
+                        it.message?.let { message ->
+                            Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
             } else if (it is AkamaiErrorException) {
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
