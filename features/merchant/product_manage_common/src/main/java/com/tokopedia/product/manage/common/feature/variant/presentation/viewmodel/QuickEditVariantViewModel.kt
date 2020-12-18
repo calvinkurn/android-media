@@ -60,7 +60,6 @@ class QuickEditVariantViewModel @Inject constructor(
         hideErrorView()
         showProgressBar()
         setEmptyTicker()
-        getTickerList()
 
         launchCatchError(block = {
             val access = getProductManageAccess()
