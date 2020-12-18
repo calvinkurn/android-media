@@ -82,7 +82,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 SORT_BY to sortBy,
                 FILTER_BY to timeFilter,
                 LIMIT to 10,
-                PAGE to PAGE)
+                PAGE to page)
         val feedbackDetailFilterRequest = GraphqlRequest(ProductFeedbackFilter.GQL_QUERY, ProductFeedbackFilterResponse::class.java,
                 feedbackFilterParams)
 
