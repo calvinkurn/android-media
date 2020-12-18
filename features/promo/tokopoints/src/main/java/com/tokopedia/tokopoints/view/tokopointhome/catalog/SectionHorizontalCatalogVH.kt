@@ -71,10 +71,9 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
                     countDownView?.visibility = View.GONE
                 }
             }
-            view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
             countDownView?.hide()
-            view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
+            timerMessage.hide()
         }
         if (!content.cta.isEmpty) {
             val btnSeeAll = view.findViewById<TextView>(R.id.text_see_all_column)
