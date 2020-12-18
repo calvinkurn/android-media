@@ -10,7 +10,6 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
@@ -134,21 +133,7 @@ class QuickEditVariantViewModel @Inject constructor(
         updateVariant(variantId) { it.copy(status = status) }
     }
 
-    fun setTickerList() {
-        _editVariantResult.value?.run {
-            val tickerList = _tickerList.value?.toMutableList()
-
-            if(isAllStockEmpty()) {
-                tickerList?.add(EmptyStockTicker)
-            } else {
-                tickerList?.remove(EmptyStockTicker)
-            }
-
-            _tickerList.value = tickerList
-        }
-    }
-
-    private fun getTickerList() {
+    fun getTickerList() {
         val multiLocationShop = userSession.isMultiLocationShop
         val canEditStock = _productManageAccess.value?.editStock == true
         val hasEmptyStock = _editVariantResult.value?.hasEmptyStock() == true

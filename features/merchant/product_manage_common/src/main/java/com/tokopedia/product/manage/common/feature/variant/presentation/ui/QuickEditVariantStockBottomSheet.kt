@@ -66,7 +66,7 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onStockBtnClicked() {
-        viewModel.setTickerList()
+        viewModel.getTickerList()
     }
 
     override fun onStockChanged(variantId: String, stock: Int) {
