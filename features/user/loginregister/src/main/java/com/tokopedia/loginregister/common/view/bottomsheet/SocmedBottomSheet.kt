@@ -23,7 +23,7 @@ class SocmedBottomSheet(mContext: Context?): BottomSheetUnify() {
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
 
-        setTitle(getString(R.string.choose_social_media))
+        setTitle(context?.getString(R.string.choose_social_media) ?: "")
         setChild(viewBottomSheetDialog)
         return this
     }
