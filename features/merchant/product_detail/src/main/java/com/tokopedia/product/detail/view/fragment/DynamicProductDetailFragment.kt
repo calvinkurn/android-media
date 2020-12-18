@@ -645,9 +645,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val shopCredibilityIndex = dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopCredibility)
 
         if (shopCredibilityIndex != RecyclerView.NO_POSITION) {
-            scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
-        } else {
             scrollToPosition(shopCredibilityIndex)
+        } else {
+            scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
         }
     }
 
