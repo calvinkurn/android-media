@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object ProductManageTickerMapper {
@@ -26,7 +25,7 @@ object ProductManageTickerMapper {
     fun mapToTickerList(
         multiLocationShop: Boolean,
         canEditStock: Boolean,
-        isAllStockEmpty: Boolean
+        hasEmptyStock: Boolean
     ): List<ProductManageTicker> {
         val tickerList = mutableListOf<ProductManageTicker>()
 
@@ -35,6 +34,10 @@ object ProductManageTickerMapper {
             !multiLocationShop && !canEditStock -> SingleLocationNoAccessTicker
             multiLocationShop && !canEditStock -> MultiLocationNoAccessTicker
             else -> NoTicker
+        }
+
+        if (hasEmptyStock) {
+            tickerList.add(EmptyStockTicker)
         }
 
         if(adminTicker.shouldShow()) {

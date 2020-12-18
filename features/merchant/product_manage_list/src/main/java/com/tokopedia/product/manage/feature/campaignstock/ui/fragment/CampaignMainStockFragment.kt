@@ -158,11 +158,11 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         }
     }
 
-    private fun createTickerUiModel(isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
+    private fun createTickerUiModel(hasEmptyStock: Boolean): CampaignStockTickerUiModel {
         val isMultiLocationShop = userSession.isMultiLocationShop
         val canEditStock = access?.editStock == true
 
-        val tickerList = mapToTickerList(isMultiLocationShop, canEditStock, isAllStockEmpty)
+        val tickerList = mapToTickerList(isMultiLocationShop, canEditStock, hasEmptyStock)
         val tickerData = mapToTickerData(context, tickerList)
 
         return CampaignStockTickerUiModel(tickerData)
