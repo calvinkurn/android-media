@@ -67,7 +67,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
-        app:backgroundTint="@color/Yellow_Y400"
+        app:backgroundTint="@color/Unify_Y400"
         app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="33dp"

@@ -1,7 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
-import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.R
@@ -14,6 +14,6 @@ class TalkReadingShimmerViewHolder(view: View) : AbstractViewHolder<LoadingMoreM
     }
 
     override fun bind(element: LoadingMoreModel) {
-        itemView.talkReadingShimmerContainer.setBackgroundColor(Color.WHITE)
+        itemView.talkReadingShimmerContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }
