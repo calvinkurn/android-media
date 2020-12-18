@@ -11,7 +11,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToCampaignStockTickerList
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToReservedStockTickerList
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
@@ -117,7 +117,7 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
 
     private fun createTickerUiModel(): CampaignStockTickerUiModel {
         val isMultiLocationShop = userSession.isMultiLocationShop
-        val tickerList = mapToCampaignStockTickerList(isMultiLocationShop)
+        val tickerList = mapToReservedStockTickerList(isMultiLocationShop)
         val tickerData = mapToTickerData(context, tickerList)
         return CampaignStockTickerUiModel(tickerData)
     }

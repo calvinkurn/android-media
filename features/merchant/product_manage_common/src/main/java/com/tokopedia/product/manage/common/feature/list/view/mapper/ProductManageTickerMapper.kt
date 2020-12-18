@@ -48,7 +48,7 @@ object ProductManageTickerMapper {
         return tickerList
     }
 
-    fun mapToCampaignStockTickerList(multiLocationShop: Boolean): List<ProductManageTicker> {
+    fun mapToReservedStockTickerList(multiLocationShop: Boolean): List<ProductManageTicker> {
         val tickerList = mutableListOf<ProductManageTicker>()
 
         if(multiLocationShop) {
