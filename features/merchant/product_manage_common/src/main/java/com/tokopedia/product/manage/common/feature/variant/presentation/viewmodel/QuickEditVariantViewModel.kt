@@ -151,8 +151,8 @@ class QuickEditVariantViewModel @Inject constructor(
     private fun getTickerList() {
         val multiLocationShop = userSession.isMultiLocationShop
         val canEditStock = _productManageAccess.value?.editStock == true
-        val isAllStockEmpty = _editVariantResult.value?.isAllStockEmpty() == true
-        _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, isAllStockEmpty)
+        val hasEmptyStock = _editVariantResult.value?.hasEmptyStock() == true
+        _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, hasEmptyStock)
     }
 
     private fun setEmptyTicker() {
