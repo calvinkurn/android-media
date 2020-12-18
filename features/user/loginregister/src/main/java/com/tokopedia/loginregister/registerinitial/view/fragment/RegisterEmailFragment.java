@@ -69,6 +69,10 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY;
+
 /**
  * @author by nisie on 10/25/18.
  */
@@ -85,9 +89,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     String TERM_CONDITION = "Syarat dan Ketentuan";
     String PRIVACY_POLICY = "Kebijakan Privasi";
-
-    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
-    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     private static final String ALREADY_REGISTERED = "sudah terdaftar";
 
@@ -206,8 +207,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             public void onClick(@NonNull View textView) {
                 registerAnalytics.trackClickTermConditionButton();
                 if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(TERM_CONDITION_URL));
+                    Intent intent = RouteManager.getIntent(getActivity(), TERM_PRIVACY, PAGE_TERM_AND_CONDITION);
                     getActivity().startActivity(intent);
                 }
             }
@@ -224,8 +224,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             public void onClick(@NonNull View textView) {
                 registerAnalytics.trackClickPrivacyPolicyButton();
                 if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(PRIVACY_POLICY_URL));
+                    Intent intent = RouteManager.getIntent(getActivity(), TERM_PRIVACY, PAGE_PRIVACY_POLICY);
                     getActivity().startActivity(intent);
                 }
             }
@@ -592,16 +591,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             );
             startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
         }
-    }
-
-    public void goToAutomaticLogin() {
-        Intent intentLogin = LoginActivity.DeepLinkIntents.getAutomaticLogin(
-                getActivity(),
-                wrapperEmail.getTextFieldInput().getText().toString(),
-                wrapperPassword.getTextFieldInput().getText().toString(),
-                source
-        );
-        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
     }
 
     public void dropKeyboard() {

@@ -33,6 +33,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.dialog.DialogUnify
@@ -45,14 +46,13 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
-import com.tokopedia.loginregister.common.data.DynamicBannerConstant
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -62,7 +62,7 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailAc
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -75,6 +75,7 @@ import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -104,7 +105,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var container: ScrollView
     private lateinit var progressBar: RelativeLayout
     private lateinit var tickerAnnouncement: Ticker
-    private lateinit var bannerRegister: ImageView
+    private lateinit var bannerRegister: ImageUnify
     private lateinit var socmedButton: UnifyButton
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -1029,14 +1030,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             activity?.runOnUiThread {
                 val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.email_already_registered))
-                dialog.setDescription(
-                        String.format(resources.getString(
+                dialog.setDescription(String.format(resources.getString(
                                 R.string.email_already_registered_info), email))
                 dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
                 dialog.setPrimaryCTAClickListener {
                     registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                     dialog.dismiss()
-                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, email, "", source)
+                    startActivity(intent)
                     it.finish()
                 }
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
