@@ -1127,14 +1127,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         resetProductList()
         disableMultiSelect()
 
-//        getFiltersTab(withDelay = true)
-//        getProductList(withDelay = true)
-
-        getProductManageAccess()
-
         hideNoAccessPage()
         hideErrorPage()
         hideStockTicker()
+
+        getProductManageAccess()
     }
 
     private fun clearFilterAndKeywordIfEmpty() {
