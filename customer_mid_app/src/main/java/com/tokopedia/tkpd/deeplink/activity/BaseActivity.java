@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.tkpd.deeplink.activity;
 
 
 import android.content.Intent;
@@ -20,10 +20,10 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.DialogForceLogout;
-import com.tokopedia.core.util.ErrorNetworkReceiver;
-import com.tokopedia.core2.R;
+import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

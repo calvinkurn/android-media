@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.sellerapp.deeplink;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -267,6 +267,7 @@ android {
 dependencies {
 
     implementation project(rootProject.ext.features.customer_mid_app)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.deviceInfo)
