@@ -133,13 +133,14 @@ class FlightSearchActivityTest {
 
     @Test
     fun validateFlightSearchPageP1Tracking() {
+        Thread.sleep(3000)
+
         try {
             onView(withId(R.id.text_next)).check(matches(isDisplayed())).perform(click())
         } catch (e: NoMatchingViewException) { }
 
         assert(getJourneyItemCount() > 1)
 
-        Thread.sleep(1000)
         if (getJourneyItemCount() > 0) {
             onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
