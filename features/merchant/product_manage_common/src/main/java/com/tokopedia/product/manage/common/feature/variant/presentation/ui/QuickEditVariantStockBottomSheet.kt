@@ -11,7 +11,6 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.common.feature.variant.adapter.factory.ProductVariantStockAdapterFactoryImpl
-import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -41,14 +40,8 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
         observeViewState()
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun initView() {
-        val emptyTicker = ProductVariantTicker(listOf())
-        variantStockAdapter.addElement(emptyTicker)
     }
 
     override fun getTitle(): String {
