@@ -35,7 +35,7 @@
             android:paddingTop="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
             app:typographyType="heading_5"
-            android:textColor="@color/Neutral_N700_96"/>
+            android:textColor="@color/Unify_N700_96"/>
 
         <LinearLayout
             android:id="@+id/telco_enquiry_result"
