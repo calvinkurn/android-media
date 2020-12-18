@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_PHONE
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
@@ -73,11 +76,19 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
     private fun getBundleFromData(): Bundle {
         val bundle = Bundle()
         intent?.data?.let {
-            val method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()
+            var method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()
             val phone = it.getQueryParameter(PARAM_PHONE).orEmpty()
             val email = it.getQueryParameter(PARAM_EMAIL).orEmpty()
             val password = it.getQueryParameter(PARAM_PASSWORD).orEmpty()
             val source = it.getQueryParameter(PARAM_SOURCE).orEmpty()
+
+            if (method.isEmpty()) {
+                if (email.isNotEmpty()) {
+                    method = METHOD_LOGIN_EMAIL
+                } else if (phone.isNotEmpty()) {
+                    method = METHOD_LOGIN_PHONE
+                }
+            }
 
             bundle.putString(PARAM_LOGIN_METHOD, method)
             bundle.putString(PARAM_PHONE, phone)
