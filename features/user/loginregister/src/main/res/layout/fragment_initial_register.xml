@@ -36,7 +36,7 @@
                 android:scaleType="fitCenter"
                 android:visibility="gone" />
 
-            <com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+            <com.tokopedia.loginregister.common.view.PartialRegisterInputView
                 android:id="@+id/register_input_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
