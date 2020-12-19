@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -85,6 +86,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication implements
+        TkpdCoreRouter,
         TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
@@ -434,4 +436,32 @@ public abstract class SellerRouterApplication extends MainApplication implements
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
+    }
 }

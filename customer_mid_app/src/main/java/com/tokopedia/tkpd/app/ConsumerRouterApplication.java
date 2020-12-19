@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
@@ -115,6 +116,7 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
  * @author normansyahputa on 12/15/16.
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
+        TkpdCoreRouter,
         ReactApplication,
         AbstractionRouter,
         ApplinkRouter,
@@ -595,5 +597,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
+    }
+
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
     }
 }
