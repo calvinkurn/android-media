@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.specification.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +19,11 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
-import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_add_edit_product_specification.*
@@ -97,7 +99,8 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
 
     private fun observeAnnotationCategoryData() {
         viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer {
-            setupSpecificationAdapter(it)
+            val itemSelected = viewModel.getItemSelected(it)
+            setupSpecificationAdapter(it, itemSelected)
         })
     }
 
@@ -116,11 +119,11 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>) {
+    private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>, itemSelected: List<SpecificationInputModel>) {
         specificationValueAdapter = SpecificationValueAdapter(fragmentManager)
         rvSpecification.adapter = specificationValueAdapter
         setRecyclerViewToVertical(rvSpecification)
-        specificationValueAdapter?.setData(annotationCategoryData)
+        specificationValueAdapter?.setData(annotationCategoryData, itemSelected)
     }
 
     private fun setupSubmitButton() {
@@ -129,13 +132,21 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
                 val specificationList = specificationValueAdapter?.getDataSelectedList()
                 viewModel.updateProductInputModelSpecifications(specificationList.orEmpty())
             }
+
+            viewModel.productInputModel.value?.apply {
+                val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID).orEmpty()
+                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+                val intent = Intent().putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                activity?.setResult(Activity.RESULT_OK, intent)
+            }
+            activity?.finish()
         }
     }
 
     private fun setRecyclerViewToVertical(recyclerView: RecyclerView) {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }
     }
 }

@@ -69,6 +69,20 @@
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_category_layout" />
 
         <include
+            android:id="@+id/add_edit_product_specification_layout"
+            layout="@layout/add_edit_product_specification_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_catalog_layout" />
+
+        <include
             android:id="@+id/add_edit_product_price_layout"
             layout="@layout/add_edit_product_price_layout"
             android:layout_width="match_parent"
@@ -80,7 +94,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_catalog_layout" />
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_specification_layout" />
 
         <include
             android:id="@+id/add_edit_product_wholesale_layout"

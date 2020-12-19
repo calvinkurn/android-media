@@ -311,9 +311,14 @@
     <!-- Spec -->
     <string name="title_specification_activity">Spesifikasi</string>
     <string name="title_specification_activity_action">Hapus Semua</string>
-    <string name="action_specification_save">Simpan</string>
     <string name="title_specification_bottom_sheet">Jenis</string>
     <string name="label_specification_search">Cari jenis</string>
+    <string name="label_product_specification">Spesifikasi</string>
+    <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
+    <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
+    <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_add">Tambah</string>
+    <string name="action_specification_refresh">Muat Ulang</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

@@ -86,7 +86,6 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
-import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -157,6 +156,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
     private var categoryAlertDialog: DialogUnify? = null
+
+    // product specification
+    private var productSpecificationView: Typography? = null
+    private var addProductSpecificationButton: Typography? = null
+    private var productSpecificationReloadLayout: View? = null
+    private var productSpecificationReloadButton: Typography? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -319,6 +324,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        // add product specification button
+        productSpecificationView = view.findViewById(R.id.tv_product_specification)
+        addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
+        productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
+        productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
@@ -629,6 +640,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        setupSpecificationField()
         enableProductNameField()
         onFragmentResult()
         setupBackPressed()
@@ -649,8 +661,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
 
-        showSpecificationPicker()
+    private fun setupSpecificationField() {
+        addProductSpecificationButton?.setOnClickListener {
+            showSpecificationPicker()
+        }
     }
 
     override fun onDestroyView() {
@@ -849,6 +865,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // display the show case names with comma separator
                         displayProductShowCaseNames(selectedShowcaseList.map { it.showcaseName })
                     } else displayProductShowCaseTips()
+                }
+                REQUEST_CODE_SPECIFICATION -> {
+                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                    val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
+                    saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
+                            ProductInputModel::class.java, viewModel.productInputModel)?.apply {
+                        viewModel.productInputModel = this
+                    }
                 }
             }
         }
@@ -1357,8 +1382,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun showSpecificationPicker(){
         context?.run {
+            val productInputModel = viewModel.productInputModel
+            productInputModel.detailInputModel.apply {
+                if (productCategoryId.isNotBlank()) categoryId = productCategoryId
+                if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+            }
+
             val cacheManager = SaveInstanceCacheManager(this, true)
-            cacheManager.put(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+            cacheManager.put(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
 
             val intent = AddEditProductSpecificationActivity.createInstance(this, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_SPECIFICATION)

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +28,10 @@ class AddEditProductSpecificationViewModel @Inject constructor(
     private val mErrorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = mErrorMessage
 
+    fun setProductInputModel(productInputModel: ProductInputModel?) {
+        mProductInputModel.value = productInputModel
+    }
+
     fun getSpecifications(categoryId: String) {
         launchCatchError(block = {
             val result = Success(withContext(dispatcher.io) {
@@ -39,8 +44,24 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         })
     }
 
-    fun setProductInputModel(productInputModel: ProductInputModel?) {
-        mProductInputModel.value = productInputModel
+    fun getItemSelected(annotationCategoryList: List<AnnotationCategoryData>) = annotationCategoryList.map { annotationCategoryData ->
+        val productInputModel = mProductInputModel.value
+        var valueResult: Values? = null
+
+        if (productInputModel != null) {
+            val specificationList = productInputModel.detailInputModel.specifications
+            valueResult = annotationCategoryData.data.firstOrNull { value ->
+                specificationList.any { id -> id == value.id.toString() }
+            }
+        }
+
+        return@map if (valueResult != null) {
+            SpecificationInputModel(
+                    id = valueResult.id.toString(),
+                    data = valueResult.name)
+        } else {
+            SpecificationInputModel()
+        }
     }
 
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
