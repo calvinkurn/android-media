@@ -22,7 +22,7 @@ class CustomToast {
 
         fun show(activityContext: Context,
                  @NonNull text: String,
-                 duration: Int = Toast.LENGTH_LONG,
+                 duration: Int = Toast.LENGTH_SHORT,
                  bg: Int = R.drawable.tp_toast_bg
         ) {
             val leftPadding = dpToPx(activityContext, 20).toInt()

@@ -73,6 +73,9 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
                     countDownView?.visibility = View.GONE
                 }
             }
+            countDownView?.onTick = {
+                content.layoutCatalogAttr.countdownInfo?.countdownUnix = it / 1000
+            }
             view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
             countDownView?.hide()

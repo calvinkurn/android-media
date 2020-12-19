@@ -57,12 +57,12 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
     }
 
     inner class TimerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var timerUnifySingle: TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
+        var timerUnifySingle : TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
 
-        fun onDetach() {
-            if (timerUnifySingle.timer != null) {
-                timerUnifySingle.timer?.cancel()
-                timerUnifySingle.timer = null
+        fun onDetach(){
+            if (timerUnifySingle.timer!=null){
+                timerUnifySingle?.timer?.cancel()
+                timerUnifySingle.timer=null
             }
         }
     }
@@ -169,7 +169,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         if (holder.timerUnifySingle.timer != null) {
             holder.timerUnifySingle.timer!!.cancel()
         }
-        val timerValue = countDownInfo.countdownUnix
+        var timerValue = countDownInfo.countdownUnix
         val timerFlagType = countDownInfo.backgroundColor
         if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_MAIN
@@ -196,6 +196,9 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         holder.timerUnifySingle.apply {
             onFinish = {
                 holder.timerUnifySingle.hide()
+            }
+            onTick = {
+                countDownInfo.countdownUnix = it / 1000
             }
         }
     }
@@ -285,6 +288,13 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         }
     }
 
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is TimerViewHolder){
+            holder.onDetach()
+        }
+    }
 
     companion object {
         const val VIEW_TYPE_TIMER = 0
