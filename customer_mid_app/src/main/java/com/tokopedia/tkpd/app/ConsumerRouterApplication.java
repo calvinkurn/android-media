@@ -282,11 +282,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSplashScreenIntent(Context context) {
-        return new Intent(context, ConsumerSplashScreen.class);
-    }
-
-    @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
     }
@@ -358,7 +353,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
+        Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

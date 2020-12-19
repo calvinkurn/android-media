@@ -19,13 +19,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -196,7 +196,7 @@ public class BaseActivity extends AppCompatActivity implements
                     @Override
                     public void onDialogClicked() {
                         onLogout();
-                        Intent intent = ((TkpdCoreRouter) getApplicationContext()).getSplashScreenIntent(getBaseContext());
+                        Intent intent = new Intent(BaseActivity.this, SplashScreenActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }

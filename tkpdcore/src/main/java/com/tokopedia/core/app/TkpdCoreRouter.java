@@ -13,6 +13,4 @@ import com.tokopedia.core.base.di.component.AppComponent;
 public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
-
-    Intent getSplashScreenIntent(Context context);
 }

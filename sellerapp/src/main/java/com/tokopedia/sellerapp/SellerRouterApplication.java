@@ -232,12 +232,6 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
-    @NonNull
-    @Override
-    public Intent getSplashScreenIntent(@NonNull Context context) {
-        return new Intent(context, SplashScreenActivity.class);
-    }
-
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
@@ -246,9 +240,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = getSplashScreenIntent(this);
+        Intent intent = new Intent(activity, SplashScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    private void forceLogout() {
+        PasswordGenerator.clearTokenStorage(context);
+        TrackApp.getInstance().getMoEngage().logoutEvent();
+        UserSessionInterface userSession = new UserSession(context);
+        userSession.logoutSession();
     }
 
     @Override
