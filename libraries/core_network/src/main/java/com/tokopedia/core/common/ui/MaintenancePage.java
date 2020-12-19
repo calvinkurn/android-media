@@ -1,20 +1,20 @@
-package com.tokopedia.core;
+package com.tokopedia.core.common.ui;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.network.R;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core2.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +23,12 @@ import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-
+/**
+ * This class need to be validated
+ */
+@Deprecated
 public class MaintenancePage extends Activity {
 
     private static String IS_NETWORK = "is_network";
@@ -36,6 +40,7 @@ public class MaintenancePage extends Activity {
         Intent intent = new Intent(context, MaintenancePage.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(IS_NETWORK, true);
+        Timber.w("P1#MAINTENANCE_PAGE#createIntentFromNetwork;data=''");
         return intent;
     }
 
@@ -44,6 +49,7 @@ public class MaintenancePage extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(IS_NETWORK, false);
         intent.putExtra("message", getMessage(context));
+        Timber.w("P1#MAINTENANCE_PAGE#createIntent;data=''");
         return intent;
     }
 
@@ -61,11 +67,9 @@ public class MaintenancePage extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_page);
-
         initVar();
         initView();
-
-
+        Timber.w("P1#MAINTENANCE_PAGE#onCreateShow;data=''");
     }
 
     private void initVar() {
@@ -87,6 +91,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void checkServerMaintenanceStatus() {
+        Timber.w("P1#MAINTENANCE_PAGE#checkServerMaintenanceStatusLoad;data=''");
         Map<String, String> param = new HashMap<>();
         new HotListService().getApi().getHotList(AuthUtil.generateParams(this, param))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,8 +109,12 @@ public class MaintenancePage extends Activity {
 
                     @Override
                     public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                        Log.i("NETWORK RICO", "dapet respon nehe: " + tkpdResponseResponse.body().getStatus());
-                        if (tkpdResponseResponse.body().getStatus().equals(UNDER_MAINTENANCE)) {
+                        String status = "";
+                        if (tkpdResponseResponse.body() != null) {
+                            status = tkpdResponseResponse.body().getStatus();
+                        }
+                        Timber.w("P1#MAINTENANCE_PAGE#checkServerMaintenanceStatusResult;data='"+status+"'");
+                        if (status.equals(UNDER_MAINTENANCE)) {
                             hideProgressBar();
                         } else {
                             setMaintenanceDone();

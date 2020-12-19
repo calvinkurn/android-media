@@ -14,7 +14,5 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    void onLogout(AppComponent appComponent);
-
     Intent getSplashScreenIntent(Context context);
 }

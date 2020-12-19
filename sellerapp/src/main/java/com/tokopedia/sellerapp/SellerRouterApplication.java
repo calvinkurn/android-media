@@ -22,7 +22,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -30,6 +30,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -77,7 +78,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -232,20 +232,6 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
-    @Override
-    public void onLogout(AppComponent appComponent) {
-        forceLogout();
-        new CacheApiClearAllUseCase(this).executeSync();
-        setTetraUserId("");
-    }
-
-    private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
-        TrackApp.getInstance().getMoEngage().logoutEvent();
-        UserSessionInterface userSession = new UserSession(context);
-        userSession.logoutSession();
-    }
-
     @NonNull
     @Override
     public Intent getSplashScreenIntent(@NonNull Context context) {
@@ -272,7 +258,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
+        CoreNetworkApplication.getAppContext().startActivity(MaintenancePage.createIntentFromNetwork(getAppContext()));
     }
 
     @Override

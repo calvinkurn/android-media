@@ -88,7 +88,7 @@
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity" />
         <activity
-            android:name="com.tokopedia.core.MaintenancePage"
+            android:name="com.tokopedia.core.common.ui.MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
             android:screenOrientation="portrait" />
 

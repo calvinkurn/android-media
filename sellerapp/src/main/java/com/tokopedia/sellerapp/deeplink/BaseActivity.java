@@ -16,8 +16,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -193,10 +195,7 @@ public class BaseActivity extends AppCompatActivity implements
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        try {
-                            ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
-                        } catch (Exception ex) {
-                        }
+                        onLogout();
                         Intent intent = ((TkpdCoreRouter) getApplicationContext()).getSplashScreenIntent(getBaseContext());
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -227,5 +226,18 @@ public class BaseActivity extends AppCompatActivity implements
 
     public BaseAppComponent getBaseAppComponent() {
         return ((MainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    public void onLogout() {
+        ((AbstractionRouter) getApplication()).onForceLogout(this);
+        new CacheApiClearAllUseCase(this).executeSync();
+        setTetraUserId("");
+    }
+
+    private void setTetraUserId(String userId) {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            TetraDebugger tetraDebugger = TetraDebugger.Companion.instance(this);
+            tetraDebugger.setUserId(userId);
+        }
     }
 }

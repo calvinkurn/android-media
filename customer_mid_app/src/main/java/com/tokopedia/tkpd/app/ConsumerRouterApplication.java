@@ -30,7 +30,7 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -39,6 +39,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -316,15 +317,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
-    @Override
-    public void onLogout(AppComponent appComponent) {
-
-        forceLogout();
-
-        PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase(this).executeSync();
-    }
-
     private void forceLogout() {
         PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
@@ -378,7 +370,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
+        CoreNetworkApplication.getAppContext().startActivity(MaintenancePage.createIntentFromNetwork(getAppContext()));
     }
 
     @Override
