@@ -13,6 +13,7 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -21,7 +22,6 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -53,7 +53,6 @@ import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -269,12 +268,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
                 if (isTaskRoot()) {
                     TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-                    if (getApplicationContext() instanceof TkpdCoreRouter) {
-                        taskStackBuilder.addNextIntent(
-                                ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
-                        );
-                        getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    }
+                    taskStackBuilder.addNextIntent(
+                            RouteManager.getIntent(this, ApplinkConst.HOME)
+                    );
+                    getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     taskStackBuilder.addNextIntent(nextIntent);
                     taskStackBuilder.startActivities();
                 } else {

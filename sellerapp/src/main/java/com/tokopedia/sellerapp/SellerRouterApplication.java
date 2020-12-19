@@ -18,14 +18,11 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -87,8 +84,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by normansyahputa on 12/15/16.
  */
 
-public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, TopAdsModuleRouter,
+public abstract class SellerRouterApplication extends MainApplication implements
+        TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,

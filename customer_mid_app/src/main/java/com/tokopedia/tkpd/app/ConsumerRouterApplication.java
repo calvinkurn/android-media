@@ -25,16 +25,12 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.common_digital.common.constant.DigitalCache;
-import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -119,7 +115,6 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
  * @author normansyahputa on 12/15/16.
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter,
         ReactApplication,
         AbstractionRouter,
         ApplinkRouter,
@@ -276,7 +271,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToHome(Context context) {
-        Intent intent = getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
