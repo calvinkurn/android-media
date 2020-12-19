@@ -52,7 +52,7 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         if (emptyStateModel.isFilterState) {
             verticalButton.show()
             verticalButton.setOnClickListener {
-                emptyStateViewModel.resetChildComponents()
+                emptyStateViewModel.handleEmptyStateReset()
             }
         }
     }
@@ -60,7 +60,7 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            emptyStateViewModel.needReSyncLiveData.observe(lifecycle, {
+            emptyStateViewModel.getSyncPageLiveData().observe(lifecycle, {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
         }
