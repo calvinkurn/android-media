@@ -20,6 +20,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +35,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -63,10 +64,11 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
+class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
     @Inject
     lateinit var verificationPref: VerificationPref
 
@@ -111,7 +113,9 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     }
 
     override val viewBound = VerificationViewBinding()
-
+  
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+  
     private val permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun getScreenName() = when (otpData.otpType) {
@@ -554,7 +558,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -575,7 +579,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -594,7 +598,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -613,7 +617,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },

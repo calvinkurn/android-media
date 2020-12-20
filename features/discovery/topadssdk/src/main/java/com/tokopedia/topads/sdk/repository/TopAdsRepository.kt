@@ -52,6 +52,7 @@ class TopAdsRepository {
             with(model) {
                 bannerId = data?.id.toString()
                 bannerName = data?.banner?.name ?: ""
+                position = data?.banner?.position ?: 0
                 adClickUrl = data?.adClickUrl ?: ""
                 adViewUrl = data?.adViewUrl ?: ""
                 applink = data?.applinks ?: ""
