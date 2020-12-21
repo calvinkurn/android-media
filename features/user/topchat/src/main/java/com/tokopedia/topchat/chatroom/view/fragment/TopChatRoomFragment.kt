@@ -37,8 +37,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -58,6 +58,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -317,7 +318,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun onErrorGetTopChat(throwable: Throwable) {
@@ -334,7 +335,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateNewUnreadMessageState(chat: ChatReplies) {
@@ -491,7 +492,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
