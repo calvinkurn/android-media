@@ -4,36 +4,46 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import com.tokopedia.notifications.common.CMConstant
+import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.*
 
 class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
                                  val pushIntentHandler: PushIntentHandler,
                                  val callback: ShowInAppCallback,
-                                 val dialogVisibilityContract: CmDialogVisibilityContract) {//todo chane nanme
+                                 val dialogVisibilityContract: CmDialogVisibilityContract) {
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
 
     fun onNewIntent(activity: Activity, intent: Intent?) {
-        checkApplication(activity)
-        updateCurrentActivity(activity)
-        if (intent != null && intent.extras != null) {
-            pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
+        try {
+            checkApplication(activity)
+            updateCurrentActivity(activity)
+            if (intent != null && intent.extras != null) {
+                pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
+            }
+        } catch (t: Throwable) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
     }
 
     fun onActivityCreatedInternalForPush(activity: Activity) {
-        checkApplication(activity)
-        updateCurrentActivity(activity)
+        try {
+            checkApplication(activity)
+            updateCurrentActivity(activity)
 
-        //only push flow
-        var finalBundle: Bundle? = null
-        val intent = activity.intent
-        if (intent != null) {
-            finalBundle = intent.extras
+            //only push flow
+            var finalBundle: Bundle? = null
+            val intent = activity.intent
+            if (intent != null) {
+                finalBundle = intent.extras
+            }
+            pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
+        } catch (t: Throwable) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
-        pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
     }
 
     fun onActivityStartedInternal(activity: Activity) {

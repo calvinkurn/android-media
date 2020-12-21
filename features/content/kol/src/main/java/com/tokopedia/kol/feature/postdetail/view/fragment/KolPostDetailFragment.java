@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
@@ -281,7 +282,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (!postDetailViewModel.getDynamicPostViewModel().getPostList().isEmpty()) {
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
-            presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+            if(!GlobalConfig.isSellerApp()) {
+                presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+            }
 
             if (isOwner()) {
                 presenter.getWhitelist();

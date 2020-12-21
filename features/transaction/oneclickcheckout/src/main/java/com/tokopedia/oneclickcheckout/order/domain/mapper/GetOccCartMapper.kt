@@ -7,6 +7,8 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
@@ -25,6 +27,7 @@ class GetOccCartMapper @Inject constructor() {
             product = generateOrderProduct(cart.product).apply {
                 quantity = mapQuantity(data)
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
+                purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
             shop = generateOrderShop(cart.shop).apply {
                 errors = cart.errors
@@ -39,7 +42,8 @@ class GetOccCartMapper @Inject constructor() {
                 mapProfile(data.profileResponse),
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
-                mapPrompt(data.prompt))
+                mapPrompt(data.prompt),
+                mapOccRevamp(data.revamp))
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -161,6 +165,23 @@ class GetOccCartMapper @Inject constructor() {
         return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
     }
 
+    private fun mapPurchaseProtectionPlanData(purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
+        return PurchaseProtectionPlanData(
+                isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,
+                protectionTypeId = purchaseProtectionPlanDataResponse.protectionTypeId,
+                protectionPricePerProduct = purchaseProtectionPlanDataResponse.protectionPricePerProduct,
+                protectionPrice = purchaseProtectionPlanDataResponse.protectionPrice,
+                protectionTitle = purchaseProtectionPlanDataResponse.protectionTitle,
+                protectionSubtitle = purchaseProtectionPlanDataResponse.protectionSubtitle,
+                protectionLinkText = purchaseProtectionPlanDataResponse.protectionLinkText,
+                protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
+                isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
+                isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled,
+                unit = purchaseProtectionPlanDataResponse.unit,
+                source = purchaseProtectionPlanDataResponse.source
+        )
+    }
+
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
         return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
                 profileResponse.profileId, profileResponse.status, profileResponse.enable,
@@ -169,7 +190,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
-        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration)
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationServiceId, shipment.recommendationSpId, shipment.isFreeShippingSelected)
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
@@ -182,13 +203,19 @@ class GetOccCartMapper @Inject constructor() {
         val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
+                mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
         return OrderPaymentErrorMessage(errorMessage.message,
                 OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
+        )
+    }
+
+    private fun mapPaymentRevampErrorMessage(errorMessage: PaymentRevampErrorMessage): OrderPaymentRevampErrorMessage {
+        return OrderPaymentRevampErrorMessage(errorMessage.message,
+                OrderPaymentRevampErrorMessageButton(errorMessage.button.text, errorMessage.button.action)
         )
     }
 
@@ -258,5 +285,9 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
+    }
+
+    private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
+        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }

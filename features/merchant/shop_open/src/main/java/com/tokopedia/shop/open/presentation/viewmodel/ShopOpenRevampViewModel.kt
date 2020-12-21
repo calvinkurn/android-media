@@ -8,6 +8,8 @@ import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameRes
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.usecase.coroutines.Fail

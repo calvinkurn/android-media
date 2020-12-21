@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
-import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -240,7 +239,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
                                 hasAddToCartButton = recommendation.grid.hasBuyButton,
-                                isTopAds = recommendation.isTopAds
+                                isTopAds = recommendation.isTopAds,
+                                isOutOfStock = recommendation.grid.isOutOfStock,
+                                ratingCount = recommendation.grid.rating,
+                                reviewCount = recommendation.grid.countReview,
+                                countSoldRating = recommendation.grid.ratingFloat
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)

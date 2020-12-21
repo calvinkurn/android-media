@@ -57,7 +57,7 @@
         android:ellipsize="end"
         android:gravity="start"
         android:maxLines="1"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
         app:layout_constraintTop_toBottomOf="@+id/tv_status"

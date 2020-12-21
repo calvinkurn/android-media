@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.util
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
@@ -8,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.View.LAYER_TYPE_SOFTWARE
@@ -97,4 +99,9 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
     } catch (e: Exception) {
 
     }
+}
+
+fun convertDpToPixel(dp: Float, context: Context): Int {
+    val r = context.resources
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
 }
