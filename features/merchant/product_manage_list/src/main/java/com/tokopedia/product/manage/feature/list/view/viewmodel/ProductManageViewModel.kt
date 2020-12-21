@@ -158,8 +158,8 @@ class ProductManageViewModel @Inject constructor(
 
                 val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
                 val shopDomain = shopInfo.shopCore.domain
-                val isGoldMerchant  = shopInfo.goldOS.isGold == 1
-                val isOfficialStore= shopInfo.goldOS.isOfficial == 1
+                val isGoldMerchant = shopInfo.goldOS.isGold == 1
+                val isOfficialStore = shopInfo.goldOS.isOfficial == 1
 
                 ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
             }
@@ -297,9 +297,13 @@ class ProductManageViewModel @Inject constructor(
     fun getProductManageAccess() {
         launchCatchError(block = {
             val access = withContext(dispatchers.io) {
-                val shopId = userSessionInterface.shopId
-                val response = getProductManageAccessUseCase.execute(shopId)
-                ProductManageAccessMapper.mapToProductManageAccess(response)
+                if(userSessionInterface.isShopOwner) {
+                    ProductManageAccessMapper.mapProductManageOwnerAccess()
+                } else {
+                    val shopId = userSessionInterface.shopId
+                    val response = getProductManageAccessUseCase.execute(shopId)
+                    ProductManageAccessMapper.mapToProductManageAccess(response)
+                }
             }
 
             _productManageAccess.value = Success(access)

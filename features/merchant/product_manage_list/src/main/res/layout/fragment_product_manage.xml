@@ -167,15 +167,6 @@
         tools:visibility="gone" />
 
     <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/noAccessPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
-        android:visibility="gone"
-        app:globalerrors_type="PAGE_NOT_FOUND"/>
-
-    <com.tokopedia.globalerror.GlobalError
         android:id="@+id/errorPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -183,6 +174,15 @@
         android:gravity="center"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/noAccessPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_NOT_FOUND"/>
 
     <FrameLayout
         android:id="@+id/interceptor"

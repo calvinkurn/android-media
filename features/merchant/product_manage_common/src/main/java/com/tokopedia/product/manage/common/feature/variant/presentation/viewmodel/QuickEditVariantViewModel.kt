@@ -10,7 +10,6 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
@@ -59,13 +58,14 @@ class QuickEditVariantViewModel @Inject constructor(
     fun getData(productId: String) {
         hideErrorView()
         showProgressBar()
-        getTickerList()
+        setEmptyTicker()
 
         launchCatchError(block = {
             val access = getProductManageAccess()
             _productManageAccess.value = access
             getProductVariants(productId, access)
         }) {
+            setEmptyTicker()
             hideProgressBar()
             showErrorView()
         }
@@ -90,11 +90,13 @@ class QuickEditVariantViewModel @Inject constructor(
                 setEditVariantResult(productId, result)
                 getTickerList()
             } else {
+                setEmptyTicker()
                 showErrorView()
             }
 
             hideProgressBar()
         }) {
+            setEmptyTicker()
             hideProgressBar()
             showErrorView()
         }
@@ -131,26 +133,15 @@ class QuickEditVariantViewModel @Inject constructor(
         updateVariant(variantId) { it.copy(status = status) }
     }
 
-    fun setTickerList() {
-        _editVariantResult.value?.run {
-            val tickerList = _tickerList.value?.toMutableList()
-            val isAllStockEmpty = isAllStockEmpty()
-
-            if(isAllStockEmpty) {
-                tickerList?.add(EmptyStockTicker)
-            } else {
-                tickerList?.remove(EmptyStockTicker)
-            }
-
-            _tickerList.value = tickerList
-        }
-    }
-
-    private fun getTickerList() {
+    fun getTickerList() {
         val multiLocationShop = userSession.isMultiLocationShop
         val canEditStock = _productManageAccess.value?.editStock == true
         val isAllStockEmpty = _editVariantResult.value?.isAllStockEmpty() == true
         _tickerList.value = mapToTickerList(multiLocationShop, canEditStock, isAllStockEmpty)
+    }
+
+    private fun setEmptyTicker() {
+        _tickerList.value = emptyList()
     }
 
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {

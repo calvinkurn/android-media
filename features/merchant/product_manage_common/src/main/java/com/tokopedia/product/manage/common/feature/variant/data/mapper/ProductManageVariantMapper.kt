@@ -33,7 +33,6 @@ object ProductManageVariantMapper {
                 it.sku,
                 it.stock,
                 it.pictures,
-                response.isAllStockEmpty(),
                 access
             )
         }
