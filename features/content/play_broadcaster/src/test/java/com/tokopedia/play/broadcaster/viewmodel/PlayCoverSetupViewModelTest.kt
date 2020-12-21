@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
 import com.tokopedia.play.broadcaster.model.ModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockImageTransformer
@@ -47,7 +47,7 @@ class PlayCoverSetupViewModelTest {
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var coverConfigStore: CoverConfigStore
 
-    private val uploadImageUseCase: UploadImageToRemoteUseCase = mockk(relaxed = true)
+    private val uploadImageUseCase: UploadImageToRemoteV2UseCase = mockk(relaxed = true)
     private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase = mockk(relaxed = true)
 
     private lateinit var mockSetupDataStore: MockSetupDataStore
