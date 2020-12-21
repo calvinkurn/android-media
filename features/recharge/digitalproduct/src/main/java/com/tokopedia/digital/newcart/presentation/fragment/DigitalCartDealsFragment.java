@@ -178,8 +178,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderGetCategoriesError(String message) {
-        Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{}).show();
     }
 
     @Override
@@ -229,8 +229,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderErrorInRedSnackbar(int resId) {
-        Toaster.make(getView(), getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        Toaster.build(getView(), getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{}).show();
     }
 
     @Override

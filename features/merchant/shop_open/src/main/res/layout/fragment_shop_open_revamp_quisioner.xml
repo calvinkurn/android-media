@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -39,7 +39,7 @@
                 android:textSize="14sp"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_centerVertical="true"
-                android:textColor="#03ac0e"
+                android:textColor="@color/Unify_G500"
                 android:lineSpacingExtra="6sp"
                 android:gravity="end"
                 android:text="Lewati" />

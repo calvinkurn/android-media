@@ -45,7 +45,16 @@ public class DrawerNotification {
         }
 
         public String getNewLineTitle() {
-            return title.replace(" ", "\n");
+            String[] split = title.split(" ");
+            if (split.length > 2) {
+                String partTitle = split[1];
+                int startSubstr = title.indexOf(partTitle);
+                int endSubstr = partTitle.length()+1;
+                String replacee = title.substring(startSubstr, startSubstr+endSubstr);
+                return title.replace(replacee, "\n");
+            } else {
+                return title.replace(" ", "\n");
+            }
         }
 
         public void setTitle(String title) {

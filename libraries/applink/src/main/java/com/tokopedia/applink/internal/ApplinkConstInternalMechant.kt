@@ -32,6 +32,9 @@ object ApplinkConstInternalMechant {
     @JvmField
     val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}/open-product-preview"
 
+    @JvmField
+    val MERCHANT_PRODUCT_DRAFT = "${INTERNAL_MERCHANT}/product-draft"
+
     // Official Store Brandlist
     @JvmField
     val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"

@@ -9,6 +9,7 @@ ext {
             developerOptions                : ":features:common:developer_options",
             developerOptionsNoop            : ":features:common:developer_options_noop",
             nps                             : ":features:common:nps",
+            feedbackForm                    : ":features:common:feedback_form",
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
@@ -21,6 +22,7 @@ ext {
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
+            categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
 
@@ -50,6 +52,7 @@ ext {
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
+            rechargeComponent               : ":features:recharge:recharge_component",
             smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
 
@@ -190,6 +193,7 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsHeadline                  : ":features:top_ads:top_ads_headline",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -242,6 +246,7 @@ ext {
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
-            logintestapp                    : ":testapp-features:user:logintestapp"
+            logintestapp                    : ":testapp-features:user:logintestapp",
+            customer_mid_app                : ":customer_mid_app"
     ]
 }

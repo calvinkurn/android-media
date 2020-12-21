@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             tools:layout_height="100dp"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
@@ -66,36 +67,38 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"/>
+                android:orientation="horizontal"/>
 
             <LinearLayout
                 android:id="@+id/layout_search"
                 tools:visibility="visible"
                 android:visibility="gone"
+                android:gravity="center"
                 app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
                 app:layout_constraintStart_toEndOf="@id/nav_icon_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:layout_width="0dp"
                 android:background="@drawable/nav_toolbar_searchbar_bg_corner"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/dp_36"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2">
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_4">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/search_magnify_icon"
                     app:icon_name="SEARCH"
-                    app:icon_color_light_enable="@color/Neutral_N700_68"
-                    app:icon_color_night_enable="@color/Neutral_N700_68"
+                    app:icon_color_light_enable="@color/Unify_N700_68"
+                    app:icon_color_night_enable="@color/Unify_N700_68"
                     android:layout_marginStart="4dp"
                     android:layout_gravity="center"
                     android:layout_width="@dimen/dp_14"
                     android:layout_height="@dimen/dp_14"/>
 
                 <TextView
+                    android:layout_gravity="center"
                     android:id="@+id/et_search"
                     android:contentDescription="@string/content_desc_et_search"
                     android:gravity="center_vertical"
@@ -108,7 +111,7 @@
                     android:enabled="true"
                     android:textSize="@dimen/sp_14"
                     android:maxLines="1"
-                    android:textColorHint="@color/Neutral_N700_68"
+                    android:textColorHint="@color/Unify_N700_68"
                     android:background="@null"
                     android:layout_weight="1"/>
 
@@ -119,11 +122,12 @@
                 tools:layout_width="200dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_2"
                 tools:listitem="@layout/toolbar_viewholder_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:paddingStart="@dimen/dp_4" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -132,7 +136,6 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_4"
             android:background="@color/Unify_N200"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>

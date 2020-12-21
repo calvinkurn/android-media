@@ -14,6 +14,15 @@ public interface DigitalEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
         String CLICK_CHECKOUT = "clickCheckout";
         String CLICK_COUPON = "clickCoupon";
+        String BUSINESS_UNIT = "businessUnit";
+        String CURRENT_SITE = "currentSite";
+
+        String EVENT_KEY = "event";
+        String EVENT_CATEGORY = "eventCategory";
+        String EVENT_ACTION = "eventAction";
+        String EVENT_LABEL = "eventLabel";
+        String EVENT_SCREEN_NAME = "screenName";
+        String USER_ID = "userId";
     }
 
     interface Category {

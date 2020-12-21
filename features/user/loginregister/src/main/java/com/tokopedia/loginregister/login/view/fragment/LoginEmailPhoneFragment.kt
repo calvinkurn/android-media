@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -31,7 +32,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -46,7 +46,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CR
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.dialog.DialogUnify
@@ -100,6 +99,7 @@ import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -111,6 +111,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import kotlinx.android.synthetic.main.layout_partial_register_input.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -150,7 +151,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    private var isEnableFingerprint = true
+    protected var isEnableFingerprint = true
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd = true
     private var isFromRegister = false
@@ -158,8 +159,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
-    private lateinit var partialActionButton: TextView
-    private lateinit var passwordEditText: TextInputEditText
+    private lateinit var partialActionButton: UnifyButton
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var bannerLogin: ImageView
@@ -201,13 +201,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
+
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
-            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, getString(R.string.developer_options))
+            val devOpsText = SpannableString(getString(R.string.developer_options))
+            context?.let {
+                devOpsText.setSpan(ForegroundColorSpan(
+                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)),
+                        0, devOpsText.length, 0)
+            }
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, devOpsText)
             menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -218,7 +225,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if (activity != null) {
             drawable = TextDrawable(activity!!)
             drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
+            drawable.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
         return drawable
     }
@@ -266,7 +273,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
-        passwordEditText = partialRegisterInputView.findViewById(R.id.password)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
@@ -324,7 +330,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val pw = arguments!!.getString(AUTO_LOGIN_PASS, "")
         partialRegisterInputView.showLoginEmailView(email)
         emailPhoneEditText.setText(email)
-        passwordEditText.setText(pw)
+        wrapper_password?.textFieldInput?.setText(pw)
         presenter.loginEmail(email, pw)
         activity?.let {
             analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -361,6 +367,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun prepareView() {
 
         initTokopediaCareText()
+        partialRegisterInputView.showForgotPassword()
 
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
@@ -394,17 +401,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
             analytics.trackClickOnNext(emailPhoneEditText.text.toString())
             registerCheck(emailPhoneEditText.text.toString())
         }
 
-        passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
+        wrapper_password?.textFieldInput?.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 presenter.loginEmail(emailPhoneEditText.text.toString().trim(),
-                        passwordEditText.text.toString())
+                        wrapper_password?.textFieldInput?.text.toString())
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
@@ -437,7 +445,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
-                            activity, R.color.tkpd_main_green
+                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                     ds.typeface = Typeface.create("sans-serif", Typeface
                             .NORMAL)
@@ -473,7 +481,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -490,12 +498,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
         partialActionButton.setOnClickListener { registerCheck(emailPhoneEditText.text.toString()) }
         partialRegisterInputView.showDefaultView()
     }
 
-    private fun goToForgotPassword() {
+    override fun goToForgotPassword() {
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText.text.toString().trim())
@@ -505,7 +514,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun goToTokopediaCareWebview() {
+    override fun goToTokopediaCareWebview() {
         RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
@@ -519,7 +528,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             layoutParams.setMargins(0, 10, 0, 10)
             socmedButtonsContainer.removeAllViews()
             providers.forEach {
-                val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
+                val tv = LoginTextView(activity, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 tv.tag = it.id
                 tv.setText(it.name)
                 if (userSession.name.isNotEmpty()) {
@@ -566,10 +575,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             onDismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+            openGoogleLoginIntent()
         }
+    }
 
+    override fun openGoogleLoginIntent(){
+        val intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
     }
 
     private fun onLoginFacebookClick() {
@@ -581,7 +593,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun onDismissBottomSheet() {
+    fun onDismissBottomSheet() {
         try {
             if (bottomSheet != null) {
                 bottomSheet.dismiss()
@@ -652,7 +664,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtension?.hide()
     }
 
-    private fun goToRegisterInitial(source: String) {
+    override fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
             var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
@@ -851,19 +863,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
         analytics.trackLoginPhoneNumber()
-        activity?.let {
-            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_LOGIN_PHONE)
-        }
+        routeToVerifyPage(phoneNumber, REQUEST_LOGIN_PHONE, OTP_LOGIN_PHONE_NUMBER)
+    }
 
+    override fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int){
+        activity?.let {
+            val intent =  goToVerification(phone = phoneNumber, otpType = otpType)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
         activity?.let {
             val intent =  goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
@@ -874,7 +885,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.loginEmail(email, passwordEditText.text.toString())
+            presenter.loginEmail(email, wrapper_password?.textFieldInput?.text.toString())
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -886,13 +897,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
 
         activity?.let {
-            val dialog = Dialog(it, Dialog.Type.PROMINANCE)
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.email_not_registered))
-            dialog.setDesc(
+            dialog.setDescription(
                     String.format(resources.getString(
                             R.string.email_not_registered_info), email))
-            dialog.setBtnOk(getString(R.string.not_registered_yes))
-            dialog.setOnOkClickListener { v ->
+            dialog.setPrimaryCTAText(getString(R.string.not_registered_yes))
+            dialog.setPrimaryCTAClickListener {
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
                 if(GlobalConfig.isSellerApp()) {
@@ -908,8 +919,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     it.finish()
                 }
             }
-            dialog.setBtnCancel(getString(R.string.already_registered_no))
-            dialog.setOnCancelClickListener { v ->
+            dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+            dialog.setSecondaryCTAClickListener {
                 analytics.eventClickNoSmartLoginDialogButton()
                 dialog.dismiss()
                 onChangeButtonClicked()
@@ -933,7 +944,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun setSmartLock() {
-        passwordEditText.text?.let {
+        wrapper_password?.textFieldInput?.text?.let {
             if (emailPhoneEditText.text.isNotBlank() && it.isNotBlank()) {
                 saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                         emailPhoneEditText.text.toString(),
@@ -1012,13 +1023,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
         return {
             val intent = ActivationActivity.getCallingIntent(activity,
-                    email, passwordEditText.text.toString(), source)
+                    email, wrapper_password?.textFieldInput?.text.toString(), source)
             startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
         }
     }
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
+            userSession.setTempLoginEmail(email)
+
             val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
@@ -1109,7 +1122,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 && !TextUtils.isEmpty(email))
     }
 
-    private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
+    override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null && activity!!.applicationContext != null) {
             val intent = RouteManager.getIntent(activity,
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
@@ -1119,7 +1132,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun goToChooseAccountPageFacebook(accessToken: String) {
+    override fun goToChooseAccountPageFacebook(accessToken: String) {
         activity?.let {
             val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
@@ -1263,7 +1276,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+    override fun goToAddPin2FA(enableSkip2FA: Boolean){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
@@ -1277,7 +1290,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun isFromAtcPage(): Boolean = source == SOURCE_ATC
 
-    private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
+    override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
         val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
@@ -1311,7 +1324,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun onGoToChangeName() {
+    override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
             startActivityForResult(intent, REQUEST_ADD_NAME)
@@ -1437,6 +1450,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             trackSuccessValidate()
 
             if (TextUtils.equals(it.registerType, PHONE_TYPE)) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+                userSession.tempPhoneNumber = partialRegisterInputView.textValue
                 if (it.isExist) {
                     goToLoginPhoneVerifyPage(it.view.replace("-", ""))
                 } else {
@@ -1446,8 +1461,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
 
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                 if (it.isExist) {
                     if (!it.isPending) {
+                        userSession.setTempLoginEmail(partialRegisterInputView.textValue)
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)

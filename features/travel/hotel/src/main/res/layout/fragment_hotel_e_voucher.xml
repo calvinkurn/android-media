@@ -18,7 +18,7 @@
             android:orientation="vertical"
             android:padding="@dimen/layout_lvl2">
 
-            <com.tokopedia.hotel.common.presentation.widget.TicketView
+            <com.tokopedia.common.travel.widget.TicketView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tv_anchor1="@+id/ticket_head"
@@ -139,7 +139,7 @@
 
                 </LinearLayout>
 
-            </com.tokopedia.hotel.common.presentation.widget.TicketView>
+            </com.tokopedia.common.travel.widget.TicketView>
 
             <LinearLayout
                 android:layout_width="match_parent"

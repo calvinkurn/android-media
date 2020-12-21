@@ -8,8 +8,10 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
     <string name="label_product_info">Informasi Produk</string>
+    <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
     <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
+    <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
@@ -42,6 +44,7 @@
     <string name="label_category">Kategori</string>
     <string name="label_desc">Deskripsi</string>
     <string name="label_spec">Spesifikasi</string>
+    <string name="merchant_product_detail_label_specification_product">Spesifikasi Produk</string>
     <string name="label_report_type">Jenis Laporan</string>
     <string name="label_report_product">Laporkan Produk</string>
 
@@ -189,6 +192,8 @@
     <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_detail_discussion_dot">•</string>
     <string name="product_detail_discussion_label">Diskusi</string>
+    <string name="product_detail_check_discussion_label">Lihat Diskusi</string>
+    <string name="product_detail_ask_discussion_label">Tanya di Diskusi</string>
 
     <!--Ticker-->
     <string name="ticker_desc_shop_close">Tenang, kamu bisa kembali belanja di toko ini mulai %1s. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
@@ -256,6 +261,8 @@
     <string name="content_desc_img_pdp_video">image produk</string>
 
     <string name="double_string_builder">%1s %2s</string>
+    <string name="merchant_product_detail_shop_notes_label">Baca info penting terkait pembelian dari toko ini.</string>
+    <string name="merchant_product_detail_shop_notes_title">Catatan Toko</string>
 
     //report
     <string name="merchant_product_detail_report_text">Produk bermasalah? Laporkan</string>
@@ -274,5 +281,4 @@
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
     <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
-
 </resources>

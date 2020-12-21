@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductModelContent
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductTypeFactoryAdapter
-import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentViewModel
+import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 
 /**
  * Created by zulfikarrahman on 1/19/18.
@@ -59,7 +59,7 @@ class ReviewShopModelContent : ReviewProductModelContent {
         reviewStar = `in`.readFloat()
         reviewMessage = `in`.readString()
         reviewTime = `in`.readString()
-        reviewAttachment = `in`.createTypedArrayList(ImageAttachmentViewModel.Companion.CREATOR)
+        reviewAttachment = `in`.createTypedArrayList(ImageAttachmentUiModel.Companion.CREATOR)
         sellerName = `in`.readString()
         shopId = `in`.readString()
         reviewId = `in`.readString()

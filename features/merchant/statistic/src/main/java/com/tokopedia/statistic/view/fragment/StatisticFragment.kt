@@ -242,12 +242,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendClickPostItemEvent(dataKey, title)
     }
 
-    override fun sendPostListCtaClickEvent(dataKey: String) {
-        StatisticTracker.sendClickPostSeeMoreEvent(dataKey)
+    override fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {
+        StatisticTracker.sendClickPostSeeMoreEvent(element.dataKey)
     }
 
-    override fun sendPostListImpressionEvent(dataKey: String) {
-        StatisticTracker.sendImpressionPostEvent(dataKey)
+    override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
+        StatisticTracker.sendImpressionPostEvent(element.dataKey)
     }
 
     override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
@@ -284,6 +284,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
         StatisticTracker.sendSectionTooltipClickEvent(model.title)
     }
+
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
     private fun setupView() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->

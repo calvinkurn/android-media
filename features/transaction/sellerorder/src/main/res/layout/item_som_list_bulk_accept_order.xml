@@ -21,12 +21,14 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
+        android:ellipsize="end"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivProduct"
         app:layout_constraintTop_toTopOf="@id/ivProduct"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_6"
-        android:ellipsize="end"
         tools:text="Air Jorda Gym Red Satin Original Produk Hoops Malaysia" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +47,6 @@
         android:id="@+id/tvProductCount"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -13,7 +14,6 @@ import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,8 +23,8 @@ import javax.inject.Inject
 class ProductInstallmentViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
-        private val dispatcher: DynamicProductDetailDispatcherProvider
-): BaseViewModel(dispatcher.ui()){
+        val dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.main){
 
     private val installmentResp = MutableLiveData<Result<List<InstallmentBank>>>()
     val transformedInstallment = Transformations.map(installmentResp){
@@ -45,7 +45,7 @@ class ProductInstallmentViewModel @Inject constructor(
             val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
                     InstallmentResponse::class.java, installmentParams)
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-            val result = withContext(dispatcher.io()){
+            val result = withContext(dispatcher.io){
                 val gqlResponse = graphqlRepository.getReseponse(listOf(installmentRequest), cacheStrategy)
                 gqlResponse.getSuccessData<InstallmentResponse>().result
             }

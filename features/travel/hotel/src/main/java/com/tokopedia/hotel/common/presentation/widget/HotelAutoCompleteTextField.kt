@@ -5,8 +5,8 @@ import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
 import com.tokopedia.hotel.R
+import com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_hotel_autocomplete_textfield.view.*
 

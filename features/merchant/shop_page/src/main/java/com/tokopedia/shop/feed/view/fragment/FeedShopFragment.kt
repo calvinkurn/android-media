@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,8 +72,8 @@ import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -109,8 +108,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isForceRefresh = false
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
-
-    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -179,7 +176,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let{
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         isLoadingInitialData = true
     }
 
@@ -206,14 +205,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isSellerMigrationEnabled(context)) {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                            showBottomSheetSellerMigration()
                         } else {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            hideBottomSheetSellerMigration()
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                        hideBottomSheetSellerMigration()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -336,8 +335,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if (isSellerMigrationEnabled(context)) {
-                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+            if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -378,7 +377,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onWhitelistClicked(element: WhitelistViewModel) {
+    override fun onWhitelistClicked(element: WhitelistUiModel) {
         goToCreatePost()
     }
 
@@ -766,6 +765,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
     fun hideFAB() {
         fab_feed.hide()
     }
@@ -857,8 +864,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-        return EmptyFeedShopViewModel()
+    private fun getEmptyResultViewModel(): EmptyFeedShopUiModel {
+        return EmptyFeedShopUiModel()
     }
 
     private fun onSuccessReportContent() {
