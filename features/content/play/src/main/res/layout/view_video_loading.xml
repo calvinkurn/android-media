@@ -21,6 +21,18 @@
 <!--        app:loader_type="circular"-->
 <!--        />-->
 
+    <com.tokopedia.play.view.custom.PlayUnifyLoader
+        android:id="@+id/iv_loading"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/iv_loading_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/iv_loading_text"
         android:layout_width="@dimen/layout_lvl0"
@@ -34,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_loading"
         app:typographyType="heading_2"
         tools:text="@string/play_buffer_reason_seller_side"
         tools:visibility="visible"

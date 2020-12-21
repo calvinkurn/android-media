@@ -17,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,10 +32,10 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
-import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.PlayUnifyLoader
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -58,7 +57,6 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -77,7 +75,7 @@ class PlayFragment @Inject constructor(
         PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
-//    private lateinit var loaderPage: LoaderUnify
+    private lateinit var loaderPage: PlayUnifyLoader
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -317,7 +315,7 @@ class PlayFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-//            loaderPage = findViewById(R.id.loader_page)
+            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
@@ -360,19 +358,19 @@ class PlayFragment @Inject constructor(
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
                 NetworkResult.Loading -> {
-//                    if (!hasFetchedChannelInfo) loaderPage.show()
-//                    else loaderPage.hide()
+                    if (!hasFetchedChannelInfo) loaderPage.show()
+                    else loaderPage.hide()
 
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
                 is NetworkResult.Success -> {
                     hasFetchedChannelInfo = true
-//                    loaderPage.hide()
+                    loaderPage.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 }
                 is NetworkResult.Fail -> {
-//                    loaderPage.hide()
+                    loaderPage.hide()
                     if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
                 }
             }
