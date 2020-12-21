@@ -426,15 +426,16 @@ final class ProductListPresenter
     }
 
     private RequestParams createSearchProductRequestParams(RequestParams requestParams) {
-        boolean isSkipGlobalNavWidget = getView().isAnyFilterActive() || getView().isAnySortActive();
+        boolean isLocalSearch = isLocalSearch();
+        boolean isSkipGlobalNavWidget = isLocalSearch || getView().isAnyFilterActive() || getView().isAnySortActive();
 
         RequestParams useCaseRequestParams = RequestParams.create();
 
         useCaseRequestParams.putObject(SEARCH_PRODUCT_PARAMS, requestParams.getParameters());
-        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch());
-        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch());
-        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch());
-        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch());
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch);
         useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget);
 
         return useCaseRequestParams;
