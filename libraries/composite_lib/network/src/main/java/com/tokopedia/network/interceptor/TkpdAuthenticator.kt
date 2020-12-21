@@ -59,7 +59,8 @@ class TkpdAuthenticator(
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
-                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());                    response.request()
+                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());
+                    response.request()
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")

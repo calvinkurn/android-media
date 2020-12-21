@@ -69,6 +69,7 @@ public class AccessTokenRefresh {
 
         } catch (Exception e) {
             e.printStackTrace();
+            networkRouter.sendRefreshTokenAnalytics(e.toString());
             Timber.w("P2#USER_AUTHENTICATOR#failed_refresh_token;oldToken='%s';exception='%s'", userSession.getAccessToken(), e.toString());
         }
 
