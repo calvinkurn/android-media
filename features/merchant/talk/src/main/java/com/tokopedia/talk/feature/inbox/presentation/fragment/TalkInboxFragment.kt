@@ -233,7 +233,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         super.onViewCreated(view, savedInstanceState)
         initSortFilter()
         initErrorPage()
-        initSortFilter()
         setupTicker()
         hideToolbar()
         setupToolbar()
@@ -429,6 +428,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             sortFilterPrefix.removeAllViews()
             if (isSellerView() && !isOldView()) {
                 addItem(getSellerFilterList())
+                setSettingsChipMargins()
                 initCoachmark()
                 return
             }
@@ -597,6 +597,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             coachMark?.showCoachMark(coachMarkItem)
             updateSharedPrefs(COACH_MARK_SHOWN)
         }
+    }
+
+    private fun setSettingsChipMargins() {
+        talkInboxSortFilter?.chipItems?.getOrNull(3)?.refChipUnify?.chip_text?.hide()
     }
 
     private fun getCoachMarkItem(anchorView: View?, title: String, subtitle: String): CoachMark2Item {
