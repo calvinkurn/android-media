@@ -4,7 +4,7 @@ import com.tokopedia.logisticCommon.data.entity.shoplocation.PartnerId
 import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopId
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Ticker
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
-import com.tokopedia.manageaddress.domain.response.shoplocation.GetShopLocationResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.GetShopLocationResponse
 import javax.inject.Inject
 
 class ShopLocationMapper @Inject constructor(){
@@ -35,21 +35,21 @@ class ShopLocationMapper @Inject constructor(){
         }
     }
 
-    private fun mapShopId(response: com.tokopedia.manageaddress.domain.response.shoplocation.ShopId) : ShopId {
+    private fun mapShopId(response: com.tokopedia.logisticCommon.data.response.shoplocation.ShopId) : ShopId {
         return ShopId().apply {
             int64 = response.int64
             valid = response.valid
         }
     }
 
-    private fun mapPartnerId(response: com.tokopedia.manageaddress.domain.response.shoplocation.PartnerId) : PartnerId {
+    private fun mapPartnerId(response: com.tokopedia.logisticCommon.data.response.shoplocation.PartnerId) : PartnerId {
         return PartnerId().apply {
             int64 = response.int64
             valid = response.valid
         }
     }
 
-    private fun mapTicker(response: com.tokopedia.manageaddress.domain.response.shoplocation.Ticker) : Ticker {
+    private fun mapTicker(response: com.tokopedia.logisticCommon.data.response.shoplocation.Ticker) : Ticker {
         return Ticker().apply {
             textInactive = response.textInactive
             textCourierSetting = response.textCourierSetting

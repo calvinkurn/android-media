@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
-import com.tokopedia.manageaddress.data.repository.ShopLocationRepository
+import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
-import com.tokopedia.manageaddress.domain.response.shoplocation.ShopLocationSetStatusResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject

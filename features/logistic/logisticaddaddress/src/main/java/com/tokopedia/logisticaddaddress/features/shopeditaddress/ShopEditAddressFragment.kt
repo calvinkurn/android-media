@@ -21,6 +21,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -192,7 +193,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         etZipCode?.setText(warehouseModel?.postalCode)
         etShopDetail?.setText(warehouseModel?.addressDetail)
 
-        tvPinpointText?.text = getString(R.string.tv_pinpoint_desc)
+        tvPinpointText?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_desc)).spannedString }
 
     }
 

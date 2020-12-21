@@ -1,14 +1,10 @@
-package com.tokopedia.manageaddress.data.query
+package com.tokopedia.logisticCommon.data.query
 
 object ShopLocationQuery {
 
     val getShopLocation = """
         query ShopGetAllLocations(${'$'}shop_id: Int!) {
-          ShopLocGetAllLocations(
-            input: {
-                shop_id: ${'$'}shop_id
-            }
-          ) {
+          ShopLocGetAllLocations(input: {shop_id: ${'$'}shop_id}) {
             status
             message
             error {
@@ -51,14 +47,45 @@ object ShopLocationQuery {
         }
     """.trimIndent()
 
-    /*ToDo: cari param yg mirip pake array ya*/
     val setShopLocationStatus = """
-        mutation shopLocSetStatus(${'$'}inputShopLocSetStatus : [ShopLocParamSetStatus]!) 
-        {
+        mutation shopLocSetStatus(${'$'}inputShopLocSetStatus : [ShopLocParamSetStatus]!) {
           ShopLocSetStatus(input: ${'$'}inputShopLocSetStatus ) {
             status_message
             is_success
           }
         }
     """.trimIndent()
+
+    val shopLocUpdateWarehouse = """
+        mutation ShopLocUpdateWarehouse(${'$'}inputShopLocUpdateWarehouse: ShopLocUpdateWarehouseParam!) {
+          ShopLocUpdateWarehouse(input: ${'$'}inputShopLocUpdateWarehouse) {
+            status
+            message
+            error {
+              id
+              description
+            }
+            data {
+              message
+            }
+          }
+        }
+    """.trimIndent()
+
+    val shopLocationWhitelist = """
+        query ShopGetAllLocations(${'$'}shop_id: Int!) {
+          ShopLocWhitelist (input: {shop_id: ${'$'}shop_id}) {
+            status
+            message
+            data {
+              eligibility_state
+            }
+            error {
+              id
+              description
+            }
+          }
+        }
+    """.trimIndent()
+
 }
