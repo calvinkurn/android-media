@@ -99,7 +99,7 @@ class ShopPageViewModel @Inject constructor(
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
-    private var TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
+    private val TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
 
     fun getShopPageTabData(
             shopId: Int,
