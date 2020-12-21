@@ -26,7 +26,7 @@ public class SessionAnalytics2 {
                 EVENT,
                 EVENT_CATEGORY,
                 EVENT_ACTION,
-                "refresh token failed - $errorMsg"
+                "refresh token failed - " + errorMsg
         );
     }
 }
