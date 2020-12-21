@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
@@ -198,14 +199,18 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
-        var voucherOwner = MerchantVoucherOwner(identifier = voucher.identifier, ownerId = voucher.ownerId)
+        var voucherOwner = MerchantVoucherOwner(
+                identifier = voucher.identifier,
+                ownerId = voucher.ownerId.toIntOrZero()
+        )
         var voucherBanner = MerchantVoucherBanner(mobileUrl = voucher.mobileUrl)
-        var voucherModel = MerchantVoucherModel(voucherId = voucher.voucherId,
+        var voucherModel = MerchantVoucherModel(
+                voucherId = voucher.voucherId.toIntOrZero(),
                 voucherName = voucher.voucherName,
                 voucherCode = voucher.voucherCode,
                 merchantVoucherType = voucherType,
                 merchantVoucherAmount = voucherAmount,
-                minimumSpend = voucher.minimumSpend,
+                minimumSpend = voucher.minimumSpend.toIntOrZero(),
                 merchantVoucherOwner = voucherOwner,
                 validThru = voucher.validThru.toString(),
                 tnc = voucher.tnc,
