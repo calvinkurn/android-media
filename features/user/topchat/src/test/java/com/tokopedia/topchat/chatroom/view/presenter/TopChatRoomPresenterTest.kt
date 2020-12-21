@@ -202,7 +202,7 @@ class TopChatRoomPresenterTest {
 
     object Dummy {
         const val exMessageId = "190378584"
-        const val exShopId = 423785
+        const val exShopId = 423785L
         const val exImageUploadId = "667056"
         const val exProductId = "123123"
         const val exUserId = "321321"

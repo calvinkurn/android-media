@@ -111,7 +111,7 @@ interface TopChatContract {
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)
 
-        fun getShopFollowingStatus(shopId: Int,
+        fun getShopFollowingStatus(shopId: Long,
                                    onError: (Throwable) -> Unit,
                                    onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
 

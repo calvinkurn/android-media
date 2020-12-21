@@ -511,7 +511,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getShopFollowingStatus(
-            shopId: Int,
+            shopId: Long,
             onError: (Throwable) -> Unit,
             onSuccessGetShopFollowingStatus: (Boolean) -> Unit
     ) {

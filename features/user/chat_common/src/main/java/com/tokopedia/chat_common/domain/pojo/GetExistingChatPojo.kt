@@ -55,7 +55,7 @@ data class Contact(
         val userId: Int = 0,
         @Expose
         @SerializedName("shopId")
-        val shopId: Int = 0,
+        val shopId: Long = 0L,
         @Expose
         @SerializedName("interlocutor")
         val isInterlocutor: Boolean = false,
