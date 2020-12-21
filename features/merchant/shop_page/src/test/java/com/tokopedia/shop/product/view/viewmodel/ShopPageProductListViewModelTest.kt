@@ -74,12 +74,13 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check whether response get new product list data success is not null`() {
+    fun `check whether response get product list data success is not null`() {
         runBlocking {
 
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getNewProductListData(
+            viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
+                    anyInt(),
                     anyString(),
                     ShopProductFilterParameter()
             )
@@ -94,38 +95,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check whether response  get new product list data error is null`() {
+    fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString(), ShopProductFilterParameter())
-
-            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
-
-            verifyGetShopProductUseCaseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Fail)
-        }
-    }
-
-    @Test
-    fun `check whether response get next product list data success is not null`() {
-        runBlocking {
-
-            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
-            verifyGetShopProductUseCaseCaseCalled()
-
-            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
-
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
-        }
-    }
-
-    @Test
-    fun `check whether response get next product list data error is null`() {
-        runBlocking {
-            coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter())
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
