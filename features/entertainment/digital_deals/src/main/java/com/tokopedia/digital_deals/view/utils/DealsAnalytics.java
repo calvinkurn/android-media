@@ -3,7 +3,6 @@ package com.tokopedia.digital_deals.view.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -15,12 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 public class DealsAnalytics {
-    public static final int SEE_ALL_BRANDS_HOME = 1;
     public static final int CLICK_BRANDS_CATEGORY = 1;
     public static final int CLICK_BRANDS_SEARCH = 2;
     public static final int CLICK_BRANDS_HOME = 3;

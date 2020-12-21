@@ -1,10 +1,7 @@
 package com.tokopedia.digital_deals.view.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -13,8 +10,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import androidx.annotation.RequiresApi;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -27,12 +22,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
+import androidx.annotation.RequiresApi;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.linker.LinkerManager;
@@ -41,32 +37,19 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
-import com.tokopedia.locationmanager.DeviceLocation;
-import com.tokopedia.locationmanager.LocationDetectorHelper;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 
 public class Utils {
     private static Utils singleInstance;
     private static Location location;
-    public static String LOCATION_OBJECT = "loc_obj";
-    public static String LOCATION_CITY_ID = "city_id";
     public static String LOCATION_COORDINATES = "coordinates";
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static String LOCATION_NAME = "Jakarta";
@@ -77,7 +60,6 @@ public class Utils {
     private static final float MIN_RADIUS = 0.0f;
     public static Locale locale = new Locale("in", "ID");
     private static final String RUPIAH_FORMAT = "Rp %s";
-    private static final String SHOWCASE_PREFERENCES = "show_case_pref";
     private SparseIntArray likedEventMap;
     private SparseIntArray unLikedEventMap;
     public static final String NSQ_SERVICE = "Recommendation_For_You";
@@ -180,7 +162,7 @@ public class Utils {
                 location = gson.fromJson(locationjson, Location.class);
             }
         }
-        if(location == null) {
+        if (location == null) {
             location = new Location();
             location.setName(LOCATION_NAME);
             location.setId(LOCATION_ID);
@@ -305,9 +287,5 @@ public class Utils {
                     }
                 }));
 
-    }
-
-    public String getLocationErrorMessage(Context context) {
-        return context.getResources().getString(com.tokopedia.digital_deals.R.string.location_error_message);
     }
 }
