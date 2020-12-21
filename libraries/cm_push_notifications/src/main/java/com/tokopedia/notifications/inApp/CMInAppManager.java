@@ -97,7 +97,7 @@ public class CMInAppManager implements CmInAppListener,
                 this);
         dataConsumer = new DataConsumerImpl();
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
-        initInAppManager(application.getApplicationContext());
+        initInAppManager();
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -106,8 +106,8 @@ public class CMInAppManager implements CmInAppListener,
         return inAppManager.cmInAppListener;
     }
 
-    private void initInAppManager(Context context) {
-        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(context, activityLifecycleHandler);
+    private void initInAppManager() {
+        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler);
         application.registerActivityLifecycleCallbacks(lifeCycle);
         CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
         FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);

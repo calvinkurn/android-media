@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.viewEngine;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,9 +10,6 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +27,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     private CmActivityLifecycleHandler lifecycleHandler;
     private NotificationCancelManager cancelManager;
-    private RemoteConfig remoteConfig;
 
-    public CMActivityLifeCycle(Context context, CmActivityLifecycleHandler lifecycleHandler) {
-        cancelManager = new NotificationCancelManager(context);
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
-
+    public CMActivityLifeCycle(CmActivityLifecycleHandler lifecycleHandler) {
         this.lifecycleHandler = lifecycleHandler;
     }
 
@@ -58,7 +50,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
-            clearNotification(activity);
+            cancelManager = new NotificationCancelManager(activity.getApplicationContext());
+            cancelManager.clearNotifications();
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -81,14 +74,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-<<<<<<< HEAD
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
-=======
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
-
->>>>>>> d8e1c0b190af2ef4b93f633d7e438ed868be2ade
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -105,12 +91,6 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         Map<String, Object> map = new HashMap<>();
         map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
-    }
-
-    private void clearNotification(Activity activity) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            cancelManager.clearNotifications(activity.getApplicationContext());
-        }
     }
 
 }
