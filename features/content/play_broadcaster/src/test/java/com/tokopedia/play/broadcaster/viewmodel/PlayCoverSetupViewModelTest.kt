@@ -77,7 +77,6 @@ class PlayCoverSetupViewModelTest {
                 setupDataStore = mockSetupDataStore,
                 uploadImageUseCase = uploadImageUseCase,
                 getOriginalProductImageUseCase = getOriginalProductImageUseCase,
-                userSession = mockk(relaxed = true),
                 coverImageUtil = MockPlayCoverImageUtil(),
                 coverImageTransformer = MockImageTransformer()
         )

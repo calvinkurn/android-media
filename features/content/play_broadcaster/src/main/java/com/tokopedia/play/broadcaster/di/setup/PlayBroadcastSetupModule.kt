@@ -11,6 +11,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.mediauploader.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
@@ -21,7 +22,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [ImageUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, MediaUploaderModule::class])
 class PlayBroadcastSetupModule {
 
     @PlayBroadcastSetupScope
