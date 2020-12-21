@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class AdminPermissionResponse(
-        @SerializedName("getAdminInfo")
+        @SerializedName("getAdminType")
         @Expose
         val adminInfo: GetAdminPermission? = GetAdminPermission()
 )

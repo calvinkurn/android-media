@@ -10,12 +10,13 @@ import javax.inject.Inject
 class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
 
     companion object {
-        private val QUERY = """
+        val QUERY = """
             query getAdminType {
               getAdminType(source: "akw-testing") {
                 shopID
                 isMultiLocation
                 admin_data {
+                  admin_type_text
                   detail_information {
                     admin_role_type {
                       is_shop_admin

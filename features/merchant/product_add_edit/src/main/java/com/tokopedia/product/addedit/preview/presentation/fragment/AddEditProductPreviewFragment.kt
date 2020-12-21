@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -112,6 +111,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -174,6 +174,9 @@ class AddEditProductPreviewFragment:
 
     //loading
     private var loadingLayout: View? = null
+
+    // admin multi location ticker
+    private var multiLocationTicker: Ticker? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -310,6 +313,9 @@ class AddEditProductPreviewFragment:
 
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
+
+        // admin revamp
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
 
         addEditProductPhotoButton?.setOnClickListener {
             // tracking
@@ -460,6 +466,8 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
+        multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
+
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -469,6 +477,7 @@ class AddEditProductPreviewFragment:
         observeImageUrlOrPathList()
         observeIsLoading()
         observeSaveProductDraft()
+        observeAdminPermission()
 
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
@@ -957,6 +966,25 @@ class AddEditProductPreviewFragment:
         })
     }
 
+    private fun observeAdminPermission() {
+        viewModel.isManageProductAdmin.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (!isEligible) {
+                            // TODO: Show not eligible page. Will wait for PM. For now, exit the page
+                            activity?.finish()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetProductErrorToast(viewModel.getProductId())
+                }
+            }
+
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -965,6 +993,7 @@ class AddEditProductPreviewFragment:
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
+        viewModel.isManageProductAdmin.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)

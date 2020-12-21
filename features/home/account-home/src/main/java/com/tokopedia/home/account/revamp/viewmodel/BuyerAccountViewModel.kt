@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
+import com.tokopedia.home.account.domain.AccountAdminInfoUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
-import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
@@ -15,6 +16,8 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +39,7 @@ class BuyerAccountViewModel @Inject constructor (
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val shortcutDataUseCase: GetShortcutDataUseCase,
+        private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
         private val dispatcher: DispatcherProvider
@@ -61,17 +65,40 @@ class BuyerAccountViewModel @Inject constructor (
     val firstRecommendation : LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendation
 
+    private val _canGoToSellerAccount = MutableLiveData<Boolean>()
+    val canGoToSellerAccount: LiveData<Boolean>
+        get() = _canGoToSellerAccount
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
+            val (adminDataResponse, shopData) =
+                    if (!userSession.isShopAdmin) {
+                        with(accountAdminInfoUseCase) {
+                            isLocationAdmin = userSession.isLocationAdmin
+                            executeOnBackground()
+                        }
+                    } else {
+                        Pair(null, null)
+                    }
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
+                accountModel.adminTypeText = adminDataResponse?.data?.adminTypeText
                 saveLocallyAttributes(accountModel)
+                adminDataResponse?.let {
+                    refreshUserSessionAdminData(it)
+                }
+                (adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true).let { canGoToSellerAccount ->
+                    _canGoToSellerAccount.postValue(canGoToSellerAccount)
+                }
+                shopData?.let {
+                    refreshUserSessionShopData(it)
+                }
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
@@ -197,6 +224,42 @@ class BuyerAccountViewModel @Inject constructor (
             override fun onSuccessRemoveWishlist(productId: String?) {
                 _removeWishList.postValue(Success(MSG_SUCCESS_REMOVE_WISHLIST))
             }
+        }
+    }
+
+    private fun refreshUserSessionShopData(shopData: ShopData) {
+        val levelGold = 1
+        val levelOfficialStore = 2
+        with(userSession) {
+            shopId = shopData.shopId
+            shopName = shopData.shopName
+            shopAvatar = shopData.shopAvatar
+            setIsGoldMerchant(shopData.shopLevel == levelGold  ||  shopData.shopLevel == levelOfficialStore)
+            setIsShopOfficialStore(shopData.shopLevel == levelOfficialStore)
+        }
+    }
+
+    private fun refreshUserSessionAdminData(adminDataResponse: AdminDataResponse) {
+        adminDataResponse.data.detail.roleType.let {
+            userSession.run {
+                setIsShopOwner(it.isShopOwner)
+                setIsLocationAdmin(it.isLocationAdmin)
+                setIsShopAdmin(it.isShopAdmin)
+                setIsMultiLocationShop(adminDataResponse.isMultiLocationShop)
+            }
+            if (it.isLocationAdmin) {
+                removeUnnecessaryShopData()
+            }
+        }
+    }
+
+    private fun removeUnnecessaryShopData() {
+        userSession.run {
+            shopAvatar = ""
+            shopId = "0"
+            shopName = ""
+            setIsGoldMerchant(false)
+            setIsShopOfficialStore(false)
         }
     }
 

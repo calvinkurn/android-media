@@ -1,5 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.viewmodel
 
+import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -18,10 +19,10 @@ import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify

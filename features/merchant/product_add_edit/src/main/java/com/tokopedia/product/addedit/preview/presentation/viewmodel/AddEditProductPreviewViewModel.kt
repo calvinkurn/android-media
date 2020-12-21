@@ -5,11 +5,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -24,10 +24,14 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -37,7 +41,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatchers
+        private val adminPermissionUseCase: AdminPermissionUseCase,
+        private val userSession: UserSessionInterface,
+        private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
@@ -51,7 +57,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) getProductData(it)
+            if (!productId.value.isNullOrBlank()) {
+                getProductData(it)
+            } else if (userSession.isShopAdmin) {
+                getAdminPermission()
+            }
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -80,6 +90,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
+    private val mIsManageProductAdmin = MutableLiveData<Result<Boolean>>()
+    val isManageProductAdmin: LiveData<Result<Boolean>>
+        get() = mIsManageProductAdmin
+
     val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
@@ -92,6 +106,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
+
+    private var getAdminPermissionJob: Job? = null
+
+    // Enable showing ticker if seller has multi location shop
+    val shouldShowMultiLocationTicker
+        get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
 
     init {
         with (productInputModel) {
@@ -200,14 +220,19 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
+        if (userSession.isShopAdmin && mIsManageProductAdmin.value !is Success) {
+            getAdminPermission()
+        }
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             }
+            getAdminPermissionJob?.join()
             mGetProductResult.value = Success(data)
             mIsLoading.value = false
         }, onError = {
+            getAdminPermissionJob?.cancel()
             mGetProductResult.value = Fail(it)
         })
     }
@@ -279,5 +304,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
+    private fun getAdminPermission() {
+        mIsLoading.value = true
+        if (getAdminPermissionJob?.isCompleted != true) {
+            getAdminPermissionJob =
+                    launchCatchError(
+                            block = {
+                                mIsManageProductAdmin.value = Success(withContext(dispatcher.io) {
+                                    adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) ?: false
+                                })
+                                mIsLoading.value = false
+                            },
+                            onError = {
+                                mIsManageProductAdmin.value = Fail(it)
+                                getAdminPermissionJob?.cancel()
+                            }
+                    )
+        }
+    }
 
 }

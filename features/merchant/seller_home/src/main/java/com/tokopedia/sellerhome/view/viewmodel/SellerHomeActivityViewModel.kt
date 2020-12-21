@@ -5,10 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
+import com.tokopedia.sessioncommon.data.admin.AdminRoleType
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 /**
@@ -19,6 +24,8 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
+        private val sellerAdminUseCase: SellerAdminUseCase,
+        private val adminPermissionUseCase: AdminPermissionUseCase,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -30,6 +37,14 @@ class SellerHomeActivityViewModel @Inject constructor(
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
         get() = _shopInfo
 
+    private val _isRoleEligible = MutableLiveData<Result<Boolean>>()
+    val isRoleEligible: LiveData<Result<Boolean>>
+        get() = _isRoleEligible
+
+    private val _isOrderShopAdmin = MutableLiveData<Boolean>()
+    val isOrderShopAdmin: LiveData<Boolean>
+        get() = _isOrderShopAdmin
+
     fun getNotifications() = executeCall(_notifications) {
         getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
         getNotificationUseCase.executeOnBackground()
@@ -39,4 +54,37 @@ class SellerHomeActivityViewModel @Inject constructor(
         getSopInfoUseCase.params = GetShopInfoUseCase.getRequestParam(userSession.userId)
         getSopInfoUseCase.executeOnBackground()
     }
+
+    fun getAdminInfo() = executeCall(_isRoleEligible) {
+        when {
+            userSession.isShopOwner -> true
+            userSession.isLocationAdmin -> false
+            else -> {
+                val adminRoleType = async {
+                    sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
+                        adminDataResponse.data.detail.roleType.also { roleType ->
+                            updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
+                        }
+                    }
+                }
+                val isRoleEligible = async {
+                    adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+                }
+                _isOrderShopAdmin.value = isRoleEligible.await()
+                adminRoleType.await().run {
+                    isShopOwner || !isLocationAdmin
+                }
+            }
+        }
+    }
+
+    private fun updateUserSessionAdminValues(roleType: AdminRoleType, isMultiLocationShop: Boolean) {
+        with(userSession) {
+            setIsShopOwner(roleType.isShopOwner)
+            setIsLocationAdmin(roleType.isLocationAdmin)
+            setIsShopAdmin(roleType.isShopAdmin)
+            setIsMultiLocationShop(isMultiLocationShop)
+        }
+    }
+
 }

@@ -33,6 +33,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private int progress;
     private boolean isAffiliate;
     private boolean hasShop;
+    private String roleName;
 
     public BuyerCardViewModel() {
     }
@@ -202,6 +203,10 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.hasShop = hasShop;
     }
 
+    public String getRoleName() { return roleName; }
+
+    public void setRoleName(String roleName) { this.roleName = roleName; }
+
     public boolean isAffiliate() {
         return isAffiliate;
     }
@@ -258,6 +263,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         dest.writeString(this.tokomemberImageUrl);
         dest.writeString(this.tokomemberApplink);
         dest.writeString(this.eggImageUrl);
+        dest.writeString(this.roleName);
         dest.writeInt(this.tokopointSize);
         dest.writeInt(this.tokomemberSize);
         dest.writeInt(this.couponSize);
@@ -285,6 +291,7 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokomemberImageUrl = in.readString();
         this.tokomemberApplink = in.readString();
         this.eggImageUrl = in.readString();
+        this.roleName = in.readString();
         this.tokopointSize = in.readInt();
         this.tokomemberSize = in.readInt();
         this.couponSize = in.readInt();
