@@ -189,11 +189,6 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
                     val newValue = s.toString()
                     if(newValue.isNotEmpty()) {
                         val stock = newValue.toInt()
-                        when {
-                            stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
-                            stock <= MINIMUM_STOCK -> setZeroStockBehavior()
-                            else -> setNormalBehavior()
-                        }
                         viewModel.updateStock(stock)
                     }
                 }
@@ -337,6 +332,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
             } else {
                 productStock = it
             }
+            renderStockEditor(it)
         })
     }
 
@@ -369,6 +365,14 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     private fun getStockTicker() {
         val access = product?.access
         viewModel.getStockTicker(access)
+    }
+
+    private fun renderStockEditor(stock: Int) {
+        when {
+            stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
+            stock <= MINIMUM_STOCK -> setZeroStockBehavior()
+            else -> setNormalBehavior()
+        }
     }
     
     private fun setZeroStockBehavior() {
