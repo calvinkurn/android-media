@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.shopeditaddress
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -68,8 +69,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments.let {
-            warehouseModel = it?.getParcelable(EXTRA_WAREHOUSE_DATA)
+        arguments?.let {
+            warehouseModel = it.getParcelable(EXTRA_WAREHOUSE_DATA)
+            currentLat = it.getDouble(EXTRA_LAT)
+            currentLong = it.getDouble(EXTRA_LONG)
         }
 
     }
@@ -88,6 +91,50 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         prepareMap()
         prepareLayout()
         setViewListener()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        /*if (resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(EXTRA_WAREHOUSE_DATA)) {
+                    warehouseModel = data.getParcelableExtra(EXTRA_WAREHOUSE_DATA)
+                    warehouseModel?.let {
+                        currentLat = it.latLon.substringBefore(",").toDouble()
+                        currentLong = it.latLon.substringAfter(",").toDouble()
+                    }
+                }
+            }
+        }*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    override fun onPause() {
+        mapView?.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView?.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
     }
 
     private fun initViews() {
@@ -235,11 +282,15 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
 
     companion object {
         const val EXTRA_WAREHOUSE_DATA = "WAREHOUSE_DATA"
+        const val EXTRA_LAT = "EXTRA_LAT"
+        const val EXTRA_LONG = "EXTRA_LONG"
 
         fun newInstance(extra: Bundle): ShopEditAddressFragment {
             return ShopEditAddressFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
+                    putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
+                    putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
                 }
             }
         }

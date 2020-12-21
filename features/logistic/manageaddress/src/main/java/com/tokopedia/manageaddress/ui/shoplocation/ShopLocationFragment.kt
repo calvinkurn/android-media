@@ -209,6 +209,8 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun openFormShopEditAddress(data: Warehouse) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS)
         intent.putExtra("WAREHOUSE_DATA", data)
+        intent.putExtra("EXTRA_LAT", data.latLon.substringBefore(",").toDouble())
+        intent.putExtra("EXTRA_LONG", data.latLon.substringAfter(",").toDouble())
         startActivityForResult(intent, 121)
     }
 

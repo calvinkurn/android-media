@@ -51,6 +51,8 @@
     <string name="activate_location">Aktifkan Lokasi</string>
     <string name="text_deactivate_success">Lokasi “%1$s” dinonaktifkan</string>
     <string name="text_activate_success">Lokasi “%1$s” berhasil diaktifkan</string>
+    <string name="shop_active">Aktif</string>
+    <string name="shop_inactive">Tidak Aktif</string>
 
     <!--Shop Location Old-->
     <string name="shop_settings_manage_address">Lokasi</string>

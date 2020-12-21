@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListener) : RecyclerView.Adapter<ShopLocationItemAdapter.ShopLocationViewHolder>() {
@@ -42,6 +46,8 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
     inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
 
         private val tvShopName = itemView.findViewById<Typography>(R.id.tv_shop_name)
+        private val tvShopLabel = itemView.findViewById<Typography>(R.id.tv_shop_label)
+        private val iconShopLabel = itemView.findViewById<ImageView>(R.id.img_mark_icon)
         private val tvAddressDetail = itemView.findViewById<Typography>(R.id.tv_address_detail)
         private val tvAddressCity = itemView.findViewById<Typography>(R.id.tv_address_city)
         private val tvAddressZipCode = itemView.findViewById<Typography>(R.id.tv_address_zipcode)
@@ -50,15 +56,13 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         private val tvPinpointState = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         private val btnSetLocation = itemView.findViewById<IconUnify>(R.id.icon_kebab)
         private val btnEditocation = itemView.findViewById<Typography>(R.id.action_edit)
+        private val tickerAddressInfo = itemView.findViewById<Ticker>(R.id.ticker_address_info)
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: Warehouse) {
             setPinpointStatus(data)
             setHeadquarter(data)
-            tvShopName.text = data.warehouseName
-            tvAddressDetail.text = data.addressDetail
-            tvAddressCity.text = "${data.cityName}, ${data.districtName}"
-            tvAddressZipCode.text = data.postalCode
+            setItemData(data)
             setListener(data)
         }
 
@@ -68,6 +72,42 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
             } else {
                 labelMainShop.visibility = View.GONE
             }
+
+            if (shopLocation.status == 1) {
+                tvShopLabel.text = itemView.context.getString(R.string.shop_active)
+                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G600))
+                iconShopLabel.setColorFilter(com.tokopedia.unifyprinciples.R.color.light_G500)
+            } else if (shopLocation.status == 2) {
+                tvShopLabel.text = itemView.context.getString(R.string.shop_active)
+                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                iconShopLabel.setColorFilter(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            }
+        }
+
+        private fun setItemData(shopLocation: Warehouse) {
+            tvShopName.text = shopLocation.warehouseName
+            tvAddressDetail.text = shopLocation.addressDetail
+            tvAddressCity.text = "${shopLocation.cityName}, ${shopLocation.districtName}"
+            tvAddressZipCode.text = shopLocation.postalCode
+
+            if (shopLocation.ticker.textInactive.isNotEmpty()) {
+                tickerAddressInfo.visibility = View.VISIBLE
+                tickerAddressInfo.tickerTitle = shopLocation.ticker.textInactive
+                tickerAddressInfo.setHtmlDescription(shopLocation.ticker.textCourierSetting)
+                tickerAddressInfo?.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING)
+                        itemView.context.startActivity(intent)
+                    }
+
+                    override fun onDismiss() {
+                        //no-op
+                    }
+                })
+            } else {
+                tickerAddressInfo.visibility = View.GONE
+            }
+
         }
 
         private fun setPinpointStatus(shopLocation: Warehouse) {
