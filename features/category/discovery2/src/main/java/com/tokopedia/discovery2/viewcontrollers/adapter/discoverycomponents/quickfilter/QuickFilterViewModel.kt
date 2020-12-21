@@ -203,7 +203,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                     productCountMutableLiveData.value = quickFilterGQLRepository
                             .getQuickFilterProductCountData(targetList.first(),
                                     components.pageEndPoint, selectedFilterMapParameter,
-                                    getUserId()).component?.compAdditionalInfo?.productCount ?: ""
+                                    getUserId()).component?.compAdditionalInfo?.totalProductData
+                            ?.productCountWording ?: ""
                 }, onError = {
                     it.printStackTrace()
                 })
