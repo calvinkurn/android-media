@@ -104,7 +104,6 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             viewModel.isSmartReplyOn = isChecked
             viewModel.setSmartReply()
             if(isChecked) {
-                talkSmartReplyDetailCardContainer.hide()
                 talkSmartReplyDetailSubmitButton.apply {
                     show()
                     isEnabled = isChecked
@@ -112,10 +111,6 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             } else {
                 setCardData()
             }
-        }
-        if(viewModel.isSmartReplyOn) {
-            talkSmartReplyDetailCardContainer.hide()
-            return
         }
         setCardData()
     }
