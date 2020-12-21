@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,23 +97,29 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?, userId: String? = "0", addCountFilters: Boolean  = false): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String,
+                        selectedFilterMapParameter: Map<String, String?>? = null,
+                        userId: String? = "0",
+                        addCountFilters: Boolean  = false): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
-            val filtersMap =  rpcDiscoQuery as? MutableMap<String, String?>
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
-            if(addCountFilters){
-                filtersMap?.let {
-                    it[COUNT_ONLY] = "true"
-                    it[RPC_PAGE__SIZE] = "10"
-                    it[RPC_PAGE_NUMBER] = "1"
-                    it[RPC_USER_ID] = if(userId.isNullOrEmpty()) "0" else userId
 
-                }
+            val filtersMasterMapParam = discoComponentQuery
+            if (addCountFilters && selectedFilterMapParameter != null) {
+                    val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
+                    filtersMap.let {
+                        it[COUNT_ONLY] = "true"
+                        it[RPC_PAGE__SIZE] = "10"
+                        it[RPC_PAGE_NUMBER] = "1"
+                        it[RPC_USER_ID] = if (userId.isNullOrEmpty()) "0" else userId
+
+                    }
+                    filtersMasterMapParam?.putAll(filtersMap)
             }
 
-            filtersMap?.let { map ->
+            filtersMasterMapParam?.let { map ->
                 val queryString = StringBuilder()
                 map.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {

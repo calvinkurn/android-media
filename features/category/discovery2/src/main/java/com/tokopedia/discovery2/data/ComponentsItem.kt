@@ -78,7 +78,9 @@ data class ComponentsItem(
         var rpc_PinnedProduct: String? = "",
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
-        var tabName: String? = "") {
+        var tabName: String? = "",
+        var description : String? = "",
+        var showFilter: Boolean = true) {
 
     private var componentsItem: List<ComponentsItem>? = null
 
@@ -97,6 +99,9 @@ data class ComponentsItem(
         return componentsItem
     }
 
+    fun reInitComponentItems(){
+        componentsItem = null
+    }
 }
 
 

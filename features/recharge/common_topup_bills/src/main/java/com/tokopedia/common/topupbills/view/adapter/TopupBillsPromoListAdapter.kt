@@ -87,12 +87,12 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
             var btnCopyBg = AppCompatResources.getDrawable(itemView.context, R.drawable.digital_bg_green_rounded)
             if (topupBillsPromo.voucherCodeCopied) {
                 btnCopyPromo.text = itemView.context.getString(R.string.common_topup_text_has_copied_promo_code)
-                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.white))
+                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
                 containerBg = AppCompatResources.getDrawable(itemView.context, R.drawable.common_topup_bg_transparent_round)
                 btnCopyBg = AppCompatResources.getDrawable(itemView.context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = itemView.context.getString(R.string.common_topup_text_copy_promo_code)
-                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.tkpd_main_green))
+                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             container.background = containerBg
             btnCopyPromo.background = btnCopyBg
