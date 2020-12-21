@@ -125,6 +125,14 @@ class PlayBeforeLiveFragment @Inject constructor(
 
         override suspend fun onSetupCompletedWithData(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
             prepareViewModel.setDataFromSetupDataStore(dataStore)
+
+            if (bottomSheet is SetupBroadcastScheduleBottomSheet) {
+                showToaster(
+                        message = getString(R.string.play_broadcast_schedule_set_success),
+                        type = Toaster.TYPE_NORMAL
+                )
+            }
+
             return parentViewModel.getChannelDetail()
         }
     }
