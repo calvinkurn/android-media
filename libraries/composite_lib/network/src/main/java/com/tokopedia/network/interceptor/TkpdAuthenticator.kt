@@ -31,10 +31,11 @@ class TkpdAuthenticator(
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
-                    response.request()
+                    Timber.w("P2#AUTHENTICATOR#Failed refresh token;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());                    response.request()
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
+                Timber.w("P2#AUTHENTICATOR#Response Count > 0");
                 return response.request()
             }
         }
@@ -74,10 +75,6 @@ class TkpdAuthenticator(
             newRequest.header(HEADER_PARAM_AUTHORIZATION, "$HEADER_PARAM_BEARER $freshAccessToken")
         }
         return newRequest.build()
-    }
-
-    private fun logToScalyr(message: String, isLoggedIn: Boolean){
-        Timber.w(message)
     }
 
     companion object {
