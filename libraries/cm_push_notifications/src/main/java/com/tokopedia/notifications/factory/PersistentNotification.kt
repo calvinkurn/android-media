@@ -3,7 +3,7 @@ package com.tokopedia.notifications.factory
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
-import android.content.res.Configuration
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.notifications.R
@@ -11,7 +11,6 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.PersistentButton
-import java.lang.Exception
 
 /**
  * @author lalit.singh
@@ -44,13 +43,16 @@ class PersistentNotification internal constructor(
     }
 
     private fun getPersistentRemoteView(): RemoteViews {
-        val remoteView = RemoteViews(context.packageName, R.layout.cm_persistent_notification_layout)
+        val remoteView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.packageName, R.layout.cm_persistent_notification_layout)
+        else RemoteViews(context.packageName, R.layout.cm_persistent_notification_layout_pre_dark_mode)
         val persistentButtonList = baseNotificationModel.persistentButtonList
 
         // close button of persistent notification
         remoteView.setOnClickPendingIntent(R.id.image_icon5, getPersistentClosePendingIntent())
 
-        remoteView.setImageViewResource(R.id.image_icon5, if (CMNotificationUtils.isDarkMode(context)) {
+        remoteView.setImageViewResource(R.id.image_icon5, if (CMNotificationUtils.isDarkMode(context)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             R.drawable.cm_ic_btn_close_white
         } else {
             R.drawable.cm_ic_btn_close_black
