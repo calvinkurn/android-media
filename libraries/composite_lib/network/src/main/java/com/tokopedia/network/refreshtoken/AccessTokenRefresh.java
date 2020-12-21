@@ -57,17 +57,19 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                Timber.w("P2#REFRESH_TOKEN#Error refresh token;oldToken='%s';error='%s'", userSession.getAccessToken(), tokenResponseError);
+                Timber.w("P2#USER_AUTHENTICATOR#error_refresh_token;oldToken='%s';error='%s'", userSession.getAccessToken(), tokenResponseError);
+                networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
                 checkShowForceLogout(tokenResponseError, networkRouter, path);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
+                networkRouter.sendRefreshTokenAnalytics("");
             } else {
                 return "";
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Timber.w("P2#REFRESH_TOKEN#Failed refresh token;oldToken='%s';exception='%s'", userSession.getAccessToken(), e.toString());
+            Timber.w("P2#USER_AUTHENTICATOR#failed_refresh_token;oldToken='%s';exception='%s'", userSession.getAccessToken(), e.toString());
         }
 
         TokenModel model = null;

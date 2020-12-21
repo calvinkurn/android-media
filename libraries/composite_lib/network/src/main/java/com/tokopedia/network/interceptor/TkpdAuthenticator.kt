@@ -5,9 +5,11 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.user.session.UserSession
 import okhttp3.*
+import okio.Buffer
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.regex.Pattern
 
 /**
  * Created by Yoris Prayogo on 23/06/20.
@@ -21,21 +23,47 @@ class TkpdAuthenticator(
 
     private fun isNeedRefresh() = userSession.isLoggedIn
 
+    private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
+        var result = ""
+        try {
+            result = response.request().url().toString() + " "
+            val path: String
+            val copy = finalRequest.newBuilder().build()
+            val buffer = Buffer()
+            if (copy.body() != null) {
+                copy.body()!!.writeTo(buffer)
+            }
+            path = buffer.readUtf8()
+            val pattern = Pattern.compile(TkpdAuthInterceptor.PATH_REGEX)
+            val matcher = pattern.matcher(path)
+            result += if (matcher.find()) {
+                matcher.group()
+            } else {
+                path.substring(0, Math.min(path.length, 150))
+            }
+        } catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+            return result
+        }
+        return result
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
             return if(responseCount(response) == 0)
                 try {
+                    val path: String = getRefreshQueryPath(response.request(), response)
                     val originalRequest = response.request()
                     val accessTokenRefresh = AccessTokenRefresh()
-                    val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter)
+                    val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
-                    Timber.w("P2#AUTHENTICATOR#Failed refresh token;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());                    response.request()
+                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());                    response.request()
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
-                Timber.w("P2#AUTHENTICATOR#Response Count > 0");
+                Timber.w("P2#USER_AUTHENTICATOR#response_count");
                 return response.request()
             }
         }

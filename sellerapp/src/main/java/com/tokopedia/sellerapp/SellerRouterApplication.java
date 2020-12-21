@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
@@ -412,6 +413,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied);
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+        if(errorMessage.isEmpty()){
+            SessionAnalytics.Companion.trackRefreshTokenSuccess();
+        }else {
+            SessionAnalytics.Companion.trackRefreshTokenFailed(errorMessage);
+        }
     }
 
     @Override
