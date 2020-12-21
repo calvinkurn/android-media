@@ -12,4 +12,7 @@ class TotalStockEditorUiModel(
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
             typeFactory.type(this)
 
+    fun isEmpty(): Boolean {
+        return totalStock == 0
+    }
 }

@@ -181,7 +181,19 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
+        updateStockEditorItem(totalStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
+    }
+
+    private fun updateStockEditorItem(totalStock: Int) {
+        adapter.apply {
+            data.firstOrNull { it is TotalStockEditorUiModel }?.let {
+                val item = TotalStockEditorUiModel(totalStock, access)
+                val index = data.indexOf(it)
+                data[index] = item
+                notifyItemChanged(index)
+            }
+        }
     }
 
     private fun onActiveStockChanged(isActive: Boolean) {
