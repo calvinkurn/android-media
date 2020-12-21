@@ -13,17 +13,18 @@ class ProductVariantAdapter(
 ): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterFactory) {
 
     companion object {
-        private const val PRODUCT_TICKER_POSITION = 0
+        private const val TICKER_POSITION = 0
     }
 
     fun showTicker(tickerList: List<TickerData>) {
-        val ticker = data.firstOrNull { it is ProductVariantTicker }
+        val currentTicker = data.firstOrNull { it is ProductVariantTicker }
+        val variantTicker = ProductVariantTicker(tickerList)
 
-        if(ticker == null) {
-            addElement(PRODUCT_TICKER_POSITION, ProductVariantTicker(tickerList))
-            notifyItemInserted(PRODUCT_TICKER_POSITION)
+        if(currentTicker == null) {
+            data.add(TICKER_POSITION, variantTicker)
+            notifyItemInserted(TICKER_POSITION)
         } else {
-            updateItem<ProductVariantTicker> { ProductVariantTicker(tickerList) }
+            updateItem<ProductVariantTicker> { variantTicker }
         }
     }
 
@@ -70,6 +71,7 @@ class ProductVariantAdapter(
         data.run {
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
+                data.removeAt(index)
                 notifyItemRemoved(index)
             }
         }

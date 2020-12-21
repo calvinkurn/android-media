@@ -785,15 +785,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun renderMultiSelectProduct() {
-        val shouldShow = adapter.data
+        val productNotEmpty = adapter.data
             .filterIsInstance<ProductViewModel>()
             .isNotEmpty()
+        val productManageAccess = viewModel.productManageAccess.value as? Success<ProductManageAccess>
+        val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
+        val shouldShow = productNotEmpty && GlobalConfig.isSellerApp() && hasMultiSelectAccess
 
-        multiSelectContainer.showWithCondition(shouldShow)
-        textMultipleSelect.showWithCondition(GlobalConfig.isSellerApp())
-        if (shouldEnableMultiEdit) {
+        multiSelectContainer.showWithCondition(productNotEmpty)
+        textMultipleSelect.showWithCondition(shouldShow)
+
+        if (shouldEnableMultiEdit && hasMultiSelectAccess) {
             shouldEnableMultiEdit = false
             textMultipleSelect.performClick()
+        }
+
+        if(hasMultiSelectAccess) {
+            enableMultiSelect()
         }
     }
 
@@ -1119,14 +1127,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         resetProductList()
         disableMultiSelect()
 
-//        getFiltersTab(withDelay = true)
-//        getProductList(withDelay = true)
-
-        getProductManageAccess()
-
         hideNoAccessPage()
         hideErrorPage()
         hideStockTicker()
+
+        getProductManageAccess()
     }
 
     private fun clearFilterAndKeywordIfEmpty() {
@@ -1832,7 +1837,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     initHeaderView(it.data)
                     showProductList(it.data)
-                    enableMultiSelect()
                     renderMultiSelectProduct()
                 }
                 is Fail -> {
@@ -2033,7 +2037,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                        getTopAdsInfo()
 
                        setupBottomSheet(access)
-                       showHideMultiSelect(access)
                        showHideOptionsMenu(access)
 
                        renderStockLocationBottomSheet()
@@ -2058,15 +2061,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
     // endregion
 
-    private fun showHideMultiSelect(access: ProductManageAccess) {
-        textMultipleSelect.showWithCondition(access.multiSelect)
-    }
-
     private fun showHideOptionsMenu(access: ProductManageAccess) {
         val addProductMenu = optionsMenu?.findItem(R.id.add_product_menu)
         val moreMenu = optionsMenu?.findItem(R.id.action_more_menu)
         addProductMenu?.isVisible = access.addProduct
-        moreMenu?.isVisible = access.changeEtalase
+        moreMenu?.isVisible = access.etalaseList
     }
 
     private fun renderStockLocationBottomSheet() {

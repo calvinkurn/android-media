@@ -305,8 +305,8 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     fun toggleSaveButton(mainStockTab: Boolean) {
-        val canManageStock = mProductManageAccess.value?.updateStock == true
-        val canManageProduct =mProductManageAccess.value?.editProduct == true
+        val canManageStock = mProductManageAccess.value?.editStock == true
+        val canManageProduct = mProductManageAccess.value?.editProduct == true
         val shouldShowSaveBtn = (canManageStock || canManageProduct) && mainStockTab
         mShowSaveBtn.value = shouldShowSaveBtn
     }

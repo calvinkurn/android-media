@@ -6,14 +6,13 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAc
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_PRICE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.EDIT_STOCK
-import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MOVE_ETALASE
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.ETALASE_LIST
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.MULTI_SELECT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.PRODUCT_LIST
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_CASHBACK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_FEATURED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.SET_TOP_ADS
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.STOCK_REMINDER
-import com.tokopedia.product.manage.common.feature.list.constant.ProductManageAccessConstant.UPDATE_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse.*
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 
@@ -25,11 +24,10 @@ object ProductManageAccessMapper {
         return ProductManageAccess(
             accessIds.contains(ADD_PRODUCT),
             accessIds.contains(EDIT_PRODUCT),
-            accessIds.contains(MOVE_ETALASE),
+            accessIds.contains(ETALASE_LIST),
             accessIds.contains(MULTI_SELECT),
             accessIds.contains(EDIT_PRICE),
             accessIds.contains(EDIT_STOCK),
-            accessIds.contains(UPDATE_STOCK),
             accessIds.contains(DUPLICATE_PRODUCT),
             accessIds.contains(STOCK_REMINDER),
             accessIds.contains(DELETE_PRODUCT),
@@ -44,11 +42,10 @@ object ProductManageAccessMapper {
         return ProductManageAccess(
             addProduct = true,
             editProduct = true,
-            changeEtalase = true,
+            etalaseList = true,
             multiSelect = true,
             editPrice = true,
             editStock = true,
-            updateStock = false,
             duplicateProduct = true,
             setStockReminder = true,
             deleteProduct = true,

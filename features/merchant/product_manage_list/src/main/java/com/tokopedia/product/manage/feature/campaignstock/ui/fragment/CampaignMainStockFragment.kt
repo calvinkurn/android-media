@@ -134,19 +134,20 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private fun setupView(view: View) {
         view.setBackgroundColor(Color.TRANSPARENT)
         setupAdapterModels(isVariant)
+        setStockAvailability()
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
-        val isAllStockEmpty = sellableProductList.all { it.isStockEmpty() }
-        val tickerUiModel = createTickerUiModel(access, isAllStockEmpty)
-
         if (isVariant) {
+            val isAllStockEmpty = sellableProductList.all { it.isStockEmpty() }
+            val tickerUiModel = createTickerUiModel(isAllStockEmpty)
             val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 add(tickerUiModel)
                 addAll(sellableProductList)
             }
             renderList(variantList)
         } else {
+            val tickerUiModel = createTickerUiModel(false)
             val productList = mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 add(tickerUiModel)
                 addAll(listOf(
@@ -158,7 +159,11 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         }
     }
 
-    private fun createTickerUiModel(access: ProductManageAccess?, isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
+    private fun setStockAvailability() {
+        mViewModel.setStockAvailability(sellableProductList)
+    }
+
+    private fun createTickerUiModel(isAllStockEmpty: Boolean): CampaignStockTickerUiModel {
         val isMultiLocationShop = userSession.isMultiLocationShop
         val canEditStock = access?.editStock == true
 
@@ -169,13 +174,26 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     }
 
     private fun observeVariantStock() {
-        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer {
-            showVariantWarningTickerWithCondition(it)
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer { isAllStockEmpty ->
+            val shouldShowWarning = isAllStockEmpty && isVariant
+            showVariantWarningTickerWithCondition(shouldShowWarning)
         })
     }
 
     private fun onTotalStockChanged(totalStock: Int) {
+        updateStockEditorItem(totalStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
+    }
+
+    private fun updateStockEditorItem(totalStock: Int) {
+        adapter.apply {
+            data.firstOrNull { it is TotalStockEditorUiModel }?.let {
+                val item = TotalStockEditorUiModel(totalStock, access)
+                val index = data.indexOf(it)
+                data[index] = item
+                notifyItemChanged(index)
+            }
+        }
     }
 
     private fun onActiveStockChanged(isActive: Boolean) {
@@ -193,7 +211,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
         adapter.data.firstOrNull { it is CampaignStockTickerUiModel }?.let {
-            val tickerUiModel = createTickerUiModel(access, shouldShowWarning)
+            val tickerUiModel = createTickerUiModel(shouldShowWarning)
             val index = adapter.data.indexOf(it)
             adapter.data[index] = tickerUiModel
             adapter.notifyItemChanged(index)
