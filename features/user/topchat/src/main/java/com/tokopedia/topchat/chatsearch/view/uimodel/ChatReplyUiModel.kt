@@ -15,7 +15,7 @@ data class ChatReplyUiModel(
         @SerializedName("createTimeStr")
         val timeStamp: String = "",
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0L,
         @SerializedName("productId")
         val productId: String = "",
         @SerializedName("replyId")
