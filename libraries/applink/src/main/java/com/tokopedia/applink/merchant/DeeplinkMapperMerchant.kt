@@ -23,7 +23,7 @@ object DeeplinkMapperMerchant {
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
     private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
-
+    private const val PARAM_PRODUCT_ID = "productId"
 
     private const val PARAM_URL = "url"
 
@@ -36,6 +36,14 @@ object DeeplinkMapperMerchant {
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
             return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+        }
+        return deeplink
+    }
+
+    fun getRegisteredNavigationSellerReviewDetail(deeplink: String): String {
+        if (deeplink.startsWith(ApplinkConst.SELLER_REVIEW)) {
+            val productId = Uri.parse(deeplink).getQueryParameter(PARAM_PRODUCT_ID)
+            return Uri.parse(ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL).buildUpon().appendQueryParameter(PARAM_PRODUCT_ID, productId).build().toString()
         }
         return deeplink
     }
