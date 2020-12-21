@@ -13,7 +13,8 @@ class TalkReplyAdapterTypeFactory(
         private val onKebabClickedListener: OnKebabClickedListener,
         private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener,
         private val talkReplyHeaderListener: TalkReplyHeaderListener,
-        private val threadListener: ThreadListener
+        private val threadListener: ThreadListener,
+        private val isOldView: Boolean
 ) : BaseAdapterTypeFactory(), TalkReplyTypeFactory {
 
     override fun type(talkReplyUiModel: TalkReplyUiModel): Int {
@@ -38,10 +39,10 @@ class TalkReplyAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener)
+            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener, isOldView)
             TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
             TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
-            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener, threadListener)
+            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener, threadListener, isOldView)
             TalkReplyProductHeaderViewHolder.LAYOUT -> TalkReplyProductHeaderViewHolder(parent, talkReplyProductHeaderListener)
             else -> super.createViewHolder(parent, type)
         }

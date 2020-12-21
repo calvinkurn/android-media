@@ -27,7 +27,8 @@ import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
                                 private val talkReplyHeaderListener: TalkReplyHeaderListener,
-                                private val threadListener: ThreadListener) :
+                                private val threadListener: ThreadListener,
+                                private val isOldView: Boolean) :
         AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
@@ -61,9 +62,16 @@ class TalkReplyHeaderViewHolder(view: View,
 
     private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
         if(allowUnmask) {
-            itemView.replyUnmaskCard.apply {
+            if(isOldView) {
+                itemView.replyUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyHeaderViewHolder, "")
+                }
+                return
+            }
+            itemView.replyQuestionTicker.apply {
                 show()
-                setListener(this@TalkReplyHeaderViewHolder, "")
+                setTextDescription(getString(R.string.reply_warning_ticker))
             }
         } else {
             itemView.replyUnmaskCard.hide()

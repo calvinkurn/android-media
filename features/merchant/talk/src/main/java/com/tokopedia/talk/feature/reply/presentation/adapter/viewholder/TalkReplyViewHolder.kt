@@ -29,7 +29,8 @@ import kotlinx.android.synthetic.main.item_talk_reply.view.*
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
                           private val onKebabClickedListener: OnKebabClickedListener,
-                          private val threadListener: ThreadListener
+                          private val threadListener: ThreadListener,
+                          private val isOldView: Boolean
 ) : AbstractViewHolder<TalkReplyUiModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
@@ -194,9 +195,16 @@ class TalkReplyViewHolder(view: View,
 
     private fun showUnmaskCardWithCondition(allowUnmask: Boolean, commentId: String) {
         if(allowUnmask) {
-            itemView.replyCommentUnmaskCard.apply {
+            if(isOldView) {
+                itemView.replyCommentUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyViewHolder, commentId)
+                }
+                return
+            }
+            itemView.replyCommentTicker.apply {
                 show()
-                setListener(this@TalkReplyViewHolder, commentId)
+                setTextDescription(getString(R.string.reply_warning_ticker))
             }
         } else {
             itemView.replyCommentUnmaskCard.hide()

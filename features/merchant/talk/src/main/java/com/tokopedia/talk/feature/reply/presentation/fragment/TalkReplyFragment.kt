@@ -663,7 +663,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this, this, this, this))
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this, this, this, this, isOldView()))
     }
 
     private fun initRecyclerView() {
@@ -857,5 +857,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                 headerTalkReply?.title = getString(R.string.title_reply_page)
             }
         }
+    }
+
+    private fun isOldView(): Boolean {
+        return false
     }
 }
