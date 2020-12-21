@@ -66,16 +66,8 @@ public class Utils {
     private static Utils singleInstance;
     private static Location location;
     public static String LOCATION_OBJECT = "loc_obj";
-    public static String LOCATION_NAME_PARAM = "location_name";
-    public static String LOCATION_ID_PARAM = "id";
-    public static String LOCATION_TYPE = "location_type";
     public static String LOCATION_CITY_ID = "city_id";
     public static String LOCATION_COORDINATES = "coordinates";
-    public static String BRAND_QUERY_PARAM_TREE = "tree";
-    public static String BRAND_QUERY_TAGS = "tags";
-    public static String BRAND_QUERY_PARAM_BRAND = "brand";
-    public static String BRAND_QUERY_PARAM_BRAND_AND_PRODUCT = "brand_product";
-    public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static String LOCATION_NAME = "Jakarta";
     public static int LOCATION_ID = 318;
@@ -90,11 +82,6 @@ public class Utils {
     private SparseIntArray unLikedEventMap;
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "24";
-    public static final String KEY_LOCATION = "KEY_FP_LOCATION";
-    public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
-    public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
-    private SharedPreferences sharedPrefs;
-
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -145,59 +132,6 @@ public class Utils {
 
     }
 
-    public ArrayList<CategoryItem> convertIntoCategoryListViewModel(List<CategoryItem> dealsResponse) {
-
-        ArrayList<CategoryItem> categoryRespons = new ArrayList<>();
-        if (dealsResponse != null && dealsResponse.size() > 0) {
-            for (CategoryItem categoryItem : dealsResponse) {
-                    CategoryItem category = new CategoryItem();
-                    category.setTitle(categoryItem.getTitle());
-                    category.setCategoryId(categoryItem.getCategoryId());
-                    category.setCount(categoryItem.getCount());
-                    category.setName(categoryItem.getName());
-                    category.setMediaUrl(categoryItem.getMediaUrl());
-                    category.setCategoryUrl(categoryItem.getCategoryUrl());
-                    category.setUrl(categoryItem.getUrl());
-                    category.setItems(categoryItem.getItems());
-                    category.setIsCard(categoryItem.getIsCard());
-                    category.setPriority(categoryItem.getPriority());
-
-                    switch (categoryItem.getName().toLowerCase()) {
-                        case "top":
-                            categoryRespons.add(0, category);
-                            break;
-                        case "carousel":
-                            categoryRespons.add(0, category);
-                            break;
-                        default:
-                            categoryRespons.add(category);
-                            break;
-                    }
-            }
-
-            applyFilterOnCategories(categoryRespons);
-
-
-        }
-        return categoryRespons;
-    }
-
-    public void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons) {
-        Map<Integer, Integer> sortOrder = new HashMap<>();
-            for (CategoryItem categoryItem : categoryRespons) {
-                if (categoryItem.getName().equalsIgnoreCase("carousel")) {
-                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
-                } else if (categoryItem.getName().equalsIgnoreCase("top")) {
-                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
-                } else {
-                    sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
-                }
-                if (sortOrder.size() == categoryRespons.size()) {
-                    Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
-                }
-            }
-    }
-
     public void sortOutletsWithLocation(List<Outlet> outlets, Location location) {
         if (location == null || outlets == null)
             return;
@@ -221,50 +155,6 @@ public class Utils {
         outlets.addAll(outlets1);
         outlets.addAll(outlets2);
 
-    }
-
-    private class CategoryItemComparator implements Comparator<CategoryItem> {
-        private Map<Integer, Integer> sortOrder;
-
-        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
-            this.sortOrder = sortOrder;
-        }
-
-        @Override
-        public int compare(CategoryItem i1, CategoryItem i2) {
-            Integer id1 = sortOrder.get(i1.getCategoryId());
-            if (id1 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i1.getCategoryId());
-            }
-            Integer id2 = sortOrder.get(i2.getCategoryId());
-            if (id2 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i2.getCategoryId());
-            }
-            return id2.compareTo(id1);
-        }
-    }
-
-    public static boolean containsIgnoreCase(String src, String what) {
-        final int length = what.length();
-        if (length == 0)
-            return true; // Empty string is contained
-
-        final char firstLo = Character.toLowerCase(what.charAt(0));
-        final char firstUp = Character.toUpperCase(what.charAt(0));
-
-        for (int i = src.length() - length; i >= 0; i--) {
-            // Quick check before calling the more expensive regionMatches() method:
-            final char ch = src.charAt(i);
-            if (ch != firstLo && ch != firstUp)
-                continue;
-
-            if (src.regionMatches(true, i, what, 0, length))
-                return true;
-        }
-
-        return false;
     }
 
     public static String convertEpochToString(int time) {
@@ -297,10 +187,6 @@ public class Utils {
             updateLocation(context, location);
         }
         return location;
-    }
-
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     public void updateLocation(Context context, Location locatn) {
@@ -390,34 +276,6 @@ public class Utils {
         }
     }
 
-    public static String fetchOrderId(String url) {
-        return url.substring(url.lastIndexOf('/') + 1);
-    }
-
-    public static Uri replaceUriParameter(Uri uri, String key, String newValue) {
-        final Set<String> params = uri.getQueryParameterNames();
-        final Uri.Builder newUri = uri.buildUpon().clearQuery();
-        for (String param : params) {
-            newUri.appendQueryParameter(param,
-                    param.equals(key) ? newValue : uri.getQueryParameter(param));
-        }
-
-        return newUri.build();
-    }
-
-    public static boolean hasShown(Context context, String tag){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
-                Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(tag, false);
-    }
-
-    public static void setShown(Context context, String tag, boolean hasShown){
-        SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
-                Context.MODE_PRIVATE).edit();
-        sharedPreferencesEditor.putBoolean (tag, hasShown);
-        sharedPreferencesEditor.apply();
-    }
-
     private void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType("")
@@ -447,26 +305,6 @@ public class Utils {
                     }
                 }));
 
-    }
-    public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper, CurrentLocationCallBack currentLocationCallBack) {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(activity
-                        .getApplicationContext()),
-                activity.getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(activity, currentLocationCallBack), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                "");
-    }
-
-    private Function1<DeviceLocation, Unit> onGetLocation(Activity activity, CurrentLocationCallBack currentLocationCallBack) {
-        return new Function1<DeviceLocation, Unit>() {
-            @Override
-            public Unit invoke(DeviceLocation deviceLocation) {
-                currentLocationCallBack.setCurrentLocation(deviceLocation);
-                return null;
-            }
-        };
     }
 
     public String getLocationErrorMessage(Context context) {
