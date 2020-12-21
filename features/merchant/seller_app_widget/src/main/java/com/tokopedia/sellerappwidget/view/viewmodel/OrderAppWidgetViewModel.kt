@@ -35,9 +35,9 @@ class OrderAppWidgetViewModel(
                         sellerOrderStatus = readyToShipResult.sellerOrderStatus
                 )
             }
-            view?.onSuccessGetOrderList(result)
+            view?.onSuccess(result)
         }, onError = {
-            view?.onFailedGetOrderList(it)
+            view?.onError(it)
         })
     }
 }

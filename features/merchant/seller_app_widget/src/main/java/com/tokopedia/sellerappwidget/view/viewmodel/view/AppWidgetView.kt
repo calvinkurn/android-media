@@ -6,7 +6,7 @@ package com.tokopedia.sellerappwidget.view.viewmodel.view
 
 interface AppWidgetView<T : Any> {
 
-    fun onSuccessGetOrderList(result: T)
+    fun onSuccess(result: T)
 
-    fun onFailedGetOrderList(t: Throwable)
+    fun onError(t: Throwable)
 }

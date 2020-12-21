@@ -5,8 +5,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerappwidget.domain.usecase.GetChatUseCase
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 
 /**
@@ -24,9 +22,9 @@ class ChatAppWidgetViewModel(
             val result = withContext(dispatchers.io) {
                 return@withContext getChatUseCase.executeOnBackground()
             }
-            view?.onSuccessGetOrderList(result)
+            view?.onSuccess(result)
         }, onError = {
-            view?.onFailedGetOrderList(it)
+            view?.onError(it)
         })
     }
 }

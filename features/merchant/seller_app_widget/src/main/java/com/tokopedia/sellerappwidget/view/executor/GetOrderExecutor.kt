@@ -64,14 +64,14 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         viewModel.getOrderList(startDateFmt, endDateFmt)
     }
 
-    override fun onSuccessGetOrderList(result: OrderUiModel) {
+    override fun onSuccess(result: OrderUiModel) {
         sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
         OrderAppWidget.setOnSuccess(context, result, orderStatusId)
         GetOrderWorker.runWorker(context)
         viewModel.unbind()
     }
 
-    override fun onFailedGetOrderList(t: Throwable) {
+    override fun onError(t: Throwable) {
         OrderAppWidget.setOnError(context)
         GetOrderWorker.runWorker(context)
         Timber.e(t)
