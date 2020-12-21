@@ -49,7 +49,6 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -475,61 +474,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-        if (getActivity() == null)
-            return;
-        switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location != null) {
-                        Intent searchIntent = new Intent(getActivity(), DealsSearchActivity.class);
-                        navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-                    }
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location != null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
-                        mPresenter.getCategoryDetails(true);
-                        mPresenter.getBrandsList(true);
-                    }
-
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location != null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
-                        mPresenter.getCategoryDetails(true);
-                        mPresenter.getBrandsList(true);
-                    } else {
-                        mPresenter.getCategoryDetails(false);
-                        mPresenter.getBrandsList(false);
-                    }
-
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    UserSessionInterface userSession = new UserSession(getActivity());
-                    if (userSession.isLoggedIn()) {
-                        if (adapterPosition != -1) {
-                            if (dealsAdapter != null)
-                                dealsAdapter.setLike(adapterPosition);
-                        }
-                    }
-                }
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public View getRootView() {
         return mainContent;
     }
@@ -614,7 +558,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 RouteManager.route(getActivity(), ApplinkConst.DEALS_ORDER);
             } else {
                 Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                navigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
+//                navigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
             }
         } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,

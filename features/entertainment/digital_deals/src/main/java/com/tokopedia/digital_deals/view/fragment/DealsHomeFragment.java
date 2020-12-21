@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -8,21 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -40,6 +24,20 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -64,7 +62,6 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
@@ -80,11 +77,10 @@ import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -92,8 +88,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static android.app.Activity.RESULT_OK;
 
 public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, PopupMenu.OnMenuItemClickListener, DialogInterface.OnCancelListener, CircularListener {
 
@@ -242,18 +236,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof DealsHomeActivity) {
-            openTrendingDeals = (OpenTrendingDeals) context;
-            currentLocationCallBack = (CurrentLocationCallBack) context;
-        }
-    }
-
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(com.tokopedia.digital_deals.R.id.shimmer_layout);
-        ((TextView)shimmerLayout.findViewById(com.tokopedia.digital_deals.R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+        ((TextView) shimmerLayout.findViewById(com.tokopedia.digital_deals.R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
                 (getActivity(), com.tokopedia.digital_deals.R.drawable.location_arrow_down), null);
         toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.deals_toolbar);
         toolbarNameLayout = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar_home_layout);
@@ -269,7 +254,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
         searchInputView = view.findViewById(com.tokopedia.digital_deals.R.id.search_input_view);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null , null);
+                (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null, null);
         tvLocationName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
         clBrands = view.findViewById(com.tokopedia.digital_deals.R.id.cl_brands);
         clPromos = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promos);
@@ -400,31 +385,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    if (getActivity() != null && getActivity().getApplication() != null) {
-                        UserSessionInterface userSession = new UserSession(getActivity());
-                        if (userSession.isLoggedIn()) {
-                            if (adapterPosition == -1) {
-                                startOrderListActivity();
-                            } else {
-                                if (rvTrendingDeals.getAdapter() != null)
-                                    ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).setLike(adapterPosition);
-                            }
-                        }
-                    }
-                }
-                break;
-
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels) {
         startShowCase();
         if (categoryList != null) {
@@ -527,28 +487,28 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
     }
 
-    private ArrayList<CircularModel> mapProductListToCircularModel(){
+    private ArrayList<CircularModel> mapProductListToCircularModel() {
         ArrayList circularList = new ArrayList<CircularModel>();
-        for (ProductItem item: bannerList) {
+        for (ProductItem item : bannerList) {
             CircularModel circularModel = new CircularModel(item.getId(), item.getImageWeb());
             circularList.add(circularModel);
         }
         return circularList;
     }
 
-    private void initBanner(){
+    private void initBanner() {
         setBannerImpression();
         cvPromos.setAdapter(promoAdapter);
         cvPromos.setItemList(mapProductListToCircularModel());
         setBannerIndicatorAnimation();
     }
 
-    private void setBannerIndicatorAnimation(){
+    private void setBannerIndicatorAnimation() {
         cvPromos.setIndicatorPageChangeListener(newIndicatorPosition -> indicatorPromos.animatePageSelected(newIndicatorPosition));
         indicatorPromos.createIndicators(cvPromos.getIndicatorCount(), cvPromos.getIndicatorPosition());
     }
 
-    private void setBannerImpression(){
+    private void setBannerImpression() {
         cvPromos.setPageChangeListener(new CircularPageChangeListener() {
             @Override
             public void onPageScrolled(int position) {
@@ -556,20 +516,21 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
     }
 
     @Override
     public void onClick(int position) {
-        if(!bannerList.isEmpty() && bannerList.size() > position){
+        if (!bannerList.isEmpty() && bannerList.size() > position) {
             ProductItem item = bannerList.get(position);
             dealsAnalytics.sendOnClickBannerPromoEvent(item, position);
             mPresenter.onClickBanner(bannerList.get(position));
         }
     }
 
-    private void onPromoScrolled(int position){
+    private void onPromoScrolled(int position) {
         dealsAnalytics.sendPromoImpressionEvent(bannerList.get(position), position);
     }
 
@@ -594,7 +555,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
             boolean isItemsAvailable = false;
-            for (int i=0; i<categoryItems.size(); i++) {
+            for (int i = 0; i < categoryItems.size(); i++) {
                 CategoryItem categoryItem = categoryItems.get(i);
                 if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
                     isItemsAvailable = true;
@@ -650,14 +611,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    public int getRequestCode() {
+        return 0;
     }
 
     @Override
-    public int getRequestCode() {
-        return DealsHomeActivity.REQUEST_CODE_LOGIN;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
 
     @Override
@@ -845,7 +806,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Utils.getSingletonInstance().updateLocation(getContext(), location);
         if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
             mPresenter.getLocations();
-        } else if (location != null){
+        } else if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
@@ -884,7 +845,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
-            Toaster.INSTANCE.build(mainContent, String.format("%s %s", getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL , getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.INSTANCE.build(mainContent, String.format("%s %s", getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
             }).show();
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();

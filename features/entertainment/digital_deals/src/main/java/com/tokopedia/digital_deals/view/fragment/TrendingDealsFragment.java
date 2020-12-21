@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
@@ -57,13 +56,6 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
         return view;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof DealsHomeActivity)
-            trendingDealsCallBacks = (DealsHomeActivity) activity;
-    }
-
     private void setViewIds(View view) {
         toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
         appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
@@ -96,26 +88,6 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
     private void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    if (getActivity() != null && getActivity().getApplication() != null) {
-                        UserSessionInterface userSession = new UserSession(getActivity());
-                        if (userSession.isLoggedIn()) {
-                            if (recyclerView.getAdapter() != null) {
-                                ((DealsCategoryAdapter) recyclerView.getAdapter()).setLike(adapterPosition);
-                            }
-                        }
-                    }
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 
     AdapterCallback mAdapterCallbacks = new AdapterCallback() {
         @Override

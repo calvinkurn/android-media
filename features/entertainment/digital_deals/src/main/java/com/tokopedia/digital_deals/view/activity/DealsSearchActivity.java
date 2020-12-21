@@ -176,7 +176,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
                 brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getSearchText());
                 brandIntent.putExtra("cat_id", categoryId);
-                navigateToActivityRequest(brandIntent, DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
+//                navigateToActivityRequest(brandIntent, DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
             }
         });
     }
@@ -430,37 +430,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     protected Fragment getNewFragment() {
         return null;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
-                        tvCityName.setText(location.getName());
-                    }
-                    if (!TextUtils.isEmpty(searchInputView.getSearchText()))
-                        mPresenter.getDealsListBySearch(searchInputView.getSearchText());
-
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    UserSessionInterface userSession = new UserSession(this);
-                    if (userSession.isLoggedIn()) {
-                        if (adapterPosition != -1) {
-                            if (dealsCategoryAdapter != null)
-                                dealsCategoryAdapter.setLike(adapterPosition);
-                        }
-                    }
-                }
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
