@@ -126,4 +126,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getAddToCartButton(): UnifyButton? = buttonAddToCart
 }

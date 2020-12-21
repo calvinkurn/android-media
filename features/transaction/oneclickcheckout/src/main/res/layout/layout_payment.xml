@@ -70,6 +70,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_payment_error"
         app:unifyButtonSize="large"
-        app:unifyButtonType="transaction" />
+        app:unifyButtonType="main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
