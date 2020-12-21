@@ -1,5 +1,8 @@
 package com.tokopedia.oneclickcheckout.preference.list.view
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +30,6 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val tvMainPreference = itemView.findViewById<Typography>(R.id.tv_main_preference)
 
     private val tvAddressName = itemView.findViewById<Typography>(R.id.tv_address_name)
-    private val tvAddressReceiver = itemView.findViewById<Typography>(R.id.tv_address_receiver)
     private val tvAddressDetail = itemView.findViewById<Typography>(R.id.tv_address_detail)
 
     private val tvShippingName = itemView.findViewById<Typography>(R.id.tv_shipping_name)
@@ -90,7 +92,6 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         }
 
         val addressModel = preference.addressModel
-        tvAddressName.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -100,12 +101,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver.text = receiverText
-            tvAddressReceiver.visible()
-        } else {
-            tvAddressReceiver.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(Typeface.BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail.text = addressModel.fullAddress
 
         val shipmentModel = preference.shipmentModel

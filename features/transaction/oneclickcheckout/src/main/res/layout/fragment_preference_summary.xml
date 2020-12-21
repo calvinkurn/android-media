@@ -33,27 +33,16 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:lines="1"
-                android:textColor="@color/Unify_N700_96"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_preference_name"
-                app:typographyType="body_2"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_address_receiver"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/btn_change_address"
-                app:layout_constraintStart_toEndOf="@+id/tv_address_name"
-                app:layout_constraintTop_toTopOf="@+id/tv_address_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_preference_name"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
@@ -74,15 +63,15 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_address"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingStart="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_24"
                 android:text="@string/lbl_change_template"
                 android:textColor="@color/Unify_G500"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_address_receiver"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_address_name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_address_receiver"
+                app:layout_constraintTop_toTopOf="@+id/tv_address_name"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
