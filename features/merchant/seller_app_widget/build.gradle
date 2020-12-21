@@ -59,6 +59,7 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    testImplementation project(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
