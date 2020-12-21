@@ -1,12 +1,12 @@
-package com.tokopedia.tokopatch.patch
+package androidx.core.app
 
 import android.app.Application
 import android.content.Intent
-import androidx.core.app.JobIntentService
 import com.tokopedia.tokopatch.domain.data.DataResponse
 import com.tokopedia.tokopatch.domain.data.RobustDatabase
 import com.tokopedia.tokopatch.domain.repository.PatchRepository
 import com.tokopedia.tokopatch.model.Patch
+import com.tokopedia.tokopatch.patch.PatchExecutors
 import com.tokopedia.tokopatch.utils.Decoder
 import com.tokopedia.tokopatch.utils.PatchLogger
 import com.tokopedia.tokopatch.utils.Utils
@@ -113,6 +113,14 @@ class PatchService : JobIntentService() {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    override fun dequeueWork(): GenericWorkItem? {
+        try {
+            return super.dequeueWork()
+        } catch (ex: SecurityException){
+            return null
         }
     }
 
