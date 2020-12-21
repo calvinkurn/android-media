@@ -5,12 +5,10 @@ import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;

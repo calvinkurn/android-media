@@ -4,20 +4,16 @@ package com.tokopedia.digital_deals.di;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
-import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TncBottomSheetFragment;
-import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.oms.di.OmsModule;
 
 import dagger.Component;
@@ -26,8 +22,6 @@ import dagger.Component;
 @Component(modules = {OmsModule.class, DealsModule.class}, dependencies = BaseAppComponent.class)
 
 public interface DealsComponent {
-
-    void inject(DealsSearchActivity activity);
 
     void inject(DealDetailsFragment fragment);
 
@@ -45,15 +39,9 @@ public interface DealsComponent {
 
     void inject(BrandDetailsFragment fragment);
 
-    void inject(DealsHomeFragment dealsHomeFragment);
-
     void inject(TncBottomSheetFragment fragment);
 
     void inject(AllBrandsActivity allBrandsActivity);
 
     void inject(SelectLocationBottomSheet selectLocationBottomSheet);
-
-    void inject(TrendingDealsFragment trendingDealsFragment);
-
-    void inject(TrendingDealsAdapter trendingDealsAdapter);
 }

@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -46,10 +45,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
@@ -65,14 +62,11 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, PopupMenu.OnMenuItemClickListener{
 
@@ -490,11 +484,11 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.tv_location_name) {
             mPresenter.getLocations();
         } else if (v.getId() == com.tokopedia.digital_deals.R.id.search_input_view) {
-            Intent searchIntent = new Intent(getContext(), DealsSearchActivity.class);
-            TopDealsCacheHandler.init().setTopDeals(this.categoryItems);
-            searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
-            searchIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
-            getContext().startActivity(searchIntent);
+//            Intent searchIntent = new Intent(getContext(), DealsSearchActivity.class);
+//            TopDealsCacheHandler.init().setTopDeals(this.categoryItems);
+//            searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+//            searchIntent.putExtra("cat_id", String.valueOf(categoriesModel.getCategoryId()));
+//            getContext().startActivity(searchIntent);
         } else {
             mPresenter.onOptionMenuClick(v.getId());
         }

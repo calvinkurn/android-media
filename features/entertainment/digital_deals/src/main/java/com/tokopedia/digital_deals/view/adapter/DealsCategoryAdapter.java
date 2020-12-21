@@ -642,7 +642,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-//                toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
+                toActivityRequest.onNavigateToActivityRequest(detailsIntent, 103, getIndex());
                 if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                     dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)) {
