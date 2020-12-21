@@ -158,7 +158,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var categoryAlertDialog: DialogUnify? = null
 
     // product specification
-    private var productSpecificationView: Typography? = null
+    private var productSpecificationTextView: Typography? = null
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
@@ -326,7 +326,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // add product specification button
-        productSpecificationView = view.findViewById(R.id.tv_product_specification)
+        productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
         productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
@@ -656,6 +656,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
+        subscribeToSpecificationList()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
@@ -664,6 +665,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupSpecificationField() {
+        val productId = viewModel.productInputModel.productId
+        val categoryId = viewModel.productInputModel.detailInputModel.categoryId
+
+        viewModel.getAnnotationCategory(categoryId, if (productId > 0) {
+            productId.toString()
+        } else {
+            ""
+        })
+
         addProductSpecificationButton?.setOnClickListener {
             showSpecificationPicker()
         }
@@ -1329,6 +1339,27 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun subscribeToSpecificationList() {
+        viewModel.specificationList.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.isNotEmpty()) {
+                        val selectedTitles = viewModel.getSpecificationTitles(result.data)
+                        productSpecificationTextView?.text = selectedTitles.joinToString(", ")
+
+                        viewModel.updateSpecification(result.data)
+                    }
+                    productSpecificationTextView?.show()
+                    productSpecificationReloadLayout?.hide()
+                }
+                is Fail -> {
+                    productSpecificationTextView?.hide()
+                    productSpecificationReloadLayout?.show()
+                }
+            }
+        })
+    }
+
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
             if (it) enableSubmitButton()
@@ -1398,7 +1429,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
         }
     }
 

@@ -22,6 +22,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
@@ -40,7 +42,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
         private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+        private val annotationCategoryUseCase: AnnotationCategoryUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -158,6 +161,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
     val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
+
+    private val mSpecificationList = MutableLiveData<Result<List<AnnotationCategoryData>>>()
+    val specificationList: LiveData<Result<List<AnnotationCategoryData>>>
+        get() = mSpecificationList
 
     private fun isInputValid(): Boolean {
 
@@ -459,5 +466,42 @@ class AddEditProductDetailViewModel @Inject constructor(
         }, onError = {
             mShopShowCases.value = Fail(it)
         })
+    }
+
+    fun getAnnotationCategory(categoryId: String, productId: String) {
+        launchCatchError(block = {
+            mSpecificationList.value = Success(withContext(Dispatchers.IO) {
+                annotationCategoryUseCase.setParamsCategoryId(categoryId)
+                annotationCategoryUseCase.setParamsProductId(productId)
+                val response = annotationCategoryUseCase.executeOnBackground()
+                response.drogonAnnotationCategoryV2.data
+            })
+        }, onError = {
+            mSpecificationList.value = Fail(it)
+        })
+    }
+
+    fun updateSpecification (specificationList: List<AnnotationCategoryData>) {
+        val result: MutableList<String> = mutableListOf()
+        specificationList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                result.add(id.toString())
+            }
+        }
+
+        productInputModel.detailInputModel.specifications = result
+    }
+
+    fun getSpecificationTitles (specificationList: List<AnnotationCategoryData>): List<String> {
+        val result: MutableList<String> = mutableListOf()
+        specificationList.forEach {
+            val selectedValue = it.data.firstOrNull { value -> value.selected }
+            selectedValue?.apply {
+                result.add(name)
+            }
+        }
+
+        return result
     }
 }

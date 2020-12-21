@@ -72,8 +72,8 @@ class EditProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel)
-
+                mapVariantParam(variantInputModel),
+                detailInputModel.specifications
         )
     }
 
