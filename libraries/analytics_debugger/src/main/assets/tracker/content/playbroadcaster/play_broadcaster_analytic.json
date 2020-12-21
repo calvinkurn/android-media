@@ -803,17 +803,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click mulai live streaming",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "currentSite": "{{.*}}",
-      "shopId": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "view pop up message before start live",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",

@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
@@ -16,9 +17,9 @@ import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.extension.toCalendar
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
+import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -60,6 +61,8 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         override val coroutineContext: CoroutineContext
             get() = dispatcher.main + job
     }
+
+    private var toasterBottomMargin = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -164,9 +167,23 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     private fun onUpdateFail(error: Throwable) {
         btnSet?.isLoading = false
+        showToasterError(
+                message = error.localizedMessage
+        )
+    }
+
+    private fun showToasterError(
+            message: String
+    ) {
+        if (toasterBottomMargin == 0) {
+            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            toasterBottomMargin = btnSet?.height.orZero() + offset8
+        }
+
         container.showToaster(
-                message = error.localizedMessage,
-                type = Toaster.TYPE_ERROR
+                message = message,
+                type = Toaster.TYPE_ERROR,
+                bottomMargin = toasterBottomMargin
         )
     }
 

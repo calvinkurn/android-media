@@ -153,7 +153,7 @@ class PlayBroadcastViewModel @Inject constructor(
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
             setDurationConfig(configUiModel.durationConfig)
-//            setScheduleConfig(configUiModel.scheduleConfig) // todo: uncomment when BE ready
+            setScheduleConfig(configUiModel.scheduleConfig)
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
