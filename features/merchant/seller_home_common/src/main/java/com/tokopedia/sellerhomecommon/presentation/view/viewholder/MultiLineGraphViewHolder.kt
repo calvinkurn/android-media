@@ -69,14 +69,14 @@ class MultiLineGraphViewHolder(
     }
 
     override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
-        scrollMetricToPisition(position)
+        scrollMetricToPosition(position)
         setOnMetricStateChanged(metric)
         element?.let {
             listener.sendMultiLineGraphMetricClick(it, metric)
         }
     }
 
-    private fun scrollMetricToPisition(position: Int) {
+    private fun scrollMetricToPosition(position: Int) {
         itemView.rvShcGraphMetrics.post {
             val mPosition = if (position == 0 || metricsAdapter.itemCount.minus(1) == position) {
                 position
@@ -226,7 +226,7 @@ class MultiLineGraphViewHolder(
             }
 
             val metricPosition = metricItems.indexOf(metric)
-            scrollMetricToPisition(metricPosition)
+            scrollMetricToPosition(metricPosition)
 
             setupCta(element)
             setupTooltip(element)
