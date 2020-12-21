@@ -57,12 +57,14 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.WidgetSource
+import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -76,7 +78,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -109,6 +110,7 @@ open class HomeViewModel @Inject constructor(
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>,
@@ -209,6 +211,9 @@ open class HomeViewModel @Inject constructor(
     private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
     val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
 
+    private val _rechargeBUWidgetLiveData = MutableLiveData<Event<RechargePerso>>()
+    val rechargeBUWidgetLiveData: LiveData<Event<RechargePerso>> get() = _rechargeBUWidgetLiveData
+
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
@@ -232,6 +237,7 @@ open class HomeViewModel @Inject constructor(
     private var declineRechargeRecommendationJob: Job? = null
     private var getSalamWidgetJob: Job? = null
     private var declineSalamWidgetJob : Job? = null
+    private var getRechargeBUWidgetJob: Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
@@ -717,6 +723,21 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun insertRechargeBUWidget(data: RechargePerso) {
+        if (data.items.isNotEmpty()) {
+            homeVisitableListData.let {
+                val findRechargeBUWidget = it.find { visitable -> visitable is RechargeBUWidgetDataModel }
+                val indexOfRechargeBUWidget = it.indexOf(findRechargeBUWidget)
+                if (indexOfRechargeBUWidget > -1 && findRechargeBUWidget is RechargeBUWidgetDataModel) {
+                    val newFindRechargeBUWidget = findRechargeBUWidget.copy(data = data)
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindRechargeBUWidget, indexOfRechargeBUWidget, this@HomeViewModel))
+                }
+            }
+        } else {
+            removeRechargeBUWidget()
+        }
+    }
+
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
                 homeVisitableListData.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
@@ -732,6 +753,14 @@ open class HomeViewModel @Inject constructor(
                         ?: return
         if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findSalamWidgetModel, -1, this))
+        }
+    }
+
+    private fun removeRechargeBUWidget() {
+        val findRechargeBUWidgetViewModel =
+                homeVisitableListData.find { visitable -> visitable is RechargeBUWidgetDataModel } ?: return
+        if (findRechargeBUWidgetViewModel is RechargeBUWidgetDataModel) {
+            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findRechargeBUWidgetViewModel, -1, this))
         }
     }
 
@@ -1031,6 +1060,17 @@ open class HomeViewModel @Inject constructor(
             declineSalamWidgetUseCase.get().setParams(requestParams)
             declineSalamWidgetUseCase.get().executeOnBackground()
         }){}
+    }
+
+    fun getRechargeBUWidget(source: WidgetSource) {
+        if(getRechargeBUWidgetJob?.isActive == true) return
+        getRechargeBUWidgetJob = launchCatchError(coroutineContext, block = {
+            getRechargeBUWidgetUseCase.get().setParams(source)
+            val data = getRechargeBUWidgetUseCase.get().executeOnBackground()
+            _rechargeBUWidgetLiveData.postValue(Event(data))
+        }){
+            removeRechargeBUWidget()
+        }
     }
 
     fun getFeedTabData() {
