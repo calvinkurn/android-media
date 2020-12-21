@@ -158,6 +158,7 @@
     <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
     <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
     <string name="play_broadcast_set_schedule">Simpan Jadwal</string>
+    <string name="play_broadcast_schedule_set_success">Jadwal berhasil disimpan. Kembali lagi ketika mulai siaran, ya!</string>
     <string name="play_broadcast_start_streaming_action">Mulai</string>
     <string name="play_broadcast_cancel_streaming_action">Batal</string>
     <string name="play_broadcast_early_streaming_dialog_title">Mulai siarannya sekarang?</string>
