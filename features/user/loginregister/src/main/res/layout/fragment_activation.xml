@@ -4,7 +4,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
     <RelativeLayout
         android:id="@+id/main_view"
@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
             android:text="@string/validation_title"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"/>
 
@@ -49,7 +49,7 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/dp_3"
 
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             tools:text="Kode aktivasi akun telah dikirimkan ke tjangjialie@gmail.com"/>
 
         <LinearLayout
@@ -74,7 +74,7 @@
                 android:inputType="number"
                 android:maxLength="5"
                 android:paddingBottom="@dimen/dp_10"
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_68"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/sp_32"
                 android:textStyle="normal"
@@ -105,7 +105,7 @@
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
             android:text="@string/error_wrong_otp"
-            android:textColor="@color/red_500"
+            android:textColor="@color/Unify_R600"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             android:visibility="invisible"
@@ -123,7 +123,7 @@
             android:enabled="false"
             android:gravity="center"
             android:text="@string/title_validation_otp"
-            android:textColor="@color/black_12"
+            android:textColor="@color/Unify_N700_20"
             android:textStyle="bold"/>
 
         <TextView
@@ -134,7 +134,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
             android:text="@string/validation_resend_email"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_12"/>
 
 

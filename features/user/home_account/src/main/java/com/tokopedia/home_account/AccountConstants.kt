@@ -273,7 +273,7 @@ object AccountConstants {
         const val SETTING_CREDIT_CARD_ID = 34
         const val SETTING_DEBIT_INSTANT = 35
         const val SETTING_FEEDBACK_FORM = 37
-        const val SETTING_DEV_OPTIONS = 0
+        const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_SETTING = 11
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 1
@@ -302,4 +302,7 @@ object AccountConstants {
         const val REQUEST_ADD_PASSWORD = 100
     }
 
+    object LAYOUT {
+        const val TYPE_ERROR = -1
+    }
 }
