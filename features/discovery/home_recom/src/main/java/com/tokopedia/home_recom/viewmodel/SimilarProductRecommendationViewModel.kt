@@ -107,10 +107,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             }
 
             getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = QUICK_FILTER, pageName = pageName)
-            val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
+            val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground(getRecommendationFilterChips.getParams()) }
 
             getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = queryParam + filterString, type = FULL_FILTER, pageName = pageName)
-            val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
+            val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground(getRecommendationFilterChips.getParams()) }
 
             _filterSortChip.postValue(Response.loading())
             _recommendationItem.postValue(Response.loading())

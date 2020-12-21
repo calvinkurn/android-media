@@ -1,4 +1,4 @@
-package com.tokopedia.home.explore.view.adapter.viewmodel;
+package com.tokopedia.home.explore.view.adapter.datamodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,16 +16,16 @@ import java.util.Map;
  * Created by errysuprayogi on 1/31/18.
  */
 
-public class CategoryFavoriteViewModel implements Visitable<TypeFactory>, Parcelable {
+public class CategoryFavoriteDataModel implements Visitable<TypeFactory>, Parcelable {
 
     private int sectionId;
     private String title;
     private List<LayoutRows> itemList;
 
-    public CategoryFavoriteViewModel() {
+    public CategoryFavoriteDataModel() {
     }
 
-    protected CategoryFavoriteViewModel(Parcel in) {
+    protected CategoryFavoriteDataModel(Parcel in) {
         sectionId = in.readInt();
         title = in.readString();
         itemList = in.createTypedArrayList(LayoutRows.CREATOR);
@@ -43,15 +43,15 @@ public class CategoryFavoriteViewModel implements Visitable<TypeFactory>, Parcel
         return 0;
     }
 
-    public static final Creator<CategoryFavoriteViewModel> CREATOR = new Creator<CategoryFavoriteViewModel>() {
+    public static final Creator<CategoryFavoriteDataModel> CREATOR = new Creator<CategoryFavoriteDataModel>() {
         @Override
-        public CategoryFavoriteViewModel createFromParcel(Parcel in) {
-            return new CategoryFavoriteViewModel(in);
+        public CategoryFavoriteDataModel createFromParcel(Parcel in) {
+            return new CategoryFavoriteDataModel(in);
         }
 
         @Override
-        public CategoryFavoriteViewModel[] newArray(int size) {
-            return new CategoryFavoriteViewModel[size];
+        public CategoryFavoriteDataModel[] newArray(int size) {
+            return new CategoryFavoriteDataModel[size];
         }
     };
 
