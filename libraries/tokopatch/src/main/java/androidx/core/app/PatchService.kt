@@ -116,7 +116,7 @@ class PatchService : JobIntentService() {
         }
     }
 
-    override fun dequeueWork(): GenericWorkItem? {
+    internal override fun dequeueWork(): GenericWorkItem? {
         try {
             return super.dequeueWork()
         } catch (ex: SecurityException){
