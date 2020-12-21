@@ -5,6 +5,7 @@
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
     <string name="label_title_draft_product">Draft Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, isi informasi produkmu</string>
@@ -15,6 +16,8 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
+    <string name="label_edit_product_notification_title">Mau atur Spesifikasi produkmu?</string>
+    <string name="label_edit_product_notification_description">Saat ini pengaturan untuk Spesifikasi baru tersedia di Tokopedia versi desktop.</string>
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
@@ -305,6 +308,14 @@
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
 
+    <!-- Location Validation -->
+    <string name="label_for_toaster_success_set_shop_location">Yay, berhasil menambah lokasi pengiriman.</string>
+    <string name="label_for_toaster_fail_set_shop_location">Terjadi kendala pada server, silahkan coba kembali</string>
+    <string name="label_for_action_text_toaster_success_set_shop_location">Oke</string>
+    <string name="label_for_dialog_title_that_shop_has_no_location">Mau tambah produk baru?</string>
+    <string name="label_for_dialog_desc_that_shop_has_no_location">Eits, lengkapi dulu lokasi pengirimanmu di halaman Pengaturan agar bisa hitung estimasi ongkir.</string>
+    <string name="label_for_dialog_primary_cta_that_shop_has_no_location">Oke, Lanjut</string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
     <string name="content_desc_tv_add_product_photo">text tambah foto</string>
@@ -338,8 +349,5 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

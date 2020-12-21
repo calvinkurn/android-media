@@ -296,7 +296,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         verify(exactly = 1) { ratesUseCase.execute(any()) }
-        coVerify(exactly = 1) { updateCartOccUseCase.executeSuspend(match { it.cart.first().quantity == 20 }) }
+        coVerify { updateCartOccUseCase.executeSuspend(match { it.cart.first().quantity == 20 }) }
     }
 
     @Test
@@ -308,7 +308,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.consumeForceShowOnboarding()
 
         // Then
-        assertEquals(OccState.Success(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false))), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel._orderPreference)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -569,7 +570,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(gatewayCode, metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
@@ -586,7 +587,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } throws response
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(gatewayCode, metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
@@ -602,7 +603,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } throws response
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(gatewayCode, metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
@@ -614,7 +615,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
 
         // When
-        orderSummaryPageViewModel.updateCreditCard("", "")
+        orderSummaryPageViewModel.choosePayment("", "")
 
         // Then
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
@@ -630,7 +631,80 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(gatewayCode, metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Success`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } returns null
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Failed`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val responseMessage = "message"
+        val response = MessageErrorException(responseMessage)
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Error`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val response = Exception()
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address On Invalid Preference State`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+
+        // When
+        orderSummaryPageViewModel.chooseAddress("")
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val occPrompt = OccPrompt()
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
 
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
@@ -654,5 +728,129 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
         assertEquals(false, isSuccess)
+    }
+
+    @Test
+    fun `Force Show Onboarding With No Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val response = OrderData(onboarding = onboarding)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding With Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding, revampData = OccRevampData(true))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        every { ratesUseCase.execute(any()) } throws Throwable()
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding Revamp With Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding, revampData = OccRevampData(true))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val shippingRecommendationData = ShippingRecommendationData().apply {
+            shippingDurationViewModels = listOf(
+                    ShippingDurationUiModel().apply {
+                        serviceData = ServiceData().apply {
+                            serviceId = 1
+                            serviceName = "kirimaja (2 hari)"
+                        }
+                        shippingCourierViewModelList = listOf(
+                                ShippingCourierUiModel().apply {
+                                    productData = ProductData().apply {
+                                        shipperName = "kirimin"
+                                        shipperProductId = 1
+                                        shipperId = 1
+                                        insurance = InsuranceData()
+                                        price = PriceData()
+                                    }
+                                    ratesId = "0"
+                                }
+                        )
+                    }
+            )
+        }
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Get Enabled Revamp Data`() {
+        // Given
+        val revampData = OccRevampData(isEnable = true, 1, "")
+        val response = helper.orderData.copy(revampData = revampData)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(revampData, orderSummaryPageViewModel.revampData)
+        assertEquals(true, orderSummaryPageViewModel.isNewFlow)
+    }
+
+    @Test
+    fun `Get Disabled Revamp Data`() {
+        // Given
+        val revampData = OccRevampData(isEnable = false, 1, "")
+        val response = helper.orderData.copy(revampData = revampData)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(revampData, orderSummaryPageViewModel.revampData)
+        assertEquals(false, orderSummaryPageViewModel.isNewFlow)
     }
 }

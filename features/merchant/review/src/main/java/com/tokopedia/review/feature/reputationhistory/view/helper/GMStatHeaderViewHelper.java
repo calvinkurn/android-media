@@ -73,9 +73,9 @@ public class GMStatHeaderViewHelper {
 
         calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
-        gredyColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.abstraction.R.color.grey_400, null);
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.unifyprinciples.R.color.Unify_N150, null);
 
-        greenColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.abstraction.R.color.tkpd_main_green, null);
+        greenColor = ResourcesCompat.getColor(itemView.getResources(), com.tokopedia.unifyprinciples.R.color.Unify_G400, null);
     }
 
     public void resetToLoading() {

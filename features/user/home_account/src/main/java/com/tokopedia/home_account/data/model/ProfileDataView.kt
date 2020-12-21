@@ -10,7 +10,7 @@ data class ProfileDataView (
         val phone: String = "",
         val email: String = "",
         val avatar: String = "",
-        val members: MemberDataView,
-        val financial: SettingDataView,
+        val members: MemberDataView? = MemberDataView(),
+        val financial: SettingDataView? = SettingDataView(),
         val backdrop: String = ""
 )

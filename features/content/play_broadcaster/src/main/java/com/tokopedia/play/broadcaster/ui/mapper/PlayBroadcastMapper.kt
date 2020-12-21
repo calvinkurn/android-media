@@ -51,7 +51,7 @@ interface PlayBroadcastMapper {
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 
-    fun mapLiveDuration(duration: LiveDuration): DurationUiModel
+    fun mapLiveDuration(duration: String): LiveDurationUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
 

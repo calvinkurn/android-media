@@ -45,7 +45,6 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     @Override
@@ -63,8 +62,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         } else {
             shopName = "";
         }
-        toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         toolbar.setSubtitle(shopName);
     }
 

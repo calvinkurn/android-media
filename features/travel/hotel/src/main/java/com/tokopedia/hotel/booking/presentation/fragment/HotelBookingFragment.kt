@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -59,6 +58,7 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -145,7 +145,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                         true -> it.throwable.message ?: ""
                         false -> ErrorHandler.getErrorMessage(activity, it.throwable)
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, message)
+                    view?.let { v ->
+                        Toaster.build(v, message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
@@ -204,7 +207,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
 
             REQUEST_CODE_CHECKOUT -> {
-                when  (resultCode) {
+                when (resultCode) {
                     PaymentConstant.PAYMENT_SUCCESS, PaymentConstant.PAYMENT_FAILED -> {
                         context?.run {
                             val taskStackBuilder = TaskStackBuilder.create(this)

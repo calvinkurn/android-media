@@ -17,7 +17,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     BrandRecommendationItem(R.layout.brand_recommendation_layout_item, ComponentNames.BrandRecommendationItem.componentName),
     CarouselBanner(R.layout.carousel_banner_layout, ComponentNames.CarouselBanner.componentName),
     CarouselBannerItemView(R.layout.carousel_banner_item_layout, ComponentNames.CarouselBannerItemView.componentName),
-    SliderBanner(R.layout.slider_banner_layout, ComponentNames.SliderBanner.componentName),
+    SliderBanner(R.layout.circular_slider_banner_layout, ComponentNames.SliderBanner.componentName),
     BannerTimer(R.layout.banner_timer_layout, ComponentNames.BannerTimer.componentName),
     Tokopoints(R.layout.horizontal_recycler_view_layout, ComponentNames.Tokopoints.componentName),
     TokopointsItem(R.layout.tokopoints_item_layout, ComponentNames.TokopointsItem.componentName),
@@ -70,4 +70,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
+    //Navigation Chips
+    NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
+    NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
+
+    //Banned View
+    BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
 }

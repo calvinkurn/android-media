@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -40,14 +42,15 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        if (activity != null && activityCount == 0) {
-            trackIrisEventForAppOpen(activity);
-        }
-        activityCount++;
         try {
+            if (activity != null && activityCount == 0) {
+                trackIrisEventForAppOpen(activity);
+            }
+            activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
         } catch (Exception e) {
-            Timber.e(e);
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
     }
 
@@ -78,7 +81,14 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
+<<<<<<< HEAD
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+=======
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+>>>>>>> d8e1c0b190af2ef4b93f633d7e438ed868be2ade
 
     @Override
     public void onActivityDestroyed(Activity activity) {
