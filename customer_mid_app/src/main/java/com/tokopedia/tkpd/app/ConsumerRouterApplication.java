@@ -11,8 +11,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.tkpd.library.utils.legacy.AnalyticsLog;
-import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tkpd.library.utils.legacy.*;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -633,10 +632,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(errorMessage.isEmpty()){
-            SessionAnalytics.Companion.trackRefreshTokenSuccess();
+        if(!errorMessage.equals("")){
+            SessionAnalytics2.trackRefreshTokenSuccess();
+//            SessionAnalytics.Companion.trackRefreshTokenSuccess();
         }else {
-            SessionAnalytics.Companion.trackRefreshTokenFailed(errorMessage);
+            SessionAnalytics2.trackRefreshTokenFailed(errorMessage);
+//            SessionAnalytics.Companion.trackRefreshTokenFailed(errorMessage);
         }
     }
 }
