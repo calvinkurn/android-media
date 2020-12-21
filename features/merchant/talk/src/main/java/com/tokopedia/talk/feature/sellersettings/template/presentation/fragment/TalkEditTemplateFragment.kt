@@ -112,7 +112,7 @@ class TalkEditTemplateFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun setupToolbar() {
-        val toolbar = activity?.findViewById<HeaderUnify>(R.id.talk_seller_settings_toolbar)
+        toolbar = activity?.findViewById(R.id.talk_seller_settings_toolbar)
         toolbar?.apply {
             clearToolbar()
             if (isEditMode) {
