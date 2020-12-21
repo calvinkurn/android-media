@@ -4,10 +4,16 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.view.View
+import android.view.ViewParent
+import android.widget.FrameLayout
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intended
@@ -16,15 +22,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.util.HumanReadables
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancellationMockResponseConfig
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
@@ -35,6 +40,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 import org.junit.*
 import java.util.*
@@ -133,9 +139,8 @@ class HotelHomepageActivityTest {
 
     private fun slidePromoBanner() {
         Thread.sleep(2000)
-        onView(withId(R.id.hotelHomepageScrollView)).perform(swipeUp())
-        Thread.sleep(2000)
         if (getBannerItemCount() > 0) {
+            onView(withId(R.id.banner_hotel_homepage_promo)).perform(nestedScrollTo())
             onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(isDisplayed()))
             Thread.sleep(1000)
         } else {
@@ -219,6 +224,57 @@ class HotelHomepageActivityTest {
     fun tearDown() {
         gtmLogDBSource.deleteAll().subscribe()
     }
+
+    private fun nestedScrollTo(): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return Matchers.allOf(
+                        isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
+                        withEffectiveVisibility(Visibility.VISIBLE))
+            }
+
+            override fun getDescription(): String {
+                return "View is not NestedScrollView"
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                try {
+                    val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView?
+                    if (nestedScrollView != null) {
+                        nestedScrollView.scrollTo(0, view.top)
+                    } else {
+                        throw java.lang.Exception("Unable to find NestedScrollView parent.")
+                    }
+                } catch (e: java.lang.Exception) {
+                    throw PerformException.Builder()
+                            .withActionDescription(this.description)
+                            .withViewDescription(HumanReadables.describe(view))
+                            .withCause(e)
+                            .build()
+                }
+                uiController.loopMainThreadUntilIdle()
+            }
+        }
+    }
+
+    private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View? {
+        var parent: ViewParent = FrameLayout(view.context)
+        var incrementView: ViewParent? = null
+        var i = 0
+        while (parent.javaClass != parentClass) {
+            parent = if (i == 0) {
+                findParent(view)
+            } else {
+                findParent(incrementView)
+            }
+            incrementView = parent
+            i++
+        }
+        return parent as View
+    }
+
+    private fun findParent(view: View): ViewParent = view.parent
+    private fun findParent(view: ViewParent?): ViewParent = view!!.parent
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_HOTEL_HOMEPAGE = "tracker/travel/hotel/hotel_homepage.json"
