@@ -16,7 +16,7 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
                 shopID
                 isMultiLocation
                 admin_data {
-                  admin_type_text
+                  admin_type_string
                   detail_information {
                     admin_role_type {
                       is_shop_admin
