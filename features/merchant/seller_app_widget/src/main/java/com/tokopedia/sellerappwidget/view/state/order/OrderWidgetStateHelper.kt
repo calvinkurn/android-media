@@ -43,7 +43,7 @@ object OrderWidgetStateHelper : AppWidgetStateHelper() {
             setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<OrderAppWidget>(context, this, R.id.btnSawSmallOrderRefreshCommon, data.widgetId)
-            registerAppLinkIntent(context, R.id.tvSawSmallOrderCommonCta, data.appLink, data.widgetId)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.tvSawSmallOrderCommonCta, data.appLink, data.widgetId)
 
             Utils.loadImageIntoAppWidget(context, this, R.id.imgSawSmallOrderCommon, data.imgUrl, data.widgetId)
         }

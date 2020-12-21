@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.RemoteViews
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
@@ -38,7 +37,7 @@ object ChatWidgetSuccessState {
             val headerHeight = 64
             val widgetItemHeight = 56
             val widgetHeight = AppWidgetHelper.getAppWidgetHeight(context, widgetId).minus(headerHeight)
-            val itemCount = (widgetHeight/widgetItemHeight).absoluteValue
+            val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
 
             //setup chat list
             val randomNumber = (Math.random() * 10000).toInt()
@@ -73,10 +72,10 @@ object ChatWidgetSuccessState {
 
             setInt(R.id.icSawChatMoreChat, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_chevron_right)
 
-            registerAppLinkIntent(context, R.id.icSawChatMoreChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
-            registerAppLinkIntent(context, R.id.tvSawChatShopName, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
-            registerAppLinkIntent(context, R.id.tvSawChatTotalChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
-            registerAppLinkIntent(context, R.id.imgSawChatAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+            registerAppLinkIntent<ChatAppWidget>(context, R.id.icSawChatMoreChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
+            registerAppLinkIntent<ChatAppWidget>(context, R.id.tvSawChatShopName, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
+            registerAppLinkIntent<ChatAppWidget>(context, R.id.tvSawChatTotalChat, ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, widgetId)
+            registerAppLinkIntent<ChatAppWidget>(context, R.id.imgSawChatAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)
         }
 
         AppWidgetTracking.getInstance(context)

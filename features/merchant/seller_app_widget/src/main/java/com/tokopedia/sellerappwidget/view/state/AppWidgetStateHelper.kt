@@ -40,7 +40,7 @@ abstract class AppWidgetStateHelper {
             setInt(R.id.btnSawNormalRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<T>(context, this, R.id.btnSawNormalRefreshCommon, data.widgetId)
-            registerAppLinkIntent(context, R.id.tvSawNormalCommonCta, data.appLink, data.widgetId)
+            registerAppLinkIntent<T>(context, R.id.tvSawNormalCommonCta, data.appLink, data.widgetId)
 
             Utils.loadImageIntoAppWidget(context, this, R.id.imgSawNormalCommon, data.imgUrl, data.widgetId)
         }
@@ -62,7 +62,7 @@ abstract class AppWidgetStateHelper {
             setInt(R.id.btnSawLargeRefreshCommon, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             setupRefreshIntent<T>(context, this, R.id.btnSawLargeRefreshCommon, data.widgetId)
-            registerAppLinkIntent(context, R.id.tvSawLargeCommonCta, data.appLink, data.widgetId)
+            registerAppLinkIntent<T>(context, R.id.tvSawLargeCommonCta, data.appLink, data.widgetId)
 
             Utils.loadImageIntoAppWidget(context, this, R.id.imgSawLargeCommon, data.imgUrl, data.widgetId)
         }

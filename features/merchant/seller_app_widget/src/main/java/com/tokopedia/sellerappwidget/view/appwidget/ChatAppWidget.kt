@@ -11,9 +11,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
-import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import com.tokopedia.sellerappwidget.view.state.chat.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,6 +40,7 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        println("AppWidget : onReceive")
         when (intent.action) {
             AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
                 val awm = AppWidgetManager.getInstance(context)
@@ -71,7 +72,7 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     private fun openAppLink(context: Context, intent: Intent) {
-        val applink = intent.data.toString()
+        val applink = intent.data?.toString().orEmpty()
         val appWidgetTracking = AppWidgetTracking.getInstance(context)
         when (applink) {
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> {
@@ -80,7 +81,7 @@ class ChatAppWidget : AppWidgetProvider() {
             ApplinkConst.LOGIN -> {
                 appWidgetTracking.sendEventClickLoginNowChatWidget()
             }
-            ApplinkConst.SellerApp.SELLER_APP_HOME -> {
+            ApplinkConstInternalSellerapp.SELLER_HOME -> {
                 appWidgetTracking.sendEventClickSellerIconChatWidget()
             }
             ApplinkConstInternalSellerapp.SELLER_HOME_CHAT -> {

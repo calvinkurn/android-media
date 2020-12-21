@@ -66,10 +66,10 @@ object OrderWidgetSuccessState {
             val bundle = Bundle().apply {
                 putString(Const.Extra.WIDGET_SIZE, WidgetSize.SMALL)
             }
-            registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId, bundle)
-            registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId, bundle)
-            registerAppLinkIntent(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
-            registerAppLinkIntent(context, R.id.imgSawSmallOrderAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId, bundle)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId, bundle)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.imgSawSmallOrderAppIcon, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
 
             AppWidgetTracking.getInstance(context)
                     .sendEventImpressionSmallSuccessStateNewOrderWidget()
@@ -85,7 +85,7 @@ object OrderWidgetSuccessState {
             val headerHeight = 112
             val widgetItemHeight = 64
             val widgetHeight = AppWidgetHelper.getAppWidgetHeight(context, widgetId).minus(headerHeight)
-            val itemCount = (widgetHeight/widgetItemHeight).absoluteValue
+            val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
 
             val orderItemsByType = order.orders?.filter { it.statusId == orderStatusId }
                     .orEmpty()
@@ -132,8 +132,8 @@ object OrderWidgetSuccessState {
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_VISIBILITY, View.VISIBLE)
                     setInt(R.id.imgSawOrderSwitchRight, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_arrow_right)
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_ready_to_ship))
-                    registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
-                    registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
+                    registerAppLinkIntent<OrderAppWidget>(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
+                    registerAppLinkIntent<OrderAppWidget>(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
 
                     AppWidgetTracking.getInstance(context)
                             .sendEventImpressionNewOrderOrderWidget()
@@ -143,8 +143,8 @@ object OrderWidgetSuccessState {
                     setInt(R.id.imgSawOrderSwitchLeft, Const.Method.SET_VISIBILITY, View.VISIBLE)
                     setInt(R.id.imgSawOrderSwitchLeft, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_arrow_left)
                     setTextViewText(R.id.tvSawOrderSwitch, context.getString(R.string.saw_new_order))
-                    registerAppLinkIntent(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
-                    registerAppLinkIntent(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
+                    registerAppLinkIntent<OrderAppWidget>(context, R.id.tvSawOrderShopName, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
+                    registerAppLinkIntent<OrderAppWidget>(context, R.id.tvSawOrderTotalOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
 
                     AppWidgetTracking.getInstance(context)
                             .sendEventImpressionReadyShippingOrderWidget()
@@ -156,7 +156,7 @@ object OrderWidgetSuccessState {
                 Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId, radius)
             }
 
-            registerAppLinkIntent(context, R.id.imgSawOrderAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)
+            registerAppLinkIntent<OrderAppWidget>(context, R.id.imgSawOrderAppIcon, ApplinkConstInternalSellerapp.SELLER_HOME, widgetId)
         }
     }
 
