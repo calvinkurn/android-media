@@ -13,7 +13,7 @@ import com.tokopedia.home_account.view.viewholder.CommonViewHolder
  */
 class HomeAccountUserCommonAdapter(val listener: HomeAccountUserListener, val type: Int): RecyclerView.Adapter<CommonViewHolder>() {
 
-    var list: List<CommonDataView> = mutableListOf()
+    var list: MutableList<CommonDataView> = mutableListOf()
 
     override fun getItemCount(): Int = list.size
 

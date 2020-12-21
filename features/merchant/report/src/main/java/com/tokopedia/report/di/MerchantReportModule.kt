@@ -29,16 +29,4 @@ class MerchantReportModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @MerchantReportScope
-    @Provides
-    @Named("product_report_reason")
-    fun getProductReportReasonQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_report_reason)
-
-    @MerchantReportScope
-    @Provides
-    @Named("product_report_submit")
-    fun getProductReportSubmitMutation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_submit_report)
 }

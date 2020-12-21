@@ -99,6 +99,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_12"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:visibility="gone" />
 
             <TextView
@@ -107,7 +109,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_12"/>
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="@dimen/sp_10"/>
 
         </RelativeLayout>
 
@@ -189,7 +193,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="Kupon Baru"
                 tools:visibility="visible" />
@@ -204,7 +208,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="900000000000000000 Poin"
                 tools:visibility="visible" />
@@ -272,7 +276,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="Kupon Baru"
                 tools:visibility="visible" />
@@ -287,7 +291,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="900000000000000000 Poin"
                 tools:visibility="visible" />

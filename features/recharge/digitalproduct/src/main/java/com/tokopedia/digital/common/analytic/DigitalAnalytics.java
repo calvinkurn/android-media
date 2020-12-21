@@ -411,4 +411,23 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Action.CLICK_CANCEL_APPLY_COUPON,
                 categoryName.toLowerCase() + " - " + promoCode.toLowerCase()));
     }
+
+    public void onClickSliceRecharge(String userId,  String rechargeProductFromSlice) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, "clickGAMain",
+                DigitalEventTracking.Event. EVENT_CATEGORY, "ga main app",
+                DigitalEventTracking.Event.EVENT_ACTION, "click item transaction",
+                DigitalEventTracking.Event.EVENT_LABEL, rechargeProductFromSlice,
+                DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
+                DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
+                DigitalEventTracking.Event.USER_ID, userId
+        ));
+    }
+
+    public void  onOpenPageFromSlice() {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, "openScreen",
+                DigitalEventTracking.Event.EVENT_SCREEN_NAME, "digital product - from voice search - mainapp"
+        ));
+    }
 }
