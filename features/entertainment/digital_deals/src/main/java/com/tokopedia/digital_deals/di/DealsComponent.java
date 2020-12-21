@@ -7,7 +7,6 @@ import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
-import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
@@ -26,8 +25,6 @@ public interface DealsComponent {
     void inject(DealDetailsFragment fragment);
 
     void inject(DealDetailsAllRedeemLocationsFragment fragment);
-
-    void inject(CategoryDetailHomeFragment fragment);
 
     void inject(AllBrandsFragment fragment);
 
