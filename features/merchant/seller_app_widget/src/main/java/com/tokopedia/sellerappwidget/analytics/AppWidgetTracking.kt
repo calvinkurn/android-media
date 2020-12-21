@@ -1,6 +1,7 @@
 package com.tokopedia.sellerappwidget.analytics
 
 import android.content.Context
+import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import com.tokopedia.track.TrackApp
@@ -39,7 +40,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_ACTIVE_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
+            sendEventChatWidget(eventMap)
         }
     }
 
@@ -47,7 +48,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_EMPTY_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
+            sendEventChatWidget(eventMap)
         }
     }
 
@@ -55,7 +56,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_LOADING_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
+            sendEventChatWidget(eventMap)
         }
     }
 
@@ -63,7 +64,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_NO_LOGIN_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
+            sendEventChatWidget(eventMap)
         }
     }
 
@@ -71,45 +72,45 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_NO_CONNECTION_STATE
         sendEventOnceADayChat(action) {
             val eventMap = createImpressionChatWidget(action)
-            sendEvent(eventMap)
+            sendEventChatWidget(eventMap)
         }
     }
 
     fun sendEventClickSellerIconChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_SELLER_ICON)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventClickRefreshButtonChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_REFRESH_BUTTON)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventClickItemChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_CHAT_LINE)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventClickCheckNowChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_CHECK_NOW)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventClickLoginNowChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_LOGIN_NOW)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventClickShopNameChatWidget() {
         val eventMap = createClickChatWidget(TrackingConstant.Action.CLICK_SHOP_NAME_AND_CHAT)
-        sendEvent(eventMap)
+        sendEventChatWidget(eventMap)
     }
 
     fun sendEventImpressionNewOrderOrderWidget() {
         val action = TrackingConstant.Action.IMPRESSION_ACTIVE_NEW_ORDER
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -117,7 +118,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_ACTIVE_READY_SHIPPING
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -125,7 +126,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_NEW_ORDER_SMALL_ORDER
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -133,7 +134,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_EMPTY_STATE
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -141,7 +142,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_LOADING_STATE
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -149,7 +150,7 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_NO_CONNECTION_STATE
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
@@ -157,53 +158,53 @@ class AppWidgetTracking(context: Context) {
         val action = TrackingConstant.Action.IMPRESSION_NO_LOGIN_STATE
         sendEventOnceADayOrder(action) {
             val eventMap = createImpressionOrderWidget(action)
-            sendEvent(eventMap)
+            sendEventOrderWidget(eventMap)
         }
     }
 
     fun sendEventClickSmallNewOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_NEW_ORDER_SMALL_ORDER)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickSmallReadyToShipOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_READY_TO_SHIP_SMALL_ORDER)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickSellerIconOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_SELLER_ICON)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickShopNameOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_SHOP_NAME_AND_ORDER)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickItemOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_ORDER_LINE)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickLoginNowOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_LOGIN_NOW)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickCheckNowOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_CHECK_NOW)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickRefreshButtonOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_REFRESH_BUTTON)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     fun sendEventClickSwitchButtonOrderWidget() {
         val eventMap = createClickOrderWidget(TrackingConstant.Action.CLICK_BUTTON_STATUS)
-        sendEvent(eventMap)
+        sendEventOrderWidget(eventMap)
     }
 
     private fun createImpressionOrderWidget(action: String): MutableMap<String, Any> {
@@ -250,8 +251,18 @@ class AppWidgetTracking(context: Context) {
         return eventMap
     }
 
-    private fun sendEvent(eventMap: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    private fun sendEventChatWidget(eventMap: Map<String, Any>) {
+        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        if (isWidgetEnabled) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
+    }
+
+    private fun sendEventOrderWidget(eventMap: Map<String, Any>) {
+        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        if (isWidgetEnabled) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+        }
     }
 
     /**
@@ -261,10 +272,10 @@ class AppWidgetTracking(context: Context) {
     private fun sendEventOnceADayChat(action: String, callback: () -> Unit) {
         val actionKey = "chat_" + action.replace(" ", "")
         val nowMillis = System.currentTimeMillis()
-        val last24hours = nowMillis.minus(TimeUnit.DAYS.toMillis(1))
+        val oneDayMillis = TimeUnit.DAYS.toMillis(1)
         val lastSend = appWidgetPref.getLong(actionKey, nowMillis)
-
-        if (lastSend > last24hours) {
+        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
             appWidgetPref.putLong(actionKey, nowMillis)
             callback()
         }
@@ -277,10 +288,10 @@ class AppWidgetTracking(context: Context) {
     private fun sendEventOnceADayOrder(action: String, callback: () -> Unit) {
         val actionKey = "order_" + action.replace(" ", "")
         val nowMillis = System.currentTimeMillis()
-        val last24hours = nowMillis.minus(TimeUnit.DAYS.toMillis(1))
+        val oneDayMillis = TimeUnit.DAYS.toMillis(1)
         val lastSend = appWidgetPref.getLong(actionKey, nowMillis)
-
-        if (lastSend > last24hours) {
+        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
             appWidgetPref.putLong(actionKey, nowMillis)
             callback()
         }

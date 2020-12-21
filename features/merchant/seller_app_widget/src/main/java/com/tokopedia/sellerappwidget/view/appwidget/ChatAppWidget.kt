@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
@@ -40,7 +41,6 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        println("AppWidget : onReceive")
         when (intent.action) {
             AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
                 val awm = AppWidgetManager.getInstance(context)
@@ -69,6 +69,18 @@ class ChatAppWidget : AppWidgetProvider() {
         }
         GetChatExecutor.run(context)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+    }
+
+    override fun onEnabled(context: Context) {
+        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        sharedPref.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, true)
+        super.onEnabled(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        sharedPref.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        super.onDisabled(context)
     }
 
     private fun openAppLink(context: Context, intent: Intent) {

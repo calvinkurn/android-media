@@ -46,4 +46,12 @@ class SellerAppWidgetPreferencesImpl(context: Context) : SellerAppWidgetPreferen
     override fun getInt(key: String, defValue: Int): Int {
         return sharedPreferences.getInt(key, defValue)
     }
+
+    override fun putBoolean(key: String, value: Boolean) {
+        sharedPreferences.edit().putBoolean(key, value).apply()
+    }
+
+    override fun getBoolean(key: String, defValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, defValue)
+    }
 }

@@ -25,4 +25,8 @@ interface SellerAppWidgetPreferences {
     fun putInt(key: String, value: Int)
 
     fun getInt(key: String, defValue: Int): Int
+
+    fun putBoolean(key: String, value: Boolean)
+
+    fun getBoolean(key: String, defValue: Boolean): Boolean
 }

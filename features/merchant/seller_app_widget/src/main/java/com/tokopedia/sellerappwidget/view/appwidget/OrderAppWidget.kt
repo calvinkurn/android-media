@@ -75,11 +75,15 @@ class OrderAppWidget : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
-    override fun onEnabled(context: Context?) {
+    override fun onEnabled(context: Context) {
+        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        sharedPref.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
         super.onEnabled(context)
     }
 
-    override fun onDisabled(context: Context?) {
+    override fun onDisabled(context: Context) {
+        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        sharedPref.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         super.onDisabled(context)
     }
 
