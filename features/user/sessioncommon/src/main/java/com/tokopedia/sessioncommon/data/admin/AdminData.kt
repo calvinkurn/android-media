@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AdminData(
     @Expose
-    @SerializedName("admin_type_text")
+    @SerializedName("admin_type_string")
     val adminTypeText: String? = "",
     @Expose
     @SerializedName("detail_information")
