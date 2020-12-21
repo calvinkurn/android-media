@@ -31,7 +31,6 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
         reviewInboxContainerFragment = ReviewInboxContainerFragment.createNewInstance(tab)
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -99,10 +98,6 @@ class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLis
         pageLoadTimePerformanceMonitoring?.let {
             it.stopRenderPerformanceMonitoring()
         }
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = ReviewInboxConstants.NO_SHADOW_ELEVATION
     }
 
     private fun getArgumentsFromApplink() {

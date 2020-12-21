@@ -248,9 +248,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         override val coroutineContext: CoroutineContext
             get() = viewJob + dispatcher.main
     }
+    private var isLoadInitialData = false
+    private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        if (isShopHomeTabSelected())
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
         getIntentData()
         setupPlayWidget()
         super.onCreate(savedInstanceState)
@@ -264,6 +267,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         setupPlayWidgetAnalyticListener()
+    }
+
+    private fun isShopHomeTabSelected(): Boolean {
+        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -329,12 +336,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
+        isLoadInitialData = true
         loadInitialData()
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
+                gridType = it
                 changeProductListGridView(it)
             }
         })
@@ -368,6 +377,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
+        loadInitialData()
     }
 
     override fun onPause() {
@@ -405,15 +415,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        shopHomeAdapter.clearAllElements()
-        recycler_view.visible()
-        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        globalError_shopPage.hide()
-        showLoading()
-        shopHomeAdapter.isOwner = isOwner
-        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
+        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
+            shopHomeAdapter.clearAllElements()
+            recycler_view.visible()
+            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+            globalError_shopPage.hide()
+            showLoading()
+            shopHomeAdapter.isOwner = isOwner
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+            viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
+            isLoadInitialData = false
+        }
     }
 
     private fun getIntentData() {
@@ -577,7 +590,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
-        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -861,6 +874,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
+                    changeShopProductFilterParameterSharedData()
                     changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
                 }
@@ -1373,6 +1387,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOwner,
                 customDimensionShopPage
         )
+        changeShopProductFilterParameterSharedData()
         changeSortData("")
         scrollToEtalaseTitlePosition()
     }
@@ -1575,7 +1590,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopHomeAdapter.changeProductCardGridType(gridType)
     }
 
@@ -1595,6 +1610,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if(isResetButtonVisible == false){
             sortId = ""
         }
+        changeShopProductFilterParameterSharedData()
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToEtalaseTitlePosition()
         applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
@@ -1602,15 +1618,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
-                shopProductFilterParameter?:ShopProductFilterParameter()
-        )
         shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
         shopHomeAdapter.refreshSticky()
-        refreshProductList()
+        if(!isLoadInitialData)
+            refreshProductList()
+    }
+
+    private fun changeShopProductFilterParameterSharedData(){
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
