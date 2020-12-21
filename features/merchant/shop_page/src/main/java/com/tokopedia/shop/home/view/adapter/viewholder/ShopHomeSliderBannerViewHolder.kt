@@ -109,6 +109,7 @@ class ShopHomeSliderBannerViewHolder(
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
+            stage.removeAllViews()
             carouselData?.let {
                 if (stage.childCount == 0) {
                     addItems(R.layout.widget_slider_banner_item, it, itmListener)
