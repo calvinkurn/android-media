@@ -23,6 +23,8 @@ object TravelSliceAnalyticsConst {
     object Event {
         const val VIEW_HOTEL_IRIS = "viewHotelIris"
         const val CLICK_HOTEL =  "clickHotel"
+        const val VIEW_FLIGHT_IRIS = "viewFlightIris"
+        const val CLICK_FLIGHT = "clickFlight"
     }
 
     object EventAction {

@@ -19,7 +19,7 @@ class TravelSliceAnalytics @Inject constructor(private val userSession: UserSess
         val successStatus = if (isSuccess) "success" else "failed"
         sendGeneralFlightTracking(
                 context,
-                eventName = TravelSliceAnalyticsConst.Event.VIEW_HOTEL_IRIS,
+                eventName = TravelSliceAnalyticsConst.Event.VIEW_FLIGHT_IRIS,
                 eventAction = TravelSliceAnalyticsConst.EventAction.FLIGHT_RESERVATION_IMPRESSION,
                 eventLabel = "$successStatus - $loginStatus")
     }
@@ -27,7 +27,7 @@ class TravelSliceAnalytics @Inject constructor(private val userSession: UserSess
     fun clickOnFlightReservation(context: Context, userId: String) {
         sendGeneralFlightTracking(
                 context,
-                eventName = TravelSliceAnalyticsConst.Event.CLICK_HOTEL,
+                eventName = TravelSliceAnalyticsConst.Event.CLICK_FLIGHT,
                 eventAction = TravelSliceAnalyticsConst.EventAction.FLIGHT_RESERVATION_CLICK,
                 eventLabel = userId)
     }
