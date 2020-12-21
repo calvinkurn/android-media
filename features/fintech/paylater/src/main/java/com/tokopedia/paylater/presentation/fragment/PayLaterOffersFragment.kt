@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.paylater.R
@@ -43,10 +41,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_paylater_offers, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeViewModel()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
-        observeViewModel()
     }
 
     private fun observeViewModel() {
@@ -78,7 +80,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
         // hide loading
-        payLaterViewModel.getPayLaterApplicationStatus()
+        if (data.productList.isNotEmpty())
+            payLaterViewModel.getPayLaterApplicationStatus()
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
@@ -87,10 +90,11 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         // set payLater + application status data in pager adapter
-        val list = payLaterViewModel.getPayLaterOptions()
-        list.add(list[0])
-        list.add(list[0])
-        pagerAdapter.setPaymentData(list, data.applicationDetailList)
+        val payLaterProductList = payLaterViewModel.getPayLaterOptions()
+        // @Todo remove below lines
+        payLaterProductList.add(payLaterProductList[0])
+        payLaterProductList.add(payLaterProductList[0])
+        pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList)
     }
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {

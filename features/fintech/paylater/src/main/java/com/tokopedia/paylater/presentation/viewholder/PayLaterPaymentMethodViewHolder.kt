@@ -6,18 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.paylater.PayLaterHelper
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
-import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 import kotlinx.android.synthetic.main.paylater_payment_method_item.view.*
 
 class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.ViewHolder(view) {
 
     fun bindData(payLaterItemProductData: PayLaterItemProductData, payLaterApplicationDataForPartner: PayLaterApplicationDetail?) {
         view.apply {
-            ivPayLaterArrow.setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
+            setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
             ivPayLaterPartner.maxHeight = context.dpToPx(72).toInt()
             ivPayLaterPartner.maxWidth = context.dpToPx(80).toInt()
             ImageHandler.loadImage(context,
@@ -27,7 +26,14 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
             tvTitlePaylaterPartner.text = payLaterItemProductData.partnerName
             tvDescription.text = "${context.getString(R.string.payLater_verification_until_subtitle)} ${payLaterApplicationDataForPartner?.payLaterExpirationDate}"
             payLaterApplicationDataForPartner?.let {
-                PayLaterHelper.setLabelData(context,  payLaterOfferLabel, it)
+                it.payLaterApplicationStatusLabelStringId.also { resId ->
+                    if (resId != 0) {
+                        payLaterOfferLabel.text = context.getString(resId)
+                        payLaterOfferLabel.setLabelType(it.payLaterApplicationStatusLabelType)
+                    } else {
+                        payLaterOfferLabel.gone()
+                    }
+                }
             }
         }
     }

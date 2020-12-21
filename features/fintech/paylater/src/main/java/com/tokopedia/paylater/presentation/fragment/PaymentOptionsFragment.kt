@@ -8,15 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.paylater.PayLaterHelper
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.data.mapper.*
+import com.tokopedia.paylater.data.mapper.PayLaterPartnerTypeMapper
+import com.tokopedia.paylater.data.mapper.RegisterStepsPartnerType
+import com.tokopedia.paylater.data.mapper.UsageStepsPartnerType
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
-import com.tokopedia.paylater.presentation.widget.PayLaterFaqBottomSheet
 import com.tokopedia.paylater.presentation.widget.PayLaterActionStepsBottomSheet
+import com.tokopedia.paylater.presentation.widget.PayLaterFaqBottomSheet
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PaymentOptionsFragment : Fragment() {
@@ -38,7 +40,7 @@ class PaymentOptionsFragment : Fragment() {
         rvPaymentDesciption.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             val orderedBenefitList = responseData?.partnerBenefitList?.sortedWith(compareBy { !it.isHighlighted })
-                    ?: ArrayList()
+                    ?: arrayListOf()
             adapter = PayLaterOfferDescriptionAdapter(orderedBenefitList)
         }
         initListener()
@@ -77,9 +79,17 @@ class PaymentOptionsFragment : Fragment() {
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
-        PayLaterHelper.setLabelData(context!!, tvPaylaterPartnerStatus, payLaterApplicationDetail)
+        context?.let {
+            payLaterApplicationDetail.payLaterApplicationStatusLabelStringId.also { resId ->
+                if (resId != 0) {
+                    tvPaylaterPartnerStatus.text = it.getString(resId)
+                    tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
+                } else {
+                    tvPaylaterPartnerStatus.gone()
+                }
+            }
+        }
     }
-
 
     private fun setBundleData(bundle: Bundle) {
         responseData?.let { data ->

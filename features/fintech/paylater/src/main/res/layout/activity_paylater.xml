@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/paylater_header"
+        android:id="@+id/paylaterHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <FrameLayout
-        android:id="@+id/paylater_parent_view"
+        android:id="@+id/paylaterParentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

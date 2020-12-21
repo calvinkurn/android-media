@@ -2,6 +2,7 @@ package com.tokopedia.paylater.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.paylater.PayLaterHelper
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
@@ -14,6 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.paylater_payment_method_item.view.*
 
 
 class PayLaterViewModel @Inject constructor(
@@ -47,6 +49,9 @@ class PayLaterViewModel @Inject constructor(
     }
 
     private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
+        for (applicationDetail in userCreditApplicationStatus.applicationDetailList) {
+            PayLaterHelper.setLabelData(applicationDetail)
+        }
         payLaterApplicationStatusResultLiveData.value = Success(userCreditApplicationStatus)
     }
 
@@ -67,13 +72,13 @@ class PayLaterViewModel @Inject constructor(
         return arrayListOf()
     }
 
-    fun getApplicationStatusData(): ArrayList<PayLaterApplicationDetail> {
+   /* fun getApplicationStatusData(): ArrayList<PayLaterApplicationDetail> {
         payLaterApplicationStatusResultLiveData.value?.let {
             if (it is Success) return it.data.applicationDetailList
         }
         return ArrayList()
     }
-
+*/
     override fun onCleared() {
         payLaterDataUseCase.cancelJobs()
         super.onCleared()

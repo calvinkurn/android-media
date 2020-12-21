@@ -44,10 +44,14 @@ class SimulationFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_simulation, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        observeViewModel()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
-        observeViewModel()
         populateRowHeaders()
         populateSimulationTable()
     }

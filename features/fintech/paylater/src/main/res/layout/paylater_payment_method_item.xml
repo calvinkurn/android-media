@@ -10,6 +10,7 @@
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:scaleType="centerInside"
+        app:unify_image_corner_radius="0"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/unify_space_12"

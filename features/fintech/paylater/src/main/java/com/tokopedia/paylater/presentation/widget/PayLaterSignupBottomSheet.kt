@@ -40,6 +40,8 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
     private val childLayoutRes = R.layout.paylater_signup_bottomsheet_widget
     private var payLaterDataList : ArrayList<PayLaterItemProductData> = arrayListOf()
     private var payLaterApplicationStatusList: ArrayList<PayLaterApplicationDetail> = arrayListOf()
+    private var listener: Listener? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,34 +71,11 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
 
     private fun initAdapter() {
         rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
+            listener?.onPayLaterSignupClicked(payLaterData, payLaterApplicationStatus)
             dismiss()
-            openBottomSheet(payLaterData, payLaterApplicationStatus)
+            //openBottomSheet(payLaterData, payLaterApplicationStatus)
         }
         rvPayLaterPaymentMethods.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
-
-    private fun openBottomSheet(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
-        val bundle = Bundle()
-        productItemData.let { data ->
-            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
-            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
-                is RegisterStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_register)} ${data.partnerName}")
-                    PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
-
-                }
-                is UsageStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerUsageDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_use)} ${data.partnerName}")
-                    PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
-                }
-                is ProcessingApplicationPartnerType -> {
-                    bundle.putParcelable(PayLaterVerificationBottomSheet.APPLICATION_STATUS, partnerApplicationDetail)
-                    PayLaterVerificationBottomSheet.show(bundle, childFragmentManager)
-                }
-            }
-        }
     }
 
     private fun setDefaultParams() {
@@ -108,17 +87,26 @@ class PayLaterSignupBottomSheet: BottomSheetUnify() {
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
+    fun setActionListener(listener: Listener) {
+        this.listener = listener
+    }
+
     companion object {
         private const val DIALOG_TITLE = "Mau daftar PayLater apa?"
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
 
         private const val TAG = "FT_TAG"
-        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+        fun show(bundle: Bundle, childFragmentManager: FragmentManager): PayLaterSignupBottomSheet {
             val payLaterSignupBottomSheet =  PayLaterSignupBottomSheet().apply {
                 arguments = bundle
             }
             payLaterSignupBottomSheet.show(childFragmentManager, TAG)
+            return payLaterSignupBottomSheet
         }
+    }
+
+    interface Listener {
+        fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?)
     }
 }
