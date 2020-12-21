@@ -70,7 +70,7 @@ class ChatAppWidgetViewModelTest {
     }
 
     @Test
-    fun `throw RuntimeException and notify the UI when failed to get chat list`() = coroutineTestRule.runBlockingTest {
+    fun `throw Exception and notify the UI when failed to get chat list`() = coroutineTestRule.runBlockingTest {
         val throwable = RuntimeException("")
         getChatUseCase.params = GetChatUseCase.creteParams()
 
