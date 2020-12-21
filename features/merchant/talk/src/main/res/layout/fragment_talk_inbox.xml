@@ -4,8 +4,16 @@
     android:id="@+id/talkInboxContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerTalkInbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/talkInboxSortFilter"
@@ -14,7 +22,7 @@
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="quick"/>
 
@@ -46,7 +54,7 @@
         layout="@layout/partial_talk_connection_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
         android:visibility="gone" />
 
     <include
@@ -54,7 +62,7 @@
         layout="@layout/partial_talk_inbox_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerTalkInbox"
         android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

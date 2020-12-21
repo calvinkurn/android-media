@@ -204,8 +204,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
         }
         setResultViews(KycUrl.KTP_VERIF_OK, KycUrl.FACE_VERIF_OK, "", getString(R.string.form_final_info),
-                ResourcesCompat.getColor(resources, R.color.kyc_centralized_f531353b, null),
-                ResourcesCompat.getColor(resources, R.color.kyc_centralized_f531353b, null),
+                ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null),
+                ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null),
                 getString(R.string.upload_button))
         generateLink()
         uploadButton?.setOnClickListener { v: View? ->
@@ -220,8 +220,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
         var imageKtp = KycUrl.KTP_VERIF_OK
         var imageFace = KycUrl.FACE_VERIF_OK
-        var colorKtp: Int? = ResourcesCompat.getColor(resources, R.color.kyc_centralized_f531353b, null)
-        var colorFace: Int? = ResourcesCompat.getColor(resources, R.color.kyc_centralized_f531353b, null)
+        var colorKtp: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
+        var colorFace: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
         if (!listRetake.isNullOrEmpty()) {
             for (i in listRetake.indices) {
 
@@ -395,7 +395,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = resources.getColor(R.color.kyc_centralized_42b549)
+                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
         val infoText = SpannableString(info?.text)
@@ -444,7 +444,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
         setResultViews(KycUrl.KTP_VERIF_FAIL, KycUrl.FACE_VERIF_OK, getString(R.string.kyc_ktp_fail_face_ok_verification_subtitle),
                 getString(R.string.kyc_ktp_fail_face_ok_verification_info),
-                null, ResourcesCompat.getColor(resources, R.color.kyc_centralized_f531353b, null),
+                null, ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null),
                 getString(R.string.kyc_ktp_fail_face_ok_button))
         bulletTextLayout?.let {
             context?.let { it1 ->

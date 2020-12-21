@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -44,6 +43,7 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -199,7 +199,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
 
                         checkout_loading_view.hide()
-                        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
+                        view?.let { v ->
+                            Toaster.build(v, getString(R.string.smart_bills_checkout_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
 
                         for (errorItem in it.data.attributes.errors) {
                             if (errorItem.index >= 0) {
@@ -223,7 +226,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
+                    view?.let { v ->
+                        Toaster.build(v, throwable.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
