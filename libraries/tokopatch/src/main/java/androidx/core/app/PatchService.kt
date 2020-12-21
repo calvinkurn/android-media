@@ -120,8 +120,9 @@ class PatchService : JobIntentService() {
         try {
             return super.dequeueWork()
         } catch (ex: SecurityException){
-            return null
+            ex.printStackTrace()
         }
+        return null
     }
 
 }
