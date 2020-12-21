@@ -25,15 +25,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.digital.R;
@@ -44,6 +36,11 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
@@ -76,6 +73,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+    public static final int PAYMENT_SUCCESS = 5;
 
     private static final int DELAY_ERROR_SHOWING = 3000;
 
@@ -262,7 +260,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
-        if(inputPriceContainer.getVisibility() == View.VISIBLE){
+        if (inputPriceContainer.getVisibility() == View.VISIBLE) {
             price = inputPriceHolderView.getPriceInput();
         }
         return new PromoDigitalModel(
@@ -382,7 +380,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                         AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
                         rating.setDialogDismissListener(() -> {
                             if (getActivity() != null) {
-                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                getActivity().setResult(PAYMENT_SUCCESS);
                                 closeView();
                             }
                         });
@@ -410,8 +408,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             } else {
                 closeView();
             }
-        } else if (requestCode == InstantCheckoutActivity.Companion.getREQUEST_CODE()) {
-            closeView();
         }
     }
 
@@ -422,8 +418,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.close), v->{});
+        if (view != null) Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v -> {
+                }).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -548,15 +545,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void renderErrorInstantCheckout(String message) {
         showToastMessage(message);
         presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
-    }
-
-    @Override
-    public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
-        navigateToActivityRequest(
-                InstantCheckoutActivity.Companion.newInstance(getActivity(), instantCheckoutData),
-                InstantCheckoutActivity.Companion.getREQUEST_CODE()
-        );
-        closeView();
     }
 
     @Override

@@ -1,17 +1,17 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder
 
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
@@ -20,6 +20,8 @@ class SellableStockProductViewHolder(itemView: View?,
                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
+    private var stockEditTextWatcher: TextWatcher? = null
+
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_campaign_stock_variant_editor
@@ -27,12 +29,17 @@ class SellableStockProductViewHolder(itemView: View?,
         private const val MAXIMUM_LENGTH = 7
     }
 
+    override fun onViewRecycled() {
+        removeListeners()
+        super.onViewRecycled()
+    }
+
     override fun bind(element: SellableStockProductUIModel) {
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
             if (element.isActive) {
-                label_campaign_stock_inactive?.gone()
+                label_campaign_stock_inactive?.visibility = View.INVISIBLE
             } else {
                 label_campaign_stock_inactive?.visible()
             }
@@ -42,7 +49,7 @@ class SellableStockProductViewHolder(itemView: View?,
                     element.isActive = isChecked
                     val status =
                             if (isChecked) {
-                                this@with.label_campaign_stock_inactive?.gone()
+                                this@with.label_campaign_stock_inactive?.visibility = View.INVISIBLE
                                 ProductStatus.ACTIVE
                             } else {
                                 this@with.label_campaign_stock_inactive?.visible()
@@ -63,7 +70,7 @@ class SellableStockProductViewHolder(itemView: View?,
 
         setValue(element.stock.toIntOrZero())
 
-        editText.afterTextChanged {
+        stockEditTextWatcher = getStockTextChangeListener {
             val input = it
             val stock = if(input.isNotEmpty()) {
                 input.toInt()
@@ -71,8 +78,10 @@ class SellableStockProductViewHolder(itemView: View?,
                 EditProductConstant.MINIMUM_STOCK
             }
             toggleQuantityEditorBtn(stock)
+            element.stock = stock.toString()
             onVariantStockChanged(element.productId, stock)
         }
+        editText.addTextChangedListener(stockEditTextWatcher)
 
         editText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -94,6 +103,26 @@ class SellableStockProductViewHolder(itemView: View?,
 
         addButton.isEnabled = enableAddBtn
         subtractButton.isEnabled = enableSubtractBtn
+    }
+
+    private fun getStockTextChangeListener(afterTextChanged: (String) -> Unit): TextWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(editable: Editable?) {
+                    afterTextChanged(editable?.toString().orEmpty())
+                }
+            }
+
+    private fun removeListeners() {
+        itemView.run {
+            stockEditTextWatcher?.let {
+                qte_campaign_stock_variant_editor?.editText?.removeTextChangedListener(it)
+            }
+            switch_campaign_stock_variant_editor?.setOnCheckedChangeListener(null)
+        }
     }
 
     private fun String.toInt(): Int {

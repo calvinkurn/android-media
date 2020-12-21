@@ -13,12 +13,15 @@ class ProgressWidgetUiModel(
         override val appLink: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
-        override val url: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: ProgressDataUiModel?,
-        override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var impressHolder: ImpressHolder = ImpressHolder(),
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

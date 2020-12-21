@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -18,6 +19,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.qrscanner.branchio.BranchIOAndroidDeepLink;
 import com.tokopedia.qrscanner.branchio.BranchIODeeplinkUseCase;
+import com.tokopedia.qrscanner.event_redeem.data.EventRedeem;
 import com.tokopedia.qrscanner.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -51,6 +53,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String QR_ID = "qr_id";
     private static final String OVO_TEXT = "ovo";
     private static final String GPNR_TEXT = "gpnqr";
+    private static final String EVENT_REDEEM = "tokopedia.com/v1/api/event/custom/redeem/invoice";
 
     private ScannerUseCase scannerUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -94,6 +97,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         } else if (isOvoPayQrEnabled && barcodeData.toLowerCase().contains(OVO_TEXT)
                 || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
             checkBarCode(barcodeData);
+        } else if (barcodeData.toLowerCase().contains(EVENT_REDEEM)){
+            checkEventRedeem(barcodeData);
         } else {
             getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
         }
@@ -260,6 +265,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                                 getView().showErrorGetInfo(context.getString(R.string.qr_scanner_no_available_feature));
                             }
                         }));
+    }
+
+    private void checkEventRedeem(String qrCode){
+        EventRedeem eventRedeem = new Gson().fromJson(qrCode, EventRedeem.class);
+        getView().goToEventRedeemPage(eventRedeem.getUrl());
     }
 
     @Override

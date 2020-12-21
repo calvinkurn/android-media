@@ -2,7 +2,6 @@ package com.tokopedia.trackingoptimizer.datasource
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.trackingoptimizer.BuildConfig
 import com.tokopedia.trackingoptimizer.db.TrackingDatabase
 import com.tokopedia.trackingoptimizer.db.dao.TrackingEEDatabaseDao
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel

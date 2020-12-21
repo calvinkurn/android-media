@@ -54,12 +54,17 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             name
                             price
                             imageUrl
-                            rating
-                            countReview
                             url
                             applink
                             priceStr
                             wishlist
+                            ratingAverage
+                            labelGroups {
+                                title
+                                position
+                                type
+                                url
+                            }
                             shop {
                                 city
                             }
@@ -98,7 +103,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
-                        rating_average
+                        url
+                        isOfficial
+                        isPowerBadge
                     }
                     freeOngkir {
                         isActive
@@ -113,19 +120,26 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     categoryId
                     categoryName
                     categoryBreadcrumb
-                    rating
                     ratingAverage
-                    countReview
                     priceInt
                     originalPrice
                     discountPercentage
                     warehouseIdDefault
                     boosterList
                     source_engine
+                    minOrder
+                    url
                     labelGroups {
                         title
                         position
                         type
+                        url
+                    }
+                    labelGroupVariant {
+                        title
+                        type
+                        type_variant
+                        hex_color
                     }
                     badges {
                         title
@@ -133,7 +147,6 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         show
                     }
                     wishlist
-                    count_sold
                 }
             }
         }
@@ -195,6 +208,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     product_rating
                     product_rating_format
                     product_item_sold_payment_verified
+                    product_minimum_order
                     free_ongkir {
                       is_active
                       img_url

@@ -18,7 +18,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -132,7 +132,7 @@ class TalkReplyHeaderViewHolder(view: View,
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 if(!allowUnmask) {
                     setType(Typography.BODY_2)
                     setWeight(Typography.REGULAR)
@@ -147,7 +147,7 @@ class TalkReplyHeaderViewHolder(view: View,
             text = HtmlLinkHelper(context, question).spannedString
             setType(Typography.HEADING_4)
             setWeight(Typography.BOLD)
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setCustomMovementMethod(fun(link: String): Boolean { return threadListener.onUrlClicked(link) })
         }
     }

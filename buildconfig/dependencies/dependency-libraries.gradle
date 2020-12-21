@@ -7,10 +7,10 @@ ext {
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.9",
             url                     : "com.tokopedia.url:url:1.0.7",
-            network                 : "com.tokopedia.network:network:1.1.10",
+            network                 : "com.tokopedia.network:network:1.1.11",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.26",
-            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
+            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
             chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
@@ -18,12 +18,13 @@ ext {
             fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.7",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.6",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
-            analyticParam           : "com.tokopedia.analytic:param:0.0.2",
-            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
-            analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
-            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3",
+            analyticParam           : "com.tokopedia.analytic:param:0.0.3",
+            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.5",
+            analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.5",
+            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
-            gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21"
+            gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
+            lint                    : "com.tokopedia.library:lint:0.0.5"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -50,12 +51,12 @@ ext {
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
+            deviceFingerprint       : ":libraries:device_fingerprint",
             deviceInfo              : ":libraries:device_info",
             devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
-            graphView               : ":libraries:graph_view",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePreview            : ":libraries:image_preview",
@@ -72,7 +73,6 @@ ext {
             mediauploader           : ":libraries:mediauploader",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
-            permissionchecker       : ":libraries:permissionchecker",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
@@ -81,7 +81,6 @@ ext {
             shakeDetect             : ":libraries:shake_detect",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
-            sharedata               : ":libraries:sharedata",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
@@ -90,6 +89,7 @@ ext {
             videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
             weaver                  : ":libraries:weaver",
+            workManagerUtil         : ":libraries:work_manager_util",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
             williamchart            : ":libraries:williamchart",
@@ -99,6 +99,7 @@ ext {
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
+            screenshot_observer     : ":libraries:screenshot_observer",
             traceroute              : ":libraries:traceroute",
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
@@ -106,6 +107,6 @@ ext {
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
-            lint                    : ":libraries:lint"
+            unitTest                : ":libraries:unit_test"
     ]
 }

@@ -14,7 +14,7 @@ internal class IntegrationSortFilterTest: SortFilterBottomSheetViewModelTestFixt
     private val keyword = "samsung"
     private val commonMapParameter = mapOf(
             SearchApiConst.Q to keyword,
-            SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+            dynamicFilterModel.getSortKey() to dynamicFilterModel.defaultSortValue
     )
 
     @Test

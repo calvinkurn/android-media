@@ -13,7 +13,7 @@
       "isQuerySafe": true,
       "autocompleteApplink": "tokopedia://search-autocomplete?q=produk%20wardyah",
       "redirection": {
-        "redirectApplink": "tokopedia://discovery/wardah-1"
+        "redirectApplink": ""
       },
       "products": [
         {

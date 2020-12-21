@@ -43,7 +43,7 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -107,7 +107,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public ProductDigitalPresenter(
@@ -116,7 +116,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            UserSession userSession) {
+            UserSessionInterface userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;

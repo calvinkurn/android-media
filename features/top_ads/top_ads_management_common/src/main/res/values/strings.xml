@@ -29,18 +29,14 @@
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
-
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
     <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
-
-
     <string name="topads_common_cancel_btn">Batalkan</string>
     <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
-    <string name="topads_common_save_butt"> Simpan</string>
+    <string name="topads_common_save_butt">Simpan</string>
     <string name="topads_common_batal">Batal</string>
     <string name="topads_common_mulai_beriklan">Mulai Beriklan</string>
-
     <string name="topads_group_detail">Detail Grup</string>
     <string name="topads_hari_ini">Hari ini</string>
     <string name="topads_common_produk_terjual">Produk Terjual</string>
@@ -49,13 +45,10 @@
     <string name="topads_common_klik">Klik</string>
     <string name="topads_common_pengeluaran">Pengeluaran</string>
     <string name="topads_common_tampil">Tampil</string>
-
-
     <string name="topads_common_ads_active">\u25CF Aktif</string>
     <string name="topads_common_ads_deactive">\u25CF Tidak Aktif</string>
     <string name="topads_common_ads_inprogress">\u25CF Dalam Proses</string>
     <string name="topads_common_ads_not_delivered">\u25CF Tidak tampil</string>
-
     <string name="topads_common_kata_kunci">Kata Kunci (%d)</string>
     <string name="topads_common_product">Produck (%d)</string>
     <string name="topads_common_kata_kunci_neg">Kata Kunci Negatif (%d)</string>
@@ -102,13 +95,13 @@
     <string name="topads_common_keyword_budget">Biaya</string>
     <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
     <string name="topads_common_error_multiple_50">Biaya harus kelipatan %d</string>
-    <string name="topads_common_simpan">Simpan</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
     <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
     <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="topads_common_keyword_list_step">Pilih Kata Kunci</string>
     <string name="topads_common_selected_list">Kata Kunci Pilihan</string>
+    <string name="topads_common_selected_list_count">Kata Kunci Pilihan(%d)</string>
     <string name="topads_common_recommended_list">Rekomendasi</string>
     <string name="topads_common_text_ok">Oke</string>
     <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
@@ -121,5 +114,21 @@
     <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
+    <string name="filter">Filter</string>
+    <string name="topads_edit_urutkan">Urutkan</string>
+    <string name="topads_common_max_bid">Biaya maximum Rp%s</string>
+    <string name="topads_common_min_bid">Biaya minimum Rp%s</string>
+    <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
+    <string name="topads_common_headline_klik">/1000 kali tampil</string>
+    <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
+
+
+
+    <string-array name="sort_product_list_array">
+        <item>Terlaris</item>
+        <item>Terbaru</item>
+        <item>Harga Tertinggi</item>
+        <item>Harga Terendah</item>
+    </string-array>
 
 </resources>

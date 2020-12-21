@@ -31,8 +31,8 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -134,7 +134,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -268,7 +268,8 @@ class MixTopComponentViewHolder(
                             ),
                             isOutOfStock = element.isOutOfStock,
                             ratingCount = element.rating,
-                            reviewCount = element.countReview
+                            reviewCount = element.countReview,
+                            countSoldRating = element.ratingFloat
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

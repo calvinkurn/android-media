@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.tkpd.category_levels">
+    <application
+        android:label="Product Nav Test"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
+        <activity
+            android:name=".InstrumentationProductNavTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+    </application>
+</manifest>

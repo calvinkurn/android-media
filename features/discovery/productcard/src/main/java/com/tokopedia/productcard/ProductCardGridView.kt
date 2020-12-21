@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
@@ -33,6 +34,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
+        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+
+        renderLabelBestSeller(labelBestSeller, productCardModel)
+
         renderOutOfStockView(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
@@ -47,6 +52,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -70,6 +77,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -87,6 +98,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
+        labelCampaignBackground?.glideClear(context)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -110,4 +122,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             outOfStockOverlay?.gone()
         }
     }
+
+    override fun getThreeDotsButton(): View? = imageThreeDots
+
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 }

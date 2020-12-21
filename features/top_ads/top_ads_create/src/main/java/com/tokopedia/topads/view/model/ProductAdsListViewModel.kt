@@ -16,8 +16,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.SORT_BY
 import com.tokopedia.topads.common.data.internal.ParamObject.START
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
+import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseEtalase
 import com.tokopedia.topads.data.response.ResponseProductList
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface

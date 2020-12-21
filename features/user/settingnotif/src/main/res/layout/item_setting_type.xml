@@ -14,7 +14,7 @@
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/setting_notif_dp_18">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_main_setting"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"

@@ -81,8 +81,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     private TrackingQueue trackingQueue;
     private RemoteConfig remoteConfig;
 
-    private static final String URL_ACCOUNT_PAGE = "https://m.tokopedia.com/user/settings/account";
-
     abstract void notifyItemChanged(int position);
 
     @Override
@@ -135,7 +133,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onProfileClicked(BuyerCardViewModel element) {
         sendTracking(PEMBELI, AKUN_SAYA, String.format("%s %s", CLICK, PROFILE));
-        openWebview(URL_ACCOUNT_PAGE);
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.GENERAL_SETTING);
     }
 
     @Override

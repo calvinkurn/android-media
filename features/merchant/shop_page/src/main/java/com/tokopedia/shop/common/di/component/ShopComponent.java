@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier;
@@ -28,7 +28,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import javax.inject.Named;
 
 import dagger.Component;
-import kotlinx.coroutines.CoroutineDispatcher;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -67,8 +66,6 @@ public interface ShopComponent {
     GQLGetShopFavoriteStatusUseCase getGQLGetShopFavoriteStatusUseCase();
 
     GetShopReputationUseCase getShopReputationUseCase();
-
-    CoroutineDispatcher getCoroutineDispatcher();
 
     GraphqlRepository getGraphqlRepository();
 

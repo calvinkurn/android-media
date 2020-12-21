@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.fragment
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -25,25 +24,31 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.attachcommon.data.VoucherPreview
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -59,9 +64,12 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -113,7 +121,7 @@ import kotlin.math.abs
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
+open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
         SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
@@ -149,6 +157,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var searchQuery: String = ""
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
+
+    //This used only for set extra in finish activity
+    private var isFavoriteShop: Boolean? = null
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -192,12 +203,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
                 composeArea,
-                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_20,
-                R.color.topchat_message_shadow,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
                 R.dimen.dp_topchat_2,
                 R.dimen.dp_topchat_1,
                 Gravity.CENTER
@@ -255,7 +266,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 quantity = product.minOrder.toString(),
                 productName = product.productName,
                 category = product.category,
-                price = product.priceInt.toString()
+                price = product.priceInt.toString(),
+                userId = session.userId
         )
         presenter.addToCart(addToCartOccRequestParams, {
             analytics.trackClickOccProduct(
@@ -436,8 +448,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        presenter.initProductPreview(savedInstanceState)
-        presenter.initInvoicePreview(savedInstanceState)
+        initProductPreview(savedInstanceState)
+        initInvoicePreview(savedInstanceState)
         presenter.initAttachmentPreview()
     }
 
@@ -924,7 +936,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                     it.getString(com.tokopedia.imagepicker.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
-                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    MAX_SIZE_IMAGE_PICKER,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                     null,
                     true,
@@ -985,13 +997,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        presenter.initInvoicePreview(data.extras)
+        initInvoicePreview(data.extras)
         presenter.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        presenter.initVoucherPreview(data.extras)
+        initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
     }
 
@@ -1028,10 +1040,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         if (data == null)
             return
 
-        if (!data.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+        if (!data.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
             return
 
-        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
         presenter.initProductPreviewFromAttachProduct(resultProducts)
     }
 
@@ -1072,13 +1084,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = presenter.getBuyPageIntent(context, element, sourcePage)
+        val buyPageIntent = getBuyPageIntent(element)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = presenter.getAtcPageIntent(context, element, sourcePage)
+        val atcPageIntent = getAtcPageIntent(element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
@@ -1110,6 +1122,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                     onSuccessUnFollowShopFromBcHandler()
                     addBroadCastSpamHandler(isFollow)
                 }
+                isFavoriteShop = isFollow
             }
         }
     }
@@ -1205,7 +1218,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(com.tokopedia.merchantvoucher.R.string.close), { snackbar.dismiss() })
-            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.setActionTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
     }
@@ -1237,6 +1250,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
             bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
             bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+            isFavoriteShop?.let {
+                bundle.putString(ApplinkConst.Chat.SHOP_FOLLOWERS_CHAT_KEY, it.toString())
+            }
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
@@ -1254,7 +1270,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventSeenProductAttachment(requireContext(), element, session)
 
             // this for experimentation of DATA
-            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) ?: false) {
+            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) == true) {
                 analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
             }
         }
@@ -1274,11 +1290,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         analytics.trackClickInvoice(viewModel)
     }
 
-    override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
+    private fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
     }
 
-    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+    private fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
         return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
@@ -1296,10 +1312,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun clearAttachmentPreviews() {
         getViewState().clearAttachmentPreview()
-    }
-
-    override fun getShopName(): String {
-        return opponentName
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
@@ -1481,15 +1493,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
-        presenter.requestFollowShop(shopId, {
-            element.stopFollowShop()
-            onSuccessFollowShopFromBcHandler()
-            adapter.removeBroadcastHandler(element)
-        }, {
-            element.stopFollowShop()
-            onErrorFollowShopFromBcHandler(it)
-            adapter.updateBroadcastHandlerState(element)
-        })
+        presenter.followUnfollowShop(
+                action = ToggleFavouriteShopUseCase.Action.FOLLOW,
+                shopId = shopId.toString(),
+                onSuccess = {
+                    element.stopFollowShop()
+                    onSuccessFollowShopFromBcHandler()
+                    adapter.removeBroadcastHandler(element)
+                    isFavoriteShop = true
+                },
+                onError = {
+                    element.stopFollowShop()
+                    onErrorFollowShopFromBcHandler(it)
+                    adapter.updateBroadcastHandlerState(element)
+                }
+        )
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
@@ -1574,7 +1592,108 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    private fun getAtcPageIntent(element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcOnly = ATC_ONLY
+        val needRefresh = true
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, opponentName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
+        }
+    }
+
+    private fun getBuyPageIntent(element: ProductAttachmentViewModel): Intent {
+        val quantity = element.minOrder
+        val atcAndBuyAction = ATC_AND_BUY
+        val needRefresh = true
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, opponentName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
+        }
+    }
+
+    private fun initProductPreview(savedInstanceState: Bundle?) {
+        val stringProductPreviews = getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
+        if (stringProductPreviews.isEmpty()) return
+        val listType = object : TypeToken<List<ProductPreview>>() {}.type
+        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
+                stringProductPreviews,
+                listType
+        )
+        for (productPreview in productPreviews) {
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            presenter.addAttachmentPreview(sendAbleProductPreview)
+        }
+    }
+
+    private fun initInvoicePreview(savedInstanceState: Bundle?) {
+        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+        val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+        val date = getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
+        val imageUrl = getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+        val invoiceUrl = getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+        val statusId = getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+        val status = getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+        val totalPriceAmount = getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+        val invoiceViewModel = InvoicePreviewUiModel(
+                id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+                invoiceCode,
+                productName,
+                date,
+                imageUrl,
+                invoiceUrl,
+                statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+                status,
+                totalPriceAmount
+        )
+        if (invoiceViewModel.enoughRequiredData()) {
+            presenter.clearAttachmentPreview()
+            presenter.addAttachmentPreview(invoiceViewModel)
+        }
+    }
+
+    private fun initVoucherPreview(extras: Bundle?) {
+        val stringVoucherPreview = getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
+        if (stringVoucherPreview.isEmpty()) return
+        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
+        val sendableVoucher = SendableVoucherPreview(voucherPreview)
+        if (!presenter.hasEmptyAttachmentPreview()) {
+            presenter.clearAttachmentPreview()
+        }
+        presenter.addAttachmentPreview(sendableVoucher)
+    }
+
     companion object {
+        private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle

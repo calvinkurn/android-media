@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
 /**
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 class AddProductInputMapper @Inject constructor() {
 
-    companion object{
+    companion object {
         const val PRICE_CURRENCY = "IDR"
         const val UNIT_GRAM = "GR"
         const val UNIT_KILOGRAM = "KG"
@@ -63,7 +64,7 @@ class AddProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                null,
+                mapProductShowCases(detailInputModel.productShowCases),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -71,6 +72,11 @@ class AddProductInputMapper @Inject constructor() {
                 mapVariantParam(variantInputModel)
         )
     }
+
+    private fun mapProductShowCases(productShowCases: List<ShowcaseItemPicker>): List<ProductEtalase> =
+            productShowCases.map {
+                ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
+            }
 
     private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
@@ -184,7 +190,7 @@ class AddProductInputMapper @Inject constructor() {
         var idxUploadIdList = 0
         imageUrlOrPathList.forEach { urlOrPath ->
             if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
-                with (pictureList[idxPictureList++]) {
+                with(pictureList[idxPictureList++]) {
                     data.add(Picture(
                             description,
                             fileName,
@@ -196,7 +202,8 @@ class AddProductInputMapper @Inject constructor() {
                     ))
                 }
             } else {
-                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+                val uploadId = uploadIdList.getOrNull(idxUploadIdList++) ?: ""
+                data.add(Picture(uploadId = uploadId))
             }
         }
         return Pictures(data)

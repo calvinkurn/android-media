@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_payment"
-        android:layout_width="@dimen/dp_45"
-        android:layout_height="@dimen/dp_45"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
         android:layout_marginStart="@dimen/dp_16"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
@@ -21,7 +21,7 @@
         android:id="@+id/tv_payment_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:ellipsize="end"
@@ -80,6 +80,22 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/tv_payment_error_message"
         app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_payment_ovo_error_action"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lines="1"
+        android:textColor="@color/Green_G500"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_payment_error_message"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
@@ -156,7 +172,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_payment,tv_installment_error_message,tv_payment_detail,tv_payment_error_message" />
+        app:constraint_referenced_ids="iv_payment,tv_installment_error_message,tv_payment_detail,tv_payment_error_message,tv_payment_ovo_error_action" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_info"

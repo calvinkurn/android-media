@@ -112,6 +112,10 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_SHIPPING_DURATION] = setDefaultIfEmpty(shippingDuration)
     }
 
+    fun setCampaignId(campaignId: String) {
+        data[KEY_CAMPAIGN_ID] = campaignId
+    }
+
     fun build(step: Int, option: String): Map<String, Any> {
         return mapOf(
                 KEY_CHECKOUT to mapOf(
@@ -167,6 +171,7 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_PRODUCT_TYPE = "dimension83"
         private const val KEY_SHIPPING_PRICE = "dimension12"
         private const val KEY_SHIPPING_DURATION = "dimension16"
+        private const val KEY_CAMPAIGN_ID = "dimension104"
 
         const val STEP_1 = 1
         const val STEP_1_OPTION = "order summary page loaded"

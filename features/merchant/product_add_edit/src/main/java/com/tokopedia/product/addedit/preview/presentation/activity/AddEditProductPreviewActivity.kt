@@ -28,8 +28,13 @@ import com.tokopedia.user.session.UserSession
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     companion object {
-        fun createInstance(context: Context?): Intent = Intent(context,
-                AddEditProductPreviewActivity::class.java)
+        fun createInstance(context: Context?, draftId: String? = null): Intent {
+            val intent = Intent(context, AddEditProductPreviewActivity::class.java)
+            draftId?.let {
+                intent.putExtra(EXTRA_DRAFT_ID, draftId)
+            }
+            return intent
+        }
 
         fun createInstance(context: Context?, draftId: String, isFromSuccessNotif: Boolean?,
                            isFromNotifEditMode: Boolean?): Intent {
@@ -88,7 +93,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         }
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         findViewById<androidx.appcompat.widget.Toolbar>(com.tokopedia.product.addedit.R.id.toolbar)?.let {

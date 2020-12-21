@@ -10,7 +10,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
 
-    testImplementation "org.robolectric:robolectric:4.3.1"
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 }
 

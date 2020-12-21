@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -118,6 +119,9 @@ class AddEditProductShipmentFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
@@ -244,6 +248,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun inputAllDataInProductInputModel() {
+        productInputModel?.isDataChanged = true
         productInputModel?.shipmentInputModel?.apply {
             isMustInsurance = switchInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()

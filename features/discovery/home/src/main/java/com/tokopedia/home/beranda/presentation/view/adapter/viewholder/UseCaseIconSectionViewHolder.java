@@ -90,7 +90,7 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
         }
 
         private void eventClickUseCase(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
-            HomePageTracking.eventClickHomeUseCase(context, homeIconItem.getName());
+            HomePageTracking.eventClickHomeUseCase(homeIconItem.getName());
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.getName(), position + 1, homeIconItem.getApplinks());

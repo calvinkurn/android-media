@@ -22,6 +22,9 @@ data class DynamicActionListItem(
 	@SerializedName("counter")
 	val counter: Counter? = null,
 
+	@SerializedName("counterTotal")
+	val counterTotal: CounterTotal? = null,
+
 	@SerializedName("iconImageURLScrolled")
 	val iconImageURLScrolled: String? = null
 )

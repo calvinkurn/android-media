@@ -43,7 +43,7 @@ import javax.inject.Inject
  * Author errysuprayogi on 29,October,2019
  */
 
-private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan manual"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
@@ -132,7 +132,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-
     }
 
     private fun errorResponse(throwable: Throwable) {
@@ -140,12 +139,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 throwable.message,
                 Snackbar.LENGTH_LONG)
                 .show()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
+            loading?.visibility = View.VISIBLE
+            btn_submit?.isEnabled = false
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
             sendAnalyticEvent()
@@ -168,7 +168,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
                     daily_budget.setError(true)
                     btn_submit.isEnabled = false
-
                 }
             } else {
                 dailyBudgetType.text = getString(R.string.tidak_dibatasi)
@@ -183,7 +182,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun sendAnalyticEvent() {
-
         adsItemsList.forEachIndexed { index, adsItem ->
             selectedProductIds.add(adsItemsList[index].productID)
         }

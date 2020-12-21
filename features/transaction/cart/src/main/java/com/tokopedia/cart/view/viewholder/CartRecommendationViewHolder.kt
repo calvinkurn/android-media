@@ -20,6 +20,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
         val LAYOUT = R.layout.item_cart_recommendation
     }
 
+    internal var isTopAds = false
+
     fun bind(element: CartRecommendationItemHolderData) {
         itemView.productCardView?.apply {
             setProductModel(
@@ -76,6 +78,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
             actionListener?.onRecommendationImpression(element)
             element.hasSentImpressionAnalytics = true
         }
+
+        isTopAds = element.recommendationItem.isTopAds
     }
 
     fun clearImage() {

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class Product {
     private int productCatalogId;
     @SerializedName("purchase_protection_plan_data")
     @Expose
-    private PurchaseProtectionPlanData purchaseProtectionPlanData;
+    private PurchaseProtectionPlanDataResponse purchaseProtectionPlanDataResponse;
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
@@ -136,6 +137,9 @@ public class Product {
     @SerializedName("product_information")
     @Expose
     private List<String> productInformation;
+    @SerializedName("campaign_id")
+    @Expose
+    private int campaignId;
 
     public String getProductCategory() {
         return productCategory;
@@ -277,8 +281,8 @@ public class Product {
         return productPreorder;
     }
 
-    public PurchaseProtectionPlanData getPurchaseProtectionPlanData() {
-        return purchaseProtectionPlanData;
+    public PurchaseProtectionPlanDataResponse getPurchaseProtectionPlanDataResponse() {
+        return purchaseProtectionPlanDataResponse;
     }
 
     public TradeInInfo getTradeInInfo() {
@@ -303,5 +307,9 @@ public class Product {
 
     public List<String> getProductInformation() {
         return productInformation;
+    }
+
+    public int getCampaignId() {
+        return campaignId;
     }
 }

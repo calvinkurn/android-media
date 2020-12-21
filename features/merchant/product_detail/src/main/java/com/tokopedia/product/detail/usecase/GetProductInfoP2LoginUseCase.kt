@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
@@ -23,6 +24,18 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 ) : UseCase<ProductInfoP2Login>() {
 
     companion object {
+        val QUERY_SHOP_FOLLOW_STATUS = """
+            query getShopInfo(${'$'}shopIds : [Int!]!, ${'$'}fields : [String!]!){
+                shopInfoByID(input: {shopIDs: ${'$'}shopIds, fields: ${'$'}fields}){
+                    result {
+                        favoriteData{
+                            alreadyFavorited
+                        }
+                    }
+                }
+            }
+        """.trimIndent()
+
         val QUERY_TOP_ADS_SHOP = """
             query getTopAdsGetShopInfo(${'$'}shop_id: Int!){
                   topAdsGetShopInfo(shop_id:${'$'}shop_id) {   
@@ -67,10 +80,17 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val topAdsShopRequest = GraphqlRequest(QUERY_TOP_ADS_SHOP,
                 TopAdsGetShopInfo.Response::class.java, topAdsShopParams)
 
+        val shopFollowParams = mapOf(
+                ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId),
+                ProductDetailCommonConstant.FIELDS_PARAM to listOf("favorite")
+        )
+        val shopFollowRequest = GraphqlRequest(QUERY_SHOP_FOLLOW_STATUS,
+                ProductShopFollowResponse::class.java, shopFollowParams)
+
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val requests = mutableListOf(isWishlistedRequest, affiliateRequest)
 
-        if (isShopOwner) requests.addAll(listOf(topAdsShopRequest, topAdsManageRequest))
+        if (isShopOwner) requests.addAll(listOf(topAdsShopRequest, topAdsManageRequest)) else requests.addAll(listOf(shopFollowRequest))
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -97,6 +117,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             if (gqlResponse.getError(TopAdsGetShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 gqlResponse.doActionIfNotNull<TopAdsGetShopInfo.Response> {
                     p2Login.topAdsGetShopInfo = gqlResponse.getData<TopAdsGetShopInfo.Response>(TopAdsGetShopInfo.Response::class.java).topAdsGetShopInfo.topAdsShopData
+                }
+            }
+
+            if (gqlResponse.getError(ProductShopFollowResponse::class.java)?.isNotEmpty() != true) {
+                gqlResponse.doActionIfNotNull<ProductShopFollowResponse> {
+                    p2Login.isFollow = gqlResponse.getData<ProductShopFollowResponse>(ProductShopFollowResponse::class.java).shopInfoByID.result.firstOrNull()?.favoriteData?.alreadyFavorited
+                            ?: 0
                 }
             }
         } catch (t: Throwable) {

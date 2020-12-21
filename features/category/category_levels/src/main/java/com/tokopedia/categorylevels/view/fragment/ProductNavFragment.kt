@@ -485,12 +485,12 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
 
+        if (item.isTopAds) {
+            productNavViewModel.sendTopAdsClick(item.productClickTrackingUrl, item.id.toString(), item.name, item.imageURL)
+        }
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
-        }
-        if (item.isTopAds) {
-            productNavViewModel.sendTopAdsClick(item.productClickTrackingUrl, item.id.toString(), item.name, item.imageURL)
         }
         catAnalyticsInstance.eventClickProductList(item.id.toString(),
                 mDepartmentId,

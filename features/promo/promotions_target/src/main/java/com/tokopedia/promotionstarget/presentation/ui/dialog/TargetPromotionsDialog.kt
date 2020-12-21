@@ -46,9 +46,9 @@ import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
-import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
+import com.tokopedia.promotionstarget.data.coupon.CouponUiData
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.di.components.AppModule
+import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
@@ -66,7 +66,6 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Compan
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.NORMAL
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -441,7 +440,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
 
             if (uiType == TargetPromotionsCouponType.MULTIPLE_COUPON) {
-                val couponDetailList = ArrayList<GetCouponDetail>()
+                val couponDetailList = ArrayList<CouponUiData>()
                 if (couponDetailResponse.couponList != null) {
                     couponDetailList.addAll(couponDetailResponse.couponList)
                 }
@@ -514,7 +513,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         this.data = data
 
 
-        val couponDetailList = ArrayList<GetCouponDetail>()
+        val couponDetailList = ArrayList<CouponUiData>()
         couponDetailResponse?.couponList?.let {
             imageViewRight.visibility = View.GONE
             couponDetailList.addAll(it)
@@ -541,7 +540,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         popGratificationActionBtn = data.popGratificationClaim?.popGratificationActionButton
         this.data = data
 
-        val couponDetailList = ArrayList<GetCouponDetail>()
+        val couponDetailList = ArrayList<CouponUiData>()
         couponDetailResponse?.couponList?.let {
             imageViewRight.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
@@ -929,7 +928,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             bottomSheetCoordinatorLayout = parent
         }
         if (bottomSheetCoordinatorLayout != null && bottomSheetFmContainer is FrameLayout) {
-            BottomSheetBehavior.from(bottomSheetFmContainer).state = BottomSheetBehavior.STATE_EXPANDED
+            BottomSheetBehavior.from(bottomSheetFmContainer as FrameLayout).state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 

@@ -4,7 +4,6 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.search.createBannedProductsEmptySearch
 import com.tokopedia.search.mock.MockSearchProductModel.getBannedProductsEmptySearchViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
@@ -22,8 +21,7 @@ internal class BenchmarkBannedProductsComponent {
     @Test
     fun benchmark_onBind_ViewHolder_banned_products_empty_search() {
         val itemView = BenchmarkObject.simpleViewFromLayout(BannedProductsEmptySearchViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
-        val viewHolder = BannedProductsEmptySearchViewHolder(
-                itemView, createBannedProductsEmptySearch())
+        val viewHolder = BannedProductsEmptySearchViewHolder(itemView)
         val data = getBannedProductsEmptySearchViewModel()
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -35,9 +33,8 @@ internal class BenchmarkBannedProductsComponent {
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_banned_products_empty_search() {
         val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
-        val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
-                BannedProductsEmptySearchViewHolder.LAYOUT) {
-            BannedProductsEmptySearchViewHolder(it, createBannedProductsEmptySearch())
+        val recyclerViewAdapter = BenchmarkObject.simpleAdapter(BannedProductsEmptySearchViewHolder.LAYOUT) {
+            BannedProductsEmptySearchViewHolder(it)
         }
 
         benchmarkRule.measureRepeated {

@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.VccUserStatus
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import rx.functions.Func1
 import javax.inject.Inject
@@ -38,8 +39,8 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
-    private val UOH_AB_TEST_KEY = "uoh_android"
-    private val UOH_AB_TEST_VALUE = "uoh_android"
+    private val UOH_AB_TEST_KEY = "uoh_android_v2"
+    private val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)
@@ -75,6 +76,7 @@ class BuyerAccountMapper @Inject constructor(
             isAffiliate = accountDataModel.isAffiliate
         }
 
+        userSession.shopName = buyerCardViewModel.shopName
         userSession.setHasPassword(accountDataModel.userProfileCompletion.isCreatedPassword)
 
         return buyerCardViewModel
@@ -245,7 +247,15 @@ class BuyerAccountMapper @Inject constructor(
     }
 
     private fun useUoh(): Boolean {
-        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-        return remoteConfigValue == UOH_AB_TEST_VALUE
+        return try {
+            val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, UOH_AB_TEST_VALUE)
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+            return (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 }

@@ -301,7 +301,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
             product: ProductData,
             onSuccessAddToCart: (DataModel) -> Unit
     ) {
-        presenter.addProductToCart(product, onSuccessAddToCart)
+        presenter.addProductToCart(userSession.userId, product, onSuccessAddToCart)
     }
 
     override fun trackOnClickCtaButton(templateKey: String, notificationId: String) {

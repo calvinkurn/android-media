@@ -3,8 +3,10 @@ package com.tokopedia.home_component.viewholders
 import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -13,18 +15,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
-import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.ImageHandler
-import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -48,7 +47,7 @@ import kotlin.math.abs
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null)
     : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
@@ -62,6 +61,7 @@ class MixLeftComponentViewHolder (itemView: View,
     private lateinit var loadingBackground: ImageView
     private lateinit var parallaxBackground: View
     private lateinit var parallaxView: View
+    private lateinit var containerMixLeft: FrameLayout
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -115,6 +115,7 @@ class MixLeftComponentViewHolder (itemView: View,
         loadingBackground = itemView.findViewById(R.id.background_loader)
         parallaxBackground = itemView.findViewById(R.id.parallax_background)
         parallaxView = itemView.findViewById(R.id.parallax_view)
+        containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
     private fun setupBackground(channel: ChannelModel) {
@@ -137,6 +138,12 @@ class MixLeftComponentViewHolder (itemView: View,
             })
         } else {
             loadingBackground.hide()
+        }
+
+        if (channel.channelHeader.backColor.isEmpty()) {
+            val params = containerMixLeft.layoutParams as ConstraintLayout.LayoutParams
+            params.setMargins(params.leftMargin, convertDpToPixel(10f, itemView.context), params.rightMargin, params.bottomMargin)
+            containerMixLeft.layoutParams = params
         }
     }
 
@@ -222,6 +229,7 @@ class MixLeftComponentViewHolder (itemView: View,
                             ),
                             isOutOfStock = element.isOutOfStock,
                             ratingCount = element.rating,
+                            countSoldRating = element.ratingFloat,
                             reviewCount = element.countReview
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),

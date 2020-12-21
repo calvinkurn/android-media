@@ -112,6 +112,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_minimum_order_cant_exceed_available_stock)
     }
 
+    // product SKU string properties
+
+    fun getEmptyProductSkuErrorMessage(): String? {
+        return getString(R.string.error_product_sku_space_exist)
+    }
+
     // pre order string properties
 
     fun getEmptyPreorderDurationErrorMessage(): String? {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_3"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    app:cardElevation="@dimen/dp_3"
+    app:cardMaxElevation="@dimen/dp_6"
+    app:cardCornerRadius="@dimen/dp_5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/line_divider"
+        android:orientation="vertical"
+        android:showDividers="beginning|middle|end">
+
+        <include layout="@layout/shop_review_header_shop_page" />
+
+        <include layout="@layout/include_item_product_review_page" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

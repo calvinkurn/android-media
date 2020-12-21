@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
-      android:id="@+id/main_view"
+        android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <LinearLayout
@@ -16,161 +17,194 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/label_view_identity"
-                style="@style/LabelLayout"
-                android:minHeight="@dimen/dp_64"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:lv_show_arrow="true"
-                app:lv_title="@string/title_personal_data_setting"
-                app:lv_title_text_size="@dimen/sp_14" />
-
-            <View
+            <LinearLayout
+                android:id="@+id/fragment_account_setting_account_section"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
-
-            <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/label_view_address"
-                style="@style/LabelLayout"
-                android:minHeight="@dimen/dp_64"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:lv_show_arrow="true"
-                app:lv_title="@string/title_address_setting"
-                app:lv_title_text_size="@dimen/sp_14" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
-  
-          <com.tokopedia.design.label.LabelView
-            android:id="@+id/label_view_account_bank"
-            style="@style/LabelLayout"
-            android:minHeight="@dimen/dp_64"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            app:lv_show_arrow="true"
-            app:lv_title="@string/title_bank_account_setting"
-            app:lv_title_text_size="@dimen/sp_14" />
-  
-          <View
-                android:id="@+id/separator_sampai"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
-
-            <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/label_view_sampai"
-                style="@style/LabelLayout"
-                android:minHeight="@dimen/dp_64"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:lv_show_arrow="true"
-                app:lv_title="@string/title_sampai_project"
-                app:lv_title_text_size="@dimen/sp_14" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
-
-            <TextView
-                style="@style/TextView.Title.Bold"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:text="@string/header_privacy_account_setting" />
-
-            <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/label_view_password"
-                style="@style/LabelLayout"
-                android:minHeight="@dimen/dp_64"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:lv_show_arrow="true"
-                app:lv_title="@string/title_password_setting"
-                app:lv_title_text_size="@dimen/sp_14" />
-
-            <View
-                android:id="@+id/separator_pin"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical">
-
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/label_view_pin"
+                    android:id="@+id/label_view_identity"
                     style="@style/LabelLayout"
                     android:minHeight="@dimen/dp_64"
                     android:paddingEnd="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
                     app:lv_show_arrow="true"
-                    app:lv_title="@string/title_setting_pin"
+                    app:lv_title="@string/title_personal_data_setting"
                     app:lv_title_text_size="@dimen/sp_14" />
 
-                <Space
-                    android:id="@+id/space"
-                    android:layout_width="@dimen/dp_120"
-                    android:layout_height="0dp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/label_view_address"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/dp_64"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_address_setting"
+                    app:lv_title_text_size="@dimen/sp_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.design.label.LabelView
+                    android:id="@+id/label_view_account_bank"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/dp_64"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_bank_account_setting"
+                    app:lv_title_text_size="@dimen/sp_14" />
+
+                <View
+                    android:id="@+id/separator_sampai"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/label_view_sampai"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/dp_64"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_sampai_project"
+                    app:lv_title_text_size="@dimen/sp_14" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fragment_account_setting_security_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_new"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="7sp"
-                    android:textColor="@color/white"
-                    android:lineSpacingExtra="2sp"
-                    android:textAllCaps="true"
-                    android:layout_toRightOf="@+id/space"
-                    android:layout_centerVertical="true"
-                    android:text="NEW"
-                    android:background="@drawable/bg_rounded_corners_red"
-                    android:padding="@dimen/dp_3"
-                    android:layout_margin="@dimen/dp_5" />
+                    style="@style/TextView.Title.Bold"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/header_privacy_account_setting" />
 
-            </RelativeLayout>
+                <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/label_view_password"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/dp_64"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_password_setting"
+                    app:lv_title_text_size="@dimen/sp_14" />
 
-            <View
-                android:id="@+id/separator_kyc"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator"
-                android:visibility="gone" />
+                <View
+                    android:id="@+id/separator_pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
 
-            <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/label_view_kyc"
-                style="@style/LabelLayout"
-                android:minHeight="@dimen/dp_64"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                android:visibility="gone"
-                app:lv_show_arrow="true"
-                app:lv_title="@string/title_kyc_setting"
-                app:lv_title_text_size="@dimen/sp_14" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_half"
-                android:background="@drawable/bg_list_separator" />
+                    <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/label_view_pin"
+                        style="@style/LabelLayout"
+                        android:minHeight="@dimen/dp_64"
+                        android:paddingEnd="@dimen/dp_8"
+                        android:paddingRight="@dimen/dp_8"
+                        app:lv_show_arrow="true"
+                        app:lv_title="@string/title_setting_pin"
+                        app:lv_title_text_size="@dimen/sp_14" />
 
-        </LinearLayout>
+                    <Space
+                        android:id="@+id/space"
+                        android:layout_width="@dimen/dp_120"
+                        android:layout_height="0dp" />
 
+                    <TextView
+                        android:id="@+id/text_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dp_5"
+                        android:layout_toRightOf="@+id/space"
+                        android:background="@drawable/bg_rounded_corners_red"
+                        android:lineSpacingExtra="2sp"
+                        android:padding="@dimen/dp_3"
+                        android:text="NEW"
+                        android:textAllCaps="true"
+                        android:textColor="@color/Unify_N0"
+                        android:textSize="7sp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/label_view_kyc"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/dp_64"
+                    android:paddingEnd="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:visibility="gone"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_kyc_setting"
+                    app:lv_title_text_size="@dimen/sp_14" />
+
+                <View
+                    android:id="@+id/separator_push_notif"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator" />
+
+                <com.tokopedia.design.label.LabelView
+                    android:id="@+id/label_view_push_notif"
+                    style="@style/LabelLayout"
+                    android:minHeight="@dimen/layout_lvl6"
+                    android:paddingEnd="@dimen/spacing_lvl3"
+                    app:lv_show_arrow="true"
+                    app:lv_title="@string/title_signin_with_notification"
+                    app:lv_title_text_size="@dimen/fontSize_lvl3" />
+
+                <View
+                    android:id="@+id/separator_kyc"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_half"
+                    android:background="@drawable/bg_list_separator"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+            </LinearLayout>
     </ScrollView>
 
     <ProgressBar
@@ -179,4 +213,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone" />
+
 </RelativeLayout>

@@ -14,20 +14,20 @@
         android:orientation="vertical"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingLeft="@dimen/layout_lvl2"
-        android:paddingTop="@dimen/dp_25"
+        android:paddingTop="@dimen/spacing_lvl5"
         android:paddingEnd="@dimen/layout_lvl2"
         android:paddingRight="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/dp_25">
+        android:paddingBottom="@dimen/spacing_lvl5">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/payment_info_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_order_detail_information"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:textColor="@color/Neutral_N700_96"
+            tools:textColor="@color/Unify_N700_96"
             tools:textSize="@dimen/sp_14"
             tools:textStyle="bold" />
 
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/hotel_grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/hotel_grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             tools:text="Kartu Kredit Anda tidak akan terpotong biaya apapun dikarenakan transaksi gagal."
             tools:textSize="@dimen/sp_12" />
 

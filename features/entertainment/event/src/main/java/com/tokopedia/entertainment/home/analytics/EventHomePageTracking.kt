@@ -76,12 +76,9 @@ class EventHomePageTracking {
         val CATEGORY = "category"
     }
 
-    companion object {
+    companion object{
         const val ACTIVITY_IND = "Aktivitas"
         const val ACTIVITY_ENG = "activity"
-        fun getInstance(): EventHomePageTracking {
-            return EventHomePageTracking()
-        }
     }
 
     private fun getTracker(): Analytics {

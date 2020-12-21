@@ -11,59 +11,58 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:fontFamily="sans-serif"
             android:text="@string/interest_what_do_you_like"
             android:textColor="@color/font_black_primary_70"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
             tools:text="Kamu Suka Apa? Aku suka kamu hehe xD Kalau kamu gimana? Yang bener dong" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:fontFamily="sans-serif"
             android:text="@string/interest_change"
             android:textColor="@color/font_black_secondary_54"
-            android:textSize="@dimen/sp_12"
             android:visibility="gone"
+            app:typographyType="body_3"
             tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/interestList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
+            android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:reverseLayout="false"
             app:spanCount="3"
             tools:listitem="@layout/item_interest_pick" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/saveInterest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/interest_select_one"
             android:textAllCaps="false"
-            app:buttonCompatSize="medium"
-            app:buttonCompatType="primary" />
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
     </LinearLayout>
 
     <FrameLayout
@@ -74,14 +73,14 @@
         android:visibility="visible"
         tools:visibility="gone">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.ProgressBarUnify
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:indeterminate="true" />
     </FrameLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

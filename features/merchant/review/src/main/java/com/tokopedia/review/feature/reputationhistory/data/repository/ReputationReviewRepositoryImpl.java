@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.data.repository;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.review.feature.reputationhistory.data.source.cloud.CloudReputationReviewDataSource;
 import com.tokopedia.review.feature.reputationhistory.domain.ReputationReviewRepository;
 import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;

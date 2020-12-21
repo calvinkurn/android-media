@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -27,19 +28,21 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.Utils.validateKeywordCountAndChars
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.KeywordSearchAdapter
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.PRODUCT_IDS_SELECTED
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SEARCH_QUERY
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SELECTED_KEYWORDS
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import javax.inject.Inject
@@ -59,6 +62,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private var groupId: String = ""
     private var userID: String = ""
     private var manualKeywords:MutableList<SearchData> = mutableListOf()
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
 
     override fun getComponent(): TopAdsEditComponent {
@@ -79,6 +84,15 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         fetchData()
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(this)
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager, KeywordSearchActivity::class.java.name)
         }
@@ -135,29 +149,17 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         manualAd.visibility = View.GONE
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
             adapter.items.clear()
-            txtError.text = validateKeyword(search.searchBarTextField.text.toString().trim())
+            txtError.text = validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
             if (txtError.text.isNotEmpty()) {
                 setEmpty(true)
                 txtError.visibility = View.VISIBLE
                 onSelectedItem()
             } else {
                 txtError.visibility = View.GONE
+                viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
+                        ?: "", ::onSuccessSearch)
+
             }
-            viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                    ?: "", ::onSuccessSearch)
-
-        }
-    }
-
-    private fun validateKeyword(text: CharSequence?): CharSequence? {
-        return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
-            getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches(Constants.REGEX.toRegex())) {
-            getString(R.string.error_keyword)
-        } else if (text!!.length > Constants.COUNT) {
-            getString(R.string.error_max_length)
-        } else {
-            null
         }
     }
 

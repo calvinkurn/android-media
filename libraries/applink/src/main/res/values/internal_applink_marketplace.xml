@@ -32,13 +32,9 @@
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
     <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
-    <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
-    <string name="path_product_edit_item" translatable="false">/product-edit-item/.*\\/</string>
-    <string name="path_product_edit_variant_dashboard" translatable="false">/product-edit-variant-dashboard</string>
-    <string name="path_product_etalase_picker" translatable="false">/product-etalase-picker/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
@@ -64,14 +60,15 @@
     <string name="path_product_draft_list" translatable="false">/product-draft-list</string>
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
-    <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
     <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
-    <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
+    <string name="path_review_detail_buyer" translatable="false">/review/detail/.*\\/</string>
+    <string name="path_reputation_detail" translatable="false">/reputation/.*\\/</string>
     <string name="path_review_report" translatable="false">/review-report</string>
 
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
+    <string name="path_seller_review_detail_page" translatable="false">/seller-review-detail</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
@@ -92,6 +89,7 @@
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
+    <string name="path_chat_setting">/chat/settings</string>
     <string name="path_notification">/notification</string>
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>
@@ -99,6 +97,7 @@
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="path_user_attach_invoice" translatable="false">/user-attach-invoice</string>
     <string name="path_user_attach_voucher" translatable="false">/user-attach-voucher</string>
+    <string name="path_user_attach_product" translatable="false">/user-attach-product</string>
     <string name="path_user_order_history" translatable="false">/user-order-history/.*\\/</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_ovop2p">OVO P2P Transfer</string>
@@ -106,6 +105,5 @@
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
     <string name="path_sellerapp_search" translatable="false">seller-search</string>
-    <string name="path_etalase_dynamic_picker">/etalase-dynamic-picker</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
 </resources>

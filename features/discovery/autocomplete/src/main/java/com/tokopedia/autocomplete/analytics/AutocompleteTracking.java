@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.analytics;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -52,15 +53,6 @@ public class AutocompleteTracking {
         eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
-    }
-
-    public static void eventClickPopularSearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH,
-                AutocompleteEventTracking.Category.TOP_NAV + " - /",
-                AutocompleteEventTracking.Action.CLICK_POPULAR_SEARCH,
-                label
-        );
     }
 
     public static void eventClickRecentSearch(String label) {
@@ -221,23 +213,6 @@ public class AutocompleteTracking {
         iris.saveEvent(map);
     }
 
-    public static void impressedPopularSearch(Iris iris, List<Object> list) {
-        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
-                EVENT, AutocompleteEventTracking.Event.PROMO_VIEW_IRIS,
-                EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - " + AutocompleteEventTracking.Category.INITIAL_STATE,
-                EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_POPULAR_SEARCH,
-                EVENT_LABEL, "",
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                )
-                        )
-                )
-        );
-        iris.saveEvent(map);
-    }
-
     public static void eventClickTopShop(String label) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -285,5 +260,94 @@ public class AutocompleteTracking {
                         USER_ID, userId
                 )
         );
+    }
+
+    public static void impressedDynamicSection(Iris iris, DynamicInitialStateItemTrackingModel model) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, AutocompleteEventTracking.Event.PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_POPULAR_SEARCH + " - " + model.getType(),
+                EVENT_LABEL, "title: " + model.getTitle(),
+                BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                USER_ID, model.getUserId(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        model.getList().toArray(new Object[model.getList().size()])
+                                )
+                        )
+                )
+        );
+        iris.saveEvent(map);
+    }
+
+    public static void eventClickDynamicSection(String userId, String label, String type) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DYNAMIC_SECTION + " - " + type,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
+
+    public static void eventClickLocalKeyword(String label, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_LOCAL_KEYWORD,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
+
+    public static void eventClickGlobalKeyword(String label, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_GLOBAL_KEYWORD,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
+
+    public static void eventClickCuratedCampaignCard(String userId, String label, String type) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_INITIAL_STATE + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_CURATED_CAMPAIGN + " - " + type,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
+
+    public static void impressedCuratedCampaign(Iris iris, String userId, String label, String type) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, AutocompleteEventTracking.Event.VIEW_TOP_NAV_IRIS,
+                EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_INITIAL_STATE + " - /",
+                EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_CURATED_CAMPAIGN + " - " + type,
+                EVENT_LABEL, label,
+                BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId
+        );
+        iris.saveEvent(map);
     }
 }

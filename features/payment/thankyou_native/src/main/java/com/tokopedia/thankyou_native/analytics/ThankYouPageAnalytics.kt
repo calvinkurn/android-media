@@ -47,7 +47,7 @@ class ThankYouPageAnalytics @Inject constructor(
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
         } else {
-            sendPushGtmFalseEvent(thanksPageData.paymentID.toString())
+            sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
         }
     }
 
@@ -105,7 +105,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
                 ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,
                 ParentTrackingKey.KEY_CURRENT_SITE to thanksPageData.currentSite,
-                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit
+                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit,
+                ParentTrackingKey.KEY_PROFILE_ID to thanksPageData.profileCode
         )
     }
 
@@ -120,9 +121,10 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     private fun getActionFieldNode(orderedItem: ShopOrder): Map<String, Any?> {
+        val storeName = orderedItem.storeName?:""
         return mapOf(
                 ParentTrackingKey.KEY_ID to orderedItem.orderId,
-                ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
+                ActionFieldNodeTrackingKey.KEY_AFFILIATION to storeName,
                 ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
@@ -147,17 +149,18 @@ class ThankYouPageAnalytics @Inject constructor(
         return productNodeList
     }
 
-    fun sendBackPressedEvent(paymentId: String) {
+    fun sendBackPressedEvent(profileId: String, paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
                 EVENT_CATEGORY_ORDER_COMPLETE,
                 EVENT_ACTION_CLICK_BACK,
                 ""
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendLihatDetailClickEvent(pageType: PageType?, paymentId: String) {
+    fun sendLihatDetailClickEvent(profileId: String, pageType: PageType?, paymentId: String) {
         val eventLabel = when (pageType) {
             is InstantPaymentPage -> EVENT_LABEL_INSTANT
             is ProcessingPaymentPage -> EVENT_LABEL_PROCESSING
@@ -169,31 +172,34 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_LIHAT_DETAIL,
                 eventLabel
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendCheckTransactionListEvent(paymentId: String) {
+    fun sendCheckTransactionListEvent(profileId: String, paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
                 EVENT_CATEGORY_ORDER_COMPLETE,
                 EVENT_ACTION_CHECK_TRANSACTION_LIST,
                 ""
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun onCheckPaymentStatusClick(paymentId: String) {
+    fun onCheckPaymentStatusClick(profileId: String, paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
                 EVENT_CATEGORY_ORDER_COMPLETE,
                 EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
                 ""
         )
         addCommonTrackingData(map, paymentId)
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendBelanjaLagiClickEvent(pageType: PageType?, paymentId: String) {
+    fun sendBelanjaLagiClickEvent(profileId: String, pageType: PageType?, paymentId: String) {
         val eventLabel = when (pageType) {
             is InstantPaymentPage -> EVENT_LABEL_INSTANT
             is ProcessingPaymentPage -> EVENT_LABEL_PROCESSING
@@ -205,27 +211,30 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_BELANJA_LAGI,
                 eventLabel
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun sendSalinButtonClickEvent(paymentMethod: String, paymentId: String) {
+    fun sendSalinButtonClickEvent(profileId: String, paymentMethod: String, paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
                 EVENT_CATEGORY_ORDER_COMPLETE,
                 EVENT_ACTION_SALIN_CLICK,
                 paymentMethod
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
 
-    fun sendOnHowtoPayClickEvent(paymentId: String) {
+    fun sendOnHowtoPayClickEvent(profileId: String, paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
                 EVENT_CATEGORY_ORDER_COMPLETE,
                 EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
                 ""
         )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -237,13 +246,14 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
 
-    fun sendPushGtmFalseEvent(paymentId:String) {
-        analyticTracker.sendGeneralEvent(
-                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                        EVENT_CATEGORY_ORDER_COMPLETE,
-                        EVENT_ACTION_PUSH_GTM_FALSE,
-                        paymentId
-                ))
+    fun sendPushGtmFalseEvent(profileId: String, paymentId:String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                EVENT_CATEGORY_ORDER_COMPLETE,
+                EVENT_ACTION_PUSH_GTM_FALSE,
+                paymentId
+        )
+        map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
+        analyticTracker.sendGeneralEvent(map)
     }
 
     fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
@@ -367,6 +377,7 @@ object ParentTrackingKey {
 
 
     const val KEY_USER_ID = "userId"
+    const val KEY_PROFILE_ID = "profileId"
     const val KEY_PAYMENT_ID_NON_E_COMMERCE = "paymentId"
     const val KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE = "payment"
 

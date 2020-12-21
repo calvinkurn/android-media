@@ -14,6 +14,7 @@ import com.tokopedia.loginphone.chooseaccount.domain.subscriber.LoginFacebookSub
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -59,6 +60,10 @@ class ChooseAccountViewModel @Inject constructor(
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
         get() = mutableGetUserInfoResponse
 
+    private val mutableShowPopup = MutableLiveData<PopupError>()
+    val showPopup: LiveData<PopupError>
+        get() = mutableShowPopup
+
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
         get() = mutableGoToActivationPage
@@ -76,6 +81,7 @@ class ChooseAccountViewModel @Inject constructor(
                         userSessionInterface,
                         onSuccessLoginToken(),
                         onFailedLoginToken(),
+                        { showPopup().invoke(it.loginToken.popupError) },
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(phoneNumber)
                 )
@@ -211,6 +217,12 @@ class ChooseAccountViewModel @Inject constructor(
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+        }
+    }
+
+    private fun showPopup(): (PopupError) -> Unit {
+        return {
+            mutableShowPopup.value = it
         }
     }
 

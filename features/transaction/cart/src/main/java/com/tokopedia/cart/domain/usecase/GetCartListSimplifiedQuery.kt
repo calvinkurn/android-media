@@ -678,5 +678,5 @@ fun getQueryCartRevamp(): String {
             }
           }
         }
-    """.trimIndent()
+    """
 }

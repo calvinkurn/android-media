@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
-import com.tokopedia.network.CoroutineCallAdapterFactory;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -14,6 +13,9 @@ import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.List;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -21,6 +23,8 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 public class NetworkClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
+    private static Retrofit retrofitCustomInterceptor = null;
+    private static RestApi restApiCustomInterceptor = null;
     private static FingerprintManager sFingerprintManager = null;
     private static UserSession sUserSession;
     private static RestDatabase sRestDatabase;
@@ -29,6 +33,7 @@ public class NetworkClient {
 
     }
 
+    // region init default retrofit
     public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
@@ -41,7 +46,6 @@ public class NetworkClient {
                     .baseUrl(RestConstant.BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
 
             sRestDatabase = RestDatabase.getInstance(context);
@@ -70,6 +74,7 @@ public class NetworkClient {
         }
         return sRestApi;
     }
+    //endregion
 
     public static UserSession getsUserSession() {
         if (sUserSession != null)
@@ -84,4 +89,48 @@ public class NetworkClient {
         }
         return sFingerprintManager;
     }
+
+    // region init retrofit to support custom interceptor
+    public static void initRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+                                                    @NonNull Context context) {
+        if (retrofitCustomInterceptor == null) reInitRetrofitWithInterceptors(interceptors, context);
+    }
+
+    public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+                                                      @NonNull Context context) {
+        UserSession userSession = new UserSession(context.getApplicationContext());
+        TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+        if (interceptors != null) {
+            okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
+            for (Interceptor interceptor : interceptors) {
+                if (interceptor == null) {
+                    continue;
+                }
+                okkHttpBuilder.addInterceptor(interceptor);
+            }
+        }
+
+        retrofitCustomInterceptor = new Retrofit.Builder()
+                .baseUrl(RestConstant.BASE_URL)
+                .addConverterFactory(new StringResponseConverter())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okkHttpBuilder.build()).build();
+
+        sUserSession = new UserSession(context);
+    }
+
+    private static Retrofit getRetrofitCustomInterceptor() {
+        if (retrofitCustomInterceptor == null) {
+            throw new RuntimeException("Please call reInitRetrofitWithInterceptors() to start the network library.");
+        }
+        return retrofitCustomInterceptor;
+    }
+
+    public static RestApi getApiInterfaceCustomInterceptor() {
+        if (restApiCustomInterceptor == null) {
+            restApiCustomInterceptor = getRetrofitCustomInterceptor().create(RestApi.class);
+        }
+        return restApiCustomInterceptor;
+    }
+    //endregion
 }

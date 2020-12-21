@@ -15,7 +15,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineInfo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/shopScoreLabel"
+        app:layout_constraintBottom_toTopOf="@id/shopScoreLayout"
         app:layout_constraintWidth_percent="0.225" />
 
     <RelativeLayout
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/default_black_text"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@id/shopBadges"
         app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
@@ -66,7 +66,7 @@
         android:layout_height="0dp"
         android:gravity="center_vertical"
         android:text="@string/dot_string"
-        android:textColor="@color/setting_grey_text"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/shopBadges"
         app:layout_constraintStart_toEndOf="@id/shopBadges"
         app:layout_constraintTop_toTopOf="@id/shopBadges"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:gravity="center_vertical"
-        android:textColor="@color/setting_grey_text"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/shopBadges"
         app:layout_constraintStart_toEndOf="@id/dot"
         app:layout_constraintTop_toTopOf="@id/shopBadges"
@@ -86,57 +86,54 @@
         app:typographyWeight="reguler"
         tools:text="100 followers" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shopScoreLabel"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/shopScoreLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:text="@string/seller_menu_shop_score_label"
-        android:textColor="@color/light_N700_68"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="@id/settingShopGuidelineLeft"
-        app:layout_constraintTop_toBottomOf="@id/outerCircle"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:layout_constraintTop_toBottomOf="@id/outerCircle">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shopScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/seller_menu_shop_score_max_label"
-        android:textColor="@color/light_G500"
-        app:layout_constraintTop_toTopOf="@id/shopScoreLabel"
-        app:layout_constraintBottom_toBottomOf="@id/shopScoreLabel"
-        app:layout_constraintRight_toLeftOf="@id/shopScoreMaxLabel"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="85"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScoreLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/seller_menu_shop_score_label"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shopScoreMaxLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:text="@string/seller_menu_shop_score_max_label"
-        android:textColor="@color/light_N700_68"
-        app:layout_constraintBottom_toBottomOf="@id/shopScoreLabel"
-        app:layout_constraintRight_toLeftOf="@id/shopScoreChevronRight"
-        app:layout_constraintTop_toBottomOf="@id/outerCircle"
-        app:layout_constraintTop_toTopOf="@id/shopScoreLabel"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="85" />
 
-    <ImageView
-        android:id="@+id/shopScoreChevronRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="@id/shopScoreMaxLabel"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shopScoreMaxLabel"
-        app:srcCompat="@drawable/ic_seller_menu_chevron_right"
-        tools:ignore="ContentDescription" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shopScoreMaxLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/seller_menu_shop_score_max_label"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <ImageView
+            android:id="@+id/shopScoreChevronRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:srcCompat="@drawable/ic_seller_menu_chevron_right"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/settingShopGuidelineLeft"

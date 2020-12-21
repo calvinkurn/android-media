@@ -22,6 +22,10 @@ private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
 private const val KEY_EVENT_USER_ID = "userId"
 private const val KEY_EVENT_INSIGHT_RECOMMENDATION = "clickShopInsight"
 private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "insight center"
+private const val KEY_EVENT_PDP_BOTTOMSHEET = "clickTopAds"
+private const val KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET = "bottomsheet"
+private const val KEY_EVENT_EDIT_FORM = "clickTopAdsEditForm"
+private const val KEY_EVENT_CATEGORY_EDIT_FORM = "edit form mobile"
 
 
 class TopAdsCreateAnalytics {
@@ -104,6 +108,36 @@ class TopAdsCreateAnalytics {
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_EVENT_USER_ID to userId
         )
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendPdpBottomSheetEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_PDP_BOTTOMSHEET,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendEditFormEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_EDIT_FORM,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_EDIT_FORM,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendEditFormSaveEvent(eventAction: String, map: MutableList<MutableMap<String, String>>) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_EDIT_FORM,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_EDIT_FORM,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to map)
 
         getTracker().sendGeneralEvent(map)
     }

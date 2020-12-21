@@ -20,6 +20,7 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -32,11 +33,11 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -49,16 +50,15 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.weaver.WeaveInterface;
-import com.tokopedia.weaver.Weaver;
-
-import org.jetbrains.annotations.NotNull;
+import com.tokopedia.utils.permission.SlicePermission;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
 import timber.log.Timber;
+
+import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -68,6 +68,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         InAppManager.InAppMessageListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -146,6 +147,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
         initRemoteConfig();
+        initCacheManager();
+
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -153,38 +156,26 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        PersistentCacheManager.init(this);
-
         TimberWrapper.init(this);
         super.onCreate();
-        createAndCallPostSeq();
-        initAppNotificationReceiver();
-        registerActivityLifecycleCallbacks();
-        TokoPatch.init(this);
-    }
-
-    private void createAndCallPostSeq() {
-        //don't convert to lambda does not work in kit kat
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                return executePostCreateSequence();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_POST_SEQ_ASYNC_SELLERAPP, context);
-    }
-
-    @NotNull
-    private Boolean executePostCreateSequence() {
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
+
+        initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
         initBlockCanary();
-        return true;
+        TokoPatch.init(this);
+        SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void setVersionName(){
@@ -215,7 +206,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+        }
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     @Override

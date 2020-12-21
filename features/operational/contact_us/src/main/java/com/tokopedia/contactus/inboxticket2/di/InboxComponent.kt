@@ -13,7 +13,7 @@ interface InboxComponent {
     fun getTicketListPresenter(): InboxBaseContract.InboxBasePresenter
 
     @Named("InboxDetailPresenter")
-    fun getInboxDetailPresenter(): InboxDetailContract.InboxDetailPresenter
+    fun getInboxDetailPresenter(): InboxDetailContract.Presenter
 
     fun getContext(): Context
 }

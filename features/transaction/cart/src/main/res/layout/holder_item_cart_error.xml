@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_product_card"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="@id/tv_product_name"
         app:layout_constraintStart_toStartOf="@id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@id/tv_product_name"
-        app:typographyType="small"
+        app:typographyType="body_3"
         tools:text="Biru, XL"
         tools:visibility="visible" />
 
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_product_price"
         app:layout_constraintStart_toEndOf="@+id/label_slash_price_percentage"
         app:layout_constraintTop_toTopOf="@+id/text_product_price"
-        app:typographyType="small"
+        app:typographyType="body_3"
         tools:text="Rp300.000"
         tools:visibility="visible" />
 
@@ -111,23 +111,9 @@
         android:alpha="0.5"
         app:layout_constraintStart_toEndOf="@+id/text_slash_price"
         app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
-        app:typographyType="heading_6"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="Rp100.000" />
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_message"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:visibility="gone"
-        app:closeButtonVisibility="gone"
-        app:descriptionText="Barang mengandung nikotin atau tembakau tidak dapat dibeli di aplikasi Android"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
-        app:layout_constraintStart_toStartOf="@id/iv_product_card"
-        app:layout_constraintTop_toBottomOf="@id/iv_product_card"
-        app:tickerShapeType="loose"
-        app:tickerType="warning"
-        tools:layout_height="@dimen/dp_56" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_move_to_wishlist"
@@ -135,7 +121,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingStart="0dp"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/label_move_to_wishlist"

@@ -11,6 +11,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -39,26 +40,30 @@ class OfficialStoreCategoryViewModelTest {
 
     @Test
     fun testGetOfficialStoreCategoriesSuccess() {
-        coEvery {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        } returns OfficialStoreCategories()
-        viewModelStore.getOfficialStoreCategories()
-        coVerify {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        runBlocking {
+            coEvery {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
+            } returns OfficialStoreCategories()
+            viewModelStore.getOfficialStoreCategories(false)
+            coVerify {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
+            }
+            assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
         }
-        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
     }
 
     @Test
     fun testGetOfficialStoreCategoriesError() {
-        coEvery {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        } throws Throwable()
-        viewModelStore.getOfficialStoreCategories()
-        coVerify {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
+        runBlocking {
+            coEvery {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
+            } throws Throwable()
+            viewModelStore.getOfficialStoreCategories(false)
+            coVerify {
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
+            }
+            assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
         }
-        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
     }
 
 }

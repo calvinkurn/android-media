@@ -1,5 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+
 data class OrderProduct(
         var parentId: Int = 0,
         var productId: Int = 0,
@@ -23,8 +25,10 @@ data class OrderProduct(
         var category: String = "",
         var productFinsurance: Int = 0,
         var isSlashPrice: Boolean = false,
+        var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
-        var tickerMessage: ProductTickerMessage = ProductTickerMessage()
+        var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
+        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData()
 ) {
 
     fun getPrice(): Long {
@@ -63,11 +67,7 @@ data class QuantityUiModel(
         var errorProductMinQuantity: String = "",
         var isStateError: Boolean = false,
         var maxOrderStock: Int = 0
-) {
-    companion object {
-        const val VALUE_REPLACE_STRING = "{{value}}"
-    }
-}
+)
 
 data class ProductTickerMessage(
         val message: String = "",

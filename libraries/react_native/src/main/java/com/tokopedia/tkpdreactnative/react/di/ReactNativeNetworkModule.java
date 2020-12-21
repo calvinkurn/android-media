@@ -5,6 +5,8 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
+import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -14,6 +16,9 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DigitalHmacAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DynamicTkpdAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.CreditCardListRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.UserInfoRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.di.SingleAuthenticationScope;
 import com.tokopedia.tkpdreactnative.react.data.ReactNetworkRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.data.StringResponseConverter;
 import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
@@ -237,5 +242,29 @@ public class ReactNativeNetworkModule {
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    PeopleService providePeopleService() {
+        return new PeopleService();
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    CreditCardAuthService authService() {
+        return new CreditCardAuthService();
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    CreditCardListRepository provideCreditCardListRepository(CreditCardAuthService authService) {
+        return new CreditCardListRepository(authService);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    UserInfoRepository userInfoRepository(PeopleService peopleService) {
+        return new UserInfoRepository(peopleService);
     }
 }

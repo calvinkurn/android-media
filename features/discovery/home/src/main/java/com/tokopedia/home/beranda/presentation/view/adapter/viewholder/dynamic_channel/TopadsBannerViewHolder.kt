@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.load.engine.GlideException
@@ -63,7 +62,17 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         categoryListener.getTrackingQueueObj(),
                         element.channel,
                         categoryListener.userId,
-                        adapterPosition
+                        adapterPosition,
+                        false,
+                        element.topAdsImageViewModel?.bannerId?:""
+                )
+                BannerAdsTracking.sendBannerAdsImpressionTracking(
+                        categoryListener.getTrackingQueueObj(),
+                        element.channel,
+                        categoryListener.userId,
+                        adapterPosition,
+                        true,
+                        element.topAdsImageViewModel?.bannerId?:""
                 )
 
                 TopAdsUrlHitter(className).hitImpressionUrl(
@@ -81,7 +90,8 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                 BannerAdsTracking.sendBannerAdsClickTracking(
                         element.channel,
                         categoryListener.userId,
-                        adapterPosition
+                        adapterPosition,
+                        element.topAdsImageViewModel?.bannerId?:""
                 )
 
                 categoryListener.onSectionItemClicked(applink?:"")

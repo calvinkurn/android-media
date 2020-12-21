@@ -10,26 +10,6 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "event": "view_item_list",
-      "eventCategory": "digital - homepage",
-      "eventAction": "impression recent icon",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "item_list": "{{.*}}",
-      "items": [
-        {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension40": "{{.*}}"
-        }
-      ]
-    },
-    {
       "event": "select_content",
       "eventCategory": "digital - homepage",
       "eventAction": "click recent icon",

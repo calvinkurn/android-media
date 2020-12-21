@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dp_88">88dp</dimen>
 
     <dimen name="hotel_last_search_width">180dp</dimen>
     <dimen name="hotel_last_search_height">78dp</dimen>
 
     <dimen name="hotel_banner_width">360dp</dimen>
     <dimen name="hotel_banner_height">120dp</dimen>
+    <dimen name="hotel_banner_offset">12dp</dimen>
 
     <dimen name="hotel_room_list_image_height">136dp</dimen>
 
+    <dimen name="hotel_minus4dp">-4dp</dimen>
     <dimen name="hotel_minus2dp">-2dp</dimen>
     <dimen name="hotel_1dp">1dp</dimen>
     <dimen name="hotel_3dp">3dp</dimen>
@@ -20,10 +21,25 @@
     <dimen name="hotel_14dp">14dp</dimen>
     <dimen name="hotel_18dp">18dp</dimen>
     <dimen name="hotel_20dp">20dp</dimen>
+    <dimen name="hotel_25dp">25dp</dimen>
+    <dimen name="hotel_28dp">28dp</dimen>
     <dimen name="hotel_30dp">30dp</dimen>
+    <dimen name="hotel_34dp">34dp</dimen>
+    <dimen name="hotel_50dp">50dp</dimen>
+    <dimen name="hotel_60dp">60dp</dimen>
     <dimen name="hotel_70dp">70dp</dimen>
+    <dimen name="hotel_72dp">72dp</dimen>
     <dimen name="hotel_76dp">76dp</dimen>
     <dimen name="hotel_80dp">80dp</dimen>
+    <dimen name="hotel_88dp">88dp</dimen>
     <dimen name="hotel_100dp">100dp</dimen>
+    <dimen name="hotel_120dp">120dp</dimen>
+    <dimen name="hotel_140dp">140dp</dimen>
     <dimen name="hotel_160dp">160dp</dimen>
+    <dimen name="hotel_180dp">180dp</dimen>
+    <dimen name="hotel_260dp">260dp</dimen>
+    <dimen name="hotel_300dp">300dp</dimen>
+
+    <dimen name="hotel_sp_6">6sp</dimen>
+    <dimen name="hotel_28sp">28sp</dimen>
 </resources>

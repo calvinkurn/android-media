@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
@@ -21,6 +20,8 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
@@ -106,6 +107,8 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
         filterModel.journeyId = flightSearchReturnViewModel.selectedFlightDepartureId
         filterModel.isReturn = isReturnTrip()
+        filterModel.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
+        filterModel.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
 
         return filterModel
     }
@@ -246,8 +249,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     private fun showErrorPickJourney() {
-        NetworkErrorHelper.showRedCloseSnackbar(activity,
-                getString(R.string.flight_error_pick_journey))
+        view?.let {
+            Toaster.build(it, getString(R.string.flight_error_pick_journey), Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay)).show()
+        }
     }
 
     private fun navigateToCart() {

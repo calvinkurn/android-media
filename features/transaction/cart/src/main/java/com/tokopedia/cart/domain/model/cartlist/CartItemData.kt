@@ -28,7 +28,7 @@ data class CartItemData(
 
     @Parcelize
     data class OriginData(
-            var cartId: Int = 0,
+            var cartId: Long = 0,
             var parentId: String? = null,
             var productId: String? = null,
             var productName: String? = null,
@@ -90,7 +90,8 @@ data class CartItemData(
             var slashPriceLabel: String = "",
             var initialPriceBeforeDrop: Int = 0,
             var productInformation: List<String> = emptyList(),
-            var productAlertMessage: String = ""
+            var productAlertMessage: String = "",
+            var campaignId: Int = 0
     ) : Parcelable
 
     @Parcelize

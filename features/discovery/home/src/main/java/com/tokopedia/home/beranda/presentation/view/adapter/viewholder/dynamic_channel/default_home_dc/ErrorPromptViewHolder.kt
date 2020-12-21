@@ -46,7 +46,7 @@ class ErrorPromptViewHolder(val view: View,
         val actionString = view.context.resources.getString(R.string.discovery_home_action_error)
         val errorSpannable = SpannableString("$descString $actionString")
         errorSpannable.setSpan(
-                ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.Green_G500)),
+                ForegroundColorSpan(ContextCompat.getColor(view.context, R.color.Unify_G500)),
                 descString.length+1, errorSpannable.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         errorSpannable.setSpan(

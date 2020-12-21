@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -26,7 +27,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -172,7 +172,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.getUserProfileResponse.observe(this, Observer {
+        shopCreationViewModel.getUserProfileResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetProfileInfo(it.data)
@@ -182,7 +182,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.getUserInfoResponse.observe(this, Observer {
+        shopCreationViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetUserInfo()
@@ -192,7 +192,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.getShopInfoResponse.observe(this, Observer {
+        shopCreationViewModel.getShopInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetShopInfo(it.data)
@@ -315,7 +315,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

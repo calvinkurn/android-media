@@ -92,9 +92,30 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textColor="@color/light_N700_68"
-                    app:typographyType="small"
+                    app:typographyType="body_3"
                     app:typographyWeight="reguler"
                     tools:text="Tangerang Selatan" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/separator_estimated_time_arrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:text="|"
+                    android:textColor="@color/light_N700_68"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_estimated_time_arrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/light_N700_68"
+                    app:typographyType="small"
+                    app:typographyWeight="reguler"
+                    tools:text="Estimasi Tiba: 2 Hari" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/separator_pre_order"

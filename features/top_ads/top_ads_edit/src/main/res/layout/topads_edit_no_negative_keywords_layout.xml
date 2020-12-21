@@ -33,14 +33,14 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/add_image"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="@+id/add"
         app:layout_constraintEnd_toStartOf="@+id/add"
-        app:layout_constraintTop_toTopOf="@+id/add"
-        app:srcCompat="@drawable/topads_plus_add_keyword" />
+        app:layout_constraintTop_toTopOf="@+id/add" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/add"

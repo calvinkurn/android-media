@@ -1,10 +1,11 @@
 package com.tokopedia.checkout.view.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
@@ -25,7 +26,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -35,7 +37,6 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
@@ -63,6 +64,10 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
+    fun provideContext(): Context = shipmentFragment.activityContext
+
+    @Provides
+    @CheckoutScope
     fun provideICheckoutMapper(): ICheckoutMapper {
         return CheckoutMapper()
     }
@@ -75,7 +80,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+    fun provideCheckPromoStackingCodeUseCase(context: Context,
                                              mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
         return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
@@ -89,7 +94,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
+    fun provideSubmitHelpTicketUseCaseQuery(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
     }
 
@@ -125,7 +130,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 gson: Gson,
+                                 executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -134,7 +141,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
+                executorSchedulers)
     }
 
     @Provides
@@ -164,29 +172,34 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     @Named(SHIPMENT_ADDRESS_FORM_QUERY)
-    fun provideGetShipmentAddressFormQuery(@ApplicationContext context: Context): String {
+    fun provideGetShipmentAddressFormQuery(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shipment_address_form_query)
     }
 
     @Provides
     @CheckoutScope
     @Named(SAVE_SHIPMENT_STATE_MUTATION)
-    fun provideSaveShipmentStateMutation(@ApplicationContext context: Context): String {
+    fun provideSaveShipmentStateMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.save_shipment_state_mutation)
     }
 
     @Provides
     @CheckoutScope
     @Named(CHANGE_SHIPPING_ADDRESS_MUTATION)
-    fun provideChangeShippingAddressMutation(@ApplicationContext context: Context): String {
+    fun provideChangeShippingAddressMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.change_shipping_address_mutation)
     }
 
     @Provides
     @CheckoutScope
     @Named(CHECKOUT_MUTATION)
-    fun provideCheckoutMutation(@ApplicationContext context: Context): String {
+    fun provideCheckoutMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.checkout_mutation)
     }
 
+    @Provides
+    @CheckoutScope
+    fun provideCheckoutTradeInAnalytics(userSession: UserSessionInterface): CheckoutTradeInAnalytics {
+        return CheckoutTradeInAnalytics(userSession.userId)
+    }
 }

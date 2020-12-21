@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.whenAlive
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
@@ -27,7 +28,8 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVouc
 class VoucherPreviewPainter(private val context: Context,
                             private val bitmap: Bitmap,
                             var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> },
-                            private val bannerBaseUiModel: BannerBaseUiModel) {
+                            private val bannerBaseUiModel: BannerBaseUiModel,
+                            private val onErrorGetBitmap: (Throwable) -> Unit = {}) {
 
     companion object {
         private const val ASTERISK = "*"
@@ -123,24 +125,29 @@ class VoucherPreviewPainter(private val context: Context,
     fun drawInitial(uiModel: BannerVoucherUiModel) {
         uiModel.run {
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
-            Glide.with(context)
-                    .asBitmap()
-                    .load(shopAvatar)
-                    .listener(object : RequestListener<Bitmap> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val bitmapRect = Rect().apply {
-                                set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+            context.whenAlive {
+                Glide.with(it)
+                        .asBitmap()
+                        .load(shopAvatar)
+                        .listener(object : RequestListener<Bitmap> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
+                                return false
                             }
-                            canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
-                            onSuccessGetBitmap(bitmap)
-                            return false
-                        }
-                    })
-                    .submit()
+
+                            override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                val bitmapRect = Rect().apply {
+                                    set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+                                }
+                                canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
+                                onSuccessGetBitmap(bitmap)
+                                return false
+                            }
+                        })
+                        .submit()
+            }
         }
     }
 
@@ -169,24 +176,29 @@ class VoucherPreviewPainter(private val context: Context,
 
             canvas.translate(-promoNameX, -promoNameY)
 
-            Glide.with(context)
-                    .asBitmap()
-                    .load(shopAvatar)
-                    .listener(object : RequestListener<Bitmap> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val bitmapRect = Rect().apply {
-                                set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+            context.whenAlive {
+                Glide.with(it)
+                        .asBitmap()
+                        .load(shopAvatar)
+                        .listener(object : RequestListener<Bitmap> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
+                                return false
                             }
-                            canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
-                            drawVoucherValue(uiModel)
-                            return false
-                        }
-                    })
-                    .submit()
+
+                            override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                val bitmapRect = Rect().apply {
+                                    set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+                                }
+                                canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
+                                drawVoucherValue(uiModel)
+                                return false
+                            }
+                        })
+                        .submit()
+            }
         }
     }
 
@@ -194,78 +206,95 @@ class VoucherPreviewPainter(private val context: Context,
         uiModel.run {
             when(imageType) {
                 is VoucherImageType.FreeDelivery -> {
-                    Glide.with(context)
-                            .asBitmap()
-                            .load(bannerBaseUiModel.freeDeliveryLabelUrl)
-                            .listener(object : RequestListener<Bitmap> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
-
-                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    imageType.value.let {
-                                        canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                    context.whenAlive {
+                        Glide.with(it)
+                                .asBitmap()
+                                .load(bannerBaseUiModel.freeDeliveryLabelUrl)
+                                .listener(object : RequestListener<Bitmap> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
+                                        return false
                                     }
-                                    return false
-                                }
-                            })
-                            .submit()
+
+                                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        imageType.value.let { value ->
+                                            canvas.drawPromotionLabel(resource, middleLabelY, value, VoucherValuePosition.CENTER)
+                                        }
+                                        return false
+                                    }
+                                })
+                                .submit()
+                    }
                 }
                 is VoucherImageType.Rupiah -> {
-                    Glide.with(context)
-                            .asBitmap()
-                            .load(bannerBaseUiModel.cashbackLabelUrl)
-                            .listener(object : RequestListener<Bitmap> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
-
-                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    imageType.value.let {
-                                        canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                    context.whenAlive {
+                        Glide.with(it)
+                                .asBitmap()
+                                .load(bannerBaseUiModel.cashbackLabelUrl)
+                                .listener(object : RequestListener<Bitmap> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
+                                        return false
                                     }
-                                    return false
-                                }
-                            })
-                            .submit()
 
+                                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        imageType.value.let { value ->
+                                            canvas.drawPromotionLabel(resource, middleLabelY, value, VoucherValuePosition.CENTER)
+                                        }
+                                        return false
+                                    }
+                                })
+                                .submit()
+                    }
                 }
                 is VoucherImageType.Percentage -> {
-                    Glide.with(context)
-                            .asBitmap()
-                            .load(bannerBaseUiModel.cashbackLabelUrl)
-                            .listener(object : RequestListener<Bitmap> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
-
-                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    (imageType as? VoucherImageType.Percentage)?.percentage?.let {
-                                        canvas.drawPromotionLabel(resource, topLabelY, it, VoucherValuePosition.TOP)
+                    context.whenAlive {
+                        Glide.with(it)
+                                .asBitmap()
+                                .load(bannerBaseUiModel.cashbackLabelUrl)
+                                .listener(object : RequestListener<Bitmap> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
+                                        return false
                                     }
-                                    return false
-                                }
-                            })
-                            .submit()
 
-                    Glide.with(context)
-                            .asBitmap()
-                            .load(bannerBaseUiModel.cashbackUntilLabelUrl)
-                            .listener(object : RequestListener<Bitmap> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                                    return false
-                                }
-
-                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    (imageType as? VoucherImageType.Percentage)?.value?.let {
-                                        canvas.drawPromotionLabel(resource, bottomLabelY, it, VoucherValuePosition.BOTTOM)
+                                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        (imageType as? VoucherImageType.Percentage)?.percentage?.let { value ->
+                                            canvas.drawPromotionLabel(resource, topLabelY, value, VoucherValuePosition.TOP)
+                                        }
+                                        return false
                                     }
-                                    return false
-                                }
-                            })
-                            .submit()
+                                })
+                                .submit()
+                    }
 
+                    context.whenAlive {
+                        Glide.with(it)
+                                .asBitmap()
+                                .load(bannerBaseUiModel.cashbackUntilLabelUrl)
+                                .listener(object : RequestListener<Bitmap> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
+                                        return false
+                                    }
 
+                                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        (imageType as? VoucherImageType.Percentage)?.value?.let { value ->
+                                            canvas.drawPromotionLabel(resource, bottomLabelY, value, VoucherValuePosition.BOTTOM)
+                                        }
+                                        return false
+                                    }
+                                })
+                                .submit()
+                    }
                 }
             }
         }
@@ -306,9 +335,9 @@ class VoucherPreviewPainter(private val context: Context,
                 layoutParams = wrapContentLayoutParams
             }
         } else {
-            val valuePair = getScaledValuePair(context, value)
-            val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
-            val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
+            val (nominal, currencyScale) = getScaledValuePair(context, value)
+            val valueTextView = getTextView(nominal, VoucherImageTextType.VALUE)
+            val scaleTextView = getTextView(currencyScale, VoucherImageTextType.SCALE)
             val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -325,7 +354,7 @@ class VoucherPreviewPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = context.resources.getDimensionPixelSize(type.dimenRes).toFloat()
+                textSize = type.textSize
                 setTextColor(Color.WHITE)
                 if (type != VoucherImageTextType.VALUE) {
                     layoutParams = linearLayoutParams

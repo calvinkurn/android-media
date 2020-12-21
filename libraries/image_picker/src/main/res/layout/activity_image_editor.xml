@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="@dimen/sp_16"
-                android:textColor="@android:color/black"
+                android:textColor="@color/Unify_N700"
                 tools:text="@string/crop"/>
 
         </androidx.appcompat.widget.Toolbar>
@@ -59,7 +59,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <LinearLayout
             android:id="@+id/vg_content_container"
@@ -107,7 +107,7 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:clipChildren="false"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
                 <LinearLayout
                     android:id="@+id/vg_editor_main"

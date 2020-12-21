@@ -4,7 +4,9 @@ import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-class InstrumentTestAddToCartBottomSheet : AddToCartDoneBottomSheet() {
+class InstrumentTestAddToCartBottomSheet(
+        private val instrumentTestTopAdsCounter: InstrumentTestTopAdsCounter
+) : AddToCartDoneBottomSheet() {
 
     companion object {
         private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
@@ -20,6 +22,7 @@ class InstrumentTestAddToCartBottomSheet : AddToCartDoneBottomSheet() {
                         item.name,
                         item.imageUrl
                 )
+                instrumentTestTopAdsCounter.onTopAdsUrlHit()
             }
         }
     }

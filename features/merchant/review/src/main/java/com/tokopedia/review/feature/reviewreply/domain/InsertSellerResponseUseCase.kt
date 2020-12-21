@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -17,15 +18,15 @@ class InsertSellerResponseUseCase @Inject constructor(
         private const val REVIEW_ID = "reviewId"
         private const val PRODUCT_ID = "productId"
         private const val RESPONSE_MESSAGE = "responseMessage"
-
-        private val gqlQuery = """
+        const val INSERT_REVIEW_MUTATION_CLASS_NAME = "InsertReview"
+        const val INSERT_REVIEW_MUTATION = """
             mutation insert_review_reply(${'$'}reviewId: Int!, ${'$'}productId: Int!, ${'$'}shopId: Int!, ${'$'}responseMessage: String!) {
                   inboxReviewInsertReviewResponse(reviewId: ${'$'}reviewId, productId: ${'$'}productId, shopId: ${'$'}shopId,
                     responseMessage: ${'$'}responseMessage) {
                         isSuccesss
                   }
             }
-        """.trimIndent()
+        """
 
         @JvmStatic
         fun createParams(reviewId: Int, productId: Int, shopId: Int, responseMessage: String): Map<String, Any> =
@@ -34,8 +35,9 @@ class InsertSellerResponseUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery(INSERT_REVIEW_MUTATION_CLASS_NAME, INSERT_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyInsertResponse.InboxReviewInsertReviewResponse {
-        val gqlRequest = GraphqlRequest(gqlQuery, ReviewReplyInsertResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(InsertReview.GQL_QUERY, ReviewReplyInsertResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {

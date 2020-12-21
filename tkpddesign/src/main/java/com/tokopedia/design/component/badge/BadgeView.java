@@ -26,6 +26,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,8 +123,8 @@ public class BadgeView extends View implements Badge {
         mBadgeBackgroundBorderPaint = new Paint();
         mBadgeBackgroundBorderPaint.setAntiAlias(true);
         mBadgeBackgroundBorderPaint.setStyle(Paint.Style.STROKE);
-        mColorBackground = 0xFFE84E40;
-        mColorBadgeText = 0xFFFFFFFF;
+        mColorBackground = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_R500);
+        mColorBadgeText = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0);
         mBadgeTextSize = DisplayUtil.dp2px(getContext(), 11);
         mBadgePadding = DisplayUtil.dp2px(getContext(), 5);
         mBadgeNumber = 0;

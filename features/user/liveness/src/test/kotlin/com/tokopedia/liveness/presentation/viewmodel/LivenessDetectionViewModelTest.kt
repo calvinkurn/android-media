@@ -3,42 +3,42 @@ package com.tokopedia.liveness.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.liveness.data.model.response.LivenessData
 import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
-import com.tokopedia.liveness.util.getOrAwaitValue
+import com.tokopedia.liveness.util.CoroutineTestDispatchersProvider
 import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import junit.framework.TestCase.assertFalse
-import kotlinx.coroutines.Dispatchers
+import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class LivenessDetectionViewModelTest {
 
-    private val useCase = mockk<UploadLivenessResultUseCase>(relaxed = true)
-    private lateinit var viewModel: LivenessDetectionViewModel
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val ktpPath = "test"
-    private val facePath = "test"
+    @RelaxedMockK
+    private lateinit var useCase: UploadLivenessResultUseCase
+
+    private lateinit var viewModel : LivenessDetectionViewModel
+
+    private val ktpPath = "test ktp path"
+    private val facePath = "test face path"
     private val projectId = "1"
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
     @Before
-    fun setup() {
-        viewModel = LivenessDetectionViewModel(useCase, Dispatchers.Unconfined)
+    fun before() {
+        MockKAnnotations.init(this)
+        viewModel = LivenessDetectionViewModel(useCase, CoroutineTestDispatchersProvider)
     }
 
-    /**
-     * Liveness Detection Response
-     * */
     @Test
-    fun `Register - Test do success response`() {
+    fun `Register - Success upload image and accepted`() {
         val livenessData = LivenessData()
 
         coEvery {
@@ -50,13 +50,13 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        val result = viewModel.livenessResponseLiveData.value
         assertEquals(result, Success(livenessData))
         assertTrue((result as Success).data.isSuccessRegister)
     }
 
     @Test
-    fun `Register - Test do failed response`() {
+    fun `Register - Success upload image but rejected`() {
         val livenessData = LivenessData()
 
         coEvery {
@@ -68,7 +68,7 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.getOrAwaitValue()
+        val result = viewModel.livenessResponseLiveData.value
         assertFalse((result as Success).data.isSuccessRegister)
     }
 
@@ -98,5 +98,19 @@ class LivenessDetectionViewModelTest {
         assertFailsWith<Exception> {
             viewModelMock.uploadImages("", "", "")
         }
+    }
+
+    @Test
+    fun `Register - Failed upload image and get exception`() {
+        val exceptionMock = mockk<Exception>(relaxed = true)
+
+        coEvery {
+            useCase.uploadImages(any(), any(), any())
+        } throws exceptionMock
+
+        viewModel.uploadImages(ktpPath, facePath, projectId)
+
+        val result = viewModel.livenessResponseLiveData.value
+        assertTrue(result is Fail)
     }
 }

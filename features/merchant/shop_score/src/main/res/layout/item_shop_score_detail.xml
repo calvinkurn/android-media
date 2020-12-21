@@ -23,8 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="@string/description_shop_score_percent"
-            android:textColor="@color/tkpd_grey_text"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="14sp" />
 
         <TextView
@@ -42,10 +41,10 @@
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="10dp"
-        app:rcBackgroundColor="@color/grey_300"
+        app:rcBackgroundColor="@color/Unify_N100"
         app:rcMax="100"
         app:rcProgress="90"
-        app:rcProgressColor="#f6b323"
+        app:rcProgressColor="@color/Unify_Y300"
         app:rcRadius="20dp" />
 
     <TextView

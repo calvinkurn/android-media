@@ -7,6 +7,8 @@ import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
+import com.tokopedia.promotionstarget.data.di.IO
+import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.GetCouponDetailUseCase
@@ -23,9 +25,9 @@ import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
-class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
+class TargetPromotionsDialogVM @Inject constructor(@Named(MAIN)
                                                    val uiDispatcher: CoroutineDispatcher,
-                                                   @Named("IO")
+                                                   @Named(IO)
                                                    val workerDispatcher: CoroutineDispatcher,
                                                    val autoApplyUseCase: AutoApplyUseCase,
                                                    val claimPopGratificationUseCase: ClaimPopGratificationUseCase,

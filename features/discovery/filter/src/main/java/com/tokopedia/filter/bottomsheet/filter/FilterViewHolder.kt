@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_filter_view_holder.view.*
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 internal class FilterViewHolder(
         itemView: View,
@@ -54,7 +55,7 @@ internal class FilterViewHolder(
     }
 
     private fun bindTitle(element: FilterViewModel) {
-        itemView.filterTitleTextView?.text = element.filter.title
+        itemView.filterTitleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.filter.title, getString(R.string.content_desc_filterTitleTextView)) }
     }
 
     private fun bindOptionList(element: FilterViewModel) {

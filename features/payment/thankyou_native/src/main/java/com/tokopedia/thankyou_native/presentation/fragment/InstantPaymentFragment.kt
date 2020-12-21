@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,23 +9,28 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.promotionstarget.presentation.dpToPx
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.helper.ScrollHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
+import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.thankyou_native.presentation.views.OnViewAddedListener
+import com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import java.util.zip.ZipInputStream
 
 
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
@@ -32,6 +38,10 @@ const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
 class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
+
+    private val scrollHelper: ScrollHelper by lazy {
+        ScrollHelper(this)
+    }
 
     private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -41,6 +51,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getLoadingView(): View? = loadingView
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not reuquired
@@ -58,7 +69,9 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.thank_fragment_success_payment, container, false)
+        val v = inflater.inflate(R.layout.thank_fragment_success_payment, container, false)
+        scrollHelper.detectHorizontalScroll(v)
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,8 +86,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun showCharacterAnimation() {
         context?.let {
-            val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
-            val lottieTask = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
             lottieTask?.addListener { result: LottieComposition? ->
                 result?.let {
                     lottieAnimationView?.setComposition(result)
@@ -84,6 +96,26 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        cancelGratifDialog()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        cancelGratifDialog()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelGratifDialog()
+    }
+
+    fun cancelGratifDialog() {
+        if (activity is ThankYouPageActivity) {
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
+    }
 
     private fun setActionMenu() {
         val headerUnify = (activity as ThankYouPageActivity).getHeader()
@@ -131,7 +163,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun observeViewModel() {
-        checkWhiteListViewModel.whiteListResultLiveData.observe(this, Observer {
+        checkWhiteListViewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessFullyRegister()
                 is Fail -> onSingleAuthRegisterFail()

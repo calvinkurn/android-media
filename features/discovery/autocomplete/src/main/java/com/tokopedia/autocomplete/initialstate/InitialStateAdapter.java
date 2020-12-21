@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.autocomplete.initialstate.InitialStateConstantKt.PAYLOAD_SEE_MORE_RECENT_SEARCH;
-
 public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
@@ -73,22 +71,23 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
     }
 
-    public void removeSeeMoreButton(RecentSearchSeeMoreViewModel item) {
-        int index = list.indexOf(item);
-        if (index != -1){
+    public void removeSeeMoreButton(int index) {
+        if (index >= 0 && index < list.size()) {
             list.remove(index);
             notifyItemRemoved(index);
         }
     }
 
-    public void renderRecentSearch() {
-        notifyItemChanged(getRecentSearchViewModelIndex(), PAYLOAD_SEE_MORE_RECENT_SEARCH);
+    public void renderRecentSearch(RecentSearchViewModel recentSearchViewModel, int index) {
+        if (index >= 0 && index < list.size()) {
+            list.set(index, recentSearchViewModel);
+            notifyItemChanged(index);
+        }
     }
 
-    private int getRecentSearchViewModelIndex() {
-        for (Visitable item: list) {
-            if (item instanceof RecentSearchViewModel) return list.indexOf(item);
+    public void refreshPopularSection(int position) {
+        if (position >= 0 && position < (list.size() - 1)) {
+            notifyItemRangeChanged(position, 2);
         }
-        return -1;
     }
 }

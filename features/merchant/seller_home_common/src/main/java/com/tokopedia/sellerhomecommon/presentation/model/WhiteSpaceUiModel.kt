@@ -12,13 +12,16 @@ class WhiteSpaceUiModel(
         override val title: String = "",
         override val subtitle: String = "",
         override val tooltip: TooltipUiModel? = null,
-        override val url: String = "",
         override val appLink: String = "",
         override val dataKey: String = "",
         override val ctaText: String = "",
+        override val isShowEmpty: Boolean = false,
         override var data: BaseDataUiModel? = null,
-        override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean = true
+        override var impressHolder: ImpressHolder = ImpressHolder(),
+        override var isLoaded: Boolean = true,
+        override var isLoading: Boolean = false,
+        override var isFromCache: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

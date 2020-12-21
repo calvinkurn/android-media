@@ -106,7 +106,7 @@ class ProcessMessageUseCaseTest {
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
             coEvery { tradeInRepository.getGQLData(any(), DeviceDiagInputResponse::class.java, any())} returns deviceDiagInputResponse
 
-            processMessageUseCase.processMessage(resources, tradeInParams, deviceDiagnostics)
+            processMessageUseCase.processMessage(tradeInParams, deviceDiagnostics)
 
             coVerify { tradeInRepository.getGQLData(any(), DeviceDiagInputResponse::class.java, any()) }
         }

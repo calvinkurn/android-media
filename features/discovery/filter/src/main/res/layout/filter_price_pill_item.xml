@@ -8,6 +8,6 @@
     android:paddingLeft="@dimen/dp_12"
     android:paddingRight="@dimen/dp_12"
     style="@style/TextView"
-    android:textColor="@color/unify_G500"
+    android:textColor="@color/Unify_G500"
     android:textSize="@dimen/sp_14"
     android:background="@drawable/filter_price_pill_item_background_neutral"/>

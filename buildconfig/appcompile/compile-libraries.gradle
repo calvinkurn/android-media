@@ -20,6 +20,7 @@ include "libraries:common_network"
 include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
+include 'libraries:device_fingerprint'
 include 'libraries:device_info'
 include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
@@ -41,13 +42,11 @@ include 'libraries:iris_session'
 include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:push_notification"
-include 'libraries:permissionchecker'
 include "libraries:product_photo_adapter"
 include "libraries:react_native"
 include "libraries:remote_config"
 include "libraries:remoteresourcerequest"
 include "libraries:shake_detect"
-include "libraries:sharedata"
 include "libraries:traceroute"
 include "libraries:translator"
 include "libraries:travel_calendar"
@@ -59,13 +58,11 @@ include "libraries:videouploader"
 include "libraries:websocket"
 include "libraries:youtubeutil"
 include "libraries:track"
-include "libraries:graph_view"
 include "libraries:graphql"
 include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
-include "libraries:lint"
 include "libraries:utils"
 include "libraries:pre_release_inspector"
 include "libraries:pre_release_inspector_no_op"
@@ -73,3 +70,6 @@ include "libraries:mapviewer"
 include "libraries:tokopatch"
 include ':libraries:annotation_proc_central'
 include "libraries:screen_recorder"
+include "libraries:screenshot_observer"
+include "libraries:work_manager_util"
+include "libraries:unit_test"

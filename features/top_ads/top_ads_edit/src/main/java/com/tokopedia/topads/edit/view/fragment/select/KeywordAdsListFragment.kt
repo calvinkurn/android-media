@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.Constants.KEYWORD_CHARACTER_COUNT
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -20,7 +22,6 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.utils.Constants.COUNT
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
@@ -30,8 +31,10 @@ import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFact
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordSelectedAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
 import javax.inject.Inject
@@ -59,6 +62,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     var productId = ""
     private var selected: ArrayList<KeywordDataItem>? = arrayListOf()
     var groupId = 0
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     companion object {
         const val PRODUCT_IDS_SELECTED = "product_ids"
@@ -150,14 +155,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
 
@@ -235,7 +239,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         else
             keywordSelectedAdapter.itemCount
         selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
-        btn_next.isEnabled = count <= COUNT
+        btn_next.isEnabled = count <= KEYWORD_CHARACTER_COUNT
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordData>) {
@@ -300,6 +304,15 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 activity?.finish()
             }
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_TIPS_KEYWORD, groupId.toString(), userID)
@@ -387,7 +400,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition ?: ""))
+                        ?: "", item.source ?: "", item.competition ?: "",true, fromSearch = true))
             }
         }
         return list

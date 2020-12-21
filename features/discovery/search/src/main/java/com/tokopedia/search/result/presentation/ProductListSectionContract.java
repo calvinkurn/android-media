@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -13,8 +14,8 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
@@ -41,7 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
@@ -67,6 +68,8 @@ public interface ProductListSectionContract {
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
+        boolean isAnySortActive();
+
         void clearLastProductItemPositionFromCache();
 
         void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);
@@ -89,8 +92,6 @@ public interface ProductListSectionContract {
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
-        void redirectToBrowser(String url);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
@@ -104,10 +105,6 @@ public interface ProductListSectionContract {
         void trackScreenAuthenticated();
 
         void reloadData();
-
-        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
-        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
         RemoteConfig getABTestRemoteConfig();
 
@@ -147,7 +144,7 @@ public interface ProductListSectionContract {
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
-        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onQuickFilterSelected(Option option);
 
@@ -157,7 +154,7 @@ public interface ProductListSectionContract {
 
         void setQuickFilter(List<SortFilterItem> items);
 
-        void showOnBoarding();
+        void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding);
 
         boolean isQuickFilterSelected(Option option);
 
@@ -174,6 +171,30 @@ public interface ProductListSectionContract {
         void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void redirectionStartActivity(String applink, String url);
+
+        void trackEventLongPress(String productID);
+
+        void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel);
+
+        void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer);
+
+        void showAddToCartSuccessMessage();
+
+        void showAddToCartFailedMessage(String errorMessage);
+
+        void routeToShopPage(String shopId);
+
+        void trackEventGoToShopPage(Object dataLayer);
+
+        void addLocalSearchRecommendation(List<Visitable> visitableList);
+
+        void trackEventSearchResultChangeView(String viewType);
+
+        void switchSearchNavigationLayoutTypeToListView(int position);
+
+        void switchSearchNavigationLayoutTypeToBigGridView(int position);
+
+        void switchSearchNavigationLayoutTypeToSmallGridView(int position);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -181,8 +202,6 @@ public interface ProductListSectionContract {
         void loadMoreData(Map<String, Object> searchParameter);
 
         void loadData(Map<String, Object> searchParameter);
-
-        void onBannedProductsGoToBrowserClick(String url);
 
         String getUserId();
 
@@ -212,9 +231,6 @@ public interface ProductListSectionContract {
 
         List<Option> getQuickFilterOptionList();
 
-        @Nullable
-        DynamicFilterModel getDynamicFilterModel();
-
         void getProductCount(Map<String, String> mapParameter);
 
         void onFreeOngkirOnBoardingShown();
@@ -224,5 +240,13 @@ public interface ProductListSectionContract {
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
+
+        void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
+
+        void handleVisitShopAction();
+
+        void handleChangeView(int position, SearchConstant.ViewType currentLayoutType);
     }
 }

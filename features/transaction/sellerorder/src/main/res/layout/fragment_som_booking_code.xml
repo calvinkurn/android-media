@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
-    tools:context=".detail.presentation.activity.SomDetailBookingCodeActivity">
+    tools:context="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/barcode_label"
@@ -16,7 +16,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/barcode_label_one"
-        android:textColor="@color/black_40"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_12" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:layout_toRightOf="@+id/barcode_label"
         android:text="@string/barcode_label_two"
-        android:textColor="@color/green_300"
+        android:textColor="@color/Unify_G400"
         android:textSize="@dimen/sp_12" />
 
 
@@ -53,7 +53,6 @@
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_copy_green"
             android:scaleType="centerInside"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
             android:layout_marginStart="@dimen/dp_8" />
@@ -71,7 +70,7 @@
         android:background="@drawable/rect_yellow"
         android:padding="@dimen/dp_16"
         android:text="@string/barcode_helper"
-        android:textColor="@color/black_39" />
+        android:textColor="@color/Unify_N700_68" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -81,21 +80,18 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="#fafbfc">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_toEndOf="@+id/ic_message"
-            android:layout_toRightOf="@+id/ic_message"
             android:background="@color/transparent"
             android:text="@string/message_label"
-            android:textColor="@color/black_40"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/sp_12" />
 
         <ImageView
@@ -103,7 +99,6 @@
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             app:srcCompat="@drawable/info_icon" />
 
@@ -120,7 +115,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#89000000"/>
+        android:background="@color/Unify_N700_44"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_barcode"

@@ -21,6 +21,7 @@ import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -53,8 +54,8 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
     private static final String LABEL_BLOCKED = "Layanan Terblokir";
     private static final String LABEL_DEACTIVATED = "Dinonaktifkan";
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
-    private static final String UOH_AB_TEST_KEY = "uoh_android";
-    private static final String UOH_AB_TEST_VALUE = "uoh_android";
+    private static final String UOH_AB_TEST_KEY = "uoh_android_v2";
+    private static final String UOH_AB_TEST_VALUE = "uoh_android_v2";
     private Context context;
     private RemoteConfig remoteConfig;
     private UserSession userSession;
@@ -257,7 +258,15 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
     }
 
     private Boolean useUoh() {
-        String remoteConfigValue = RemoteConfigInstance.getInstance().getABTestPlatform().getString(UOH_AB_TEST_KEY, "");
-        return remoteConfigValue.equalsIgnoreCase(UOH_AB_TEST_VALUE);
+        try {
+            String remoteConfigRollenceValue = RemoteConfigInstance.getInstance().getABTestPlatform().getString(UOH_AB_TEST_KEY, "");
+            Boolean rollence = remoteConfigRollenceValue.equalsIgnoreCase(UOH_AB_TEST_VALUE);
+
+            Boolean remoteConfigFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH);
+            return (rollence && remoteConfigFirebase);
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

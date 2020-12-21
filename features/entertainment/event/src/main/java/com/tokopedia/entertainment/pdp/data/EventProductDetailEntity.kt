@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import java.io.Serializable
 
@@ -408,6 +409,9 @@ data class Form(
         @SerializedName("element_type")
         @Expose
         val elementType: String = "",
+        @SerializedName("options")
+        @Expose
+        val options: String = "",
         @SerializedName("error_message")
         @Expose
         val errorMessage: String = "",
@@ -442,7 +446,9 @@ data class Form(
         @Expose
         var value: String = "",
         var valuePosition: String = "",
-        var valueList: String = ""
+        var valueList: String = "",
+        var isError: Boolean = false,
+        var errorType: Int = EMPTY_TYPE
 ): Serializable
 
 data class Group(

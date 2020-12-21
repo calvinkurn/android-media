@@ -1,0 +1,60 @@
+{
+  "readme": "Tracking Event Ticket PDP",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalevents",
+      "screenName": "{{.*}}",
+      "category": "events",
+      "event": "clickEvent",
+      "userId": "{{.*}}",
+      "eventAction": "click package",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalevents",
+      "screenName": "{{.*}}",
+      "category": "events",
+      "event": "clickEvent",
+      "userId": "{{.*}}",
+      "eventAction": "click quantity",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalevents",
+      "screenName": "{{.*}}",
+      "category": "events",
+      "event": "add_to_cart",
+      "userId": "{{.*}}",
+      "eventAction": "click beli",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "shop_id": "{{.*}}",
+          "quantity": "{{.*}}",
+          "category_id": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "shop_type": "{{.*}}",
+          "item_name": "{{.*}}",
+          "shop_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

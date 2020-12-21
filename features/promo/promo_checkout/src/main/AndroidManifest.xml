@@ -8,7 +8,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListDigitalActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" >
@@ -26,7 +26,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListFlightActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" >
@@ -44,7 +44,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListHotelActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" >
@@ -62,7 +62,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListDealsActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" >
@@ -79,7 +79,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListMarketplaceActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" >
@@ -97,7 +97,7 @@
 
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailMarketplaceActivity"
-            android:label="@string/activity_promo_detail_title"
+            android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:configChanges="uiMode">
@@ -115,7 +115,7 @@
 
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailDigitalActivity"
-            android:label="@string/activity_promo_detail_title"
+            android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -132,7 +132,7 @@
 
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailFlightActivity"
-            android:label="@string/activity_promo_detail_title"
+            android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -149,7 +149,7 @@
 
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailHotelActivity"
-            android:label="@string/activity_promo_detail_title"
+            android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -166,7 +166,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListUmrahActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" >
@@ -184,7 +184,7 @@
 
         <activity
             android:name=".list.view.activity.PromoCheckoutListEventActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" >
@@ -202,7 +202,7 @@
 
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailEventActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" >
@@ -219,7 +219,7 @@
         </activity>
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailDealsActivity"
-            android:label="@string/activity_promo_list_title"
+            android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" >

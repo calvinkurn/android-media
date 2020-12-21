@@ -19,7 +19,7 @@ class RecentSearchSeeMoreViewHolder(itemView: View, private val clickListener: I
     }
 
     private fun bindListener(item: RecentSearchSeeMoreViewModel) {
-        itemView.autocompleteSeeMoreButton?.setOnClickListener { clickListener.onRecentSearchSeeMoreClicked(item) }
+        itemView.autocompleteSeeMoreButton?.setOnClickListener { clickListener.onRecentSearchSeeMoreClicked() }
     }
 
     companion object {

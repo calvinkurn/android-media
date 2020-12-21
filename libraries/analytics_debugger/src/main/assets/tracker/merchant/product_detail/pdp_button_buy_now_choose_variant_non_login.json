@@ -1,0 +1,53 @@
+{
+  "readme": "Product Detail - click button buy now non login",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "product detail page",
+      "eventAction": "{{.*}}",
+      "event": "view_item",
+      "categoryId": "{{productId : \\d{1,}}}",
+      "productId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "{{.*}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}",
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "creative_url": "{{.*}}",
+          "creative_name": "{{layout:.*;comp:.*;temp:.*;}}",
+          "category": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "creative_slot": "{{\\d{1,}}}"
+        }
+      ]
+    },
+    {
+      "eventCategory": "product detail page",
+      "eventAction": "{{.*}}",
+      "event": "clickPDP",
+      "productId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "{{level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,};}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
+    },
+    {
+      "eventAction": "{{.*}}",
+      "eventCategory": "product detail page",
+      "event": "clickPDP",
+      "shopType": "{{.*}}",
+      "productId": "{{\\d{1,}}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "sessionIris": "{{.{1,}}}",
+      "shopId": "{{\\d{1,}}}",
+      "eventLabel": "{{.*}}",
+      "user_id": "{{.*}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{.*}}"
+    }
+  ]
+}

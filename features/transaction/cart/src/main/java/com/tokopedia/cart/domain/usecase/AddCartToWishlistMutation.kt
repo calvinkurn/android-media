@@ -12,5 +12,5 @@ fun getAddToWishlistMutation(): String {
             }
           }
         }
-    """.trimIndent()
+    """
 }

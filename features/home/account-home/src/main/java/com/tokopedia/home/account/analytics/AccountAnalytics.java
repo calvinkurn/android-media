@@ -302,6 +302,17 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickSignInByPushNotifSetting() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_OTP,
+                String.format("%s %s", ACCOUNT, SETTING),
+                "click masuk lewat notifikasi",
+                ""
+        ));
+    }
+
     public void eventClickKYCSellerAccountPage(int status) {
 
         final Analytics analytics = TrackApp.getInstance().getGTM();

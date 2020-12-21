@@ -2,29 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet_checkout_term_condition">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/umrah_ic_home_page_closed"
-        android:id="@+id/img_umrah_checkout_bottom_sheet_closed"
-        android:layout_margin="@dimen/dp_16"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_umrah_checkout_bottom_sheet_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/img_umrah_checkout_bottom_sheet_closed"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_3"
-        android:text="@string/umrah_checkout_term_condition_bottom_sheet_title"
-        />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/tv_umrah_checkout_bottom_sheet_title"
         android:id="@+id/rv_umrah_checkout_term_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

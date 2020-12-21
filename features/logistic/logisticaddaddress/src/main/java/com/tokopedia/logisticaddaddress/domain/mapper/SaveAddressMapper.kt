@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
 import javax.inject.Inject
 
 class SaveAddressMapper @Inject constructor() {

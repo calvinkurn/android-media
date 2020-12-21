@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
@@ -32,9 +33,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
         intent?.data?.let {
             if (it.getQueryParameter(PUSH_NOTIFICATION_PAGE) != null) {
-                val isSellerApp = GlobalConfig.isSellerApp()
-                openPushNotificationFiled(isSellerApp)
-
+                openPushNotificationFiled(GlobalConfig.isSellerApp())
                 isHasPushNotificationParam = true
             }
         }
@@ -43,10 +42,16 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     override fun onBackPressed() {
         if (isHasPushNotificationParam) {
             finish()
-            return
+        } else {
+            super.onBackPressed()
         }
+    }
 
-        super.onBackPressed()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun bindView() {
@@ -92,13 +97,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
             )
             dataView.createNewFragmentInstance()
         } else {
-            SettingTypeFragment()
+            SettingTypeFragment.createInstance()
         }
     }
 
     companion object {
-        private const val PUSH_NOTIFICATION_PAGE = "push_notification"
-
+        const val PUSH_NOTIFICATION_PAGE = "push_notification"
         private const val EXTRA_OPEN_SELLER_NOTIF = "extra_open_seller_notif"
     }
 }

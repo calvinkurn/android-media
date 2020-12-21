@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterOpenRangeViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionRangeViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.OnSelectedFilterChangedListener
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.*
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 
 /**
@@ -24,6 +21,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
         field = value
         notifyDataSetChanged()
     }
+    var isSelectionWithOverflowLayout = false
 
     var selectedFilter = hashMapOf<String, List<String>>()
 
@@ -35,7 +33,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterBaseViewHolder {
         return when (viewType) {
             SELECTION_VIEW_TYPE -> {
-                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this)
+                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this, isSelectionWithOverflowLayout)
             }
             OPEN_RANGE_VIEW_TYPE -> {
                 FilterOpenRangeViewHolder(parent.inflateLayout(FilterOpenRangeViewHolder.LAYOUT), this)
@@ -43,8 +41,11 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
             SELECTION_RANGE_TYPE -> {
                 FilterSelectionRangeViewHolder(parent.inflateLayout(FilterSelectionRangeViewHolder.LAYOUT), this)
             }
+            FILTER_SORT_TYPE -> {
+                FilterSortViewHolder(parent.inflateLayout(FilterSortViewHolder.LAYOUT), this)
+            }
             else -> {
-                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this)
+                FilterSelectionViewHolder(parent.inflateLayout(FilterSelectionViewHolder.LAYOUT), this, isSelectionWithOverflowLayout)
             }
         }
     }
@@ -60,6 +61,7 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
             FilterV2.FILTER_TYPE_SELECTION -> SELECTION_VIEW_TYPE
             FilterV2.FILTER_TYPE_OPEN_RANGE -> OPEN_RANGE_VIEW_TYPE
             FilterV2.FILTER_TYPE_SELECTION_RANGE -> SELECTION_RANGE_TYPE
+            FilterV2.FILTER_TYPE_SORT -> FILTER_SORT_TYPE
             else -> SELECTION_VIEW_TYPE
         }
     }
@@ -67,13 +69,13 @@ class HotelSearchResultFilterV2Adapter: RecyclerView.Adapter<HotelSearchResultFi
     abstract class FilterBaseViewHolder(view: View): RecyclerView.ViewHolder(view) {
         abstract var filterName: String
         abstract fun bind(filter: FilterV2)
-        abstract fun resetSelection()
     }
 
     companion object {
         const val SELECTION_VIEW_TYPE = 13
         const val OPEN_RANGE_VIEW_TYPE = 15
         const val SELECTION_RANGE_TYPE = 17
+        const val FILTER_SORT_TYPE = 19
     }
 
     override fun onSelectedFilterChanged(name: String, filter: List<String>) {

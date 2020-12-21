@@ -3,7 +3,7 @@ package com.tokopedia.gtmutil
 import android.os.Bundle
 import java.util.*
 
-object BundlerUtil {
+object BundlerUtil    {
     fun putByte(key: String, value: Byte?, defaultValue: Byte, bundle: Bundle) {
         val byteValue = value ?: defaultValue
         bundle.putByte(key, byteValue)

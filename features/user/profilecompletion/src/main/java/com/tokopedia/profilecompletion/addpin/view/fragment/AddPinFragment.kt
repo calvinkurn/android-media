@@ -27,6 +27,7 @@ import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.LoadingDialog
+import com.tokopedia.profilecompletion.common.ValidateToken
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -54,6 +55,8 @@ class AddPinFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var loadingDialog: LoadingDialog
+    @Inject
+    lateinit var validateToken: ValidateToken
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
@@ -215,6 +218,7 @@ class AddPinFragment : BaseDaggerFragment() {
         if (skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()) {
             showLoading()
             addChangePinViewModel.addPin(skipOtpPinData.validateToken)
+            validateToken.set(skipOtpPinData.validateToken)
         } else {
             goToVerificationActivity()
         }

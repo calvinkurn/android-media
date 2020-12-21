@@ -1,96 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/topads_bg_top_round"
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16">
 
-    <ImageView
-        android:id="@+id/btn_close"
-        android:layout_width="@dimen/dp_25"
-        android:layout_height="@dimen/dp_30"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sheet_title"
-        app:srcCompat="@drawable/topads_create_ic_group_close" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/sheet_title"
-        style="@style/TextView.TitleBig.Bold"
-        android:layout_width="@dimen/dp_0"
+    <com.tokopedia.unifycomponents.list.ListUnify
+        android:id="@+id/sortList"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:gravity="center_vertical"
-        android:text="@string/topads_edit_info_sheet_title"
-        app:layout_constraintBottom_toTopOf="@+id/radio_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_close"
+        android:choiceMode="singleChoice"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
-
-    <RadioGroup
-        android:id="@+id/radio_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sheet_title">
-
-        <RadioButton
-            android:id="@+id/title_1"
-            style="@style/TopadsProductSortRadioButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:gravity="start"
-            android:layoutDirection="rtl"
-            android:text="@string/topads_edit_keyword_edit_info_sheet_title_1"
-            android:textAlignment="textStart" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/desc_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:text="@string/topads_edit_keyword_edit_info_sheet_desc_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_1"
-            app:typographyType="body_3"
-            tools:text="wo humsafar tha magar usse humnavayi na thi.. ki dhooop chaav ka aalam raha judai na thi">
-
-        </com.tokopedia.unifyprinciples.Typography>
-
-        <RadioButton
-            android:id="@+id/title_2"
-            style="@style/TopadsProductSortRadioButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:gravity="start"
-            android:layoutDirection="rtl"
-            android:text="@string/topads_edit_keyword_edit_info_sheet_title_2"
-            android:textAlignment="textStart" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/desc_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/topads_edit_keyword_edit_info_sheet_desc_2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_2"
-            app:typographyType="body_3"
-            tools:text="is dil ki aadat yahi hai.. gir kar sambhalta nahi hai.. jaalim samajhta nhi hai ye koi jubaan ye dil beparvaah">
-
-        </com.tokopedia.unifyprinciples.Typography>
-    </RadioGroup>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
+import com.tokopedia.core.model.share.ShareData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -25,7 +26,7 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.sharedata.DefaultShareData
+import com.tokopedia.linker.share.DefaultShare
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
 class CatalogDetailPageActivity : BaseActivity(),
@@ -174,12 +175,12 @@ class CatalogDetailPageActivity : BaseActivity(),
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(com.tokopedia.abstraction.R.color.white)
         } else {
-            toolbar.setBackgroundResource(com.tokopedia.buyerorder.R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow)
         }
         img_share_button.setOnClickListener {
             if (shareData != null) {
                 CatalogDetailPageAnalytics.trackEventClickSocialShare()
-                DefaultShareData(this, shareData!!).show()
+                DefaultShare(this, shareData!!).show()
             } else
                 NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia")
         }

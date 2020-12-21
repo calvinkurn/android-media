@@ -2,8 +2,6 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
-import android.content.res.Resources;
-
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -21,7 +19,7 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;

@@ -70,7 +70,7 @@ object ProductEditStepperTracking {
     }
 
     fun oopsConnectionPageScreen(userId: String, serverStatus: String, errorName: String) {
-        sendEditProductImpression(userId, "impression add product error", "server error - $serverStatus - $errorName")
+        sendEditProductImpression(userId, "impression edit product error", "server error - $serverStatus - $errorName")
     }
 
     fun trackFinishService(shopId: String, isSuccess: Boolean) {

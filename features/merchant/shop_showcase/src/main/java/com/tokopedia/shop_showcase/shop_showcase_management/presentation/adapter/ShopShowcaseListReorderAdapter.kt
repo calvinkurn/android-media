@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
 import com.tokopedia.shop_showcase.common.ShowcaseType
@@ -23,11 +24,11 @@ class ShopShowcaseListReorderAdapter(
 ) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
-    private var showcaseList: MutableList<ShowcaseItem> = mutableListOf()
-    val _showcaseList: List<ShowcaseItem>
+    private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
+    val _showcaseList: List<ShopEtalaseModel>
         get() = showcaseList
 
-    fun updateDataShowcaseList(showcaseListData: ArrayList<ShowcaseItem>) {
+    fun updateDataShowcaseList(showcaseListData: ArrayList<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
 
         // Handling undragable list
@@ -80,7 +81,7 @@ class ShopShowcaseListReorderAdapter(
             buttonMove = itemView.findViewById(R.id.img_move)
         }
 
-        fun bindData(dataShowcase: ShowcaseItem, position: Int) {
+        fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
             if (dataShowcase.type == ShowcaseType.CUSTOM) {

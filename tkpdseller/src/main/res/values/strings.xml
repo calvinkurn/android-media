@@ -13,6 +13,15 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
+    <string name="product_notification_complete_upload_product">Sukses Mengunggah Produk</string>
+    <string name="product_notification_start_upload_product">Mulai mengunggah produk</string>
+    <string name="product_notification_progress_upload_product">Sedang mengunggah produk</string>
+    <string name="product_title_notification_upload_product">Mengunggah</string>
+    <string name="product_group_notification">com.tokopedia</string>
+    <string name="product_label_catalog">Katalog</string>
+    <string name="product_currency_value_idr">1</string>
+    <string name="product_currency_value_usd">2</string>
+    <string name="label_variant_save">Simpan</string>
 
     <string name="next">Selanjutnya</string>
     <string name="label_top_ads_choose_credit">Pilih</string>

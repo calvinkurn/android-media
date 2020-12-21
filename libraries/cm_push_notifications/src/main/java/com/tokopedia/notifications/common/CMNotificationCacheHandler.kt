@@ -34,4 +34,9 @@ class CMNotificationCacheHandler(context: Context) {
         localCacheHandler.applyEditor()
     }
 
+    fun remove(key: String) {
+        localCacheHandler.remove(key)
+        localCacheHandler.applyEditor()
+    }
+
 }

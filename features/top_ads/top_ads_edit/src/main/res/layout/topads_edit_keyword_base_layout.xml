@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <RadioGroup
+    <LinearLayout
         android:id="@+id/keyword_grp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,27 +18,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/keyword"
-            style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
-            android:text="@string/topads_edit_kata_kunci" />
+            app:chipSize="medium"
+            app:centerText="true"
+            app:chipText="@string/topads_edit_kata_kunci"
+            app:chipType="normal" />
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/neg_keyword"
-            style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/topads_edit_kata_kunci_neg" />
+            app:chipSize="medium"
+            app:centerText="true"
+            app:chipText="@string/topads_edit_kata_kunci_neg"
+            app:chipType="normal" />
 
-    </RadioGroup>
+    </LinearLayout>
 
     <com.tokopedia.topads.common.CustomViewPager
         android:id="@+id/view_pager"

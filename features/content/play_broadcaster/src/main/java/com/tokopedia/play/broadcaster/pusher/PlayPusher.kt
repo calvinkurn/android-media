@@ -1,76 +1,62 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import android.view.SurfaceView
-import androidx.lifecycle.LiveData
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 
 
 /**
- * Created by mzennis on 24/05/20.
+ * Created by mzennis on 22/09/20.
  */
 interface PlayPusher {
 
-    /**
-     * Initialize SDK
-     */
-    suspend fun create()
+    fun init()
 
-    /**
-     * Open camera for preview live streaming
-     */
-    suspend fun startPreview(surfaceView: SurfaceView)
+    fun startPreview(surfaceView: SurfaceView)
 
-    /**
-     * Call this method to stop an ongoing preview. However, you cannot call this method to stop a preview during live stream.
-     */
     fun stopPreview()
 
-    /**
-     * Start live streaming by providing ingest url
-     */
-    suspend fun startPush(ingestUrl: String)
+    fun startPush(ingestUrl: String)
 
-    /**
-     * Call this method to restart live stream. or after you receive any callback event notification related to an error.
-     */
-    suspend fun restartPush()
+    fun restartPush()
 
-    /**
-     *  Call this method to stop ongoing live stream.
-     */
-    suspend fun stopPush()
+    fun stopPush()
 
-    /**
-     * Switch camera between front and back, the default is front
-     */
-    suspend fun switchCamera()
+    fun switchCamera()
 
-    /**
-     * Call this method to enable disabled live stream. Then, the SDK resumes the audio and video preview and live stream.
-     * After the streaming is resumed, the audio and video preview and streaming are back to normal.
-     */
-    suspend fun resume()
+    fun resumePush()
 
-    /**
-     * Call this method to disable ongoing live stream. Then, the SDK pauses the video preview and video stream at the last frame.
-     */
-    suspend fun pause()
+    fun pausePush()
 
-    /**
-     * Destroy pusher
-     */
     fun destroy()
 
     /**
-     * add live streaming duration
+     * set live streaming duration
      */
-    fun addStreamDuration(durationInMillis: Long)
+    fun setStreamDuration(durationInMillis: Long)
 
     /**
-     * add maximum live streaming duration
+     * set maximum live streaming duration
      */
-    fun addMaxStreamDuration(durationInMillis: Long)
+    fun setMaxStreamDuration(durationInMillis: Long)
+
+    /**
+     * start live streaming timer
+     */
+    fun startTimer()
+
+    /**
+     * resume live streaming timer
+     */
+    fun resumeTimer()
+
+    /**
+     * pause live streaming timer
+     */
+    fun pauseTimer()
+
+    /**
+     * stop live streaming timer
+     */
+    fun stopTimer()
 
     /**
      * restart live streaming duration
@@ -78,19 +64,19 @@ interface PlayPusher {
     fun restartStreamDuration(durationInMillis: Long)
 
     /**
-     * add maximum pause duration when streaming
+     * set maximum pause duration when streaming
      */
-    fun addMaxPauseDuration(durationInMillis: Long)
+    fun setMaxPauseDuration(durationInMillis: Long)
+
+    fun getTimeElapsed(): String
 
     /**
-     * Callback pusher info during live streaming
+     * set listener to timer
      */
-    fun addPusherInfoListener(playPusherInfoListener: PlayPusherInfoListener)
+    fun setPlayPusherTimerListener(listener: PlayPusherTimerListener)
 
     /**
-     * Get Network State during Live Streaming
+     * set listener to pusher
      */
-    fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState>
-
-    fun isPushing(): Boolean
+    fun setPlayPusherInfoListener(listener: PlayPusherInfoListener)
 }

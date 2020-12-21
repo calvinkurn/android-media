@@ -6,11 +6,10 @@ import android.content.DialogInterface
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -130,49 +129,44 @@ open class AddToCartDoneBottomSheet :
             inflatedView?.let{
                 configView(it)
                 dialog.setContentView(it)
-                val parent = it.parent as View
-                bottomSheetBehavior = BottomSheetBehavior.from(parent)
-                val bottomSheetView = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-                bottomSheetView.setBackgroundResource(android.R.color.transparent)
-                if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
-                    dialog.setCanceledOnTouchOutside(false)
-                    recyclerView.isNestedScrollingEnabled = false
-                    val bottomSheetBehavior = BottomSheetBehavior.from<View>(bottomSheetView)
-                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-                        override fun onStateChanged(bottomSheet: View, newState: Int) {
-                            if(newState == BottomSheetBehavior.STATE_DRAGGING){
-                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                            }
-                        }
-
-                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                    })
-                }
+                initInjector()
+                initViewModel()
+                getArgumentsData()
+                trackingQueue = TrackingQueue(context)
+                initAdapter()
+                observeRecommendationProduct()
+                observeAtcStatus()
+                getRecommendationProduct()
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInjector()
-        initViewModel()
-        getArgumentsData()
-        context?.let {
-            trackingQueue = TrackingQueue(it)
-        }
-        initAdapter()
-        observeRecommendationProduct()
-        observeAtcStatus()
-        getRecommendationProduct()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)?.let {
+            it.setBackgroundResource(android.R.color.transparent)
+            bottomSheetBehavior = BottomSheetBehavior.from(it)
+            if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+                dialog.setCanceledOnTouchOutside(false)
+                recyclerView.isNestedScrollingEnabled = false
+                val bottomSheetBehavior = BottomSheetBehavior.from<View>(it)
+                bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+                    }
 
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                })
+            }
+        }
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let{
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true)
         }
@@ -208,6 +202,12 @@ open class AddToCartDoneBottomSheet :
         super.onDetach()
     }
 
+    override fun show(manager: FragmentManager, tag: String?) {
+        val fragmentTransaction = manager.beginTransaction()
+        fragmentTransaction.add(this, tag)
+        fragmentTransaction.commitAllowingStateLoss()
+    }
+
     private fun getRecommendationProduct() {
         addedProductDataModel?.productId?.let {
             viewShimmeringLoading.show()
@@ -226,11 +226,11 @@ open class AddToCartDoneBottomSheet :
     private fun observeAtcStatus(){
         addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
             addToCartButton.isLoading = false
-            if(result is Success){
+            if (result is Success) {
                 stateAtcView.visible()
                 addToCartButton.hide()
-            } else if(result is Fail){
-                dialog?.run{
+            } else if (result is Fail) {
+                dialog?.run {
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
                     Toaster.make(findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
@@ -250,8 +250,9 @@ open class AddToCartDoneBottomSheet :
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
                     val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
-                    if(abValue.isNotEmpty() && abValue != oldVariantPDP){
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId ?: -1))
+                    if (abValue.isNotEmpty() && abValue != oldVariantPDP) {
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId
+                                ?: -1))
                     } else {
                         for (res in it.data) {
                             atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
@@ -364,13 +365,16 @@ open class AddToCartDoneBottomSheet :
                 )
             }
         }
-        DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
-                item,
-                item.position,
-                addToCartDoneViewModel.isLoggedIn(),
-                item.pageName,
-                item.header
-        )
+        addedProductDataModel?.productId?.let {
+            DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
+                    item,
+                    item.position,
+                    addToCartDoneViewModel.isLoggedIn(),
+                    item.pageName,
+                    item.header,
+                    it
+            )
+        }
         if (position.size > 1) {
             lastAdapterPosition = position[0]
             goToPDP(item, position[1])
@@ -391,14 +395,17 @@ open class AddToCartDoneBottomSheet :
                 )
             }
         }
-        productDetailTracking.eventAddToCartRecommendationImpression(
-                item.position,
-                item,
-                addToCartDoneViewModel.isLoggedIn(),
-                item.pageName,
-                item.header,
-                trackingQueue
-        )
+        addedProductDataModel?.productId?.let {
+            productDetailTracking.eventAddToCartRecommendationImpression(
+                    item.position,
+                    item,
+                    addToCartDoneViewModel.isLoggedIn(),
+                    item.pageName,
+                    item.header,
+                    it,
+                    trackingQueue
+            )
+        }
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
@@ -429,13 +436,16 @@ open class AddToCartDoneBottomSheet :
             if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
-                productDetailTracking.eventAddToCartRecommendationATCClick(
-                        item,
-                        item.position,
-                        addToCartDoneViewModel.isLoggedIn(),
-                        item.pageName,
-                        item.header
-                )
+                addedProductDataModel?.productId?.let {
+                    productDetailTracking.eventAddToCartRecommendationATCClick(
+                            item,
+                            item.position,
+                            addToCartDoneViewModel.isLoggedIn(),
+                            item.pageName,
+                            item.header,
+                            it
+                    )
+                }
             }
         }
     }

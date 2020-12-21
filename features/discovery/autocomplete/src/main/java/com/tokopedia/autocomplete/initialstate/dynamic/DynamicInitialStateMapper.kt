@@ -21,9 +21,11 @@ fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(): MutableL
                 labelType = item.labelType,
                 shortcutImage = item.shortcutImage,
                 productId = item.itemId,
-                type = item.type
+                type = item.type,
+                featureId = this.featureId,
+                header = this.header
         )
         childList.add(model)
     }
-    return arrayListOf(DynamicInitialStateSearchViewModel(childList))
+    return arrayListOf(DynamicInitialStateSearchViewModel(this.featureId, childList))
 }

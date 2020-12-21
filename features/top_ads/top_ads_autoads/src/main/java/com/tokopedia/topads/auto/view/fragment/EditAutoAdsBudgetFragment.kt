@@ -5,14 +5,14 @@ import android.view.View
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.sheet.AutoAdsCreateSheet
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import kotlinx.android.synthetic.main.topads_autoads_edit_daily_budget.*
 
 /**
  * Author errysuprayogi on 09,May,2019
  */
 class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener {
-    private var autoAdsWidget: AutoAdsWidget? = null
+    private var autoAdsWidget: AutoAdsWidgetCommon? = null
     private val EDIT_AUTOADS = 1
 
     override fun getLayoutId(): Int {

@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -32,11 +33,11 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.model.ShowcaseItemPickerProduct
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
@@ -172,7 +173,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     @Inject
     lateinit var shopShowcasePickerViewModel: ShopShowcasePickerViewModel
     private var showcasePickerAdapter: ShopShowcasePickerAdapter? = null
-    private var showcaseList: List<ShowcaseItem> = listOf()
+    private var showcaseList: List<ShopEtalaseModel> = listOf()
     private var isMyShop = false
     private var shopId: String = ""
     private var shopType: String = ""
@@ -231,7 +232,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        removeObservers(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse)
+        removeObservers(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse)
         removeObservers(shopShowcasePickerViewModel.getShopProductResponse)
         removeObservers(shopShowcasePickerViewModel.createShopShowcase)
     }
@@ -254,7 +255,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int) {
+    override fun onPickerItemClicked(item: ShopEtalaseModel, totalCheckedItem: Int) {
         val itemPicker = ShowcaseItemPicker().apply {
             showcaseId = item.id
             showcaseName = item.name
@@ -379,6 +380,13 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                     buttonAddShowcaseBottomSheet?.isLoading = true
                     createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
                 }
+
+                // on dismiss bottomsheet
+                setOnDismissListener {
+                    activity?.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+                }
             })
             isKeyboardOverlap = false
         }
@@ -392,6 +400,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 && (showcaseList.size >= MAX_TOTAL_SHOWCASE_PM_AND_OS)) {
             showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
         }
+        else if (totalCheckedShowcase >= ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE) {
+            showToaster(getString(R.string.max_selected_showcase_text), Toaster.TYPE_NORMAL)
+        }
         else {
             context?.let {
                 setupAddShowcaseBottomSheet(it)
@@ -402,6 +413,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
+                activity?.let { activity ->
+                    KeyboardHandler.showSoftKeyboard(activity)
+                }
             }
         }
     }
@@ -425,7 +439,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun loadShowcaseList() {
         if(isMyShop) {
             showLoading(true)
-            shopShowcasePickerViewModel.getShopShowcaseListAsBuyer(shopId, isOwner = isMyShop)
+            shopShowcasePickerViewModel.getShopShowcaseListAsSeller()
         }
     }
 
@@ -470,12 +484,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun observeGetShowcaseList() {
-        observe(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse) {
+        observe(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse) {
             when(it) {
                is Success -> {
                    showLoading(false)
-                   val errorMessage = it.data.shopShowcasesByShopID.error.message
-                   showcaseList = it.data.shopShowcasesByShopID.result
+                   val errorMessage = it.data.shopShowcases.error.message
+                   showcaseList = it.data.shopShowcases.result
                    if(errorMessage.isNotEmpty()) {
                        showToaster(errorMessage, Toaster.TYPE_ERROR)
                    } else {
@@ -497,8 +511,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                            if(selectedShowcaseList?.size.isMoreThanZero()) {
                                showcaseList.forEach { item ->
                                    selectedShowcaseList?.forEach { selectedItem ->
-                                       if(item.id == selectedItem.showcaseId)
+                                       if(item.id == selectedItem.showcaseId) {
+                                           // assign new showcase name from cloud, to prevent empty showcase from edit product
+                                           selectedItem.showcaseName = item.name
                                            item.isChecked = true
+                                       }
                                    }
                                }
                            }
@@ -635,6 +652,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun showToaster(msg: String?, type: Int) {
+        hideSoftKeyboard()
         view?.let { view ->
             Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, type)
         }
@@ -661,6 +679,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     private fun setBackgroundColor() {
         view?.setBackgroundColor(Color.WHITE)
+    }
+
+    private fun hideSoftKeyboard() {
+        activity?.run {
+            KeyboardHandler.hideSoftKeyboard(this)
+        }
     }
 
     private fun goToAddShowcase() {

@@ -21,4 +21,7 @@ object TalkInboxTrackingConstants {
     const val EVENT_LABEL_CLICK_TAB = "shop id:%s;count unread messages:%s;"
     const val TAB_SELLER = "seller"
     const val TAB_BUYER = "user"
+    const val EVENT_PROMO_VIEW = "promoView"
+    const val EVENT_ACTION_IMPRESS_ITEM = "view - talk on inbox talk"
+    const val CREATIVE_MESSAGE_STATUS = "message status:%s"
 }

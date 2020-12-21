@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
@@ -14,6 +14,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -73,7 +75,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     private void executeCrashlyticLog(Bundle data, String message) {
         if (!BuildConfig.DEBUG) {
             String logMessage = generateLogMessage(data, message);
-            Crashlytics.logException(new Exception(logMessage));
+            FirebaseCrashlytics.getInstance().recordException(new Exception(logMessage));
             Timber.w(
                     "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
                     "AppNotificationReceiver::onNotificationReceived(String from, Bundle data)",
@@ -108,12 +110,12 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     @Override
     public void onCampaignManagementNotificationReceived(RemoteMessage message) {
-
+        CMPushNotificationManager.getInstance().handlePushPayload(message);
     }
 
     @Override
     public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
-        return false;
+        return CMPushNotificationManager.getInstance().isFromCMNotificationPlatform(extra);
     }
 
     private boolean isApplinkNotification(Bundle data) {

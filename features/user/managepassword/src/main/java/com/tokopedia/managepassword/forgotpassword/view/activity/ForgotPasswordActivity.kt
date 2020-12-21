@@ -13,6 +13,8 @@ import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author rival
@@ -28,6 +30,9 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
  */
 
 class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordComponent> {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
 
@@ -60,7 +65,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         getAbTestPlatform()?.fetch(null)
 
         if (isDirectToWebView) {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
+            if (userSession.isLoggedIn) {
+                RouteManager.route(this, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
+            } else {
+                RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
+            }
             finish()
             return
         }

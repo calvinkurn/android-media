@@ -1,0 +1,67 @@
+{
+  "readme": "Hotel Cancellation Page Tracking with Priority P0 & P1",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewHotelIris",
+      "eventCategory": "digital - native",
+      "eventAction": "view cancellation page",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/ordercancel",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click next on cancellation page",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/ordercancel",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click submit cancellation",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/ordercancelreason",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },{
+      "event": "viewHotelIris",
+      "eventCategory": "digital - native",
+      "eventAction": "view cancellation status",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/ordercancelresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click on cancellation result page",
+      "eventLabel": "{{hotel - .+}}",
+      "screenName": "/hotel/ordercancelresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
     <application>
 
         <activity
-            android:name=".presentation.activity.DigitalHomePageActivity"
+            android:name=".old.presentation.activity.DigitalHomePageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.White" >

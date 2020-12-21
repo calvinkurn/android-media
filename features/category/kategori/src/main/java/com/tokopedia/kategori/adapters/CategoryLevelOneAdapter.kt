@@ -13,7 +13,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kategori.R
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
-import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.common_category.data.kategorymodel.CategoriesItem
+import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 import kotlinx.android.synthetic.main.item_shimmer_level_one.view.*
@@ -79,7 +80,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }
 
-        holder.categoryName.text = getEllipsizedMessage(item.name ?: "")
+        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), R.string.content_desc_category_name)}
     }
 
 

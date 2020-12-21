@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.topads.auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.tokopedia.topads.auto">
 
     <application>
-        <activity
-            android:name=".view.activity.AutoAdsRouteActivity"
-            android:label="" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/host_topads"
-                    android:path="@string/path_topads_autoads"/>
-            </intent-filter>
-        </activity>
         <activity
             android:name=".view.activity.CreateAutoAdsActivity"
             android:theme="@style/Theme.White"

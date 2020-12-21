@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/dp_3"
+    android:paddingTop="@dimen/chatcommon_3dp"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl2">
 
@@ -16,6 +17,7 @@
         android:orientation="vertical">
 
         <include layout="@layout/item_chatcommon_chat_header" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -44,7 +46,7 @@
             android:focusable="true"
             android:text="@string/title_chatcommon_check"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/Unify_N0"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -54,11 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/card_group_chat_message"
-        android:layout_gravity="left"
-        android:layout_marginTop="@dimen/dp_3"
-        android:gravity="left"
-        android:textColor="@color/time_color"
-        android:textSize="@dimen/sp_10"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/chatcommon_3dp"
+        android:gravity="start"
+        android:textColor="@color/Unify_N300"
+        android:textSize="@dimen/chatcommon_10sp"
         tools:text="testtest" />
 
 </RelativeLayout>

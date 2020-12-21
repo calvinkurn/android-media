@@ -251,7 +251,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderChangerButtonTextColor() {
-        stateChanger?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500))
+        stateChanger?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
     private fun renderOpenCloseStateChangerButton() {
@@ -333,7 +333,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
         companion object {
             const val COLOR_NOT_SEEN = 0xFFEBFFEF
-            const val COLOR_SEEN = Color.WHITE
+            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_N0
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"

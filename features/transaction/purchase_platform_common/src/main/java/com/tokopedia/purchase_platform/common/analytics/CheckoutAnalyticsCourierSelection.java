@@ -306,15 +306,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
-                                              String irisSessionId,
+                                              Map<String, String> tradeInCustomDimension,
                                               String transactionId,
-                                              boolean isTradeIn,
+                                              String eventCategory,
                                               String eventAction,
                                               String eventLabel) {
-        String eventCategory = EventCategory.COURIER_SELECTION;
-        if (isTradeIn) {
-            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
-        }
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
@@ -323,6 +319,9 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        if (tradeInCustomDimension != null && tradeInCustomDimension.size() > 0) {
+            dataLayer.putAll(tradeInCustomDimension);
+        }
         if (!TextUtils.isEmpty(transactionId)) {
             dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
         }
@@ -603,73 +602,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CHANGE_COURIER_OPTION,
                 eventLabel
-        );
-    }
-
-    // Trade In
-    public void eventViewCheckoutPageTradeIn() {
-        sendEventCategoryAction(EventName.VIEW_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
-        );
-    }
-
-    public void eventClickGantiNomor(boolean tradeIn) {
-        sendEventCategoryAction(tradeIn ? EventName.CLICK_TRADEIN : "",
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_GANTI_NOMOR
-        );
-    }
-
-    public void eventClickButtonPilihDurasi() {
-        sendEventCategoryAction(EventName.CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BUTTON_PILIH_DURASI
-        );
-    }
-
-    public void eventClickKurirTradeIn(String label) {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_KURIR_TRADE_IN,
-                label
-        );
-    }
-
-    public void eventClickBayarTradeInFailed() {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BAYAR,
-                EventLabel.FAILED
-        );
-    }
-
-    public void eventClickBayarCourierNotComplete() {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BAYAR,
-                EventLabel.COURIER_NOT_COMPLETE
-        );
-    }
-
-    public void eventClickJemputTab() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_JEMPUT_TAB
-        );
-    }
-
-    public void eventClickDropOffTab() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_DROP_OFF_TAB
-        );
-    }
-
-    public void eventClickUbahTitikDropoffButton() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_UBAH_TITIK_DROP_OFF_BUTTON
         );
     }
 
@@ -975,7 +907,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventViewPromoLogisticTickerDisable(String promoCode){
+    public void eventViewPromoLogisticTickerDisable(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,

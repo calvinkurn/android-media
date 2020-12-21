@@ -20,7 +20,7 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELE
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_NOTES
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
-import com.tokopedia.cart.view.adapter.CartItemAdapter
+import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -245,7 +245,7 @@ class CartItemViewHolder constructor(itemView: View,
                             data.isSelected = isChecked
                             if (adapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                                viewHolderListener?.onNeedToRefreshAllShop()
+                                viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
                             }
                         }
                     }
@@ -294,12 +294,8 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
-        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
-        ImageHandler.loadImageRounded2(
-                this.itemView.context, this.ivProductImage,
-                data.cartItemData?.originData?.productImage
-        )
-
+        renderProductName(data)
+        renderImage(data)
         renderPrice(data)
         renderVariant(data)
         renderWarningMessage(data)
@@ -309,9 +305,20 @@ class CartItemViewHolder constructor(itemView: View,
 
         sendAnalyticsInformationLabel(data)
 
-        setClickListener(parentPosition, data)
-
         divider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
+    }
+
+    private fun renderProductName(data: CartItemHolderData) {
+        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
+        textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
+    }
+
+    private fun renderImage(data: CartItemHolderData) {
+        ImageHandler.loadImageRounded2(
+                this.itemView.context, this.ivProductImage,
+                data.cartItemData?.originData?.productImage
+        )
+        ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
@@ -351,7 +358,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
             setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-            setType(Typography.SMALL)
+            setType(Typography.BODY_3)
             text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
     }
@@ -368,11 +375,6 @@ class CartItemViewHolder constructor(itemView: View,
         } else {
             textIncidentLabel.gone()
         }
-    }
-
-    private fun setClickListener(parentPosition: Int, data: CartItemHolderData) {
-        ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
-        textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun renderPrice(data: CartItemHolderData) {
@@ -531,7 +533,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 
@@ -655,7 +657,7 @@ class CartItemViewHolder constructor(itemView: View,
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
-                        ?: 0)
+                        ?: 0, ivProductImage)
             }
         }
         textMoveToWishlist.show()

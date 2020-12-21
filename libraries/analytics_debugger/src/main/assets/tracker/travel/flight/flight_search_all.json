@@ -1,0 +1,32 @@
+{
+  "readme": "Flight Search Tracking with Priority P2 and below.",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickFlight",
+      "eventAction": "click widget filter",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/search",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    },
+    {
+      "event": "clickFlight",
+      "eventAction": "click change search",
+      "eventCategory": "digital - flight",
+      "eventLabel": "flight - change search",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/search",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    }
+  ]
+}

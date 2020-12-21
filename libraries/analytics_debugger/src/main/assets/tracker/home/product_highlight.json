@@ -3,8 +3,11 @@
   "mode": "exact",
   "query": [
     {
+      "businessUnit": "home & browse",
       "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
       "item_list": "{{.*}}",
+      "screenName": "/",
       "event": "select_content",
       "eventAction": "click on product dynamic channel hero",
       "sessionIris": "{{.*}}",
@@ -26,8 +29,11 @@
       "campaignCode": "{{.*}}"
     },
     {
+      "businessUnit": "home & browse",
       "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
       "item_list": "{{.*}}",
+      "screenName": "/",
       "event": "view_item_list",
       "userId" : "{{.*}}",
       "eventAction": "impression on product dynamic channel hero",

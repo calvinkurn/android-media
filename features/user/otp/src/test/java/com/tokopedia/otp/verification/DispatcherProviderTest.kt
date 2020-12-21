@@ -1,6 +1,6 @@
 package com.tokopedia.otp.verification
 
-import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.common.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

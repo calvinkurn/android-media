@@ -1,18 +1,24 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
+import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
+
+private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
@@ -31,7 +37,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `Test get initial state data`() {
+    fun `Test get initial state data without see more button`() {
         `Test Initial State Data`(initialStateCommonData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
@@ -57,15 +63,41 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         Assert.assertTrue(visitableList[7] is DynamicInitialStateSearchViewModel)
         Assert.assertTrue(visitableList.size == 8)
 
-        `Then verify RecentSearchViewModel only have 3 items`(visitableList[3] as RecentSearchViewModel)
+        `Then verify RecentSearchViewModel only have n items`(3, visitableList[3] as RecentSearchViewModel)
     }
 
-    private fun `Then verify RecentSearchViewModel only have 3 items`(viewModel: RecentSearchViewModel) {
-        assert(viewModel.list.size == 3) {
-            "RecentSearchViewModel should only have 3 items, actual size is ${viewModel.list.size}"
+    private fun `Then verify RecentSearchViewModel only have n items`(expectedRecentSearchSize: Int, viewModel: RecentSearchViewModel) {
+        assert(viewModel.list.size == expectedRecentSearchSize) {
+            "RecentSearchViewModel should only have $expectedRecentSearchSize items, actual size is ${viewModel.list.size}"
         }
     }
 
+    @Test
+    fun `Test get initial state data with see more button`() {
+        val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        `Test Initial State Data`(initialStateData)
+
+        `Then verify initial state view will call showInitialStateResult behavior`()
+        `Then verify visitable list has SeeMoreViewModel`()
+    }
+
+    private fun `Then verify visitable list has SeeMoreViewModel`() {
+        val visitableList = slotVisitableList.captured
+
+        Assert.assertTrue(visitableList[0] is CuratedCampaignViewModel)
+        Assert.assertTrue(visitableList[1] is RecentViewTitleViewModel)
+        Assert.assertTrue(visitableList[2] is RecentViewViewModel)
+        Assert.assertTrue(visitableList[3] is RecentSearchTitleViewModel)
+        Assert.assertTrue(visitableList[4] is RecentSearchViewModel)
+        Assert.assertTrue(visitableList[5] is RecentSearchSeeMoreViewModel)
+        Assert.assertTrue(visitableList[6] is PopularSearchTitleViewModel)
+        Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
+        Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
+        Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(visitableList.size == 10)
+
+        `Then verify RecentSearchViewModel only have n items`(3, visitableList[4] as RecentSearchViewModel)
+    }
 
     @Test
     fun `Test fail to get initial state data`() {

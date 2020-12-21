@@ -102,7 +102,7 @@
                             app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
 
-                        <com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+                        <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
                             android:id="@+id/autoads_edit_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -153,6 +153,7 @@
                     app:tabIndicatorColor="@color/topads_common_tab_green"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/Green_G500"
+                    app:tabTextAppearance="@style/tabTopAdsStyle"
                     app:tabTextColor="@color/font_black_disabled_38" />
 
             </com.google.android.material.appbar.AppBarLayout>

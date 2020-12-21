@@ -25,9 +25,9 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
 
     override fun bind(filter: FilterV2) {
         filterName  = filter.name
-        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName, filter.optionSelected.toMutableList())
 
         with(itemView) {
+            base_rating_step.removeAllViews()
             hotel_filter_selection_range_title.text = filter.displayName
             hotel_filter_selection_range_seekbar.max = filter.options.size - 1
 
@@ -78,13 +78,6 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                 override fun onStopTrackingTouch(p0: SeekBar?) {}
 
             })
-        }
-    }
-
-    override fun resetSelection() {
-        onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
-        with(itemView) {
-            hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
         }
     }
 

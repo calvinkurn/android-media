@@ -6,6 +6,7 @@
     android:minHeight="@dimen/spacing_lvl8">
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerUnify2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +20,7 @@
         android:layout_marginLeft="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_14"
         android:text="@string/label_add_product_variant"
-        android:textColor="@android:color/black"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
@@ -28,11 +29,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_start_add_edit_product_variant"
+        android:contentDescription="@string/content_desc_tv_start_add_edit_product_variant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/action_change"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/tv_product_variant"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_product_variant"
@@ -40,52 +42,17 @@
         app:typographyWeight="reguler"
         android:layout_marginEnd="@dimen/dp_16" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/add_product_variant_tips_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl7"
-        android:layout_marginStart="@dimen/dp_1"
-        android:layout_marginLeft="@dimen/dp_1"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/dp_12"
-        android:background="@drawable/yellow_y100_rounded_corner"
-        android:visibility="visible"
+        app:text="@string/preview_label_add_product_variant_tips"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_start_add_edit_product_variant">
-
-        <ImageView
-            android:id="@+id/iv_tips_bulb"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/product_add_edit_ic_tips_bulb" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_variant_tips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginBottom="@dimen/dp_11"
-            android:text="@string/preview_label_add_product_variant_tips"
-            android:textColor="@color/container_help_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/iv_tips_bulb"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/tv_start_add_edit_product_variant"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

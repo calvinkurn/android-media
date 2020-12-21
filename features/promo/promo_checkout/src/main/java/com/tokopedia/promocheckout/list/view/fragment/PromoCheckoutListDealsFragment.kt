@@ -54,7 +54,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
             textInputCoupon.setText(promoCodeApplied)
         }
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
     override fun onPromoCodeUse(promoCode: String) {

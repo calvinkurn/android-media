@@ -1,0 +1,11 @@
+query registerPushnotif($publicKey: String!, $signature: String!, $datetime: String!) {
+  RegisterPushnotif(
+    publicKey: $publicKey
+    signature: $signature
+    datetime: $datetime
+  ){
+    success
+    errorMessage
+    message
+  }
+}

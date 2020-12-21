@@ -1,5 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -11,8 +14,30 @@ import com.tokopedia.usecase.coroutines.UseCase
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     var params: RequestParams = RequestParams.EMPTY
+    var isFirstLoad: Boolean = true
+    protected var cacheStrategy: GraphqlCacheStrategy = getCacheFirstCacheStrategy()
 
     inline fun <reified T> GraphqlResponse.getData(): T {
         return this.getData(T::class.java)
+    }
+
+    private fun getCacheFirstCacheStrategy(): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .build()
+    }
+
+    private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
+        return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .build()
+    }
+
+    fun setUseCache(useCache: Boolean) {
+        cacheStrategy = if (useCache) {
+            getCacheOnlyCacheStrategy()
+        } else {
+            getCacheFirstCacheStrategy()
+        }
     }
 }

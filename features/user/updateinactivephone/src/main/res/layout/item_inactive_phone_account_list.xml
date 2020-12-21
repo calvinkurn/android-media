@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clickable="true"
+  android:focusable="true"
+  android:layout_marginLeft="@dimen/layout_lvl2"
+  android:layout_marginTop="@dimen/layout_lvl1"
+  android:layout_marginRight="@dimen/layout_lvl2"
+  android:layout_marginBottom="@dimen/layout_lvl1">
+  
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/mainView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selectable_background_tokopedia">
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+      android:id="@+id/imgAvatar"
+      android:layout_width="@dimen/updateinactivephone_50dp"
+      android:layout_height="@dimen/updateinactivephone_50dp"
+      android:layout_margin="@dimen/layout_lvl2"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+    
+    <LinearLayout
+      android:layout_width="@dimen/layout_lvl0"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/updateinactivephone_20dp"
+      android:layout_marginBottom="@dimen/updateinactivephone_20dp"
+      android:layout_marginStart="@dimen/layout_lvl2"
+      android:layout_marginEnd="@dimen/updateinactivephone_20dp"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="@+id/mainView"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+      app:layout_constraintTop_toTopOf="@+id/mainView">
+      
+      <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/fontSize_lvl10"
+        android:maxLines="1"
+        android:textColor="@color/dark_N0"
+        android:textSize="@dimen/fontSize_lvl4"
+        app:typographyType="body_1"
+        app:typographyWeight="bold" />
+      
+      <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/updateinactivephone_4dp"
+        android:lineSpacingExtra="@dimen/updateinactivephone_6sp"
+        android:textColor="@color/dark_N300"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler" />
+    
+    </LinearLayout>
+  
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

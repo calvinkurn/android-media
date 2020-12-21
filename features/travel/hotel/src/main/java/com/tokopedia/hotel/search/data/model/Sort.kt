@@ -10,5 +10,5 @@ data class Sort(
 
         @SerializedName("displayName")
         @Expose
-        val displayName: String = ""
+        var displayName: String = ""
 )

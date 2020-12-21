@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
-import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel
@@ -98,20 +98,24 @@ class SellerMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            val getShopInfo = async (dispatchers.io) {
-                val response = getAllShopInfoUseCase.executeOnBackground()
+            val getShopInfo = withContext(dispatchers.io) {
+                async {
+                    val response = getAllShopInfoUseCase.executeOnBackground()
 
-                if (response.first is PartialSettingSuccessInfoType || response.second is PartialSettingSuccessInfoType) {
-                    SettingShopInfoUiModel(response.first, response.second, userSession)
-                } else {
-                    throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
+                    if (response.first is PartialSettingSuccessInfoType || response.second is PartialSettingSuccessInfoType) {
+                        SettingShopInfoUiModel(response.first, response.second, userSession)
+                    } else {
+                        throw MessageErrorException(ERROR_EXCEPTION_MESSAGE)
+                    }
                 }
             }
 
-            val getShopScore = async(dispatchers.io) {
-                val shopId = userSession.shopId
-                val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
-                getShopScoreUseCase.createObservable(requestParams).toBlocking().first()
+            val getShopScore = withContext(dispatchers.io) {
+                async {
+                    val shopId = userSession.shopId
+                    val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
+                    getShopScoreUseCase.getData(requestParams)
+                }
             }
 
             val shopInfoResponse = getShopInfo.await()

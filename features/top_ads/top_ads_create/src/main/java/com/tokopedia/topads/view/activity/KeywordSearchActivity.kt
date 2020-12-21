@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -99,10 +100,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager, KeywordAdsListFragment::class.java.name)
         }
-        emptyLayout.ic_tip.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
-        emptyLayout.imageView2.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView3.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView4.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+
+        emptyLayout.ic_tip.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         btn_next.setOnClickListener {
             val eventLabel = "$shopID - $EVENT_CLICK_SUBMIT_BUTT"
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTT, eventLabel, userID)
@@ -149,7 +151,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         manualAd.visibility = View.GONE
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
             adapter.items.clear()
-            txtError.text = validateKeyword(search.searchBarTextField.text.toString().trim())
+            txtError.text = Utils.validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
             if (txtError.text.isNotEmpty()) {
                 setEmpty(true)
                 txtError.visibility = View.VISIBLE
@@ -159,18 +161,6 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
                 viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
                         ?: "", ::onSuccessSearch)
             }
-        }
-    }
-
-    private fun validateKeyword(text: CharSequence?): CharSequence? {
-        return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
-            getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
-            getString(R.string.error_keyword)
-        } else if (text!!.length > 50) {
-            getString(R.string.error_max_length)
-        } else {
-            null
         }
     }
 

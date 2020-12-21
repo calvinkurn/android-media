@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeResultUiModel
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.bottomsheet_autocomplete_item.view.*
 
 /**
@@ -48,7 +49,7 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
             placeId = dataAutocomplete[position].placeId
         }
 
-        holder.itemView.place_name.text = placeName
+        TextAndContentDescriptionUtil.setTextAndContentDescription(holder.itemView.place_name, placeName, holder.itemView.place_name.context.getString(R.string.content_desc_place_name))
         holder.itemView.place_address.text = placeAddress
         holder.itemView.rl_autocomplete_item.setOnClickListener {
             println("## MASUK ONCLICK - placeID : $placeId")

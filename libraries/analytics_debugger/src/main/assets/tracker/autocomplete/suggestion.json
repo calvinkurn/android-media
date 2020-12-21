@@ -6,42 +6,42 @@
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - shop - carousel",
-      "eventLabel": "{{.* - keyword: .*}}",
+      "eventLabel": "{{.+ - keyword: .+}}",
       "sessionIris": "{{.*}}"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - lihat toko lainnya - carousel",
-      "eventLabel": "{{keyword: .*}}",
+      "eventLabel": "{{keyword: .+}}",
       "sessionIris": "{{.*}}"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - homepage",
       "eventAction": "click - recent search autocomplete",
-      "eventLabel": "{{.*}}",
+      "eventLabel": "{{.+}}",
       "sessionIris": "{{.*}}"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav",
       "eventAction": "click - shop autocomplete",
-      "eventLabel": "{{.* - keyword: .* - shop: .*}}",
+      "eventLabel": "{{.+ - keyword: .+ - shop: .+}}",
       "sessionIris": "{{.*}}"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav",
       "eventAction": "click - product autocomplete",
-      "eventLabel": "{{keyword: .* - value: .* - po: .* - applink: .*}}",
+      "eventLabel": "{{keyword: .+ - value: .+ - po: .+ - applink: .+}}",
       "sessionIris": "{{.*}}"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav - /",
       "eventAction": "click - digital product suggestion",
-      "eventLabel": "{{keyword: .* - product: .* - po: .* - page: .*}}",
+      "eventLabel": "{{keyword: .+ - product: .+ - po: .+ - page: .+}}",
       "campaignCode": "{{.*}}",
       "sessionIris": "{{.*}}"
     },
@@ -49,7 +49,27 @@
       "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "click - search",
-      "eventLabel": "{{.*}}",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete local",
+      "eventLabel": "{{keyword: .+ - value: .+ - applink: .+ - campaign: .+}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "search",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete global",
+      "eventLabel": "{{keyword: .+ - value: .+ - applink: .+}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "search",
       "sessionIris": "{{.*}}"
     }
   ]

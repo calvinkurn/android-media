@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -28,6 +30,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
+import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
@@ -41,14 +49,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.logisticdata.util.toCompositeSubs
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import rx.Subscriber
@@ -83,10 +86,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var continueWithLocation: Boolean? = false
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
+    private var isGpsEnable: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -108,7 +113,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -137,6 +141,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         private const val ADDRESS_KONSLET = "tokopedia_konslet.png"
         private const val ADDRESS_OUT_OF_INDONESIA = "tokopedia_out_of_indonesia.png"
         private const val ADDRESS_INVALID = "ic_invalid_location.png"
+        private const val ZOOM_LEVEL = 16f
 
     }
 
@@ -172,6 +177,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
         presenter.autoFill(currentLat, currentLong, zoom)
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -231,29 +237,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                googleMap?.isMyLocationEnabled = true
-                            }
-
-                        },
-                        it.getString(R.string.rationale_need_location))
+                requestLocation()
             } else {
                 googleMap?.isMyLocationEnabled = true
             }
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -308,7 +299,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             }, 500)
         }
 
-        var zoomLevel = 16f
+        var zoomLevel = ZOOM_LEVEL
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
@@ -319,7 +310,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(zoomLevel)
@@ -331,19 +322,37 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            presenter.requestLocation(requireActivity())
-        }
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
+            isGpsEnable = false
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
+        }
+        getLastLocationClient()
+    }
+
+    private fun getLastLocationClient() {
+        if (!isGpsEnable && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            SimpleIdlingResource.increment()
+            Handler().postDelayed({
+                SimpleIdlingResource.decrement()
+                showAutoCompleteBottomSheet("")
+            }, 200)
+        } else {
+            fusedLocationClient?.lastLocation
+                    ?.addOnSuccessListener {
+                        if (it != null) {
+                            showAutoComplete(it.latitude, it.longitude)
+                        } else {
+                            showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)
+                        }
+                    }
         }
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            activity?.let { presenter.requestLocation(it) }
+            requestLocation()
         } else {
             showLocationInfoBottomSheet(isFullFlow)
         }
@@ -391,7 +400,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
                     currentLat = getDistrictDataUiModel.latitude.toDouble()
                     currentLong = getDistrictDataUiModel.longitude.toDouble()
-                    moveMap(getLatLng(currentLat, currentLong))
+                    moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                     showNotFoundLocation()
                 } else {
                     doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
@@ -406,7 +415,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
@@ -813,6 +822,28 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
             override fun afterTextChanged(text: Editable) {
             }
+        }
+    }
+
+    private fun requestLocation() {
+        activity?.let {
+            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)  }
+                        permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                    }
+
+                    override fun onPermissionGranted() {
+                        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                        googleMap?.isMyLocationEnabled = true
+                    }
+
+                }, it.getString(R.string.rationale_need_location))
         }
     }
 

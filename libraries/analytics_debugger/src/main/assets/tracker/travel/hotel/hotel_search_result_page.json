@@ -1,0 +1,131 @@
+{
+  "readme": "Hotel Search Result Page Tracking with Priority P0 & P1",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": "{{.+}}",
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.+}}",
+      "currentSite": "tokopediadigitalhotel",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "/hotel/searchresult",
+      "category": "hotel",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - native",
+      "eventAction": "view hotel list impression",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "item_list": "/hotel/",
+      "category": "hotel",
+      "items": [ {
+        "item_id": "{{.+}}",
+        "price": "{{.+}}",
+        "dimension40": "/hotel/",
+        "index": "{{.+}}",
+        "item_name": "{{.+}}",
+        "item_brand":  "none / other",
+        "item_variant": "{{.+}}",
+        "item_category": "Hotel"
+      }
+      ]
+    }, {
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click change on search result page",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    }, {
+      "networkSpeed": "{{.+}}",
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.+}}",
+      "currentSite": "tokopediadigitalhotel",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "/hotel/changesearch",
+      "category": "hotel",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click search hotel on change search page",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/changesearch",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    }, {
+      "event": "select_content",
+      "eventCategory": "digital - native",
+      "eventAction": "choose hotel",
+      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+ - .+}}",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "item_list": "/hotel/",
+      "category": "hotel",
+      "items": [ {
+        "item_id": "{{.+}}",
+        "price": "{{\\d*.\\d*}}",
+        "dimension40": "/hotel/",
+        "index": "{{.+}}",
+        "item_name": "{{.+}}",
+        "item_brand":  "none / other",
+        "item_variant": "{{.+}}",
+        "item_category": "Hotel"
+      }
+      ]
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "user click filter",
+      "eventLabel": "{{hotel - .+ - .+}}",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },
+    {
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click quick filter on search result page",
+      "eventLabel": "{{hotel - .+ - .+}}",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": "{{.+}}",
+      "sessionIris": "{{.+}}",
+      "userId": "{{.*}}",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    }
+  ]
+}

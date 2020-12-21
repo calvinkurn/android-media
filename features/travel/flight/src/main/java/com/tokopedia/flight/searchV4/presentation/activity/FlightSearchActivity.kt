@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -196,6 +195,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         imageView.setImage(R.drawable.ic_flight_edit, CORNER_RADIUS)
 
         wrapper.addView(imageView)
+        wrapper.tag = TAG_CHANGE_BUTTON
         wrapper.setOnClickListener {
             showChangeSearchBottomSheet()
         }
@@ -322,14 +322,17 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
-        Toaster.make(findViewById(parentViewResourceID), getString(stringResourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay))
-        NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
+        Toaster.build(findViewById(parentViewResourceID), getString(stringResourceId),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)).show()
     }
 
     companion object {
         const val TAG_CHANGE_COACH_MARK = "TagChangeSearchCoachMark"
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
         const val EXTRA_SEARCH_FROM_WIDGET = "EXTRA_SEARCH_FROM_WIDGET"
+
+        private const val TAG_CHANGE_BUTTON = "TagChangeSearchButton"
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11

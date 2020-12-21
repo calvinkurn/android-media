@@ -106,10 +106,10 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         shop_last_active.text = MethodChecker.fromHtml(lastActive)
         if (lastActive == context.getString(R.string.shop_online)) {
             shop_last_active.setWeight(Typography.BOLD)
-            shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.g_500))
+            shop_last_active.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
             shop_last_active.setType(Typography.BODY_3)
-            shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
+            shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.Unify_N700_68))
         }
     }
 

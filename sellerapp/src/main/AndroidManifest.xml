@@ -27,6 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         tools:replace="android:icon,android:label,android:hasCode,android:roundIcon,android:allowBackup">
         <activity
             android:name=".SplashScreenActivity"
@@ -86,9 +87,6 @@
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
-        <meta-data
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
         <meta-data
@@ -106,6 +104,17 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLE_API_KEY_SA" />
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="GJPFWEGF6PLIR6Y7EIBONHPG4"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="0II3AMNFRMI3N0G0EO8D1RJZKR40KCEYTW8Y31BBGZTBCHQDI0"
+            tools:replace="android:value" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -257,6 +266,18 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.sellerapp.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
     </application>
 </manifest>

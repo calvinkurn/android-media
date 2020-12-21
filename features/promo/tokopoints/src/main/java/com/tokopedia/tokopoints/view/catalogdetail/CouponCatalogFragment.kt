@@ -74,6 +74,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     var textUserPoint: Typography? = null
     var code: String? = null
     var userPoints: String? = null
+    private var menu:Menu?=null
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -96,6 +97,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu=menu
         inflater.inflate(R.menu.menu_coupon_catalog, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -138,11 +140,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         addRedeemCouponObserver()
     }
 
-    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
             is ValidationError<*, *> -> {
@@ -153,17 +155,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it) }
     })
 
-    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             checkValidation(it.item, it.title, it.desc, it.messageCode)
         }
     })
 
-    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
@@ -173,7 +175,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
@@ -224,22 +226,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun showError(hasInternet: Boolean) {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
         mContainerMain!!.displayedChild = CONTAINER_ERROR
         serverErrorView!!.showErrorUi(hasInternet)
     }
 
     private fun showCouponError() {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
         container?.displayedChild = CONTAINER_COUPON_ERROR
         btnError.setOnClickListener {
             RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
         }
-        invalidateOptionsMenu(activity)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        val registrar = menu.findItem(R.id.action_menu_share)
-        registrar.isVisible = false
-        return
     }
 
     override fun hideLoader() {
@@ -321,7 +322,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         alertDialog.show()
     }
 
-    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int){
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int){
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -393,7 +394,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         decorateDialog(dialog)
     }
 
-    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    override fun checkValidation(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
        if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
            mViewModel.startSaveCoupon(item)
            AnalyticsTrackerUtil.sendEvent(context,
@@ -528,29 +529,29 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
         val tncSeeMore: Typography = view!!.findViewById(R.id.tnc_see_more)
         val howToUseSeeMore: Typography = view!!.findViewById(R.id.how_to_use_see_more)
-        tvTnc.loadData(getLessDisplayData(data.tnc, tncSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tvHowToUse.loadData(getLessDisplayData(data.howToUse, howToUseSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tncSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.tnc, getString(R.string.tnc_coupon_catalog)) }
-        howToUseSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.howToUse, getString(R.string.how_to_use_coupon_catalog)) }
+        tvTnc.loadData(data.tnc?.let { getLessDisplayData(it, tncSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        tvHowToUse.loadData(data.howToUse?.let { getLessDisplayData(it, howToUseSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        tncSeeMore.setOnClickListener { v: View? -> data.tnc?.let { loadWebViewInBottomsheet(it, getString(R.string.tnc_coupon_catalog)) } }
+        howToUseSeeMore.setOnClickListener { v: View? -> data.howToUse?.let { loadWebViewInBottomsheet(it, getString(R.string.how_to_use_coupon_catalog)) } }
         val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         //Quota text handling
-        if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
+        if (data.upperTextDesc.isNullOrEmpty()) {
             quota.visibility = View.GONE
         } else {
             quota.visibility = View.VISIBLE
             val upperText = StringBuilder()
-            for (i in data.upperTextDesc.indices) {
+            for (i in data.upperTextDesc!!.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
+                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc!![i] + "</font>")
                 } else {
-                    upperText.append(data.upperTextDesc[i]).append(" ")
+                    upperText.append(data.upperTextDesc!![i]).append(" ")
                 }
             }
             quota.text = MethodChecker.fromHtml(upperText.toString())
         }
         //Quota text handling
-        if (data.disableErrorMessage == null || data.disableErrorMessage.isEmpty()) {
+        if (data.disableErrorMessage.isNullOrEmpty()) {
             disabledError.visibility = View.GONE
         } else {
             disabledError.visibility = View.VISIBLE
@@ -659,7 +660,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {
+    override fun gotoSendGiftPage(id: Int, title: String?, pointStr: String?, banner: String?) {
         val bundle = Bundle()
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id)
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title)
@@ -668,6 +669,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val sendGiftFragment = SendGiftFragment()
         sendGiftFragment.arguments = bundle
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    private fun setMenuVisibility(menu: Menu , isMenuVisible: Boolean){
+            val menuItem = menu.findItem(R.id.action_menu_share)
+            menuItem?.isVisible = isMenuVisible
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

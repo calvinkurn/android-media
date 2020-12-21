@@ -3,10 +3,8 @@ package com.tokopedia.recharge_credit_card.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
-import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -27,7 +25,6 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -101,8 +98,10 @@ class RechargeCCModule {
     @Provides
     @RechargeCCScope
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: AbstractionRouter): DigitalInterceptor {
-        return DigitalInterceptor(context, networkRouter)
+                                  networkRouter: NetworkRouter,
+                                  userSession: UserSessionInterface
+    ): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @Provides

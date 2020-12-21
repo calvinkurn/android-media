@@ -1,0 +1,66 @@
+[
+  {
+    "data": {
+      "recharge_favorite_number": {
+        "list": [
+          {
+            "client_number": "087855813789",
+            "label": "Tes2",
+            "product_id": 30,
+            "operator_id": 5,
+            "category_id": 1
+          },
+          {
+            "client_number": "08121111111",
+            "label": "Tes",
+            "product_id": 70,
+            "operator_id": 12,
+            "category_id": 1
+          },
+          {
+            "client_number": "08121111112",
+            "label": "",
+            "product_id": 68,
+            "operator_id": 12,
+            "category_id": 1
+          },
+          {
+            "client_number": "0811111111111",
+            "label": "",
+            "product_id": 70,
+            "operator_id": 12,
+            "category_id": 1
+          },
+          {
+            "client_number": "081911111111",
+            "label": "",
+            "product_id": 1137,
+            "operator_id": 5,
+            "category_id": 1
+          },
+          {
+            "client_number": "087786807105",
+            "label": "",
+            "product_id": 31,
+            "operator_id": 5,
+            "category_id": 1
+          },
+          {
+            "client_number": "087889514776",
+            "label": "",
+            "product_id": 30,
+            "operator_id": 5,
+            "category_id": 1
+          },
+          {
+            "client_number": "081908878591",
+            "label": "",
+            "product_id": 32,
+            "operator_id": 5,
+            "category_id": 1
+          }
+        ]
+      }
+    }
+  }
+]

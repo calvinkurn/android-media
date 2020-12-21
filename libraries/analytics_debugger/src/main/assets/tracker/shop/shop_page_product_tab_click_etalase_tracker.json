@@ -1,0 +1,26 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click etalase list",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{etalase (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click etalase (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    }
+  ]
+}

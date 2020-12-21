@@ -1,0 +1,27 @@
+{
+  "readme": "Recharge general template",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click promo tab",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click salin promo digital",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from favorite number",
+      "eventLabel": "{{.+ - .+}}",
+      "sessionIris": "{{.+}}"
+    }
+  ]
+}

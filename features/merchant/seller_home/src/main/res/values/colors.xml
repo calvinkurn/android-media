@@ -7,4 +7,7 @@
     <color name="sah_color_ebffef">#ebffef</color>
 
     <color name="setting_grey_pale">#5231353B</color>
+
+    <color name="color_active_bottom_nav">#00AA5B</color>
+    <color name="color_bottom_nav_btn">#525A67</color>
 </resources>

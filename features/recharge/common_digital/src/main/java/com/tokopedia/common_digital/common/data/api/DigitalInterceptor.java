@@ -4,12 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.common_digital.common.data.api.exception.DigitalError;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,13 +22,15 @@ import okhttp3.Response;
 /**
  * Created by Rizky on 16/08/18.
  */
-public class DigitalInterceptor extends com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor {
+public class DigitalInterceptor extends TkpdAuthInterceptor {
 
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
     private Context context;
 
-    public DigitalInterceptor(Context context, AbstractionRouter abstractionRouter) {
-        super(context, abstractionRouter);
+    public DigitalInterceptor(@ApplicationContext Context context,
+                              NetworkRouter networkRouter,
+                              UserSessionInterface userSessionInterface) {
+        super(context, networkRouter, userSessionInterface, AuthUtil.KEY.KEY_WSV4);
         this.context = context;
     }
 

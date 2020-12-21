@@ -203,14 +203,20 @@
                 android:background="@color/thank_divider_color"
                 app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
 
-            <LinearLayout
+            <com.tokopedia.thankyou_native.presentation.views.GyroView
+                android:id="@+id/featureListingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
+
+            <com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
+                app:layout_constraintTop_toBottomOf="@id/featureListingContainer" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

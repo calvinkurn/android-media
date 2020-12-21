@@ -28,7 +28,6 @@ class UploaderUseCase @Inject constructor(
 ) : BaseUseCase<RequestParams, UploadResult>() {
 
     private var progressCallback: ProgressCallback? = null
-    private val ERROR_MAX_LENGTH = 1500
 
     override suspend fun execute(params: RequestParams): UploadResult {
         if (params.parameters.isEmpty()) throw Exception("Not param found")
@@ -37,8 +36,7 @@ class UploaderUseCase @Inject constructor(
         val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
 
         return try {
-            val sourcePolicy = mediaPolicy(sourceId)
-            preValidation(fileToUpload, sourcePolicy) {
+            preValidation(fileToUpload, sourceId) { sourcePolicy ->
                 postMedia(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
@@ -53,7 +51,12 @@ class UploaderUseCase @Inject constructor(
                     e !is CancellationException) {
                 Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
             }
-            UploadResult.Error(NETWORK_ERROR)
+            // check whether media source is valid
+            return if (isSourceMediaNotFound(e)) {
+                UploadResult.Error(SOURCE_NOT_FOUND)
+            } else {
+                UploadResult.Error(NETWORK_ERROR)
+            }
         }
     }
 
@@ -81,15 +84,23 @@ class UploaderUseCase @Inject constructor(
         return upload.data?.let {
             UploadResult.Success(it.uploadId)
         }?: UploadResult.Error(
-                upload.header.messages.first()
+                if (upload.header.messages.isNotEmpty()) {
+                    upload.header.messages.first()
+                } else {
+                    UNKNOWN_ERROR // error handling, when server returned empty error message
+                }
         )
     }
 
     private suspend fun preValidation(
             fileToUpload: File,
-            sourcePolicy: SourcePolicy,
-            onUpload: suspend () -> UploadResult
+            sourceId: String,
+            onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
     ): UploadResult {
+        // sourceId empty validation
+        if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
+
+        val sourcePolicy = mediaPolicy(sourceId)
         val filePath = fileToUpload.path // file full path
         val extensions = sourcePolicy.imagePolicy
                 .extension
@@ -100,8 +111,13 @@ class UploaderUseCase @Inject constructor(
             !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
                     "Format file: ${sourcePolicy.imagePolicy.extension}"
             )
-            else -> onUpload()
+            else -> onUpload(sourcePolicy)
         }
+    }
+
+    private fun isSourceMediaNotFound(exception: Exception): Boolean {
+        val exceptionMessage = exception.message.orEmpty()
+        return exceptionMessage.startsWith(ERROR_SOURCE_NOT_FOUND)
     }
 
     /**
@@ -123,13 +139,20 @@ class UploaderUseCase @Inject constructor(
     }
 
     companion object {
+        const val ERROR_MAX_LENGTH = 1500
+
         // key of params
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
+
+        // const error validation
+        const val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
 
         // const local error message
         const val TIMEOUT_ERROR = "Request timeout, silakan coba kembali beberapa saat lagi"
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
         const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
+        const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
+        const val UNKNOWN_ERROR = "Upload gagal, silakan coba kembali beberapa saat lagi"
     }
 }

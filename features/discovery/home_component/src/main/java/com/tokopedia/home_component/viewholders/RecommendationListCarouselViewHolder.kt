@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -27,6 +28,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,9 +63,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         setViewportImpression(element)
 
+        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+            override fun onSeeAllClick(link: String) {
+                listCarouselListener?.onRecommendationSeeMoreClick(element.channelModel, link)
+            }
+
+            override fun onChannelExpired(channelModel: ChannelModel) {}
+        })
+
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, R.color.Neutral_N50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, R.color.Unify_N50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
@@ -229,7 +239,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
                                 hasAddToCartButton = recommendation.grid.hasBuyButton,
-                                isTopAds = recommendation.isTopAds
+                                isTopAds = recommendation.isTopAds,
+                                isOutOfStock = recommendation.grid.isOutOfStock,
+                                ratingCount = recommendation.grid.rating,
+                                reviewCount = recommendation.grid.countReview,
+                                countSoldRating = recommendation.grid.ratingFloat
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)

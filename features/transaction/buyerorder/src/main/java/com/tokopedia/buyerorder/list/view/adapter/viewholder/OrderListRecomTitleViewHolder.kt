@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleUiModel
 
-class OrderListRecomTitleViewHolder(itemView: View?) : AbstractViewHolder<OrderListRecomTitleViewModel>(itemView) {
+class OrderListRecomTitleViewHolder(itemView: View?) : AbstractViewHolder<OrderListRecomTitleUiModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -15,7 +15,7 @@ class OrderListRecomTitleViewHolder(itemView: View?) : AbstractViewHolder<OrderL
     }
     private var title = itemView?.findViewById<TextView>(R.id.title)
 
-    override fun bind(element: OrderListRecomTitleViewModel) {
+    override fun bind(element: OrderListRecomTitleUiModel) {
         title?.text = element.title
     }
 }

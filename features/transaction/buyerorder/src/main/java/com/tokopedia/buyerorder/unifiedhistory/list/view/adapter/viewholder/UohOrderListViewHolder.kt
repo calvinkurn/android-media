@@ -107,7 +107,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
 
             if (item.dataObject.metadata.dotMenus.isNotEmpty()) {
                 itemView.iv_kebab_menu?.setOnClickListener {
-                    actionListener?.onKebabMenuClicked(item.dataObject)
+                    actionListener?.onKebabMenuClicked(item.dataObject, position)
                 }
             }
 

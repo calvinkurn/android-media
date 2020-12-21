@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_order_list">Daftar Transaksi</string>
+    <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
     <string name="event_ticket_voucher_number">E-Voucher</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
@@ -35,12 +35,10 @@
     <string name="additional_text">Detail Periode</string>
     <string name="tkpdtransaction_bebas_ongkir">Bebas Ongkir</string>
     <string name="bom_check_cart">Lihat</string>
-    <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
+    <string name="contact_us_text">Butuh bantuan? Hubungi Tokopedia Care</string>
     <string name="label_shop_title">Toko: </string>
     <string name="contact_us_applink">https://www.tokopedia.com/help</string>
     <string name="help_text">disini</string>
-    <color name="subtitle_gray_color">#ae31353b</color>
-    <color name="title_gray_color">#f531353b</color>
     <string name="text_redeem_voucher">Redeem Voucher</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
     <string name="event_voucher_code_copied">Detail pembelian sudah dikirim ulang ke e-mail yang terdaftar di akun ini.</string>
@@ -434,9 +432,6 @@ Anda di sini.</string>
     <string name="title_other_reason">Lainnya</string>
     <string name="error_note_empty">Catatan harus diisi</string>
 
-    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
-    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
-
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="store_name_placeholder">Store Name 24 Character</string>
     <string name="invoice_placeholder">INV/20161025/XVI/X/55069657</string>
@@ -506,6 +501,7 @@ Anda di sini.</string>
     <string name="btn_send_email_label">Kirim</string>
     <string name="toaster_succeed_send_email">Hore! E-mail berhasil dikirim.</string>
     <string name="toaster_failed_send_email">E-mail gagal dikirim, coba kirim ulang ya</string>
+    <string name="img_content_desc">img_content_desc</string>
 
     <string name="ticker_info_selengkapnya">
         <![CDATA[
@@ -516,4 +512,9 @@ Anda di sini.</string>
         </html>
         ]]>
     </string>
+
+    <string name="banner_deals_main_title">Hai %s,</string>
+    <string name="banner_deals_coachmark_sub_title">Setelah redeem, jangan lupa klik ini. Ada promo spesial menantimu!</string>
+    <string name="banner_deals_coachmark_title">Wow, ada yang seru nih!</string>
+    <string name="contact_us_clickable_text">Hubungi Tokopedia Care</string>
 </resources>

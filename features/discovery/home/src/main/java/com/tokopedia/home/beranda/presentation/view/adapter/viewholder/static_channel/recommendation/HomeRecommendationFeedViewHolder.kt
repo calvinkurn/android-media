@@ -66,7 +66,6 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 if (tab.position < recommendationTabDataModelList!!.size) {
                     val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
                     HomePageTracking.eventClickOnHomePageRecommendationTab(
-                            context,
                             selectedFeedTabModel
                     )
                 }

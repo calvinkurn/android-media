@@ -8,18 +8,18 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="@dimen/spacing_lvl6"
         app:srcCompat="@drawable/invoice_empty_state" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_28"
-        android:paddingEnd="@dimen/dp_28"
+        android:paddingStart="@dimen/dp_28_attachinvoice"
+        android:paddingEnd="@dimen/dp_28_attachinvoice"
         android:text="@string/title_attachinvoice_empty_state"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2" />
 </LinearLayout>

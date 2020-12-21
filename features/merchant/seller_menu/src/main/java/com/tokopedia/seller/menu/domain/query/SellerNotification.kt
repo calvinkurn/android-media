@@ -10,7 +10,7 @@ internal object SellerMenuNotification {
      	            readyToShip
                 }
                 notifcenter_total_unread {
-                    notif_total_unread_seller
+                    notif_total_unread_seller_int
                 }
                 inbox {
                     talk

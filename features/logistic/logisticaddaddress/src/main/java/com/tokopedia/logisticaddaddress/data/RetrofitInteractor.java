@@ -1,9 +1,6 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
-
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 
 import java.util.Map;
 

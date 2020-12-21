@@ -22,7 +22,7 @@ public class BankListDataSourceLocal {
     private Context context;
 
     @Inject
-    public BankListDataSourceLocal(@ApplicationContext Context context) {
+    public BankListDataSourceLocal(Context context) {
         this.context = context;
     }
 

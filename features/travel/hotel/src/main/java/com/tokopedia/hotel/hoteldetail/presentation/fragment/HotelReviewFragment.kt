@@ -1,12 +1,12 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -57,7 +57,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        reviewViewModel.reviewResult.observe(this, Observer {
+        reviewViewModel.reviewResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> onErrorGetResult(it.throwable)
@@ -102,7 +102,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
                 getString(R.string.hotel_review_filter_second_rank),
                 getString(R.string.hotel_review_filter_third_rank)),
-                R.color.hotel_snackbar_border)
+                com.tokopedia.unifyprinciples.R.color.Unify_G300)
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip

@@ -8,7 +8,6 @@
     <string name="label_user_tokopoint">TokoPoints</string>
     <string name="label_user_voucher">Kupon Saya</string>
     <string name="label_user_tokomember">TokoMember</string>
-    <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
     <string name="title_tkpd_template_setting">Template Pembelian</string>
@@ -17,6 +16,7 @@
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
     <string name="title_privacy_setting">Kebijakan Privasi</string>
     <string name="title_help_center_setting">Tokopedia Care</string>
+    <string name="general_setting_title_account_setting_item">Akun</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
@@ -28,6 +28,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
@@ -41,9 +42,11 @@
     <string name="title_tokocard_setting">TokoSwipe</string>
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
-    <string name="title_credit_card_setting">Kartu Kredit</string>
+    <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
     <string name="title_debit_instant_setting">Debit Instan</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
+    <string name="title_account_setting">Atur Pembayaran</string>
+
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
@@ -227,13 +230,10 @@
     <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<strong>%1$s</strong>]]></string>
 
+    <string name="feedback_form">Feedback Form</string>
+
     <!--CONTENT DESC-->
-    <string name="content_desc_text_shop_name">text nama toko</string>
-    <string name="content_desc_image_shop">image logo toko</string>
-    <string name="content_desc_image_badge">image badge toko</string>
-    <string name="content_desc_text_desc">text menu status pesanan</string>
     <string name="content_desc_tv_add_product_title">text tambah produk</string>
-    <string name="content_desc_text_view_title">text menu</string>
 
 
     <string name="account_buyer">Akun Pembeli</string>

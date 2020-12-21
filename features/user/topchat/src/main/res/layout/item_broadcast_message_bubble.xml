@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bubble_broadcast_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_topchat_14"
+    android:layout_marginTop="@dimen/spacing_lvl1"
+    android:layout_marginEnd="@dimen/dp_topchat_14"
+    android:layout_marginBottom="@dimen/spacing_lvl1"
+    android:background="@drawable/bg_broadcast_bubble_receiver"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_topchat_1">
+
+    <com.tokopedia.topchat.chatroom.view.custom.BroadcastBannerImageView
+        android:id="@+id/iv_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
+        android:id="@+id/broadcast_merchant_voucher"
+        android:layout_width="@dimen/dp_topchat_270"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginLeft="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginRight="@dimen/dp_topchat_12"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:maxWidth="270dp"
+        android:paddingLeft="@dimen/dp_topchat_3"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/dp_topchat_3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:useShadow="true"
+        app:voucherShadowColor="@color/Unify_N700_20"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
+        android:id="@+id/rv_product_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        tools:layout_height="50dp"
+        tools:listitem="@layout/item_topchat_product_carousel_attachment"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+        android:id="@+id/broadcast_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:layout_gravity="end"
+        tools:layout_height="50dp"
+        tools:visibility="gone" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+        android:id="@+id/broadcast_fx_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
+        app:useMaxWidth="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_topchat_1"
+        android:background="@color/Unify_N75" />
+
+    <LinearLayout
+        android:id="@+id/ll_cta_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_broadcast_see_detail"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:paddingVertical="@dimen/dp_topchat_11">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/title_topchat_see_detail"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <ImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:srcCompat="@drawable/ic_green_chevron_right_16dp" />
+    </LinearLayout>
+
+</LinearLayout>

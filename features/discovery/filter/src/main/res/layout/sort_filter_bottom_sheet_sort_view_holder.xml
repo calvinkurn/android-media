@@ -10,7 +10,7 @@
         android:id="@+id/sortTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/title_sort_but"
         android:layout_marginTop="@dimen/dp_16"
         app:typographyType="heading_4"

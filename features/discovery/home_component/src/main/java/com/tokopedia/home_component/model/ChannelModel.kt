@@ -7,9 +7,14 @@ data class ChannelModel(
         val groupId: String,
         val type: String = "",
         var verticalPosition: Int = 0,
+        val contextualInfo: Int = 0,
+        val widgetParam: String = "",
+        val pageName: String = "",
         val channelHeader: ChannelHeader = ChannelHeader(),
         val channelBanner: ChannelBanner = ChannelBanner(),
         val channelConfig: ChannelConfig = ChannelConfig(),
         val trackingAttributionModel: TrackingAttributionModel = TrackingAttributionModel(),
-        val channelGrids: List<ChannelGrid>  = listOf()
+        val channelGrids: List<ChannelGrid>  = listOf(),
+        val name : String = "",
+        val layout: String = ""
 ): ImpressHolder()

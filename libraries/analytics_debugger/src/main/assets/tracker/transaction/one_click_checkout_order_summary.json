@@ -18,6 +18,7 @@
           "dimension53": "{{true|false}}",
           "dimension56": "{{\\d+}}",
           "dimension11": "{{\\d+}}",
+          "dimension12": "{{\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension14": "{{\\d+}}",
           "dimension58": "{{true|false}}",
@@ -36,7 +37,8 @@
           "dimension40": "{{.*}}",
           "dimension49": "",
           "dimension48": "{{\\d+}}",
-          "dimension16": "{{.*}}"
+          "dimension16": "{{.*}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",
@@ -79,7 +81,8 @@
           "dimension49": "",
           "dimension48": "{{\\d+}}",
           "dimension16": "{{.*}}",
-          "dimension12": "{{\\d+}}"
+          "dimension12": "{{\\d+}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",
