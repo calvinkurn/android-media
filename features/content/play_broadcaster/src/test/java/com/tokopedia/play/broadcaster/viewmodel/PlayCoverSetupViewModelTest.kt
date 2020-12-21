@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.max
 
 /**
  * Created by jegul on 29/09/20
