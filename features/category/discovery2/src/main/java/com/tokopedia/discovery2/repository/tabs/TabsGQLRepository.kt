@@ -7,8 +7,8 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 
 open class TabsGQLRepository : BaseRepository(), TabsRepository {
-    override suspend fun getDynamicTabData(componentId: String, pageIdentifier: String, rpcDiscoquery: Map<String, String?>?): DiscoveryResponse {
+    override suspend fun getDynamicTabData(componentId: String, pageIdentifier: String): DiscoveryResponse {
         return (getGQLData(GQL_COMPONENT,
-                DataResponse::class.java, getQueryMap(componentId, pageIdentifier, rpcDiscoquery), "componentInfo") as DataResponse).data
+                DataResponse::class.java, getQueryMap(componentId, pageIdentifier), "componentInfo") as DataResponse).data
     }
 }

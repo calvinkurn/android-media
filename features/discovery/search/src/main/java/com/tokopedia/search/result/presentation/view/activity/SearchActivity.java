@@ -291,6 +291,7 @@ public class SearchActivity extends BaseActivity
     private void setSearchNavigationToolbar(){
         if (searchNavigationToolbar == null) return;
 
+        searchNavigationToolbar.bringToFront();
         searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
         searchNavigationToolbar.setIcon(
                 new IconBuilder()
@@ -625,14 +626,26 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
 
-        if (isABTestNavigationRevamp) return;
-
-        showButtonCart();
+        if (isABTestNavigationRevamp) setSearchNavigationCartButton();
+        else showButtonCart();
     }
 
     @Override
     public boolean isAllowShake() {
         return false;
+    }
+
+    private void setSearchNavigationCartButton() {
+        if (userSession.isLoggedIn()) {
+            setSearchNavigationCartButtonCount();
+        }
+    }
+
+    private void setSearchNavigationCartButtonCount() {
+        if (searchNavigationToolbar == null) return;
+
+        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+        searchNavigationToolbar.setBadgeCounter(IconList.ID_CART, cartCount);
     }
 
     private void showButtonCart() {

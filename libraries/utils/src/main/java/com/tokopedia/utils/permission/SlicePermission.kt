@@ -8,25 +8,37 @@ import android.net.Uri
 import android.os.Build
 import android.service.voice.VoiceInteractionService
 import androidx.slice.SliceManager
+import timber.log.Timber
 
-object SlicePermission {
+class SlicePermission {
 
-    const val RECHARGE_SLICE_PERMISSION = "com.tokopedia.tkpd.recharge_slice"
-
-    @JvmStatic
-    fun initPermission(context: Context){
-        grantAssistantPermissions(context)
+    companion object {
+        const val RECHARGE_SLICE_AUTHORITY = "com.tokopedia.tkpd.recharge_slice"
+        const val SELLER_ORDER_AUTHORITY = "com.tokopedia.seller.action.slices"
     }
 
-    private fun grantAssistantPermissions(context: Context) {
-        getAssistantPackage(context)?.let { assistantPackage ->
-            val sliceProviderUri = Uri.Builder()
-                    .scheme(ContentResolver.SCHEME_CONTENT)
-                    .authority(RECHARGE_SLICE_PERMISSION)
-                    .build()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
+    fun initPermission(context: Context, authority: String){
+        grantAssistantPermissions(context, authority)
+    }
+
+    private fun grantAssistantPermissions(context: Context, authority: String) {
+        try {
+            val provider = context.contentResolver.acquireContentProviderClient(authority)
+            if (provider != null) {
+                getAssistantPackage(context)?.let { assistantPackage ->
+                    val sliceProviderUri = Uri.Builder()
+                            .scheme(ContentResolver.SCHEME_CONTENT)
+                            .authority(authority)
+                            .build()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
+                    }
+                }
+            } else {
+                Timber.w("P2#SLICE_GRANT_PERMISSION#NULL_PROVIDER")
             }
+        } catch (e : Exception){
+            Timber.w("P2#SLICE_GRANT_PERMISSION#"+e)
         }
     }
 

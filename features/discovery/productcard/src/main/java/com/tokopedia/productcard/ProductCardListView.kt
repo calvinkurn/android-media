@@ -36,6 +36,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
 
+        renderLabelBestSeller(labelBestSeller, productCardModel)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
