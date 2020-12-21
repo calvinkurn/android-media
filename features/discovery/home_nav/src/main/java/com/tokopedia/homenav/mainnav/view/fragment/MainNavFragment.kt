@@ -9,16 +9,15 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.widget.ScrollView
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -43,15 +42,15 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
+import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -62,6 +61,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_REGISTER = 2345
     }
 
+    private var mainNavDataFetched: Boolean = false
     private var sharedPrefs: SharedPreferences? = null
 
     @Inject
@@ -70,6 +70,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
+    private var scrollView: ScrollView? = null
     lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
@@ -100,6 +101,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
+        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -114,12 +116,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
-        scrollView.viewTreeObserver.addOnScrollChangedListener {
-            val scrollY = scrollView.scrollY
-            if (scrollY > 100) {
-                navToolbar?.showShadow(lineShadow = true)
-            } else {
-                navToolbar?.hideShadow(lineShadow = true)
+        scrollView = view.findViewById(R.id.scrollView)
+        scrollView?.viewTreeObserver?.addOnScrollChangedListener {
+            scrollView?.run {
+                if (scrollY > 100) {
+                    navToolbar?.showShadow(lineShadow = true)
+                } else {
+                    navToolbar?.hideShadow(lineShadow = true)
+                }
             }
         }
 
@@ -145,41 +149,16 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             populateAdapterData(it)
         })
 
-        viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-
-        })
-
-        viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.membershipResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.ovoResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.shopResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-
         viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.setOnboardingSuccess(showNavigationPageOnboarding(it))
+        })
+
+        viewModel.networkProcessLiveData.observe(viewLifecycleOwner, Observer { isFinished->
+            if (!isFinished) {
+                getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
+            } else {
+                getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+            }
         })
     }
 
@@ -187,7 +166,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
         startActivity(intent)
     }
 
@@ -199,17 +178,20 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.REGISTER), REQUEST_REGISTER)
     }
 
-    override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadUserData(element)
+    override fun onErrorProfileRefreshClicked(position: Int) {
+        viewModel.refreshProfileData()
     }
 
-    override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadOvoData(element)
-        viewModel.reloadSaldoData(element)
+    override fun onErrorShopInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserShopData()
     }
 
-    override fun onErrorProfileShopClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadShopData(getUserSession().shopId.toInt(), element)
+    override fun onErrorBuListClicked(position: Int) {
+        viewModel.refreshBuListdata()
+    }
+
+    override fun onErrorTransactionListClicked(position: Int) {
+        viewModel.refreshTransactionListData()
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
@@ -234,7 +216,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
-            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuViewModel.itemTitle, userSession.userId)
+            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuViewModel.trackerName, userSession.userId)
         }
     }
 
@@ -244,6 +226,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun getUserId(): String {
         return userSession.userId
+    }
+
+    private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
+        context?.let {
+            return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
+        }
+        return null
     }
 
     private fun observeCategoryListData(){
@@ -256,7 +245,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
         var windowHeight = 0
@@ -277,7 +266,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
+        setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
+        if (data.dataList.size > 1 && !mainNavDataFetched) {
+            viewModel.getMainNavData(true)
+            mainNavDataFetched = true
+        }
+    }
+
+    private fun setupViewPerformanceMonitoring(data: MainNavigationDataModel) {
+        if (data.dataList.size > 1) {
+            getNavPerformanceCallback()?.startRenderPerformanceMonitoring()
+            recyclerView.addOneTimeGlobalLayoutListener {
+                getNavPerformanceCallback()?.stopRenderPerformanceMonitoring()
+                getNavPerformanceCallback()?.stopMonitoring()
+            }
+        }
     }
 
     private fun getUserSession() : UserSessionInterface{
@@ -454,5 +458,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun Int.getViewForThisPosition(): View? {
         if (this != -1) return recyclerView.findViewHolderForAdapterPosition(this)?.itemView
         return null
+    }
+
+    private fun haveUserLogoutData(): Boolean {
+        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        return name.isNotEmpty()
+    }
+
+    private fun getSharedPreference(): SharedPreferences {
+        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

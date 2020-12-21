@@ -64,7 +64,7 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinOnboardingActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@PinOnboardingActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
         }
     }
 
@@ -80,7 +80,7 @@ class PinOnboardingActivity : BaseSimpleActivity(), HasComponent<ProfileCompleti
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

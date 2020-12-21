@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_margin="@dimen/spacing_lvl4"
         />
 

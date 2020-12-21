@@ -358,7 +358,7 @@ class CartItemViewHolder constructor(itemView: View,
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
             setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-            setType(Typography.SMALL)
+            setType(Typography.BODY_3)
             text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
     }
@@ -533,7 +533,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 

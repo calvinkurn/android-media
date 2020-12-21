@@ -76,6 +76,9 @@ object ProductTrackingConstant {
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
+        const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
+        const val KEY_FINTECH = "fintech"
+        const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
 
@@ -163,6 +166,7 @@ object ProductTrackingConstant {
         const val CLICK_BUY_ACTIVATION_OVO = "click - beli then go to bottomsheet ovo activation"
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
+        const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 

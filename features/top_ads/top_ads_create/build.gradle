@@ -37,6 +37,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
@@ -53,3 +54,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'kotlin-android'

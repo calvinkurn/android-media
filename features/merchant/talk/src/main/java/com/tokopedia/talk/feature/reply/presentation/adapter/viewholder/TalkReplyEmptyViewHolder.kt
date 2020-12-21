@@ -2,10 +2,11 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.item_talk_reply_empty_state.view.*
 
 class TalkReplyEmptyViewHolder(view: View) : AbstractViewHolder<TalkReplyEmptyModel>(view) {
@@ -26,7 +27,7 @@ class TalkReplyEmptyViewHolder(view: View) : AbstractViewHolder<TalkReplyEmptyMo
 
     private fun showOwnQuestionEmptyState() {
         with(itemView) {
-            talkReplyEmptyContainer.setBackgroundColor(Color.WHITE)
+            talkReplyEmptyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL)
             talkReplyEmptyTitle.text = getString(R.string.reply_empty_title_own_question)
             talkReplyEmptySubtitle.text = getString(R.string.reply_empty_subtitle_own_question)

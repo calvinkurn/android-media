@@ -6,7 +6,6 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
-    const val COUNT = 50
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"
@@ -31,6 +30,7 @@ object Constants {
     const val DAILY_BUDGET = "daily_budget"
     const val NAME_EDIT = "isNameEdit"
     const val MULTIPLIER = 40
+    const val MAXIMUM_LIMIT = "10.000.000"
     const val PRODUCT = "product"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val KEYWORD_EXISTS = 1
@@ -44,7 +44,6 @@ object Constants {
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
-    const val REGEX = "^[A-Za-z0-9 ]*\$"
     const val EDIT_SOURCE = "dashboard_edit_group_app"
     const val ACTION_EDIT = "edit"
     const val ACTION_ADD = "add"
