@@ -415,16 +415,16 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showDim(float procentage, int height) {
+    public void showDim(float percentage, int height) {
         checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         checkoutDim.setVisibility(View.VISIBLE);
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * procentage)));
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * percentage)));
     }
 
     @Override
-    public void hideDim(float procentage) {
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * procentage)));
-        if (procentage == 0.0) {
+    public void hideDim(float percentage) {
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(androidx.core.content.ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0), (int) (DEFAULT_MAX_DIM * percentage)));
+        if (percentage == 0.0) {
             checkoutDim.setVisibility(View.GONE);
         }
     }

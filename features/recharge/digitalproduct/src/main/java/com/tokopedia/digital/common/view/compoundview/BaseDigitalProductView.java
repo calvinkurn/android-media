@@ -61,7 +61,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         this.context = context;
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         onCreateView();
-//        setBottomSheetDialog();
     }
 
     public void renderData(C data, H historyClientNumber) {

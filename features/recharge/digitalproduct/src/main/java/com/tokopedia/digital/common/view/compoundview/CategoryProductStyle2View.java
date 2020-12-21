@@ -170,12 +170,6 @@ public class CategoryProductStyle2View extends
             cbInstantCheckout.setChecked(false);
             layoutCheckout.setVisibility(GONE);
         }
-//        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                bottomSheetView.show();
-//            }
-//        });
     }
 
     private void renderOperatorChooserOptions() {
