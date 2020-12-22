@@ -32,9 +32,9 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
             productId: Long, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
-            blastId: Long, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
-            categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
+            blastId: Long, productPriceInt: Long, category: String, variant: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
+            categoryId: Long, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
             rating: TopchatProductRating, replyId: String
     ) : super(
@@ -73,9 +73,9 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             attachmentId: String, attachmentType: String, replyTime: String, productId: Long,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
-            blastId: Long, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
-            categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
+            blastId: Long, productPriceInt: Long, category: String, variant: List<AttachmentVariant>,
+            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
+            categoryId: Long, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
             source: String, rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
