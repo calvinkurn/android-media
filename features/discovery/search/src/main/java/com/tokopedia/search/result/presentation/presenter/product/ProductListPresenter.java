@@ -105,6 +105,12 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Inspiratio
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -325,9 +331,11 @@ final class ProductListPresenter
         enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
 
+        RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
+
         // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
         searchProductLoadMoreUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
+        searchProductLoadMoreUseCase.execute(useCaseRequestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
     }
 
     private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
@@ -418,6 +426,22 @@ final class ProductListPresenter
 
     private boolean textIsEmpty(String text) {
         return text == null || text.length() == 0;
+    }
+
+    private RequestParams createSearchProductRequestParams(RequestParams requestParams) {
+        boolean isLocalSearch = isLocalSearch();
+        boolean isSkipGlobalNavWidget = isLocalSearch || getView().isAnyFilterActive() || getView().isAnySortActive();
+
+        RequestParams useCaseRequestParams = RequestParams.create();
+
+        useCaseRequestParams.putObject(SEARCH_PRODUCT_PARAMS, requestParams.getParameters());
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget);
+
+        return useCaseRequestParams;
     }
 
     private Subscriber<SearchProductModel> getLoadMoreDataSubscriber(final Map<String, Object> searchParameter) {
@@ -572,17 +596,6 @@ final class ProductListPresenter
         return !textIsEmpty(navSource) && !textIsEmpty(pageId);
     }
 
-    private int convertCountReviewFormatToInt(String countReviewFormat) {
-        String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
-
-        try {
-            return Integer.parseInt(countReviewString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
     private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
         List<BadgeItemViewModel> items = new ArrayList<>();
         for (Badge b : badges) {
@@ -648,12 +661,14 @@ final class ProductListPresenter
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
+        RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
+
         getView().stopPreparePagePerformanceMonitoring();
         getView().startNetworkRequestPerformanceMonitoring();
 
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(requestParams.getParameters()));
+        searchProductFirstPageUseCase.execute(useCaseRequestParams, getLoadDataSubscriber(requestParams.getParameters()));
     }
 
     private void setNavSource(String navSource) {
