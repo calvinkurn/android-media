@@ -4,6 +4,8 @@ import android.text.InputFilter
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -26,6 +28,7 @@ class TotalStockEditorViewHolder(itemView: View?,
 
     private val stockEditor by lazy { itemView?.qte_campaign_stock_amount }
     private val emptyStockInfo by lazy { itemView?.emptyStockInfo }
+    private val textStock by lazy { itemView?.textStock }
 
     private val stockTextWatcher by lazy {
         StockEditorTextWatcher(stockEditor, onTotalStockChanged)
@@ -57,7 +60,7 @@ class TotalStockEditorViewHolder(itemView: View?,
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
-        setStockEditorAccess(element)
+        setupStockEditor(element)
     }
 
     private fun QuantityEditorUnify.removeEditorTextListener() {
@@ -68,12 +71,16 @@ class TotalStockEditorViewHolder(itemView: View?,
         editText.addTextChangedListener(stockTextWatcher)
     }
 
-    private fun setStockEditorAccess(element: TotalStockEditorUiModel) {
-        stockEditor?.apply {
-            val canEditStock = element.access?.editStock == true
-            addButton.isEnabled = canEditStock
-            subtractButton.isEnabled = canEditStock
-            editText.isEnabled = canEditStock
+    private fun setupStockEditor(element: TotalStockEditorUiModel) {
+        val canEditStock = element.access?.editStock == true
+
+        if(canEditStock) {
+            stockEditor?.show()
+            textStock?.hide()
+        } else {
+            stockEditor?.hide()
+            textStock?.show()
+            textStock?.text = element.totalStock.toString()
         }
     }
 }
