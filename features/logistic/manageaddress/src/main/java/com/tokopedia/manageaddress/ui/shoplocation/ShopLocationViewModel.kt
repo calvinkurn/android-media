@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +29,15 @@ class ShopLocationViewModel @Inject constructor(
     val result: LiveData<ShopLocationState<ShopLocationSetStatusResponse>>
         get() = _result
 
+    private val _saveEditShop = MutableLiveData<ShopLocationState<ShopLocUpdateWarehouse>>()
+    val saveEditShop: LiveData<ShopLocationState<ShopLocUpdateWarehouse>>
+        get() = _saveEditShop
+
+    private val _shopWhitelist = MutableLiveData<ShopLocationState<ShopLocWhitelist>>()
+    val shopWhitelist: LiveData<ShopLocationState<ShopLocWhitelist>>
+        get() = _shopWhitelist
+
+
     fun getShopLocationList(shopId: Int?) {
         _shopLocation.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetShopLocation) {
@@ -44,6 +55,24 @@ class ShopLocationViewModel @Inject constructor(
         }
     }
 
+    fun saveEditShopLocation(shopId: Int, warehouseId: Int, warehouseName: String,
+                             districtId: Int, latLon: String, email: String,
+                             addressDetail: String, postalCode: String, phone: String) {
+        _saveEditShop.value = ShopLocationState.Loading
+        viewModelScope.launch(onErrorSaveEditShopLocation) {
+            val saveEditLocation  = repo.saveEditShopLocation(shopId, warehouseId, warehouseName, districtId, latLon, email, addressDetail, postalCode, phone)
+            _saveEditShop.value = ShopLocationState.Success(saveEditLocation.shopLocUpdateWarehouse)
+        }
+    }
+
+    fun getWhitelistData(shopId: Int) {
+        _shopWhitelist.value = ShopLocationState.Loading
+        viewModelScope.launch(onErrorGetWhitelistData) {
+            val getWhitelistShop = repo.getShopLocationWhitelist(shopId)
+            _shopWhitelist.value = ShopLocationState.Success(getWhitelistShop.shopLocWhitelist)
+        }
+    }
+
     private val onErrorGetShopLocation = CoroutineExceptionHandler { _, e ->
         _shopLocation.value = ShopLocationState.Fail(e, "")
     }
@@ -51,6 +80,14 @@ class ShopLocationViewModel @Inject constructor(
     private val onErrorSetShopLocation = CoroutineExceptionHandler { _, e ->
         shopLocationStateStatus = false
         _result.value = ShopLocationState.Fail(e, "")
+    }
+
+    private val onErrorSaveEditShopLocation = CoroutineExceptionHandler { _, e ->
+        _saveEditShop.value = ShopLocationState.Fail(e, "")
+    }
+
+    private val onErrorGetWhitelistData = CoroutineExceptionHandler { _, e ->
+        _shopWhitelist.value = ShopLocationState.Fail(e, "")
     }
 
 }
