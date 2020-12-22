@@ -7,6 +7,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.R
@@ -57,14 +59,20 @@ class ProductVariantStockViewHolder(
         setAddButtonClickListener(variant)
         setSubtractButtonClickListener(variant)
         addStockEditorTextChangedListener(variant)
-        setStockEditorAccess(variant)
+        setupStockEditor(variant)
     }
 
-    private fun setStockEditorAccess(variant: ProductVariant) {
+    private fun setupStockEditor(variant: ProductVariant) {
         val canEditStock = variant.access.editStock
-        itemView.quantityEditorStock.addButton.isEnabled = canEditStock
-        itemView.quantityEditorStock.subtractButton.isEnabled = canEditStock
-        itemView.quantityEditorStock.editText.isEnabled = canEditStock
+
+        if(canEditStock) {
+            itemView.quantityEditorStock.show()
+            itemView.textStock.hide()
+        } else {
+            itemView.quantityEditorStock.hide()
+            itemView.textStock.show()
+            itemView.textStock.text = variant.stock.toString()
+        }
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {

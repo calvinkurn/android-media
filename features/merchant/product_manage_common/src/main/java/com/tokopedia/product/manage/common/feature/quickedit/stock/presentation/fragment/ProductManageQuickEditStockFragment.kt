@@ -201,12 +201,10 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         quickEditStockQuantityEditor.editText.requestFocus()
     }
 
-    private fun disableStockEditor() {
-        quickEditStockQuantityEditor.apply {
-            addButton.isEnabled = false
-            subtractButton.isEnabled = false
-            editText.isEnabled = false
-        }
+    private fun disableStockEditor(stock: Int) {
+        quickEditStockQuantityEditor.hide()
+        textStock.show()
+        textStock.text = stock.toString()
     }
 
     private fun setupStatusSwitch() {
@@ -367,7 +365,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         val canEditStock = product?.hasEditStockAccess() == true
 
         when {
-            !canEditStock -> disableStockEditor()
+            !canEditStock -> disableStockEditor(stock)
             stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
             stock <= MINIMUM_STOCK -> setZeroStockBehavior()
             else -> setNormalBehavior()

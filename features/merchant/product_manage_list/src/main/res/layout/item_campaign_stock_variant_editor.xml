@@ -64,6 +64,18 @@
         app:layout_constraintStart_toEndOf="@id/guideline_campaign_stock_variant"
         app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_campaign_stock_variant"
+        app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3" />
+
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_campaign_stock_variant_editor"
         android:layout_width="wrap_content"
