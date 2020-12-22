@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_INSIGHT
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
@@ -15,6 +17,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsKeywordInsightAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_insight_keword_layout.*
 import javax.inject.Inject
 
@@ -68,6 +71,7 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         }
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
+        Utils.setSearchListener(searchBar, context, view, ::searchAction)
     }
 
     private fun onSuccessGetInsightData(response: InsightKeyData) {
@@ -79,27 +83,38 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
             adapter.items.add(it.value)
             listOfKeys.add(it.key)
         }
-        (parentFragment as TopAdsRecommendationFragment).setCount(data.size)
+        if (data.isEmpty()) {
+            setEmpty()
+        }
+        (parentFragment as TopAdsRecommendationFragment).setCount(data.size, 2)
         adapter.notifyDataSetChanged()
     }
 
-    private fun loadData(){
-        swipe_refresh_layout.isEnabled = true
+    private fun setEmpty() {
+        emptyViewKeyword?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        emptyViewKeyword?.visibility = View.VISIBLE
+        keyword_list?.visibility = View.GONE
+        searchBar?.visibility = View.GONE
+    }
+
+    private fun loadData() {
+        swipe_refresh_layout?.isEnabled = true
         adapter.items.clear()
         adapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
     }
 
-    fun searchAction(search: String) {
+    private fun searchAction() {
         val list: MutableList<KeywordInsightDataMain> = mutableListOf()
         listOfKeys.clear()
+        val search = searchBar.searchBarTextField.text.toString()
         keyData.forEach {
-            if(it.value.name.contains(search)){
+            if (it.value.name.contains(search)) {
                 list.add(it.value)
                 listOfKeys.add(it.key)
             }
         }
-        (parentFragment as TopAdsRecommendationFragment).setCount(list.size)
+        (parentFragment as TopAdsRecommendationFragment).setCount(list.size, 2)
         if (list.isEmpty()) {
             keyword_list.visibility = View.GONE
             txtSearch.visibility = View.VISIBLE
@@ -112,5 +127,4 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         adapter.items.addAll(list)
         adapter.notifyDataSetChanged()
     }
-
 }

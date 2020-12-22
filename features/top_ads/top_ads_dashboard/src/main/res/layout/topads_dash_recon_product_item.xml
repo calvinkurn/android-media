@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_product_recom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_18"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@id/img_folder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/img_folder" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_folder"
@@ -30,9 +32,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_folder"
         app:layout_constraintTop_toTopOf="@id/img_folder"
+        app:typographyType="body_3"
         tools:text="Kemeja Polos Pria Lengan  Pendek Slimfit Kerja Cowok - Pink, M" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/search_icon"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
@@ -48,15 +51,25 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_12"
         android:text="@string/topads_common_anggaran_harian"
+        android:textColor="@color/topads_common_select_color_unchecked"
         app:layout_constraintStart_toEndOf="@id/search_icon"
-        app:layout_constraintTop_toBottomOf="@id/img_folder" />
+        app:layout_constraintTop_toBottomOf="@id/img_folder"
+        app:typographyType="body_3" />
+
+    <ImageView
+        android:id="@+id/up_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/total_search"
+        app:layout_constraintTop_toBottomOf="@id/total_search"
+        app:srcCompat="@drawable/topads_up" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/totalSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        app:layout_constraintStart_toStartOf="@id/total_search"
+        app:layout_constraintStart_toEndOf="@id/up_icon"
         app:layout_constraintTop_toBottomOf="@id/total_search"
         tools:text="Rp10000" />
 
@@ -64,88 +77,50 @@
         android:id="@+id/divider"
         android:layout_width="@dimen/dp_2"
         android:layout_height="@dimen/dp_24"
-        app:layout_constraintEnd_toStartOf="@id/potential_text"
+        app:layout_constraintEnd_toStartOf="@id/speaker_icon"
         app:layout_constraintStart_toEndOf="@id/total_search"
         app:layout_constraintTop_toTopOf="@id/speaker_icon" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/speaker_icon"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_8"
-        app:layout_constraintBottom_toBottomOf="@id/potential"
-        app:layout_constraintEnd_toStartOf="@id/potential_text"
-        app:layout_constraintTop_toTopOf="@id/potential_text"
-        app:srcCompat="@drawable/topads_speaker" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/potential_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/topads_common_potential_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/total_search"
-        app:layout_constraintTop_toTopOf="@id/total_search" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/potential"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:text="llalalla"
-        app:layout_constraintStart_toStartOf="@id/potential_text"
-        app:layout_constraintTop_toBottomOf="@id/potential_text"
-        tools:text="Rp100000" />
+        app:layout_constraintBottom_toBottomOf="@id/recommendedBid"
+        app:layout_constraintEnd_toStartOf="@id/recommended_bid_text"
+        app:layout_constraintTop_toTopOf="@id/recommended_bid_text"
+        app:srcCompat="@drawable/topads_rp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recommended_bid_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/topads_common_recommended_budget"
-        app:layout_constraintStart_toStartOf="@id/img_folder"
-        app:layout_constraintTop_toBottomOf="@id/totalSearch" />
+        android:textColor="@color/topads_common_select_color_unchecked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/total_search"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recommendedBid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/img_folder"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="@id/recommended_bid_text"
         app:layout_constraintTop_toBottomOf="@id/recommended_bid_text"
-        tools:text="Maks. +1000 klik/hari" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/biaya_iklan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/topads_biaya_iklan"
-        app:layout_constraintStart_toStartOf="@id/potential_text"
-        app:layout_constraintTop_toBottomOf="@id/potential" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/klik"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/topads_common_klik_"
-        app:layout_constraintBottom_toBottomOf="@id/editBudget"
-        app:layout_constraintStart_toEndOf="@id/editBudget"
-        app:layout_constraintTop_toTopOf="@id/editBudget"
-        app:typographyType="body_3" />
+        tools:text="Rp100000" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/editBudget"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/topads_dash_potential_click"
-        app:layout_constraintStart_toStartOf="@id/potential_text"
-        app:layout_constraintTop_toBottomOf="@id/biaya_iklan"
-        app:text_field_append_drawable_icon_1="@drawable/topads_hari"
-        app:text_field_append_drawable_icon_2="@drawable/topads_hari"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="@id/search_icon"
+        app:layout_constraintTop_toBottomOf="@id/totalSearch"
+        app:text_field_append_text="@string/topads_common_klik_"
         app:text_field_input_type="number"
-        app:text_field_label_static="false"
+        app:text_field_label="@string/topads_biaya_iklan"
+        app:text_field_label_static="true"
         app:text_field_prepend_text="Rp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

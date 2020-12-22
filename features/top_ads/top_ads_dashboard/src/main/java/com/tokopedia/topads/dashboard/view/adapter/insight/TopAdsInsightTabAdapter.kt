@@ -35,12 +35,14 @@ class TopAdsInsightTabAdapter(private val context: Context) : RecyclerView.Adapt
         holder.toggleActivate(position == selectedTabPosition)
     }
 
-    fun setTabTitles(resources: Resources,countKey:Int,countBid:Int,countProduct:Int){
+    fun setTabTitles(resources: Resources, countProduct: Int, countBid: Int, countKey: Int) {
         tabMenus.clear()
-        tabMenus.add(resources.getString(R.string.topads_dash_product_suggestion_insight_count))
-        tabMenus.add(resources.getString(R.string.topads_dash_bid_suggestion_insight_count))
-
-        tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count),countKey))
+        if (countProduct != 0)
+            tabMenus.add(String.format(resources.getString(R.string.topads_dash_product_suggestion_insight_count), countProduct))
+        if (countBid != 0)
+            tabMenus.add(String.format(resources.getString(R.string.topads_dash_bid_suggestion_insight_count), countBid))
+        if (countKey != 0)
+            tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count), countKey))
         notifyDataSetChanged()
     }
 

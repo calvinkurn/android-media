@@ -8,6 +8,7 @@ import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewAct
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.fragment.insight.*
+import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineNegKeyFragment
@@ -56,4 +57,5 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsHeadlineGroupDetailViewActivity: TopAdsHeadlineAdDetailViewActivity)
     fun inject(topAdsAddCreditActivity: TopAdsAddCreditActivity)
     fun inject(topAdsChooseNominalBottomSheet: TopAdsChooseNominalBottomSheet)
+    fun inject(topAdsRecomGroupBottomSheet: TopAdsRecomGroupBottomSheet)
 }

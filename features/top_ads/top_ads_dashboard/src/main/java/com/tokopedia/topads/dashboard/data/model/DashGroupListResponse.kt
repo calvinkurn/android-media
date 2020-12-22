@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 
 data class DashGroupListResponse(
 
@@ -11,7 +12,10 @@ data class DashGroupListResponse(
 data class GetTopadsDashboardGroups(
 
         @field:SerializedName("data")
-        val data: List<GroupListDataItem> = listOf()
+        val data: List<GroupListDataItem> = listOf(),
+
+        @field:SerializedName("meta")
+        val meta: Meta = Meta()
 )
 
 data class GroupListDataItem(
@@ -29,7 +33,28 @@ data class GroupListDataItem(
         val groupId: Int = 0,
 
         @field:SerializedName("group_name")
-        val groupName: String = ""
+        val groupName: String = "",
+
+        var isSelected: Boolean = false
+)
+
+data class Meta(
+
+        @field:SerializedName("page")
+        val page: Page = Page()
+)
+
+data class Page(
+
+        @field:SerializedName("per_page")
+        val perPage: Int = 0,
+
+        @field:SerializedName("current")
+        val current: Int = 0,
+
+        @field:SerializedName("total")
+        val total: Int = 0
+
 )
 
 

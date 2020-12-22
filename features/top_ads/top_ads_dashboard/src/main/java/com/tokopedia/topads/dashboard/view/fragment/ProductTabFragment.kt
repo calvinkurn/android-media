@@ -235,7 +235,7 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
-        viewModel.getGroupList(resources, search, ::onSuccessGroupList)
+        viewModel.getGroupList(search, ::onSuccessGroupList)
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {

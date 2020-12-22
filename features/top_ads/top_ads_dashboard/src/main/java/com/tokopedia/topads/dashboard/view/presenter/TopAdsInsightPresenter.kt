@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA
-import com.tokopedia.topads.dashboard.data.model.FinalAdResponse
-import com.tokopedia.topads.dashboard.data.model.StatsData
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditKeywordUseCase

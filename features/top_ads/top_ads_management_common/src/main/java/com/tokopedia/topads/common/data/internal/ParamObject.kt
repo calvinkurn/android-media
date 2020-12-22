@@ -66,4 +66,12 @@ object ParamObject {
     const val ACTION_CREATE = "create"
     const val HEADLINE_KEYWORD_TYPE = "positive_phrase"
     const val ACTIVE_STATUS = "active"
+    const val PARAM_RECOM_EDIT_SOURCE = "insight_app_edit_source"
+    const val PARAM_ADD_OPTION = "add"
+    const val PARAM_EDIT_OPTION = "edit"
+    const val PARAM_DAILY_BUDGET = "daily_budget"
+    const val PARAM_GROUP_Id = "groupId"
+
+
+
 }

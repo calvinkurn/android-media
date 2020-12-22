@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.raw.GROUP_LIST_QUERY
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -159,10 +160,9 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-
-    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
-        topAdsGetGroupListUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
+    @GqlQuery("GroupList", GROUP_LIST_QUERY)
+    fun getGroupList(search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
+        topAdsGetGroupListUseCase.setGraphqlQuery(GroupList.GQL_QUERY)
         topAdsGetGroupListUseCase.setParams(search)
         topAdsGetGroupListUseCase.executeQuerySafeMode(
                 {
@@ -172,7 +172,6 @@ class GroupDetailViewModel @Inject constructor(
                 {
                     it.printStackTrace()
                 })
-
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {

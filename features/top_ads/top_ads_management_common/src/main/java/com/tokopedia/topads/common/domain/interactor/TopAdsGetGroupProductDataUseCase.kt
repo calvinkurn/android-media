@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toUrlParams
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -34,13 +35,11 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(val userSession: User
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = "https://gql.tokopedia.com/graphql/ta"
         val token = object : TypeToken<DataResponse<NonGroupResponse>>() {}.type
-
-        var request: GraphqlRequest = GraphqlRequest(query, NonGroupResponse::class.java, requestParams?.parameters)
+        val request = GraphqlRequest(query, NonGroupResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
-        headers.put("Content-Type", "application/json")
-        val restReferralRequest = RestRequest.Builder(url, token)
+        headers["Content-Type"] = "application/json"
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
                 .setHeaders(headers)
                 .setRequestType(RequestType.POST)

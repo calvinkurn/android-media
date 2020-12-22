@@ -1,4 +1,4 @@
-package com.tokopedia.topads.recommendation.data
+package com.tokopedia.topads.dashboard.data.model
 
 
 import com.google.gson.annotations.SerializedName
@@ -11,12 +11,12 @@ data class ProductRecommendationModel(
 
 data class TopadsGetProductRecommendation(
         @SerializedName("data")
-        val `data`: Data = Data(),
+        val data: ProductRecommendationData = ProductRecommendationData(),
         @SerializedName("errors")
         val errors: List<Error> = listOf()
 )
 
-data class Data(
+data class ProductRecommendationData(
         @SerializedName("info")
         val info: String = "",
         @SerializedName("nominal_id")
@@ -40,4 +40,6 @@ data class ProductRecommendation(
         val recomBid: Int = 0,
         @SerializedName("min_bid")
         val minBid: Int = 0,
+        var setCurrentBid: Int = 0,
+        var isChecked: Boolean = true
 )

@@ -125,8 +125,11 @@
     <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
     <string name="topads_common_potential_text">Potensi Tampil</string>
     <string name="topads_common_klik_">/klik</string>
+    <string name="topads_common_hari_">/hari</string>
     <string name="topads_biaya_iklan">Biaya Iklan</string>
-
+    <string name="topads_iklankan_button">Iklankan</string>
+    <string name="topads_common_bs_title">Atur Biaya Iklan</string>
+    <string name="topads_common_atur_anngaran">Atur Anggaran</string>
 
 
     <string-array name="sort_product_list_array">

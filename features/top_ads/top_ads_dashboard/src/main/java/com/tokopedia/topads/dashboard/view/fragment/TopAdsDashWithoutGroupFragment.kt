@@ -205,7 +205,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
-        topAdsDashboardPresenter.getGroupList(resources, search, ::onSuccessGroupList)
+        topAdsDashboardPresenter.getGroupList( search, ::onSuccessGroupList)
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
