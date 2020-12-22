@@ -31,7 +31,7 @@ class AdminPermissionUseCase @Inject constructor(
                 if (error.isNullOrEmpty()) {
                     return getIsPermissionValid(
                             permissionToCheck.toList(),
-                            info.adminData?.firstOrNull()?.permissionList?.map { it.id }
+                            info.adminData.permissionList?.map { it.id }
                     )
                 } else {
                     throw MessageErrorException(error)
