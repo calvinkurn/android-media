@@ -417,7 +417,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(errorMessage.equals("")){
+        if("".equals(errorMessage)){
             SessionAnalytics.Companion.trackRefreshTokenSuccess();
         }else {
             SessionAnalytics.Companion.trackRefreshTokenFailed(errorMessage);

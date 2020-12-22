@@ -632,7 +632,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(errorMessage.equals("")){
+        if("".equals(errorMessage)){
             SessionAnalytics.trackRefreshTokenSuccess();
         }else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
