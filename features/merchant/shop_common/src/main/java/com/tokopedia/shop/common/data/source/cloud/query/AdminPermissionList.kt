@@ -8,10 +8,10 @@ object AdminPermissionList {
             "      permission_list {\n" +
             "        permission_id\n" +
             "      }\n" +
-            "      response_detail {\n" +
-            "        code\n" +
-            "        error_message\n" +
-            "      }\n" +
+            "    }\n" +
+            "    response_detail {\n" +
+            "      code\n" +
+            "      error_message\n" +
             "    }\n" +
             "  }\n" +
             "}"
