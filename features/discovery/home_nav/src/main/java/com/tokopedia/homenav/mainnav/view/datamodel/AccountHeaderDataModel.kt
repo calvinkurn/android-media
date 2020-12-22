@@ -1,9 +1,9 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel
+package com.tokopedia.homenav.mainnav.view.datamodel
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
-data class AccountHeaderViewModel(
+data class AccountHeaderDataModel(
         val id: Int = 999,
         var loginState: Int = 0,
         var userName: String = "",
@@ -50,8 +50,8 @@ data class AccountHeaderViewModel(
         const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
     }
 
-    fun copy(): AccountHeaderViewModel {
-        return AccountHeaderViewModel(
+    fun copy(): AccountHeaderDataModel {
+        return AccountHeaderDataModel(
                 id,
                 loginState,
                 userName,

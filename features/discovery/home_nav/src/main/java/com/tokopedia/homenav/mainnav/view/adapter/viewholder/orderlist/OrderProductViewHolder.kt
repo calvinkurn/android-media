@@ -10,12 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import kotlinx.android.synthetic.main.holder_transaction_product.view.*
 
 class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductModel>(itemView) {

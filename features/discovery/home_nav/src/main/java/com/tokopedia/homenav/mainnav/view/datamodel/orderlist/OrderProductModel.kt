@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel.orderlist
+package com.tokopedia.homenav.mainnav.view.datamodel.orderlist
 
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFactory

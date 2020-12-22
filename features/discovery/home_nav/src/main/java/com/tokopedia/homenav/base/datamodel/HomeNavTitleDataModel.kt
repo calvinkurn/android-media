@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.base.viewmodel
+package com.tokopedia.homenav.base.datamodel
 
 import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
@@ -7,14 +7,14 @@ import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
  * Created by Lukas on 21/10/20.
  */
 
-data class HomeNavTitleViewModel (
+data class HomeNavTitleDataModel (
         val title: String = "",
         val applink: String = ""
 ) : HomeNavVisitable {
     override fun id(): Any = title
 
     override fun isContentTheSame(visitable: HomeNavVisitable): Boolean =
-            visitable is HomeNavTitleViewModel && visitable.title == title && visitable.applink == applink
+            visitable is HomeNavTitleDataModel && visitable.title == title && visitable.applink == applink
 
     override fun type(factory: HomeNavTypeFactory): Int = factory.type(this)
 

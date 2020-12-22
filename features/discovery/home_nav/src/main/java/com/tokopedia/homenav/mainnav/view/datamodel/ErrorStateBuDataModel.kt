@@ -1,13 +1,12 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel
+package com.tokopedia.homenav.mainnav.view.datamodel
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
-data class SeparatorViewModel(
-        val isSeparator: Boolean = true,
+data class ErrorStateBuDataModel(
         val sectionId: Int? = null
 ): MainNavVisitable, ImpressHolder() {
-    override fun id(): Any = sectionId.toString()
+    override fun id(): Any = "Error state bu"
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean = id() == visitable.id()
 

@@ -7,8 +7,8 @@ import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeF
 /**
  * Created by Lukas on 22/10/20.
  */
-class CategoryListLoadingViewModel : HomeNavVisitable{
-    override fun id(): Any = CategoryListLoadingViewModel::class.java.simpleName
+class CategoryListLoadingDataModel : HomeNavVisitable{
+    override fun id(): Any = CategoryListLoadingDataModel::class.java.simpleName
 
     override fun isContentTheSame(visitable: HomeNavVisitable): Boolean = visitable.id() == id()
 
