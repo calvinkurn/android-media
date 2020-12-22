@@ -65,6 +65,7 @@ import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.CustomWidthToaster;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -552,11 +553,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void showLoginSnackbar(String message, int position) {
         View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        Toaster.build(rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
+        int dimen = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_96);
+        CustomWidthToaster.showCustomeToaster(dimen, rootView, message,
+                getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login),
+                v -> {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
-                }).show();
+                });
     }
 
     @Override
