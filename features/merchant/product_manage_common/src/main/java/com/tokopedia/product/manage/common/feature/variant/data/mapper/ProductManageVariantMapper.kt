@@ -20,6 +20,7 @@ object ProductManageVariantMapper {
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
         val productName = response.productName
+        val isAllStockEmpty = response.isAllStockEmpty()
 
         val variants = response.variant.products.map {
             val variantName = getVariantName(it.combination, variantSelections)
@@ -33,6 +34,7 @@ object ProductManageVariantMapper {
                 it.sku,
                 it.stock,
                 it.pictures,
+                isAllStockEmpty,
                 access
             )
         }

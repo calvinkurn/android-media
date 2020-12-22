@@ -23,8 +23,6 @@ abstract class QuickEditVariantViewModelTestFixture {
     @Before
     fun setUp() {
         getProductVariantUseCase = mockk(relaxed = true)
-        getProductManageAccessUseCase = mockk(relaxed = true)
-        userSession = mockk(relaxed = true)
         viewModel = QuickEditVariantViewModel(
                 getProductVariantUseCase,
                 getProductManageAccessUseCase,
@@ -32,4 +30,4 @@ abstract class QuickEditVariantViewModelTestFixture {
                 CoroutineTestDispatchersProvider
         )
     }
- }
+}
