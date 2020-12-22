@@ -225,7 +225,7 @@ class TestSimilarProductRecommendationViewModel {
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(RecommendationItem()) andThen listOf()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "", "")
-        assert(viewModel.filterSortChip.value?.isEmpty() == true)
+        assert(viewModel.filterSortChip.value?.isEmpty() == false)
         assert(viewModel.recommendationItem.value?.isEmpty() == true)
     }
 

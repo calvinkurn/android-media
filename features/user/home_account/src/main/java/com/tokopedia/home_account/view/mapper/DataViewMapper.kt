@@ -45,17 +45,19 @@ class DataViewMapper @Inject constructor(
     fun mapMemberItemDataView(shortcutResponse: ShortcutResponse): ArrayList<MemberItemDataView> {
         val items = arrayListOf<MemberItemDataView>()
         val shortcutGroupList = shortcutResponse.tokopointsShortcutList.shortcutGroupList
-        val shortcutList = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList
-        if(shortcutGroupList.isNotEmpty() && shortcutList.isNotEmpty()) {
-            shortcutList.forEach {
-                items.add(
-                    MemberItemDataView(
-                        title = it.description,
-                        subtitle = it.cta.text,
-                        icon = it.iconImageURL,
-                        applink = it.cta.appLink
+        if(shortcutGroupList.isNotEmpty()) {
+            val shortcutList = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0].shortcutList
+            if (shortcutList.isNotEmpty()) {
+                shortcutList.forEach {
+                    items.add(
+                            MemberItemDataView(
+                                    title = it.description,
+                                    subtitle = it.cta.text,
+                                    icon = it.iconImageURL,
+                                    applink = it.cta.appLink
+                            )
                     )
-                )
+                }
             }
         }
 
