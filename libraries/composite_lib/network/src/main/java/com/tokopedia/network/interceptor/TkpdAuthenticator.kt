@@ -50,16 +50,16 @@ class TkpdAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
+            val path: String = getRefreshQueryPath(response.request(), response)
             return if(responseCount(response) == 0)
                 try {
-                    val path: String = getRefreshQueryPath(response.request(), response)
                     val originalRequest = response.request()
                     val accessTokenRefresh = AccessTokenRefresh()
                     val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
-                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s'", userSession.accessToken, ex.toString());
+                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s';path='%s'",userSession.accessToken, ex.toString(), path);
                     response.request()
                 }
             else {
