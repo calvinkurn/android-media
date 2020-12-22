@@ -1402,7 +1402,7 @@ final class ProductListPresenter
         while(topAdsImageViewModelIterator.hasNext()) {
             TopAdsImageViewModel data = topAdsImageViewModelIterator.next();
 
-            if (data.getPosition() < 0) {
+            if (data.getPosition() <= 0) {
                 topAdsImageViewModelIterator.remove();
                 continue;
             }

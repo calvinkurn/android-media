@@ -120,12 +120,11 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
 
         `When load data`()
 
-        `Then verify TDN at position 0`()
+        `Then verify TDN is not shown`()
     }
 
-    private fun `Then verify TDN at position 0`() {
-        visitableList.size shouldBe 9
-        visitableList[0].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[0] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn0
+    private fun `Then verify TDN is not shown`() {
+        visitableList.size shouldBe 8
+        visitableList.any { it is SearchProductTopAdsImageViewModel } shouldBe false
     }
 }

@@ -120,7 +120,7 @@ class SearchProductTDNFirstPageGqlUseCase(
             )
 
     private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
-        return Observable.create({ emitter ->
+        return Observable.create<List<TopAdsImageViewModel>>({ emitter ->
             try {
                 launch { emitTopAdsImageViewData(emitter, query) }
             }
@@ -148,7 +148,7 @@ class SearchProductTDNFirstPageGqlUseCase(
     }
 
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
-            getQueryMap(query, "2", "", 1, 5, "")
+            getQueryMap(query, "2", "", 4, 5, "")
 
     private fun setTopAdsImageViewModelList(
             searchProductModel: SearchProductModel?,
