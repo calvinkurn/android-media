@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_product_sheet_title_margin_start"
             android:layout_marginLeft="@dimen/play_product_sheet_title_margin_start"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_3"
             app:typographyWeight="bold"
             android:ellipsize="end"
