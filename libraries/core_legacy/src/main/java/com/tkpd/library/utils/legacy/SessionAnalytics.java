@@ -6,7 +6,7 @@ import com.tokopedia.track.TrackApp;
  * Created by Yoris Prayogo on 22/12/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-public class SessionAnalytics2 {
+public class SessionAnalytics {
 
     private static final String EVENT = "clickLogout";
     private static final String EVENT_CATEGORY = "force logout";
