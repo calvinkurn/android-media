@@ -490,7 +490,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
                 if (getContext() != null) {
                     Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
-                        getString(R.string.title_invoice));
+                            invoiceNum, boughtDate, getString(R.string.title_invoice));
                 startActivity(intent);
                 }
             });
@@ -1322,7 +1322,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            int productId = 0;
+            long productId = 0;
             int quantity = 0;
             int shopId = 0;
             String notes = "";

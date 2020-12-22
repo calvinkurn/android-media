@@ -903,7 +903,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(viewModel.toggleTeaserNotifyMe.value is Success)
@@ -917,7 +917,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(!(viewModel.toggleTeaserNotifyMe.value as Success).data)

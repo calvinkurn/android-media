@@ -179,7 +179,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             getView().hideProgressBar();
                         }
                     }
-    
+
                     @Override
                     public void onNext(GraphqlResponse response) {
                         if (response != null) {

@@ -322,7 +322,7 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            true
         }
     }
     private fun isNavOld(): Boolean {
@@ -330,16 +330,16 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
         }
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
-        if (isNavRevamp()) {
-            ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+       if (isNavOld()) {
             ifNavOld.invoke()
-        }
+       } else if (isNavRevamp()) {
+            ifNavRevamp.invoke()
+       }
     }
 
     override fun onAttach(context: Context) {
@@ -573,6 +573,7 @@ open class HomeFragment : BaseDaggerFragment(),
             val bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
+                bottomSheet.dismiss()
                 showCoachMark(bottomSheet)
             }
 
@@ -618,7 +619,6 @@ open class HomeFragment : BaseDaggerFragment(),
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
-            bottomSheet.dismiss()
             if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                 coachMark.showCoachMark(step = coachMarkItem, index = 0)
             }

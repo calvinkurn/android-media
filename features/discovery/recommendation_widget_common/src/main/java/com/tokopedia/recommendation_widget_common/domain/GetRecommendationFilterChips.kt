@@ -62,7 +62,7 @@ class GetRecommendationFilterChips (
     init {
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(RecommendationFilterChipsEntity::class.java)
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()
     }
 
