@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -12,6 +13,7 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
@@ -148,6 +150,10 @@ internal open class ProductListPresenterTestFixtures {
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
     }
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun RequestParams.getSearchProductParams(): Map<String, Any>
+            = parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 
     @After
     open fun tearDown() {

@@ -15,9 +15,6 @@ data class ChatItemPojo(
         @SerializedName("user_id")
         var userId: Int = 0,
         @Expose
-        @SerializedName("reply_id")
-        var replyId: Int = 0,
-        @Expose
         @SerializedName("sender_id")
         var senderId: String="",
         @Expose

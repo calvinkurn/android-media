@@ -35,6 +35,7 @@ import com.tokopedia.shop.home.util.Event
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -73,13 +74,9 @@ class ShopHomeViewModel @Inject constructor(
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-        get() = _initialProductListData
-    private val _initialProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
-
-    val newProductListData: LiveData<Result<GetShopHomeProductUiModel>>
-        get() = _newProductListData
-    private val _newProductListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
+    val productListData: LiveData<Result<GetShopHomeProductUiModel>>
+        get() = _productListData
+    private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -133,7 +130,7 @@ class ShopHomeViewModel @Inject constructor(
     fun getShopPageHomeData(
             shopId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
-            isRefreshShopLayout: Boolean = false
+            initialProductListData: ShopProduct.GetShopProduct?
     ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
@@ -149,9 +146,10 @@ class ShopHomeViewModel @Inject constructor(
             val productList = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
-                        if (!isRefreshShopLayout)
+                        if(initialProductListData == null)
                             getProductListData(shopId, 1, shopProductFilterParameter)
-                        else null
+                        else
+                            null
                     },
                     onError = { null }
             )
@@ -170,8 +168,16 @@ class ShopHomeViewModel @Inject constructor(
 
                 _shopHomeLayoutData.postValue(Success(it))
 
-                productList.await()?.let { productListData ->
-                    _initialProductListData.postValue(Success(productListData))
+                if(initialProductListData == null) {
+                    productList.await()?.let { productListData ->
+                        _productListData.postValue(Success(productListData))
+                    }
+                }else{
+                    _productListData.postValue(Success(mapToShopHomeProductUiModel(
+                            shopId,
+                            1,
+                            initialProductListData
+                    )))
                 }
                 sortResponse.await()?.let{  sortResponse ->
                     sortListData  = sortResponse
@@ -193,9 +199,9 @@ class ShopHomeViewModel @Inject constructor(
             val listProductData = withContext(dispatcherProvider.io) {
                 getProductListData(shopId, page, shopProductFilterParameter)
             }
-            _newProductListData.postValue(Success(listProductData))
+            _productListData.postValue(Success(listProductData))
         }) {
-            _newProductListData.postValue(Fail(it))
+            _productListData.postValue(Fail(it))
         }
     }
 
@@ -291,6 +297,10 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
+        return mapToShopHomeProductUiModel(shopId, page, productListResponse)
+    }
+
+    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
         val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
@@ -542,4 +552,5 @@ class ShopHomeViewModel @Inject constructor(
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
         }
     }
+
 }
