@@ -64,7 +64,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
-        const val EMPTY_SELLER_PROBLEM = ""
+        const val EMPTY_SELLER_PROBLEM = "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
 
         fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -275,7 +275,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                         showEmptyFilter(getString(R.string.inbox_empty_title), getString(R.string.inbox_empty_read_discussion))
                                     }
                                     is TalkInboxFilter.TalkInboxUnrespondedFilter -> {
-                                        showEmptySeller(EMPTY_SELLER_DISCUSSION, getString(R.string.inbox_unresponded_empty_title), getString(R.string.inbox_unresponded_empty_subtitle))
+                                        showEmptySeller(EMPTY_SELLER_READ_DISCUSSION, getString(R.string.inbox_unresponded_empty_title), getString(R.string.inbox_unresponded_empty_subtitle))
                                     }
                                     is TalkInboxFilter.TalkInboxProblemFilter -> {
                                         showEmptySeller(EMPTY_SELLER_PROBLEM, getString(R.string.inbox_problem_empty), getString(R.string.inbox_problem_empty_subtitle))
