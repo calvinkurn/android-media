@@ -33,7 +33,7 @@ data class DynamicProductInfoP1(
 
     val parentProductId: String
         get() =
-            if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {
+            if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {
                 data.variant.parentID
             } else {
                 basic.productID
