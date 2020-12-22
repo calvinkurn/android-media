@@ -35,7 +35,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         private set
     var canShowFooter: Boolean = false
         private set
-    var blastId: Int = 0
+    var blastId: Long = 0L
         private set
     var priceInt: Int = 0
         private set
@@ -148,7 +148,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
             productId: Int, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            blastId: Long, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
@@ -220,7 +220,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
+            blastId: Long, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
             source: String, rating: TopchatProductRating
@@ -314,9 +314,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     fun getAtcEventLabel(): String {
         val atcEventLabel = when {
-            blastId == 0 -> "chat"
-            blastId == -1 -> "drop price alert"
-            blastId == -2 -> "limited stock"
+            blastId == 0L -> "chat"
+            blastId == -1L -> "drop price alert"
+            blastId == -2L -> "limited stock"
             blastId > 0 -> "broadcast"
             else -> "chat"
         }
@@ -389,7 +389,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun fromBroadcast(): Boolean {
-        return blastId != 0
+        return blastId != 0L
     }
 
     fun isEligibleOcc(): Boolean {

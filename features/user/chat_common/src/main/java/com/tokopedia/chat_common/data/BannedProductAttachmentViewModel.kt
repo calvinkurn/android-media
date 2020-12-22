@@ -32,7 +32,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
             productId: Int, productName: String, productPrice: String, productUrl: String,
             productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
+            blastId: Long, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
             status: Int, wishList: Boolean, images: List<String>, source: String,
@@ -73,7 +73,7 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             attachmentId: String, attachmentType: String, replyTime: String, productId: Int,
             productName: String, productPrice: String, productUrl: String, productImage: String,
             isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
-            blastId: Int, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
+            blastId: Long, productPriceInt: Int, category: String, variant: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
             source: String, rating: TopchatProductRating

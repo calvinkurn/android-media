@@ -190,6 +190,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
         val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
 
+        //TODO: remove toLong()
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentViewModel(
                     chatItemPojoByDateByTime.msgId.toString(),
@@ -209,7 +210,7 @@ open class GetExistingChatMapper @Inject constructor() {
                     chatItemPojoByDateByTime.msg,
                     canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
                             chatItemPojoByDateByTime.role),
-                    chatItemPojoByDateByTime.blastId,
+                    chatItemPojoByDateByTime.blastId.toLong(),
                     pojoAttribute.productProfile.priceInt,
                     pojoAttribute.productProfile.category,
                     variant,
@@ -248,7 +249,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.msg,
                 canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
                         chatItemPojoByDateByTime.role),
-                chatItemPojoByDateByTime.blastId,
+                chatItemPojoByDateByTime.blastId.toLong(),
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
                 variant,
