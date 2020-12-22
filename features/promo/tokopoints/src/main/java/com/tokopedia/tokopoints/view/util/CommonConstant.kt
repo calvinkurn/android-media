@@ -164,5 +164,6 @@ interface CommonConstant {
         const val APIVERSION = "2.0.0"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
         const val TIMER_RED_BACKGROUND_HEX = "#EF144A"
+        const val CATALOG_CLAIM_MESSAGE = "CATALOG_CLAIM_MESSAGE"
     }
 }

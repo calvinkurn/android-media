@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.coupondetail
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
@@ -49,6 +48,7 @@ import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
@@ -82,6 +82,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     var mCTA: String = ""
     var mCode: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var redeemMessage: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -94,6 +95,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        redeemMessage = arguments?.getString(CATALOG_CLAIM_MESSAGE, "") ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,6 +111,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
         mPresenter.isPhonerVerfied()
+        ToasterHelper.showCouponClaimToast(redeemMessage,view, BOTTOM_HEIGHT_TOASTER)
     }
 
     private fun initObserver() {
@@ -734,7 +737,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         private val CONTAINER_ERROR = 2
         private val CONTAINER_SWIPE = 1
         private val CONTAINER_COUPON_ERROR = 3
-
+        private const val BOTTOM_HEIGHT_TOASTER = 76
 
         fun newInstance(extras: Bundle): Fragment {
             val fragment = CouponDetailFragment()

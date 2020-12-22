@@ -43,6 +43,7 @@ import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -290,10 +291,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun redeemCoupon(cta: String?, code: String?, title: String?, description: String?, redeemMessage: String?) {
-        RouteManager.route(context, cta)
-        if (!redeemMessage.isNullOrEmpty()) {
-            CustomToast.show(appContext, redeemMessage)
-        }
+        val intent = RouteManager.getIntent(context,cta)
+        intent.putExtra(CATALOG_CLAIM_MESSAGE,redeemMessage)
+        startActivity(intent)
     }
 
     private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
