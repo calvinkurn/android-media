@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
-import com.tokopedia.top_ads_headline.view.fragment.EditAdContentFragment
+import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
 import com.tokopedia.top_ads_headline.view.fragment.EditAdCostFragment
 import com.tokopedia.top_ads_headline.view.fragment.EditAdOthersFragment
 import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
@@ -89,7 +89,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
 
     private fun getViewPagerAdapter(): TopAdsEditPagerAdapter {
         val list: ArrayList<Fragment> = ArrayList()
-        list.add(EditAdContentFragment.newInstance())
+        list.add(AdContentFragment.newInstance())
         list.add(EditAdCostFragment.newInstance())
         list.add(EditAdOthersFragment.newInstance())
         adapter = TopAdsEditPagerAdapter(arrayOf(Constants.AD_CONTENT, Constants.AD_AND_KEYWORD_COST, Constants.OTHERS), supportFragmentManager, 0)

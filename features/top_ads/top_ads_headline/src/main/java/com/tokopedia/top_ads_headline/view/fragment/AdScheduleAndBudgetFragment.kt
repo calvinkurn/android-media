@@ -44,13 +44,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-private const val COUNTRY_ID = "ID"
-private const val LANGUAGE_ID = "in"
-private const val HEADLINE_DATETIME_FORMAT1 = "dd MMM yyyy, HH:mm"
-private const val HEADLINE_DATETIME_FORMAT2 = "dd/MM/yyyy hh:mm aa"
-private const val MAX_DAILY_BUDGET = "1.000.000.000.000"
-private const val MINUTE_INTERVAL = 30
-private const val MULTIPLIER = 3
+internal const val COUNTRY_ID = "ID"
+internal const val LANGUAGE_ID = "in"
+internal const val HEADLINE_DATETIME_FORMAT1 = "dd MMM yyyy, HH:mm"
+internal const val HEADLINE_DATETIME_FORMAT2 = "dd/MM/yyyy hh:mm aa"
+internal const val MAX_DAILY_BUDGET = "1.000.000.000.000"
+internal const val MINUTE_INTERVAL = 30
+internal const val MULTIPLIER = 3
 
 class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
@@ -188,7 +188,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             stepperModel?.dailyBudget = budget.toFloat()
             budgetCost.textFieldInput.setText(convertToCurrency(budget.toLong()))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
-            budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget)
+            budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
         }
     }
 

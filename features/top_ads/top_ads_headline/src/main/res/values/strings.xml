@@ -20,6 +20,8 @@
     <string name="topads_headline_product_list_label">Pilih Produk</string>
     <string name="topads_headline_cari_produk">Cari Produk</string>
     <string name="topads_headline_recommendasi">Rekomendasi</string>
+    <string name="topads_headline_recommendasi_price">%s •</string>
+    <string name="topads_headline_recommendasi_price_apply">Terapkan</string>
     <string name="topads_headline_over_product_selection">Kamu telah memilih maksimum 10 produk.</string>
     <string name="topads_headline_tooltip_text">Tips memilih produk.</string>
     <string name="topads_headline_select_all_recommendation">Pilih semua rekomendasi</string>
@@ -113,5 +115,25 @@
 
     <!--topads headline edit-->
     <string name="topads_headline_edit_form_label">Isi Konten Iklan</string>
+    <string name="topads_headline_edit_ad_cost_header">Biaya Iklan di halaman lainnya</string>
+    <string name="topads_headline_edit_ad_cost_sub_header">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit. </string>
+    <string name="topads_headline_edit_keyword_cost_header">Biaya kata kunci di halaman pencarian</string>
+    <string name="topads_headline_edit_keyword_cost_sub_header">Biaya ini akan dikenakan bila iklanmu diklik di hasil pencarian kata kunci pilihanmu.</string>
+    <string name="topads_headline_edit_kata_kunci">Kata Kunci</string>
+    <string name="topads_headline_edit_kata_kunci_neg">Kata Kunci Negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_header">Belum ada kata kunci dipilih</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_header">Belum ada kata kunci negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_subheader">Tambahkan kata kunci agar produkmu lebih mudah ditemukan calon pembeli.</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_subheader">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_cta">Tambah Kata Kunci</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_cta">Tambah Kata Kunci Negatif</string>
+
+    <!--tips for setting a sort type-->
+    <string name="topads_headline_sort_type_title">Tips Pencarian</string>
+    <string name="topads_headline_broad_sort_type_header">Pencarian Luas</string>
+    <string name="topads_headline_broad_sort_type_subheader">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_headline_specific_sort_type_header">Pencarian Spesifik</string>
+    <string name="topads_headline_specific_sort_type_subheader">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+
 
 </resources>

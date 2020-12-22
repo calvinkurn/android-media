@@ -37,25 +37,6 @@ class EditFormDefaultViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
-    companion object {
-        private const val QUERY_PRODUCT = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) {
-            topAdsGetPromo(shopID:${'$'}shopID, adID: ${'$'}adID) {
-                data {
-                    adType
-                    itemID
-                    status
-                    priceBid
-                    priceDaily
-                }
-                errors {
-                    code
-                    detail
-                    title
-                }
-            }
-        }"""
-    }
-
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
         validGroupUseCase.setParams(userSession.shopId.toIntOrZero(), groupName)
         validGroupUseCase.execute(

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.view.adapter
+package com.tokopedia.topads.common.view.adapter.viewpager
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
