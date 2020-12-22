@@ -6,11 +6,11 @@ import android.content.Context.NOTIFICATION_SERVICE
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.CM_CAMPAIGN_ID_EXCLUDE_LIST
+import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository.Companion.getInstance as pushRepository
-import com.tokopedia.remoteconfig.RemoteConfigKey.NOTIFICATION_TRAY_CLEAR as NOTIFICATION_TRAY_CLEAR
 
 open class NotificationCancelManager(
         private val context: Context
@@ -46,7 +46,7 @@ open class NotificationCancelManager(
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
                 val result = notifications
-                        .intersect(excludeItems) { notification, excludedItem ->
+                        .intersect(excludeCampaignIdList()) { notification, excludedItem ->
                             notification.campaignId == excludedItem.toLong()
                         }
                 invoke(result)
@@ -54,18 +54,16 @@ open class NotificationCancelManager(
         }
     }
 
+    private fun excludeCampaignIdList(): List<String> {
+        val campaignIds = remoteConfig.getStringRemoteConfig(CM_CAMPAIGN_ID_EXCLUDE_LIST)
+        return campaignIds.split(",").map { it.trim() }
+    }
+
     private fun cancelNotificationManager(context: Context, notificationId: Int) {
         NotificationManagerCompat.from(context).cancel(notificationId)
         (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.let {
             it.cancel(notificationId)
         }
-    }
-
-    companion object {
-        // Exclude items by campaignId
-        private val excludeItems = listOf(
-                "-1854" // OTP Push Notification
-        )
     }
 
 }
