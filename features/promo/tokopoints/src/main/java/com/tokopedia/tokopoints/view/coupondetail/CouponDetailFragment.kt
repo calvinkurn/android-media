@@ -413,20 +413,16 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             }
         }
 
-        if (TextUtils.isEmpty(data.minimumUsageLabel)) {
-            textMinExchangeLabel.visibility = View.GONE
-            imgMinExchange.visibility = View.GONE
-        } else {
-            imgMinExchange.visibility = View.VISIBLE
-            textMinExchangeLabel.visibility = View.VISIBLE
-            textMinExchangeLabel.text = data.minimumUsageLabel
-        }
-
         if (TextUtils.isEmpty(data.minimumUsage)) {
-            textMinExchangeValue.visibility = View.GONE
+            textMinExchangeLabel.hide()
+            imgMinExchange.hide()
+            textMinExchangeValue.hide()
         } else {
-            textMinExchangeValue.visibility = View.VISIBLE
+            textMinExchangeValue.show()
             textMinExchangeValue.text = data.minimumUsage
+            imgMinExchange.show()
+            textMinExchangeLabel.show()
+            textMinExchangeLabel.text = data.minimumUsageLabel
         }
 
         if (data.usage != null && (data.usage.activeCountDown > 0 || data.usage.expiredCountDown <= 0)) {
