@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/fontSize_lvl6"
                 app:layout_constraintBottom_toTopOf="@+id/subtitle"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -57,7 +57,7 @@
                 android:layout_marginRight="@dimen/spacing_lvl5"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/liveness_text_spacing_6"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"

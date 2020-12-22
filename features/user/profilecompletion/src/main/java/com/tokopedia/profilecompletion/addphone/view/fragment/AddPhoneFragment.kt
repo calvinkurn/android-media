@@ -20,6 +20,7 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
+import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -30,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_add_phone.*
 import javax.inject.Inject
 
 
-class AddPhoneFragment : BaseDaggerFragment() {
+open class AddPhoneFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -63,6 +64,13 @@ class AddPhoneFragment : BaseDaggerFragment() {
         setListener()
         setObserver()
         buttonSubmit.isEnabled = false
+        presetView()
+    }
+
+    private fun presetView() {
+        arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let {
+            phone -> etPhone.textFieldInput.setText(phone)
+        }
     }
 
     private fun setListener() {
@@ -139,7 +147,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.addPhoneResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddPhone(it.data)
@@ -149,7 +157,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         )
 
         viewModel.userValidateResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessUserValidate(it.data)
@@ -181,7 +189,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessAddPhone(result: AddPhoneResult) {
+    open fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
         storeLocalSession(result.phoneNumber)
         activity?.run {
@@ -195,7 +203,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun storeLocalSession(phone: String) {
+    protected fun storeLocalSession(phone: String) {
         userSession.setIsMSISDNVerified(true)
         userSession.phoneNumber = phone
     }
@@ -205,7 +213,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         progressBar?.visibility = View.VISIBLE
     }
 
-    private fun dismissLoading() {
+    protected fun dismissLoading() {
         mainView?.visibility = View.VISIBLE
         progressBar?.visibility = View.GONE
     }
@@ -225,11 +233,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        val EXTRA_PROFILE_SCORE = "profile_score"
-        val EXTRA_PHONE = "phone"
+        const val EXTRA_PROFILE_SCORE = "profile_score"
+        const val EXTRA_PHONE = "phone"
 
-        val REQUEST_COTP_PHONE_VERIFICATION = 101
-        val OTP_TYPE_PHONE_VERIFICATION = 11
+        const val REQUEST_COTP_PHONE_VERIFICATION = 101
+        const val OTP_TYPE_PHONE_VERIFICATION = 11
 
         fun createInstance(bundle: Bundle): AddPhoneFragment {
             val fragment = AddPhoneFragment()

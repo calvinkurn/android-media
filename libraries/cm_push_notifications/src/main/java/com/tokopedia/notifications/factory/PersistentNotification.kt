@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.PersistentButton
 import java.lang.Exception
@@ -49,7 +50,7 @@ class PersistentNotification internal constructor(
         // close button of persistent notification
         remoteView.setOnClickPendingIntent(R.id.image_icon5, getPersistentClosePendingIntent())
 
-        remoteView.setImageViewResource(R.id.image_icon5, if (isDarkMode()) {
+        remoteView.setImageViewResource(R.id.image_icon5, if (CMNotificationUtils.isDarkMode(context)) {
             R.drawable.cm_ic_btn_close_white
         } else {
             R.drawable.cm_ic_btn_close_black
@@ -75,20 +76,6 @@ class PersistentNotification internal constructor(
         }
 
         return remoteView
-    }
-
-    private fun isDarkMode(): Boolean {
-        return try {
-            when (context.resources.configuration.uiMode and
-                    Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                Configuration.UI_MODE_NIGHT_NO -> false
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-                else -> false
-            }
-        } catch (ignored: Exception) {
-            false
-        }
     }
 
     private fun getPersistentClickPendingIntent(persistentButton: PersistentButton): PendingIntent {

@@ -234,6 +234,8 @@
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
 
+-dontwarn com.tokopedia.sortfilter.SortFilter*
+
 
 #SELLERAPP ONLY:
 #from Apsara broadcaster 29/11/2019 document
@@ -249,3 +251,9 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn com.tokopedia.empty_state.**
+
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}

@@ -32,6 +32,10 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
 }
 
 dependencies {
@@ -60,6 +64,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.icon
@@ -129,6 +134,8 @@ dependencies {
     debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
         exclude group: 'androidx.test', module: 'core'
     })
+
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

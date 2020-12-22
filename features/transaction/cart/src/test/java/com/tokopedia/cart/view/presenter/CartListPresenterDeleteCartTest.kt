@@ -49,7 +49,7 @@ object CartListPresenterDeleteCartTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -104,7 +104,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, false)
                 }
             }
         }
@@ -131,7 +131,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false, false, false)
                 }
             }
         }
@@ -158,7 +158,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false, false, false)
                 }
             }
         }

@@ -108,8 +108,10 @@ class SmartBillsViewModel @Inject constructor(
         return mapOf(PARAM_LIMIT to limit)
     }
 
-    fun createStatementBillsParams(month: Int, year: Int): Map<String, Int> {
-        return mapOf(PARAM_MONTH to month, PARAM_YEAR to year)
+    fun createStatementBillsParams(month: Int, year: Int, source: Int? = null): Map<String, Int> {
+        val map = mutableMapOf(PARAM_MONTH to month, PARAM_YEAR to year)
+        source?.run { map[PARAM_SOURCE] = source }
+        return map
     }
 
     fun createMultiCheckoutParams(bills: List<RechargeBills>, userSession: UserSessionInterface): MultiCheckoutRequest? {
@@ -134,6 +136,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
+        const val PARAM_SOURCE = "source"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

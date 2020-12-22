@@ -76,6 +76,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     var textUserPoint: Typography? = null
     var code: String? = null
     var userPoints: String? = null
+    private var menu:Menu?=null
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -98,6 +99,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu=menu
         inflater.inflate(R.menu.menu_coupon_catalog, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -226,22 +228,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun showError(hasInternet: Boolean) {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
         mContainerMain!!.displayedChild = CONTAINER_ERROR
         serverErrorView!!.showErrorUi(hasInternet)
     }
 
     private fun showCouponError() {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
         container?.displayedChild = CONTAINER_COUPON_ERROR
         btnError.setOnClickListener {
             RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
         }
-        invalidateOptionsMenu(activity)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        val registrar = menu.findItem(R.id.action_menu_share)
-        registrar.isVisible = false
-        return
     }
 
     override fun hideLoader() {
@@ -681,6 +682,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val sendGiftFragment = SendGiftFragment()
         sendGiftFragment.arguments = bundle
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    private fun setMenuVisibility(menu: Menu , isMenuVisible: Boolean){
+            val menuItem = menu.findItem(R.id.action_menu_share)
+            menuItem?.isVisible = isMenuVisible
     }
 
     override fun onDestroyView() {

@@ -66,4 +66,20 @@ data class RechargeBills(
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
         }
+
+        enum class Source(val label: String) {
+                DEFAULT("default"),
+                FAVORITE_WIDGET("favorite"),
+                REMINDER_WIDGET("reminder");
+
+                companion object {
+                        @JvmStatic
+                        fun getSourceByString(label: String): Source {
+                                for (type in values()) {
+                                        if (type.label == label) return type
+                                }
+                                return DEFAULT
+                        }
+                }
+        }
 }
