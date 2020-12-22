@@ -2484,11 +2484,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun playWidgetOnVisibilityChanged(
             isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-            isUserVisibleHint: Boolean = userVisibleHint,
-            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+            isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
-            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+            val isViewVisible = isViewResumed && isUserVisibleHint
 
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()
