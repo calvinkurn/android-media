@@ -43,8 +43,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         // configure mirroring
         setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
-        // the fluency-first mode in which the stream ingest SDK sets the bitrate to prioritize the fluency of video streams.
-        qualityMode = AlivcQualityModeEnum.QM_FLUENCY_FIRST
+        //  the resolution-first mode in which the stream ingest SDK sets the bitrate to prioritize the resolution of video streams.
+        qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
         isEnableBitrateControl = true
         isEnableAutoResolution = true
     }
