@@ -170,8 +170,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_ATTACH_VOUCHER = 117
     private val REQUEST_REPORT_USER = 118
 
-    private var seenAttachedProduct = HashSet<Int>()
-    private var seenAttachedBannedProduct = HashSet<Int>()
+    private var seenAttachedProduct = HashSet<Long>()
+    private var seenAttachedBannedProduct = HashSet<Long>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
