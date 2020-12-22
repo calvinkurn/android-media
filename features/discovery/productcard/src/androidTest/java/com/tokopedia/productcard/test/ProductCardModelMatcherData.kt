@@ -1766,11 +1766,11 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
 
 private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Product Card With 2 Line Empty Stock",
+            productName = "Product Card With Stock label color",
             productImageUrl = productImageUrl,
             pdpViewCount = "17.7k View",
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            stockBarLabel = "Tersedia",
+            stockBarLabel = "Segera Habis",
             stockBarPercentage = 80,
             stockBarLabelColor = "#ef144a",
     )

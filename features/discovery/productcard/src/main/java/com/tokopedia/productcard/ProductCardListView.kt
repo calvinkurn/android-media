@@ -4,10 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -102,8 +105,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private fun View.renderStockLabel(productCardModel: ProductCardModel) {
         textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
             textViewStockLabel.text = productCardModel.stockBarLabel
-            if(productCardModel.stockBarLabelColor.isNotEmpty()){
+            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
                 textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
+            } else {
+                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
         }
     }
