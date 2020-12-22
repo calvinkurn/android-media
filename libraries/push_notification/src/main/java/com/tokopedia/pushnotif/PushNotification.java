@@ -96,11 +96,9 @@ public class PushNotification {
         if (!GlobalConfig.isSellerApp()) return;
 
         if (notificationId == Constant.NotificationId.CHAT) {
-            String getChatAction = "com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA";
-            sendBroadcast(context, getChatAction);
+            sendBroadcast(context, Constant.IntentFilter.GET_CHAT_SELLER_APP_WIDGET_DATA);
         } else if (notificationId == Constant.NotificationId.SELLER) {
-            String getOrderAction = "com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA";
-            sendBroadcast(context, getOrderAction);
+            sendBroadcast(context, Constant.IntentFilter.GET_ORDER_SELLER_APP_WIDGET_DATA);
         }
     }
 
