@@ -389,7 +389,6 @@ object UohAnalytics {
     }
 
     fun productViewRecommendation(userId: String, impressions: ECommerceImpressions.Impressions, isTopads: Boolean) {
-        println("++ start productViewRecommendation")
         val arrayListBundleItems = arrayListOf<Bundle>()
         val bundleImpression = Bundle().apply {
             putString(ITEM_NAME, impressions.name)
@@ -419,11 +418,9 @@ object UohAnalytics {
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
-        println("++ end productViewRecommendation")
     }
 
     fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean, userId: String) {
-        println("++ start productClickRecommendation")
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
@@ -454,11 +451,9 @@ object UohAnalytics {
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
-        println("++ end productClickRecommendation")
     }
 
     fun productAtcRecommendation(userId: String, listProduct: ArrayList<ECommerceAddRecommendation.Add.ActionField.Product>, isTopads: Boolean) {
-        println("++ start productAtcRecommendation")
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
@@ -489,6 +484,5 @@ object UohAnalytics {
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
-        println("++ end productAtcRecommendation")
     }
 }

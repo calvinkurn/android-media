@@ -239,7 +239,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("++ onCreate UohListFragment")
         userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             initialLoad()
