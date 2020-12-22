@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
@@ -16,6 +17,22 @@ import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.card_view
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.check_box
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.img_menu
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.item_card
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.klik_count
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.label
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.pendapatan_count
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.pengeluaran_count
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.persentase_klik_count
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.produk_terjual_count
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.progress_bar
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.progress_layout
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.progress_status1
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.progress_status2
+import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.tampil_count
+import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 import java.lang.NumberFormatException
 
 
@@ -38,6 +55,7 @@ class NonGroupItemsItemViewHolder(val view: View,
     }
 
     override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+        view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
         item.let {
             when (it.data.adStatusDesc) {
 

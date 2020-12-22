@@ -105,7 +105,7 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_start"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budget_parent"
+                app:layout_constraintBottom_toTopOf="@+id/budgetEditText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
@@ -118,29 +118,22 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_end"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budget_parent"
+                app:layout_constraintBottom_toTopOf="@+id/budgetEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/budget_parent"
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/budgetEditText"
                 style="@style/TextInputLayout"
                 android:layout_width="0dp"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
+                android:inputType="number"
+                android:layout_marginTop="@dimen/dp_24"
+                android:maxLines="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/range_start"
-                app:layout_constraintWidth_percent=".70">
-
-                <com.tokopedia.seller.common.widget.PrefixEditText
-                    android:id="@+id/budgetEditText"
-                    style="@style/EditText.Currency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:maxLines="1"
-                    app:prefix="Rp " />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintWidth_percent=".70"
+                app:prefix="Rp "/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/error_text"
@@ -148,8 +141,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/bright_red"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/budget_parent"
-                app:layout_constraintTop_toBottomOf="@+id/budget_parent"
+                app:layout_constraintStart_toStartOf="@+id/budgetEditText"
+                app:layout_constraintTop_toBottomOf="@+id/budgetEditText"
                 app:typographyType="body_3"
                 tools:text="error"
                 tools:visibility="visible" />

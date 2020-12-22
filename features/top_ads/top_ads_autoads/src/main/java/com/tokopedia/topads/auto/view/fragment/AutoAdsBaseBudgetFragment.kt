@@ -34,6 +34,7 @@ import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,7 +48,7 @@ import javax.inject.Inject
 abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var seekBar: RangeSeekBar
     lateinit var priceRange: TextView
-    lateinit var priceEditText: EditText
+    lateinit var priceEditText: TextFieldUnify
     lateinit var budgetViewModel: DailyBudgetViewModel
     lateinit var progressBar: LoaderUnify
     lateinit var errorText: TextView
@@ -106,16 +107,16 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                 eligible()
         })
 
-        priceEditText.addTextChangedListener(
-                object : NumberTextWatcher(priceEditText, "0") {
+        priceEditText.textFieldInput.addTextChangedListener(
+                object : NumberTextWatcher(priceEditText.textFieldInput, "0") {
 
                     override fun afterTextChanged(s: Editable) {
-                        priceEditText.removeTextChangedListener(this)
+                        priceEditText.textFieldInput.removeTextChangedListener(this)
                         var text = replace(s.toString())
                         if (text.isEmpty())
                             text = "0"
                         try {
-                            priceEditText.setText(convertToCurrencyString(text.toLong()))
+                            priceEditText.textFieldInput.setText(convertToCurrencyString(text.toLong()))
                         } catch (e: NumberFormatException) {
                             e.printStackTrace()
                         }
@@ -129,7 +130,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                             errorText.visibility = View.GONE
                             btnSubmit.isEnabled = true                                                                                          
                         }
-                        priceEditText.addTextChangedListener(this)
+                        priceEditText.textFieldInput.addTextChangedListener(this)
                     }
                 })
     }
@@ -146,7 +147,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         rangeEnd.text = data.maxDailyBudgetFmt
         minDailyBudget = data.minDailyBudget
         maxDailyBudget = data.maxDailyBudget
-        priceEditText.setText(data.minDailyBudgetFmt.replace("Rp", ""))
+        priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.replace("Rp", ""))
         shopStatus = data.shopStatus
         seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
         seekBar.value = budget
@@ -169,12 +170,12 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     private fun getPotentialReach(): CharSequence? {
-        return budgetViewModel.getPotentialImpressionGQL(replace(priceEditText.text.toString()).toInt()
+        return budgetViewModel.getPotentialImpressionGQL(replace(priceEditText.textFieldInput.text.toString()).toInt()
                 , lowClickDivider)
     }
 
     fun estimateImpression(progress: Int) {
-        priceEditText.setText(progress.toString())
+        priceEditText.textFieldInput.setText(progress.toString())
         priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
     }
 
@@ -205,7 +206,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     fun activatedAds() {
-        val budget = replace(priceEditText.text.toString()).toInt()
+        val budget = replace(priceEditText.textFieldInput.text.toString()).toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 TOGGLE_ON,
                 CHANNEL,

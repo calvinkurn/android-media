@@ -48,10 +48,8 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             app:unifyImageButtonVariant="image"
-            app:unifyImageButtonType="main"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_dashboard_menu" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/check_box"

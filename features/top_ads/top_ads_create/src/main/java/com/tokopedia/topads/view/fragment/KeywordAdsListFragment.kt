@@ -98,10 +98,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
-        emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
-        emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
         keywordSelectedAdapter = KeywordSelectedAdapter(::onItemUnchecked)
 
@@ -322,6 +318,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         shopID = UserSession(view.context).shopId
         startLoading(true)
         setStepLayout(View.GONE)
+        emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         btn_next.setOnClickListener {
             if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
                 gotoNextStage()

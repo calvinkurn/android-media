@@ -64,7 +64,6 @@ import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.app_bar_layout_2
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.hari_ini
@@ -247,6 +246,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun getViewPagerAdapter(): GroupNonGroupPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(TopAdsDashboardConstant.GRUP)
         tab_layout?.addNewTab(TopAdsDashboardConstant.TANPA_GRUP)
         list.add(TopAdsDashGroupFragment())
