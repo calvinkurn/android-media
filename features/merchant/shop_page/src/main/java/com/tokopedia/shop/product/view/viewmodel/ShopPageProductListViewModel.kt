@@ -19,6 +19,8 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -72,8 +74,6 @@ class ShopPageProductListViewModel @Inject constructor(
     val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherUiModel>>()
     val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedUiModel>>()
     val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightUiModel>>()
-    val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleUiModel>>()
-    val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
     val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
@@ -84,13 +84,10 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.deviceId
     private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase?>()
 
-    fun getBuyerShopPageProductTabData(
+    fun getBuyerViewContentData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            shopEtalaseItemDataModel: ShopEtalaseItemDataModel,
-            isShowNewShopHomeTab: Boolean,
-            initialProductListData: GetShopProductUiModel?,
-            shopProductFilterParameter: ShopProductFilterParameter
+            isShowNewShopHomeTab: Boolean
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -113,24 +110,6 @@ class ShopPageProductListViewModel @Inject constructor(
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
-                val productListDataAsync = async(Dispatchers.IO) {
-                    if (initialProductListData == null) {
-                        getProductList(
-                                getShopProductUseCase,
-                                shopId,
-                                START_PAGE,
-                                ShopPageConstant.DEFAULT_PER_PAGE,
-                                shopEtalaseItemDataModel.etalaseId,
-                                "",
-                                shopProductFilterParameter.getSortId().toIntOrZero(),
-                                shopProductFilterParameter.getRating(),
-                                shopProductFilterParameter.getPmax(),
-                                shopProductFilterParameter.getPmax()
-                        )
-                    } else {
-                        null
-                    }
-                }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
                 }
@@ -142,25 +121,6 @@ class ShopPageProductListViewModel @Inject constructor(
                 }
                 shopProductEtalaseHighlightDataAsync.await()?.let {
                     shopProductEtalaseHighlightData.postValue(Success(it))
-                }
-                var totalProductData = 0
-                val isProductListNotEmpty = if (null != initialProductListData) {
-                    totalProductData = initialProductListData.totalProductData
-                    initialProductListData.listShopProductUiModel.isNotEmpty()
-                } else {
-                    val productListDataModel = productListDataAsync.await()
-                    productListDataModel?.let {
-                        productListData.postValue(Success(productListDataModel))
-                        totalProductData = productListDataModel.totalProductData
-                        productListDataModel.listShopProductUiModel.isNotEmpty()
-                    } ?: false
-                }
-                if (isProductListNotEmpty) {
-                    shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleUiModel(
-                            shopEtalaseItemDataModel.etalaseName,
-                            shopEtalaseItemDataModel.etalaseBadge
-                    )))
-                    shopProductChangeProductGridSectionData.postValue(Success(totalProductData))
                 }
             }
         },
@@ -302,37 +262,10 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    fun getNewProductListData(
+    fun getProductListData(
             shopId: String,
-            selectedEtalaseId: String,
-            shopProductFilterParameter: ShopProductFilterParameter
-    ) {
-        launchCatchError(block = {
-            val listShopProduct = withContext(dispatcherProvider.io) {
-                getProductList(
-                        getShopProductUseCase,
-                        shopId,
-                        START_PAGE,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
-                        selectedEtalaseId,
-                        "",
-                        shopProductFilterParameter.getSortId().toIntOrZero(),
-                        shopProductFilterParameter.getRating(),
-                        shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin()
-                )
-            }
-            shopProductChangeProductGridSectionData.postValue(Success(listShopProduct.totalProductData))
-            productListData.postValue(Success(listShopProduct))
-        }) {
-            productListData.postValue(Fail(it))
-        }
-    }
-
-    fun getNextProductListData(
-            shopId: String,
-            selectedEtalaseId: String,
             page: Int,
+            selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
@@ -350,7 +283,6 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getPmin()
                 )
             }
-            shopProductChangeProductGridSectionData.postValue(Success(listShopProduct.totalProductData))
             productListData.postValue(Success(listShopProduct))
         }) {
             productListData.postValue(Fail(it))
@@ -431,8 +363,23 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun setInitialProductList(initialProductListData: GetShopProductUiModel) {
-        productListData.postValue(Success(initialProductListData))
+    fun setInitialProductList(
+            shopId: String,
+            initialProductListData: ShopProduct.GetShopProduct
+    ) {
+        productListData.postValue(Success(
+                GetShopProductUiModel(
+                        ShopUtil.isHasNextPage(
+                                START_PAGE,
+                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                initialProductListData.totalData
+                        ),
+                        initialProductListData.data.map {
+                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), "")
+                        },
+                        initialProductListData.totalData
+                )
+        ))
     }
 
     fun getBottomSheetFilterData() {
