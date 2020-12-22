@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
@@ -32,8 +34,8 @@ class SearchProductTopAdsImageViewHolder(
             topAdsImageView.hide()
         }
 
-        topAdsImageView?.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
+        topAdsImageView?.addOnImpressionListener(element, object: ViewHintListener {
+            override fun onViewHint() {
                 topAdsImageViewListener.onTopAdsImageViewImpressed(
                         topAdsImageView.javaClass.canonicalName,
                         element

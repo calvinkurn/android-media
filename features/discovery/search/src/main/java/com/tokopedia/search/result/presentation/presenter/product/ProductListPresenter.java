@@ -1093,9 +1093,6 @@ final class ProductListPresenter
         productList = createProductItemVisitableList(productViewModel);
         list.addAll(productList);
 
-        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList();
-        processTopAdsImageViewModel(searchParameter, list);
-
         processHeadlineAds(searchParameter, list);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
@@ -1109,6 +1106,9 @@ final class ProductListPresenter
         processInspirationCardPosition(searchParameter, list);
 
         processBroadMatch(searchProduct, list);
+
+        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList();
+        processTopAdsImageViewModel(searchParameter, list);
 
         addSearchInTokopedia(searchProduct, list);
 
