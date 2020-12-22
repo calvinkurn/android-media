@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 
 data class HomeData(
@@ -16,5 +17,6 @@ data class HomeData(
     val spotlight: Spotlight = Spotlight(),
     @SerializedName("homeFlag")
     val homeFlag: HomeFlag = HomeFlag(),
-    var token: String = ""
+    var token: String = "",
+    var atfData: HomeAtfData? = HomeAtfData()
 )

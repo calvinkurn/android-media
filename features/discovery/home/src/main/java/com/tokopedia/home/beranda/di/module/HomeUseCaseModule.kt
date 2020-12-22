@@ -15,6 +15,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
@@ -417,6 +418,15 @@ class HomeUseCaseModule {
             "  }\n" +
             "}"
 
+    private val atfQuery = "query getAtf {\n" +
+            "  dynamicPosition{\n" +
+            "    id\n" +
+            "    name\n" +
+            "    component\n" +
+            "    param\n" +
+            "    isOptional\n" +
+            "    }\n" +
+            "}"
     @HomeScope
     @Provides
     fun graphqlUseCase(): GraphqlUseCase {
@@ -566,6 +576,14 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
         useCase.setGraphqlQuery(homeQuery)
         return GetHomeDataUseCase(useCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository): GetHomeAtfUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
+        useCase.setGraphqlQuery(atfQuery)
+        return GetHomeAtfUseCase(useCase)
     }
 
     @Provides

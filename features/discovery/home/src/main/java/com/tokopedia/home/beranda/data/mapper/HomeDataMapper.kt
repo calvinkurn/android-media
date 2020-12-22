@@ -43,6 +43,7 @@ class HomeDataMapper(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
                 .addEmptyBanner()
                 .addUserWalletVisitable()
+                .addAtfComponentVisitable()
 
         if (showGeolocation) factory.addGeolocationVisitable()
 

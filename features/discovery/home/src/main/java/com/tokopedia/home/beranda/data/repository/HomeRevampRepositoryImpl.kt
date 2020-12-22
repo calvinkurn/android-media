@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
@@ -51,9 +52,16 @@ class HomeRevampRepositoryImpl @Inject constructor(
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
-
+            val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }
             val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
             val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
+
+            val homeAtfResponseValue = try {
+                homeAtfResponse.await()
+            } catch (e: Exception) {
+                HomeAtfData()
+            }
+
 
             var homeDataCombined: HomeData? = HomeData()
 
@@ -73,6 +81,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
             }
 
+            homeDataResponseValue?.atfData = homeAtfResponseValue
             homeDataResponseValue?.banner?.timestamp = currentTimeMillisString
 
             /**

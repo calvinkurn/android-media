@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
@@ -128,4 +129,6 @@ interface HomeCategoryListener {
     fun declineSalamItem(requestParams: Map<String, Int>)
 
     fun getSalamWidget()
+
+    fun getRechargeBUWidget(source: WidgetSource)
 }
