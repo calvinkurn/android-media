@@ -2,14 +2,16 @@ package com.tokopedia.explore
 
 import com.tokopedia.home.explore.domain.GetExploreDataUseCase
 import com.tokopedia.home.explore.domain.GetExploreLocalDataUseCase
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel
 import com.tokopedia.home.explore.view.presentation.ExploreContract
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.slot
 import org.junit.Test
 import rx.Observable
+import rx.Subscriber
 
 /**
  * Created by Lukas on 12/18/20.
@@ -32,9 +34,15 @@ class ExplorePresenterTest {
     @Test
     fun `Test get data`(){
         presenter.attachView(viewListener)
-        every { localDataUseCase.getExecuteObservable(any()) } returns Observable.just(listOf())
-        every { dataUseCase.getExecuteObservable(any()) } returns Observable.just(listOf())
+        val subscriber = slot<Subscriber<List<ExploreSectionDataModel>>>()
+        val mockData = mockk<Observable<List<ExploreSectionDataModel>>>(relaxed = true)
+        every { localDataUseCase.getExecuteObservable(any()) } returns mockData
+        every { dataUseCase.getExecuteObservable(any()) } returns mockData
+        every { mockData.subscribe(capture(subscriber)) } answers  {
+            subscriber.captured.onNext(listOf())
+            subscriber.captured
+        }
         presenter.getData()
-        verify { viewListener.renderData(any()) }
+        assert(presenter.compositeSubscription.hasSubscriptions())
     }
 }

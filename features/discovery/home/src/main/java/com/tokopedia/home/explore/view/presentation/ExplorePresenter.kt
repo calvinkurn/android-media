@@ -22,9 +22,9 @@ import javax.inject.Inject
  * Created by Lukas on 12/18/20.
  */
 class ExplorePresenter @Inject constructor(
-        var dataUseCase: GetExploreDataUseCase,
-        var localDataUseCase: GetExploreLocalDataUseCase,
-        var userSession: UserSession
+        private val dataUseCase: GetExploreDataUseCase,
+        private val localDataUseCase: GetExploreLocalDataUseCase,
+        private val userSession: UserSession
 ): BaseDaggerPresenter<ExploreContract.View>(), ExploreContract.Presenter {
 
     val compositeSubscription: CompositeSubscription = CompositeSubscription()
@@ -83,7 +83,7 @@ class ExplorePresenter @Inject constructor(
         }
     }
 
-    fun getDataFromNetwork(): Observable<List<ExploreSectionDataModel?>?> {
+    private fun getDataFromNetwork(): Observable<List<ExploreSectionDataModel?>?> {
         val requestParams = RequestParams.create()
         requestParams.putString(ConstantKey.RequestKey.USER_ID, userSession.userId)
         return dataUseCase.getExecuteObservable(requestParams)
