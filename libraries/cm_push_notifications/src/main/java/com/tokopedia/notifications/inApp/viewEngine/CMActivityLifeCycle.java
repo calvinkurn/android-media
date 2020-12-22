@@ -28,8 +28,12 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     private CmActivityLifecycleHandler lifecycleHandler;
     private NotificationCancelManager cancelManager;
 
-    public CMActivityLifeCycle(CmActivityLifecycleHandler lifecycleHandler) {
+    public CMActivityLifeCycle(
+            CmActivityLifecycleHandler lifecycleHandler,
+            NotificationCancelManager cancelManager
+    ) {
         this.lifecycleHandler = lifecycleHandler;
+        this.cancelManager = cancelManager;
     }
 
     @Override
@@ -50,7 +54,6 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
-            cancelManager = new NotificationCancelManager(activity.getApplicationContext());
             cancelManager.clearNotifications();
         } catch (Exception e) {
             Timber.e(e);

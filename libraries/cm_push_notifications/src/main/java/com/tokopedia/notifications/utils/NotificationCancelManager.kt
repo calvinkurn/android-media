@@ -66,4 +66,14 @@ open class NotificationCancelManager(
         }
     }
 
+    companion object {
+        @Volatile private var instance: NotificationCancelManager? = null
+
+        @JvmStatic
+        fun getInstance(context: Context) =
+                instance ?: synchronized(this) {
+                    instance ?: NotificationCancelManager(context).also { instance = it }
+                }
+    }
+
 }

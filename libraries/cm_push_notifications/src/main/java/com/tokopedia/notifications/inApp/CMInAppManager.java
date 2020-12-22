@@ -27,6 +27,7 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,6 +71,8 @@ public class CMInAppManager implements CmInAppListener,
     public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
 
+    private NotificationCancelManager cancelManager;
+
     static {
         inAppManager = new CMInAppManager();
     }
@@ -96,6 +99,7 @@ public class CMInAppManager implements CmInAppListener,
                 this,
                 this);
         dataConsumer = new DataConsumerImpl();
+        cancelManager = NotificationCancelManager.getInstance(application.getApplicationContext());
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
         initInAppManager();
     }
