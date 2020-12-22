@@ -56,7 +56,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
-        if (data.data?.originData?.priceOriginal != 0) {
+        if (data.data?.originData?.priceOriginal != 0L) {
             var hasSlashPrice = false
             if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 itemView.text_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal

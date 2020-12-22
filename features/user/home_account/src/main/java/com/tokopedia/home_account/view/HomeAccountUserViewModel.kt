@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
@@ -65,6 +66,16 @@ class HomeAccountUserViewModel @Inject constructor(
     val firstRecommendationData : LiveData<Result<RecommendationWidget>>
         get() = _firstRecommendationData
 
+    private val _walletData = MutableLiveData<Result<WalletModel>>()
+    val walletData : LiveData<Result<WalletModel>>
+        get() = _walletData
+
+    private val _shortcutData = MutableLiveData<Result<ShortcutResponse>>()
+    val shortcutData : LiveData<Result<ShortcutResponse>>
+        get() = _shortcutData
+
+    var internalBuyerData: UserAccountDataModel? = null
+
     fun setSafeMode(isActive: Boolean){
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
                 { (userProfileSettingUpdate) ->
@@ -78,14 +89,29 @@ class HomeAccountUserViewModel @Inject constructor(
                 }, isActive)
     }
 
+    fun getShortcutData(){
+        launchCatchError(block = {
+            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
+            _shortcutData.value = Success(shortcutResponse)
+        }, onError = {
+            _shortcutData.postValue(Fail(it))
+        })
+    }
+
+    fun getWalletBalance(){
+        launchCatchError(block = {
+            val wallet = getBuyerWalletBalance()
+            _walletData.value = Success(wallet)
+        }, onError = {
+            _walletData.postValue(Fail(it))
+        })
+    }
+
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
-            val walletModel = getBuyerWalletBalance()
-            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
             withContext(dispatcher) {
-                accountModel.wallet = walletModel
-                accountModel.shortcutResponse = shortcutResponse
+                internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.value = Success(accountModel)
             }

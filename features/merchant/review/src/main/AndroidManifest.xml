@@ -27,7 +27,19 @@
             android:name=".feature.reviewdetail.view.activity.SellerReviewDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_seller_review_detail_page"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".feature.reviewreply.view.activity.SellerReviewReplyActivity"
