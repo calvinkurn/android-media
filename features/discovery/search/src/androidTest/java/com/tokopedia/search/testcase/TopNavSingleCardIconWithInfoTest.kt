@@ -15,13 +15,10 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -43,7 +40,7 @@ internal class TopNavSingleCardIconWithInfoTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        setupGraphqlMockResponse(SearchMockModelConfigKeywordTiketPesawatBandung())
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_tiket_pesawat_bandung))
 
         disableOnBoarding(context)
 
@@ -62,7 +59,7 @@ internal class TopNavSingleCardIconWithInfoTest {
     }
 
     @Test
-    fun testTopNavSinglePill() {
+    fun testTopNavSingleCardIconWithInfo() {
         performUserJourney()
     }
 

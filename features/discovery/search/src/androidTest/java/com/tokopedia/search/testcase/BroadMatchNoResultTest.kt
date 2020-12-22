@@ -18,14 +18,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-internal class TopNavSinglePillTest {
+internal class BroadMatchNoResultTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -40,7 +41,7 @@ internal class TopNavSinglePillTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_qurban))
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_broad_match_no_result_response))
 
         disableOnBoarding(context)
 
@@ -59,7 +60,7 @@ internal class TopNavSinglePillTest {
     }
 
     @Test
-    fun testTopNavSinglePill() {
+    fun testBroadMatchLowResult() {
         performUserJourney()
     }
 
@@ -67,9 +68,10 @@ internal class TopNavSinglePillTest {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
         val productListAdapter = recyclerView.getProductListAdapter()
-        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
+        val broadMatchViewModelPosition = productListAdapter.itemList.getBroadMatchViewModelPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, click()))
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchSeeMore)))
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<BroadMatchViewHolder>(broadMatchViewModelPosition, clickChildViewWithId(R.id.searchBroadMatchList)))
     }
 
     @After

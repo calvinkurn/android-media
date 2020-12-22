@@ -47,7 +47,7 @@ internal class SearchProductTrackingTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        setupGraphqlMockResponse(SearchMockModelConfig())
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_common_response))
 
         disableOnBoarding(context)
 
@@ -84,14 +84,6 @@ internal class SearchProductTrackingTest {
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
 
         activityRule.activity.finish()
-    }
-
-    private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
-    }
-
-    private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
-        return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
     }
 
     @After

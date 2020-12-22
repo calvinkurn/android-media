@@ -3,7 +3,10 @@ package com.tokopedia.search
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -16,6 +19,8 @@ import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import org.hamcrest.Matcher
+
 
 internal const val QUERY_PARAMS_WITH_KEYWORD = "?q=samsung"
 
@@ -113,5 +118,22 @@ internal fun createRecommendationListener(): RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+    }
+}
+
+internal fun clickChildViewWithId(id: Int): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click on a child view with specified id."
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val v: View = view.findViewById(id)
+            v.performClick()
+        }
     }
 }

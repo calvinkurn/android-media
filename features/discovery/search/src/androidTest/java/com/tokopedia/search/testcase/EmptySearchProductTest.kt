@@ -25,7 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-internal class TopNavSinglePillTest {
+internal class EmptySearchProductTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -36,11 +36,13 @@ internal class TopNavSinglePillTest {
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
 
+    private val emptyStateProductLayout = R.id.main_retry
+
     @Before
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_qurban))
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_empty_search_response))
 
         disableOnBoarding(context)
 
@@ -59,7 +61,7 @@ internal class TopNavSinglePillTest {
     }
 
     @Test
-    fun testTopNavSinglePill() {
+    fun testEmptySearchProduct() {
         performUserJourney()
     }
 
@@ -67,9 +69,26 @@ internal class TopNavSinglePillTest {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
         val productListAdapter = recyclerView.getProductListAdapter()
-        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
+        val emptySearchProductViewModelPosition = productListAdapter.itemList.getEmptySearchProductViewModelPosition()
+        val recommendationTitleViewModelPosition = productListAdapter.itemList.getRecommendationTitleViewModelPosition()
+        val recommendationItemViewModelPosition = productListAdapter.itemList.getRecommendationItemViewModelPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, click()))
+        assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition)
+        assertRecommendationBehaviour(recommendationTitleViewModelPosition, recommendationItemViewModelPosition)
+    }
+
+    private fun assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition: Int) {
+        assert(emptySearchProductViewModelPosition != -1) {
+            "EmptySearchProductViewModel should be in the list"
+        }
+        onView(withId(emptyStateProductLayout)).check(matches(isDisplayed()))
+    }
+
+    private fun assertRecommendationBehaviour(recommendationTitleViewModelPosition: Int, recommendationItemViewModelPosition: Int) {
+        assert(recommendationTitleViewModelPosition != -1) {
+            "RecommendationTitleViewModel should be in the list"
+        }
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(recommendationItemViewModelPosition, click()))
     }
 
     @After
