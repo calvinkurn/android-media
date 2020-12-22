@@ -3,7 +3,7 @@
     
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
-    <string name="product_manage_stock_info_description">Produk dengan stok 0 tidak ditampilkan di tokomu.</string>
+    <string name="product_manage_stock_info_description">Stock 0 tidak muncul di calon pembeli</string>
     <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
