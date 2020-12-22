@@ -11,7 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BannerTimerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BannerTimerViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val bannerTimeData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
@@ -54,6 +54,8 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
             navigate(context, it.applinks)
         }
     }
+
+    fun getComponent() = components
 
     override fun onStop() {
         stopTimer()

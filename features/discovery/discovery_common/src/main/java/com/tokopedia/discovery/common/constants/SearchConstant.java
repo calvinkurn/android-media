@@ -85,6 +85,12 @@ public interface SearchConstant {
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
+        String SEARCH_PRODUCT_PARAMS = "params";
+        String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
+        String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
+        String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
     }
 
     interface SearchShop {

@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 
 object LastApplyMapper {
 
@@ -30,7 +30,9 @@ object LastApplyMapper {
                     val lastApplyVoucherOrdersItemUiModel = LastApplyVoucherOrdersItemUiModel()
                     val voucherOrdersItem = lastApply.data?.voucherOrders?.get(i)
                     if (voucherOrdersItem != null) {
-                        val (_, code, uniqueId, _, _, _, _, message) = voucherOrdersItem
+                        val message = voucherOrdersItem.message
+                        val code = voucherOrdersItem.code
+                        val uniqueId = voucherOrdersItem.uniqueId
                         if (code != null && uniqueId != null && message?.color != null && message.state != null && message.text != null) {
                             lastApplyVoucherOrdersItemUiModel.code = code
                             lastApplyVoucherOrdersItemUiModel.uniqueId = uniqueId
