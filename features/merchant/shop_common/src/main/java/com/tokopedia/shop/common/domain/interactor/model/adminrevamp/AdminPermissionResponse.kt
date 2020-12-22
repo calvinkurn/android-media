@@ -12,14 +12,14 @@ data class AdminPermissionResponse(
 data class GetAdminPermission(
         @SerializedName("admin_data")
         @Expose
-        val adminData: List<AdminPermissionData>? = listOf()
+        val adminData: List<AdminPermissionData>? = listOf(),
+        @SerializedName("response_detail")
+        @Expose
+        val responseDetail: AdminResponseDetail? = AdminResponseDetail()
 )
 
 data class AdminPermissionData(
         @SerializedName("permission_list")
         @Expose
-        val permissionList: List<AdminPermission>? = listOf(),
-        @SerializedName("response_detail")
-        @Expose
-        val responseDetail: AdminResponseDetail? = AdminResponseDetail()
+        val permissionList: List<AdminPermission>? = listOf()
 )

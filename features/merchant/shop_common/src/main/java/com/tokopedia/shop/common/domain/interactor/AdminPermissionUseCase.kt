@@ -24,14 +24,14 @@ class AdminPermissionUseCase @Inject constructor(
         setTypeClass(AdminPermissionResponse::class.java)
     }
 
-    suspend fun execute(vararg permissionToCheck: String): Boolean? {
+    suspend fun execute(vararg permissionToCheck: String): Boolean {
         val response = executeOnBackground()
-        response.adminInfo?.adminData?.let { adminData ->
-            adminData.firstOrNull()?.responseDetail?.errorMessage.let { error ->
+        response.adminInfo?.let { info ->
+            info.responseDetail?.errorMessage.let { error ->
                 if (error.isNullOrEmpty()) {
                     return getIsPermissionValid(
                             permissionToCheck.toList(),
-                            adminData.firstOrNull()?.permissionList?.map { it.id }
+                            info.adminData?.firstOrNull()?.permissionList?.map { it.id }
                     )
                 } else {
                     throw MessageErrorException(error)
