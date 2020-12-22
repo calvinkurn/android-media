@@ -63,6 +63,7 @@ object ParamObject {
     const val TYPE_HEADLINE_KEYWORD = "headline/keyword"
     const val INPUT = "input"
     const val HEADLINE_SOURCE = "dashboard_create_headline_app"
+    const val EDIT_HEADLINE_PAGE = "edit_headline_page"
     const val ACTION_CREATE = "create"
     const val HEADLINE_KEYWORD_TYPE = "positive_phrase"
     const val ACTIVE_STATUS = "active"

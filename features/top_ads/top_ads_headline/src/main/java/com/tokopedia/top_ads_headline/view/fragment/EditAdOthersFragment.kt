@@ -12,12 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
-import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
+import com.tokopedia.top_ads_headline.view.viewmodel.EditAdOthersViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.data.util.DateTimeUtils
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
@@ -49,7 +50,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var adDetailsViewModel: AdDetailsViewModel
+    private lateinit var editAdOthersViewModel: EditAdOthersViewModel
 
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
     private var stepperModel: HeadlineAdStepperModel? = null
@@ -60,7 +61,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adDetailsViewModel = ViewModelProvider(this, viewModelFactory).get(AdDetailsViewModel::class.java)
+        editAdOthersViewModel = ViewModelProvider(this, viewModelFactory).get(EditAdOthersViewModel::class.java)
         activity?.let {
             sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
@@ -82,19 +83,19 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpObservers()
-        setUpAdNameEditText()
         budgetCost.textFieldInput.isSaveEnabled = false
         startDate.textFieldInput.isSaveEnabled = false
         endDate.textFieldInput.isSaveEnabled = false
-        setMinBid()
-        setUpToolTip()
-        setUpScheduleView()
-        setUpLimitView()
     }
 
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
             stepperModel = it
+            setUpAdNameEditText()
+            setMinBid()
+            setUpToolTip()
+            setUpScheduleView()
+            setUpLimitView()
         })
     }
 
@@ -149,6 +150,18 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpScheduleView() {
+        if (stepperModel?.startDate?.isNotBlank() == true) {
+            stepperModel?.startDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
+                selectedStartDate = Calendar.getInstance()
+                selectedStartDate?.time = it
+            }
+        }
+        if (stepperModel?.endDate?.isNotBlank() == true) {
+            stepperModel?.endDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
+                selectedEndDate = Calendar.getInstance()
+                selectedEndDate?.time = it
+            }
+        }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
         val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -185,15 +198,18 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun setDate() {
         context?.run {
-            if (selectedStartDate == null || selectedEndDate == null) {
+            if (selectedStartDate == null) {
                 selectedStartDate = getToday()
-                selectedEndDate = getSpecifiedDateFromToday(month = 1)
                 val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 startDate.textFieldInput.setText(startDateString)
+            } else {
+                startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
+            }
+            if (selectedEndDate == null) {
+                selectedEndDate = getSpecifiedDateFromToday(month = 1)
                 val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 endDate.textFieldInput.setText(endDateString)
             } else {
-                startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
                 endDate.textFieldInput.setText(selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
             }
         }
@@ -284,6 +300,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpAdNameEditText() {
+        headlineAdNameInput?.textFieldInput?.setText(stepperModel?.groupName)
         headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -315,7 +332,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun validateGroup(s: String?) {
         s?.let {
-            adDetailsViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+            editAdOthersViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
         }
     }
 

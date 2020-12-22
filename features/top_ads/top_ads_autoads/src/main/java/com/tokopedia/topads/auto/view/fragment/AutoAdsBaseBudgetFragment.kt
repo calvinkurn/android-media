@@ -20,7 +20,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
@@ -30,6 +29,7 @@ import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -37,7 +37,6 @@ import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -97,9 +96,9 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
         budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
-            budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
+            budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
-        budgetViewModel.autoAdsData.observe(this, Observer {
+        budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             if (topAdsDeposit <= 0) {
                 insufficientCredit()
             } else
@@ -135,8 +134,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onSuccessBudgetInfo(response: TopadsBidInfo.Response) {
-        val data = response.bidInfo.data[0]
+    private fun onSuccessBudgetInfo(response: ResponseBidInfo.Result) {
+        val data = response.topadsBidInfo.data[0]
         var budget = data.minDailyBudget
         val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
         if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {

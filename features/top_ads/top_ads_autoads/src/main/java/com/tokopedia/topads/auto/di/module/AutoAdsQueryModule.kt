@@ -27,12 +27,6 @@ class AutoAdsQueryModule(val context: Context) {
 
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyObject.QUERY_ADS_BID_INFO)
-    fun queryBidInfo(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_bid_info)
-
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
     fun queryGetAutoAds(@ActivityContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status)

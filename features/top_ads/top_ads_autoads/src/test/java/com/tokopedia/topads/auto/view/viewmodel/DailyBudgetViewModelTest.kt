@@ -4,17 +4,16 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
-import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +48,7 @@ class DailyBudgetViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         repository = mockk()
         context = mockk()
-        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries))
+        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries, mockk()))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -59,11 +58,11 @@ class DailyBudgetViewModelTest {
     @Test
     fun `test exception in getBudgetInfo`() {
         val t = Exception("my excep")
-        var data: TopadsBidInfo.Response? = null
+        var data: ResponseBidInfo.Result? = null
 
         coEvery { repository.getReseponse(any(), any()) } throws t
 
-        viewModel.getBudgetInfo(0, "reqType", "source") {
+        viewModel.getBudgetInfo("reqType", "source") {
             data = it
         }
 
@@ -75,15 +74,16 @@ class DailyBudgetViewModelTest {
     fun `test result in getBudgetInfo`() {
         val expected = 2
         var actual = 0
-        val bidInfoData: TopadsBidInfo.Response = TopadsBidInfo.Response(TopadsBidInfo(data = listOf(BidInfoData(shopStatus = expected))))
+        val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(com.tokopedia.topads.common.data.response.TopadsBidInfo(data =
+        listOf(com.tokopedia.topads.common.data.response.TopadsBidInfo.DataItem(shopStatus = expected))))
         val response: GraphqlResponse = mockk(relaxed = true)
 
         coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(TopadsBidInfo.Response::class.java) } returns listOf()
-        every { response.getData<TopadsBidInfo.Response>(TopadsBidInfo.Response::class.java) } returns bidInfoData
+        every { response.getError(ResponseBidInfo.Result::class.java) } returns listOf()
+        every { response.getData<ResponseBidInfo.Result>(ResponseBidInfo.Result::class.java) } returns bidInfoData
 
-        viewModel.getBudgetInfo(0, "reqType", "source") {
-            actual = it.bidInfo.data[0].shopStatus
+        viewModel.getBudgetInfo("reqType", "source") {
+            actual = it.topadsBidInfo.data[0].shopStatus
         }
 
         assertEquals(expected, actual)

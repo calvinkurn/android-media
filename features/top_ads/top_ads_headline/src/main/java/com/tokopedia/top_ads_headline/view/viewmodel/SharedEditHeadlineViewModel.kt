@@ -62,9 +62,13 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun setEditAdHeadlineData(ad: SingleAd) {
         val editHeadlineAdModel = HeadlineAdStepperModel()
+        editHeadlineAdModel.minBid = ad.priceBid
+        editHeadlineAdModel.startDate = "${ad.adStartDate} ${ad.adStartTime}"
+        editHeadlineAdModel.endDate = "${ad.adEndDate} ${ad.adEndTime}"
         ad.cpmDetails.firstOrNull()?.let {
             editHeadlineAdModel.groupName = it.title
             editHeadlineAdModel.slogan = it.description.slogan
+
             val selectedProductMap = HashMap<Category, ArrayList<TopAdsProductModel>>()
             it.product.forEach { product ->
                 editHeadlineAdModel.selectedProductIds.add(product.productID)

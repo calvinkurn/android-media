@@ -46,4 +46,9 @@ abstract class ViewModelModule {
     @ViewModelKey(EditFormHeadlineViewModel::class)
     internal abstract fun provideEditFormHeadlineViewModel(viewModel: EditFormHeadlineViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditAdOthersViewModel::class)
+    internal abstract fun provideEditAdOthersViewModel(viewModel: EditAdOthersViewModel): ViewModel
+
 }

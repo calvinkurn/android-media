@@ -21,5 +21,7 @@ open class HeadlineAdStepperModel(
         var maxBid: Int = 0,
         var dailyBudget: Float = 0F,
         var adOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
-        var keywordOperations: List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList()
+        var keywordOperations: List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList(),
+        var startDate:String = "",
+        var endDate:String = ""
 ) : StepperModel

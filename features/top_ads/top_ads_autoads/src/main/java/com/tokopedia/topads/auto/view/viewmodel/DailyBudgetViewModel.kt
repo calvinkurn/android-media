@@ -10,18 +10,18 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject.QUERY_TOPADS_DEPOSIT
 import com.tokopedia.topads.auto.view.RequestHelper
-import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.IDS
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import org.json.JSONException
@@ -35,24 +35,24 @@ class DailyBudgetViewModel @Inject constructor(
         private val context: Context,
         private val dispatcher: AutoAdsDispatcherProvider,
         private val repository: GraphqlRepository,
-        private val rawQueries: Map<String, String>
+        private val rawQueries: Map<String, String>,
+        private val bidInfoUseCase: BidInfoUseCase
 ) : BaseViewModel(dispatcher.ui()) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
     val topAdsDeposit = MutableLiveData<Int>()
 
-    fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit) {
+    fun getBudgetInfo(requestType: String, source: String, onSuccess: (ResponseBidInfo.Result) -> Unit) {
         launchCatchError(block = {
             val dummyId: MutableList<Int> = mutableListOf()
-            val map = mapOf(TYPE to PRODUCT, IDS to dummyId)
-            val cacheStrategy = RequestHelper.getCacheStrategy()
-            val data = withContext(dispatcher.io()) {
-                val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
-                        TopadsBidInfo.Response::class.java,
-                        hashMapOf(ParamObject.SUGGESTION to map, SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
-                repository.getReseponse(listOf(request), cacheStrategy)
-            }
-            onSuccess(data.getSuccessData<TopadsBidInfo.Response>())
+            val suggestionsDefault = ArrayList<DataSuggestions>()
+            suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
+            bidInfoUseCase.setParams(suggestionsDefault, requestType, source)
+            bidInfoUseCase.executeQuerySafeMode({
+                onSuccess(it)
+            }, {
+                it.printStackTrace()
+            })
         }) {
             it.printStackTrace()
         }

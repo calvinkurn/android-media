@@ -10,6 +10,7 @@ import com.tokopedia.topads.auto.di.AutoAdsDispatcherProviderImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -47,8 +48,9 @@ class AutoAdsModule {
     fun provideDailyBudgetViewModelFactory(@ApplicationContext context: Context,
                                            dispatcher: AutoAdsDispatcherProvider,
                                            repository: GraphqlRepository,
-                                           query: Map<String, String>):
-            DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(context, dispatcher, repository, query)
+                                           query: Map<String, String>,
+                                           bidInfoUseCase: BidInfoUseCase):
+            DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(context, dispatcher, repository, query, bidInfoUseCase)
 
     @AutoAdsScope
     @Provides

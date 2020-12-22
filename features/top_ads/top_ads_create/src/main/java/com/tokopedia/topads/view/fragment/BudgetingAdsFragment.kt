@@ -14,10 +14,10 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.BidInfoDataItem
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapter
@@ -195,7 +195,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidInfoAdapter.setType(list)
     }
 
-    private fun onDefaultSuccessSuggestion(data: List<BidInfoDataItem>) {
+    private fun onDefaultSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         maxBid = data[0].maxBid
         minBid = data[0].minBid
@@ -222,7 +222,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidInfoAdapter.notifyDataSetChanged()
     }
 
-    private fun onSuccessSuggestion(data: List<BidInfoDataItem>) {
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         stepperModel?.selectedKeywords?.forEach { _ ->
             bidInfoAdapter.items.add(BidInfoItemViewModel(data[0]))
         }
@@ -258,7 +258,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
         tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            var tipSheetBugList = TipSheetBudgetList.newInstance()
+            val tipSheetBugList = TipSheetBudgetList.newInstance()
             tipSheetBugList.show(fragmentManager!!, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
         }
