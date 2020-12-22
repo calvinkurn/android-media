@@ -32,6 +32,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     private var mVideoId: String = ""
     private var video_volume: IconUnify? = null
     private var video_minimize: IconUnify? = null
+    private var video_close_btn: IconUnify? = null
     private val videoListener: VideoListener = object : VideoListener {
         override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
             val data = height.toFloat() / width.toFloat()
@@ -48,6 +49,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     init {
         video_volume = view.pdp_main_video.findViewById(R.id.pdp_volume_control)
         video_minimize = view.pdp_main_video.findViewById(R.id.pdp_mainimize_control)
+        video_close_btn = view.pdp_main_video.findViewById(R.id.pdp_video_detail_close)
     }
 
     override fun bind(data: ProductVideoDataModel) {
@@ -60,6 +62,10 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         }
 
         video_minimize?.setOnClickListener {
+            viewListener.onMinimizeVideoClicked()
+        }
+
+        video_close_btn?.setOnClickListener {
             viewListener.onMinimizeVideoClicked()
         }
     }

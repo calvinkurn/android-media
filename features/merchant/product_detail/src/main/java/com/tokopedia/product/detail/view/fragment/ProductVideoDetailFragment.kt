@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.product.detail.R
@@ -27,7 +26,6 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
     private var activityListener: ProductDetailActivityInterface? = null
 
     private var videoDetailPager: ViewPager2? = null
-    private var closeBtn: IconUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +47,6 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
         super.onViewCreated(view, savedInstanceState)
         activityListener = activity as ProductDetailActivityInterface
         initView(view)
-
-        closeBtn?.setOnClickListener {
-            val videoDetailData = sharedViewModel?.productVideoDetailData?.value
-            videoDetailData?.let {
-                ProductVideoDetailTracking.eventCLickMinimizeVideo(it.productId, it.shopTypeString, it.shopId, it.userId)
-            }
-            onBackButtonClicked()
-            activityListener?.onBackPressed()
-        }
 
         videoCoordinator = ProductVideoCoordinator(viewLifecycleOwner)
 
@@ -95,7 +84,6 @@ class ProductVideoDetailFragment : Fragment(), ProductVideoDetailInterface {
 
     private fun initView(view: View) {
         videoDetailPager = view.findViewById(R.id.pdp_video_detail_pager)
-        closeBtn = view.findViewById(R.id.pdp_video_detail_close)
     }
 
     private fun setupViewPagerCallback(productVideoCoordinator: ProductVideoCoordinator?) {

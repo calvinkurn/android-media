@@ -1046,12 +1046,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onImageClicked(position: Int) {
         val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted ?: false
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+
         activity?.let {
+            val images = dynamicProductInfoData.data.getImagePathExceptVideo() ?: return@let
             val intent = ImagePreviewPdpActivity.createIntent(it,
                     shopId = dynamicProductInfoData.basic.shopID,
                     productId = dynamicProductInfoData.basic.productID,
                     isWishlisted = isWishlisted,
-                    imageUris = dynamicProductInfoData.data.getImagePath(),
+                    imageUris = images,
                     imageDesc = null,
                     position = position)
             startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW)

@@ -111,6 +111,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
                 override fun onVideoReadyToPlay() {
                     removeThumbnail()
                     hideBufferLoading()
+                    pdp_main_video.useController = true
                 }
 
                 override fun onVideoBuffering() {

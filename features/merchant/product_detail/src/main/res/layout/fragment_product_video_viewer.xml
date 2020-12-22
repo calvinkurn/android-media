@@ -14,15 +14,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/pdp_video_detail_close"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_name="CLOSE" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

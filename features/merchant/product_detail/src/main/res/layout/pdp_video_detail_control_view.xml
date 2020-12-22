@@ -7,6 +7,16 @@
     android:orientation="horizontal"
     android:padding="@dimen/dp_16">
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/pdp_video_detail_close"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        tools:icon_color_light_enable="@color/Unify_Static_Black"
+        app:icon_name="CLOSE" />
+
     <FrameLayout
         android:id="@+id/pdp_video_detail_control"
         android:layout_width="wrap_content"
