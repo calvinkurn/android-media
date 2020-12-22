@@ -44,11 +44,7 @@ class TableColumnHtmlViewHolder(itemView: View?,
                     },
                     onUrlClicked = { url ->
                         listener.onHyperlinkClicked(url)
-                        Uri.parse(url).let { uri ->
-                            if (!checkUrlForNativePage(context, uri)) {
-                                goToDefaultIntent(context, uri)
-                            }
-                        }
+                        goToPage(context, Uri.parse(url))
                     })
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START
@@ -61,8 +57,8 @@ class TableColumnHtmlViewHolder(itemView: View?,
     /**
      * Mimicks RouteManager.kt#moveToNativePageFromWebView
      */
-    private fun checkUrlForNativePage(context: Context?, uri: Uri): Boolean {
-        return when(deeplinkMatcher.match(uri)) {
+    private fun goToPage(context: Context?, uri: Uri) {
+        when(deeplinkMatcher.match(uri)) {
             DeepLinkChecker.PRODUCT -> {
                 with(uri.pathSegments) {
                     getOrNull(0)?.let { shopDomain ->
@@ -71,9 +67,8 @@ class TableColumnHtmlViewHolder(itemView: View?,
                         }
                     }
                 }
-                false
             }
-            else -> false
+            else -> goToDefaultIntent(context, uri)
         }
     }
 
