@@ -21,6 +21,9 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val SEARCH_APPLINK= "tokopedia://search-autocomplete"
         const val DOMAIN_URL_LIVE = "https://www.tokopedia.com/"
         const val BANNED= 1
+        const val INDEX_ONE = "1"
+        const val INDEX_TWO = "2"
+        const val INDEX_THREE = "3"
     }
 
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
@@ -44,20 +47,20 @@ class CategoryGqlPageRepository(private val departmentName: String,
     private fun getCategoryComponents(bannedData: Data): ArrayList<ComponentsItem> {
         val components = ArrayList<ComponentsItem>()
         if(!bannedData.appRedirectionURL.isNullOrEmpty()) {
-            components.add(ComponentsItem(name = ComponentNames.LoadMore.componentName, id = "1", renderByDefault = true))
+            components.add(ComponentsItem(name = ComponentNames.LoadMore.componentName, id = INDEX_ONE, renderByDefault = true))
             return components
         }
         if(bannedData.isBanned == BANNED){
-            components.add(ComponentsItem(name = ComponentNames.BannedView.componentName, id = "1", renderByDefault = true, title = bannedData.bannedMsgHeader, description = bannedData.bannedMessage))
+            components.add(ComponentsItem(name = ComponentNames.BannedView.componentName, id = INDEX_ONE, renderByDefault = true, title = bannedData.bannedMsgHeader, description = bannedData.bannedMessage))
             return components
         }
         val navigationChipsItems = arrayListOf<DataItem>()
         bannedData.child?.forEachIndexed { index, item ->
             navigationChipsItems.add(DataItem(title = item?.name, id = item?.id?.toString(), applinks = item?.applinks, positionForParentItem = index))
         }
-        components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = "1", renderByDefault = true, data = navigationChipsItems))
-        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3"), isSticky = true))
-        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true, pagePath = bannedData.url ?: ""))
+        components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = INDEX_ONE, renderByDefault = true, data = navigationChipsItems))
+        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = INDEX_TWO, renderByDefault = true, showFilter = false, properties = Properties(targetId = INDEX_THREE), isSticky = true))
+        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = INDEX_THREE, renderByDefault = true, pagePath = bannedData.url ?: ""))
         return components
     }
 
