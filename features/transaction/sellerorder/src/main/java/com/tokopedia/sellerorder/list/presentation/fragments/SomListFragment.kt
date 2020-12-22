@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -79,6 +80,7 @@ import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -1300,9 +1302,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         errorToaster?.dismiss()
         hideWaitingPaymentOrderListMenu()
         somAdminPermissionView?.run {
-            setPermissionType(SellerHomePermissionGroup.ORDER)
-            setOnActionButtonClickedListener {
-                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            val permissionGroup = SellerHomePermissionGroup.ORDER
+            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+            setButtonFull(true)
+
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
             }
             show()
         }
