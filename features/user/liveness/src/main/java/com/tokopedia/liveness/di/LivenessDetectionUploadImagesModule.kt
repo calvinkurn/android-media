@@ -11,7 +11,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.liveness.utils.LivenessConstants.KYC_BASE_URL
-import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -116,7 +115,6 @@ class LivenessDetectionUploadImagesModule {
         return Retrofit.Builder()
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
     }
 
     @LivenessDetectionScope

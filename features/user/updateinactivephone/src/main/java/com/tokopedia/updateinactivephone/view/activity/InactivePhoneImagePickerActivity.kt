@@ -37,7 +37,7 @@ class InactivePhoneImagePickerActivity : ImagePickerActivity() {
         fun createIntentCamera(context: Context?, cameraViewMode: CameraViewMode): Intent {
             val bundle = Bundle()
             val title = context?.getString(R.string.text_select_image) ?: ""
-            val builder = ImagePickerBuilder(title, IntArray(ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true, null, null)
+            val builder = ImagePickerBuilder(title, intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true, null, null)
             val intent = Intent(context, InactivePhoneImagePickerActivity::class.java)
             bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder)
             bundle.putParcelable(EXTRA_CAMERA_MODE, cameraViewMode)

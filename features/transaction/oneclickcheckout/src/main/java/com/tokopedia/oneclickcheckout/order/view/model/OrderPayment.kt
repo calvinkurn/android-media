@@ -14,13 +14,15 @@ data class OrderPayment(
         val walletAmount: Long = 0,
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+        val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
         val errorTickerMessage: String = "",
         val isEnableNextButton: Boolean = false,
         val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
         val isOvoOnlyCampaign: Boolean = false,
         val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
-        val ovoErrorData: OrderPaymentOvoErrorData? = null
+        val ovoErrorData: OrderPaymentOvoErrorData? = null,
+        val errorData: OrderPaymentErrorData? = null
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
@@ -48,6 +50,27 @@ data class OrderPaymentErrorMessageButton(
         val text: String = "",
         val link: String = ""
 )
+
+data class OrderPaymentRevampErrorMessage(
+        val message: String = "",
+        val button: OrderPaymentRevampErrorMessageButton = OrderPaymentRevampErrorMessageButton()
+)
+
+data class OrderPaymentRevampErrorMessageButton(
+        val text: String = "",
+        val action: String = ""
+)
+
+data class OrderPaymentErrorData(
+        val message: String = "",
+        val buttonText: String = "",
+        val action: String = ""
+) {
+    companion object {
+        internal const val ACTION_CHANGE_CC = "change_cc"
+        internal const val ACTION_CHANGE_PAYMENT = "change_payment"
+    }
+}
 
 data class OrderPaymentCreditCard(
         val numberOfCards: OrderPaymentCreditCardsNumber = OrderPaymentCreditCardsNumber(),

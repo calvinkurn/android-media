@@ -50,7 +50,7 @@
         android:layout_below="@+id/product_select_item_desc"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/red_800"
+        android:textColor="@color/Unify_Y500"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Rp190.000" />

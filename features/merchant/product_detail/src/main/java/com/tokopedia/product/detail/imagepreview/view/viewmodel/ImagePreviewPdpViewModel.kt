@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.imagepreview.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -12,8 +12,10 @@ class ImagePreviewPdpViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        dispatcher: DynamicProductDetailDispatcherProvider
-) : BaseViewModel(dispatcher.ui()) {
+        val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
+
+    fun isShopOwner(shopId: String): Boolean = userSessionInterface.isLoggedIn && userSessionInterface.shopId == shopId
 
     private fun isProductIdValid(productId: String): Boolean {
         return productId.isNotEmpty() && productId.matches(Regex(PATTERN_REGEX))

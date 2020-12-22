@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMenuAdapterFactory
 
 sealed class ProductMenuViewModel(
@@ -46,6 +47,12 @@ sealed class ProductMenuViewModel(
         R.string.product_manage_see_promo_ads_menu,
         IconUnify.SPEAKER,
         product
+    )
+
+    data class CreateBroadcastChat(override val product: ProductViewModel): ProductMenuViewModel(
+            R.string.product_manage_create_broadcast_chat,
+            R.drawable.ic_bc_chat,
+            product
     )
 
     data class SetCashBack(override val product: ProductViewModel): ProductMenuViewModel(

@@ -115,6 +115,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         initToolbar()
         prepareView()
         initializeSearchParameter(intent)
+        removeCatalogTab()
     }
 
     private fun startPerformanceMonitoring() {

@@ -78,14 +78,14 @@ internal class ShopPageFragmentPagerAdapter(
         return if (ShopUtil.isUsingNewNavigation())
             R.color.color_gray_shop_tab_new
         else
-            R.color.color_gray_shop_tab
+            com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
     private fun getTabActivateColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
             R.color.color_green_shop_tab_new
         else
-            R.color.color_green_shop_tab
+            com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

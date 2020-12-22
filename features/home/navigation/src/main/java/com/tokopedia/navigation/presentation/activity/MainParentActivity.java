@@ -59,6 +59,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -87,6 +88,7 @@ import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeCo
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -163,9 +165,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
-    private static final String ROLLANCE_EXP_NAME = "Navigation Revamp";
-    private static final String ROLLANCE_VARIANT_OLD = "Existing Navigation";
-    private static final String ROLLANCE_VARIANT_REVAMP = "Navigation Revamp";
+    private static final String ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+    private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -483,7 +485,7 @@ public class MainParentActivity extends BaseActivity implements
             int flags = fragmentContainer.getSystemUiVisibility();
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             fragmentContainer.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
+            getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
 
         //make full transparent statusBar
@@ -520,6 +522,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(fragment);
             }
             ft.commitNowAllowingStateLoss();
         });
@@ -530,8 +533,10 @@ public class MainParentActivity extends BaseActivity implements
             Fragment frag = manager.getFragments().get(i);
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
             } else {
                 ft.hide(frag); // hide all fragment
+                FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
             }
         }
     }
@@ -592,16 +597,10 @@ public class MainParentActivity extends BaseActivity implements
 
         addShortcuts();
 
-        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return checkAppSignature();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
-
-        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+        if (currentFragment != null) {
+            configureStatusBarBasedOnFragment(currentFragment);
+            FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
+        }
     }
 
     private void clearNotification() {
@@ -609,14 +608,6 @@ public class MainParentActivity extends BaseActivity implements
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
             NotificationManagerCompat.from(this).cancelAll();
         }
-    }
-
-    @NotNull
-    private boolean checkAppSignature(){
-        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
-        }
-        return true;
     }
 
     @Override
@@ -758,10 +749,10 @@ public class MainParentActivity extends BaseActivity implements
      */
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                .shadowColorRes(R.color.Unify_N700_68)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
                 .textSizeRes(R.dimen.sp_12)
                 .titleTextSizeRes(R.dimen.sp_16)
                 .nextStringRes(R.string.next)
@@ -1134,7 +1125,15 @@ public class MainParentActivity extends BaseActivity implements
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             if (isRollanceTestingUsingNavigationRevamp()) {
-                globalNavAnalytics.get().eventBottomNavigationDrawer(menu.get(index).getTitle(), userSession.get().getUserId());
+                String pageName = "";
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
+                    pageName = "/";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
+                    pageName = "OS Homepage";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                    pageName = "Feed";
+                }
+                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
@@ -1168,15 +1167,15 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView(){
-        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
+        menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.unifyprinciples.R.color.Unify_P500, true, 1f, 3f));
         if (!isRollanceTestingUsingNavigationRevamp()) {
-            menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+            menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             if (userSession.get().isLoggedIn()) {
-                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             } else {
-                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             }
         }
         bottomNavigation.setMenu(menu, isRollanceTestingUsingNavigationRevamp());

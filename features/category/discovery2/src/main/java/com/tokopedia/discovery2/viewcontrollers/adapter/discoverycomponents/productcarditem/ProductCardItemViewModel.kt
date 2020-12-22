@@ -16,7 +16,7 @@ import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRe
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -52,11 +52,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
-    init {
-        initDaggerInject()
-    }
+    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -111,7 +107,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     fun getFreeOngkirImage(dataItem: DataItem): String {
         val isBebasActive = dataItem.freeOngkir?.isActive
         return if (isBebasActive == true) {
-            dataItem.freeOngkir.freeOngkirImageUrl
+            dataItem.freeOngkir?.freeOngkirImageUrl ?: ""
         } else {
             ""
         }
@@ -281,10 +277,5 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return campaignNotifyMeRequest
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 }

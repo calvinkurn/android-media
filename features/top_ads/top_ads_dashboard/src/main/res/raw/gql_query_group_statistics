@@ -16,6 +16,7 @@ query GetTopadsDashboardGroupStatistics($queryInput: GetTopadsDashboardGroupStat
       stat_total_ctr
       stat_total_conversion
       stat_total_sold
+      stat_total_income
     }
   }
 }

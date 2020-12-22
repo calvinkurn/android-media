@@ -60,6 +60,10 @@ class TableViewHolder(
                     setOnTableEmpty(element)
                 } else {
                     tvShcTableOnEmpty.gone()
+                    imgShcTableEmpty.gone()
+                    tvShcTableEmptyTitle.gone()
+                    tvShcTableEmptyDescription.gone()
+                    btnShcTableEmpty.gone()
                     shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, isEmpty ->
@@ -82,7 +86,34 @@ class TableViewHolder(
     }
 
     private fun setOnTableEmpty(element: TableWidgetUiModel) = with(itemView) {
-        tvShcTableOnEmpty.visible()
+        if (element.emptyState.imageUrl.isNotBlank() && element.emptyState.title.isNotBlank() &&
+                element.emptyState.description.isNotBlank() && element.emptyState.ctaText.isNotBlank() &&
+                element.emptyState.appLink.isNotBlank()) {
+            imgShcTableEmpty.run {
+                visible()
+                ImageHandler.loadImageWithoutPlaceholderAndError(this, element.emptyState.imageUrl.takeIf { it.isNotBlank() })
+            }
+            tvShcTableEmptyTitle.run {
+                text = element.emptyState.title
+                visible()
+            }
+            tvShcTableEmptyDescription.run {
+                text = element.emptyState.description
+                visible()
+            }
+            btnShcTableEmpty.run {
+                text = element.emptyState.ctaText
+                visible()
+                setOnClickListener {
+                    if (RouteManager.route(context, element.emptyState.appLink)) {
+                        listener.sendTableEmptyStateCtaClickEvent(element)
+                    }
+                }
+            }
+            tvShcTableOnEmpty.gone()
+        } else {
+            tvShcTableOnEmpty.visible()
+        }
         shcTableView.gone()
         listener.sendTableImpressionEvent(element, 0, true)
     }
@@ -91,6 +122,10 @@ class TableViewHolder(
         shimmerTableWidgetWidget.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
+        imgShcTableEmpty.gone()
+        tvShcTableEmptyTitle.gone()
+        tvShcTableEmptyDescription.gone()
+        btnShcTableEmpty.gone()
     }
 
     private fun showErrorState() = with(itemView) {
@@ -99,6 +134,10 @@ class TableViewHolder(
         tvTableWidgetTitle.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
+        imgShcTableEmpty.gone()
+        tvShcTableEmptyTitle.gone()
+        tvShcTableEmptyDescription.gone()
+        btnShcTableEmpty.gone()
 
         ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
     }
@@ -143,6 +182,7 @@ class TableViewHolder(
 
         fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+        fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
 
     }
 }

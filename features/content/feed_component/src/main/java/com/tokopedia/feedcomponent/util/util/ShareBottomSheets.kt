@@ -328,8 +328,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(ACTION_INSTAGRAM_STORY)
                 .setType(MimeType.IMAGE.typeString)
                 .putExtra(IG_STORY_EXTRA_STICKER_URI, mediaUri)
-                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(R.color.share_ig_story_top_bg))
-                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(R.color.share_ig_story_bottom_bg))
+                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_T400))
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 

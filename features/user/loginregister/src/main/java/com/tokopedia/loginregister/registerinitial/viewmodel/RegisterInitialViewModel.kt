@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
@@ -138,6 +139,8 @@ class RegisterInitialViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
 
+    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+
     fun getProvider() {
         discoverUseCase.execute(
                 DiscoverUseCase.getParamRegister(),
@@ -150,6 +153,7 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+        idlingResourceProvider?.increment()
         getFacebookCredentialUseCase.execute(
                 GetFacebookCredentialUseCase.getParam(
                         fragment,
@@ -166,14 +170,17 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun registerFacebook(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-
+        idlingResourceProvider?.increment()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenSubscriber(
                         userSession,
                         onSuccessLoginTokenFacebook(),
                         onFailedLoginTokenFacebook(),
-                        {showPopup().invoke(it.loginToken.popupError)},
+                        {
+                            showPopup().invoke(it.loginToken.popupError)
+                            idlingResourceProvider?.decrement()
+                        },
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -199,14 +206,17 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun registerGoogle(accessToken: String, email: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
-
+        idlingResourceProvider?.increment()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
                 LoginTokenSubscriber(
                         userSession,
                         onSuccessLoginTokenGoogle(),
                         onFailedLoginTokenGoogle(),
-                        {showPopup().invoke(it.loginToken.popupError)},
+                        {
+                            showPopup().invoke(it.loginToken.popupError)
+                            idlingResourceProvider?.decrement()
+                        },
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -215,6 +225,7 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun getUserInfo() {
+        idlingResourceProvider?.increment()
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
@@ -242,6 +253,7 @@ class RegisterInitialViewModel @Inject constructor(
             registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
             registerCheckUseCase.setRequestParams(params)
             registerCheckUseCase.setGraphqlQuery(query)
+            idlingResourceProvider?.increment()
             registerCheckUseCase.execute(
                     onSuccessRegisterCheck(),
                     onFailedRegisterCheck()
@@ -338,30 +350,35 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onSuccessGetFacebookPhoneCredential(): (FacebookCredentialData) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onFailedGetFacebookCredential(): (Throwable) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onSuccessLoginTokenFacebook(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenFacebookResponse.value = Success(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onFailedLoginTokenFacebook(): (Throwable) -> Unit {
         return {
             mutableLoginTokenFacebookResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
@@ -380,12 +397,14 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Success(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onFailedLoginTokenGoogle(): (Throwable) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
@@ -405,12 +424,14 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
@@ -445,12 +466,14 @@ class RegisterInitialViewModel @Inject constructor(
             else if (it.data.errors.isNotEmpty()) mutableRegisterCheckResponse.value =
                     Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
             else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onFailedRegisterCheck(): (Throwable) -> Unit {
         return {
             mutableRegisterCheckResponse.value = Fail(it)
+            idlingResourceProvider?.decrement()
         }
     }
 
@@ -506,12 +529,14 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
             mutableGoToActivationPage.value = it
+            idlingResourceProvider?.decrement()
         }
     }
 
     private fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
             mutableGoToSecurityQuestion.value = email
+            idlingResourceProvider?.decrement()
         }
     }
 

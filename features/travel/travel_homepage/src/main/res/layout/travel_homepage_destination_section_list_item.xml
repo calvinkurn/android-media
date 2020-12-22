@@ -30,8 +30,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toTopOf="@id/image"
-            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintTop_toTopOf="@+id/image"
+            app:layout_constraintBottom_toBottomOf="@+id/image"
             android:background="@drawable/travel_destination_section_overlay"/>
 
         <com.tokopedia.unifyprinciples.Typography

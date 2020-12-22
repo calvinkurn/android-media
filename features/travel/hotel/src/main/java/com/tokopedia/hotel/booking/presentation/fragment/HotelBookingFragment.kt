@@ -21,18 +21,20 @@ import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
@@ -44,10 +46,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
-import com.tokopedia.kotlin.extensions.view.getDimens
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -59,6 +58,9 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -126,14 +128,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             when (it) {
                 is Success -> {
                     context?.run {
-                        val taskStackBuilder = TaskStackBuilder.create(this)
-
-                        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        taskStackBuilder.addNextIntent(intentHome)
-
-                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
-                        taskStackBuilder.addNextIntent(intentHotelHome)
-
                         val checkoutData = PaymentPassData()
                         checkoutData.queryString = it.data.queryString
                         checkoutData.redirectUrl = it.data.redirectUrl
@@ -141,8 +135,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         val intent = RouteManager.getIntent(context, paymentCheckoutString)
                         intent?.run {
                             putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
-                            taskStackBuilder.addNextIntent(this)
-                            taskStackBuilder.startActivities()
+                            startActivityForResult(this, REQUEST_CODE_CHECKOUT)
                         }
                     }
 
@@ -152,13 +145,31 @@ class HotelBookingFragment : HotelBaseFragment() {
                         true -> it.throwable.message ?: ""
                         false -> ErrorHandler.getErrorMessage(activity, it.throwable)
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, message)
+                    view?.let { v ->
+                        Toaster.build(v, message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
 
         bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
+        })
+
+        bookingViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
+            }
         })
     }
 
@@ -176,6 +187,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         initGuestInfoEditText()
         showLoadingBar()
 
+        bookingViewModel.fetchTickerData()
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
         bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_tokopoints_sum_coupon))
@@ -190,6 +202,24 @@ class HotelBookingFragment : HotelBaseFragment() {
                     data?.run {
                         hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
+                    }
+                }
+            }
+
+            REQUEST_CODE_CHECKOUT -> {
+                when (resultCode) {
+                    PaymentConstant.PAYMENT_SUCCESS, PaymentConstant.PAYMENT_FAILED -> {
+                        context?.run {
+                            val taskStackBuilder = TaskStackBuilder.create(this)
+
+                            val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
+                            taskStackBuilder.addNextIntent(intentHome)
+                            val intent = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+                            intent?.run {
+                                taskStackBuilder.addNextIntent(this)
+                                taskStackBuilder.startActivities()
+                            }
+                        }
                     }
                 }
             }
@@ -283,6 +313,32 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun hideLoadingBar() {
         hotel_booking_container.visibility = View.VISIBLE
         hotel_booking_loading_bar.visibility = View.GONE
+    }
+
+    private fun hideTickerView() {
+        hotelBookingTicker.hide()
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        hotelBookingTicker.setHtmlDescription(travelTickerModel.message)
+        hotelBookingTicker.tickerType = Ticker.TYPE_WARNING
+        hotelBookingTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
+        if (travelTickerModel.url.isNotEmpty()) {
+            hotelBookingTicker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        hotelBookingTicker.show()
     }
 
     private fun setupHotelInfo(property: HotelPropertyData) {

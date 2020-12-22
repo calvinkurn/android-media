@@ -1,16 +1,18 @@
 package com.tokopedia.liveness.view.activity
 
-import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
-import com.tokopedia.liveness.di.LivenessDetectionComponent
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.fragment.LivenessErrorFragment
 import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
+import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.fragment.LivenessErrorFragment
+import com.tokopedia.unifyprinciples.R
 
 class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetectionComponent> {
 
@@ -21,6 +23,7 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
 
     fun updateToolbarTitle(strId: Int){
         supportActionBar?.setTitle(strId)
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.Unify_N700_96))
     }
 
     override fun onBackPressed() {

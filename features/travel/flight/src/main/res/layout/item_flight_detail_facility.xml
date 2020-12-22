@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingTop="@dimen/spacing_lvl4">
 
@@ -28,7 +28,7 @@
             android:id="@+id/separator_info"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/flight_search_list_background" />
+            android:background="@color/Unify_N75" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,20 +42,20 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_info"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/flight_detail_facility_label"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_2" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_amenity"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="@dimen/dp_5" />
+                android:paddingBottom="@dimen/spacing_lvl2" />
 
         </LinearLayout>
     </LinearLayout>
@@ -64,6 +64,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
-        android:background="@color/black_twenty_percent" />
+        android:background="@color/Unify_N700_20" />
 
 </LinearLayout>

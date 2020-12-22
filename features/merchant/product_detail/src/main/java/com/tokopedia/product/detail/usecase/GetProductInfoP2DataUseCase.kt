@@ -54,6 +54,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 subTitle
                 titlePDP
                 subTitlePDP
+                iconURL
+                partnerText
+                partnerLogo
+                linkURL
+                isAppLink
               }
             }
             productView

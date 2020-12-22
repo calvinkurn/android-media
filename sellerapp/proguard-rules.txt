@@ -215,15 +215,6 @@
 -keep public class com.android.installreferrer.** { *; }
 
 # Keep Class com.tokopedia
--keep class com.tokopedia.product.manage.feature.cashback.data.** { *; }
--keep class com.tokopedia.product.manage.feature.filter.data.** { *; }
--keep class com.tokopedia.product.manage.feature.multiedit.data.** { *; }
--keep class com.tokopedia.product.manage.feature.quickedit.common.data.** { *; }
--keep class com.tokopedia.product.manage.feature.quickedit.delete.data.** { *; }
--keep class com.tokopedia.product.manage.feature.quickedit.price.data.** { *; }
--keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
--keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
--keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 #-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
@@ -243,6 +234,8 @@
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
 
+-dontwarn com.tokopedia.sortfilter.SortFilter*
+
 
 #SELLERAPP ONLY:
 #from Apsara broadcaster 29/11/2019 document
@@ -258,3 +251,9 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn com.tokopedia.empty_state.**
+
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}

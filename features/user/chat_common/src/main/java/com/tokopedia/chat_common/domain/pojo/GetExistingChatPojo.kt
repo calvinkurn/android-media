@@ -121,7 +121,7 @@ data class Reply(
         val msgId: Int = 0,
         @Expose
         @SerializedName("replyId")
-        val replyId: String,
+        val replyId: String = "",
         @Expose
         @SerializedName("senderId")
         val senderId: Int = 0,
@@ -131,6 +131,9 @@ data class Reply(
         @Expose
         @SerializedName("role")
         val role: String = "",
+        @Expose
+        @SerializedName("fraudStatus")
+        val fraudStatus: Int = 0,
         @Expose
         @SerializedName("msg")
         val msg: String = "",
@@ -142,7 +145,7 @@ data class Reply(
         val status: Int = 0,
         @Expose
         @SerializedName("attachment")
-        val attachment: Attachment?,
+        val attachment: Attachment = Attachment(),
         @Expose
         @SerializedName("isOpposite")
         val isOpposite: Boolean = false,

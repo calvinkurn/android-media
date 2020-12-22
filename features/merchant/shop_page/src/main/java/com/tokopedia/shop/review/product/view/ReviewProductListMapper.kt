@@ -5,7 +5,7 @@ import com.tokopedia.shop.review.product.data.model.reviewlist.*
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductModel
 import com.tokopedia.shop.review.product.view.adapter.ReviewProductModelContent
 import com.tokopedia.shop.review.shop.view.adapter.ReviewShopModelContent
-import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentViewModel
+import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 import java.util.*
 import javax.inject.Inject
 
@@ -76,10 +76,10 @@ class ReviewProductListMapper @Inject constructor() {
         return userId == java.lang.String.valueOf(owner!!.user!!.userId)
     }
 
-    private fun generateImageAttachmentModel(review: Review): List<ImageAttachmentViewModel?> {
-        val imageAttachmentViewModels: MutableList<ImageAttachmentViewModel?> = ArrayList()
+    private fun generateImageAttachmentModel(review: Review): List<ImageAttachmentUiModel?> {
+        val imageAttachmentViewModels: MutableList<ImageAttachmentUiModel?> = ArrayList()
         for (reviewImageAttachment in review.reviewImageAttachment!!) {
-            val imageAttachmentViewModel = ImageAttachmentViewModel(reviewImageAttachment.attachmentId,
+            val imageAttachmentViewModel = ImageAttachmentUiModel(reviewImageAttachment.attachmentId,
                     reviewImageAttachment.description, reviewImageAttachment.uriThumbnail, reviewImageAttachment.uriLarge)
             imageAttachmentViewModels.add(imageAttachmentViewModel)
         }

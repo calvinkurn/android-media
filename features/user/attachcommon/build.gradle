@@ -19,4 +19,8 @@ project.ext {
     artifactName = "attachcommon-release"
 }
 
+dependencies {
+    implementation rootProject.ext.unifyDependencies.principles
+}
+
 apply from: '../../../publish_local.gradle'

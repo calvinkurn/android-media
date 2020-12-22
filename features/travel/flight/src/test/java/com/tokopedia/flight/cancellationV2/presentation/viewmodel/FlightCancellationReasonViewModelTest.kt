@@ -4,9 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_WRAPPER
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_WRAPPER_ATTACHMENT
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -21,13 +25,18 @@ class FlightCancellationReasonViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val testDispatcherProvider = TravelTestDispatcherProvider()
 
+    @RelaxedMockK
+    private lateinit var flightAnalytics: FlightAnalytics
+
+    private val userSession: UserSessionInterface = mockk()
     private val attachmentUseCase: FlightCancellationAttachmentUploadUseCase = mockk()
 
     private lateinit var viewModel: FlightCancellationReasonViewModel
 
     @Before
     fun setUp() {
-        viewModel = FlightCancellationReasonViewModel(attachmentUseCase, testDispatcherProvider)
+        MockKAnnotations.init(this)
+        viewModel = FlightCancellationReasonViewModel(attachmentUseCase, userSession, flightAnalytics, testDispatcherProvider)
     }
 
     @Test

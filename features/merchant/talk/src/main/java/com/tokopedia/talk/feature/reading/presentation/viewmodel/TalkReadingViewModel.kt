@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.reading.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.talk.feature.reading.data.model.ViewState
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper

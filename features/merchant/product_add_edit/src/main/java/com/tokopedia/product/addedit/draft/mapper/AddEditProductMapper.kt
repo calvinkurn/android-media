@@ -2,21 +2,23 @@ package com.tokopedia.product.addedit.draft.mapper
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
-import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
-import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
 
     private fun mapProductInputModelPictureListToDraftPictureList(pictureList: List<PictureInputModel>) = pictureList.map {
-        com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel(
+        com.tokopedia.product.manage.common.feature.draft.data.model.detail.PictureInputModel(
                 picID = it.picID,
                 description = it.description,
                 filePath = it.filePath,
@@ -31,7 +33,7 @@ object AddEditProductMapper {
         )
     }
 
-    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel>) =
+    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.feature.draft.data.model.detail.PictureInputModel>) =
             pictureList.map {
                 PictureInputModel(
                         picID = it.picID,
@@ -147,6 +149,15 @@ object AddEditProductMapper {
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel
+    }
+
+    fun mapProductDraftToProductDraftUiModel(draft: ProductDraft): ProductDraftUiModel {
+        return ProductDraftUiModel(
+                draft.draftId,
+                draft.detailInputModel.imageUrlOrPathList.firstOrNull() ?: "",
+                draft.detailInputModel.productName,
+                AddEditProductDraftMapper.getCompletionPercent(draft),
+        )
     }
 
     private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {

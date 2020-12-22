@@ -1,16 +1,22 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -24,8 +30,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
-        setQuickFilters()
-        refreshQuickFilter()
+        getSubComponent().inject(quickFilterViewModel)
         quickFilterViewModel.fetchDynamicFilterModel()
     }
 
@@ -39,15 +44,24 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             quickFilterViewModel.getSyncPageLiveData().observe(it, Observer { item ->
                 if (item) {
                     (fragment as DiscoveryFragment).reSync()
-                    refreshQuickFilter()
+                    quickFilterViewModel.fetchQuickFilters()
                 }
+            })
+            quickFilterViewModel.getQuickFilterLiveData().observe(it, Observer { filters ->
+                setQuickFilters(filters)
             })
         }
     }
 
 
-    private fun setQuickFilters() {
+    private fun setQuickFilters(filters: ArrayList<Option>) {
         quickSortFilter.let {
+            if(!quickFilterViewModel.components.showFilter) {
+                it.filterType = SortFilter.TYPE_QUICK
+                it.dismissListener = {
+                    quickFilterViewModel.clearQuickFilters()
+                }
+            }
             it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
             it.sortFilterItems.removeAllViews()
@@ -56,17 +70,27 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
         componentName = quickFilterViewModel.getTargetComponent()?.name
 
-        for (option in quickFilterViewModel.getQuickFiltersList()) {
+        for (option in filters) {
             sortFilterItems.add(createSortFilterItem(option))
         }
         quickSortFilter.addItem(sortFilterItems)
+        refreshQuickFilter(filters)
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
-        val item = SortFilterItem(option.name)
+        var icon : Drawable? = null
+        when (option.name) {
+            "Official Store" -> {
+                icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
+            }
+            "4 Keatas" -> {
+                icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_5_star))
+            }
+        }
+        val item = SortFilterItem(option.name, icon)
         item.listener = {
             quickFilterViewModel.onQuickFilterSelected(option)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName)
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickQuickFilter(option.name, componentName, option.value, quickFilterViewModel.isQuickFilterSelected(option))
         }
         if (quickFilterViewModel.isQuickFilterSelected(option)) {
             item.type = ChipsUnify.TYPE_SELECTED
@@ -75,13 +99,13 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         return item
     }
 
-    private fun refreshQuickFilter() {
-        val options: List<Option> = quickFilterViewModel.getQuickFiltersList()
+    private fun refreshQuickFilter(filters: ArrayList<Option>) {
+        val options: List<Option> = filters
         setSortFilterItemState(options)
     }
 
     private fun setSortFilterItemState(options: List<Option>) {
-        if (quickFilterViewModel.getQuickFiltersList().size != quickSortFilter.chipItems.size) return
+        if (options.size != quickSortFilter.chipItems.size) return
         var selectedCount = 0
         for (i in options.indices) {
             if (quickFilterViewModel.isQuickFilterSelected(options[i])) {

@@ -93,7 +93,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="heading_6"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Kaos Adidas Camo Tongue Tee... White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XS" />
 
@@ -110,7 +110,7 @@
             android:layout_toEndOf="@id/iv_product_card"
             android:layout_toRightOf="@id/iv_product_card"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="small"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Biru, XXL" />
 
@@ -143,7 +143,7 @@
             android:layout_toRightOf="@id/iv_product_card"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_68"
-            app:typographyType="small"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Rp500.000" />
 
@@ -159,7 +159,7 @@
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_4"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="heading_6"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
 

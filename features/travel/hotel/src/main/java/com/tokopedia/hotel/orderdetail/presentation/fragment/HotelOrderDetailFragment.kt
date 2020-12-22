@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
@@ -175,7 +176,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
                         GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
+                        TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(

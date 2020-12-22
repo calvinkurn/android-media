@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
@@ -19,6 +20,7 @@ import com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.som_list_item.view.*
+import java.lang.StringBuilder
 
 /**
  * Created by fwidjaja on 2019-08-26.
@@ -39,65 +41,67 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (somItemList.isNotEmpty()) {
-            somItemList.getOrNull(position)?.let { orderItem ->
-                holder.itemView.label_status_order.text = orderItem.status
+            with(holder.itemView) {
+                somItemList.getOrNull(position)?.let { orderItem ->
+                    label_status_order.text = orderItem.status
 
-                if (orderItem.tickerInfo.text.isNotBlank()) {
-                    orderItem.tickerInfo.let { tickerInfo ->
-                        setupTicker(holder.itemView.ticker_buyer_request_cancel, tickerInfo)
-                        holder.itemView.ticker_buyer_request_cancel?.show()
-                    }
-                } else {
-                    holder.itemView.ticker_buyer_request_cancel?.hide()
-                }
-
-                if (orderItem.statusColor.isNotEmpty() && !orderItem.statusColor.equals(LABEL_EMPTY, true)) {
-                    holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(orderItem.statusColor))
-                }
-                holder.itemView.label_invoice.text = orderItem.orderResi
-                if (orderItem.listOrderProduct.isNotEmpty()) {
-                    holder.itemView.ic_product.loadImage(orderItem.listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
-                }
-                holder.itemView.label_date_order.text = orderItem.orderDate
-                holder.itemView.label_buyer_name.text = orderItem.buyerName
-
-                if (orderItem.deadlineText.isEmpty() || orderItem.deadlineText.equals(LABEL_EMPTY, true)) {
-                    holder.itemView.label_due_response.visibility = View.GONE
-                    holder.itemView.ic_label_due_card.visibility = View.GONE
-                } else {
-                    if (orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED || orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
-                        holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
+                    if (orderItem.tickerInfo.text.isNotBlank()) {
+                        orderItem.tickerInfo.let { tickerInfo ->
+                            setupTicker(holder.itemView.ticker_buyer_request_cancel, tickerInfo)
+                            ticker_buyer_request_cancel?.show()
+                        }
                     } else {
-                        holder.itemView.label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)
+                        ticker_buyer_request_cancel?.hide()
                     }
-                    holder.itemView.label_due_response.visibility = View.VISIBLE
-                    holder.itemView.ic_label_due_card.visibility = View.VISIBLE
-                    holder.itemView.label_due_response_day_count.text = orderItem.deadlineText
-                    holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
-                    holder.itemView.ic_time.setColorFilter(Color.WHITE)
-                    if (orderItem.deadlineColor.isNotEmpty() && !orderItem.deadlineColor.equals(LABEL_EMPTY, true)) {
-                        holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(orderItem.deadlineColor))
+
+                    if (orderItem.statusColor.isNotEmpty() && !orderItem.statusColor.equals(LABEL_EMPTY, true)) {
+                        label_status_order.setBackgroundColor(Color.parseColor(orderItem.statusColor))
                     }
-                }
+                    label_invoice.text = orderItem.orderResi
+                    if (orderItem.listOrderProduct.isNotEmpty()) {
+                        ic_product.loadImage(orderItem.listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+                    }
+                    label_date_order.text = orderItem.orderDate
+                    label_buyer_name.text = orderItem.buyerName
 
-                val totalProducts = orderItem.listOrderProduct.size
-                if (totalProducts > 1) {
-                    holder.itemView.rl_overlay_product?.visibility = View.VISIBLE
-                    holder.itemView.label_total_product?.text = "$totalProducts\n Produk"
-                } else {
-                    holder.itemView.rl_overlay_product?.visibility = View.GONE
-                }
+                    if (orderItem.deadlineText.isEmpty() || orderItem.deadlineText.equals(LABEL_EMPTY, true)) {
+                        label_due_response.visibility = View.GONE
+                        ic_label_due_card.visibility = View.GONE
+                    } else {
+                        if (orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED || orderItem.orderStatusId == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
+                            label_due_response.text = holder.itemView.context.getString(R.string.som_deadline_done)
+                        } else {
+                            label_due_response.text = holder.itemView.context.getString(R.string.som_deadline)
+                        }
+                        label_due_response.visibility = View.VISIBLE
+                        ic_label_due_card.visibility = View.VISIBLE
+                        label_due_response_day_count.text = orderItem.deadlineText
+                        ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
+                        ic_time.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                        if (orderItem.deadlineColor.isNotEmpty() && !orderItem.deadlineColor.equals(LABEL_EMPTY, true)) {
+                            holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(orderItem.deadlineColor))
+                        }
+                    }
 
-                if (orderItem.listOrderLabel.isNotEmpty()) {
-                    holder.itemView.ll_label_order?.visibility = View.VISIBLE
-                    createOrderLabelList(holder, position)
-                } else {
-                    holder.itemView.ll_label_order?.visibility = View.GONE
-                }
+                    val totalProducts = orderItem.listOrderProduct.size
+                    if (totalProducts > 1) {
+                        rl_overlay_product?.visibility = View.VISIBLE
+                        label_total_product?.text = StringBuilder("$totalProducts\n Produk")
+                    } else {
+                        rl_overlay_product?.visibility = View.GONE
+                    }
 
-                val orderId = orderItem.orderId
-                holder.itemView.setOnClickListener {
-                    actionListener?.onListItemClicked(orderId)
+                    if (orderItem.listOrderLabel.isNotEmpty()) {
+                        ll_label_order?.visibility = View.VISIBLE
+                        createOrderLabelList(holder, position)
+                    } else {
+                        ll_label_order?.visibility = View.GONE
+                    }
+
+                    val orderId = orderItem.orderId
+                    setOnClickListener {
+                        actionListener?.onListItemClicked(orderId)
+                    }
                 }
             }
         }

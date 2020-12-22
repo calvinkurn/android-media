@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet
@@ -115,6 +115,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         flightCancellationReviewViewModel.requestCancel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    flightCancellationReviewViewModel.trackOnSubmit()
                     if (it.data) showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description)
                 }
                 is Fail -> {
@@ -206,7 +207,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun descriptionText(): SpannableString {
-        val color = requireContext().resources.getColor(R.color.flight_green_text_color)
+        val color = requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
         val startIndex = getString(R.string.flight_cancellation_refund_description).indexOf(LEARN_TEXT)
         val stopIndex = getString(R.string.flight_cancellation_refund_description).length
         val description = SpannableString(requireContext().getString(
@@ -256,11 +257,11 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showSuccessDialog(resId: Int) {
-        val dialog = Dialog(activity, Dialog.Type.RETORIC)
+        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title))
-        dialog.setDesc(Html.fromHtml(getString(resId)))
-        dialog.setBtnOk("OK")
-        dialog.setOnOkClickListener {
+        dialog.setDescription(Html.fromHtml(getString(resId)))
+        dialog.setPrimaryCTAText("OK")
+        dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             closeCancellationReviewPage()
         }
@@ -302,10 +303,10 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showCancellationError(t: Throwable) {
-        Toaster.make(requireView(),
+        Toaster.build(requireView(),
                 FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR)
+                Toaster.TYPE_ERROR).show()
     }
 
     companion object {

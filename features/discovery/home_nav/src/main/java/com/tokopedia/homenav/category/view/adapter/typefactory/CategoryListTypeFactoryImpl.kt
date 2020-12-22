@@ -50,7 +50,7 @@ class CategoryListTypeFactoryImpl(
             HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view)
             HomeNavGlobalErrorViewHolder.LAYOUT -> HomeNavGlobalErrorViewHolder(view, listener)
             CategoryListLoadingViewHolder.LAYOUT -> CategoryListLoadingViewHolder(view)
-            HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view)
+            HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, listener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }
