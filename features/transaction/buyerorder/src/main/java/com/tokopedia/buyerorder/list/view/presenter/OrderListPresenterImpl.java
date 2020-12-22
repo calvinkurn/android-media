@@ -1,37 +1,24 @@
 package com.tokopedia.buyerorder.list.view.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
-import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
-import com.tokopedia.buyerorder.detail.data.DetailsData;
-import com.tokopedia.buyerorder.detail.data.Items;
-import com.tokopedia.buyerorder.detail.data.OrderDetails;
-import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
-import com.tokopedia.buyerorder.detail.data.ShopInfo;
-import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
-import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.list.data.Data;
 import com.tokopedia.buyerorder.list.data.FilterStatus;
 import com.tokopedia.buyerorder.list.data.Order;
@@ -42,15 +29,14 @@ import com.tokopedia.buyerorder.list.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.buyerorder.list.data.surveyresponse.CheckSurveyResponse;
 import com.tokopedia.buyerorder.list.data.surveyresponse.InsertSurveyResponse;
 import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleViewModel;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleUiModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -84,29 +70,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.tokopedia.buyerorder.list.view.fragment.OrderListFragment.ACTION_ASK_SELLER;
-import static com.tokopedia.buyerorder.list.view.fragment.OrderListFragment.ACTION_BUY_AGAIN;
-import static com.tokopedia.buyerorder.list.view.fragment.OrderListFragment.ACTION_SUBMIT_CANCELLATION;
-
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
     OrderListContract.View view;
 
-    private static final String ORDER_CATEGORY = "orderCategoryStr";
     private static final String ORDER_ID = "orderId";
-    private static final String PAYMENT_ID = "paymentId";
-    private static final String CART_STRING = "cartString";
-    private static final String DETAIL = "detail";
-    private static final String ACTION = "action";
-    private static final String UPSTREAM = "upstream";
-    private static final String PARAM = "param";
-    private static final String INVOICE = "invoice";
-    private static final String PRODUCT_ID = "product_id";
-    private static final String QUANTITY = "quantity";
-    private static final String NOTES = "notes";
-    private static final String SHOP_ID = "shop_id";
-    private static final String PRODUCT_PRICE = "product_price";
-    private static final String CATEGORY = "category";
-    private static final String PRODUCT_NAME = "product_name";
     private static final String SEARCH = "Search";
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
@@ -128,9 +95,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private final UserSessionInterface userSessionInterface;
     private List<Visitable> orderList = new ArrayList<>();
     private String recomTitle;
-    private OrderListAnalytics orderListAnalytics;
-    private OrderDetails orderDetails;
-    private RequestCancelInfo requestCancelInfo;
     private PostCancelReasonUseCase postCancelReasonUseCase;
     private AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
     private FinishOrderGqlUseCase finishOrderGqlUseCase;
@@ -142,7 +106,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                   RemoveWishListUseCase removeWishListUseCase,
                                   TopAdsWishlishedUseCase topAdsWishlishedUseCase,
                                   UserSessionInterface userSessionInterface,
-                                  OrderListAnalytics orderListAnalytics,
                                   PostCancelReasonUseCase postCancelReasonUseCase,
                                   AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase,
                                   FinishOrderGqlUseCase finishOrderGqlUseCase) {
@@ -152,7 +115,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.removeWishListUseCase = removeWishListUseCase;
         this.topAdsWishlishedUseCase = topAdsWishlishedUseCase;
         this.userSessionInterface = userSessionInterface;
-        this.orderListAnalytics = orderListAnalytics;
         this.postCancelReasonUseCase = postCancelReasonUseCase;
         this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
         this.finishOrderGqlUseCase = finishOrderGqlUseCase;
@@ -190,7 +152,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                             recomTitle = !TextUtils.isEmpty(recommendationWidget.getTitle())
                                     ? recommendationWidget.getTitle()
                                     : context.getResources().getString(R.string.order_list_title_recommendation);
-                            visitables.add(new OrderListRecomTitleViewModel(recomTitle));
+                            visitables.add(new OrderListRecomTitleUiModel(recomTitle));
                         }
                         visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         getView().addData(visitables, true, false);
@@ -212,7 +174,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recommendationList = new ArrayList<>();
         for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
-            recommendationList.add(new OrderListRecomViewModel(item, recomTitle));
+            recommendationList.add(new OrderListRecomUiModel(item, recomTitle));
         }
         return recommendationList;
     }
@@ -221,7 +183,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private List<Visitable> getOrderListVisitables(Data data) {
         List<Visitable> orderList = new ArrayList<>();
         for (Order item : data.orders()) {
-            orderList.add(new OrderListViewModel(item));
+            orderList.add(new OrderListUiModel(item));
         }
         return orderList;
     }
@@ -347,7 +309,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
                 finishFilter.setName(entry.getFilterName());
                 finishFilter.setType(entry.getFilterLabel());
-                finishFilter.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green);
+                finishFilter.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400);
                 if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                     isAnyItemSelected = true;
                     finishFilter.setSelected(true);
@@ -502,17 +464,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             String externalSource = "";
             String clickUrl = "";
             String imageUrl = "";
-            if (productModel instanceof OrderListRecomViewModel) {
-                OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
-                productId = orderListRecomViewModel.getRecommendationItem().getProductId();
-                shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
-                productName = orderListRecomViewModel.getRecommendationItem().getName();
-                productCategory = orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs();
-                productPrice = orderListRecomViewModel.getRecommendationItem().getPrice();
+            if (productModel instanceof OrderListRecomUiModel) {
+                OrderListRecomUiModel orderListRecomUiModel = (OrderListRecomUiModel) productModel;
+                productId = orderListRecomUiModel.getRecommendationItem().getProductId();
+                shopId = orderListRecomUiModel.getRecommendationItem().getShopId();
+                productName = orderListRecomUiModel.getRecommendationItem().getName();
+                productCategory = orderListRecomUiModel.getRecommendationItem().getCategoryBreadcrumbs();
+                productPrice = orderListRecomUiModel.getRecommendationItem().getPrice();
                 externalSource = "recommendation_list";
-                clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
-                imageUrl = orderListRecomViewModel.getRecommendationItem().getImageUrl();
-                quantity = orderListRecomViewModel.getRecommendationItem().getMinOrder();
+                clickUrl = orderListRecomUiModel.getRecommendationItem().getClickUrl();
+                imageUrl = orderListRecomUiModel.getRecommendationItem().getImageUrl();
+                quantity = orderListRecomUiModel.getRecommendationItem().getMinOrder();
             }
 
             if(!clickUrl.isEmpty()) {
@@ -670,192 +632,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 }
             });
         }
-    }
-
-    private void buyAgainItem(Context context) {
-        if (getView() != null) {
-            Map<String, Object> variables = new HashMap<>();
-            variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
-            getView().displayLoadMore(true);
-            addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
-            addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    if (getView() != null) {
-                        getView().displayLoadMore(false);
-                        getView().showFailureMessage(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onNext(AtcMultiData atcMultiData) {
-                    if (getView() != null) {
-                        getView().displayLoadMore(false);
-                        if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
-                            getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
-                        } else {
-                            getView().showFailureMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
-                        }
-                        orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, false, "", getStatus().status());
-                    }
-                }
-            });
-        }
-    }
-
-    public void setOrderDetails(Context context, String orderId, String orderCategory, String buttonLabel) {
-        if (getView() != null) getView().displayLoadMore(true);
-        GraphqlRequest graphqlRequest;
-        Map<String, Object> variables = new HashMap<>();
-        if (orderCategory.equalsIgnoreCase("marketplace")) {
-            variables.put("orderCategory", orderCategory);
-            variables.put(ORDER_ID, orderId);
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
-        } else {
-            variables.put(ORDER_CATEGORY, orderCategory);
-            variables.put(ORDER_ID, orderId);
-            variables.put(DETAIL, 1);
-            //assuming that fromPayment is false, although confirmation required
-            variables.put(ACTION, 1);
-            variables.put(UPSTREAM, "");
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                    R.raw.orderdetails), DetailsData.class, variables, false);
-        }
-
-        GraphqlUseCase orderDetailsUseCase = new GraphqlUseCase();
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.addRequest(graphqlRequest);
-
-        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null) {
-                    Timber.d("error occured" + e);
-                    getView().displayLoadMore(false);
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                if (response != null) {
-                    DetailsData data = response.getData(DetailsData.class);
-                    orderDetails = data.orderDetails();
-                    requestCancelInfo = orderDetails.getRequestCancelInfo();
-                    handleActionButtonClick(context, buttonLabel);
-                }
-            }
-        });
-    }
-
-    private void handleActionButtonClick(Context context, String buttonLabel) {
-        switch (buttonLabel) {
-            case ACTION_BUY_AGAIN:
-                buyAgainItem(context);
-                break;
-            case ACTION_ASK_SELLER:
-                if (getView() != null) {
-                    getView().startSellerAndAddInvoice();
-                }
-                orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
-                break;
-            case ACTION_SUBMIT_CANCELLATION:
-                if (getView() != null) {
-                    getView().requestCancelOrder(getStatus());
-                }
-                orderListAnalytics.sendActionButtonClickEventList("", "");
-                break;
-            default:
-                break;
-        }
-    }
-
-    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
-        JsonArray jsonArray = new JsonArray();
-        for (Items item : items) {
-            JsonObject passenger = new JsonObject();
-
-            int productId = 0;
-            int quantity = 0;
-            int shopId = 0;
-            String notes = "";
-            String price = "";
-            String category = "";
-            String productName = "";
-            try {
-                productId = item.getId();
-                quantity = item.getQuantity();
-                shopId = orderDetails.getShopInfo().getShopId();
-                notes = item.getDescription();
-                price = item.getPrice();
-                category = item.getCategory();
-                productName = item.getTitle();
-            } catch (Exception e) {
-                Log.e("error parse", e.getMessage());
-            }
-            passenger.addProperty(PRODUCT_ID, productId);
-            passenger.addProperty(QUANTITY, quantity);
-            passenger.addProperty(NOTES, notes);
-            passenger.addProperty(SHOP_ID, shopId);
-            passenger.addProperty(PRODUCT_PRICE, price);
-            passenger.addProperty(CATEGORY, category);
-            passenger.addProperty(PRODUCT_NAME, productName);
-            jsonArray.add(passenger);
-        }
-        return jsonArray;
-    }
-
-    public void assignInvoiceDataTo(Intent intent) {
-        if (orderDetails != null) {
-            String id = orderDetails.getInvoiceId();
-            String invoiceCode = orderDetails.getInvoiceCode();
-            String productName = orderDetails.getProductName();
-            String date = orderDetails.getBoughtDate();
-            String imageUrl = orderDetails.getProductImageUrl();
-            String invoiceUrl = orderDetails.getInvoiceUrl();
-            String statusId = orderDetails.getStatusId();
-            String status = orderDetails.getStatusInfo();
-            String totalPriceAmount = orderDetails.getTotalPriceAmount();
-
-            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
-        }
-    }
-
-    public ShopInfo getShopInfo() {
-        return orderDetails.getShopInfo();
-    }
-
-    public Status getStatus() {
-        return orderDetails.status();
-    }
-
-    public String getCancelTime() {
-        return requestCancelInfo.getRequestCancelNote();
-    }
-
-    public boolean shouldShowTimeForCancellation(){
-        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
-                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 
     public void updateOrderCancelReason(Context context, String cancelReason, String orderId,

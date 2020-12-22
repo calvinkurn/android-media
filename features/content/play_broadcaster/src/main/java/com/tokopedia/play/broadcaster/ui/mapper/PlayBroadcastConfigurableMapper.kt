@@ -92,7 +92,7 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapShareInfo(channel)
     }
 
-    override fun mapLiveDuration(duration: LiveDuration): DurationUiModel {
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel {
         return if (!isMock) uiMapper.mapLiveDuration(duration)
         else mockMapper.mapLiveDuration(duration)
     }

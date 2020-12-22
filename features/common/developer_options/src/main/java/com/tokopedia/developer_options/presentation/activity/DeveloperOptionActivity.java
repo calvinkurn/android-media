@@ -77,7 +77,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
-    public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -122,8 +121,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
 
-    private CheckBox toggleUiBlockDebugger;
-
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
     private ToggleButton groupChatLogToggle;
@@ -138,7 +135,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
-    private EditText etUIBlockDelay;
 
     @Override
     public String getScreenName() {
@@ -148,13 +144,19 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
 
-            Uri uri = getIntent().getData();
-            boolean isChangeUrlApplink
-                    = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
-
+            Intent intent = getIntent();
+            Uri uri = null;
+            boolean isChangeUrlApplink = false;
+            if (intent != null) {
+                uri = intent.getData();
+                if (uri!= null) {
+                    isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(CHANGEURL);
+                }
+            }
             if (isChangeUrlApplink) {
                 handleUri(uri);
             } else {
@@ -221,9 +223,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
-
-        etUIBlockDelay = findViewById(R.id.et_block_canary_delay);
-        toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -490,21 +489,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToIrisSendLogDB.setOnClickListener(v -> {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
-        });
-
-        toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
-            String delayStr = etUIBlockDelay.getText().toString();
-            int delay = toInt(delayStr);
-            if (delay <= 0) {
-                delay = DEFAULT_DELAY_UI_BLOCK;
-            }
-            if (state) {
-                Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is enabled with delay " + delay, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is disabled", Toast.LENGTH_LONG).show();
-            }
         });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());

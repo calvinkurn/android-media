@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorder
 
+import android.app.Application
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,13 +31,7 @@ import org.hamcrest.TypeSafeMatcher
  * Created by fwidjaja on 08/11/20.
  */
 class UohRobot {
-    fun launchFrom(rule: ActivityTestRule<UohListActivity>) {
-        rule.launchActivity(null)
-        waitForData()
-    }
-
-    fun login(rule: ActivityTestRule<UohListActivity>) {
-        InstrumentationAuthHelper.loginToAnUser(rule.activity.application)
+    fun loading() {
         waitForData()
     }
 
@@ -69,21 +65,8 @@ class UohRobot {
         waitForData()
     }
 
-    fun clickFilterDate() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0))
-                .perform(click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
-    }
-
-    fun doApplyFilterDate() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
-        waitForData()
-    }
-
     fun clickFilterStatus() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),1))
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0))
                 .perform(click())
         onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
@@ -96,8 +79,8 @@ class UohRobot {
     }
 
     fun clickFilterCategory() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),2))
-                .perform(scrollTo(), click())
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),1))
+                .perform(click())
         onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
     }
@@ -105,6 +88,19 @@ class UohRobot {
     fun doApplyFilterCategory() {
         onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
                 .perform(click())
+    }
+
+    fun clickFilterDate() {
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),2))
+                .perform(scrollTo(), click())
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+    }
+
+    fun doApplyFilterDate() {
+        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
+                .perform(click())
+        waitForData()
     }
 
     private fun waitForData() {
