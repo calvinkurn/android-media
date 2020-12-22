@@ -17,8 +17,10 @@ import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
@@ -63,7 +65,7 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView)
-            handleBackgroundColor(channel, it)
+            handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
         }
     }
 
@@ -233,9 +235,17 @@ class DynamicChannelHeaderView: FrameLayout {
         }
     }
 
-    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout) {
+    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
         if (channel.channelHeader.backColor.isNotEmpty()) {
+            stubSeeAllButton?.gone()
+            stubSeeAllButtonUnify?.gone()
             titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+
+            titleContainer.setPadding(
+                    titleContainer.paddingLeft,
+                    convertDpToPixel(10f, titleContainer.context),
+                    titleContainer.paddingRight,
+                    titleContainer.paddingBottom)
         }
 
     }
