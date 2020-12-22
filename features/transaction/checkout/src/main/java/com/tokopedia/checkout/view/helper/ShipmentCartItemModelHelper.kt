@@ -15,12 +15,11 @@ import com.tokopedia.checkout.R
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.webview.TkpdWebView
 import timber.log.Timber
 
 
 object ShipmentCartItemModelHelper {
-    private var webView: TkpdWebView? = null
+    private var webView: NestedScrollWebview? = null
     var failedLoading = false
 
     @JvmStatic

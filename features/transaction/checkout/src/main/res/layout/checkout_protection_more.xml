@@ -70,18 +70,13 @@
                 app:loader_type="rect" />
         </LinearLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <com.tokopedia.checkout.view.helper.NestedScrollWebview
+            android:id="@+id/proteksi_webview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:scrollbars="none">
-
-            <com.tokopedia.webview.TkpdWebView
-                android:id="@+id/proteksi_webview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
-                android:scrollbars="none" />
-        </androidx.core.widget.NestedScrollView>
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scrollbars="none" />
     </ViewFlipper>
 </LinearLayout>
