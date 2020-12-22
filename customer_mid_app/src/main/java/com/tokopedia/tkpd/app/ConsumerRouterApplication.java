@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.preference.PreferenceManager;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.FirebaseApp;
@@ -44,7 +46,12 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
@@ -68,6 +75,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
@@ -145,6 +153,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+
+    private FirebaseMessagingManager fcmManager;
 
     @Override
     public void onCreate() {
@@ -426,8 +436,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-        sessionRefresh.gcmUpdate();
+        String accessToken = accessTokenRefresh.refreshToken();
+        doRelogin(accessToken);
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     @Override
@@ -535,7 +549,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.gcmUpdate();
+            if(isOldGcmUpdate()) {
+                sessionRefresh.gcmUpdate();
+            } else {
+                if(fcmManager == null) {
+                    provideFcmManager();
+                }
+                fcmManager.onNewToken(newAccessToken);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -628,5 +649,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
+    }
+
+    private void provideFcmManager() {
+        fcmManager = new FirebaseMessagingManagerImpl(
+                new UpdateFcmTokenUseCase(
+                        new GraphqlUseCase<>(GraphqlInteractor.getInstance().getGraphqlRepository()),
+                        GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
+                ),
+                PreferenceManager.getDefaultSharedPreferences(context),
+                new UserSession(context)
+        );
     }
 }

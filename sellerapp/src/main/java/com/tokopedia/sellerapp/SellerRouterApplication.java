@@ -36,6 +36,10 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmComponent;
+import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -46,10 +50,13 @@ import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
+import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
+import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
@@ -76,6 +83,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -101,6 +111,11 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
     protected CacheManager cacheManager;
+
+    private DaggerGcmUpdateComponent.Builder daggerGcmUpdateBuilder;
+    private GcmUpdateComponent gcmUpdateComponent;
+    @Inject
+    Lazy<FirebaseMessagingManager> fcmManager;
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
 
@@ -304,8 +319,8 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-        sessionRefresh.gcmUpdate();
+        String accessToken = accessTokenRefresh.refreshToken();
+        doRelogin(accessToken);
     }
 
     @Override
@@ -348,9 +363,16 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void doRelogin(String newAccessToken) {
+        if(gcmUpdateComponent == null) {
+            injectGcmUpdateComponent();
+        }
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.gcmUpdate();
+            if(isOldGcmUpdate()) {
+                sessionRefresh.gcmUpdate();
+            } else {
+                fcmManager.get().onNewToken(newAccessToken);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -454,6 +476,27 @@ public abstract class SellerRouterApplication extends MainApplication
     public void setOnboardingStatus(boolean status) {
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OLD_GCM_UPDATE, false);
+    }
+
+    private void injectGcmUpdateComponent() {
+        if(!isOldGcmUpdate()) {
+            if(daggerGcmUpdateBuilder == null) {
+                FcmComponent fcmComponent = DaggerFcmComponent.builder()
+                        .fcmModule(new FcmModule(this))
+                        .build();
+
+                daggerGcmUpdateBuilder = DaggerGcmUpdateComponent.builder()
+                        .fcmComponent(fcmComponent);
+            }
+            if(gcmUpdateComponent == null) {
+                gcmUpdateComponent = daggerGcmUpdateBuilder.build();
+            }
+            gcmUpdateComponent.inject(this);
+        }
     }
 
 }
