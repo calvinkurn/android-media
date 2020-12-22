@@ -62,7 +62,7 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setInboxType(inboxType: String) {
         this.type = inboxType
-        resetPage()
+        resetFilter()
     }
 
     fun setFilter(selectedFilter: TalkInboxFilter) {

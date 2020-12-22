@@ -16,7 +16,7 @@ data class TalkReplyHeaderModel(
         val userThumbnail: String,
         val userName: String,
         val userId: Int,
-        val isMyQuestion:Boolean
+        val isMyQuestion: Boolean
 ) : Visitable<TalkReplyAdapterTypeFactory> {
 
     override fun type(typeFactory: TalkReplyAdapterTypeFactory): Int {

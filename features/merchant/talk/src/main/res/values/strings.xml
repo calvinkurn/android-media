@@ -100,5 +100,9 @@
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
     <string name="inbox_unresponded">Belum Direspon</string>
     <string name="inbox_problem">Bermasalah</string>
+    <string name="inbox_problem_empty">Tidak ada diskusi yang bermasalah</string>
+    <string name="inbox_problem_empty_subtitle">Tetap pantau terus isi diskusimu, ya!</string>
+    <string name="inbox_unresponded_empty_title">Yay, semua diskusi sudah direspon</string>
+    <string name="inbox_unresponded_empty_subtitle">Gercep balas diskusi, pembeli jadi makin yakin dan hepi!</string>
 
 </resources>

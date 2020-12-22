@@ -43,6 +43,7 @@ class TalkReplyHeaderViewHolder(view: View,
             showHeaderDateWithCondition(date)
             showUserNameWithCondition(element.userName, element.isMyQuestion)
             showUnmaskCardWithCondition(element.allowUnmask)
+            showTickerWithCondition(element.isMasked, element.maskedContent)
             itemView.apply {
                 replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
@@ -182,6 +183,17 @@ class TalkReplyHeaderViewHolder(view: View,
             }
         } else {
             itemView.replyHeaderFollowButton.hide()
+        }
+    }
+
+    private fun showTickerWithCondition(isMasked: Boolean, maskedContent: String) {
+        if(isMasked) {
+            itemView.replyQuestionTicker.apply {
+                show()
+                setTextDescription(maskedContent)
+            }
+        } else {
+            itemView.replyQuestionTicker.hide()
         }
     }
 }

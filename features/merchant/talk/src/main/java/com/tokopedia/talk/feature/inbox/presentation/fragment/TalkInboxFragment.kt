@@ -64,6 +64,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val REPLY_REQUEST_CODE = 420
         const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
+        const val EMPTY_SELLER_PROBLEM = ""
 
         fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -268,10 +269,16 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                         showEmptyInbox()
                                     }
                                     is TalkInboxFilter.TalkInboxUnreadFilter -> {
-                                        showEmptyUnread()
+                                        showEmptyFilter(getString(R.string.inbox_empty_title), getString(R.string.inbox_empty_unread_discussion))
                                     }
                                     is TalkInboxFilter.TalkInboxReadFilter -> {
-                                        showEmptyRead()
+                                        showEmptyFilter(getString(R.string.inbox_empty_title), getString(R.string.inbox_empty_read_discussion))
+                                    }
+                                    is TalkInboxFilter.TalkInboxUnrespondedFilter -> {
+                                        showEmptySeller(EMPTY_SELLER_DISCUSSION, getString(R.string.inbox_unresponded_empty_title), getString(R.string.inbox_unresponded_empty_subtitle))
+                                    }
+                                    is TalkInboxFilter.TalkInboxProblemFilter -> {
+                                        showEmptySeller(EMPTY_SELLER_PROBLEM, getString(R.string.inbox_problem_empty), getString(R.string.inbox_problem_empty_subtitle))
                                     }
                                 }
                                 return@Observer
@@ -352,36 +359,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxEmpty.show()
     }
 
-    private fun showEmptyUnread() {
-        when {
-            isSellerView() && !isOldView() -> {
-                talkInboxEmptyImage.loadImage(EMPTY_SELLER_READ_DISCUSSION)
-                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_seller_unread_title)
-                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_unread_subtitle)
-            }
-            else -> {
-                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
-                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
-            }
-        }
+    private fun showEmptyFilter(title: String, subtitle: String) {
+        talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+        talkInboxEmptyTitle.text = title
+        talkInboxEmptySubtitle.text = subtitle
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
 
-    private fun showEmptyRead() {
-        when {
-            isSellerView() && !isOldView() -> {
-                talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
-                talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
-            }
-            else -> {
-                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
-                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
-            }
-        }
+    private fun showEmptySeller(imageUrl: String, title: String, subtitle: String) {
+        talkInboxEmptyImage.loadImage(imageUrl)
+        talkInboxEmptyTitle.text = title
+        talkInboxEmptySubtitle.text = subtitle
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
@@ -487,9 +476,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun initToolbar() {
-        if(!userSession.hasShop() && !GlobalConfig.isSellerApp() && isOldView()) {
+        if (!userSession.hasShop() && !GlobalConfig.isSellerApp() && isOldView()) {
             setupToolbar()
-        } else if(userSession.hasShop() && GlobalConfig.isSellerApp() && isOldView()) {
+        } else if (userSession.hasShop() && GlobalConfig.isSellerApp() && isOldView()) {
             setupToolbar()
         } else {
             headerTalkInbox?.hide()

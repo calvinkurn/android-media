@@ -56,6 +56,7 @@ class TalkReplyViewHolder(view: View,
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
             showUnmaskCardWithCondition(state.allowUnmask, answerID)
+            showTickerWithCondition(state.isMasked, maskedContent)
         }
     }
 
@@ -200,6 +201,17 @@ class TalkReplyViewHolder(view: View,
             }
         } else {
             itemView.replyCommentUnmaskCard.hide()
+        }
+    }
+
+    private fun showTickerWithCondition(isMasked: Boolean, maskedContent: String) {
+        if(isMasked) {
+            itemView.replyCommentTicker.apply {
+                show()
+                setTextDescription(maskedContent)
+            }
+        } else {
+            itemView.replyCommentTicker.hide()
         }
     }
 }
