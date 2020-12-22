@@ -51,7 +51,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
 
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
-    private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_new_address_receiver) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
     private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
 
@@ -479,7 +478,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private fun showAddress() {
         val addressModel = preference.preference.address
-        tvAddressName?.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -489,15 +487,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver?.text = receiverText
-            tvAddressReceiver?.visible()
-        } else {
-            tvAddressReceiver?.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
 
-        setMultiViewsOnClickListener(tvAddressName, tvAddressReceiver, tvAddressDetail, btnChangeAddress) {
+        setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
             listener.chooseAddress(addressModel.addressId.toString())
         }
     }

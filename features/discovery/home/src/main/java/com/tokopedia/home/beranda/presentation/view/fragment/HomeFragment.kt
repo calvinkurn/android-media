@@ -527,6 +527,7 @@ open class HomeFragment : BaseDaggerFragment(),
             val bottomSheet = BottomSheetUnify()
             val onBoardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onBoardingView.onboarding_button.setOnClickListener {
+                bottomSheet.dismiss()
                 showCoachMark(bottomSheet)
             }
 
@@ -572,7 +573,6 @@ open class HomeFragment : BaseDaggerFragment(),
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
-            bottomSheet.dismiss()
             if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                 coachMark.showCoachMark(step = coachMarkItem, index = 0)
             }

@@ -70,7 +70,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
                 val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-                if(recommendationItems.isEmpty() && filterAndSort == null){
+                if(recommendationItems.isEmpty()){
                     _filterSortChip.postValue(Response.error(Exception()))
                     _recommendationItem.postValue(Response.error(Exception()))
                 }else {
@@ -121,7 +121,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 _filterSortChip.postValue(Response.success(filterData))
                 _recommendationItem.postValue(Response.success(recommendation))
             } else {
-                _filterSortChip.postValue(Response.empty(oldFilterData))
+                _filterSortChip.postValue(Response.success(oldFilterData))
                 _recommendationItem.postValue(Response.empty())
             }
         }){
@@ -160,7 +160,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                     _filterSortChip.postValue(Response.success(FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)))
                     _recommendationItem.postValue(Response.success(recommendation))
                 } else {
-                    _filterSortChip.postValue(Response.empty(filterSort))
+                    _filterSortChip.postValue(Response.success(filterSort))
                     _recommendationItem.postValue(Response.empty())
                 }
             }

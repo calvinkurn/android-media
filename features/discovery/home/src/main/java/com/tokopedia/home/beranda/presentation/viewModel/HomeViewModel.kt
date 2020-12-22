@@ -77,7 +77,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -109,7 +108,7 @@ open class HomeViewModel @Inject constructor(
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
-        private val getRechargeBUWidget: Lazy<GetRechargeBUWidgetUseCase>,
+        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>,
@@ -1063,10 +1062,12 @@ open class HomeViewModel @Inject constructor(
     fun getRechargeBUWidget(source: WidgetSource) {
         if(getRechargeBUWidgetJob?.isActive == true) return
         getRechargeBUWidgetJob = launchCatchError(coroutineContext, block = {
-            getRechargeBUWidget.get().setParams(source)
-            val data = getRechargeBUWidget.get().executeOnBackground()
+            getRechargeBUWidgetUseCase.get().setParams(source)
+            val data = getRechargeBUWidgetUseCase.get().executeOnBackground()
             _rechargeBUWidgetLiveData.postValue(Event(data))
-        }){}
+        }){
+            removeRechargeBUWidget()
+        }
     }
 
     fun getFeedTabData() {

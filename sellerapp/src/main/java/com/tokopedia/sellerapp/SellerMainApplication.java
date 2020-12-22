@@ -33,10 +33,12 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -169,7 +171,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
-        SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        initSlicePermission();
     }
 
     private void initCacheManager(){
@@ -205,7 +207,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+        }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
@@ -260,6 +265,20 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
     }
+
+    private void initSlicePermission() {
+        if (getSliceRemoteConfig()) {
+            SlicePermission slicePermission = new SlicePermission();
+            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        }
+    }
+
+    private Boolean getSliceRemoteConfig() {
+        return remoteConfig != null
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
+    }
+
+
 
     @Override
     public Class<?> getDeeplinkClass() {

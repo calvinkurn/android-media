@@ -20,6 +20,7 @@ import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
@@ -99,7 +100,7 @@ fun createHomeViewModel(
             declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
             declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
-            getRechargeBUWidget = Lazy{getRechargeBUWidgetUseCase},
+            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             bestSellerMapper = Lazy { bestSellerMapper },
             homeDispatcher = Lazy{ dispatchers },
@@ -156,6 +157,14 @@ fun GetSalamWidgetUseCase.givenGetSalamWidgetThrowReturn(){
 
 fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
     coEvery { executeOnBackground() } returns salamWidget
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso){
+    coEvery { executeOnBackground() } returns rechargePerso
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
 }
 
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {

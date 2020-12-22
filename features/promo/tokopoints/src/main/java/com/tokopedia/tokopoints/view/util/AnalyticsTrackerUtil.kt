@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.util
 
 import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.ScreenKeys.Companion.HOME_PAGE_SCREEN_NAME
 import com.tokopedia.track.TrackApp
@@ -29,15 +30,14 @@ object AnalyticsTrackerUtil {
     @JvmStatic
     fun sendEvent(event: String, category: String,
                   action: String, label: String, businessUnit: String, currentSite: String) {
-        val map = mutableMapOf<String, String>()
-        map[EventKeys.EVENT] = event
-        map[EventKeys.EVENT_CATEGORY] = category
-        map[EventKeys.EVENT_ACTION] = action
-        map[EventKeys.EVENT_LABEL] = label
-        map[EventKeys.EVENT_BUSINESSUNIT] = businessUnit
-        map[EventKeys.EVENT_CURRENTSITE] = currentSite
-
-        getTracker().sendScreenAuthenticated(HOME_PAGE_SCREEN_NAME, map)
+        val eventDataLayer = Bundle()
+        eventDataLayer.putString(EventKeys.EVENT, event)
+        eventDataLayer.putString(EventKeys.EVENT_CATEGORY, category)
+        eventDataLayer.putString(EventKeys.EVENT_ACTION, action)
+        eventDataLayer.putString(EventKeys.EVENT_LABEL, label)
+        eventDataLayer.putString(EventKeys.EVENT_BUSINESSUNIT, businessUnit)
+        eventDataLayer.putString(EventKeys.EVENT_CURRENTSITE, currentSite)
+        getTracker().sendEnhanceEcommerceEvent(event, eventDataLayer)
     }
 
     fun sendECommerceEvent(context: Context?, event: String, category: String,
