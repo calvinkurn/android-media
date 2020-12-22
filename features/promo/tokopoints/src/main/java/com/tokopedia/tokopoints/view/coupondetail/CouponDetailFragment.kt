@@ -7,20 +7,22 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
+import android.os.Handler
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -30,7 +32,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
@@ -49,28 +51,26 @@ import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
-import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.COUPON_MIME_TYPE
-import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.webview.TkpdWebView
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
 import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
@@ -141,7 +141,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         it?.let {
             when (it) {
                 is ErrorMessage -> RouteManager.route(context, it.data)
-                is Success -> RouteManager.route(context, it.data)
+                is Success -> showToasterAndRedirect(it.data)
             }
             return@let
         }
@@ -356,20 +356,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     }
 
-    private fun decorateDialog(dialog: AlertDialog) {
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext!!,
-                    com.tokopedia.design.R.color.tkpd_main_green))
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
-        }
-
-        if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext!!,
-                    com.tokopedia.design.R.color.grey_warm))
-        }
-    }
-
     private fun setCouponToUi(data: CouponValueEntity) {
         if (view == null) {
             return
@@ -398,6 +384,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         if (data.isIs_show_button) {
             btnAction2.show()
+            ll_bottom_button.show()
+        }
+        else{
+            btnAction2.hide()
+            ll_bottom_button.hide()
         }
         if (data.usage != null) {
             label.visibility = View.VISIBLE
@@ -408,8 +399,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
             if (data.usage.btnUsage != null) {
                 if (data.usage.btnUsage.type.equals("invisible", ignoreCase = true)) {
+                    ll_bottom_button.hide()
                     btnAction2.visibility = View.GONE
                 } else {
+                    ll_bottom_button.show()
                     btnAction2.visibility = View.VISIBLE
                 }
                 if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
@@ -546,36 +539,24 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
 
-    private fun setupInfoPager(info: String, tnc: String) {
-        view?.apply {
-            tnc_content.loadData(getLessDisplayData(tnc, tnc_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
-            tnc_content.setMargin(0, 0, 0, 0)
-            how_to_use_content.loadData(getLessDisplayData(info, how_to_use_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
+    private fun setupInfoPager(howToUse: String, tnc: String) {
+        val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
+        val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
 
-            tnc_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog)) }
-            how_to_use_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(info, getString(R.string.how_to_use_coupon_catalog)) }
-            ll_bottom_button.visibility = View.VISIBLE
+        if (tnc.isNotEmpty() && tnc != "<br>") {
+            tvTnc.loadData(tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        } else {
+            view?.findViewById<Typography>(R.id.tnc)?.hide()
+            view?.findViewById<View>(R.id.mid_separator)?.hide()
+            tvTnc.hide()
         }
-    }
-
-    private fun loadWebViewInBottomsheet(data: String?, title: String?) {
-        val bottomSheet = BottomSheetUnify()
-        bottomSheet.setShowListener {
-            val sideMargin = 16.toPx()
-            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
-            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+        if (!howToUse.isEmpty() && howToUse != "<br>") {
+            tvHowToUse.loadData(howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        } else {
+            view?.findViewById<Typography>(R.id.how_to_use)?.hide()
+            view?.findViewById<View>(R.id.mid_separator)?.hide()
+            tvHowToUse.hide()
         }
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
-        val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING)
-        bottomSheet.apply {
-            setChild(view)
-            title?.let { setTitle(it) }
-            showCloseIcon = true
-            isDragable = true
-            isHideable = true
-        }
-        bottomSheet.show(childFragmentManager, "")
     }
 
     private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: TextView) {
@@ -710,6 +691,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         activity?.supportFragmentManager?.let {
             mBottomSheetFragment?.showNow(it, "")
         }
+    }
+
+    private fun showToasterAndRedirect(data: String) {
+        view?.let { Toaster.build(it, resources.getString(R.string.tp_coupon_autoapply_msg), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+        Handler().postDelayed({ RouteManager.route(context, data) }, 1000)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

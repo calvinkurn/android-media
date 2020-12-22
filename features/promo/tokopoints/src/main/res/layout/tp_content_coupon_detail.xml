@@ -199,28 +199,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tnc" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tnc_see_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:lineSpacingExtra="@dimen/sp_4"
-                    android:text="@string/see_more_txt"
-                    android:textColor="@color/medium_green"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tnc_content"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
                 <View
                     android:id="@+id/mid_separator"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_2"
                     android:layout_margin="@dimen/dp_16"
                     android:background="@color/bg_label_grey_tokopoints"
-                    app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
-                    app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
-                    app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
+                    app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
+                    app:layout_constraintRight_toRightOf="@+id/tnc_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tnc_content" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/how_to_use"
@@ -245,21 +232,6 @@
                     app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
                     app:layout_constraintRight_toRightOf="@+id/how_to_use"
                     app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/how_to_use_see_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:lineSpacingExtra="@dimen/sp_4"
-                    android:paddingBottom="@dimen/dp_16"
-                    android:text="@string/see_more_txt"
-                    android:textColor="@color/medium_green"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/how_to_use_content"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -298,6 +270,6 @@
     <include
         android:id="@+id/ll_bottom_button"
         layout="@layout/tp_layout_coupon_detail_button"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </LinearLayout>
