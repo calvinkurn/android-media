@@ -124,6 +124,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
@@ -1228,8 +1229,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
-                CategoryNavigationCallback(context, this)
-
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1845,6 +1846,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun getSalamWidget() {
         getHomeViewModel().getSalamWidget()
+    }
+
+    override fun getRechargeBUWidget(source: WidgetSource) {
+        getHomeViewModel().getRechargeBUWidget(source)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
