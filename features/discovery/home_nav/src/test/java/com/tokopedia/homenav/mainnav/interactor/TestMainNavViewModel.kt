@@ -139,6 +139,7 @@ class TestMainNavViewModel {
                 clientMenuGenerator = clientMenuGenerator,
                 getNavNotification = getNavNotification
         )
+        viewModel.getMainNavData(true)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val complainVisitable = visitableList.find { it is HomeNavMenuViewModel && it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuViewModel
@@ -164,6 +165,7 @@ class TestMainNavViewModel {
                 clientMenuGenerator = clientMenuGenerator,
                 getNavNotification = getNavNotification
         )
+        viewModel.getMainNavData(true)
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
         val complainVisitable = visitableList.find { it is HomeNavMenuViewModel && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as HomeNavMenuViewModel
@@ -214,6 +216,7 @@ class TestMainNavViewModel {
                 getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
                 userSession = userSession
         )
+        viewModel.getMainNavData(true)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
@@ -244,6 +247,7 @@ class TestMainNavViewModel {
                 getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase,
                 userSession = userSession
         )
+        viewModel.getMainNavData(true)
 
         val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
             it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
@@ -271,6 +275,7 @@ class TestMainNavViewModel {
                 shopName = "binatang",
                 shopId = "1234")
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -293,6 +298,7 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -309,6 +315,7 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderViewModel(userName = "", userImage = "Tingkir")
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -325,6 +332,7 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderViewModel(userName = "Joko", userImage = "")
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
@@ -341,6 +349,7 @@ class TestMainNavViewModel {
             getProfileDataUseCase.executeOnBackground()
         } returns AccountHeaderViewModel(userName = "", userImage = "")
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
