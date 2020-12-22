@@ -71,6 +71,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -145,6 +146,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
+    private var lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_EMPTY
 
     private var source: String = SOURCE_OTHERS
 
@@ -509,7 +511,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         // first load
-        if (viewModel.orderProduct.productId == 0) {
+        if (viewModel.orderProduct.productId == 0L) {
             val productId = arguments?.getString(QUERY_PRODUCT_ID)
             if (productId.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
@@ -594,7 +596,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         3 -> layoutPayment
                         else -> null
                     }
-                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
+                    val color = context?.let { ctx ->
+                        ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    } ?: com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = color))
                 }
                 val coachMark = CoachMarkBuilder().build()
                 coachMark.enableSkip = true
@@ -1203,6 +1208,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean) {
         viewModel.updateProduct(product, shouldReloadRates)
+    }
+
+    override fun onPurchaseProtectionInfoClicked(url: String) {
+        PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
+    }
+
+    override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
+        if (isChecked) {
+            lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_TICKED
+        } else {
+            lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_UNTICKED
+        }
+        viewModel.calculateTotal()
+    }
+
+    override fun getLastPurchaseProtectionCheckState(): Int {
+        return lastPurchaseProtectionCheckState
     }
 
     private fun handleError(throwable: Throwable?) {

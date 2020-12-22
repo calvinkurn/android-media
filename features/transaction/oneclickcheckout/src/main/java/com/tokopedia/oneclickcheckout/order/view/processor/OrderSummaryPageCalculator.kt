@@ -10,6 +10,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Compa
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
@@ -57,16 +58,21 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.main) {
             val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
+            var purchaseProtectionPriceMultiplier = quantity.orderQuantity
+            if (orderCart.product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
+                purchaseProtectionPriceMultiplier = 1
+            }
+            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
+            var subtotal = totalProductPrice + purchaseProtectionPrice + totalShippingPrice + insurancePrice
             payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
             val fee = payment.getRealFee()
             subtotal += fee
             subtotal -= productDiscount
             subtotal -= shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, purchaseProtectionPrice, cashbacks)
 
             var currentState = forceButtonState ?: orderTotal.buttonState
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {

@@ -8,15 +8,20 @@ class PushIntentHandler {
     var isHandledByPush = false
 
     fun processPushIntent(activity: Activity, bundle: Bundle?):Boolean {
-        var isHandled = false
-        for (pushHandler in getPushIntentHandlerList()) {
-            val tempIsHandled =  pushHandler.processPushIntent(activity, bundle)
-            if (tempIsHandled) {
-                isHandled = tempIsHandled
+        try {
+            var isHandled = false
+            for (pushHandler in getPushIntentHandlerList()) {
+                val tempIsHandled =  pushHandler.processPushIntent(activity, bundle)
+                if (tempIsHandled) {
+                    isHandled = tempIsHandled
+                }
+                break
             }
-            break
+            return isHandled
+        }catch (t:Throwable){
+            return false
         }
-        return isHandled
+
     }
 
     private fun getPushIntentHandlerList() = CmEventListener.pushIntentContractList

@@ -62,10 +62,4 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
         verify { CheckOfficialStoreTypeUseCase.createRequestParam(shopId) }
         coVerify { checkOsMerchantUseCase.executeOnBackground() }
     }
-
-    protected fun verifyUnsubscribeUseCase() {
-        coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { getShopStatusUseCase.unsubscribe() }
-        coVerify { updateShopScheduleUseCase.unsubscribe() }
-    }
 }

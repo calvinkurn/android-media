@@ -25,7 +25,6 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
-import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
@@ -95,22 +94,21 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -121,7 +119,8 @@ final class ProductListPresenter
     private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
-    private static final List<String> showInspirationCarouselLayout = Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST);
+    private static final List<String> showInspirationCarouselLayout =
+            Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST, LAYOUT_INSPIRATION_CAROUSEL_GRID);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -149,10 +148,8 @@ final class ProductListPresenter
     private int startFrom = 0;
     private int totalData = 0;
     private boolean hasLoadData = false;
-    private boolean useRatingString = false;
     private String responseCode = "";
     private int topAdsCount = 1;
-    private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
     private String navSource = "";
     private String pageId = "";
     private String pageTitle = "";
@@ -210,8 +207,6 @@ final class ProductListPresenter
     public void attachView(ProductListSectionContract.View view) {
         super.attachView(view);
 
-        useRatingString = getIsUseRatingString();
-        shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
         isABTestNavigationRevamp = isABTestNavigationRevamp();
     }
@@ -225,39 +220,6 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    private boolean getIsUseRatingString() {
-        try {
-            return getView().getABTestRemoteConfig()
-                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                    .equals(AB_TEST_VARIANT_COMMA_STAR);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private ShopRatingABTestStrategy getShopRatingABTestStrategy() {
-        String shopRatingABVariant = getShopRatingABVariant();
-
-        switch(shopRatingABVariant) {
-            case AB_TEST_SHOP_RATING_VARIANT_A: return new ShopRatingABTestVariantA();
-            case AB_TEST_SHOP_RATING_VARIANT_B: return new ShopRatingABTestVariantB();
-            case AB_TEST_SHOP_RATING_VARIANT_C: return new ShopRatingABTestVariantC();
-            default: return null;
-        }
-    }
-
-    private String getShopRatingABVariant() {
-        try {
-            return getView().getABTestRemoteConfig().getString(AB_TEST_SHOP_RATING);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return "";
         }
     }
 
@@ -366,9 +328,11 @@ final class ProductListPresenter
         enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
 
+        RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
+
         // Unsubscribe first in case user has slow connection, and the previous loadMoreUseCase has not finished yet.
         searchProductLoadMoreUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.execute(requestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
+        searchProductLoadMoreUseCase.execute(useCaseRequestParams, getLoadMoreDataSubscriber(requestParams.getParameters()));
     }
 
     private RequestParams createInitializeSearchParam(Map<String, Object> searchParameter) {
@@ -461,6 +425,22 @@ final class ProductListPresenter
         return text == null || text.length() == 0;
     }
 
+    private RequestParams createSearchProductRequestParams(RequestParams requestParams) {
+        boolean isLocalSearch = isLocalSearch();
+        boolean isSkipGlobalNavWidget = isLocalSearch || getView().isAnyFilterActive() || getView().isAnySortActive();
+
+        RequestParams useCaseRequestParams = RequestParams.create();
+
+        useCaseRequestParams.putObject(SEARCH_PRODUCT_PARAMS, requestParams.getParameters());
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch);
+        useCaseRequestParams.putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget);
+
+        return useCaseRequestParams;
+    }
+
     private Subscriber<SearchProductModel> getLoadMoreDataSubscriber(final Map<String, Object> searchParameter) {
         return new Subscriber<SearchProductModel>() {
             @Override
@@ -499,9 +479,9 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+            ProductViewModelMapper mapper = new ProductViewModelMapper();
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -579,9 +559,7 @@ final class ProductListPresenter
                     item.setImageUrl300(topAds.getProduct().getImage().getM_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
-                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
-                    item.setRating(useRatingString ? 0 : topAds.getProduct().getProductRating());
-                    item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
+                    item.setRatingString(topAds.getProduct().getProductRatingFormat());
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
                     item.setShopID(topAds.getShop().getId());
@@ -599,10 +577,6 @@ final class ProductListPresenter
                     item.setProductUrl(topAds.getProduct().getUri());
                     item.setMinOrder(topAds.getProduct().getProductMinimumOrder());
 
-                    if (shopRatingABTestStrategy != null) {
-                        shopRatingABTestStrategy.processShopRatingVariant(topAds, item);
-                    }
-
                     list.add(i, item);
                     j++;
                     topAdsCount++;
@@ -616,17 +590,6 @@ final class ProductListPresenter
 
     private boolean isLocalSearch() {
         return !textIsEmpty(navSource) && !textIsEmpty(pageId);
-    }
-
-    private int convertCountReviewFormatToInt(String countReviewFormat) {
-        String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
-
-        try {
-            return Integer.parseInt(countReviewString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
 
     private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
@@ -694,12 +657,14 @@ final class ProductListPresenter
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
+        RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
+
         getView().stopPreparePagePerformanceMonitoring();
         getView().startNetworkRequestPerformanceMonitoring();
 
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(requestParams.getParameters()));
+        searchProductFirstPageUseCase.execute(useCaseRequestParams, getLoadDataSubscriber(requestParams.getParameters()));
     }
 
     private void setNavSource(String navSource) {
@@ -851,9 +816,9 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1051,9 +1016,9 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModelMapper mapper = new ProductViewModelMapper();
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1913,12 +1878,10 @@ final class ProductListPresenter
     }
 
     private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN)
-                && (searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions);
+        return searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions;
     }
 
     private void toggleSearchOnBoardingShown() {
-        searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true);
         if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }

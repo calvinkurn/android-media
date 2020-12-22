@@ -278,7 +278,6 @@ dependencies {
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.oms)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.commonDigital)
@@ -322,6 +321,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'

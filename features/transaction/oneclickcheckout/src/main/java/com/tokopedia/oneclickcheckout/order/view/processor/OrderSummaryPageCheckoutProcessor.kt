@@ -13,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                                     product.productId,
                                                     product.quantity.orderQuantity,
                                                     product.notes,
+                                                    product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
                                             )
                                     ),
                                     shippingInfo = ShippingInfo(

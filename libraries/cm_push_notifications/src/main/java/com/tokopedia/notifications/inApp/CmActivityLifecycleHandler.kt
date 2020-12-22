@@ -24,8 +24,8 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             if (intent != null && intent.extras != null) {
                 pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
             }
-        } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        } catch (t: Throwable) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
     }
 
@@ -41,8 +41,8 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
                 finalBundle = intent.extras
             }
             pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
-        } catch (ex: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(ex).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        } catch (t: Throwable) {
+            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
     }
 

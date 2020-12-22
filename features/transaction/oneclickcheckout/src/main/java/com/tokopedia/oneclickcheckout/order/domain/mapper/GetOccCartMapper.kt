@@ -7,6 +7,8 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
@@ -25,6 +27,7 @@ class GetOccCartMapper @Inject constructor() {
             product = generateOrderProduct(cart.product).apply {
                 quantity = mapQuantity(data)
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
+                purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
             shop = generateOrderShop(cart.shop).apply {
                 errors = cart.errors
@@ -160,6 +163,23 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapProductTickerMessage(tickerMessage: OccTickerMessage): ProductTickerMessage {
         return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
+    }
+
+    private fun mapPurchaseProtectionPlanData(purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
+        return PurchaseProtectionPlanData(
+                isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,
+                protectionTypeId = purchaseProtectionPlanDataResponse.protectionTypeId,
+                protectionPricePerProduct = purchaseProtectionPlanDataResponse.protectionPricePerProduct,
+                protectionPrice = purchaseProtectionPlanDataResponse.protectionPrice,
+                protectionTitle = purchaseProtectionPlanDataResponse.protectionTitle,
+                protectionSubtitle = purchaseProtectionPlanDataResponse.protectionSubtitle,
+                protectionLinkText = purchaseProtectionPlanDataResponse.protectionLinkText,
+                protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
+                isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
+                isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled,
+                unit = purchaseProtectionPlanDataResponse.unit,
+                source = purchaseProtectionPlanDataResponse.source
+        )
     }
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {

@@ -60,6 +60,13 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
 
     inner class TimerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var timerUnifySingle: TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
+
+        fun onDetach() {
+            if (timerUnifySingle.timer != null) {
+                timerUnifySingle.timer?.cancel()
+                timerUnifySingle.timer = null
+            }
+        }
     }
 
     private fun setData(holder: ViewHolder, rawItem: Any?, position: Int) {
@@ -282,6 +289,14 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
             setDataTimer(holder, list[VIEW_TYPE_TIMER] as CountDownInfo)
         }
     }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is TimerViewHolder) {
+            holder.onDetach()
+        }
+    }
+
 
     companion object {
         const val VIEW_TYPE_TIMER = 0

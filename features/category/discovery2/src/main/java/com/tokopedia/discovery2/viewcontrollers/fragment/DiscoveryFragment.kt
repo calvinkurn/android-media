@@ -1,7 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,22 +12,24 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.data.*
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -42,8 +46,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -53,9 +60,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -63,7 +68,6 @@ import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import javax.inject.Inject
 
 
 private const val LOGIN_REQUEST_CODE = 35769
@@ -75,7 +79,9 @@ private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
-class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener,
+        View.OnClickListener, LihatSemuaViewHolder.OnLihatSemuaClickListener,
+        TabLayout.OnTabSelectedListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -86,11 +92,14 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var ivToTop: ImageView
     private lateinit var globalError: GlobalError
     private lateinit var navToolbar: NavToolbar
+    private var bottomNav: TabsUnify? = null
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
-    private val analytics: DiscoveryAnalytics by lazy {
-        DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode, sourceIdentifier = arguments?.getString(SOURCE, "")
-                ?: "")
+
+    private val analytics: BaseDiscoveryAnalytics by lazy {
+        (context as DiscoveryActivity).getAnalytics()
+    }
+    private val trackingQueue: TrackingQueue by lazy {
+        (context as DiscoveryActivity).trackingQueue
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
@@ -101,8 +110,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
+
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -140,11 +148,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun initInjector() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((context?.applicationContext
-                        as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        with(context) {
+            if(this is DiscoveryActivity) {
+                this.discoveryComponent
+                        .inject(this@DiscoveryFragment)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -165,6 +174,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             oldToolbar.visibility = View.GONE
             navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
+
+        bottomNav = view.findViewById(R.id.bottomNav)
+        bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
 
     private fun initView(view: View) {
@@ -275,6 +287,56 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is RouteToApplink -> {
+                    RouteManager.route(context, it.applink)
+                    activity?.finish()
+                }
+                is GoToAgeRestriction -> {
+                    AdultManager.showAdultPopUp(this, it.origin, it.departmentId)
+                }
+            }
+        })
+
+        discoveryViewModel.getDiscoveryBottomNavLiveData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    setBottomNavigationComp(it)
+                }
+                is Fail -> {
+                    bottomNav?.hide()
+                }
+            }
+        })
+    }
+
+    private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
+        if (bottomNav != null && !it.data.data.isNullOrEmpty()) {
+            bottomNav?.let { bottomTabHolder ->
+                bottomTabHolder.tabLayout.apply {
+                    tabMode = TabLayout.MODE_FIXED
+                    removeAllTabs()
+                    setBackgroundResource(0)
+                }
+                bottomTabHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
+                it.data.data!!.forEach { item ->
+                    if (item.image.isNotEmpty()) {
+                        val tab = bottomTabHolder.tabLayout.newTab()
+                        tab.customView = LayoutInflater.from(this.context).inflate(R.layout.bottom_nav_item, bottomTabHolder, false).apply {
+                            findViewById<ImageUnify>(R.id.tab_image).loadImage(item.image)
+                            findViewById<Typography>(R.id.tab_text).apply {
+                                text = item.name
+                                setTextColor(getTabTextColor(this.context, item.fontColor))
+                            }
+                        }
+                        bottomTabHolder.tabLayout.addTab(tab, false)
+                    }
+                }
+                bottomTabHolder.show()
+            }
+        }
     }
 
     private fun setToolBarPageInfoOnSuccess(data: PageInfo?) {
@@ -340,8 +402,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
                 IconBuilder()
-                        .addIcon(iconId =  IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId =  IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
+                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
     }
 
@@ -438,7 +500,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+    fun getDiscoveryAnalytics(): BaseDiscoveryAnalytics {
         return analytics
     }
 
@@ -450,7 +512,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(false)
     }
 
     override fun onRefresh() {
@@ -459,10 +521,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun refreshPage() {
         trackingQueue.sendAll()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds()
+        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -500,6 +562,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         }
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+            }
+
+            override fun onLoginPreverified() {
+            }
+
+        })
     }
 
     private fun showVerificationBottomSheet() {
@@ -580,11 +654,46 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         openScreenStatus = false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        discoComponentQuery = null
+    }
+
     override fun onProductCardHeaderClick(componentsItem: ComponentsItem) {
         getDiscoveryAnalytics().trackHeaderSeeAllClick(isUserLoggedIn(), componentsItem)
     }
 
     override fun onLihatSemuaClick(data: DataItem) {
         getDiscoveryAnalytics().trackLihatSemuaClick(data.name)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab?) {
+        tabItemRedirection(tab)
+    }
+
+    private fun tabItemRedirection(tab: TabLayout.Tab?) {
+        tab?.let {
+            discoveryViewModel.getTabItem(it.position)?.let { dataItem ->
+                getDiscoveryAnalytics().trackBottomNavBarClick(dataItem.name ?: "", getUserID())
+                RouteManager.route(this.context, dataItem.applinks)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun getTabTextColor(context: Context, textColor: String?): Int {
+        return try {
+            Color.parseColor(textColor)
+        } catch (exception: Exception) {
+            ContextCompat.getColor(context, R.color.Green_G500)
+        }
     }
 }
