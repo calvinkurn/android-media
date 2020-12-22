@@ -52,7 +52,7 @@ data class Contact(
         val role: String = "",
         @Expose
         @SerializedName("userId")
-        val userId: Int = 0,
+        val userId: Long = 0L,
         @Expose
         @SerializedName("shopId")
         val shopId: Long = 0L,
