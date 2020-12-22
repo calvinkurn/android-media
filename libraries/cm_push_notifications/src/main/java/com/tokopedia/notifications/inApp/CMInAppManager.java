@@ -111,7 +111,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void initInAppManager() {
-        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler);
+        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler, cancelManager);
         application.registerActivityLifecycleCallbacks(lifeCycle);
         CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
         FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);
