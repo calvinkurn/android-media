@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRecharg
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
+import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
@@ -84,7 +85,7 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeUseCase: Lazy<HomeUseCase>,
+        private val homeUseCase: Lazy<HomeRevampUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
         private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,

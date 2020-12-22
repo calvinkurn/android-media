@@ -48,6 +48,8 @@ class HomeVisitableFactoryImpl(
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+        private const val ATF_TYPE_BANNER = "banner"
+        private const val ATF_TYPE_TICKER = "ticker"
     }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
@@ -86,6 +88,11 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addTickerVisitable(): HomeVisitableFactory {
+        addTickerData()
+        return this
+    }
+
+    private fun addTickerData() {
         if (!isCache) {
             homeData?.ticker?.tickers?.let { ticker ->
                 if (!HomeRevampFragment.HIDE_TICKER) {
@@ -97,7 +104,6 @@ class HomeVisitableFactoryImpl(
                 }
             }
         }
-        return this
     }
 
     private fun mappingTickerFromServer(it: List<Tickers>): List<Tickers> {
@@ -149,6 +155,19 @@ class HomeVisitableFactoryImpl(
             viewModelDynamicIcon.isTrackingCombined = false
         }
         visitableList.add(viewModelDynamicIcon)
+        return this
+    }
+
+    override fun addAtfComponentVisitable(): HomeVisitableFactory {
+        homeData?.atfData?.let {
+            it.dataList.forEach { data ->
+                when(data.component) {
+                    ATF_TYPE_TICKER -> {
+                        addTickerData()
+                    }
+                }
+            }
+        }
         return this
     }
 
