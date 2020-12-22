@@ -42,7 +42,7 @@ buildscript {
         classpath "com.google.gms:google-services:4.3.3"
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.tokopedia.patch:gradle-plugin:0.0.1'
         classpath 'com.tokopedia.patch:auto-patch-plugin:0.0.1'
