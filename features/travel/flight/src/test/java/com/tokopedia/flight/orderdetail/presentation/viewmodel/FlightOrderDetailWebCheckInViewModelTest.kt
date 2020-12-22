@@ -1,34 +1,31 @@
 package com.tokopedia.flight.orderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dummy.DUMMY_CROSS_SELL
-import com.tokopedia.flight.dummy.DUMMY_FAILED_ORDER_DETAIL_DATA
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
-import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
+import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.*
-import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 /**
- * @author by furqan on 22/10/2020
+ * @author by furqan on 13/12/2020
  */
-class FlightOrderDetailViewModelTest {
+class FlightOrderDetailWebCheckInViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -36,57 +33,29 @@ class FlightOrderDetailViewModelTest {
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
 
+    private val orderDetailUseCase: FlightOrderDetailUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
-    private val useCase: FlightOrderDetailUseCase = mockk()
-    private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase = mockk()
-    private val crossSellUseCase: TravelCrossSellingUseCase = mockk()
-    private val mapper: FlightOrderDetailCancellationMapper = FlightOrderDetailCancellationMapper()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val dispatcherProvider = TravelTestDispatcherProvider()
 
-    private lateinit var viewModel: FlightOrderDetailViewModel
+    private lateinit var viewModel: FlightOrderDetailWebCheckInViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = FlightOrderDetailViewModel(
-                userSession,
-                useCase,
-                getInvoiceEticketUseCase,
-                crossSellUseCase,
-                mapper,
+
+        viewModel = FlightOrderDetailWebCheckInViewModel(
+                orderDetailUseCase,
                 flightAnalytics,
-                testDispatcherProvider)
+                userSession,
+                dispatcherProvider
+        )
     }
 
-    @Test
-    fun userEmail_whenNotLoggedIn_shouldBeEmptyString() {
-        // given
-        coEvery { userSession.isLoggedIn } returns false
-
-        // when
-        val userEmail = viewModel.getUserEmail()
-
-        // then
-        userEmail shouldBe ""
-    }
-
-    @Test
-    fun userEmail_whenLoggedIn_shouldBeUserEmail() {
-        // given
-        coEvery { userSession.isLoggedIn } returns true
-        coEvery { userSession.email } returns "nakama@tokopedia.com"
-
-        // when
-        val userEmail = viewModel.getUserEmail()
-
-        // then
-        userEmail shouldBe "nakama@tokopedia.com"
-    }
 
     @Test
     fun fetchOrderDetailData_errorFetching_shouldReturnFail() {
         // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw MessageErrorException("Error Fetch Data") }
+        coEvery { orderDetailUseCase.execute(any(), any()) } coAnswers { throw MessageErrorException("Error Fetch Data") }
         viewModel.orderId = "1234567890"
 
         // when
@@ -98,9 +67,9 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
-    fun fetchOrderDetailData_successFetching_shouldReturnSuccessWithData() {
+    fun fetchOrderDetailData_successFetchingSingleAirline_shouldReturnSuccessWithData() {
         // given
-        coEvery { useCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA
         viewModel.orderId = "1234567890"
 
         // when
@@ -337,7 +306,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun fetchOrderDetailData_successFetchingMultiAirline_shouldReturnSuccessWithData() {
         // given
-        coEvery { useCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
         viewModel.orderId = "1234567890"
 
         // when
@@ -499,7 +468,7 @@ class FlightOrderDetailViewModelTest {
                 cancel.statusType shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.passengers[passengerIndex].cancelStatus[cancelIndex].statusType
             }
         }
-        data.data.actionButtons.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons.size
+        data.data.actionButtons.size shouldBe DUMMY_ORDER_DETAIL_DATA.actionButtons.size
         for ((actionIndex, action) in data.data.actionButtons.withIndex()) {
             action.id shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].id
             action.label shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].label
@@ -510,7 +479,7 @@ class FlightOrderDetailViewModelTest {
             action.method shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].method
             action.weight shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].weight
         }
-        data.data.conditionalInfos.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos.size
+        data.data.conditionalInfos.size shouldBe DUMMY_ORDER_DETAIL_DATA.conditionalInfos.size
         for ((infoIndex, info) in data.data.conditionalInfos.withIndex()) {
             info.type shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].type
             info.title shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].title
@@ -518,7 +487,7 @@ class FlightOrderDetailViewModelTest {
             info.border shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].border
             info.background shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].background
         }
-        data.data.insurances.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances.size
+        data.data.insurances.size shouldBe DUMMY_ORDER_DETAIL_DATA.insurances.size
         for ((insuranceIndex, insurance) in data.data.insurances.withIndex()) {
             insurance.id shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].id
             insurance.title shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].title
@@ -526,7 +495,7 @@ class FlightOrderDetailViewModelTest {
             insurance.paidAmount shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].paidAmount
             insurance.paidAmountNumeric shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].paidAmountNumeric
         }
-        data.data.cancellations.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.cancellations.size
+        data.data.cancellations.size shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations.size
         for ((cancelIndex, cancel) in data.data.cancellations.withIndex()) {
             cancel.cancelId shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.cancellations[cancelIndex].cancelId
             for ((cancelDetailIndex, cancelDetail) in cancel.cancelDetails.withIndex()) {
@@ -572,948 +541,112 @@ class FlightOrderDetailViewModelTest {
     }
 
     @Test
-    fun fetchEticketData_failedToFetch() {
-        // given
-        coEvery { getInvoiceEticketUseCase.executeGetETicket(any()) } coAnswers { throw Throwable("error") }
-
-        // when
-        viewModel.fetchETicketData()
-
-        // then
-        assert(viewModel.eticketData.value is Fail)
-        (viewModel.eticketData.value as Fail).throwable.message shouldBe "error"
-    }
-
-    @Test
-    fun fetchEticketData_successToFetch() {
-        // given
-        coEvery { getInvoiceEticketUseCase.executeGetETicket(any()) } returns "<html><body>SUCCESS</body></html>"
-
-        // when
-        viewModel.fetchETicketData()
-
-        // then
-        assert(viewModel.eticketData.value is Success)
-        (viewModel.eticketData.value as Success).data shouldBe "<html><body>SUCCESS</body></html>"
-    }
-
-    @Test
-    fun fetchCrossSellingData() {
-        // given
-        coEvery { crossSellUseCase.execute(any(), any(), any()) } returns DUMMY_CROSS_SELL
-
-        // when
-        viewModel.fetchCrossSellData()
-
-        // then
-        assert(viewModel.crossSell.value is Success)
-        val dataCrossSell = (viewModel.crossSell.value as Success).data
-        dataCrossSell.meta.title shouldBe DUMMY_CROSS_SELL.data.meta.title
-        dataCrossSell.meta.uri shouldBe DUMMY_CROSS_SELL.data.meta.uri
-        dataCrossSell.meta.uriWeb shouldBe DUMMY_CROSS_SELL.data.meta.uriWeb
-
-        dataCrossSell.items.size shouldBe DUMMY_CROSS_SELL.data.items.size
-        for ((index, item) in dataCrossSell.items.withIndex()) {
-            item.product shouldBe DUMMY_CROSS_SELL.data.items[index].product
-            item.value shouldBe DUMMY_CROSS_SELL.data.items[index].value
-            item.uriWeb shouldBe DUMMY_CROSS_SELL.data.items[index].uriWeb
-            item.title shouldBe DUMMY_CROSS_SELL.data.items[index].title
-            item.prefix shouldBe DUMMY_CROSS_SELL.data.items[index].prefix
-            item.imageUrl shouldBe DUMMY_CROSS_SELL.data.items[index].imageUrl
-            item.content shouldBe DUMMY_CROSS_SELL.data.items[index].content
-            item.uri shouldBe DUMMY_CROSS_SELL.data.items[index].uri
-        }
-    }
-
-    @Test
-    fun onNavigateToCancellationClicked() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA.journeys
-
-        // when
-        viewModel.onNavigateToCancellationClicked(dummyData)
-
-        // then
-        val cancellationData = viewModel.cancellationData.value!!
-        for ((index, item) in cancellationData.withIndex()) {
-            item.journeyId shouldBe dummyData[index].id.toString()
-            item.departureTime shouldBe dummyData[index].departureTime
-            item.departureCity shouldBe dummyData[index].departureCityName
-            item.departureCityCode shouldBe dummyData[index].departureId
-            item.departureAirportId shouldBe dummyData[index].departureAirportName
-            item.arrivalTime shouldBe dummyData[index].arrivalTime
-            item.arrivalCity shouldBe dummyData[index].arrivalCityName
-            item.arrivalCityCode shouldBe dummyData[index].arrivalId
-            item.arrivalAirportId shouldBe dummyData[index].arrivalAirportName
-        }
-    }
-
-    @Test
-    fun trackOpenOrderDetail() {
-        // given
-        coEvery { userSession.userId } returns "67890"
-        viewModel.orderId = "12345"
-
-        // when
-        viewModel.trackOpenOrderDetail("berhasil")
-
-        // then
-        verify {
-            flightAnalytics.openOrderDetail("berhasil - 12345", "67890")
-        }
-    }
-
-    @Test
-    fun isWebCheckInAvailable_whenOrderStatusNotSuccess_shouldNotAvailable() {
-        // given
-        val dummyData = DUMMY_FAILED_ORDER_DETAIL_DATA
-
-        // when
-        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
-
-        // then
-        isWebCheckInAvailable.first shouldBe false
-        isWebCheckInAvailable.second shouldBe ""
-    }
-
-    @Test
-    fun isWebCheckInAvailable_whenOrderStatusSuccessAndWebCheckInOpen_shouldBeAvailable() {
-        // given
-        // dummy data will be build on runtime because checkIn date need to be dynamic
-        val dummyData = FlightOrderDetailDataModel(
-                1,
-                "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                1,
-                "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
-                "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        1,
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
-                        0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                1,
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                1,
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
-                                arrayListOf()
-                        )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
-        )
-
-        // when
-        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
-
-        // then
-        isWebCheckInAvailable.first shouldBe true
-        isWebCheckInAvailable.second shouldBe "Check In Available"
-    }
-
-    @Test
-    fun isWebCheckInAvailable_whenOrderStatusSuccessButWebCheckInStartTimeNotOpenYet_shouldBeAvailable() {
-        // given
-        // dummy data will be build on runtime because checkIn date need to be dynamic
-        val dummyData = FlightOrderDetailDataModel(
-                1,
-                "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                1,
-                "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
-                "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        1,
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
-                        0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                1,
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                1,
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
-                                arrayListOf()
-                        )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
-        )
-
-        // when
-        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
-
-        // then
-        isWebCheckInAvailable.first shouldBe false
-        isWebCheckInAvailable.second shouldBe "Check In Not Available"
-    }
-
-    @Test
-    fun isWebCheckInAvailable_whenOrderStatusSuccessButWebCheckInStartTimeOpenButEndTimePassed_shouldBeAvailable() {
-        // given
-        // dummy data will be build on runtime because checkIn date need to be dynamic
-        val dummyData = FlightOrderDetailDataModel(
-                1,
-                "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                1,
-                "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
-                "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        1,
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
-                        0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                1,
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                1,
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
-                                arrayListOf()
-                        )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
-        )
-
-        // when
-        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
-
-        // then
-        isWebCheckInAvailable.first shouldBe false
-        isWebCheckInAvailable.second shouldBe "Check In Not Available"
-    }
-
-    @Test
-    fun isWebCheckInAvailable_whenOrderStatusSuccessButWebCheckInStartAndEndTimePassed_shouldBeAvailable() {
-        // given
-        // dummy data will be build on runtime because checkIn date need to be dynamic
-        val dummyData = FlightOrderDetailDataModel(
-                1,
-                "0001-01-01T00:00:00Z",
-                700,
-                "Berhasil",
-                1,
-                "1234567890",
-                "Muhammad Furqan",
-                "email@email.com",
-                "123456789012",
-                "ID",
-                "Rp1.000.000",
-                1000000,
-                "Rp0",
-                0,
-                "Rp0",
-                0,
-                "Rp1.000.000",
-                1000000,
-                "Rp",
-                "dummy pdf",
-                true,
-                false,
-                "Ekonomi",
-                "dummy contact us URL",
-                false,
-                FlightOrderDetailPaymentModel(
-                        1,
-                        1,
-                        "Paid",
-                        "BCA Virtual Account",
-                        "dummy icon",
-                        "0001-01-01T00:00:00Z",
-                        "",
-                        "ididid",
-                        "",
-                        0,
-                        "Rp0",
-                        0,
-                        "rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "Rp0",
-                        0,
-                        "BCA",
-                        "Jakarta",
-                        "1234567890",
-                        "Furqan",
-                        "Rp1.000.000"
-                ),
-                arrayListOf(
-                        FlightOrderDetailJourneyModel(
-                                1,
-                                1,
-                                "123",
-                                "0001-01-01T00:00:00Z",
-                                "departure airport",
-                                "aceh",
-                                "321",
-                                "0001-01-01T00:00:00Z",
-                                "arrival airport",
-                                "jakarta",
-                                0,
-                                0,
-                                0,
-                                "2j",
-                                120,
-                                FlightOrderDetailFareModel(
-                                        1000000,
-                                        0,
-                                        0
-                                ),
-                                arrayListOf(
-                                        FlightOrderDetailRouteModel(
-                                                "123",
-                                                "departure time",
-                                                "departure airport",
-                                                "departure city",
-                                                "321",
-                                                "arrival time",
-                                                "arrival airport",
-                                                "arrival city",
-                                                "123ASD",
-                                                "890",
-                                                "Seulawah Air",
-                                                "",
-                                                "",
-                                                "AN-12345",
-                                                "2j",
-                                                120,
-                                                "",
-                                                0,
-                                                true,
-                                                "2",
-                                                "",
-                                                0,
-                                                "",
-                                                arrayListOf(),
-                                                arrayListOf(),
-                                                FlightOrderDetailFreeAmenityModel(
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                        false,
-                                                        false,
-                                                        false,
-                                                        arrayListOf()
-                                                )
-                                        )
-                                ),
-                                FlightOrderDetailWebCheckInModel(
-                                        "Check In",
-                                        "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        "",
-                                        "",
-                                        ""
-                                )
-                        )
-                ),
-                arrayListOf(
-                        FlightOrderDetailPassengerModel(
-                                1,
-                                1,
-                                1,
-                                "Dewasa",
-                                1,
-                                "Tuan",
-                                "Muhammad",
-                                "Furqan",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                arrayListOf(),
-                                arrayListOf()
-                        )
-                ),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf(),
-                arrayListOf()
-        )
-
-        // when
-        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
-
-        // then
-        isWebCheckInAvailable.first shouldBe false
-        isWebCheckInAvailable.second shouldBe "Check In Not Available"
-    }
-
-    @Test
-    fun buildPaymentDetailData_failedToFetchOrderDetail() {
-        // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
-
-        // when
-        val paymentData = viewModel.buildPaymentDetailData()
-
-        // then
-        paymentData.size shouldBe 0
-    }
-
-    @Test
-    fun buildPaymentDetailData_successToFetchOrderDetail() {
+    fun trackOnCheckInDeparture_MultiAirline() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
-        viewModel.fetchOrderDetailData()
-
-        // when
-        val paymentData = viewModel.buildPaymentDetailData()
-
-        // then
-        paymentData.size shouldBe 3
-        // check adult passenger paymentData
-        paymentData[0].leftValue shouldBe "CGK - BTJ Dewasa x1"
-        paymentData[0].rightValue shouldBe "Rp1.000.000"
-        paymentData[0].isLeftBold shouldBe false
-        paymentData[0].isRightBold shouldBe false
-        paymentData[0].isLeftStriked shouldBe false
-        paymentData[0].isRightStriked shouldBe false
-        paymentData[0].isRightAlign shouldBe true
-        // check child passenger paymentData
-        paymentData[1].leftValue shouldBe "CGK - BTJ Anak x1"
-        paymentData[1].rightValue shouldBe "Rp100"
-        paymentData[1].isLeftBold shouldBe false
-        paymentData[1].isRightBold shouldBe false
-        paymentData[1].isLeftStriked shouldBe false
-        paymentData[1].isRightStriked shouldBe false
-        paymentData[1].isRightAlign shouldBe true
-        // check infant passenger paymentData
-        paymentData[2].leftValue shouldBe "CGK - BTJ Bayi x1"
-        paymentData[2].rightValue shouldBe "Rp10"
-        paymentData[2].isLeftBold shouldBe false
-        paymentData[2].isRightBold shouldBe false
-        paymentData[2].isLeftStriked shouldBe false
-        paymentData[2].isRightStriked shouldBe false
-        paymentData[2].isRightAlign shouldBe true
-    }
-
-    @Test
-    fun buildAmenitiesPaymentDetailData_failedToFetchOrderDetail() {
-        // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
-
-        // when
-        val paymentData = viewModel.buildAmenitiesPaymentDetailData()
-
-        // then
-        paymentData.size shouldBe 0
-    }
-
-    @Test
-    fun buildAmenitiesPaymentDetailData_successToFetchOrderDetail() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
-        viewModel.fetchOrderDetailData()
-
-        // when
-        val paymentData = viewModel.buildAmenitiesPaymentDetailData()
-
-        // then
-        paymentData.size shouldBe 3
-        // check luggage paymentData
-        paymentData[0].leftValue shouldBe "Bagasi CGK - BTJ"
-        paymentData[0].rightValue shouldBe "Rp1.000"
-        paymentData[0].isLeftBold shouldBe false
-        paymentData[0].isRightBold shouldBe false
-        paymentData[0].isLeftStriked shouldBe false
-        paymentData[0].isRightStriked shouldBe false
-        paymentData[0].isRightAlign shouldBe true
-        // check meal paymentData
-        paymentData[1].leftValue shouldBe "Makanan CGK - BTJ"
-        paymentData[1].rightValue shouldBe "Rp1.000"
-        paymentData[1].isLeftBold shouldBe false
-        paymentData[1].isRightBold shouldBe false
-        paymentData[1].isLeftStriked shouldBe false
-        paymentData[1].isRightStriked shouldBe false
-        paymentData[1].isRightAlign shouldBe true
-        // check wrong paymentData
-        paymentData[2].leftValue shouldBe ""
-        paymentData[2].rightValue shouldBe "Rp1.000"
-        paymentData[2].isLeftBold shouldBe false
-        paymentData[2].isRightBold shouldBe false
-        paymentData[2].isLeftStriked shouldBe false
-        paymentData[2].isRightStriked shouldBe false
-        paymentData[2].isRightAlign shouldBe true
-    }
-
-    @Test
-    fun getTotalAmount() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
-        viewModel.fetchOrderDetailData()
-
-        // when
-        val totalAmount = viewModel.getTotalAmount()
-
-        // then
-        totalAmount shouldBe "Rp1.000.000"
-    }
-
-    @Test
-    fun getOrderDetailStatus_withNullOrderDetail() {
-        // given
-
-        // when
-        val orderDetailStatus = viewModel.getOrderDetailStatus()
-
-        // then
-        orderDetailStatus shouldBe ""
-    }
-
-    @Test
-    fun getOrderDetailStatus_withOrderDetailData() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
-        viewModel.fetchOrderDetailData()
-
-        // when
-        val orderDetailStatus = viewModel.getOrderDetailStatus()
-
-        // then
-        orderDetailStatus shouldBe "Berhasil"
-    }
-
-    @Test
-    fun trackSendETicketClicked() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns dummyData
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
 
         // when
-        viewModel.trackSendETicketClicked()
+        viewModel.trackOnCheckInDeparture(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE, false)
 
         // then
         coVerify {
-            flightAnalytics.eventSendETicketOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
+            flightAnalytics.eventClickOnWebCheckIn(
+                    "123321 - Seulawah Air + Garuda Indonesia - 00010101 - 1234567890",
+                    "0987654321",
+                    false
             )
         }
     }
 
     @Test
-    fun trackClickWebCheckIn() {
+    fun trackOnCheckInDeparture_SingleAirline() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns dummyData
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
 
         // when
-        viewModel.trackClickWebCheckIn()
+        viewModel.trackOnCheckInDeparture(FlightOrderDetailJourneyModel(
+                1,
+                1,
+                "123",
+                "0001-01-01T00:00:00Z",
+                "departure airport",
+                "aceh",
+                "321",
+                "0001-01-01T00:00:00Z",
+                "arrival airport",
+                "jakarta",
+                0,
+                0,
+                0,
+                "2j",
+                120,
+                FlightOrderDetailFareModel(
+                        1000000,
+                        0,
+                        0
+                ),
+                arrayListOf(
+                        FlightOrderDetailRouteModel(
+                                "123",
+                                "departure time",
+                                "departure airport",
+                                "departure city",
+                                "321",
+                                "arrival time",
+                                "arrival airport",
+                                "arrival city",
+                                "123ASD",
+                                "890",
+                                "Seulawah Air",
+                                "logo seulawah air",
+                                "",
+                                "AN-12345",
+                                "2j",
+                                120,
+                                "",
+                                0,
+                                true,
+                                "2",
+                                "",
+                                0,
+                                "",
+                                arrayListOf(),
+                                arrayListOf(),
+                                FlightOrderDetailFreeAmenityModel(
+                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                        FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                        false,
+                                        false,
+                                        false,
+                                        arrayListOf()
+                                )
+                        )
+                ),
+                FlightOrderDetailWebCheckInModel(
+                        "Check In",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                )
+        ), false)
 
         // then
         coVerify {
-            flightAnalytics.eventWebCheckInOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
-            )
-        }
-    }
-
-    @Test
-    fun trackClickCancel() {
-        // given
-        val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
-        coEvery { userSession.userId } returns "0987654321"
-        viewModel.orderId = "1234567890"
-        viewModel.fetchOrderDetailData()
-
-        // when
-        viewModel.trackClickCancel()
-
-        // then
-        coVerify {
-            flightAnalytics.eventCancelTicketOrderDetail(
-                    "Berhasil - 1234567890",
-                    "0987654321"
+            flightAnalytics.eventClickOnWebCheckIn(
+                    any(),
+                    "0987654321",
+                    false
             )
         }
     }

@@ -26,11 +26,12 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_timer_container_layout)
     private var context: Context
     private var bannerImageView: ImageView = customItemView.findViewById(R.id.banner_image_view)
-
     private lateinit var daysTextView: TextView
     private lateinit var hoursTextView: TextView
     private lateinit var minutesTextView: TextView
     private lateinit var secondsTextView: TextView
+    private var timeTextFontColour : Int = 0
+    private var timeBoxColour : Int = 0
 
     companion object {
         const val DAYS = 0
@@ -45,15 +46,34 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerTimerViewModel = discoveryBaseViewModel as BannerTimerViewModel
+        initView()
+    }
+
+    private fun initView() {
         val viewHeight = bannerTimerViewModel.getBannerUrlHeight()
         val viewWidth = bannerTimerViewModel.getBannerUrlWidth()
         val constraintSet = ConstraintSet()
         constraintSet.clone(constraintLayout)
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
         constraintSet.applyTo(constraintLayout)
-
+        configureTimerUI()
         constraintLayout.setOnClickListener {
             bannerTimerViewModel.onBannerClicked(it.context)
+        }
+    }
+
+    private fun configureTimerUI() {
+        bannerTimerViewModel.getComponent().let {
+            if (!it.data.isNullOrEmpty()) {
+                ImageHandler.LoadImage(bannerImageView, it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
+                timeTextFontColour = getTimerFontColour(it)
+                timeBoxColour = getTimerBoxColour(it)
+                setTimerUI(it, DAYS)
+                setTimerUI(it, HOURS)
+                setTimerUI(it, MINUTES)
+                setTimerUI(it, SECONDS)
+                setSeparatorUI()
+            }
         }
     }
 
@@ -61,12 +81,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         super.setUpObservers(lifecycleOwner)
         bannerTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
-                ImageHandler.LoadImage(bannerImageView, componentItem.data?.get(0)?.backgroundUrlMobile)
-                setTimerUI(componentItem, DAYS)
-                setTimerUI(componentItem, HOURS)
-                setTimerUI(componentItem, MINUTES)
-                setTimerUI(componentItem, SECONDS)
-
                 bannerTimerViewModel.startTimer()
             }
         })
@@ -103,46 +117,45 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
                 val daysViewLayout: View = customItemView.findViewById(R.id.day_layout)
                 val daysTitleTextView: TextView = daysViewLayout.findViewById(R.id.time_title_text_view)
                 daysTitleTextView.text = context.resources.getString(R.string.hari)
-                daysTitleTextView.setTextColor(getTimerFontColour(componentItem))
+                daysTitleTextView.setTextColor(timeBoxColour)
                 daysTextView = daysViewLayout.findViewById(R.id.time_text_view)
-                daysTextView.setTextColor(getTimerFontColour(componentItem))
-                setTimerBoxDynamicBackground(daysTextView, getTimerBoxColour(componentItem))
+                daysTextView.setTextColor(timeTextFontColour)
+                setTimerBoxDynamicBackground(daysTextView, timeBoxColour)
             }
             HOURS -> {
                 val hoursViewLayout: View = customItemView.findViewById(R.id.hours_layout)
                 val hoursTitleTextView: TextView = hoursViewLayout.findViewById(R.id.time_title_text_view)
                 hoursTitleTextView.text = context.resources.getString(R.string.jam)
-                hoursTitleTextView.setTextColor(getTimerFontColour(componentItem))
+                hoursTitleTextView.setTextColor(timeBoxColour)
                 hoursTextView = hoursViewLayout.findViewById(R.id.time_text_view)
-                hoursTextView.setTextColor(getTimerFontColour(componentItem))
-                setTimerBoxDynamicBackground(hoursTextView, getTimerBoxColour(componentItem))
+                hoursTextView.setTextColor(timeTextFontColour)
+                setTimerBoxDynamicBackground(hoursTextView, timeBoxColour)
             }
             MINUTES -> {
                 val minutesViewLayout: View = customItemView.findViewById(R.id.minutes_layout)
                 val minutesTitleTextView: TextView = minutesViewLayout.findViewById(R.id.time_title_text_view)
                 minutesTitleTextView.text = context.resources.getString(R.string.menit)
-                minutesTitleTextView.setTextColor(getTimerFontColour(componentItem))
+                minutesTitleTextView.setTextColor(timeBoxColour)
                 minutesTextView = minutesViewLayout.findViewById(R.id.time_text_view)
-                minutesTextView.setTextColor(getTimerFontColour(componentItem))
-                setTimerBoxDynamicBackground(minutesTextView, getTimerBoxColour(componentItem))
+                minutesTextView.setTextColor(timeTextFontColour)
+                setTimerBoxDynamicBackground(minutesTextView, timeBoxColour)
             }
             SECONDS -> {
                 val secondsViewLayout: View = customItemView.findViewById(R.id.seconds_layout)
                 val secondsTitleTextView: TextView = secondsViewLayout.findViewById(R.id.time_title_text_view)
                 secondsTitleTextView.text = context.resources.getString(R.string.detik)
-                secondsTitleTextView.setTextColor(getTimerFontColour(componentItem))
+                secondsTitleTextView.setTextColor(timeBoxColour)
                 secondsTextView = secondsViewLayout.findViewById(R.id.time_text_view)
-                secondsTextView.setTextColor(getTimerFontColour(componentItem))
-                setTimerBoxDynamicBackground(secondsTextView, getTimerBoxColour(componentItem))
+                secondsTextView.setTextColor(timeTextFontColour)
+                setTimerBoxDynamicBackground(secondsTextView, timeBoxColour)
             }
         }
-        setSeparatorUI(componentItem)
     }
 
-    private fun setSeparatorUI(componentItem: ComponentsItem?) {
-        customItemView.findViewById<TextView>(R.id.day_separator_text_view).setTextColor(getTimerBoxColour(componentItem))
-        customItemView.findViewById<TextView>(R.id.hours_separator_text_view).setTextColor(getTimerBoxColour(componentItem))
-        customItemView.findViewById<TextView>(R.id.minutes_separator_text_view).setTextColor(getTimerBoxColour(componentItem))
+    private fun setSeparatorUI() {
+        customItemView.findViewById<TextView>(R.id.day_separator_text_view).setTextColor(timeBoxColour)
+        customItemView.findViewById<TextView>(R.id.hours_separator_text_view).setTextColor(timeBoxColour)
+        customItemView.findViewById<TextView>(R.id.minutes_separator_text_view).setTextColor(timeBoxColour)
     }
 
     private fun getTimerFontColour(componentItem: ComponentsItem?): Int {
