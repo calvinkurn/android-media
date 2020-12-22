@@ -2,6 +2,7 @@ package com.tokopedia.categorylevels.domain.repository
 
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.categorylevels.analytics.*
 import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
@@ -41,7 +42,13 @@ class CategoryGqlPageRepository(private val departmentName: String,
                                 description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${data.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
                                 url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL + "://", DOMAIN_URL_LIVE), title = "", image = "")),
                 title = data.name ?: departmentName,
-                additionalInfo = AdditionalInfo(null))
+                additionalInfo = AdditionalInfo(null, hashMapOf(
+                        KEY_CATEGORY_ID_MAP to data.id.toString(),
+                        KEY_ROOT_ID to (data.rootId ?: ""),
+                        KEY_PARENT to (data.parent ?: ""),
+                        KEY_URL to (data.url ?: ""),
+                        KEY_REDIRECTION_URL to (data.appRedirectionURL ?: "")
+                )))
     }
 
     private fun getCategoryComponents(bannedData: Data): ArrayList<ComponentsItem> {
