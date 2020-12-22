@@ -523,8 +523,8 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productViewModel));
         productList.addAll(list);
 
-        processTopAdsImageViewModel(searchParameter, list);
         processHeadlineAds(searchParameter, list);
+        processTopAdsImageViewModel(searchParameter, list);
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
         processBroadMatch(searchProductModel.getSearchProduct(), list);
@@ -1435,17 +1435,34 @@ final class ProductListPresenter
     }
 
     private void processTopAdsImageViewModelInPosition(List<Visitable> list, TopAdsImageViewModel data) {
-        boolean isTopPosition = data.getPosition() == 0 || data.getPosition() == 1;
+        boolean isTopPosition = data.getPosition() == 1;
         SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel = new SearchProductTopAdsImageViewModel(data);
 
         if (isTopPosition) {
-            Visitable product = productList.get(0);
-            list.add(list.indexOf(product), searchProductTopAdsImageViewModel);
+            int index = getIndexOfTopAdsImageViewModelAtTop(list);
+            list.add(index, searchProductTopAdsImageViewModel);
         }
         else {
             Visitable product = productList.get(data.getPosition() - 1);
             list.add(list.indexOf(product) + 1, searchProductTopAdsImageViewModel);
         }
+    }
+
+    private int getIndexOfTopAdsImageViewModelAtTop(List<Visitable> list) {
+        int index = 0;
+
+        while (shouldIncrementIndexForTopAdsImageViewModel(index, list))
+            index++;
+
+        return index;
+    }
+
+    private boolean shouldIncrementIndexForTopAdsImageViewModel(int index, List<Visitable> list) {
+        if (index >= list.size()) return false;
+
+        boolean isCPMOrProductItem = list.get(index) instanceof CpmViewModel || list.get(index) instanceof ProductItemViewModel;
+
+        return !isCPMOrProductItem;
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {

@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.CpmViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -12,6 +14,9 @@ import io.mockk.every
 import io.mockk.slot
 import org.junit.Test
 import rx.Subscriber
+
+private const val tdnWithHeadlineAdsPosition12JSON = "searchproduct/tdn/tdn-with-headline-ads-position-12.json"
+private const val tdnWithHeadlineAdsPosition24JSON = "searchproduct/tdn/tdn-with-headline-ads-position-24.json"
 
 internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
 
@@ -23,6 +28,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     private val tdn8 = TopAdsImageViewModel(position = 8, bannerName = "Position 8")
     private val tdn12 = TopAdsImageViewModel(position = 12, bannerName = "Position 12")
     private val tdn16 = TopAdsImageViewModel(position = 16, bannerName = "Position 16")
+    private val tdn24 = TopAdsImageViewModel(position = 24, bannerName = "Position 24")
 
     private val visitableList = mutableListOf<Visitable<*>>()
 
@@ -126,5 +132,67 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     private fun `Then verify TDN is not shown`() {
         visitableList.size shouldBe 8
         visitableList.any { it is SearchProductTopAdsImageViewModel } shouldBe false
+    }
+
+    @Test
+    fun `TDN should be above headline ads in the same position in first page`() {
+        val searchProductModelWithCPM = tdnWithHeadlineAdsPosition12JSON.jsonToObject<SearchProductModel>()
+        searchProductModelWithCPM.setTopAdsImageViewModelList(listOf(tdn1, tdn12))
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelWithCPM)
+        `Given product list will be captured`()
+
+        `When load data`()
+
+        `Then verify visitable list with TDN above headline ads in first page`()
+    }
+
+    private fun `Then verify visitable list with TDN above headline ads in first page`() {
+        visitableList.size shouldBe 18
+
+        visitableList.forEachIndexed { index, visitable ->
+            if (index == 0 || index == 14) {
+                visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+            }
+            else if (index == 1 || index == 15) {
+                visitable.shouldBeInstanceOf<CpmViewModel>()
+            }
+            else {
+                visitable.shouldBeInstanceOf<ProductItemViewModel>()
+            }
+        }
+    }
+
+    @Test
+    fun `TDN should be above headline ads in the same position after load more`() {
+        val searchProductModelWithCPM = tdnWithHeadlineAdsPosition24JSON.jsonToObject<SearchProductModel>()
+        searchProductModelWithCPM.setTopAdsImageViewModelList(listOf(tdn1, tdn12, tdn24))
+
+        val searchProductWithTopAds = "searchproduct/with-topads.json".jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelWithCPM)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductWithTopAds)
+        `Given product list will be captured`()
+        `Given view already load first page`()
+
+        `When load more data`()
+
+        `Then verify visitable list with TDN above headline ads after load more`()
+    }
+
+    private fun `Then verify visitable list with TDN above headline ads after load more`() {
+        visitableList.size shouldBe 33
+
+        visitableList.forEachIndexed { index, visitable ->
+            if (index == 0 || index == 14 || index == 27) {
+                visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+            }
+            else if (index == 1 || index == 28) {
+                visitable.shouldBeInstanceOf<CpmViewModel>()
+            }
+            else {
+                visitable.shouldBeInstanceOf<ProductItemViewModel>()
+            }
+        }
     }
 }
