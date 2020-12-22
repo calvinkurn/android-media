@@ -1310,7 +1310,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             setButtonFull(true)
 
             setActionClickListener {
-                RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
+                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
             }
             show()
         }
