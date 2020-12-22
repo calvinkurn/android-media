@@ -37,6 +37,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
             setSlideProperties(it)
             setUpIndicator(it)
         }
+        sendFirstBannerImpression()
         sendBannerImpression()
     }
 
@@ -78,16 +79,23 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
         sliderIndicator.createIndicators(cvSliderBanner.indicatorCount, cvSliderBanner.indicatorPosition)
     }
 
+    private fun sendFirstBannerImpression() {
+        trackBannerImpressionGTM(0)
+    }
+
     private fun sendBannerImpression() {
         cvSliderBanner.setPageChangeListener(object : CircularPageChangeListener {
             override fun onPageScrolled(position: Int) {
-                sliderBannerViewModel.getBannerItem(position)?.let {
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(arrayListOf(it), sliderBannerViewModel.getComponentPosition())
-                }
+                trackBannerImpressionGTM(position)
             }
-
             override fun onPageScrollStateChanged(state: Int) {}
         })
+    }
+
+    fun trackBannerImpressionGTM(position : Int = 0){
+        sliderBannerViewModel.getBannerItem(position)?.let {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(arrayListOf(it), sliderBannerViewModel.getComponentPosition())
+        }
     }
 
     override fun onClick(position: Int) {

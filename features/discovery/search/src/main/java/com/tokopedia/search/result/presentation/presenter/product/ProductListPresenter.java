@@ -104,7 +104,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultVie
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
@@ -1911,12 +1910,10 @@ final class ProductListPresenter
     }
 
     private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN)
-                && (searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions);
+        return searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions;
     }
 
     private void toggleSearchOnBoardingShown() {
-        searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true);
         if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }

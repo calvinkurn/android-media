@@ -10,13 +10,13 @@
     <ProgressBar
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" />
+        android:layout_marginEnd="@dimen/dp_16" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/checkout_common_module_title_loading"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

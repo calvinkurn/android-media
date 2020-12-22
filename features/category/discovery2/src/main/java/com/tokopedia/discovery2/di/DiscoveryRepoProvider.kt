@@ -3,8 +3,6 @@ package com.tokopedia.discovery2.di
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.common.RepositoryProvider
-import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
-import com.tokopedia.discovery2.repository.childcategory.DiscoveryChildCategoryRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
@@ -39,10 +37,6 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideQuickFilterRepository(): QuickFilterRepository {
         return QuickFilterDiscoveryRepository()
-    }
-
-    override fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return DiscoveryChildCategoryRepository()
     }
 
     override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {

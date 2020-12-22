@@ -33,7 +33,6 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
         getDataFromAppLink()
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -131,9 +130,4 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
             this.availableVariants = availableVariantsFromApplink
         }
     }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = NO_SHADOW_ELEVATION
-    }
-
 }

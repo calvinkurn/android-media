@@ -13,11 +13,11 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 class PostMessageUseCase2Test {
@@ -43,22 +43,26 @@ class PostMessageUseCase2Test {
         Dispatchers.resetMain()
     }
 
-    /****************************************** setQueryMap() ***************************************/
+    /****************************************** createRequestParams() ***************************************/
 
     @Test
     fun `check invocation of setQueryMap`() {
 
         val fileUploaded = "file"
         val postKey = "key"
+        val userId = "uid"
+        val ticketId = "tid"
 
-        val map = postMessageUseCase2.setQueryMap(fileUploaded, postKey)
+        val parmas = postMessageUseCase2.createRequestParams(ticketId, userId, fileUploaded, postKey)
 
-        assertEquals(map[FILE_UPLOADED], fileUploaded)
-        assertEquals(map[POST_KEY], postKey)
+        assertEquals(parmas.parameters[FILE_UPLOADED], fileUploaded)
+        assertEquals(parmas.parameters[POST_KEY], postKey)
+        assertEquals(parmas.parameters[USER_ID], userId)
+        assertEquals(parmas.parameters[TICKETID], ticketId)
+
     }
 
-    /****************************************** setQueryMap() ***************************************/
-
+    /****************************************** createRequestParams() ***************************************/
 
 
     /************************************* getInboxDataResponse() **********************************/
@@ -66,19 +70,17 @@ class PostMessageUseCase2Test {
     fun `check function invocation getInboxDataResponse`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.postRestData(any(),
-                        object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
-                        any(),
-                        any()) as InboxDataResponse<StepTwoResponse>
+                contactUsRepository.getGQLData("",
+                        StepTwoResponse::class.java,
+                        any())
             } returns mockk()
 
-            postMessageUseCase2.getInboxDataResponse(mockk())
+            postMessageUseCase2.getInboxDataResponse(mockk(relaxed = true))
 
             coVerify(exactly = 1) {
-                contactUsRepository.postRestData(any(),
-                        object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
-                        any(),
-                        any()) as InboxDataResponse<StepTwoResponse>
+                contactUsRepository.getGQLData(any(),
+                        StepTwoResponse::class.java,
+                        any())
             }
         }
     }

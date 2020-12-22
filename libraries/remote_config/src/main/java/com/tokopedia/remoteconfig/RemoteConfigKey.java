@@ -127,8 +127,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
 
-    public static final String MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW = "android_customer_enable_new_deals_revamp_flow";
-
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
     //feed section
@@ -240,6 +238,8 @@ public class RemoteConfigKey {
     public static final String SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache";
 
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
+
+    public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 }
