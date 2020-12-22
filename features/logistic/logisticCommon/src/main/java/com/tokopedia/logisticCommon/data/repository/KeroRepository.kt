@@ -2,9 +2,9 @@ package com.tokopedia.logisticCommon.data.repository
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
@@ -13,7 +13,7 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
 
     suspend fun getAutoComplete(keyword: String): AutoCompleteResponse {
         val param = mapOf("param" to keyword)
-        val request = GraphqlRequest(KeroLogisticQuery.autoCompleteGeocode,
+        val request = GraphqlRequest(KeroLogisticQuery.autoComplete,
                 AutoCompleteResponse::class.java, param)
         return gql.getResponse(request)
     }

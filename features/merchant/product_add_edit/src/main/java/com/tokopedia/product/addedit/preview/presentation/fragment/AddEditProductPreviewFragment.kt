@@ -354,6 +354,8 @@ class AddEditProductPreviewFragment:
                 } else {
                     validateShopLocation()
                 }
+            } else {
+                moveToImagePicker()
             }
         }
 
@@ -481,7 +483,7 @@ class AddEditProductPreviewFragment:
         observeSaveShipmentLocationData()
 
         // validate whether shop has location
-        validateShopLocation()
+        validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
     }
@@ -1023,7 +1025,7 @@ class AddEditProductPreviewFragment:
         viewModel.locationValidation.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    if (!it.data) {
+                    if (!it.data && dataBackPressedLoss()) {
                         showDialogLocationValidation()
                     }
                     hasLocation = it.data
@@ -1047,9 +1049,9 @@ class AddEditProductPreviewFragment:
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
-                    if (isSuccess) {
+                    if (isSuccess && dataBackPressedLoss()) {
                         showToasterSuccessSetLocation()
-                    } else {
+                    } else if (dataBackPressedLoss()) {
                         moveToLocationPicker()
                     }
                     hasLocation = isSuccess
@@ -1478,6 +1480,15 @@ class AddEditProductPreviewFragment:
         shipmentPayload[LATITUDE] = lat
         shipmentPayload[LONGITUDE] = long
         return shipmentPayload
+    }
+
+    private fun validateShopLocationWhenPageOpened() {
+        if (!isStartButtonClicked && !isDrafting()) {
+            validateShopLocation()
+        } else {
+            // reset the value when on view created
+            isStartButtonClicked = false
+        }
     }
 
     private fun validateShopLocation() {

@@ -205,7 +205,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList(GetShopProductUiModel())
+        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct())
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
 

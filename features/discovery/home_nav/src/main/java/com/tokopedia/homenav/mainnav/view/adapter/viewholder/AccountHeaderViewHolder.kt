@@ -14,8 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
@@ -26,7 +26,6 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -35,10 +34,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.util.*
 
-
 class AccountHeaderViewHolder(itemView: View,
                               private val mainNavListener: MainNavListener,
-                              private val remoteConfig: RemoteConfig,
                               private val userSession: UserSessionInterface
 ): AbstractViewHolder<AccountHeaderViewModel>(itemView), CoroutineScope {
 
@@ -179,7 +176,7 @@ class AccountHeaderViewHolder(itemView: View,
             } else {
                 subtext = MethodChecker.fromHtml(element.shopName).toString()
                 fulltext = String.format(TEXT_TOKO_SAYA, subtext)
-                tvShopInfo.setOnClickListener { onShopClicked(element.shopId) }
+                tvShopInfo.setOnClickListener { onShopClicked() }
             }
 
             tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
@@ -280,9 +277,9 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun onShopClicked(shopId: String) {
+    private fun onShopClicked() {
         TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        RouteManager.route(itemView.context, ApplinkConst.SHOP.replace("{shop_id}", shopId))
+        RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()

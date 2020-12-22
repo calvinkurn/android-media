@@ -1,6 +1,9 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,6 +11,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -16,8 +21,6 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticCommon.data.constant.CourierConstant
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -40,7 +43,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val ivEditPreference by lazy { view.findViewById<ImageView>(R.id.iv_edit_preference) }
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_choose_preference) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
-    private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
     private val tvShippingName by lazy { view.findViewById<Typography>(R.id.tv_shipping_name) }
     private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_shipping_duration) }
@@ -408,9 +410,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
         if (isDetailRed) {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
         } else {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
@@ -418,12 +420,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     private fun showAddress() {
         val addressModel = preference.preference.address
-        tvAddressName?.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -433,12 +434,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver?.text = receiverText
-            tvAddressReceiver?.visible()
-        } else {
-            tvAddressReceiver?.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(Typeface.BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
     }
 
