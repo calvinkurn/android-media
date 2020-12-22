@@ -43,19 +43,20 @@ class SearchProductTDNFirstPageGqlUseCase(
         get() = coroutineDispatchers.main + masterJob
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val query = getQueryFromParameters(requestParams.parameters)
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
-        val headlineParams = createHeadlineParams(requestParams.parameters)
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 
-        val graphqlRequestList = listOf(
-                createAceSearchProductRequest(params = params),
-                createQuickFilterRequest(query = query, params = params),
-                createTopAdsProductRequest(params = params),
-                createHeadlineAdsRequest(headlineParams = headlineParams),
-                createGlobalSearchNavigationRequest(query = query, params = params),
-                createSearchInspirationCarouselRequest(params = params),
-                createSearchInspirationWidgetRequest(params = params)
-        )
+        val query = getQueryFromParameters(searchProductParams)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+
+        val graphqlRequestList = graphqlRequests {
+            addAceSearchProductRequest(params)
+            addQuickFilterRequest(query, params)
+            addProductAdsRequest(requestParams, params)
+            addHeadlineAdsRequest(requestParams, searchProductParams)
+            addGlobalNavRequest(requestParams, query, params)
+            addInspirationCarouselRequest(requestParams, params)
+            addInspirationWidgetRequest(requestParams, params)
+        }
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequests(graphqlRequestList)
@@ -84,12 +85,23 @@ class SearchProductTDNFirstPageGqlUseCase(
         return UrlParamUtils.generateUrlParamString(headlineParams)
     }
 
+    private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
+        add(createQuickFilterRequest(query = query, params = params))
+    }
+
     private fun createQuickFilterRequest(query: String, params: String) =
             GraphqlRequest(
                     QUICK_FILTER_QUERY,
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
+        if (!requestParams.isSkipHeadlineAds()) {
+            val headlineParams = createHeadlineParams(searchProductParams)
+            add(createHeadlineAdsRequest(headlineParams = headlineParams))
+        }
+    }
 
     private fun createHeadlineAdsRequest(headlineParams: String) =
             GraphqlRequest(
@@ -98,6 +110,12 @@ class SearchProductTDNFirstPageGqlUseCase(
                     mapOf(GQL.KEY_HEADLINE_PARAMS to headlineParams)
             )
 
+    private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
+        if (!requestParams.isSkipGlobalNav()) {
+            add(createGlobalSearchNavigationRequest(query = query, params = params))
+        }
+    }
+
     private fun createGlobalSearchNavigationRequest(query: String, params: String) =
             GraphqlRequest(
                     GLOBAL_NAV_GQL_QUERY,
@@ -105,12 +123,24 @@ class SearchProductTDNFirstPageGqlUseCase(
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
 
+    private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipInspirationCarousel()) {
+            add(createSearchInspirationCarouselRequest(params = params))
+        }
+    }
+
     private fun createSearchInspirationCarouselRequest(params: String) =
             GraphqlRequest(
                     SEARCH_INSPIRATION_CAROUSEL_QUERY,
                     SearchInspirationCarouselModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipInspirationWidget()) {
+            add(createSearchInspirationWidgetRequest(params = params))
+        }
+    }
 
     private fun createSearchInspirationWidgetRequest(params: String) =
             GraphqlRequest(
