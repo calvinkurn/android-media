@@ -2,15 +2,16 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -64,7 +65,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private var tvPreferenceName: Typography? = null
     private var tvAddressName: Typography? = null
-    private var tvAddressReceiver: Typography? = null
     private var tvAddressDetail: Typography? = null
     private var buttonChangeAddress: Typography? = null
 
@@ -120,7 +120,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         buttonSavePreference = null
         tvPreferenceName = null
         tvAddressName = null
-        tvAddressReceiver = null
         tvAddressDetail = null
         buttonChangeAddress = null
         tvShippingName = null
@@ -149,7 +148,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModel() {
-        viewModel.preference.observe(viewLifecycleOwner, Observer {
+        viewModel.preference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -172,7 +171,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         })
-        viewModel.editResult.observe(viewLifecycleOwner, Observer {
+        viewModel.editResult.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
@@ -227,7 +226,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         }
 
         val addressModel = data.addressModel
-        tvAddressName?.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -237,12 +235,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver?.text = receiverText
-            tvAddressReceiver?.visible()
-        } else {
-            tvAddressReceiver?.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(Typeface.BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
@@ -323,14 +318,15 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         mainContent = view?.findViewById(R.id.main_content)
         buttonSavePreference = view?.findViewById(R.id.btn_save)
 
         tvPreferenceName = view?.findViewById(R.id.tv_preference_name)
         tvAddressName = view?.findViewById(R.id.tv_address_name)
-        tvAddressReceiver = view?.findViewById(R.id.tv_address_receiver)
         tvAddressDetail = view?.findViewById(R.id.tv_address_detail)
         buttonChangeAddress = view?.findViewById(R.id.btn_change_address)
 
