@@ -55,43 +55,65 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                 with(item.dataObject) {
                     tv_receiver_name.text = receiverName
-                    if(numberPhone.isNotBlank()) {
+                    if (numberPhone.isNotBlank()) {
                         tv_receiver_number.show()
                         tv_receiver_number.text = numberPhone
                     } else {
                         tv_receiver_number.hide()
                     }
 
-                    if(receiverStreet.isNotBlank()) {
+                    if (receiverStreet.isNotBlank()) {
                         tv_receiver_street.show()
                         tv_receiver_street.text = receiverStreet
                     } else {
                         tv_receiver_street.hide()
                     }
 
-
-                    if(receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                    if (receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
                         tv_receiver_district.show()
                         tv_receiver_district.text = receiverDistrict
                     } else {
                         tv_receiver_district.hide()
                     }
 
-                    if(receiverProvince.isNotBlank()) {
+                    if (receiverProvince.isNotBlank()) {
                         tv_receiver_province.show()
                         tv_receiver_province.text = receiverProvince
                     } else {
                         tv_receiver_province.hide()
                     }
-                }
 
-                shipping_address_copy.apply {
-                    setOnClickListener {
-                        actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
-                                "\n" + item.dataObject.receiverPhone +
-                                "\n" + item.dataObject.receiverStreet +
-                                "\n" + item.dataObject.receiverDistrict +
-                                "\n" + item.dataObject.receiverProvince))
+                    shipping_address_copy.apply {
+                        setOnClickListener {
+
+                            val numberPhoneText = if (numberPhone.isNotBlank()) {
+                                "\n" + numberPhone
+                            } else ""
+
+                            val receiverStreetText = if (receiverStreet.isNotBlank()) {
+                                "\n" + receiverStreet
+                            } else {
+                                ""
+                            }
+
+                            val receiverDistrictText = if (receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
+                                "\n" + receiverDistrict
+                            } else {
+                                ""
+                            }
+
+                            val receiverProvinceText = if (receiverProvince.isNotBlank()) {
+                                "\n" + receiverProvince
+                            } else {
+                                ""
+                            }
+
+                            actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (receiverName +
+                                    numberPhoneText +
+                                    receiverStreetText +
+                                    receiverDistrictText +
+                                    receiverProvinceText))
+                        }
                     }
                 }
 
@@ -179,7 +201,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     } else {
                         item.dataObject.dropshipperPhone
                     }
-                    if(numberPhoneDropShipper.isNotBlank()) {
+                    if (numberPhoneDropShipper.isNotBlank()) {
                         tv_som_dropshipper_name.text = item.dataObject.dropshipperName
                         tv_dropshipper_number.text = numberPhoneDropShipper
                     } else {

@@ -76,6 +76,7 @@ data class ComponentsItem(
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
+        var isSticky : Boolean = false,
         var description : String? = "",
         var showFilter: Boolean = true) {
 
