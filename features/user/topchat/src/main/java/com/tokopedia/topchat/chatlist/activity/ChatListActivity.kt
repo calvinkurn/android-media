@@ -35,10 +35,6 @@ open class ChatListActivity : BaseSimpleActivity(), ChatTabListFragment.Listener
         supportActionBar?.setBackgroundDrawable(null)
     }
 
-    private fun isDarkMode(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-    }
-
     companion object {
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
