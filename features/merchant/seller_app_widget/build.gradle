@@ -23,8 +23,6 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -32,23 +30,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.graphql)
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
-    } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
-    }
 
     implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.workManager
 
     implementation rootProject.ext.networkDependencies.glide
@@ -57,11 +48,7 @@ dependencies {
         transitive = true
     }
 
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-
     testImplementation project(rootProject.ext.libraries.unitTest)
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.couroutinesTest
