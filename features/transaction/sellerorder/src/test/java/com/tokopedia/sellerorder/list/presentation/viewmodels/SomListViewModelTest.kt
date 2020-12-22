@@ -684,6 +684,9 @@ class SomListViewModelTest {
             adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
         } returns true
         coEvery {
+            userSession.isShopOwner
+        } returns false
+        coEvery {
             userSession.isShopAdmin
         } returns true
 
@@ -702,6 +705,9 @@ class SomListViewModelTest {
             adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
         } throws Throwable()
         coEvery {
+            userSession.isShopOwner
+        } returns false
+        coEvery {
             userSession.isShopAdmin
         } returns true
 
@@ -715,7 +721,40 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun getAdminPermission_whenIsNotShopAdmin_shouldNotRun() {
+    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() {
+        coEvery {
+            userSession.isShopOwner
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        coVerify(exactly = 0) {
+            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+        }
+        assert((viewModel.isAdminEligible.value as? Success)?.data == true)
+    }
+
+    @Test
+    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() {
+        coEvery {
+            userSession.isShopOwner
+        } returns false
+        coEvery {
+            userSession.isShopAdmin
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        coVerify {
+            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+        }
+    }
+
+    @Test
+    fun getAdminPermission_whenIsNotShopOwnerOrAdmin_shouldNotRunAndShouldNotEligible() {
+        coEvery {
+            userSession.isShopOwner
+        } returns false
         coEvery {
             userSession.isShopAdmin
         } returns false
@@ -725,6 +764,7 @@ class SomListViewModelTest {
         coVerify(exactly = 0) {
             adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
         }
+        assert((viewModel.isAdminEligible.value as? Success)?.data == false)
     }
 
     @Test

@@ -49,8 +49,6 @@ class SomListViewModel @Inject constructor(
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
         private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
-
-        private const val NOT_ELIGIBLE_ERROR_MESSAGE = "User role is not eligible"
     }
 
     private var retryCount = 0
@@ -308,7 +306,7 @@ class SomListViewModel @Inject constructor(
                 )
             }
             else -> {
-                _isAdminEligible.postValue(Fail(MessageErrorException(NOT_ELIGIBLE_ERROR_MESSAGE)))
+                _isAdminEligible.postValue(Success(false))
                 _canShowOrderData.postValue(false)
             }
         }
