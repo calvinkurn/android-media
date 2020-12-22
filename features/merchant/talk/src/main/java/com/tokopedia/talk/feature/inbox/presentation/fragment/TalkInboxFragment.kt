@@ -487,9 +487,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun initToolbar() {
-        if(!userSession.hasShop() && !GlobalConfig.isSellerApp()) {
+        if(!userSession.hasShop() && !GlobalConfig.isSellerApp() && isOldView()) {
             setupToolbar()
-        } else if(userSession.hasShop() && GlobalConfig.isSellerApp()) {
+        } else if(userSession.hasShop() && GlobalConfig.isSellerApp() && isOldView()) {
             setupToolbar()
         } else {
             headerTalkInbox?.hide()
