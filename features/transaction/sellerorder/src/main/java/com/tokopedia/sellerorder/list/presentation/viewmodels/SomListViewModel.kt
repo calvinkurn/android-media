@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -48,6 +49,8 @@ class SomListViewModel @Inject constructor(
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
         private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
+
+        private const val NOT_ELIGIBLE_ERROR_MESSAGE = "User role is not eligible"
     }
 
     private var retryCount = 0
@@ -94,8 +97,6 @@ class SomListViewModel @Inject constructor(
             }
         }
     }
-
-    private var getAdminPermissionJob: Job? = null
 
     init {
         bulkAcceptOrderStatusResult.apply {
@@ -183,7 +184,6 @@ class SomListViewModel @Inject constructor(
     fun getFilters() {
         launchCatchError(block = {
             val filterResult = somListGetFilterListUseCase.execute()
-            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
                 _filterResult.postValue(filterResult)
             }
@@ -195,7 +195,6 @@ class SomListViewModel @Inject constructor(
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
             val waitingPaymentResult = somListGetWaitingPaymentUseCase.execute()
-            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
                 _waitingPaymentCounterResult.postValue(waitingPaymentResult)
             }
@@ -209,7 +208,6 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob?.join()
-            getAdminPermissionJob?.join()
             getOrderListParams.nextOrderId = result.first
             if (_canShowOrderData.value == true) {
                 _orderListResult.postValue(Success(result.second))
@@ -290,18 +288,30 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
-            getAdminPermissionJob = launchCatchError(
-                    block = {
-                        adminPermissionUseCase.execute(AdminPermissionGroup.ORDER).let { isEligible ->
-                            _isAdminEligible.postValue(Success(isEligible ?: false))
-                            _canShowOrderData.postValue(isEligible)
+        when {
+            userSession.isShopOwner -> {
+                _isAdminEligible.postValue(Success(true))
+                _canShowOrderData.postValue(true)
+            }
+            userSession.isShopAdmin -> {
+                launchCatchError(
+                        block = {
+                            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER).let { isEligible ->
+                                _isAdminEligible.postValue(Success(isEligible))
+                                _canShowOrderData.postValue(isEligible)
+                            }
+                        },
+                        onError = {
+                            _isAdminEligible.postValue(Fail(it))
+                            _canShowOrderData.postValue(false)
                         }
-                    },
-                    onError = {
-                        _isAdminEligible.postValue(Fail(it))
-                    }
-            )
+                )
+            }
+            else -> {
+                _isAdminEligible.postValue(Fail(MessageErrorException(NOT_ELIGIBLE_ERROR_MESSAGE)))
+                _canShowOrderData.postValue(false)
+            }
         }
     }
+
 }

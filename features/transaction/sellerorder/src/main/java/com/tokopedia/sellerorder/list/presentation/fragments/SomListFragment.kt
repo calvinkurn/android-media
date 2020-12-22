@@ -224,7 +224,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
-    private var canDisplayOrderData = true
+    private var canDisplayOrderData = false
     private var somListBulkAcceptOrderBottomSheet: SomListBulkAcceptOrderBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkActionDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
@@ -387,17 +387,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun loadInitialData() {
-        viewModel.isMultiSelectEnabled = false
-        resetOrderSelectedStatus()
-        isLoadingInitialData = true
-        loadUserRoles()
-        loadTopAdsCategory()
-        loadTickers()
-        loadWaitingPaymentOrderCounter()
-        loadFilters()
-        loadAdminPermission()
-        if (shouldReloadOrderListImmediately()) {
-            loadOrderList()
+        if (canDisplayOrderData) {
+            loadAllInitialData()
+        } else {
+            loadAdminPermission()
         }
     }
 
@@ -904,7 +897,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Success -> {
                     result.data.let { isEligible ->
                         canDisplayOrderData = isEligible
-                        if (!isEligible) {
+                        if (isEligible) {
+                            loadAllInitialData()
+                        } else {
                             showAdminPermissionError()
                         }
                     }
@@ -1051,6 +1046,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
         } else {
             showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty())
+        }
+    }
+
+    private fun loadAllInitialData() {
+        viewModel.isMultiSelectEnabled = false
+        resetOrderSelectedStatus()
+        isLoadingInitialData = true
+        loadUserRoles()
+        loadTopAdsCategory()
+        loadTickers()
+        loadWaitingPaymentOrderCounter()
+        loadFilters()
+        if (shouldReloadOrderListImmediately()) {
+            loadOrderList()
         }
     }
 
