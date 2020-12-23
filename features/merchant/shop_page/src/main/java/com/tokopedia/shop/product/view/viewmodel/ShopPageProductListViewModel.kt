@@ -19,6 +19,8 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -361,8 +363,23 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun setInitialProductList(initialProductListData: GetShopProductUiModel) {
-        productListData.postValue(Success(initialProductListData))
+    fun setInitialProductList(
+            shopId: String,
+            initialProductListData: ShopProduct.GetShopProduct
+    ) {
+        productListData.postValue(Success(
+                GetShopProductUiModel(
+                        ShopUtil.isHasNextPage(
+                                START_PAGE,
+                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                initialProductListData.totalData
+                        ),
+                        initialProductListData.data.map {
+                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), "")
+                        },
+                        initialProductListData.totalData
+                )
+        ))
     }
 
     fun getBottomSheetFilterData() {

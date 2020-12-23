@@ -46,15 +46,20 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                     quickFilterViewModel.fetchQuickFilters()
                 }
             })
-            quickFilterViewModel.getQuickFilterLiveData().observe(it, Observer { filters ->
-                setQuickFilters(filters)
-            })
         }
     }
 
 
     private fun setQuickFilters(filters: ArrayList<Option>) {
+        if (quickFilterViewModel.components.data?.isEmpty() == true) return
+        val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
+        componentName = quickFilterViewModel.getTargetComponent()?.name
+        for (option in filters) {
+            sortFilterItems.add(createSortFilterItem(option))
+        }
         quickSortFilter.let {
+            it.sortFilterItems.removeAllViews()
+            it.addItem(sortFilterItems)
             if(!quickFilterViewModel.components.showFilter) {
                 it.filterType = SortFilter.TYPE_QUICK
                 it.dismissListener = {
@@ -63,16 +68,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             }
             it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
-            it.sortFilterItems.removeAllViews()
         }
-        val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
-        if (quickFilterViewModel.components.data?.isEmpty() == true) return
-        componentName = quickFilterViewModel.getTargetComponent()?.name
-
-        for (option in filters) {
-            sortFilterItems.add(createSortFilterItem(option))
-        }
-        quickSortFilter.addItem(sortFilterItems)
         refreshQuickFilter(filters)
     }
 
@@ -150,5 +146,16 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun getResultCount(mapParameter: Map<String, String>) {
         sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
     }
+
+    override fun onViewAttachedToWindow() {
+        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, Observer { filters ->
+            setQuickFilters(filters)
+        })
+    }
+
+    override fun onViewDetachedToWindow() {
+        quickFilterViewModel.getQuickFilterLiveData().removeObservers(fragment.viewLifecycleOwner)
+    }
+
 }
 

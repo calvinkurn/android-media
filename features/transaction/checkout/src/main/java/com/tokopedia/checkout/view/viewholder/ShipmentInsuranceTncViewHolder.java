@@ -55,7 +55,7 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
             int startSpan = messageTosAgreement.indexOf(formatText);
             int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
             Spannable tosAgreementText = new SpannableString(messageTosAgreement);
-            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), com.tokopedia.abstraction.R.color.tkpd_main_green);
+            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400);
             tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tosAgreementText.setSpan(new TypefaceSpan("sans-serif-medium"), startSpan, endSpan,
