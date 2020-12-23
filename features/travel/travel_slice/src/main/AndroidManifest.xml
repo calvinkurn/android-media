@@ -11,14 +11,14 @@
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.app.slice.category.SLICE" />
             </intent-filter>
         </provider>
 
         <activity android:name=".ui.provider.TravelSliceActivity">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
