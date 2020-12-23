@@ -4,16 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
+    android:gravity="bottom"
     android:orientation="vertical">
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/bs_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/topads_dash_recom_daily_budget_title"
-        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bs_desc"
@@ -38,6 +30,7 @@
         android:imeOptions="actionSearch"
         android:lines="1"
         android:visibility="gone"
+        app:text_field_label="@string/topads_common_nama_group"
         app:text_field_label_static="true"
         app:text_field_message="@string/topads_dash_grp_bs_hint" />
 
@@ -52,8 +45,6 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_weight="1"
         tools:itemCount="8"
         tools:listitem="@layout/topads_dash_item_moveto_group_recom" />
@@ -62,6 +53,11 @@
         android:id="@+id/submit_butt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:text="@string/topads_iklankan_button" />
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/topads_iklankan_button"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 </LinearLayout>

@@ -109,6 +109,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                     val height = createAd?.measuredHeight
                     view_pager?.setPadding(0, 0, 0, height ?: 0)
+                }
+                if (tab?.position == 3) {
+                    collapseTab()
+                    bottom.visibility = View.GONE
+                    view_pager?.setPadding(0, 0, 0, 0)
                 } else {
                     bottom.visibility = View.GONE
                     view_pager?.setPadding(0, 0, 0, 0)
@@ -242,6 +247,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
         }
+    }
+
+    private fun collapseTab() {
+        app_bar_layout.setExpanded(false)
     }
 
     override fun gotToInsights() {

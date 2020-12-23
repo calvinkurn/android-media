@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -22,21 +21,19 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.data.raw.GROUP_LIST_QUERY
-import com.tokopedia.topads.common.data.response.FinalAdResponse
-import com.tokopedia.topads.common.data.response.GroupEditInput
-import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.interactor.*
+import com.tokopedia.topads.common.domain.usecase.CreateGroupUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsEditUseCase
-import com.tokopedia.topads.common.domain.usecase.ValidGroupUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -56,6 +53,7 @@ import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -75,10 +73,13 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
             private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
             private val topAdsInsightUseCase: TopAdsInsightUseCase,
             private val getStatisticUseCase: GetStatisticUseCase,
-            private val budgetRecomUseCase : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DailyBudgetRecommendationModel>,
+            private val budgetRecomUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DailyBudgetRecommendationModel>,
             private val productRecomUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductRecommendationModel>,
             private val topAdsEditUseCase: TopAdsEditUseCase,
-            private val validGroupUseCase: ValidGroupUseCase,
+            private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
+            private val createGroupUseCase: CreateGroupUseCase,
+            private val bidInfoUseCase: BidInfoUseCase,
+            private val groupInfoUseCase: GroupInfoUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -382,8 +383,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
                     onSuccess(data)
                 }
             })
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
@@ -570,22 +570,59 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         )
     }
 
-    fun editBudgetThroughInsight(productData:MutableList<GroupEditInput.Group.AdOperationsItem>?, groupData:HashMap<String,Any?>?, onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit){
-        topAdsEditUseCase.setParam(productData,groupData)
+    fun editBudgetThroughInsight(productData: MutableList<GroupEditInput.Group.AdOperationsItem>?, groupData: HashMap<String, Any?>?, onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit, onError: ((String)) -> Unit) {
+        topAdsEditUseCase.setParam(productData, groupData)
         topAdsEditUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topadsManageGroupAds)
                 },
                 {
+                    onError(it.message ?: "")
                     Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", it.localizedMessage)
                 }
         )
     }
+
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
         validGroupUseCase.setParams(groupName)
         validGroupUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it)
+                },
+                { throwable ->
+                    throwable.printStackTrace()
+                })
+    }
+
+    fun createGroup(param: HashMap<String, Any>, onSuccess: ((ResponseCreateGroup.TopadsCreateGroupAds) -> Unit)) {
+        createGroupUseCase.setParams(param)
+        createGroupUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it)
+
+                }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_CREATE_GROUP#%s", it.localizedMessage)
+
+        }
+        )
+    }
+
+    fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
+        bidInfoUseCase.setParams(suggestion, ParamObject.PRODUCT, ParamObject.SOURCE_CREATE_HEADLINE)
+        bidInfoUseCase.executeQuerySafeMode({
+            onSuccess(it.topadsBidInfo.data)
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_BID_INFO#%s", it.localizedMessage)
+        })
+    }
+
+    fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
+        groupInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.topads.common.R.raw.query_get_group_info))
+        groupInfoUseCase.setParams(groupId)
+        groupInfoUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.topAdsGetPromoGroup?.data!!)
                 },
                 { throwable ->
                     throwable.printStackTrace()
@@ -609,5 +646,9 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         validGroupUseCase.cancelJobs()
         topAdsEditUseCase.cancelJobs()
         productRecomUseCase.cancelJobs()
+        createGroupUseCase.cancelJobs()
+        bidInfoUseCase.cancelJobs()
+        bidInfoUseCase.cancelJobs()
+        groupInfoUseCase.cancelJobs()
     }
 }

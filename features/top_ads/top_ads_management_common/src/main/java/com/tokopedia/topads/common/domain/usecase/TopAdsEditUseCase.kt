@@ -10,6 +10,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_RECOM_EDIT_SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.raw.EDIT_GROUP_QUERY
@@ -49,12 +50,9 @@ class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository
     }
 
     private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManageGroupAdsInput {
-//
-        val groupName = dataGroup?.get(GROUP_NAME) as? String
-        val priceBidGroup = dataGroup?.get("price_bid") as? Int
+        val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
         val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Int
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as? Int
-        var productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = ArrayList()
         return TopadsManageGroupAdsInput().apply {
             shopID = userSession.shopId
             groupID = groupId.toString()
@@ -62,12 +60,11 @@ class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository
             groupInput = GroupEditInput(
                     action = PARAM_EDIT_OPTION,
                     group = GroupEditInput.Group(
+                            adOperations = dataProduct,
                             name = null,
                             type = PRODUCT,
-                          //  status = "published",
                             dailyBudget = dailyBudgetGroup,
-                            //  priceBid = 10
-                            adOperations = productList
+                            priceBid = priceBidGroup,
                     )
             )
         }

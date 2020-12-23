@@ -26,11 +26,11 @@ import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.param.AdsItem
-import com.tokopedia.topads.data.param.Group
-import com.tokopedia.topads.data.param.InputCreateGroup
-import com.tokopedia.topads.data.param.KeywordsItem
-import com.tokopedia.topads.data.response.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.AdsItem
+import com.tokopedia.topads.common.data.model.Group
+import com.tokopedia.topads.common.data.model.InputCreateGroup
+import com.tokopedia.topads.common.data.model.KeywordsItem
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity

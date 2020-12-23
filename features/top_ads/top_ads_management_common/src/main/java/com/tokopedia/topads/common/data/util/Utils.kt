@@ -6,15 +6,12 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.tokopedia.kotlin.extensions.view.numberFormatted
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.unifycomponents.SearchBarUnify
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 import kotlin.jvm.Throws
@@ -76,43 +73,6 @@ object Utils {
             list.add(value)
         }
         return list
-    }
-
-    private val suffixes = TreeMap<Long, String>()
-
-
-    init {
-        suffixes[1_0L] = " puluh"
-        suffixes[1_000L] = " ratus"
-        suffixes[1_000_000L] = " juta"
-    }
-
-    fun format(value: Long): String {
-        //Long.MIN_VALUE == -Long.MIN_VALUE so we need an adjustment here
-        if (value == java.lang.Long.MIN_VALUE) return format(java.lang.Long.MIN_VALUE + 1)
-        if (value < 0) return "-" + format(-value)
-        if (value < 1000) return java.lang.Long.toString(value) //deal with easy case
-
-        val e = suffixes.floorEntry(value)
-        val divideBy = e.key
-        val suffix = e.value
-
-        val truncated = value / (divideBy!! / 10) //the number part of the output times 10
-        val hasDecimal = truncated < 100 && truncated / 10.0 != (truncated / 10).toDouble()
-        return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
-    }
-    val decimalFormat = DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale("in", "id")))
-
-    fun Number.numberFormatted(): String {
-        decimalFormat.maximumFractionDigits = 2
-        return decimalFormat.format(this)
-    }
-    fun Number.thousandFormatted(): String {
-        if (toDouble() < 1000) return numberFormatted()
-
-        val exp = (Math.log(this.toDouble())/Math.log(1000.00)).toInt()
-        val number = this.toDouble()/Math.pow(1000.00, exp.toDouble())
-        return "${number.numberFormatted()}${listOf("rb", "jt", "mil", "T")[exp-1]}"
     }
 
     fun setSearchListener(searchbar: SearchBarUnify, context: Context?, view: View, onSuccess: () -> Unit) {

@@ -1,8 +1,7 @@
 package com.tokopedia.topads.view.model
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
-import com.tokopedia.topads.common.domain.usecase.ValidGroupUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -13,7 +12,7 @@ import javax.inject.Named
 class CreateGroupAdsViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: ValidGroupUseCase) : BaseViewModel(dispatcher) {
+        private val validGroupUseCase: TopAdsGroupValidateNameUseCase) : BaseViewModel(dispatcher) {
 
 
     fun validateGroup(groupName: String, onSuccess: (() -> Unit),

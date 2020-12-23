@@ -9,7 +9,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.common.domain.usecase.ValidGroupUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.edit.data.response.*
 import com.tokopedia.topads.edit.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class EditFormDefaultViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: ValidGroupUseCase,
+        private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
         private val bidInfoUseCase: BidInfoUseCase,
         private val getAdsUseCase: GetAdsUseCase,
         private val getAdKeywordUseCase: GetAdKeywordUseCase,

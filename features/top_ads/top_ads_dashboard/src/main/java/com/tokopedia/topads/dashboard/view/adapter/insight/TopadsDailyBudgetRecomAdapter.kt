@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.DataBudget
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_item.view.*
@@ -39,13 +41,13 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(items[holder.adapterPosition]) {
-
+            holder.view.buttonSubmitEdit.isLoading = false
             holder.view.groupName.text = groupName
-            val dailyBudget = priceDaily.toString() + holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_hari_)
+            val dailyBudget = convertToCurrency(priceDaily.toLong()) + holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_hari_)
             holder.view.daily_budget_value.text = dailyBudget
-            val recommendationBid = "Rp" + suggestedPriceDaily + holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_hari_)
+            val recommendationBid = "Rp" + convertToCurrency(suggestedPriceDaily.toLong()) + holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_hari_)
             holder.view.recom_budget.text = recommendationBid
-            holder.view.editBudget?.textFieldInput?.setText(suggestedPriceDaily.toString())
+            holder.view.editBudget?.textFieldInput?.setText(convertToCurrency(suggestedPriceDaily.toLong()))
             setCurrentBid = suggestedPriceDaily
             holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder))
             holder.view.buttonSubmitEdit.setOnClickListener {
@@ -58,8 +60,7 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
                     setCurrentBid = number.toInt()
                     holder.view.potentialClick.text = calculatePotentialClick(holder).toString()
                     when {
-                        number < suggestedPriceDaily.toDouble() -> {
-                            //todo
+                        number < suggestedPriceDaily.toDouble() && number > priceDaily -> {
                             holder.view.buttonSubmitEdit.isEnabled = true
                             holder.view.editBudget?.setMessage(Html.fromHtml(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), suggestedPriceDaily)))
                         }

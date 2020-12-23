@@ -56,10 +56,12 @@
             android:id="@+id/rvProductRecom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/dp_40"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
-            tools:itemCount="2"
+            tools:itemCount="8"
             tools:listitem="@layout/topads_dash_recon_product_item" />
 
         <include

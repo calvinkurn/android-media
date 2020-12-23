@@ -13,7 +13,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.CREDIT_DATA
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_DATA
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

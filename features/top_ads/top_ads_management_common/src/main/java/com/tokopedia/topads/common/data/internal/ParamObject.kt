@@ -71,7 +71,6 @@ object ParamObject {
     const val PARAM_EDIT_OPTION = "edit"
     const val PARAM_DAILY_BUDGET = "daily_budget"
     const val PARAM_GROUP_Id = "groupId"
-
-
-
+    const val PARAM_PRICE_BID = "price_bid"
+    const val PARAM_SOURCE_RECOM = "product_recom_app"
 }

@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="@id/img_folder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/img_folder" />
@@ -50,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_12"
-        android:text="@string/topads_common_anggaran_harian"
+        android:text="@string/topads_common_total_search"
         android:textColor="@color/topads_common_select_color_unchecked"
         app:layout_constraintStart_toEndOf="@id/search_icon"
         app:layout_constraintTop_toBottomOf="@id/img_folder"
@@ -62,6 +61,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/total_search"
         app:layout_constraintTop_toBottomOf="@id/total_search"
+        app:layout_constraintTop_toTopOf="@id/totalSearch"
+        app:layout_constraintBottom_toBottomOf="@id/totalSearch"
         app:srcCompat="@drawable/topads_up" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -112,9 +113,10 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/editBudget"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/search_icon"
         app:layout_constraintTop_toBottomOf="@id/totalSearch"
         app:text_field_append_text="@string/topads_common_klik_"

@@ -1,16 +1,23 @@
 package com.tokopedia.topads.dashboard.view.fragment.insight
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.FinalAdResponse
+import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.util.SpaceItemDecoration
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -48,6 +55,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = TopadsDailyBudgetRecomAdapter(::onButtonClick)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,6 +76,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
         }
         rvDailyBudget?.adapter = adapter
         rvDailyBudget?.layoutManager = LinearLayoutManager(context)
+        rvDailyBudget?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 
     private fun setEmptyState() {
@@ -84,6 +93,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
     }
 
     private fun onSuccessDailyBudgetRecom(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
+        swipeRefreshLayout.isRefreshing = false
         setAdapterData(dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation)
     }
 
@@ -99,7 +109,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun setTitle(data: List<DataBudget>) {
         val potentialClick = calculatePotentialClick(data)
-        daily_budget_desc?.text = String.format(getString(R.string.topads_dash_recom_daily_budget_desc), adapter.itemCount, potentialClick)
+        daily_budget_desc?.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_daily_budget_desc), adapter.itemCount, potentialClick))
     }
 
     private fun calculatePotentialClick(data: List<DataBudget>): Int {
@@ -116,26 +126,36 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
         adapter.notifyItemChanged(currentPosition)
     }
 
     private fun onButtonClick(pos: Int) {
-        val map = HashMap<String,Any?>()
-       // map["price_bid"] = 1
-        map[PARAM_DAILY_BUDGET] = adapter.items[pos].setCurrentBid
-        map[PARAM_GROUP_Id] = adapter.items[pos].groupId
         currentPosition = pos
-        topAdsDashboardPresenter.editBudgetThroughInsight(null,map,::onResultEdit)
+        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
+    }
+
+    private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
+        val map = HashMap<String, Any?>()
+        map[PARAM_PRICE_BID] = data.priceBid
+        map[PARAM_DAILY_BUDGET] = adapter.items[currentPosition].setCurrentBid
+        map[PARAM_GROUP_Id] = adapter.items[currentPosition].groupId
+        topAdsDashboardPresenter.editBudgetThroughInsight(null, map, ::onResultEdit, ::onError)
     }
 
     private fun onResultEdit(topadsManageGroupAds: FinalAdResponse.TopadsManageGroupAds) {
-        if(topadsManageGroupAds.groupResponse.errors?.isEmpty() == false)
-        {
-            onError(topadsManageGroupAds.groupResponse.errors?.firstOrNull()?.detail?:"")
-        }else{
+        if (topadsManageGroupAds.groupResponse.errors?.isEmpty() == false) {
+            onError(topadsManageGroupAds.groupResponse.errors?.firstOrNull()?.detail ?: "")
+        } else {
             loadData()
+            showSuccessToast()
+        }
+    }
+
+    private fun showSuccessToast() {
+        view?.let {
+            Toaster.build(it, getString(R.string.topads_dash_success_daily_budget_toast), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
     }
 }

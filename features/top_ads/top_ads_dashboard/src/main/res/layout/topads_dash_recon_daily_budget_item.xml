@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/img_folder"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_dash_folder_with_border" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/groupName"
@@ -43,6 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/daily_budget_text"
         app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Rp10000z" />
 
     <ImageView
@@ -71,6 +73,7 @@
         app:layout_constraintStart_toStartOf="@id/recom_budget_text"
         app:layout_constraintTop_toBottomOf="@id/recom_budget_text"
         app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Rp100000" />
 
     <LinearLayout
@@ -78,9 +81,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintEnd_toStartOf="@id/editBudget"
         android:background="@drawable/potential_click_bg"
         android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/editBudget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/daily_budget_value">
 
@@ -88,10 +91,10 @@
             android:id="@+id/potential_click_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_6"
-            app:typographyType="body_3"
             android:layout_marginStart="@dimen/dp_8"
-            android:text="@string/topads_dash_potential_click" />
+            android:layout_marginTop="@dimen/dp_6"
+            android:text="@string/topads_dash_potential_click"
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/potentialClick"
@@ -100,6 +103,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_2"
             app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="Maks. +1000 klik/hari" />
     </LinearLayout>
 
@@ -107,8 +111,8 @@
         android:id="@+id/editBudget"
         android:layout_width="@dimen/dp_150"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/clickLayout"
         app:layout_constraintTop_toBottomOf="@id/recom_budget"
@@ -122,7 +126,7 @@
         android:id="@+id/buttonSubmitEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/topads_dash_terapkan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editBudget"

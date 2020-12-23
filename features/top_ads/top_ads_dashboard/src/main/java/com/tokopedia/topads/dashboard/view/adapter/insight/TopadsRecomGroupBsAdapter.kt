@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import kotlinx.android.synthetic.main.topads_dash_item_moveto_group_recom.view.*
@@ -14,9 +15,9 @@ private const val VIEW_SHIMMER = 0
 private const val VIEW_GROUP = 1
 private const val DEFAULT_SHIMMER_COUNT = 5
 
-class TopadsRecomGroupBsAdapter(private val onItemClicked: ((pos: Int) -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopadsRecomGroupBsAdapter(val onGroupSelect: ((pos: Int) -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: MutableList<GroupListDataItem> = mutableListOf()
-
+    private var list: List<CountDataItem> = listOf()
     private var showShimmer = true
     private var selectedPosition = -1
 
@@ -77,8 +78,9 @@ class TopadsRecomGroupBsAdapter(private val onItemClicked: ((pos: Int) -> Unit))
         (holder as? GroupViewHolder)?.let {
             it.name.text = items[holder.adapterPosition].groupName
             it.radio.isChecked = items[holder.adapterPosition].isSelected
-            it.groupDesc.text = String.format(it.itemView.desc_group.context.getString(R.string.topads_dash_grp_bs_item_desc), items[holder.adapterPosition].totalItem, items[holder.adapterPosition].totalKeyword)
+            it.groupDesc.text = String.format(it.itemView.desc_group.context.getString(R.string.topads_dash_grp_bs_item_desc), list[holder.adapterPosition].totalAds, list[holder.adapterPosition].totalKeywords)
             it.itemView.setOnClickListener { v ->
+                onGroupSelect.invoke(holder.adapterPosition)
                 items[holder.adapterPosition].isSelected = true
                 setOtherFalse(holder.adapterPosition)
                 v.radio_button.isChecked = true
@@ -93,11 +95,16 @@ class TopadsRecomGroupBsAdapter(private val onItemClicked: ((pos: Int) -> Unit))
                 it.isSelected = false
             }
         }
+        notifyDataSetChanged()
     }
 
     fun setItems(groupList: List<GroupListDataItem>) {
-        showShimmer = false
         this.items = groupList as MutableList<GroupListDataItem>
+    }
+
+    fun setKeyProductCount(list: List<CountDataItem>) {
+        showShimmer = false
+        this.list = list
         notifyDataSetChanged()
     }
 }

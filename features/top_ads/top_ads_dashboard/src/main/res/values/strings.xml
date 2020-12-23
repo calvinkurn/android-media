@@ -313,10 +313,10 @@
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>
-    <string name="topads_dash_recom_daily_budget_desc">Yuk, tambah anggaran harian untuk %d iklanmu supaya bisa dapat +%d klik/hari!</string>
+    <string name="topads_dash_recom_daily_budget_desc">Yuk, tambah anggaran harian untuk %d iklanmu supaya bisa dapat <![CDATA["<font color='#fa31353b'><b>  +%d klik/hari!</b></font> ]]></string>
     <string name="topads_dash_potential_click">Potensi Klik</string>
     <string name="topads_dash_recom_product_title">Rekomendasi produk untuk diiklankan</string>
-    <string name="topads_dash_recom_product_desc">Iklankan %d produk terbaikmu ke dalam satu grup untuk bisa berpotensi +%d klik per hari</string>
+    <string name="topads_dash_recom_product_desc">Iklankan %d produk terbaikmu ke dalam satu grup untuk bisa berpotensi <![CDATA["<font color='#fa31353b'><b> +%d klik per hari</b></font> ]]></string>
     <string name="topads_dash_grp_bs_title">Iklankan Produk Dengan Grup</string>
     <string name="topads_dash_grp_bs_desc">Masukkan produk yang kamu pilih ke dalam Grup Iklan supaya lebih mudah diatur!</string>
     <string name="topads_dash_grp_bs_label_switch_on">Grup Iklan Aktif</string>
@@ -331,8 +331,13 @@
     <string name="topads_dash_budget_recom_error">Biaya terbaik Rp%d <![CDATA["<font color='#42b549'><b> Pasang </b></font> ]]></string>
     <string name="topads_dash_budget_recom_min_bid_error">Oops, biaya terlalu rendah!</string>
     <string name="topads_dash_potential_click_text">Maks. +%d klik/hari</string>
-    <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#42b549'><b> %s% </b></font> ]]>•%s</string>
+    <string name="topads_dash_total_search_pattern"><![CDATA["<font color='#42b549'><b> %s</b></font> ]]> .%s</string>
     <string name="topads_dash_product_recomm_min_budget_error">Oops, biaya terlalu tinggi!</string>
+    <string name="topads_dash_success_daily_budget_toast">Berhasil menerapkan anggaran baru untuk grup Kemeja Kerja!</string>
+    <string name="topads_dash_success_product_toast">%d Produk berhasil diiklankan!</string>
+    <string name="topads_dash_grp_bs_search_hint">Cari grup</string>
+    <string name="topads_dash_grp_bs_empty">Oops, pencarianmu tidak ditemukan!</string>
+
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>

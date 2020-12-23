@@ -1,18 +1,26 @@
 package com.tokopedia.topads.dashboard.view.fragment.insight
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_SOURCE_RECOM
+import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
@@ -22,6 +30,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsProductRecomAda
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
 import javax.inject.Inject
@@ -33,6 +42,7 @@ import javax.inject.Inject
 class TopAdsInsightBaseProductFragment(private val productRecommendData: ProductRecommendationData?) : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
+    private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, _ -> }
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -41,6 +51,8 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private val sheet: TopAdsRecomGroupBottomSheet by lazy {
         TopAdsRecomGroupBottomSheet.getInstance()
     }
+    private var currentGroupName = ""
+    private var currentGroupId = -1
 
     override fun getScreenName(): String {
         return TopAdsInsightBaseProductFragment::class.java.name
@@ -52,10 +64,8 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        }
-        adapter = TopadsProductRecomAdapter()
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,6 +86,14 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             setAdapterData(productRecommendData?.products)
         }
         onBudgetClicked()
+        checkUnchekAll()
+    }
+
+    private fun checkUnchekAll() {
+        onCheckedChangeListener = { _, checked ->
+            adapter.setAllChecked(checked)
+            selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.getSelectedIds().size)
+        }
     }
 
     private fun calculateSetTitle(products: List<ProductRecommendation>?): Int {
@@ -92,13 +110,14 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             adapter.items.add(it)
         }
         adapter.notifyDataSetChanged()
+        cb_product_recom?.isChecked = true
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
-        product_recom_desc.text = String.format(getString(R.string.topads_dash_recom_product_desc), products?.size, calculateSetTitle(products))
+        product_recom_desc.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_product_desc), products?.size, calculateSetTitle(products)))
         selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.itemCount)
     }
 
-    fun onBudgetClicked() {
-        (parentFragment as TopAdsRecommendationFragment).setClick()
+    private fun onBudgetClicked() {
+        (parentFragment as? TopAdsRecommendationFragment)?.setClick()
     }
 
     private fun setEmptyState() {
@@ -130,22 +149,84 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         swipeRefreshLayout.isRefreshing = false
     }
 
-    fun test() {
+    fun openBottomSheet() {
         sheet.show(childFragmentManager)
+        sheet.onNewGroup = { groupName ->
+            currentGroupName = groupName
+            getBidInfo()
+        }
         sheet.onItemClick = { groupId ->
-            val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
-            val map = HashMap<String, Any?>()
-            map[PARAM_GROUP_Id] = groupId
-            topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit)
+            getBidInfo()
+            currentGroupId = groupId
         }
     }
 
+    private fun getBidInfo() {
+        val selectedProductIds: List<Int>? = adapter.getSelectedIds().map {
+            it.toInt()
+        }
+        val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+        topAdsDashboardPresenter.getBidInfo(listOf(suggestions), this::onSuccessSuggestion)
+    }
+
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
+        if (currentGroupId == -1) {
+            val param: HashMap<String, Any> = hashMapOf()
+            val userSession = UserSession(context)
+            param[INPUT] = InputCreateGroup().apply {
+                shopID = userSession.shopId
+                keywords = null
+                group = Group(
+                        groupName = currentGroupName,
+                        ads = getAdsList(),
+                        priceBid = data.firstOrNull()?.suggestionBid ?: 0,
+                        groupBudget = "0",
+                        source = PARAM_SOURCE_RECOM,
+                        suggestedBidValue = data.firstOrNull()?.suggestionBid ?: 0
+                )
+            }
+            topAdsDashboardPresenter.createGroup(param, ::onSucessGroupCreation)
+
+        } else {
+            val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
+            val map = HashMap<String, Any?>()
+            map[PARAM_GROUP_Id] = currentGroupId
+            map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
+            topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit, ::onError)
+            currentGroupId = -1
+        }
+        sheet.dismiss()
+    }
+
+    private fun getAdsList(): List<AdsItem> {
+        val ids = adapter.getSelectedIds()
+        val adsList: MutableList<AdsItem> = mutableListOf()
+        val ad = AdsItem()
+        ids.forEach {
+            ad.productID = it
+            ad.source = PARAM_SOURCE_RECOM
+            ad.ad = Ad().apply {
+                adType = "1"
+                adID = "0"
+            }
+            adsList.add(ad)
+        }
+        return adsList
+    }
+
+    private fun onSucessGroupCreation(topadsCreateGroupAds: ResponseCreateGroup.TopadsCreateGroupAds) {
+        if (topadsCreateGroupAds.errors.isEmpty()) {
+            loadData()
+        } else {
+            onError(topadsCreateGroupAds.errors.firstOrNull()?.detail ?: "")
+        }
+    }
 
     private fun getAds(): MutableList<GroupEditInput.Group.AdOperationsItem>? {
         val ids = adapter.getSelectedIds()
         val adOperation = GroupEditInput.Group.AdOperationsItem()
         val ad = adOperation.ad
-        val list:MutableList<GroupEditInput.Group.AdOperationsItem>? = mutableListOf()
+        val list: MutableList<GroupEditInput.Group.AdOperationsItem>? = mutableListOf()
         ids.forEach {
             ad.productId = it
             adOperation.ad = ad
@@ -157,7 +238,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
     }
 
@@ -166,6 +247,32 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             onError(topadsManageGroupAds.groupResponse.errors?.firstOrNull()?.detail ?: "")
         } else {
             loadData()
+            showSuccessToast()
+        }
+    }
+
+    private fun showSuccessToast() {
+        view?.let {
+            Toaster.build(it, String.format(getString(R.string.topads_dash_success_product_toast), adapter.getSelectedIds().size), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
+        }
+    }
+
+    private fun itemCheckedUnchecked() {
+        val selected = adapter.getSelectedIds().size
+        selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), selected)
+        if (selected != adapter.itemCount) {
+            cb_product_recom?.setOnCheckedChangeListener(null)
+            cb_product_recom?.isChecked = false
+            cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
+        }
+        if (selected == 0) {
+            (parentFragment as? TopAdsRecommendationFragment)?.setEnable(false)
+        } else {
+            (parentFragment as? TopAdsRecommendationFragment)?.setEnable(true)
         }
     }
 }
+
+
+
+

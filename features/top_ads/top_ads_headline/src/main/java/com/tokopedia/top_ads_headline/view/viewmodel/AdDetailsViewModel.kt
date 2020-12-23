@@ -13,7 +13,7 @@ class AdDetailsViewModel @Inject constructor(
     fun validateGroup(adName: String, shopId:Int,  onSuccess: (() -> Unit), onError: ((String) -> Unit)) {
         viewModelScope.launchCatchError(
                 block = {
-                    topAdsGroupValidateNameUseCase.setParams(shopId, adName)
+                    topAdsGroupValidateNameUseCase.setParams(adName)
                     val response = topAdsGroupValidateNameUseCase.executeOnBackground()
                     if (response.topAdsGroupValidateName.errors.isEmpty()){
                         onSuccess()

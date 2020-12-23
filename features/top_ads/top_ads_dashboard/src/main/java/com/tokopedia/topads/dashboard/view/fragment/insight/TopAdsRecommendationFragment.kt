@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -104,6 +103,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
+        loderRecom?.visibility = View.GONE
         rvTabInsight?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
@@ -118,12 +118,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                 view_pager.currentItem = position
                 if (position == 0) {
                     bottomInsight.visibility = View.VISIBLE
-                    editProduct?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    val height = editProduct?.measuredHeight
-                    view_pager?.setPadding(0, 0, 0, view?.getDimens(R.dimen.dp_40) ?: 0)
                 } else {
                     bottomInsight.visibility = View.GONE
-                    view_pager?.setPadding(0, 0, 0, 0)
                 }
             }
         })
@@ -132,6 +128,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderViewPager() {
+        loderRecom?.visibility = View.GONE
         view_pager.adapter = getViewPagerAdapter()
         view_pager.disableScroll(true)
     }
@@ -161,11 +158,15 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         bottomInsight?.visibility = View.GONE
     }
 
+    fun setEnable(enable:Boolean){
+        editProduct?.isEnabled = enable
+    }
+
     fun setClick() {
         editProduct.setOnClickListener {
             val fragments = (view_pager?.adapter as? TopAdsDashInsightPagerAdapter)?.listFrag
             if (fragments?.get(0) is TopAdsInsightBaseProductFragment) {
-                (fragments[0] as TopAdsInsightBaseProductFragment).test()
+                (fragments[0] as TopAdsInsightBaseProductFragment).openBottomSheet()
             }
         }
     }

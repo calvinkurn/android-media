@@ -114,6 +114,7 @@
     <string name="topads_common_confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
+    <string name="topads_common_total_search">Total Pencarian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
     <string name="filter">Filter</string>
     <string name="topads_edit_urutkan">Urutkan</string>
@@ -130,6 +131,7 @@
     <string name="topads_iklankan_button">Iklankan</string>
     <string name="topads_common_bs_title">Atur Biaya Iklan</string>
     <string name="topads_common_atur_anngaran">Atur Anggaran</string>
+    <string name="topads_common_nama_group">Nama Grup</string>
 
 
     <string-array name="sort_product_list_array">
