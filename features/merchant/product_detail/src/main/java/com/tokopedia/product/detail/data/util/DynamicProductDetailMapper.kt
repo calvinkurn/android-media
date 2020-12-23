@@ -143,8 +143,8 @@ object DynamicProductDetailMapper {
                         ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
             }
 
-            Variant(pv = it.pv.toIntOrZero(),
-                    v = it.v.toIntOrZero(),
+            Variant(pv = it.pv,
+                    v = it.v,
                     name = it.name,
                     identifier = it.identifier,
                     options = newOption)
@@ -162,15 +162,15 @@ object DynamicProductDetailMapper {
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
                     ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick)
 
-            VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
+            VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
                     campaign = campaign)
         }
 
         return ProductVariantCommon(
-                parentId = networkData.parentId.toIntOrZero(),
+                parentId = networkData.parentId,
                 errorCode = networkData.errorCode,
-                defaultChild = networkData.defaultChild.toIntOrZero(),
+                defaultChild = networkData.defaultChild,
                 sizeChart = networkData.sizeChart,
                 variant = variants,
                 children = child

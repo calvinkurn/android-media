@@ -85,20 +85,15 @@ object ReviewConstants {
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
-    const val ARGS_RATING = "ARGS_RATING"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
-    const val PARAM_UTM_SOURCE = "utmSource"
+    const val PARAM_UTM_SOURCE = "utm_source"
     const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
-    const val REPUTATION_SCORE_EMPTY = 0
-
-    const val AB_TEST_KEY = "InboxUlasanRevamp2"
-    const val NEW_REVIEW_FLOW = "New Review Flow"
 
     const val REVIEW_PENDING_TRACE = "review_pending_trace"
     const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
@@ -119,6 +114,21 @@ object ReviewConstants {
     const val EDIT_REVIEW_PLT_PREPARE_METRICS = "edit_review_plt_prepare_metrics"
     const val EDIT_REVIEW_PLT_NETWORK_METRICS = "edit_review_plt_network_metrics"
     const val EDIT_REVIEW_PLT_RENDER_METRICS = "edit_review_plt_render_metrics"
+
+    const val RATING_PRODUCT_TRACE = "rating_product_trace"
+    const val RATING_PRODUCT_PLT_PREPARE_METRICS = "rating_product_plt_prepare_metrics"
+    const val RATING_PRODUCT_PLT_NETWORK_METRICS = "rating_product_plt_network_metrics"
+    const val RATING_PRODUCT_PLT_RENDER_METRICS = "rating_product_plt_render_metrics"
+
+    const val SELLER_REVIEW_DETAIL_TRACE = "seller_review_detail_trace"
+    const val SELLER_REVIEW_DETAIL_PLT_PREPARE_METRICS = "seller_review_detail_plt_prepare_metrics"
+    const val SELLER_REVIEW_DETAIL_PLT_NETWORK_METRICS = "seller_review_detail_plt_network_metrics"
+    const val SELLER_REVIEW_DETAIL_PLT_RENDER_METRICS = "seller_review_detail_plt_render_metrics"
+
+    const val SELLER_REVIEW_REPLY_TRACE = "seller_review_reply_trace"
+    const val SELLER_REVIEW_REPLY_PLT_PREPARE_METRICS = "seller_review_reply_plt_prepare_metrics"
+    const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
+    const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
 }
 
 
