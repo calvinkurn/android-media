@@ -30,6 +30,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
+private const val TDN_SEARCH_INVENTORY_ID = "2"
+private const val TDN_SEARCH_ITEM_COUNT = 4
+private const val TDN_SEARCH_DIMENSION = 5
+
 class SearchProductTDNFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
         private val searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
@@ -179,7 +183,7 @@ class SearchProductTDNFirstPageGqlUseCase(
     }
 
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
-            getQueryMap(query, "2", "", 4, 5, "")
+            getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
         val timeoutMs : Long = 2_000
