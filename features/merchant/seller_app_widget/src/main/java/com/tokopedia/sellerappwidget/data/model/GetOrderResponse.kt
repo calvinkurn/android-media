@@ -8,8 +8,8 @@ data class GetOrderResponse(
         @SerializedName("orderList")
         val orderList: OrderListModel = OrderListModel(),
         @Expose
-        @SerializedName("notifications")
-        val notifications: NotificationsModel? = NotificationsModel()
+        @SerializedName("orderFilterSom")
+        val orderFilterSom: OrderFilterSomModel? = OrderFilterSomModel()
 )
 
 data class OrderListModel(
@@ -43,4 +43,19 @@ data class OrderProductModel(
         @Expose
         @SerializedName("product_name")
         val productName: String = ""
+)
+
+data class OrderFilterSomModel(
+        @Expose
+        @SerializedName("status_list")
+        val statusList: List<OrderStatusModel>? = emptyList(),
+)
+
+data class OrderStatusModel(
+        @Expose
+        @SerializedName("key")
+        val key: String? = "",
+        @Expose
+        @SerializedName("order_status_amount")
+        val orderAmount: Int? = 0
 )

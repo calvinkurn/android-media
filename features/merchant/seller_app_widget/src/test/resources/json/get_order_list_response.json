@@ -16,11 +16,33 @@
         }
       ]
     },
-    "notifications": {
-      "sellerOrderStatus": {
-        "newOrder": 0,
-        "readyToShip": 1
-      }
+    "orderFilterSom": {
+      "status_list": [
+        {
+          "key": "all_order",
+          "order_status_amount": 0
+        },
+        {
+          "key": "new_order",
+          "order_status_amount": 64
+        },
+        {
+          "key": "confirm_shipping",
+          "order_status_amount": 218
+        },
+        {
+          "key": "in_shipping",
+          "order_status_amount": 149
+        },
+        {
+          "key": "done",
+          "order_status_amount": 7
+        },
+        {
+          "key": "order_canceled",
+          "order_status_amount": 14
+        }
+      ]
     }
   }
 }

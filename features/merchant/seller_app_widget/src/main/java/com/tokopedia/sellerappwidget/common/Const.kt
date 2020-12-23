@@ -11,6 +11,11 @@ object Const {
         const val READY_TO_SHIP = 400
     }
 
+    object OrderStatusStr {
+        const val NEW_ORDER = "new_order"
+        const val READY_TO_SHIP = "confirm_shipping"
+    }
+
     object OrderListSortBy {
         const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
         const val SORT_BY_PAYMENT_DATE_DESCENDING = 2

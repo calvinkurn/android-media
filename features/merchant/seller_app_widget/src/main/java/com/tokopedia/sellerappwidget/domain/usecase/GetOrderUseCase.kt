@@ -3,7 +3,6 @@ package com.tokopedia.sellerappwidget.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.model.GetOrderResponse
 import com.tokopedia.sellerappwidget.data.model.InputParameterModel
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
@@ -66,10 +65,10 @@ class GetOrderUseCase(
                   }
                 }
               }
-              notifications {
-                sellerOrderStatus {
-                  newOrder
-                  readyToShip
+              orderFilterSom {
+                status_list {
+                  key
+                  order_status_amount
                 }
               }
             }
