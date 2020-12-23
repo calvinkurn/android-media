@@ -27,6 +27,7 @@ import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
 import rx.functions.Func1
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 class SearchProductTDNFirstPageGqlUseCase(
@@ -158,7 +159,7 @@ class SearchProductTDNFirstPageGqlUseCase(
                 searchLogger.logTDNError(throwable)
                 emitter.onNext(listOf())
             }
-        }, BUFFER)
+        }, BUFFER).tdnTimeout()
     }
 
     private suspend fun emitTopAdsImageViewData(emitter: Emitter<List<TopAdsImageViewModel>>, query: String) {
@@ -179,6 +180,15 @@ class SearchProductTDNFirstPageGqlUseCase(
 
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
             getQueryMap(query, "2", "", 4, 5, "")
+
+    private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
+        val timeoutMs : Long = 2_000
+
+        return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
+            searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
+            emitter.onNext(listOf())
+        }, BUFFER))
+    }
 
     private fun setTopAdsImageViewModelList(
             searchProductModel: SearchProductModel?,
