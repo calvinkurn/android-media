@@ -19,7 +19,6 @@ import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.cache.InboxCacheState
-import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
@@ -61,7 +60,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
-    private var inboxBadgeCounter: InboxCounter = InboxCounter()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -105,7 +103,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun clearNotificationCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
                 InboxConfig.role
         ) ?: return
         notificationRole.notifcenterInt = 0
@@ -113,7 +111,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun decreaseChatUnreadCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
                 InboxConfig.role
         ) ?: return
         notificationRole.chatInt -= 1
@@ -121,7 +119,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun increaseChatUnreadCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
                 InboxConfig.role
         ) ?: return
         notificationRole.chatInt += 1
@@ -155,6 +153,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         icon.addIcon(IconList.ID_CART) { }
         icon.addIcon(IconList.ID_NAV_GLOBAL) { }
         toolbar?.setIcon(icon)
+        toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
     }
 
     private fun setupView() {
@@ -230,20 +229,21 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupObserver() {
         viewModel.notifications.observe(this, Observer { result ->
             if (result is Success) {
-                inboxBadgeCounter = result.data
+                InboxConfig.notifications = result.data
                 updateBadgeCounter()
             }
         })
     }
 
     private fun updateBadgeCounter() {
-        val notificationRole = inboxBadgeCounter.getByRole(
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
                 InboxConfig.role
         ) ?: return
-        val oppositeRole = inboxBadgeCounter.getByRoleOpposite(InboxConfig.role)
+        val oppositeRole = InboxConfig.inboxCounter.getByRoleOpposite(InboxConfig.role)
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
         oppositeRole?.let {
             navHeader.setBadgeCount(oppositeRole.totalInt)
         }
