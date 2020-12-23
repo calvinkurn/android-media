@@ -375,8 +375,16 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      * This void from Callback [RecommendationErrorListener]
      * it handle global error click from [RecommendationErrorViewHolder]
      */
-    override fun refresh() {
+    override fun onRefreshRecommendation() {
         loadInitialData()
+    }
+
+    /**
+     * This void from Callback [RecommendationErrorListener]
+     * it handle global error click from [RecommendationErrorViewHolder]
+     */
+    override fun onCloseRecommendation() {
+        this.activity?.finish()
     }
 
     /**

@@ -28,7 +28,7 @@ data class CartItemData(
 
     @Parcelize
     data class OriginData(
-            var cartId: Int = 0,
+            var cartId: Long = 0,
             var parentId: String? = null,
             var productId: String? = null,
             var productName: String? = null,
@@ -40,11 +40,11 @@ data class CartItemData(
             var productInvenageByUserLastStockLessThan: Int = 0,
             var productInvenageByUserText: String? = null,
             var pricePlan: Double = 0.toDouble(),
-            var pricePlanInt: Int = 0,
+            var pricePlanInt: Long = 0,
             var priceCurrency: Int = 0,
             var priceFormatted: String? = null,
             var wholesalePriceFormatted: String? = null,
-            var wholesalePrice: Int = 0,
+            var wholesalePrice: Long = 0,
             var productImage: String? = null,
             var productVarianRemark: String? = null,
             var weightPlan: Double = 0.toDouble(),
@@ -81,14 +81,14 @@ data class CartItemData(
             var warehouseId: Int = 0,
             var promoCodes: String? = null,
             var promoDetails: String? = null,
-            var priceOriginal: Int = 0,
+            var priceOriginal: Long = 0,
             var isFreeShipping: Boolean = false,
             var freeShippingBadgeUrl: String? = null,
             var listPromoCheckout: List<String> = emptyList(),
             var variant: String = "",
             var warningMessage: String = "", // eg : sisa 3
             var slashPriceLabel: String = "",
-            var initialPriceBeforeDrop: Int = 0,
+            var initialPriceBeforeDrop: Long = 0,
             var productInformation: List<String> = emptyList(),
             var productAlertMessage: String = "",
             var campaignId: Int = 0

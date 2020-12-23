@@ -478,7 +478,7 @@ class DynamicProductDetailViewModelTest {
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
         viewModel.loadRecommendation(pageName)
@@ -501,7 +501,7 @@ class DynamicProductDetailViewModelTest {
         } returns listOfRecom
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
         viewModel.loadRecommendation(pageName)
@@ -521,7 +521,7 @@ class DynamicProductDetailViewModelTest {
         } throws Throwable()
 
         coEvery {
-            getRecommendationFilterChips.executeOnBackground()
+            getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOf()
 
         viewModel.loadRecommendation(pageName)
@@ -903,7 +903,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(viewModel.toggleTeaserNotifyMe.value is Success)
@@ -917,7 +917,7 @@ class DynamicProductDetailViewModelTest {
             toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
         } returns result
 
-        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        viewModel.toggleTeaserNotifyMe(0L, 0L, "")
         coVerify { toggleNotifyMeUseCase.executeOnBackground() }
 
         Assert.assertTrue(!(viewModel.toggleTeaserNotifyMe.value as Success).data)

@@ -10,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -156,6 +157,7 @@ import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -988,8 +990,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isWishlisted = pdpUiUpdater?.basicContentMap?.isWishlisted ?: false
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         activity?.let {
-            val intent = ImagePreviewPdpActivity.createIntent(it, dynamicProductInfoData.basic.productID, isWishlisted,
-                    dynamicProductInfoData.data.getImagePath(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it,
+                    shopId = dynamicProductInfoData.basic.shopID,
+                    productId = dynamicProductInfoData.basic.productID,
+                    isWishlisted = isWishlisted,
+                    imageUris = dynamicProductInfoData.data.getImagePath(),
+                    imageDesc = null,
+                    position = position)
             startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
@@ -1307,6 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
             }, {
+                Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
                 logException(it)
                 renderPageError(it)
             })
@@ -3115,7 +3123,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpUiUpdater?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
-                    viewModel.toggleTeaserNotifyMe(data.campaignID.toIntOrZero(), productId?.toIntOrZero()
+                    viewModel.toggleTeaserNotifyMe(data.campaignID.toLongOrZero(), productId?.toLongOrZero()
                             ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()

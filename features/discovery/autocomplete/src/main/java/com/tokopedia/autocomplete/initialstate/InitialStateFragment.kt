@@ -15,6 +15,7 @@ import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
@@ -248,5 +249,17 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun dropKeyBoard() {
         initialStateViewUpdateListener?.dropKeyboard()
+    }
+
+    override fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        presenter.onCuratedCampaignCardClicked(curatedCampaignViewModel)
+    }
+
+    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String) {
+        AutocompleteTracking.eventClickCuratedCampaignCard(userId, label, type)
+    }
+
+    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
+        AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
     }
 }
