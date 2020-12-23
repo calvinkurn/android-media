@@ -11,7 +11,7 @@
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.app.slice.category.SLICE" />
             </intent-filter>
         </provider>
