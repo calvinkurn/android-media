@@ -1,10 +1,8 @@
 package com.tokopedia.home_account.view.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.data.model.MemberDataView
 import com.tokopedia.home_account.data.model.MemberItemDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.utils.image.ImageUtils
@@ -29,6 +27,8 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
 
     companion object {
         val LAYOUT = R.layout.home_account_item_member
+
+        val TYPE_DEFAULT = 1
     }
 
 }
