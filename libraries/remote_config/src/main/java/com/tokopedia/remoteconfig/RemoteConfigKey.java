@@ -219,7 +219,6 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
-    public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
@@ -240,4 +239,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
+
+    public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 }
