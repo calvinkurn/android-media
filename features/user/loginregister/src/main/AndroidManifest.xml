@@ -207,7 +207,7 @@
   
             <data
               android:host="@string/host_global"
-              android:path="@string/path_term_privacy"
+              android:pathPattern="@string/path_term_privacy"
               android:scheme="@string/internal_scheme" />
           </intent-filter>
         </activity>
