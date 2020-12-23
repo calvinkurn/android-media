@@ -3,14 +3,15 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
@@ -25,7 +26,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
         private val sellerAdminUseCase: SellerAdminUseCase,
-        private val adminPermissionUseCase: AdminPermissionUseCase,
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -68,7 +69,7 @@ class SellerHomeActivityViewModel @Inject constructor(
                     }
                 }
                 val isRoleEligible = async {
-                    adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+                    authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
                 }
                 _isOrderShopAdmin.value = isRoleEligible.await()
                 adminRoleType.await().run {

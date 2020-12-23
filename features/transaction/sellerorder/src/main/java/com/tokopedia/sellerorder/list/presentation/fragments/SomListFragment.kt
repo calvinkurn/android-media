@@ -894,7 +894,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun observeIsAdminEligible() {
-        viewModel.isAdminEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isOrderManageEligible.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
                     result.data.let { isEligible ->

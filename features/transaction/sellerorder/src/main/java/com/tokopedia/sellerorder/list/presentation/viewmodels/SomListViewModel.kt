@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -16,8 +15,8 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -42,7 +41,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val adminPermissionUseCase: AdminPermissionUseCase
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
@@ -77,9 +76,9 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
-    private val _isAdminEligible = MutableLiveData<Result<Boolean>>()
-    val isAdminEligible: LiveData<Result<Boolean>>
-        get() = _isAdminEligible
+    private val _isOrderManageEligible = MutableLiveData<Result<Boolean>>()
+    val isOrderManageEligible: LiveData<Result<Boolean>>
+        get() = _isOrderManageEligible
 
     private val _canShowOrderData = MutableLiveData<Boolean>().apply {
         value = true
@@ -288,25 +287,25 @@ class SomListViewModel @Inject constructor(
     fun getAdminPermission() {
         when {
             userSession.isShopOwner -> {
-                _isAdminEligible.postValue(Success(true))
+                _isOrderManageEligible.postValue(Success(true))
                 _canShowOrderData.postValue(true)
             }
             userSession.isShopAdmin -> {
                 launchCatchError(
                         block = {
-                            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER).let { isEligible ->
-                                _isAdminEligible.postValue(Success(isEligible))
+                            authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST).let { isEligible ->
+                                _isOrderManageEligible.postValue(Success(isEligible))
                                 _canShowOrderData.postValue(isEligible)
                             }
                         },
                         onError = {
-                            _isAdminEligible.postValue(Fail(it))
+                            _isOrderManageEligible.postValue(Fail(it))
                             _canShowOrderData.postValue(false)
                         }
                 )
             }
             else -> {
-                _isAdminEligible.postValue(Success(false))
+                _isOrderManageEligible.postValue(Success(false))
                 _canShowOrderData.postValue(false)
             }
         }

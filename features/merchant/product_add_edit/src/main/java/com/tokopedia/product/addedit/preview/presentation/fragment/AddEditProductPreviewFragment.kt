@@ -967,7 +967,7 @@ class AddEditProductPreviewFragment:
     }
 
     private fun observeAdminPermission() {
-        viewModel.isManageProductAdmin.observe(viewLifecycleOwner) { result ->
+        viewModel.isProductManageAuthorized.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
                     result.data.let { isEligible ->
@@ -993,7 +993,7 @@ class AddEditProductPreviewFragment:
         viewModel.imageUrlOrPathList.removeObservers(this)
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
-        viewModel.isManageProductAdmin.removeObservers(this)
+        viewModel.isProductManageAuthorized.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)

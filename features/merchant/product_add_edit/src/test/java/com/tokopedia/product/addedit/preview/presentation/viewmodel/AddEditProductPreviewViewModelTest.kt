@@ -10,7 +10,6 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -20,6 +19,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
@@ -373,7 +373,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
-        coEvery { adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) } returns isEligible
+        coEvery { authorizeAccessUseCase.execute(anyInt(), anyInt()) } returns isEligible
     }
 
     private fun onGetIsShopAdmin_thenReturn(isShopAdmin: Boolean) {
@@ -393,24 +393,24 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun onGetAdminProductPermission_thenFailed() {
-        coEvery { adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) } throws MessageErrorException("")
+        coEvery { authorizeAccessUseCase.execute(anyInt(), anyInt()) } throws MessageErrorException("")
     }
 
     private fun verifyGetAdminProductPermissionCalled() {
         coVerify {
-            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
+            authorizeAccessUseCase.execute(anyInt(), anyInt())
         }
     }
 
     private fun verifyGetAdminProductPermissionCalledOnlyOnce() {
         coVerify(exactly = 1) {
-            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
+            authorizeAccessUseCase.execute(anyInt(), anyInt())
         }
     }
 
     private fun verifyGetAdminProductPermissionNotCalled() {
         coVerify(exactly = 0) {
-            adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT)
+            authorizeAccessUseCase.execute(anyInt(), anyInt())
         }
     }
 
@@ -435,7 +435,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun verifyGetAdminProductPermissionResult(expectedResult: Success<Boolean>) {
-        val actualResult = viewModel.isManageProductAdmin.value as Success<Boolean>
+        val actualResult = viewModel.isProductManageAuthorized.value as Success<Boolean>
         assertEquals(expectedResult, actualResult)
     }
 
@@ -458,7 +458,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     private fun verifyGetAdminProductPermissionFailed() {
-        val result = viewModel.isManageProductAdmin.value
+        val result = viewModel.isProductManageAuthorized.value
         assertTrue(result is Fail)
     }
 }

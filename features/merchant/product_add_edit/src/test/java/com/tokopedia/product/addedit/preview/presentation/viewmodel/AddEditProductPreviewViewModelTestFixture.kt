@@ -8,7 +8,7 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +35,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
     @RelaxedMockK
-    lateinit var adminPermissionUseCase: AdminPermissionUseCase
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
@@ -55,7 +55,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 resourceProvider,
                 getProductDraftUseCase,
                 saveProductDraftUseCase,
-                adminPermissionUseCase,
+                authorizeAccessUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider))
     }
