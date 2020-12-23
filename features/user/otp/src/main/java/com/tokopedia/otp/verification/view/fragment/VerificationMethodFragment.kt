@@ -107,7 +107,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
-
+               viewmodel.done = true
                 if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {

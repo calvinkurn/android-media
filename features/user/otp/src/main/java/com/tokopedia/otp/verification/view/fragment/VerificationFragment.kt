@@ -310,6 +310,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         return { otpValidateData ->
             when {
                 otpValidateData.success -> {
+                    viewModel.done = true
                     when (otpData.otpType) {
                         OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                             analytics.trackSuccessClickVerificationRegisterPhoneButton()

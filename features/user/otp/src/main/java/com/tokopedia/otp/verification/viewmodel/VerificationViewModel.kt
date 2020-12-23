@@ -44,7 +44,7 @@ class VerificationViewModel @Inject constructor(
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
 
-    private var accessTokenRefresh = true
+    var done = false
 
     fun getVerificationMethod2FA(
             otpType: String,
@@ -172,7 +172,6 @@ class VerificationViewModel @Inject constructor(
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {
-                    accessTokenRefresh = false
                     _otpValidateResult.value = Success(data)
                 }
                 data.errorMessage.isNotEmpty() -> {
@@ -210,7 +209,6 @@ class VerificationViewModel @Inject constructor(
                 val data = otpValidateUseCase.getData(params).data
                 when {
                     data.success -> {
-                        accessTokenRefresh = false
                         _otpValidateResult.value = Success(data)
                     }
                     data.errorMessage.isNotEmpty() -> {
@@ -227,7 +225,7 @@ class VerificationViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        if(accessTokenRefresh) {
+        if(!done) {
             userSession.setToken(null, null, null)
         }
         super.onCleared()
