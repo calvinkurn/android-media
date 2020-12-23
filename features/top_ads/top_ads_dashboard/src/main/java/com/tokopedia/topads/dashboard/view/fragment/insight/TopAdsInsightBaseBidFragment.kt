@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
@@ -81,11 +83,12 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun setEmptyState() {
         emptyViewDailyBudgetRecommendation?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
-        emptyViewDailyBudgetRecommendation?.visibility = View.VISIBLE
+        emptyViewDailyBudgetRecommendation?.visible()
         emptyViewDailyBudgetRecommendation?.text_title?.text = getString(R.string.topads_dash_empty_daily_budget_title)
         emptyViewDailyBudgetRecommendation?.text_desc?.text = getString(R.string.topads_dash_empty_daily_budget_desc)
-        daily_budget_title?.visibility = View.GONE
-        daily_budget_desc?.visibility = View.GONE
+        rvDailyBudget?.gone()
+        daily_budget_title?.gone()
+        daily_budget_desc?.gone()
     }
 
     private fun loadData() {

@@ -49,6 +49,14 @@
         tools:itemCount="8"
         tools:listitem="@layout/topads_dash_item_moveto_group_recom" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/topads_dash_grp_bs_empty"
+        android:visibility="gone" />
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/submit_butt"
         android:layout_width="match_parent"

@@ -14,7 +14,6 @@ class TopAdsInsightTabAdapter(private val context: Context) : RecyclerView.Adapt
     @LayoutRes
     private var itemLayout = R.layout.topads_dash_item_insight_tab_layout
     private var selectedTabPosition = 0
-        private set
     private var listener: OnRecyclerTabItemClick? = null
     private val tabMenus: MutableList<String> = mutableListOf()
     fun setListener(listener: OnRecyclerTabItemClick) {
@@ -44,6 +43,9 @@ class TopAdsInsightTabAdapter(private val context: Context) : RecyclerView.Adapt
         if (countKey != 0)
             tabMenus.add(String.format(resources.getString(R.string.topads_dash_keyword_count), countKey))
         notifyDataSetChanged()
+    }
+    fun getTab(): MutableList<String> {
+        return tabMenus
     }
 
     override fun getItemCount() = tabMenus.size

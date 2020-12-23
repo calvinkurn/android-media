@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
@@ -22,6 +24,7 @@ import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
@@ -31,6 +34,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRec
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_choose_group_insight_bottomsheet.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
 import javax.inject.Inject
@@ -124,11 +128,13 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         emptyViewProductRecommendation?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         emptyViewProductRecommendation?.text_title?.text = getString(R.string.topads_dash_empty_product_recom_title)
         emptyViewProductRecommendation?.text_desc?.text = getString(R.string.topads_dash_empty_product_recom_desc)
-        emptyViewProductRecommendation?.visibility = View.VISIBLE
-        product_recom_title?.visibility = View.GONE
-        product_recom_desc?.visibility = View.GONE
-        cb_product_recom?.visibility = View.GONE
-        selectedItems?.visibility = View.GONE
+        emptyViewProductRecommendation?.visible()
+        divider?.gone()
+        rvProductRecom?.gone()
+        product_recom_title?.gone()
+        product_recom_desc?.gone()
+        cb_product_recom?.gone()
+        selectedItems?.gone()
         (parentFragment as TopAdsRecommendationFragment).setEmpty()
     }
 
@@ -150,7 +156,11 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     }
 
     fun openBottomSheet() {
-        sheet.show(childFragmentManager)
+        topAdsDashboardPresenter.getGroupList(search.searchBarTextField.text.toString(), ::onSuccessGroupList)
+    }
+
+    private fun onSuccessGroupList(list: List<GroupListDataItem>) {
+        sheet.show(childFragmentManager, list)
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
             getBidInfo()
@@ -159,6 +169,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
             getBidInfo()
             currentGroupId = groupId
         }
+
     }
 
     private fun getBidInfo() {
@@ -185,7 +196,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
                         suggestedBidValue = data.firstOrNull()?.suggestionBid ?: 0
                 )
             }
-            topAdsDashboardPresenter.createGroup(param, ::onSucessGroupCreation)
+            topAdsDashboardPresenter.createGroup(param, ::onSuccessGroupCreation)
 
         } else {
             val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
@@ -214,7 +225,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         return adsList
     }
 
-    private fun onSucessGroupCreation(topadsCreateGroupAds: ResponseCreateGroup.TopadsCreateGroupAds) {
+    private fun onSuccessGroupCreation(topadsCreateGroupAds: ResponseCreateGroup.TopadsCreateGroupAds) {
         if (topadsCreateGroupAds.errors.isEmpty()) {
             loadData()
         } else {

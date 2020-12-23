@@ -9,8 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
@@ -35,6 +36,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     private lateinit var adapter: TopadsRecomGroupBsAdapter
     var onItemClick: ((groupId: Int) -> Unit)? = null
     var onNewGroup: ((name: String) -> Unit)? = null
+    var groupList: List<GroupListDataItem> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -43,15 +45,22 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         setChild(childView)
         setSheetValues()
         adapter = TopadsRecomGroupBsAdapter(::onGroupSelect)
-        initalState()
+        initialState()
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
-    private fun initalState() {
-        group_name_input?.textFieldInput?.text?.clear()
-        submit_butt?.isEnabled = false
-        group_name_input?.setError(false)
-        group_name_input?.setMessage("")
+    private fun initialState() {
+        if (groupList.isEmpty()) {
+            contentSwitch?.gone()
+            search.gone()
+            recyclerView?.gone()
+        } else {
+            adapter.setItems(groupList)
+            group_name_input?.textFieldInput?.text?.clear()
+            submit_butt?.isEnabled = false
+            group_name_input?.setError(false)
+            group_name_input?.setMessage("")
+        }
     }
 
     private fun setSheetValues() {
@@ -71,37 +80,38 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getData()
         bottomSheetBehaviorKnob(view, true)
-        setAdpter()
+        setAdapter()
         Utils.setSearchListener(search, context, view, ::getData)
         setGroupName()
-        onbuttonSubmit()
+        onButtonSubmit()
         contentSwitch?.setOnCheckedChangeListener { _, isChecked ->
             group_name_input?.textFieldInput?.text?.clear()
             if (!isChecked) {
-                group_name_input.visibility = View.GONE
-                search.visibility = View.VISIBLE
-                recyclerView.visibility = View.VISIBLE
+                group_name_input.gone()
+                search.visible()
+                recyclerView.visible()
             } else {
                 group_name_input?.requestFocus()
-                group_name_input.visibility = View.VISIBLE
-                search.visibility = View.GONE
-                recyclerView.visibility = View.GONE
+                group_name_input.visible()
+                search.gone()
+                recyclerView.gone()
             }
         }
     }
 
-    private fun onbuttonSubmit() {
+    private fun onButtonSubmit() {
         submit_butt?.setOnClickListener {
             submit_butt?.isLoading = true
-            if (!contentSwitch.isChecked)
-                onItemClick?.invoke(adapter.getCheckedPosition()) else
-                onNewGroup?.invoke(group_name_input?.textFieldInput?.text?.toString() ?: "")
+            if (contentSwitch.isChecked || !contentSwitch.isVisible)
+                onNewGroup?.invoke(group_name_input?.textFieldInput?.text?.toString() ?: ""
+                ) else
+                onItemClick?.invoke(adapter.getCheckedPosition()
+                )
         }
     }
 
-    private fun setAdpter() {
+    private fun setAdapter() {
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(context)
         recyclerView?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -149,11 +159,16 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     private fun onSuccessGroupList(groupList: List<GroupListDataItem>) {
-        val groupIds: List<String> = groupList.map {
-            it.groupId.toString()
+        if (groupList.isEmpty()) {
+            emptyText.visible()
+        } else {
+            emptyText.gone()
+            val groupIds: List<String> = groupList.map {
+                it.groupId.toString()
+            }
+            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+            adapter.setItems(groupList)
         }
-        topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
-        adapter.setItems(groupList)
     }
 
     private fun onSuccessCount(list: List<CountDataItem>) {
@@ -161,8 +176,9 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     fun show(
-            fragmentManager: FragmentManager
+            fragmentManager: FragmentManager, groupList: List<GroupListDataItem>
     ) {
+        this.groupList = groupList
         show(fragmentManager, TOPADS_BOTTOM_SHEET_TAG)
     }
 

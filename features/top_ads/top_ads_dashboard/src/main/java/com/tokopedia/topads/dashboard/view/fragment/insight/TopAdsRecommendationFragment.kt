@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -22,6 +23,7 @@ import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
 import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
+import kotlinx.android.synthetic.main.topads_dash_item_moveto_group.*
 import java.util.*
 import javax.inject.Inject
 
@@ -116,7 +118,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 view_pager.currentItem = position
-                if (position == 0) {
+                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true) {
                     bottomInsight.visibility = View.VISIBLE
                 } else {
                     bottomInsight.visibility = View.GONE
@@ -158,7 +160,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         bottomInsight?.visibility = View.GONE
     }
 
-    fun setEnable(enable:Boolean){
+    fun setEnable(enable: Boolean) {
         editProduct?.isEnabled = enable
     }
 
