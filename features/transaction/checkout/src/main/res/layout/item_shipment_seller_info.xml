@@ -13,7 +13,7 @@
         android:id="@+id/text_order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:paddingBottom="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,7 @@
         android:paddingRight="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
         android:text="Tukar Tambah"
-        android:textColor="@color/text_trade_in_label"
+        android:textColor="@color/Unify_B500"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +133,7 @@
             android:gravity="center_vertical"
             android:scaleType="fitStart"
             app:unify_image_type="rect"
-            tools:src="@color/unify_G500" />
+            tools:src="@color/Unify_G500" />
 
     </com.google.android.flexbox.FlexboxLayout>
 
