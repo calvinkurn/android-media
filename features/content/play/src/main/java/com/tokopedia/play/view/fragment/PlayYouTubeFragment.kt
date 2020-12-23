@@ -74,6 +74,11 @@ class PlayYouTubeFragment @Inject constructor(
         setupObserve()
     }
 
+    override fun onResume() {
+        super.onResume()
+        playViewModel.stopPiP()
+    }
+
     override fun onPause() {
         super.onPause()
         if (isYouTube) videoAnalyticHelper.onPause()
