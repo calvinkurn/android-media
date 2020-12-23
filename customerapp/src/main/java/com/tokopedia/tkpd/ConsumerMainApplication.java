@@ -99,7 +99,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if(getSliceRemoteConfig()) {
             SlicePermission slicePermission = new SlicePermission();
             slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
-            SlicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
+            slicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
         }
     }
 
