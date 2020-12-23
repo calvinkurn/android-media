@@ -2,6 +2,7 @@ package com.tokopedia.paylater.data.mapper
 
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.paylater.domain.model.PayLaterProductData
 
 const val APPLY_STEPS_PARTNER = "how_to_apply"
 const val USAGE_STEPS_PARTNER = "how_to_use"
@@ -15,27 +16,35 @@ object PayLaterPartnerTypeMapper {
 
     fun getPayLaterPartnerType(payLaterPartnerData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?): PayLaterPartnerType {
         var isApplicationActive = false
-        var status : String = ""
+        var status = ""
         partnerApplicationDetail?.let {
             val payLaterStatus = PayLaterApplicationStatusMapper.getApplicationStatusType(it)
             isApplicationActive = payLaterStatus is PayLaterStatusActive
             status = payLaterStatus.tag
         }
 
-        if (payLaterPartnerData.isAbleToApply && isApplicationActive) {
-            return UsageStepsPartnerType
-        } else if (payLaterPartnerData.isAbleToApply && status.isNotBlank()) {
-            return ProcessingApplicationPartnerType
-        } else if (payLaterPartnerData.isAbleToApply) {
+        return if (payLaterPartnerData.isAbleToApply == true && isApplicationActive) {
+            UsageStepsPartnerType
+        } else if (payLaterPartnerData.isAbleToApply == true && status.isNotBlank()) {
+            ProcessingApplicationPartnerType
+        } else if (payLaterPartnerData.isAbleToApply == true) {
             // isApplicationActive = false as partnerApplicationDetail == null
-            return RegisterStepsPartnerType
-        } else return UsageStepsPartnerType
+            RegisterStepsPartnerType
+        } else UsageStepsPartnerType
     }
 
-    fun getPayLaterApplicationDataForPartner(paymentOption: PayLaterItemProductData, applicationStatusList: ArrayList<PayLaterApplicationDetail>): PayLaterApplicationDetail? {
-        for (applicationStatus in applicationStatusList) {
-            if (applicationStatus.payLaterGatewayCode == paymentOption.gateWayCode) return applicationStatus
+    fun getPayLaterApplicationDataForPartner(
+            paymentOption: PayLaterItemProductData,
+            applicationStatusList: ArrayList<PayLaterApplicationDetail>): PayLaterApplicationDetail? {
+        val partnerStatus = applicationStatusList.filter {
+            it.payLaterGatewayCode == paymentOption.gateWayCode
         }
-        return null
+        return partnerStatus.getOrNull(0)
+    }
+
+    fun validateProductData(productDataList: PayLaterProductData?): PayLaterProductData? {
+        if (productDataList == null) return null
+        if (productDataList.productList.isNullOrEmpty()) return null
+        return productDataList
     }
 }

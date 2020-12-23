@@ -1,13 +1,14 @@
-package com.tokopedia.paylater
+package com.tokopedia.paylater.helper
 
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.paylater.R
 import com.tokopedia.paylater.data.mapper.*
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.paylater.presentation.widget.PayLaterActionStepsBottomSheet
-import com.tokopedia.paylater.presentation.widget.PayLaterVerificationBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterVerificationBottomSheet
 import com.tokopedia.unifycomponents.Label
 
 object PayLaterHelper {
@@ -32,6 +33,22 @@ object PayLaterHelper {
             }
             is PayLaterStatusRejected -> {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_rejected
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+            }
+            is PayLaterStatusApproved -> {
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_approved
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
+            }
+            is PayLaterStatusSuspended -> {
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_suspended
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+            }
+            is PayLaterStatusFailed-> {
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_failed
+                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
+            }
+            is PayLaterStatusExpired -> {
+                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_expired
                 payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
             }
         }

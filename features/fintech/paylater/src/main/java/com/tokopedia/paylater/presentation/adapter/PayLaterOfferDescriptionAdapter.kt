@@ -3,7 +3,6 @@ package com.tokopedia.paylater.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.paylater.domain.model.OfferDescriptionItem
 import com.tokopedia.paylater.domain.model.PayLaterPartnerBenefit
 import com.tokopedia.paylater.presentation.viewholder.PayLaterOfferDescriptionViewHolder
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,7 +12,7 @@
             android:id="@+id/borderDaftar"
             android:layout_width="@dimen/unify_space_8"
             android:layout_height="@dimen/unify_space_0"
-            android:background="@color/paylater_daftar_widget_border_blue"
+            android:background="@color/paylater_register_widget_border_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +38,7 @@
             app:typographyType="heading_4"
             app:typographyWeight="bold"
             android:textSize="@dimen/unify_font_16"
-            android:text="@string/paylater_register"
+            android:text="@string/payLater_register"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -52,20 +51,20 @@
             app:layout_constraintTop_toBottomOf="@+id/typography"
             app:typographyType="body_3"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/payLater_register_widget_subtitle"
             android:textSize="@dimen/unify_font_12"
-            android:text="@string/sp_more_choices"
+            android:text="@string/payLater_widget_more_choices_description"
             />
 
         <ImageView
-            android:id="@+id/proceedPaylater"
+            android:id="@+id/proceedPayLater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_paylater_daftar_right_arrow"
+            app:srcCompat="@drawable/ic_paylater_register_right_arrow"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

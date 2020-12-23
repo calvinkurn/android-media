@@ -1,26 +1,31 @@
 <resources>
     <string name="app_name">paylater</string>
 
+    <!--Content Switcher Headings -->
+    <string name="payLater_content_switcher_heading">PayLater</string>
+    <string name="payLater_credit_content_switcher_heading">Kartu Credit</string>
+
+    <!-- Fragment titles -->
     <string name="payLater_simulation_tab_title">Simulasi</string>
     <string name="payLater_offer_details_tab_title">Detail Penawaran</string>
 
-    <string name="paylater_register">Daftar PayLater</string>
-    <string name="sp_more_choices">Makin banyak pilihan, makin bebas belanja.</string>
+    <!-- Register Widget -->
+    <string name="payLater_register">Daftar PayLater</string>
+    <string name="payLater_widget_more_choices_description">Makin banyak pilihan, makin bebas belanja.</string>
 
-    <!-- Simulation Page-->
-    <string name="paylater_simulation_header_title">Simulasi pembayaran*</string>
+    <!-- Simulation Page -->
+    <string name="payLater_simulation_header_title">Simulasi pembayaran*</string>
     <string name="paylater_simulation_empty_view_title">Yah, harga tidak sesuai ketentuan PayLater</string>
     <string name="paylater_simulation_empty_view_description">Untuk menggunakan PayLater, min. total transaksi adalah Rp10 Ribu dan maks. total transaksi adalah Rp30 Juta</string>
     <string name="paylater_simulation_ticker_text">*Sudah termasuk biaya layanan. Belum termasuk biaya asuransi &amp; ongkir. Harga final dapat dilihat di halaman Pembayaran.
 **Pelunasan sekali bayar dalam 30 hari, tanpa bunga untuk Kredivo dan Indodana.</string>
     <string name="paylater_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
 
+    <!-- PayLater Products Detail Page -->
     <string name="paylater_title_detail">Ketahui lebih banyak soal PayLater</string>
-
-
     <string name="kredivo">Kredivo</string>
-    <string name="sp_how_to_use">Lihat Cara Pakai</string>
-    <string name="sp_see_more">Lihat Lebih Lengkap</string>
+    <string name="payLater_see_how_to_use">Lihat Cara Pakai</string>
+    <string name="payLater_see_more">Lihat Lebih Lengkap</string>
 
     <!-- BottomSheet title-->
     <string name="paylater_find_out_more_heading">Hal yang sering ditanyakan</string>
@@ -43,5 +48,10 @@
     <string name="payLater_status_waiting">Menunggu</string>
     <string name="payLater_status_rejected">Ditolak</string>
     <string name="payLater_status_cancelled">Dibatalkan</string>
+    <string name="payLater_status_approved">Pengajuan disetujui</string>
+    <string name="payLater_status_suspended">Dinonaktifkan</string>
+    <string name="payLater_status_failed">Pengajuan gagal</string>
+    <string name="payLater_status_expired">Pengajuan Kedaluwarsa</string>
+
 
 </resources>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="paylater_daftar_widget_border_blue">#32AFFF</color>
+    <color name="paylater_register_widget_border_blue">#32AFFF</color>
     <color name="paylater_common_tab_green">#03AC0E</color>
     <color name="payLater_recommendation_border_green">#4FD15A</color>
     <color name="paylater_grey_border">#F3F4F5</color>
     <color name="paylater_partner_card_border">#E5E7E9</color>
     <color name="paylater_partner_status_text_blue">#009BFF</color>
     <color name="paylater_status_bg_blue">#E5F5FF</color>
+    <color name="payLater_register_widget_subtitle">#f531353b</color>
 </resources>

@@ -2,14 +2,14 @@ package com.tokopedia.paylater.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.paylater.GQL_PAYLATER_APPLICATION_STATUS
+import com.tokopedia.paylater.GQL_PAY_LATER_APPLICATION_STATUS
 import com.tokopedia.paylater.domain.model.PayLaterApplicationStatusResponse
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import javax.inject.Inject
 import javax.inject.Named
 
 class PayLaterApplicationStatusUseCase @Inject constructor(
-        @Named(GQL_PAYLATER_APPLICATION_STATUS) val query: String, graphqlRepository: GraphqlRepository)
+        @Named(GQL_PAY_LATER_APPLICATION_STATUS) val query: String, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<PayLaterApplicationStatusResponse>(graphqlRepository) {
 
     fun getPayLaterApplicationStatus(onSuccess: (UserCreditApplicationStatus) -> Unit,

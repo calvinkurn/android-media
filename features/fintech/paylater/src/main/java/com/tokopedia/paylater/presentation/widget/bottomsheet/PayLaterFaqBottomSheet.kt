@@ -1,4 +1,4 @@
-package com.tokopedia.paylater.presentation.widget
+package com.tokopedia.paylater.presentation.widget.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -47,7 +47,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
     private fun getArgumentData() {
         arguments?.let {
-            faqData = it.getParcelableArrayList(FAQ_DATA)
+            faqData = it.getParcelableArrayList(FAQ_DATA) ?: arrayListOf()
             faqUrl = it.getString(FAQ_SEE_MORE_URL) ?: ""
         }
     }

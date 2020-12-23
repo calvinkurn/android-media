@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -56,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:text="@string/paylater_simulation_header_title"
+            android:text="@string/payLater_simulation_header_title"
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
@@ -72,6 +71,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitleSimulation" />
 
+        <ImageView
+            android:id="@+id/demo1"
+            android:layout_width="@dimen/unify_space_2"
+            android:layout_height="0dp"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
+            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner"
+            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
+            android:src="@drawable/vertical_line"/>
+
 
         <HorizontalScrollView
             android:id="@+id/hsvInstallment"
@@ -79,7 +88,7 @@
             android:layout_height="@dimen/unify_space_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
+            app:layout_constraintStart_toEndOf="@+id/demo1"
             app:layout_constraintTop_toTopOf="@id/llPayLaterPartner"
             app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
             app:layout_constraintVertical_bias="1.0">
@@ -154,18 +163,17 @@
             app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
             app:typographyType="small" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/ivSupervisor"
             android:layout_width="@dimen/unify_space_64"
             android:layout_height="@dimen/unify_space_24"
             android:layout_marginStart="@dimen/unify_space_8"
             android:scaleType="centerInside"
-            app:unify_image_corner_radius="0"
             app:layout_constraintBottom_toBottomOf="@+id/tvPartnerRegistration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvPartnerRegistration"
             app:layout_constraintTop_toTopOf="@+id/tvPartnerRegistration"
-            tools:src="@tools:sample/avatars" />
+            android:src="@drawable/ic_paylater_financial_authority" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

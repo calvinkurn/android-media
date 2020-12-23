@@ -13,7 +13,7 @@ import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.fragment.PaymentOptionsFragment
 
 class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {
-    private val paymentOptionsFragment = SparseArrayCompat<Fragment>()
+    private val paymentOptionsFragmentArray = SparseArrayCompat<Fragment>()
     private var paymentProductList: ArrayList<PayLaterItemProductData> = ArrayList()
     private var applicationStatusList: ArrayList<PayLaterApplicationDetail> = ArrayList()
 
@@ -35,12 +35,12 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentSt
 
     override fun instantiateItem(container: ViewGroup, position: Int): Fragment {
         val fragment = super.instantiateItem(container, position) as Fragment
-        paymentOptionsFragment[position, fragment]
+        paymentOptionsFragmentArray[position, fragment]
         return fragment
     }
 
     override fun destroyItem(container: View, position: Int, `object`: Any) {
-        paymentOptionsFragment.remove(position)
+        paymentOptionsFragmentArray.remove(position)
         super.destroyItem(container, position, `object`)
     }
 
@@ -54,7 +54,7 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentSt
         notifyDataSetChanged()
     }
 
-    fun getCurrentPaymentOption(position: Int) = paymentOptionsFragment[position]
+    fun getCurrentPaymentOption(position: Int) = paymentOptionsFragmentArray[position]
 
     override fun getPageWidth(position: Int): Float {
         return 0.9f

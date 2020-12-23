@@ -17,8 +17,8 @@ import com.tokopedia.paylater.data.mapper.UsageStepsPartnerType
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
-import com.tokopedia.paylater.presentation.widget.PayLaterActionStepsBottomSheet
-import com.tokopedia.paylater.presentation.widget.PayLaterFaqBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterFaqBottomSheet
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PaymentOptionsFragment : Fragment() {
@@ -39,7 +39,7 @@ class PaymentOptionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         rvPaymentDesciption.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            val orderedBenefitList = responseData?.partnerBenefitList?.sortedWith(compareBy { !it.isHighlighted })
+            val orderedBenefitList = responseData?.partnerBenefitList?.sortedWith(compareBy { it.isHighlighted == false })
                     ?: arrayListOf()
             adapter = PayLaterOfferDescriptionAdapter(orderedBenefitList)
         }

@@ -12,70 +12,62 @@ data class PayLaterActivityResponse(
 @Parcelize
 data class PayLaterProductData(
         @SerializedName("product")
-        val productList: ArrayList<PayLaterItemProductData>
+        val productList: ArrayList<PayLaterItemProductData>?
 ) : Parcelable
 
 @Parcelize
 data class PayLaterItemProductData(
         @SerializedName("id")
-        val productId: Long,
+        val productId: Long?,
         @SerializedName("name")
-        val partnerName: String,
+        val partnerName: String?,
         @SerializedName("subheader")
-        val subHeader: String,
+        val subHeader: String?,
         @SerializedName("gateway_code")
-        val gateWayCode: String,
+        val gateWayCode: String?,
         @SerializedName("img_light_url")
-        val partnerImgLightUrl: String,
+        val partnerImgLightUrl: String?,
         @SerializedName("img_dark_url")
-        val partnerImgDarkUrl: String,
+        val partnerImgDarkUrl: String?,
         @SerializedName("benefit")
-        val partnerBenefitList: ArrayList<PayLaterPartnerBenefit>,
+        val partnerBenefitList: ArrayList<PayLaterPartnerBenefit>?,
         @SerializedName("faq")
-        val partnerFaqList: ArrayList<PayLaterPartnerFaq>,
+        val partnerFaqList: ArrayList<PayLaterPartnerFaq>?,
         @SerializedName("faq_url")
-        val partnerFaqUrl: String,
+        val partnerFaqUrl: String?,
         @SerializedName("how_to_use")
-        val partnerUsageDetails: PayLaterPartnerStepDetails,
+        val partnerUsageDetails: PayLaterPartnerStepDetails?,
         @SerializedName("how_to_apply")
-        val partnerApplyDetails: PayLaterPartnerStepDetails,
+        val partnerApplyDetails: PayLaterPartnerStepDetails?,
         @SerializedName("is_able_apply")
-        val isAbleToApply: Boolean,
+        val isAbleToApply: Boolean?,
         @SerializedName("how_to_action_url")
-        val actionWebUrl: String
+        val actionWebUrl: String?
 ) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerBenefit(
         @SerializedName("content")
-        val partnerBenefitContent: String,
+        val partnerBenefitContent: String?,
         @SerializedName("is_highlight")
-        val isHighlighted: Boolean
-) : Parcelable
-
-@Parcelize
-data class PayLaterPartnerDetails(
-        @SerializedName("title")
-        val partnerTitle: String,
-        @SerializedName("content")
-        val partnerDetailContentList: ArrayList<String>
+        val isHighlighted: Boolean?
 ) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerFaq(
         @SerializedName("question")
-        val faqQuestion: String,
+        val faqQuestion: String?,
         @SerializedName("answer")
-        val faqAnswer: String,
+        val faqAnswer: String?,
         var expandLayout: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class PayLaterPartnerStepDetails(
         @SerializedName("notes")
-        val partnerNotes: ArrayList<String>,
+        val partnerNotes: ArrayList<String>?,
         @SerializedName("steps")
-        val partnerSteps: ArrayList<String>
+        val partnerSteps: ArrayList<String>?
 ) : Parcelable
 
 

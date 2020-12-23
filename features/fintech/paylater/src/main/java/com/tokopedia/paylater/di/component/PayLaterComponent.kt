@@ -11,6 +11,7 @@ import com.tokopedia.paylater.presentation.activity.PayLaterActivity
 import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
 import com.tokopedia.paylater.presentation.fragment.PayLaterOffersFragment
 import com.tokopedia.paylater.presentation.fragment.SimulationFragment
+import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
 import dagger.Component
 
 @PayLaterScope
@@ -27,4 +28,5 @@ interface PayLaterComponent {
     fun inject(payLaterFragment: PayLaterFragment)
     fun inject(payLaterOffersFragment: PayLaterOffersFragment)
     fun inject(simulationFragment: SimulationFragment)
+    fun inject(payLaterSignupBottomSheet: PayLaterSignupBottomSheet)
 }

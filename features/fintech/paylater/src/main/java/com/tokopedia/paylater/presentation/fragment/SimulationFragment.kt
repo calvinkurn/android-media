@@ -87,11 +87,9 @@ class SimulationFragment : BaseDaggerFragment() {
     private fun initListeners() {
         btnDaftarPayLater.setOnClickListener {
             registerPayLaterCallback?.onRegisterPayLaterClicked()
-            //PayLaterSignupBottomSheet.show(setPayLaterOptions(), childFragmentManager)
         }
         paylaterDaftarWidget.setOnClickListener {
             registerPayLaterCallback?.onRegisterPayLaterClicked()
-            //PayLaterSignupBottomSheet.show(setPayLaterOptions(), childFragmentManager)
         }
     }
 

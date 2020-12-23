@@ -74,13 +74,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun renderTabAndViewPager() {
         context?.let {
             paymentOptionViewPager.adapter = pagerAdapter
-            paymentOptionViewPager.pageMargin = 16.dpToPx(it.resources.displayMetrics)
+            // @Todo 16 dp to constants
+            paymentOptionViewPager.pageMargin = PAGE_MARGIN.dpToPx(it.resources.displayMetrics)
         }
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
         // hide loading
-        if (data.productList.isNotEmpty())
+        if (data.productList?.isNullOrEmpty() == false)
             payLaterViewModel.getPayLaterApplicationStatus()
     }
 
@@ -90,20 +91,26 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         // set payLater + application status data in pager adapter
-        val payLaterProductList = payLaterViewModel.getPayLaterOptions()
+        val payLaterProductList = ArrayList<PayLaterItemProductData>()
+        payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
         // @Todo remove below lines
         payLaterProductList.add(payLaterProductList[0])
         payLaterProductList.add(payLaterProductList[0])
-        pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList)
+        paymentOptionViewPager.post {
+            pagerAdapter.setPaymentData(payLaterProductList, arrayListOf())
+        }
     }
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         // set payLater data in view pager
-        pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+        paymentOptionViewPager.post {
+            pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+
+        }
     }
 
     companion object {
-
+        const val PAGE_MARGIN = 16
         @JvmStatic
         fun newInstance() =
                 PayLaterOffersFragment()

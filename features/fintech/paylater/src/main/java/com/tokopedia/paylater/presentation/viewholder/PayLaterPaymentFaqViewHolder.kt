@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.paylater_card_faq_item.view.*
 class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
     fun bindData(faqData: PayLaterPartnerFaq) {
-        view.tvFaqHeading.text = faqData.faqQuestion
+        view.tvFaqHeading.text = faqData.faqQuestion ?: ""
         setLayout(faqData)
         view.setOnClickListener {
             faqData.expandLayout = !faqData.expandLayout
@@ -26,7 +26,7 @@ class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view
     private fun setLayout(faqData: PayLaterPartnerFaq) {
         if(faqData.expandLayout) {
             view.ivArrowBottom.animate().rotation(180f).duration = 300
-            view.tvFaqDescription.text = faqData.faqAnswer
+            view.tvFaqDescription.text = faqData.faqAnswer?: ""
             view.tvFaqDescription.visible()
         } else {
             view.ivArrowBottom.animate().rotation(0f).duration = 300
@@ -38,7 +38,7 @@ class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view
         private val LAYOUT_ID = R.layout.paylater_card_faq_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterPaymentFaqViewHolder(
-                inflater.inflate(PayLaterPaymentFaqViewHolder.LAYOUT_ID, parent, false)
+                inflater.inflate(LAYOUT_ID, parent, false)
         )
     }
 }

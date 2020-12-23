@@ -22,8 +22,4 @@ class PayLaterPaymentMethodAdapter(private val productDataList: ArrayList<PayLat
     override fun getItemCount(): Int {
         return productDataList.size
     }
-
-    companion object {
-
-    }
 }

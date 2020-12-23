@@ -1,22 +1,15 @@
-package com.tokopedia.paylater.presentation.widget
+package com.tokopedia.paylater.presentation.widget.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.paylater.domain.model.PayLaterPartnerFaq
-import com.tokopedia.paylater.presentation.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.paylater_card_faq_bottomsheet_widget.*
 import kotlinx.android.synthetic.main.paylater_verification_bottomsheet_widget.*
 
 class PayLaterVerificationBottomSheet : BottomSheetUnify() {

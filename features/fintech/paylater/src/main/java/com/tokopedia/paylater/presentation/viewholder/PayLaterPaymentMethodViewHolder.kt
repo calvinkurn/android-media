@@ -23,7 +23,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                     ivPayLaterPartner,
                     payLaterItemProductData.partnerImgLightUrl,
                     R.drawable.ic_loading_image)
-            tvTitlePaylaterPartner.text = payLaterItemProductData.partnerName
+            tvTitlePaylaterPartner.text = payLaterItemProductData.partnerName ?: ""
             tvDescription.text = "${context.getString(R.string.payLater_verification_until_subtitle)} ${payLaterApplicationDataForPartner?.payLaterExpirationDate}"
             payLaterApplicationDataForPartner?.let {
                 it.payLaterApplicationStatusLabelStringId.also { resId ->

@@ -1,4 +1,4 @@
-package com.tokopedia.paylater.presentation.widget
+package com.tokopedia.paylater.presentation.widget.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -98,6 +98,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
+            // @Todo remove hardcoded string url
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + "https://staging.tokopedia.com/kredivo/"
             RouteManager.route(context, webViewAppLink)
         }
