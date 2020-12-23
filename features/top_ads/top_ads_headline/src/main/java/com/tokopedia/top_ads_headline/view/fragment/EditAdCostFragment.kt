@@ -5,11 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.viewmodel.EditAdCostViewModel
+import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.tips.viewholder.TipsUiSortViewHolder
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiSortModel
@@ -18,13 +24,28 @@ import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.fragment_edit_ad_cost.*
+import javax.inject.Inject
 
 private const val POSITION_KEYWORD = 0
 private const val POSITION_NEGATIVE_KEYWORD = 1
 
 class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortItemClick {
     private var tipsSortListSheet: TipsListSheet? = null
+
+    private lateinit var editAdCostViewModel: EditAdCostViewModel
+
+    private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var stepperModel: HeadlineAdStepperModel? = null
 
     override fun getScreenName(): String {
         return EditAdCostFragment::class.java.simpleName
@@ -39,14 +60,64 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
         fun newInstance(): EditAdCostFragment = EditAdCostFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        editAdCostViewModel = ViewModelProvider(this, viewModelFactory).get(EditAdCostViewModel::class.java)
+        activity?.let {
+            sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_edit_ad_cost, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpObservers()
         renderViewPager()
         setUpToolTipButton()
+    }
+
+    private fun setUpObservers() {
+        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
+            stepperModel = it
+            setAdvertisingCost(it.minBid)
+        })
+    }
+
+    private fun setAdvertisingCost(minBid: Int) {
+            val cost = Utils.convertToCurrency(minBid.toLong())
+            advertisingCost.textFieldInput.setText(cost)
+            advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
+    }
+
+    private fun advertisingCostTextWatcher(): NumberTextWatcher? {
+        return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val input = number.toInt()
+                when {
+                    input < stepperModel?.minBid ?: 0 -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.minBid?.toLong()
+                                ?: 0)))
+                    }
+                    input > stepperModel?.maxBid ?: 0 -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), Utils.convertToCurrency(stepperModel?.maxBid?.toLong()
+                                ?: 0)))
+                    }
+                    else -> {
+                        stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
+                        advertisingCost.setMessage("")
+                        advertisingCost.setError(false)
+                        //handle the case when the advertising cost will be changed and then daily budget will also has to change
+                        //accordingly
+                    }
+                }
+            }
+        }
     }
 
     private fun renderViewPager() {

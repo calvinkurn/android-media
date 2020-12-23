@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
@@ -22,7 +23,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
@@ -205,10 +205,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
-        topAdsDashboardPresenter.getGroupList(resources, search, ::onSuccessGroupList)
+        topAdsDashboardPresenter.getGroupList(search, ::onSuccessGroupList)
     }
 
-    private fun onSuccessGroupList(list: List<GroupListDataItem>) {
+    private fun onSuccessGroupList(list: List<DataItem>) {
         val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
         recyclerviewScrollListener.updateStateAfterGetData()

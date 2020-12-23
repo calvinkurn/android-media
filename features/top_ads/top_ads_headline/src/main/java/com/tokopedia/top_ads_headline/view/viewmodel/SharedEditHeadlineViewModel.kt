@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import kotlinx.coroutines.launch
@@ -17,11 +21,32 @@ private const val TYPE_BANNER = "banner"
 
 class SharedEditHeadlineViewModel @Inject constructor(
         private val topAdsGetGroupProductUseCase: TopAdsGetGroupProductDataUseCase,
-        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase) : ViewModel() {
+        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
+        private val bidInfoUseCase: BidInfoUseCase) : ViewModel() {
 
     private val editHeadlineAdLiveData: MutableLiveData<HeadlineAdStepperModel> = MutableLiveData()
+    private val bidInfoData:MutableLiveData<TopadsBidInfo.DataItem> = MutableLiveData()
+
 
     fun getEditHeadlineAdLiveData(): LiveData<HeadlineAdStepperModel> = editHeadlineAdLiveData
+
+    fun getBidInfoData():LiveData<TopadsBidInfo.DataItem> = bidInfoData
+
+    private fun getBidInfoDetail() {
+        viewModelScope.launch {
+            val dummyId: MutableList<Int> = mutableListOf()
+            val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
+            suggestionsDefault.add(DataSuggestions(ParamObject.PRODUCT, dummyId))
+            bidInfoUseCase.setParams(suggestionsDefault, ParamObject.HEADLINE, ParamObject.EDIT_HEADLINE_PAGE)
+            bidInfoUseCase.executeQuerySafeMode({ result ->
+                result.topadsBidInfo.data.firstOrNull()?.let {
+                    bidInfoData.value = it
+                }
+            }, {
+                it.printStackTrace()
+            })
+        }
+    }
 
     fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
         viewModelScope.launch {
@@ -51,6 +76,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
                         } else if (it.topAdsGetPromo.errors.isNotEmpty()) {
                             onError(it.topAdsGetPromo.errors.first().detail)
                         }
+                        getBidInfoDetail()
                     },
                     {
                         onError(it.message ?: "")

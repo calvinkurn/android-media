@@ -9,14 +9,19 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.*
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.StatsData
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.presenter.StatsList
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
@@ -146,11 +151,10 @@ class GroupDetailViewModel @Inject constructor(
     }
 
 
-    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
-        topAdsGetGroupListUseCase.setParams(search)
+    fun getGroupList(search: String, onSuccess: (List<DataItem>) -> Unit) {
+        topAdsGetGroupListUseCase.setParamsForKeyWord(search)
         topAdsGetGroupListUseCase.executeQuerySafeMode(
                 {
-
                     onSuccess(it.getTopadsDashboardGroups.data)
                 },
                 {

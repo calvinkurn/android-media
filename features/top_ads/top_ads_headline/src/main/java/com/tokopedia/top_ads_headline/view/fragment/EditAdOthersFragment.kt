@@ -20,7 +20,7 @@ import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.viewmodel.EditAdOthersViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.topads.common.data.util.DateTimeUtils
+import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday
 import com.tokopedia.topads.common.data.util.Utils
@@ -53,6 +53,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     private lateinit var editAdOthersViewModel: EditAdOthersViewModel
 
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
+
     private var stepperModel: HeadlineAdStepperModel? = null
 
     override fun getScreenName(): String {
@@ -82,28 +83,54 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpAdScheduleView()
+        setUpLimitView()
         setUpObservers()
         budgetCost.textFieldInput.isSaveEnabled = false
         startDate.textFieldInput.isSaveEnabled = false
         endDate.textFieldInput.isSaveEnabled = false
     }
 
+    private fun setUpAdScheduleView() {
+        adScheduleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                startDate.show()
+                endDate.show()
+                adAppearanceMessage.show()
+            } else {
+                startDate.hide()
+                endDate.hide()
+                adAppearanceMessage.hide()
+            }
+        }
+    }
+
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
             stepperModel = it
             setUpAdNameEditText()
-            setMinBid()
             setUpToolTip()
             setUpScheduleView()
-            setUpLimitView()
+        })
+        sharedEditHeadlineViewModel?.getBidInfoData()?.observe(viewLifecycleOwner, Observer {
+            stepperModel?.minBid = it.minBid
+            stepperModel?.maxBid = it.maxBid
+            stepperModel?.dailyBudget = it.minDailyBudget.toFloat()
+            setMinBid()
         })
     }
 
     private fun setMinBid() {
         stepperModel?.minBid?.let {
             Utils.convertToCurrency(it.toLong())
-            val budget = it * MULTIPLIER
-            stepperModel?.dailyBudget = budget.toFloat()
+            var budget: Int
+            if (stepperModel?.dailyBudget ?: 0F == 0F) {
+                budget = it * MULTIPLIER
+                stepperModel?.dailyBudget = budget.toFloat()
+            } else {
+                budget = stepperModel?.dailyBudget?.toInt() ?: 0
+                limitBudgetSwitch.isChecked = true
+            }
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget.toLong()))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
@@ -154,6 +181,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             stepperModel?.startDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
                 selectedStartDate = Calendar.getInstance()
                 selectedStartDate?.time = it
+                adScheduleSwitch.isChecked = true
             }
         }
         if (stepperModel?.endDate?.isNotBlank() == true) {
@@ -174,23 +202,12 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                         getSpecifiedDateFromToday(years = 50), this@EditAdOthersFragment::onStartDateChanged)
             }
             endDate.textFieldInput.setOnClickListener {
-                DateTimeUtils.getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
-                    DateTimeUtils.getSpecifiedDateFromStartDate(it1, month = 1)?.let { it2 ->
+                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
+                    getSpecifiedDateFromStartDate(it1, month = 1)?.let { it2 ->
                         openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
                                 it1, it2, getSpecifiedDateFromToday(years = 50), this@EditAdOthersFragment::onEndDateChanged)
                     }
                 }
-            }
-        }
-        adScheduleSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                startDate.show()
-                endDate.show()
-                adAppearanceMessage.show()
-            } else {
-                startDate.hide()
-                endDate.hide()
-                adAppearanceMessage.hide()
             }
         }
         setAdAppearanceMessage()
@@ -204,6 +221,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 startDate.textFieldInput.setText(startDateString)
             } else {
                 startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
+                selectedEndDate = getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)
             }
             if (selectedEndDate == null) {
                 selectedEndDate = getSpecifiedDateFromToday(month = 1)
@@ -236,7 +254,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
         startDate.textFieldInput.setText(startDateString)
         selectedStartDate = calendar
-        val endDateCalendar = DateTimeUtils.getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
+        val endDateCalendar = getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
         endDateCalendar?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)?.let {
             endDate.textFieldInput.setText(it)
         }

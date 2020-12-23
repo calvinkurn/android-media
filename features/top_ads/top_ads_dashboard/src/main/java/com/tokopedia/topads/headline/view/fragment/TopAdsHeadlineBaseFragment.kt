@@ -343,10 +343,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
-        presenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
-                this::onSuccessGroupResult)
+        presenter.getGroupData(currentPage, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), Utils.format.format(startDate),
+                Utils.format.format(endDate), GROUP_TYPE_HEADLINE, this::onSuccessGroupResult)
     }
 
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
@@ -405,10 +404,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        presenter.getGroupData(resources, currentPageNum, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
-                this::onSuccessGroupResult)
+        presenter.getGroupData(currentPageNum, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), Utils.format.format(startDate),
+                Utils.format.format(endDate), GROUP_TYPE_HEADLINE, this::onSuccessGroupResult)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
