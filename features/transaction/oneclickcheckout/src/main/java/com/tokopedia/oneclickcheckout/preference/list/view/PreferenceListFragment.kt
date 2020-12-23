@@ -114,7 +114,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     val profiles = it.data.profiles
                     val maxProfiles = it.data.maxProfile
                     isNewLayout = it.data.enableOccRevamp
-                    adapter.submitList(profiles, isNewLayout)
+                    adapter.submitList(profiles, false)
                     if (profiles.isEmpty()) {
                         ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PREFERENCE_PICT)
                         if (isNewLayout) {

@@ -45,19 +45,16 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_order_detail"
         android:layout_width="@dimen/dp_32"
         android:layout_height="0dp"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment_value"
         app:layout_constraintEnd_toStartOf="@+id/btn_pay"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/tv_total_payment_value"
-        app:layout_constraintTop_toTopOf="@+id/tv_total_payment_value"
-        app:srcCompat="@drawable/ic_arrow_down_grey"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="@+id/tv_total_payment_value" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_pay"
