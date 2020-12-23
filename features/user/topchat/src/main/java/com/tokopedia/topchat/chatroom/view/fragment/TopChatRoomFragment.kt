@@ -1205,7 +1205,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return url
     }
 
-    override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
+    override fun onDualAnnouncementClicked(
+            redirectUrl: String, attachmentId: String, blastId: Long
+    ) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)

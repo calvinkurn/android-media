@@ -118,13 +118,13 @@ data class Chat(
 data class Reply(
         @Expose
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0,
         @Expose
         @SerializedName("replyId")
         val replyId: String,
         @Expose
         @SerializedName("senderId")
-        val senderId: Int = 0,
+        val senderId: Long = 0,
         @Expose
         @SerializedName("senderName")
         val senderName: String = "",
@@ -157,7 +157,7 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0,
+        val blastId: Long = 0,
         @Expose
         @SerializedName("source")
         val source: String = ""

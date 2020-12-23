@@ -113,7 +113,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
     }
 
-    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Int): Pair<Map<String, Visitable<*>>, Int> {
+    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Long): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
