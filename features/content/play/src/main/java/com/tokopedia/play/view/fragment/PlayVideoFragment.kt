@@ -143,6 +143,8 @@ class PlayVideoFragment @Inject constructor(
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
+
+        setupFragmentObserve()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -159,7 +161,7 @@ class PlayVideoFragment @Inject constructor(
         initAnalytic()
         initView(view)
         setupView()
-        setupObserve()
+        setupViewObserve()
     }
 
     override fun onDestroyView() {
@@ -220,13 +222,16 @@ class PlayVideoFragment @Inject constructor(
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
-    private fun setupObserve() {
+    private fun setupFragmentObserve() {
+        observePiPEvent()
+    }
+
+    private fun setupViewObserve() {
         observeVideoMeta()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
-        observePiPEvent()
     }
 
     private fun showVideoThumbnail() {
@@ -307,7 +312,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiP.observe(this, Observer {
             if (it.peekContent() == PiPMode.StopPip) removePiP()
         })
     }
