@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -10,7 +11,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.imagepicker.common.util.ImageUtils
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.*
@@ -51,10 +51,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import rx.Subscriber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class ShopPageViewModel @Inject constructor(
         private val gqlGetShopFavoriteStatusUseCase: Lazy<GQLGetShopFavoriteStatusUseCase>,
         private val userSessionInterface: UserSessionInterface,
@@ -102,27 +104,20 @@ class ShopPageViewModel @Inject constructor(
             etalaseId: String,
             isRefresh: Boolean
     ) {
-        if (shopId == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
-            val shopP1DataAsync = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getShopP1Data(
-                                shopId,
-                                shopDomain,
-                                page,
-                                itemPerPage,
-                                shopProductFilterParameter,
-                                keyword,
-                                etalaseId,
-                                isRefresh
-                        )
-                    },
-                    onError = {
-                        shopPageP1Data.postValue(Fail(it))
-                        null
-                    })
-            shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
+            val flowShopP1Data = flow{
+                emit(getShopP1Data(
+                        shopId,
+                        shopDomain,
+                        page,
+                        itemPerPage,
+                        shopProductFilterParameter,
+                        keyword,
+                        etalaseId,
+                        isRefresh
+                ))
+            }
+            flowShopP1Data.flowOn(dispatcherProvider.io).collect { shopPageHeaderP1Data ->
                 productListData = GetShopProductUiModel(
                         isHasNextPage(page, itemPerPage, shopPageHeaderP1Data.productList.totalData),
                         shopPageHeaderP1Data.productList.data.map {
@@ -139,8 +134,8 @@ class ShopPageViewModel @Inject constructor(
                         shopPageHeaderP1Data.feedWhitelist
                 )))
             }
-        }) {
-            shopPageP1Data.postValue(Fail(it))
+        }) { exception ->
+            shopPageP1Data.postValue(Fail(exception))
         }
     }
 
@@ -265,73 +260,49 @@ class ShopPageViewModel @Inject constructor(
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
-        val id = shopId.toIntOrNull() ?: 0
-        if (id == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
-            val shopInfoForHeaderResponse = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getShopInfoHeader(id, shopDomain, isRefresh)
-                    },
-                    onError = {
-                        shopPageHeaderContentData.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopBadgeDataResponse = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getShopBadgeData(id, isRefresh)
-                    },
-                    onError = {
-                        shopPageHeaderContentData.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopOperationalHourStatus = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = { getShopOperationalHourStatus(id) },
-                    onError = {
-                        shopPageHeaderContentData.postValue(Fail(it))
-                        null
-                    }
-            )
-
-            val shopFavourite = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = { getShopFavoriteStatus(shopId, shopDomain) },
-                    onError = {
-                        shopPageHeaderContentData.postValue(Fail(it))
-                        null
-                    }
-            )
-            var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
-            if(isMyShop(shopId = shopId)) {
-                broadcasterConfig = asyncCatchError(
-                        dispatcherProvider.io,
-                        block = { getShopBroadcasterConfig(shopId) },
-                        onError = { null }
-                ).await() ?: Broadcaster.Config()
+            val flowShopInfoHeader = flow {
+                emit(getShopInfoHeader(shopId.toIntOrZero(), shopDomain, isRefresh))
             }
-
-            val shopInfoForHeaderData = shopInfoForHeaderResponse.await()
-            val shopBadgeData = shopBadgeDataResponse.await()
-            val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
-            val shopFavouriteResponse = shopFavourite.await()
-            if (null != shopInfoForHeaderData && null != shopBadgeData && null != shopOperationalHourStatusResponse && null != shopFavouriteResponse) {
-                shopPageHeaderContentData.postValue(Success(ShopPageHeaderContentData(
-                        shopInfoForHeaderData,
-                        shopBadgeData,
-                        shopOperationalHourStatusResponse,
-                        broadcasterConfig,
-                        shopFavouriteResponse
-                )))
+            val flowShopBadgeData = flow {
+                emit(getShopBadgeData(shopId.toIntOrZero(), isRefresh))
+            }
+            val flowShopOperationalHourStatus = flow {
+                emit(getShopOperationalHourStatus(shopId.toIntOrZero()))
+            }
+            val flowShopFavoriteStatus = flow {
+                emit(getShopFavoriteStatus(shopId, shopDomain))
+            }
+            val flowBroadcasterConfig = flow {
+                var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
+                if (isMyShop(shopId = shopId)) {
+                    broadcasterConfig = getShopBroadcasterConfig(shopId)
+                }
+                emit(broadcasterConfig)
+            }.catch {
+                emit(Broadcaster.Config())
+            }.flowOn(dispatcherProvider.io)
+            combine(
+                    flowShopInfoHeader,
+                    flowShopBadgeData,
+                    flowShopOperationalHourStatus,
+                    flowBroadcasterConfig,
+                    flowShopFavoriteStatus
+            ) { shopInfoHeader, shopBadge, shopOperationalHourStatus, broadcasterConfigData, shopInfoFavoriteData ->
+                ShopPageHeaderContentData(
+                        shopInfoHeader,
+                        shopBadge,
+                        shopOperationalHourStatus,
+                        broadcasterConfigData,
+                        shopInfoFavoriteData
+                )
+            }.flowOn(dispatcherProvider.io).collect {
+                shopPageHeaderContentData.postValue(Success(it))
             }
         }) {
             shopPageHeaderContentData.postValue(Fail(it))
         }
+
     }
 
     private suspend fun getShopBadgeData(shopId: Int, refresh: Boolean): ShopBadge {
@@ -365,14 +336,14 @@ class ShopPageViewModel @Inject constructor(
 
     fun getShopIdFromDomain(shopDomain: String) {
         launchCatchError(block = {
-            val shopInfoCoreData = withContext(dispatcherProvider.io){
-                getShopInfoCoreFromDomain(shopDomain)
+            flow{
+                emit(getShopInfoCoreFromDomain(shopDomain))
+            }.flowOn(dispatcherProvider.io).collect{
+                shopIdFromDomainData.postValue(Success(it.shopCore.shopID))
             }
-            shopIdFromDomainData.postValue(Success(shopInfoCoreData.shopCore.shopID))
         }){
             shopIdFromDomainData.postValue(Fail(it))
         }
-
     }
 
     private suspend fun getShopInfoCoreFromDomain(shopDomain: String): ShopInfo {
