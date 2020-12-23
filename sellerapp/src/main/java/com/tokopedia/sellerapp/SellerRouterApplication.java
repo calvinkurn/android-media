@@ -55,9 +55,6 @@ import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.utils.constants.Constants;
-import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget;
-import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor;
-import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -457,11 +454,5 @@ public abstract class SellerRouterApplication extends MainApplication
     public void setOnboardingStatus(boolean status) {
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
-    }
-
-    @Override
-    public void fetchSellerAppWidgetData() {
-        GetOrderExecutor.run(this, OrderAppWidget.DEFAULT_ORDER_STATUS_ID);
-        GetChatExecutor.run(this);
     }
 }
