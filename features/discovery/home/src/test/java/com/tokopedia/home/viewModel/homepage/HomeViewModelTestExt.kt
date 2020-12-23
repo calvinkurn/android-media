@@ -27,7 +27,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -57,7 +56,6 @@ fun createHomeViewModel(
         getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
         getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
         getSendGeolocationInfoUseCase: SendGeolocationInfoUseCase = mockk(relaxed = true),
-        getStickyLoginUseCase: StickyLoginUseCase = mockk(relaxed = true),
         getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
         getDynamicChannelsUseCase: GetDynamicChannelsUseCase = mockk(relaxed = true),
         getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
@@ -93,7 +91,6 @@ fun createHomeViewModel(
             homeUseCase = Lazy{ getHomeUseCase },
             popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
             sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
-            stickyLoginUseCase = Lazy{getStickyLoginUseCase},
             getAtcUseCase = Lazy{getAtcUseCase},
             userSession = Lazy{userSessionInterface},
             closeChannelUseCase = Lazy{closeChannelUseCase},
