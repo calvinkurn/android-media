@@ -819,7 +819,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if(isFromRegister) {
                 TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
                         userSession.name,
-                        userSession.userId.toIntOrZero().toString(),
+                        userSession.userId,
                         userSession.email,
                         analytics.getLoginMethodMoengage(userSession.loginMethod),
                         userSession.phoneNumber,

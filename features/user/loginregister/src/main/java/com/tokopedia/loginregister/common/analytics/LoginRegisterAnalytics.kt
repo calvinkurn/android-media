@@ -547,7 +547,7 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
+    fun eventSuccessRegisterEmail(context: Context?, userId: String, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -555,7 +555,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, "Email")
         sendBranchRegisterEvent(email)
 
     }
