@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -17,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -45,6 +43,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         fetchQuickFilters()
     }
 
+    fun fetchQuickFilters() {
+        launchCatchError(block = {
+            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
+            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
     private fun addFilterOptions(filters: ArrayList<Filter>) {
         quickFilterOptionList.clear()
         for (item in filters) {
@@ -54,7 +61,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         }
         quickFiltersLiveData.value = quickFilterOptionList
     }
-
 
     fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
@@ -81,15 +87,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         launchCatchError(block = {
             dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
-        }, onError = {
-            it.printStackTrace()
-        })
-    }
-
-    fun fetchQuickFilters() {
-        launchCatchError(block = {
-            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
-            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
         }, onError = {
             it.printStackTrace()
         })
