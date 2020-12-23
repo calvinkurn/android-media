@@ -13,7 +13,7 @@ import android.widget.RemoteViews
  * Created By @ilhamsuaib on 25/11/20
  */
 
-inline fun <reified T : AppWidgetProvider> RemoteViews.registerAppLinkIntent(context: Context, viewId: Int, appLink: String, widgetId: Int, bundle: Bundle? = null) {
+internal inline fun <reified T : AppWidgetProvider> RemoteViews.registerAppLinkIntent(context: Context, viewId: Int, appLink: String, widgetId: Int, bundle: Bundle? = null) {
     val appLinkIntent = Intent(context, T::class.java).apply {
         action = Const.Action.OPEN_APPLINK
         data = Uri.parse(appLink)
