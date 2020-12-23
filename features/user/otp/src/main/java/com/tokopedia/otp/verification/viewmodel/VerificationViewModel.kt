@@ -14,6 +14,7 @@ import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -27,6 +28,7 @@ class VerificationViewModel @Inject constructor(
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
         private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+        private val userSession: UserSessionInterface,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
 
@@ -42,6 +44,7 @@ class VerificationViewModel @Inject constructor(
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
 
+    private var accessTokenRefresh = true
 
     fun getVerificationMethod2FA(
             otpType: String,
@@ -169,6 +172,7 @@ class VerificationViewModel @Inject constructor(
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {
+                    accessTokenRefresh = false
                     _otpValidateResult.value = Success(data)
                 }
                 data.errorMessage.isNotEmpty() -> {
@@ -206,6 +210,7 @@ class VerificationViewModel @Inject constructor(
                 val data = otpValidateUseCase.getData(params).data
                 when {
                     data.success -> {
+                        accessTokenRefresh = false
                         _otpValidateResult.value = Success(data)
                     }
                     data.errorMessage.isNotEmpty() -> {
@@ -219,5 +224,12 @@ class VerificationViewModel @Inject constructor(
                 _otpValidateResult.postValue(Fail(it))
             })
         }
+    }
+
+    override fun onCleared() {
+        if(accessTokenRefresh) {
+            userSession.setToken(null, null, null)
+        }
+        super.onCleared()
     }
 }
