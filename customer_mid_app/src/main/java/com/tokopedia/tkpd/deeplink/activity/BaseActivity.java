@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.common.constant.DigitalCache;

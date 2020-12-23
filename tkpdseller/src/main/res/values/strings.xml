@@ -335,4 +335,10 @@
     <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
     <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
+    <string name="stock_unavailable">Stok Kosong</string>
+    <string name="shop_address_hint">Tulis nama kota atau kecamatan</string>
+    <string name="title_action_add_notes">Buat Catatan</string>
+    <string name="title_action_add_returnable_policy_notes">Kebijakan Pengembalian</string>
+    <string name="action_search">Cari</string>
+    <string name="title_action_add_note">Tambah Catatan</string>
 </resources>

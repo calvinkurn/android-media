@@ -183,4 +183,19 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+
+    <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
+    <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>
+    <string name="title_notif_purchase_partial_accepted">Pesanan kamu diproses sebagian</string>
+    <string name="title_notif_purchase_rejected">Pesanan kamu tidak dapat diproses </string>
+    <string name="title_notif_purchase_delivered">Pesanan kamu telah tiba</string>
+    <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur %1$s hanya
+        dapat dilakukan di aplikasi TopSeller</string>
+    <string name="title_activity_deep_link">Tokopedia</string>
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="shop_shipping_setting">Pengaturan Pengiriman</string>
+    <string name="gold_merchant_redirect_text">Gunakan aplikasi TopSeller untuk mengelola toko
+        online, terima order dan upload produk, kapan pun dan di mana pun.</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+    <string name="action_reset">Reset</string>
 </resources>
