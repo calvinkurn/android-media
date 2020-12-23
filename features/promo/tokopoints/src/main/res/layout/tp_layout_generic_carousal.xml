@@ -43,15 +43,15 @@
         app:unify_timer_text_color="#FF5C84"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_see_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
+        android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/medium_green"
-        android:textSize="@dimen/sp_13"
-        android:textStyle="bold"
+        app:typographyType="heading_6"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"

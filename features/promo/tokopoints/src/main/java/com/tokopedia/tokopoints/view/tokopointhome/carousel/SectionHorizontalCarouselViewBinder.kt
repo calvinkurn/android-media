@@ -49,7 +49,7 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
             val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
             val constraintSet = ConstraintSet()
             constraintSet.clone(constraintLayout)
-            constraintSet.connect(R.id.text_see_all_carousel, ConstraintSet.TOP, R.id.text_title_carousel, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.text_see_all_carousel, ConstraintSet.BASELINE, R.id.text_title_carousel, ConstraintSet.BASELINE, 0)
             constraintSet.applyTo(constraintLayout)
         }
 

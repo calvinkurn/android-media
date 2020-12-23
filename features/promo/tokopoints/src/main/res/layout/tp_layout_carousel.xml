@@ -36,7 +36,7 @@
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:textColor="@color/medium_green"
-        app:typographyType="heading_5"
+        app:typographyType="heading_6"
         app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
