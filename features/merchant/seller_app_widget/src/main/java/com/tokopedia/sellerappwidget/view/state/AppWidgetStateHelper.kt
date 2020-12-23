@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 abstract class AppWidgetStateHelper {
 
-    inline fun <reified T : AppWidgetProvider> setupNormalCommonWidget(context: Context, remoteViews: RemoteViews, data: CommonStateUiModel) {
+    internal inline fun <reified T : AppWidgetProvider> setupNormalCommonWidget(context: Context, remoteViews: RemoteViews, data: CommonStateUiModel) {
         with(remoteViews) {
             setTextViewText(R.id.tvSawNormalCommonTitle, data.title)
             setTextViewText(R.id.tvSawNormalCommonDescription, data.description)
@@ -46,7 +46,7 @@ abstract class AppWidgetStateHelper {
         }
     }
 
-    inline fun <reified T : AppWidgetProvider> setupLargeCommonWidget(context: Context, remoteViews: RemoteViews, data: CommonStateUiModel) {
+    internal inline fun <reified T : AppWidgetProvider> setupLargeCommonWidget(context: Context, remoteViews: RemoteViews, data: CommonStateUiModel) {
         with(remoteViews) {
             setTextViewText(R.id.tvSawLargeCommonTitle, data.title)
             setTextViewText(R.id.tvSawLargeCommonDescription, data.description)

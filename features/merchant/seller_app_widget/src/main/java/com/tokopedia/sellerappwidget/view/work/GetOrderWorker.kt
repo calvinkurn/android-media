@@ -25,7 +25,6 @@ class GetOrderWorker(
         fun runWorker(context: Context) {
             if (workRequest == null) {
                 val constraints = Constraints.Builder()
-                        .setRequiresDeviceIdle(false)
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build()
 

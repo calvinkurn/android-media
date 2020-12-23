@@ -25,11 +25,10 @@ class GetChatWorker(
         fun runWorkerPeriodically(context: Context) {
             if (workRequest == null) {
                 val constraints = Constraints.Builder()
-                        .setRequiresDeviceIdle(false)
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build()
 
-                workRequest = OneTimeWorkRequestBuilder<GetChatWorker>()
+                workRequest = OneTimeWorkRequest.Builder(GetChatWorker::class.java)
                         .setConstraints(constraints)
                         .setInitialDelay(REPEAT_INTERVAL, TimeUnit.SECONDS)
                         .build()
