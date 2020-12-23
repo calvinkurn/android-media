@@ -25,8 +25,8 @@ class EmptyStateUseCase @Inject constructor() {
                             ?: arrayListOf())
                     if (optionLists.isNotEmpty()) {
                         this?.filters?.clear()
-                        this?.selectedFilters = null
-                        this?.selectedSort = null
+                        this?.selectedFilters?.clear()
+                        this?.selectedSort?.clear()
                         for (option in optionLists) {
                             this?.filterController?.setFilter(option, isFilterApplied = false,
                                     isCleanUpExistingFilterWithSameKey = false)
