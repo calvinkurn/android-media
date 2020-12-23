@@ -29,14 +29,11 @@ object AppWidgetHelper {
     fun getAppWidgetSize(option: Bundle): String {
         val minHeight = option.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
 
-        var n = 2
-        while (70 * n - 2 < minHeight) {
-            ++n
-        }
-        val size = (ceil(minHeight + 30.0) / 70.0).toInt()
+        //n = 70 × n − 30
+        val widgetSize = (ceil(minHeight + 30.0) / 70.0).toInt()
         return when {
-            size <= 3 -> WidgetSize.SMALL
-            size > 5 -> WidgetSize.LARGE
+            widgetSize <= 3 -> WidgetSize.SMALL
+            widgetSize > 5 -> WidgetSize.LARGE
             else -> WidgetSize.NORMAL
         }
     }
