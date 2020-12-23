@@ -17,7 +17,7 @@
         android:layout_gravity="center_vertical"
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_arrow_back_black" />
+        app:srcCompat="@drawable/ic_cart_arrow_back_black" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_title"

@@ -1322,7 +1322,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            int productId = 0;
+            long productId = 0;
             int quantity = 0;
             int shopId = 0;
             String notes = "";
