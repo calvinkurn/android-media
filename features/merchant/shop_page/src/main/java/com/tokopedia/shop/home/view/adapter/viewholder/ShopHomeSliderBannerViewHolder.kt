@@ -61,7 +61,7 @@ class ShopHomeSliderBannerViewHolder(
         try {
             img.post {
                 val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
-                img.layoutParams.height = (img.measuredWidth * ratio).toInt()
+                img.layoutParams.height = (carouselShopPage?.measuredWidth.orZero() * ratio).toInt()
                 img.requestLayout()
                 img.setImageUrl(carouselItem.imageUrl)
             }
@@ -109,6 +109,7 @@ class ShopHomeSliderBannerViewHolder(
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
+            stage.removeAllViews()
             carouselData?.let {
                 if (stage.childCount == 0) {
                     addItems(R.layout.widget_slider_banner_item, it, itmListener)
