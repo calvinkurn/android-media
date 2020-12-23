@@ -225,6 +225,7 @@ class VerificationViewModel @Inject constructor(
     }
 
     override fun onCleared() {
+        //if user interrupted otp flow (not done), delete the token
         if(!done) {
             userSession.setToken(null, null, null)
         }
