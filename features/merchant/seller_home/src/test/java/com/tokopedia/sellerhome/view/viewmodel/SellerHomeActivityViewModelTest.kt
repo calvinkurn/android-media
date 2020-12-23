@@ -14,8 +14,8 @@ import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,6 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyInt
 
 /**
  * Created By @ilhamsuaib on 24/03/20
@@ -52,7 +53,7 @@ class SellerHomeActivityViewModelTest {
     lateinit var sellerAdminUseCase: SellerAdminUseCase
 
     @RelaxedMockK
-    lateinit var adminPermissionUseCase: AdminPermissionUseCase
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -69,7 +70,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, sellerAdminUseCase, adminPermissionUseCase, coroutineTestRule.dispatchers)
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, sellerAdminUseCase, authorizeAccessUseCase, coroutineTestRule.dispatchers)
 
     @Test
     fun `get notifications then returns success result`() {
@@ -454,13 +455,13 @@ class SellerHomeActivityViewModelTest {
 
     private fun everyCheckOrderRolePermissionThenReturn(isRoleEligible: Boolean) {
         coEvery {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
         } returns isRoleEligible
     }
 
     private fun everyCheckOrderRolePermissionThenThrow(exception: Exception) {
         coEvery {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
         } throws exception
     }
 
@@ -481,7 +482,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsCalled() {
         coVerify {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
         }
     }
 
@@ -493,7 +494,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsNotCalled() {
         coVerify(exactly = 0) {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
         }
     }
 

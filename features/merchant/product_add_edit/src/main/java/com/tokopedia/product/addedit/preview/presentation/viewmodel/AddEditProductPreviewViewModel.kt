@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -24,8 +25,8 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.shop.common.constant.AdminPermissionGroup
-import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,7 +42,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        private val adminPermissionUseCase: AdminPermissionUseCase,
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -60,7 +61,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             if (!productId.value.isNullOrBlank()) {
                 getProductData(it)
             } else if (userSession.isShopAdmin) {
-                getAdminPermission()
+                authorizeAccess()
             }
         }
     }
@@ -90,9 +91,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
-    private val mIsManageProductAdmin = MutableLiveData<Result<Boolean>>()
-    val isManageProductAdmin: LiveData<Result<Boolean>>
-        get() = mIsManageProductAdmin
+    private val mIsProductManageAuthorized = MutableLiveData<Result<Boolean>>()
+    val isProductManageAuthorized: LiveData<Result<Boolean>>
+        get() = mIsProductManageAuthorized
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -220,8 +221,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
-        if (userSession.isShopAdmin && mIsManageProductAdmin.value !is Success) {
-            getAdminPermission()
+        if (userSession.isShopAdmin && mIsProductManageAuthorized.value !is Success) {
+            authorizeAccess()
         }
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
@@ -305,19 +306,26 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
 
-    private fun getAdminPermission() {
+    private fun authorizeAccess() {
         mIsLoading.value = true
         if (getAdminPermissionJob?.isCompleted != true) {
             getAdminPermissionJob =
                     launchCatchError(
                             block = {
-                                mIsManageProductAdmin.value = Success(withContext(dispatcher.io) {
-                                    adminPermissionUseCase.execute(AdminPermissionGroup.PRODUCT) ?: false
+                                mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
+                                    val accessId =
+                                            when {
+                                                isAdding -> AccessId.PRODUCT_ADD
+                                                isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                                                isEditing.value == true -> AccessId.PRODUCT_EDIT
+                                                else -> AccessId.PRODUCT_ADD
+                                            }
+                                    authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), accessId)
                                 })
                                 mIsLoading.value = false
                             },
                             onError = {
-                                mIsManageProductAdmin.value = Fail(it)
+                                mIsProductManageAuthorized.value = Fail(it)
                                 getAdminPermissionJob?.cancel()
                             }
                     )
