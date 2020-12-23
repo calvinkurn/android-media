@@ -177,6 +177,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
+    override fun onSwipeRefresh() {
+        containerListener?.refreshNotificationCounter()
+        super.onSwipeRefresh()
+    }
+
     override fun onRoleChanged(role: Int) {
         when (role) {
             RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB

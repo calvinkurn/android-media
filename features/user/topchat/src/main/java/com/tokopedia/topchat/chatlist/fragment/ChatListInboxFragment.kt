@@ -764,6 +764,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onSwipeRefresh() {
+        containerListener?.refreshNotificationCounter()
         super.onSwipeRefresh()
 //        chatTabListContract?.loadNotificationCounter()
     }

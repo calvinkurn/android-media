@@ -126,6 +126,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
     }
 
+    override fun refreshNotificationCounter() {
+        viewModel.getNotifications()
+    }
+
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(

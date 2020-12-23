@@ -315,6 +315,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun onSwipeRefresh() {
         viewModel.cancelAllUseCase()
+        containerListener?.refreshNotificationCounter()
         super.onSwipeRefresh()
     }
 
