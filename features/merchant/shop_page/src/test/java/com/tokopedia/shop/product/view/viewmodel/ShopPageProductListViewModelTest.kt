@@ -90,30 +90,28 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         }
     }
 
-//    @Test
-//    fun `check whether response get new product list with isHasNextPage is true`() {
-//        runBlocking {
-//
-//            coEvery {
-//                getShopProductUseCase.executeOnBackground()
-//            } returns ShopProduct.GetShopProduct(
-//                    totalData = 20
-//            )
-//
-//            viewModelShopPageProductListViewModel.getNewProductListData(
-//                    anyString(),
-//                    anyString(),
-//                    ShopProductFilterParameter()
-//            )
-//
-//            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
-//
-//            verifyGetShopProductUseCaseCaseCalled()
-//
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
-//            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
-//        }
-//    }
+    @Test
+    fun `check whether response get product list data success is not null and has next page`() {
+        runBlocking {
+
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20
+            )
+            viewModelShopPageProductListViewModel.getProductListData(
+                    anyString(),
+                    anyInt(),
+                    anyString(),
+                    ShopProductFilterParameter()
+            )
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
+            verifyGetShopProductUseCaseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
+        }
+    }
 
     @Test
     fun `check whether response  get product list data error is null`() {
@@ -328,7 +326,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct())
+        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct())
+        ))
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
 
@@ -372,7 +372,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData is Success with sort by SOLD_ETALASE`() {
+    fun `check getBuyerViewContentData is Success with sort by SOLD_ETALASE`() {
         runBlocking {
 
             // membership use case
@@ -425,21 +425,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value is Success<ShopProductEtalaseTitleUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value is Success<Int>)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData is Success with sort by DISCOUNT_ETALASE`() {
+    fun `check getBuyerViewContentData is Success with sort by DISCOUNT_ETALASE`() {
         runBlocking {
 
             // membership use case
@@ -477,7 +473,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
                     etalaseList = listOf(ShopEtalaseItemDataModel(
-                            etalaseId = "sold",
+                            etalaseId = "discount",
                             alias = "",
                             etalaseName = "test",
                             type = 2,
@@ -492,21 +488,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value is Success<ShopProductEtalaseTitleUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value is Success<Int>)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData is Success with no sort`() {
+    fun `check getBuyerViewContentData is Success with no sort`() {
         runBlocking {
 
             // membership use case
@@ -544,7 +536,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
                     etalaseList = listOf(ShopEtalaseItemDataModel(
-                            etalaseId = "sold",
+                            etalaseId = "123",
                             alias = "",
                             etalaseName = "test",
                             type = 2,
@@ -559,19 +551,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData is Success with no highlighted etalase`() {
+    fun `check getBuyerViewContentData is Success with no highlighted etalase`() {
         runBlocking {
 
             // membership use case
@@ -607,13 +597,13 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
                     etalaseList = listOf(ShopEtalaseItemDataModel(
-                            etalaseId = "sold",
+                            etalaseId = "123",
                             alias = "",
                             etalaseName = "test",
                             type = 2,
                             etalaseBadge = "",
                             etalaseCount = 10,
-                            highlighted = true,
+                            highlighted = false,
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false
@@ -622,21 +612,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value == null)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value == null)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData is Success with no product on highlighted etalase`() {
+    fun `check getBuyerViewContentData is Success with no product on highlighted etalase`() {
         runBlocking {
 
             // membership use case
@@ -674,7 +660,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
                     etalaseList = listOf(ShopEtalaseItemDataModel(
-                            etalaseId = "sold",
+                            etalaseId = "123",
                             alias = "",
                             etalaseName = "test",
                             type = 2,
@@ -689,21 +675,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value == null)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value == null)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData with getHighlightEtalaseData throw an exception`() {
+    fun `check getBuyerViewContentData with getHighlightEtalaseData throw an exception`() {
         runBlocking {
 
             // membership use case
@@ -741,7 +723,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getBuyerViewContentData(
                     shopId = "123",
                     etalaseList = listOf(ShopEtalaseItemDataModel(
-                            etalaseId = "sold",
+                            etalaseId = "123",
                             alias = "",
                             etalaseName = "test",
                             type = 2,
@@ -756,21 +738,17 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value == null)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value is Success<ShopProductEtalaseTitleUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value is Success<Int>)
 
         }
     }
 
     @Test
-    fun `check getBuyerShopPageProductTabData with featured product throw an exception`() {
+    fun `check getBuyerViewContentData with featured product throw an exception`() {
         runBlocking {
 
             // membership use case
@@ -823,15 +801,11 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             verifyGetMemberShipUseCaseCalled()
             verifyGetMerchantVoucerUseCaseCalled()
             verifyGetShopFeaturedProductUseCaseCalled()
-            verifyGetShopProductUseCaseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseTitleData.value is Success<ShopProductEtalaseTitleUiModel>)
-//            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductChangeProductGridSectionData.value is Success<Int>)
 
         }
     }
