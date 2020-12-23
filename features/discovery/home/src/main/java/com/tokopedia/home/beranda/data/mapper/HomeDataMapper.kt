@@ -41,14 +41,15 @@ class HomeDataMapper(
         val addLoadingMore = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
-                .addEmptyBanner()
                 .addUserWalletVisitable()
                 .addAtfComponentVisitable()
 
         if (showGeolocation) factory.addGeolocationVisitable()
 
-        factory.addDynamicChannelVisitable(addLoadingMore)
-                .build()
+        if (homeData.dynamicHomeChannel.channels.isNotEmpty()) {
+            factory.addDynamicChannelVisitable(addLoadingMore)
+                    .build()
+        }
 
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)

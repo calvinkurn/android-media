@@ -7,9 +7,7 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeAtfUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase
+import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.common.HomeAceApi
 import dagger.Module
 import dagger.Provides
@@ -18,10 +16,27 @@ import dagger.Provides
 class HomeDataSourceModule {
     @HomeScope
     @Provides
-    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider,
-    getDynamicChannelsUseCase: GetDynamicChannelsUseCase, getHomeDataUseCase: GetHomeDataUseCase,
-    getHomeAtfUseCase: GetHomeAtfUseCase)
-            = HomeRemoteDataSource(dispatcher, getDynamicChannelsUseCase, getHomeDataUseCase, getHomeAtfUseCase)
+    fun provideHomeRemoteDataSource(
+            graphqlRepository: GraphqlRepository,
+            dispatcher: HomeDispatcherProvider,
+            getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+            getHomeDataUseCase: GetHomeDataUseCase,
+            getHomeAtfUseCase: GetHomeAtfUseCase,
+            getHomeFlagUseCase: GetHomeFlagUseCase,
+            getHomeTickerUseCase: GetHomeTickerUseCase,
+            getHomeIconUseCase: GetHomeIconUseCase,
+            getHomePageBannerUseCase: GetHomePageBannerUseCase
+    )
+            = HomeRemoteDataSource(
+            dispatcher,
+            getDynamicChannelsUseCase,
+            getHomeDataUseCase,
+            getHomeAtfUseCase,
+            getHomeFlagUseCase,
+            getHomePageBannerUseCase,
+            getHomeIconUseCase,
+            getHomeTickerUseCase
+    )
 
     @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)
