@@ -1412,7 +1412,7 @@ class ShopPageFragment :
         if (stickyLoginView.isShowing()) {
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
-            viewPager.setPadding(0, 0, 0, 16.toDp())
+            viewPager.setPadding(0, 0, 0, 0)
         }
     }
 
