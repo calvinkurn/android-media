@@ -28,7 +28,17 @@ object FlightSliceProviderUtil {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
-                subtitle = context.getString(R.string.slice_failed_desc)
+                subtitle = context.getString(R.string.slice_flight_failed_desc)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    fun getEmptyOrderListSlices(context: Context, sliceUri: Uri): Slice {
+        return list(context, sliceUri, ListBuilder.INFINITY) {
+            header {
+                title = context.getString(R.string.slice_flight_title)
+                subtitle = context.getString(R.string.slice_empty_order_list)
             }
         }
     }

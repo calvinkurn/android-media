@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.travel_slice.analytics.TravelSliceAnalytics
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
 import com.tokopedia.travel_slice.utils.TravelActionConst
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -21,6 +23,9 @@ class TravelSliceActivity : Activity() {
     @Inject
     lateinit var analytics: TravelSliceAnalytics
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     companion object {
         fun createHotelDashboardIntent(context: Context, applink: String): Intent {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
@@ -30,18 +35,28 @@ class TravelSliceActivity : Activity() {
             }
         }
 
-        fun createHotelDetailIntent(context: Context, applink: String): Intent {
+        fun createHotelDetailIntent(context: Context, applink: String, city: String): Intent {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_DETAIL)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                putExtra(TravelActionConst.PARAM_CITY_NAME, city)
                 action = System.currentTimeMillis().toString()
             }
         }
 
-        fun createHotelOrderDetailIntent(context: Context, applink: String): Intent {
+        fun createHotelOrderDetailIntent(context: Context, applink: String, city: String): Intent {
             return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
                 putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_ORDER)
                 putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, applink)
+                putExtra(TravelActionConst.PARAM_CITY_NAME, city)
+                action = System.currentTimeMillis().toString()
+            }
+        }
+
+        fun createHotelOrderListIntent(context: Context): Intent {
+            return RouteManager.getIntent(context, ApplinkConstInternalTravel.TRAVEL_ACTION).apply {
+                putExtra(TravelActionConst.PARAM_FEATURE_NAME, TravelActionConst.Feature.HOTEL_ORDER_LIST)
+                putExtra(TravelActionConst.PARAM_FEATURE_APPLINK, ApplinkConst.HOTEL_ORDER)
                 action = System.currentTimeMillis().toString()
             }
         }
@@ -80,20 +95,16 @@ class TravelSliceActivity : Activity() {
 
     private fun redirectToMainApp(featureName: String) {
         when (featureName) {
-            TravelActionConst.Feature.HOTEL_DASHBOARD -> {
-
-            }
             TravelActionConst.Feature.HOTEL_DETAIL -> {
-
+                val city = intent?.getStringExtra(TravelActionConst.PARAM_CITY_NAME) ?: ""
+                analytics.clickOnHotelBooking(this, city, userSessionInterface.userId)
             }
             TravelActionConst.Feature.HOTEL_ORDER -> {
-
+                val city = intent?.getStringExtra(TravelActionConst.PARAM_CITY_NAME) ?: ""
+                analytics.clickOnHotelReservation(this, city, userSessionInterface.userId)
             }
             TravelActionConst.Feature.FLIGHT_ORDER -> {
-
-            }
-            TravelActionConst.Feature.FLIGHT_ORDERLIST -> {
-
+                analytics.clickOnFlightReservation(this, userSessionInterface.userId)
             }
         }
         intent?.getStringExtra(TravelActionConst.PARAM_FEATURE_APPLINK)?.let { applink ->
