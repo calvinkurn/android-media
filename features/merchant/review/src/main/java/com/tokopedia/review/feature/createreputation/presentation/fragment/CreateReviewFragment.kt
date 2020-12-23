@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
@@ -33,6 +34,7 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -196,7 +198,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
@@ -244,7 +246,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     showLoading()
                 }
                 is Success -> {
-                    onSuccessSubmitReview()
+                    onSuccessSubmitReview(it.data)
                 }
                 is Fail -> {
                     onFailSubmitReview(it.fail)
@@ -794,7 +796,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSubmitReview() {
+    private fun onSuccessSubmitReview(feedbackId: String = "") {
         stopLoading()
         showLayout()
         if (isUserEligible() && !isReviewIncomplete) {
@@ -802,7 +804,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             shouldShowThankYouBottomSheet = true && !isReviewIncomplete
             return
         }
-        finishIfRoot(true)
+        finishIfRoot(success = true, feedbackId = feedbackId)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -878,7 +880,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     }
 
-    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "") {
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String =  "") {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -888,11 +890,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 startActivity(intent)
             } else {
                 val intent = Intent()
-                intent.putExtra(ReviewConstants.ARGS_RATING, reviewClickAt.toFloat())
-                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                 if (success) {
+                    intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_RATING, reviewClickAt)
+                    intent.putExtra(ReputationCommonConstants.ARGS_PRODUCT_ID, productId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REPUTATION_ID, reputationId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.REVIEWED)
                     setResult(Activity.RESULT_OK, intent)
                 } else {
+                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.INVALID_TO_REVIEW)
                     setResult(Activity.RESULT_FIRST_USER, intent)
                 }
             }

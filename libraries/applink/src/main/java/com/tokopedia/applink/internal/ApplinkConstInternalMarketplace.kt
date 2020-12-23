@@ -102,6 +102,9 @@ object ApplinkConstInternalMarketplace {
     //ReviewDetailActivity
     val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
 
+    //SellerReviewDetailActivity
+    val SELLER_REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/seller-review-detail"
+
     // InboxReputationDetailActivity
     val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"
 

@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -48,14 +49,19 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         get() = _observableDeleteVideo
     private val _observableDeleteVideo = MutableLiveData<NetworkResult<Boolean>>()
 
+    val observableReportDuration: LiveData<LiveDurationUiModel>
+        get() = _observableReportDuration
+    private val _observableReportDuration = MutableLiveData<LiveDurationUiModel>()
+
     fun fetchLiveTraffic() {
         _observableTrafficMetrics.value = NetworkResult.Loading
         scope.launchCatchError(block = {
-            val liveMetrics = withContext(dispatcher.io) {
+            val reportChannelSummary = withContext(dispatcher.io) {
                 getLiveStatisticsUseCase.params = GetLiveStatisticsUseCase.createParams(channelId)
                 return@withContext getLiveStatisticsUseCase.executeOnBackground()
             }
-            _observableTrafficMetrics.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(liveMetrics))
+            _observableReportDuration.value = playBroadcastMapper.mapLiveDuration(reportChannelSummary.duration)
+            _observableTrafficMetrics.value = NetworkResult.Success(playBroadcastMapper.mapToLiveTrafficUiMetrics(reportChannelSummary.channel.metrics))
         }) {
             _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }

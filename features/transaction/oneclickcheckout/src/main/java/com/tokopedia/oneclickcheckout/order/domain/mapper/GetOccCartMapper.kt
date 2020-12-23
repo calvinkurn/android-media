@@ -177,7 +177,8 @@ class GetOccCartMapper @Inject constructor() {
                 protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
                 isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
                 isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled,
-                unit = purchaseProtectionPlanDataResponse.unit
+                unit = purchaseProtectionPlanDataResponse.unit,
+                source = purchaseProtectionPlanDataResponse.source
         )
     }
 

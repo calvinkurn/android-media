@@ -45,7 +45,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         getDataFromAppLink()
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -56,10 +55,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 
     private fun getDataFromIntent() {

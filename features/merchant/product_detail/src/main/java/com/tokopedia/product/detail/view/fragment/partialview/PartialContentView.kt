@@ -232,7 +232,7 @@ class PartialContentView(private val view: View,
     private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDateTimeMs = campaign.getEndDataInt * ONE_SECOND
+            val endDateTimeMs = campaign.getEndDateLong * ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
