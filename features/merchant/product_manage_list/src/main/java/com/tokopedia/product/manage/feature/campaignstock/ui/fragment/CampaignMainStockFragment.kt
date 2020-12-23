@@ -93,6 +93,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeVariantStock()
+        observeStockInfo()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,6 +179,26 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             val shouldShowWarning = isAllStockEmpty && isVariant
             showVariantWarningTickerWithCondition(shouldShowWarning)
         })
+    }
+
+    private fun observeStockInfo() {
+        mViewModel.showStockInfo.observe(viewLifecycleOwner, Observer { showStockInfo ->
+            showHideStockInfo(showStockInfo)
+        })
+    }
+
+    private fun showHideStockInfo(showStockInfo: Boolean) {
+        adapter.apply {
+            data.filterIsInstance<SellableStockProductUIModel>().forEach {
+                val index = data.indexOf(it)
+                data[index] = if (showStockInfo) {
+                    it.copy(isAllStockEmpty = false)
+                } else {
+                    it.copy(isAllStockEmpty = true)
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     private fun onTotalStockChanged(totalStock: Int) {

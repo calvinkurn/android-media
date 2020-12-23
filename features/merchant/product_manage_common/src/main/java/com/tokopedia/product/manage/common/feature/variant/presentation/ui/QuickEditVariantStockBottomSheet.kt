@@ -82,5 +82,12 @@ class QuickEditVariantStockBottomSheet(
                 variantStockAdapter.hideTicker()
             }
         }
+        observe(viewModel.showStockInfo) { showStockInfo ->
+            if(showStockInfo) {
+                variantStockAdapter.showStockInfo()
+            } else {
+                variantStockAdapter.hideStockInfo()
+            }
+        }
     }
 }

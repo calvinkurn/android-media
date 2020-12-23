@@ -100,7 +100,8 @@ class ProductVariantStockViewHolder(
     }
 
     private fun setupStockHint(variant: ProductVariant) {
-        val shouldShow = variant.isEmpty() && !variant.isAllStockEmpty
+        val stock = getCurrentStockInput()
+        val shouldShow = stock == 0 && !variant.isAllStockEmpty
         itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
@@ -241,6 +242,15 @@ class ProductVariantStockViewHolder(
                 delay(delayMs)
                 block()
             }, onError = {})
+    }
+
+    private fun getCurrentStockInput(): Int {
+        val input = itemView.quantityEditorStock.editText.text.toString()
+        return if(input.isNotEmpty()) {
+            input.toIntOrZero()
+        } else {
+            MINIMUM_STOCK
+        }
     }
 
     interface ProductVariantStockListener {

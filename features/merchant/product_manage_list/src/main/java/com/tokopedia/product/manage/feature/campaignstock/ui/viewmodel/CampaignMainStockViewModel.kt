@@ -11,6 +11,7 @@ import javax.inject.Inject
 class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
 
     private val mVariantStockAvailabilityLiveData = MutableLiveData<HashMap<String, Boolean>>(hashMapOf())
+    private val mShowStockInfo = MutableLiveData<Boolean>()
 
     private val mShouldDisplayVariantStockWarningLiveData = MediatorLiveData<Boolean>().apply {
         addSource(mVariantStockAvailabilityLiveData) { variantMap ->
@@ -18,11 +19,16 @@ class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
                 if (value != isAllStockEmpty) {
                     value = isAllStockEmpty
                 }
+                setShowStockInfo(isAllStockEmpty)
             }
         }
     }
+
     val shouldDisplayVariantStockWarningLiveData: LiveData<Boolean>
         get() = mShouldDisplayVariantStockWarningLiveData
+
+    val showStockInfo: LiveData<Boolean>
+        get() = mShowStockInfo
 
     fun setStockAvailability(sellableProductList: List<SellableStockProductUIModel>) {
         val variantStockMap = hashMapOf<String, Boolean>()
@@ -40,6 +46,15 @@ class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
             val isStockEmpty = stock == 0
             it[productId] = isStockEmpty
             mVariantStockAvailabilityLiveData.value = it
+        }
+    }
+
+    private fun setShowStockInfo(isAllStockEmpty: Boolean) {
+        val showStockInfo = mShowStockInfo.value
+        val shouldShow = !isAllStockEmpty
+
+        if(showStockInfo != shouldShow) {
+            mShowStockInfo.value = !isAllStockEmpty
         }
     }
 }
