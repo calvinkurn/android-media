@@ -60,6 +60,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private var isLogisticLabel: Boolean = true
     private var token: Token? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
+    private var saveAddressDataModelNegative = SaveAddressDataModel()
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -280,7 +281,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     }
 
     private fun goToAddNewAddressNegative() {
-        val saveModel = getUnnamedRoadModelFormat(saveAddressDataModel)
+        val saveModel = getUnnamedRoadModelFormat()
 
         Intent(context, AddEditAddressActivity::class.java).apply {
             putExtra(EXTRA_IS_MISMATCH, true)
@@ -304,9 +305,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(isFullFlow, isLogisticLabel)
     }
 
-    private fun getUnnamedRoadModelFormat(data: SaveAddressDataModel?): SaveAddressDataModel? {
-        val fmt = data?.formattedAddress?.replaceAfter("Unnamed Road, ", "")
-        return fmt?.let { data.copy(formattedAddress = it, selectedDistrict = fmt) }
+    private fun getUnnamedRoadModelFormat(): SaveAddressDataModel? {
+        val fmt = saveAddressDataModelNegative.formattedAddress.replaceAfter("Unnamed Road, ", "")
+        return saveAddressDataModelNegative.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
     private fun showLocationInfoBottomSheet() {
