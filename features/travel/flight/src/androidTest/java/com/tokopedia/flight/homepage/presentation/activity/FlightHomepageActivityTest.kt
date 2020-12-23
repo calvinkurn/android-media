@@ -57,7 +57,6 @@ class FlightHomepageActivityTest {
     fun validateFlightHomepageP1Tracking() {
         Thread.sleep(3000)
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
-        Thread.sleep(1000)
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
 
         validateFlightHomepageBannerDisplayedAndScrollable()
