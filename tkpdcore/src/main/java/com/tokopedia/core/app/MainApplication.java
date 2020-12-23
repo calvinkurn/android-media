@@ -1,16 +1,11 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-
-import androidx.multidex.MultiDex;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
-import com.tokopedia.core.TkpdCoreRouter;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -31,14 +26,10 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 
 public abstract class MainApplication extends CoreNetworkApplication {
 
-    public static final int DATABASE_VERSION = 7;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -48,11 +39,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
     private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
-
-
-    public static MainApplication getInstance() {
-        return instance;
-    }
 
     protected void initRemoteConfig() {
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
@@ -65,23 +51,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(MainApplication.this);
-    }
-
-    public static int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public static boolean isDebug() {
         return BuildConfig.DEBUG;
     }
@@ -89,10 +58,8 @@ public abstract class MainApplication extends CoreNetworkApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        PACKAGE_NAME = getPackageName();
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
@@ -172,10 +139,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
             appComponent = daggerBuilder.build();
         }
         return appComponent;
-    }
-
-    public void setAppComponent(AppComponent appComponent) {
-        this.appComponent = appComponent;
     }
 
     //this method needs to be called from here in case of migration get it tested from CM team

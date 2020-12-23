@@ -585,6 +585,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
