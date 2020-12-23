@@ -45,4 +45,13 @@
         app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_amount"
         app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_amount"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
