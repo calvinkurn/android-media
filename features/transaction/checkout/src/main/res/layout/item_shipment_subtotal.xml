@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:visibility="visible">
 
@@ -39,7 +39,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_sub_total_price"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -60,7 +60,7 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="end"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/Unify_G400"
             android:visibility="gone"
             app:typographyType="small"
             app:typographyWeight="reguler"

@@ -18,13 +18,6 @@ import org.junit.Test
 class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
     @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopSettingsInfoViewModel.detachView()
-
-        verifyUnsubscribeUseCase()
-    }
-
-    @Test
     fun `when validate os merchant type with provided shopId should return success`() {
         runBlocking {
             mockkObject(CheckOfficialStoreTypeUseCase)

@@ -6,7 +6,7 @@ import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.NicotineLiteMessageData
 
 data class DisabledCartItemHolderData(
-        var cartId: Int = 0,
+        var cartId: Long = 0,
         var productId: String = "",
         var productImage: String = "",
         var productName: String = "",

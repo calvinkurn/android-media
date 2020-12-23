@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.viewholder.ProfileViewHolder
 
@@ -13,7 +15,7 @@ import com.tokopedia.home_account.view.viewholder.ProfileViewHolder
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserAdapterDelegate (val listener: HomeAccountUserListener) :
+class HomeAccountUserAdapterDelegate (val listener: HomeAccountUserListener, val financialAdapter: HomeAccountFinancialAdapter?, val memberAdapter: HomeAccountMemberAdapter?) :
         TypedAdapterDelegate<ProfileDataView, Any, ProfileViewHolder>(
                 ProfileViewHolder.LAYOUT
         ) {
@@ -25,6 +27,6 @@ class HomeAccountUserAdapterDelegate (val listener: HomeAccountUserListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProfileViewHolder {
-        return ProfileViewHolder(basicView, listener)
+        return ProfileViewHolder(basicView, listener, financialAdapter, memberAdapter)
     }
 }

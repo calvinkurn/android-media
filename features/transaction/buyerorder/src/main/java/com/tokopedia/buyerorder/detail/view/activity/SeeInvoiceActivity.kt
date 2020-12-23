@@ -50,7 +50,6 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         val data = intent?.extras?.getString(KEY_URL, "defaultKey")
         webView.loadUrl(data)
         onPrintClicked(webView)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -69,7 +68,17 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
     private fun onPrintClicked(webView: WebView?) {
         webView?.let {
             val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
-            val jobName = getString(R.string.app_name) + " Document"
+
+            var lastNoInvoice = ""
+            val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
+            if (invoiceRefNum.isNotEmpty()) {
+                val splitInvoice = invoiceRefNum.split("/")
+                if (splitInvoice.isNotEmpty()) {
+                    lastNoInvoice = splitInvoice[splitInvoice.size-1]
+                }
+            }
+            val jobName = "Invoice $lastNoInvoice"
+
             val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 it.createPrintDocumentAdapter(jobName)
             } else {
@@ -88,12 +97,17 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     companion object {
         const val STATUS = "status"
+        const val INVOICE_REF_NUM = "invoice_ref_num"
+        const val BOUGHT_DATE = "bought_date"
         @JvmStatic
-        fun newInstance(context: Context, status: Status, invoice: Invoice, title: String): Intent =
+        fun newInstance(context: Context, status: Status, invoice: Invoice,
+                        invoiceRefNum: String, boughtDate: String, title: String): Intent =
                 Intent(context, SeeInvoiceActivity::class.java).apply {
                     putExtra(STATUS, status.status())
                     putExtra(KEY_URL, invoice.invoiceUrl())
                     putExtra(KEY_TITLE, title)
+                    putExtra(INVOICE_REF_NUM, invoiceRefNum)
+                    putExtra(BOUGHT_DATE, boughtDate)
                 }
     }
 

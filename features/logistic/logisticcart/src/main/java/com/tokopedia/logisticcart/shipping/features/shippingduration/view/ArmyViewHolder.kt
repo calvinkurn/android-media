@@ -32,6 +32,15 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             itemView.tv_eta.visibility = View.GONE
         }
 
+        if (data.codData.isCodAvailable == 1) {
+            itemView.lbl_cod_available_eta.apply {
+                visibility = View.VISIBLE
+                text = data.codData.codText
+            }
+        } else {
+            itemView.lbl_cod_available_eta.visibility = View.GONE
+        }
+
         if (data.description.isEmpty()) itemView.tv_info.visibility = View.GONE
         ImageHandler.LoadImage(itemView.img_logo, data.imageUrl)
 
