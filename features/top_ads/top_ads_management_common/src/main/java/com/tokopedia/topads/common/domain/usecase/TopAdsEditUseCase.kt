@@ -55,6 +55,7 @@ class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as? Int
         return TopadsManageGroupAdsInput().apply {
             shopID = userSession.shopId
+            keywordOperation = null
             groupID = groupId.toString()
             source = PARAM_RECOM_EDIT_SOURCE
             groupInput = GroupEditInput(
@@ -64,7 +65,7 @@ class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository
                             name = null,
                             type = PRODUCT,
                             dailyBudget = dailyBudgetGroup,
-                            priceBid = priceBidGroup,
+                            priceBid = priceBidGroup
                     )
             )
         }

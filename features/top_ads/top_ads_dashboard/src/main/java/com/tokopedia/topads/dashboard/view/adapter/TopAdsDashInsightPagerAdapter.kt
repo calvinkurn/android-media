@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 
 /**
  * Created by Pika on 14/5/20.

@@ -53,7 +53,6 @@ import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 /**
  * Created by hadi.putra on 23/04/18.

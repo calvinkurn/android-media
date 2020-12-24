@@ -297,7 +297,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, 0, 0, response.data.size)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 

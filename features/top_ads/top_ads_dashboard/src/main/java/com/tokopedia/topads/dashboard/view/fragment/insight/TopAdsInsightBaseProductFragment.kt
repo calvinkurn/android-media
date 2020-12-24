@@ -34,7 +34,6 @@ import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRec
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_choose_group_insight_bottomsheet.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
 import javax.inject.Inject
@@ -125,6 +124,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     }
 
     private fun setEmptyState() {
+        (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
         emptyViewProductRecommendation?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         emptyViewProductRecommendation?.text_title?.text = getString(R.string.topads_dash_empty_product_recom_title)
         emptyViewProductRecommendation?.text_desc?.text = getString(R.string.topads_dash_empty_product_recom_desc)
@@ -156,7 +156,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     }
 
     fun openBottomSheet() {
-        topAdsDashboardPresenter.getGroupList(search.searchBarTextField.text.toString(), ::onSuccessGroupList)
+        topAdsDashboardPresenter.getGroupList("", ::onSuccessGroupList)
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
@@ -227,6 +227,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun onSuccessGroupCreation(topadsCreateGroupAds: ResponseCreateGroup.TopadsCreateGroupAds) {
         if (topadsCreateGroupAds.errors.isEmpty()) {
+            showSuccessToast()
             loadData()
         } else {
             onError(topadsCreateGroupAds.errors.firstOrNull()?.detail ?: "")
@@ -235,10 +236,10 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun getAds(): MutableList<GroupEditInput.Group.AdOperationsItem>? {
         val ids = adapter.getSelectedIds()
-        val adOperation = GroupEditInput.Group.AdOperationsItem()
-        val ad = adOperation.ad
         val list: MutableList<GroupEditInput.Group.AdOperationsItem>? = mutableListOf()
         ids.forEach {
+            val adOperation = GroupEditInput.Group.AdOperationsItem()
+            val ad = adOperation.ad
             ad.productId = it
             adOperation.ad = ad
             adOperation.action = PARAM_ADD_OPTION
@@ -271,11 +272,9 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private fun itemCheckedUnchecked() {
         val selected = adapter.getSelectedIds().size
         selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), selected)
-        if (selected != adapter.itemCount) {
-            cb_product_recom?.setOnCheckedChangeListener(null)
-            cb_product_recom?.isChecked = false
-            cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
-        }
+        cb_product_recom?.setOnCheckedChangeListener(null)
+        cb_product_recom?.isChecked = selected == adapter.itemCount
+        cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
         if (selected == 0) {
             (parentFragment as? TopAdsRecommendationFragment)?.setEnable(false)
         } else {

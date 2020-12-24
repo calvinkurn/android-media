@@ -45,21 +45,25 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         setChild(childView)
         setSheetValues()
         adapter = TopadsRecomGroupBsAdapter(::onGroupSelect)
-        initialState()
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
     private fun initialState() {
+        group_name_input?.textFieldInput?.text?.clear()
+        submit_butt?.isEnabled = false
+        group_name_input?.setError(false)
+        group_name_input?.setMessage("")
         if (groupList.isEmpty()) {
+            group_name_input.visible()
             contentSwitch?.gone()
             search.gone()
             recyclerView?.gone()
         } else {
             adapter.setItems(groupList)
-            group_name_input?.textFieldInput?.text?.clear()
-            submit_butt?.isEnabled = false
-            group_name_input?.setError(false)
-            group_name_input?.setMessage("")
+            val groupIds: List<String> = groupList.map {
+                it.groupId.toString()
+            }
+            topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
     }
 
@@ -82,6 +86,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetBehaviorKnob(view, true)
         setAdapter()
+        initialState()
         Utils.setSearchListener(search, context, view, ::getData)
         setGroupName()
         onButtonSubmit()
@@ -161,14 +166,16 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     private fun onSuccessGroupList(groupList: List<GroupListDataItem>) {
         if (groupList.isEmpty()) {
             emptyText.visible()
+            submit_butt?.isEnabled = false
         } else {
+            submit_butt?.isEnabled = true
             emptyText.gone()
             val groupIds: List<String> = groupList.map {
                 it.groupId.toString()
             }
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
-            adapter.setItems(groupList)
         }
+            adapter.setItems(groupList)
     }
 
     private fun onSuccessCount(list: List<CountDataItem>) {

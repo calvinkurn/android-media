@@ -6,11 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.raw.GROUP_LIST_QUERY
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -29,7 +25,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import timber.log.Timber
 import java.lang.reflect.Type
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named

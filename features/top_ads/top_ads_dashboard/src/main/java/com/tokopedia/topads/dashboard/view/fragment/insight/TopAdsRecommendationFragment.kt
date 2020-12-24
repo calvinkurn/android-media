@@ -11,19 +11,18 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
+import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
+import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
+import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
+import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.topads.dashboard.data.model.DailyBudgetRecommendationModel
-import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
-import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
-import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
-import kotlinx.android.synthetic.main.topads_dash_item_moveto_group.*
 import java.util.*
 import javax.inject.Inject
 
@@ -98,6 +97,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (countProduct == 0 && countBid == 0 && countKey == 0) {
             setEmptyView()
         } else {
+            if (countProduct != 0)
+                bottomInsight.visibility = View.VISIBLE
             initInsightTabAdapter()
             renderViewPager()
             topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey)
