@@ -1122,7 +1122,9 @@ class ShopPageFragment :
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
                         shopRef
-                )
+                ).apply{
+                    setInitialProductListData(shopViewModel.productListData)
+                }
             } else {
                 HomeProductFragment.createInstance(
                         shopId,

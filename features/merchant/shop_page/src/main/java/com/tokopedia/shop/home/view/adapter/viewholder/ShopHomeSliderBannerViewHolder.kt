@@ -59,7 +59,12 @@ class ShopHomeSliderBannerViewHolder(
         val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         //avoid crash in ImageUnify when image url is returned as base64
         try {
-            img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
+            img.post {
+                val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
+                img.layoutParams.height = (img.measuredWidth * ratio).toInt()
+                img.requestLayout()
+                img.setImageUrl(carouselItem.imageUrl)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
