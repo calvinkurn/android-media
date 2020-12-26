@@ -11,7 +11,8 @@ import androidx.annotation.IntDef
 @IntDef(
         AccessId.SOM_LIST,
         AccessId.PRODUCT_ADD,
-        AccessId.PRODUCT_EDIT
+        AccessId.PRODUCT_EDIT,
+        AccessId.PRODUCT_DUPLICATE
 )
 annotation class AccessId {
     companion object {

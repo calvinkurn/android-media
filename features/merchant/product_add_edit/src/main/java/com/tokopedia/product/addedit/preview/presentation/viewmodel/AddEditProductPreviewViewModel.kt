@@ -55,13 +55,29 @@ class AddEditProductPreviewViewModel @Inject constructor(
         (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
 
-    // observing the product id, and will execute the use case when product id is changed
+    private val mIsProductManageAuthorized = MutableLiveData<Result<Boolean>>()
+    val isProductManageAuthorized: LiveData<Result<Boolean>>
+        get() = mIsProductManageAuthorized
+
+    // observing the product id, and will execute the use case or check authorization when product id is changed
+    // also, observing whether user role is authorized and will execute use case if true
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) {
+            if (!productId.value.isNullOrBlank())  {
                 getProductData(it)
-            } else if (userSession.isShopAdmin) {
+            } else {
+                // Authorize access if adding product
                 authorizeAccess()
+            }
+        }
+        addSource(mIsProductManageAuthorized) { result ->
+            mIsLoading.value = false
+            ((result as? Success)?.data)?.let { shouldLoadProductData ->
+                productId.value?.let {
+                    if (shouldLoadProductData && it.isNotBlank()) {
+                        getProductData(it)
+                    }
+                }
             }
         }
     }
@@ -90,10 +106,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
-
-    private val mIsProductManageAuthorized = MutableLiveData<Result<Boolean>>()
-    val isProductManageAuthorized: LiveData<Result<Boolean>>
-        get() = mIsProductManageAuthorized
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -221,21 +233,23 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductData(productId: String) {
         mIsLoading.value = true
-        if (userSession.isShopAdmin && mIsProductManageAuthorized.value !is Success) {
+        val isAuthorized = (mIsProductManageAuthorized.value as? Success)?.data ?: false
+        if (isAuthorized) {
+            launchCatchError(block = {
+                val data = withContext(Dispatchers.IO) {
+                    getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
+                    getProductUseCase.executeOnBackground()
+                }
+                getAdminPermissionJob?.join()
+                mGetProductResult.value = Success(data)
+                mIsLoading.value = false
+            }, onError = {
+                getAdminPermissionJob?.cancel()
+                mGetProductResult.value = Fail(it)
+            })
+        } else {
             authorizeAccess()
         }
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
-                getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
-                getProductUseCase.executeOnBackground()
-            }
-            getAdminPermissionJob?.join()
-            mGetProductResult.value = Success(data)
-            mIsLoading.value = false
-        }, onError = {
-            getAdminPermissionJob?.cancel()
-            mGetProductResult.value = Fail(it)
-        })
     }
 
     fun getProductDraft(draftId: Long) {
@@ -308,28 +322,29 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun authorizeAccess() {
         mIsLoading.value = true
-        if (getAdminPermissionJob?.isCompleted != true) {
-            getAdminPermissionJob =
-                    launchCatchError(
-                            block = {
-                                mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
-                                    val accessId =
-                                            when {
-                                                isAdding -> AccessId.PRODUCT_ADD
-                                                isDuplicate -> AccessId.PRODUCT_DUPLICATE
-                                                isEditing.value == true -> AccessId.PRODUCT_EDIT
-                                                else -> AccessId.PRODUCT_ADD
-                                            }
-                                    authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), accessId)
-                                })
-                                mIsLoading.value = false
-                            },
-                            onError = {
-                                mIsProductManageAuthorized.value = Fail(it)
-                                getAdminPermissionJob?.cancel()
+        launchCatchError(
+                block = {
+                    mIsProductManageAuthorized.value = Success(withContext(dispatcher.io) {
+                        when {
+                            userSession.isShopOwner -> true
+                            userSession.isShopAdmin -> {
+                                val accessId =
+                                        when {
+                                            isAdding -> AccessId.PRODUCT_ADD
+                                            isDuplicate -> AccessId.PRODUCT_DUPLICATE
+                                            isEditing.value == true -> AccessId.PRODUCT_EDIT
+                                            else -> AccessId.PRODUCT_ADD
+                                        }
+                                authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), accessId)
                             }
-                    )
-        }
+                            else -> false
+                        }
+                    })
+                },
+                onError = {
+                    mIsProductManageAuthorized.value = Fail(it)
+                }
+        )
     }
 
 }
