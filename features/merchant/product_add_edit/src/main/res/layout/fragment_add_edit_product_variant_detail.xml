@@ -9,11 +9,10 @@
         android:id="@+id/ticker_add_edit_variant_multi_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         app:tickerType="information"
         app:tickerShapeType="full"
         app:closeButtonVisibility="gone"
-        app:descriptionText="@string/ticker_add_product_variant_main_location"
+        app:descriptionText="@string/message_add_product_stock_only_main_location"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

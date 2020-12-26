@@ -157,8 +157,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             sendTrackerSaveVariantDetailData()
         }
 
-        view.findViewById<Ticker>(R.id.ticker_add_edit_variant_multi_location)?.configAdminDescription(viewModel.isEditMode)
-
         observeSelectedVariantSize()
         observeInputStatus()
         observeHasWholesale()
@@ -463,33 +461,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
-        }
-    }
-
-    private fun Ticker.configAdminDescription(isEdit: Boolean) {
-        when {
-            userSession.isShopOwner -> {
-                if (isEdit) {
-                    setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
-                    show()
-                } else {
-                    if (userSession.isMultiLocationShop) {
-                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
-                        show()
-                    }
-                }
-            }
-            userSession.isShopAdmin -> {
-                if (userSession.isMultiLocationShop) {
-                    if (isEdit) {
-                        setTextDescription(context?.getString(R.string.ticker_edit_variant_show_location_status).orEmpty().parseAsHtml())
-                    } else {
-                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
-                    }
-                    show()
-                }
-            }
-            else -> {}
         }
     }
 }

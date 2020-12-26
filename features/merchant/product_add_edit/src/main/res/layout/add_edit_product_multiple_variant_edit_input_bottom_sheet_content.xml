@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tickerType="information"
-        app:tickerShapeType="loose"/>
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/ticker_edit_variant_main_location"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfuPrice"

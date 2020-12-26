@@ -24,7 +24,6 @@ import java.math.BigInteger
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean = false,
         private var enableEditPrice: Boolean = false,
-        private val couldShowMultiLocationTicker: Boolean = false,
         private val multipleVariantEditInputListener: MultipleVariantEditInputListener? = null
 ): BottomSheetUnify() {
 
@@ -88,15 +87,6 @@ class MultipleVariantEditInputBottomSheet(
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
-
-        contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.run {
-            if (couldShowMultiLocationTicker) {
-                setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
-                show()
-            } else {
-                hide()
-            }
-        }
 
         contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
