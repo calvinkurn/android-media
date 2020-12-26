@@ -33,6 +33,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -43,6 +44,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -335,7 +337,15 @@ class AddEditProductPreviewViewModel @Inject constructor(
                                             isEditing.value == true -> AccessId.PRODUCT_EDIT
                                             else -> AccessId.PRODUCT_ADD
                                         }
-                                authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), accessId)
+                                userSession.shopId.toIntOrZero().let { shopId ->
+                                    val canManageProduct = async {
+                                        authorizeAccessUseCase.execute(shopId, accessId)
+                                    }
+                                    val canEditStock = async {
+                                        authorizeEditStockUseCase.execute(shopId, AccessId.EDIT_STOCK)
+                                    }
+                                    canManageProduct.await() && canEditStock.await()
+                                }
                             }
                             else -> false
                         }

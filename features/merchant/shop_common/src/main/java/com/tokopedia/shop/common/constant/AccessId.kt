@@ -12,7 +12,8 @@ import androidx.annotation.IntDef
         AccessId.SOM_LIST,
         AccessId.PRODUCT_ADD,
         AccessId.PRODUCT_EDIT,
-        AccessId.PRODUCT_DUPLICATE
+        AccessId.PRODUCT_DUPLICATE,
+        AccessId.EDIT_STOCK
 )
 annotation class AccessId {
     companion object {
@@ -20,5 +21,6 @@ annotation class AccessId {
         const val PRODUCT_ADD = 101
         const val PRODUCT_EDIT = 121
         const val PRODUCT_DUPLICATE = 123
+        const val EDIT_STOCK = 124
     }
 }

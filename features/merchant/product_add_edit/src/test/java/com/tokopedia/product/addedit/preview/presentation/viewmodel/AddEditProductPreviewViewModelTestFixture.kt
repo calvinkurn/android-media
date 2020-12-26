@@ -38,6 +38,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
+    lateinit var authorizeEditStockUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
 
     @RelaxedMockK
@@ -56,6 +59,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 getProductDraftUseCase,
                 saveProductDraftUseCase,
                 authorizeAccessUseCase,
+                authorizeEditStockUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider))
     }
