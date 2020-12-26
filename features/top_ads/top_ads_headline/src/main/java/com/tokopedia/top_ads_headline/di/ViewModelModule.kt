@@ -48,8 +48,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EditAdCostViewModel::class)
-    internal abstract fun provideEditAdCostViewModel(viewModel: EditAdCostViewModel): ViewModel
+    @ViewModelKey(HeadlineEditKeywordViewModel::class)
+    internal abstract fun provideHeadlineEditKeywordViewModel(viewModel: HeadlineEditKeywordViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -15,6 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
@@ -118,7 +119,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private fun editGroup(groupId: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-            putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+            putExtra(ParamObject.GROUP_ID, groupId.toString())
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }

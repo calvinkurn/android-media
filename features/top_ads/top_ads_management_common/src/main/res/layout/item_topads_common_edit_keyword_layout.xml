@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_10"
-    android:layout_marginEnd="@dimen/dp_10"
     app:cardCornerRadius="@dimen/dp_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,21 +60,19 @@
             app:layout_constraintBottom_toBottomOf="@id/searchType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/keywordName"
-            tools:src="@drawable/topads_ic_delete" />
+            app:srcCompat="@drawable/topads_ic_delete" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/advertisingCost"
             android:layout_width="@dimen/dp_150"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
             android:focusableInTouchMode="true"
             app:layout_constraintEnd_toStartOf="@id/klik"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchType"
             app:text_field_input_type="number"
             app:text_field_label_static="true"
-            app:text_field_message="@string/topads_common_keyword_avg_cost"
             app:text_field_prepend_text="Rp"
             tools:layout_height="@dimen/dp_50"
             tools:layout_width="@dimen/dp_50" />

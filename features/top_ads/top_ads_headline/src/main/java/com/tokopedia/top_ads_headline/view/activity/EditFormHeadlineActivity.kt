@@ -17,8 +17,8 @@ import com.tokopedia.top_ads_headline.view.fragment.EditAdOthersFragment
 import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.constant.Constants
-import com.tokopedia.topads.common.constant.Constants.GROUP_ID
 import com.tokopedia.topads.common.constant.Constants.TAB_POSITION
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -90,7 +90,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     private fun getViewPagerAdapter(): TopAdsEditPagerAdapter {
         val list: ArrayList<Fragment> = ArrayList()
         list.add(AdContentFragment.newInstance())
-        list.add(EditAdCostFragment.newInstance())
+        list.add(EditAdCostFragment.newInstance(groupId))
         list.add(EditAdOthersFragment.newInstance())
         adapter = TopAdsEditPagerAdapter(arrayOf(Constants.AD_CONTENT, Constants.AD_AND_KEYWORD_COST, Constants.OTHERS), supportFragmentManager, 0)
         adapter.setData(list)

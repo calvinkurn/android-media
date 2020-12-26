@@ -10,11 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
-import com.tokopedia.top_ads_headline.view.viewmodel.EditAdCostViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.tips.viewholder.TipsUiSortViewHolder
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
@@ -35,8 +36,6 @@ private const val POSITION_NEGATIVE_KEYWORD = 1
 class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortItemClick {
     private var tipsSortListSheet: TipsListSheet? = null
 
-    private lateinit var editAdCostViewModel: EditAdCostViewModel
-
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
 
     @Inject
@@ -47,6 +46,7 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
 
     private var stepperModel: HeadlineAdStepperModel? = null
 
+    private var groupId: Int = 0
     override fun getScreenName(): String {
         return EditAdCostFragment::class.java.simpleName
     }
@@ -57,12 +57,18 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
     }
 
     companion object {
-        fun newInstance(): EditAdCostFragment = EditAdCostFragment()
+        fun newInstance(groupId: String): EditAdCostFragment = EditAdCostFragment().apply {
+            arguments = Bundle().apply {
+                putString(GROUP_ID, groupId)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        editAdCostViewModel = ViewModelProvider(this, viewModelFactory).get(EditAdCostViewModel::class.java)
+        arguments?.run {
+            groupId = getString(GROUP_ID).toIntOrZero()
+        }
         activity?.let {
             sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
@@ -87,9 +93,9 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
     }
 
     private fun setAdvertisingCost(minBid: Int) {
-            val cost = Utils.convertToCurrency(minBid.toLong())
-            advertisingCost.textFieldInput.setText(cost)
-            advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
+        val cost = Utils.convertToCurrency(minBid.toLong())
+        advertisingCost.textFieldInput.setText(cost)
+        advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
     }
 
     private fun advertisingCostTextWatcher(): NumberTextWatcher? {
@@ -138,8 +144,8 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
 
     private fun getViewPagerAdapter(): KeywordEditPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
-        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_POSITIVE))
-        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_NEGATIVE))
+        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_POSITIVE, groupId))
+        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_NEGATIVE, groupId))
         val adapter = KeywordEditPagerAdapter(childFragmentManager, 0)
         adapter.setData(list)
         return adapter
