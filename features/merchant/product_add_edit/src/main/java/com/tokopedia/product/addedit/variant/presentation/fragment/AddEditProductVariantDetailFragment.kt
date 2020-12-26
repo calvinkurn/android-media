@@ -125,7 +125,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
@@ -360,7 +360,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun showMultipleEditBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
-        val bottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
+        val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
