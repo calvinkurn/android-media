@@ -17,7 +17,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import kotlin.math.abs
@@ -34,7 +33,7 @@ object AddNewAddressUtils {
         if (message.isEmpty()) {
             msg = activity.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
-        val snackbar = view.let { Snackbar.make(it, msg, BaseToaster.LENGTH_SHORT) }
+        val snackbar = view.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT) }
         val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
         snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)

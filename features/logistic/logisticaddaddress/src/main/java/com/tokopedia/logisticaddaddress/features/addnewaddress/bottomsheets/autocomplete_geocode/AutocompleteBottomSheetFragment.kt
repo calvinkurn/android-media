@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -204,6 +205,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         }
     }
 
+    @SuppressLint("FragmentLiveDataObserve")
     private fun setObservers() {
         viewModel.autoCompleteList.observe(this, Observer {
             when(it) {
