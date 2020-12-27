@@ -455,13 +455,13 @@ class SellerHomeActivityViewModelTest {
 
     private fun everyCheckOrderRolePermissionThenReturn(isRoleEligible: Boolean) {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         } returns isRoleEligible
     }
 
     private fun everyCheckOrderRolePermissionThenThrow(exception: Exception) {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         } throws exception
     }
 
@@ -482,7 +482,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsCalled() {
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         }
     }
 
@@ -494,7 +494,7 @@ class SellerHomeActivityViewModelTest {
 
     private fun verifyCheckAdminOrderPermissionIsNotCalled() {
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         }
     }
 
