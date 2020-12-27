@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:tickerType="information"
+                app:tickerType="announcement"
                 app:tickerShapeType="full"
                 app:titleText="@string/ticker_add_product_main_location_title"
                 app:descriptionText="@string/ticker_add_product_main_location_desc"
