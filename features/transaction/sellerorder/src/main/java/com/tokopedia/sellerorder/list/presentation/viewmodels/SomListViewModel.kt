@@ -293,7 +293,8 @@ class SomListViewModel @Inject constructor(
             userSession.isShopAdmin -> {
                 launchCatchError(
                         block = {
-                            authorizeAccessUseCase.execute(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST).let { isEligible ->
+                            val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
+                            authorizeAccessUseCase.execute(requestParams).let { isEligible ->
                                 _isOrderManageEligible.postValue(Success(isEligible))
                                 _canShowOrderData.postValue(isEligible)
                             }

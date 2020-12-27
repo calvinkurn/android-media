@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.query.AuthorizeAccess
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.AuthorizeAccessResponse
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class AuthorizeAccessUseCase @Inject constructor(
@@ -14,6 +15,13 @@ class AuthorizeAccessUseCase @Inject constructor(
 
     companion object {
         private const val ERROR_MESSAGE = "Failed getting access"
+
+        @JvmStatic
+        fun createRequestParams(shopId: Int, resourceId: Int): RequestParams =
+                RequestParams.create().apply {
+                    putInt(AuthorizeAccess.ACCESS_ID, resourceId)
+                    putInt(AuthorizeAccess.RESOURCE_ID, shopId)
+                }
     }
 
     init {
@@ -24,8 +32,8 @@ class AuthorizeAccessUseCase @Inject constructor(
         setTypeClass(AuthorizeAccessResponse::class.java)
     }
 
-    suspend fun execute(shopId: Int, resourceId: Int): Boolean {
-        setRequestParams(AuthorizeAccess.createRequestParams(shopId, resourceId).parameters)
+    suspend fun execute(requestParams: RequestParams): Boolean {
+        setRequestParams(requestParams.parameters)
         val response = executeOnBackground()
         response.authorizeAccessData?.let { accessData ->
             if (accessData.error.isNullOrEmpty()) {

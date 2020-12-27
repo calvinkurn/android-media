@@ -11,14 +11,7 @@ object AuthorizeAccess {
             "  }\n" +
             "}"
 
-    private const val ACCESS_ID = "accessID"
-    private const val RESOURCE_ID = "resourceID"
-
-    @JvmStatic
-    fun createRequestParams(shopId: Int, resourceId: Int): RequestParams =
-            RequestParams.create().apply {
-                putInt(ACCESS_ID, resourceId)
-                putInt(RESOURCE_ID, shopId)
-            }
+    const val ACCESS_ID = "accessID"
+    const val RESOURCE_ID = "resourceID"
 
 }

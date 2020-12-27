@@ -339,10 +339,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                                         }
                                 userSession.shopId.toIntOrZero().let { shopId ->
                                     val canManageProduct = async {
-                                        authorizeAccessUseCase.execute(shopId, accessId)
+                                        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, accessId)
+                                        authorizeAccessUseCase.execute(requestParams)
                                     }
                                     val canEditStock = async {
-                                        authorizeEditStockUseCase.execute(shopId, AccessId.EDIT_STOCK)
+                                        val requestParams = AuthorizeAccessUseCase.createRequestParams(shopId, AccessId.EDIT_STOCK)
+                                        authorizeEditStockUseCase.execute(requestParams)
                                     }
                                     canManageProduct.await() && canEditStock.await()
                                 }
