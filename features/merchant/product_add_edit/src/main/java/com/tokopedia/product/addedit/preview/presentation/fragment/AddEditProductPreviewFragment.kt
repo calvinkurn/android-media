@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -28,10 +29,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
@@ -108,6 +111,8 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
+import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -175,8 +180,9 @@ class AddEditProductPreviewFragment:
     //loading
     private var loadingLayout: View? = null
 
-    // admin multi location ticker
+    // admin revamp
     private var multiLocationTicker: Ticker? = null
+    private var adminRevampGlobalError: GlobalError? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -316,6 +322,7 @@ class AddEditProductPreviewFragment:
 
         // admin revamp
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
+        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
 
         addEditProductPhotoButton?.setOnClickListener {
             // tracking
@@ -972,8 +979,21 @@ class AddEditProductPreviewFragment:
                 is Success -> {
                     result.data.let { isEligible ->
                         if (!isEligible) {
-                            // TODO: Show not eligible page. Will wait for PM. For now, exit the page
-                            activity?.finish()
+                            adminRevampGlobalError?.run {
+                                val permissionGroup = SellerHomePermissionGroup.PRODUCT
+                                ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+                                errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+                                errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+                                errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+                                setButtonFull(true)
+
+                                setActionClickListener {
+                                    activity?.finish()
+                                    if (GlobalConfig.isSellerApp()) {
+                                        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
