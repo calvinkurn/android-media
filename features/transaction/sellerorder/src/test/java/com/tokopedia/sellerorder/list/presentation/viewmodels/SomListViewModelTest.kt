@@ -15,7 +15,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.util.observeAwaitValue
-import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -34,7 +33,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 
 class SomListViewModelTest {
     @get:Rule
@@ -682,7 +680,7 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldSuccess() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         } returns true
         coEvery {
             userSession.isShopOwner
@@ -694,7 +692,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         }
 
         assert(viewModel.isOrderManageEligible.observeAwaitValue() is Success)
@@ -703,7 +701,7 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldFail() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         } throws Throwable()
         coEvery {
             userSession.isShopOwner
@@ -715,7 +713,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         }
 
         assert(viewModel.isOrderManageEligible.observeAwaitValue() is Fail)
@@ -730,9 +728,9 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify(exactly = 0) {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(any())
         }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == true)
+        assert((viewModel.isOrderManageEligible.value as? Success)?.data == true)
     }
 
     @Test
@@ -747,7 +745,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
+            authorizeAccessUseCase.execute(any())
         }
     }
 
@@ -763,9 +761,9 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(any())
         }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == false)
+        assert((viewModel.isOrderManageEligible.value as? Success)?.data == false)
     }
 
     @Test
