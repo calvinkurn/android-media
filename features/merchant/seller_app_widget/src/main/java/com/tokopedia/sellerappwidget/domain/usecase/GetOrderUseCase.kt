@@ -37,6 +37,9 @@ class GetOrderUseCase(
          * create params to get order list
          * @param startDateFmt should be date with format dd/MM/yyyy
          * @param endDateFmt should be date with format dd/MM/yyyy
+         * @param statusId is order status id, ex : new order is 220, ready to ship is 400, etc
+         * @param sortBy to short order by SORT_BY_PAYMENT_DATE_ASCENDING which is 0
+         * or SORT_BY_PAYMENT_DATE_ASCENDING which is 2
          * @return `RequestParams`
          * */
         fun createParams(startDateFmt: String, endDateFmt: String, statusId: Int, sortBy: Int): RequestParams {
