@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.activity
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -37,20 +36,12 @@ open class TopChatRoomActivity : BaseChatToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
-        useLightNotificationBar()
         initWindowBackground()
     }
 
     private fun initWindowBackground() {
         val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         window.decorView.setBackgroundColor(color)
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
     }
 
     override fun setupToolbar() {
