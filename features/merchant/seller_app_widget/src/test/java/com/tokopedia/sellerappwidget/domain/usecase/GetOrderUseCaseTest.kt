@@ -2,7 +2,9 @@ package com.tokopedia.sellerappwidget.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.data.model.GetOrderResponse
+import com.tokopedia.sellerappwidget.data.model.OrderFilterSomModel
 import com.tokopedia.sellerappwidget.data.model.OrderProductModel
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
 import com.tokopedia.sellerappwidget.utils.TestHelper
@@ -113,10 +115,18 @@ class GetOrderUseCaseTest {
                     )
                 },
                 sellerOrderStatus = SellerOrderStatusUiModel(
-                        newOrder = data.notifications?.sellerOrderStatus?.newOrder.orZero(),
-                        readyToShip = data.notifications?.sellerOrderStatus?.readyToShip.orZero()
+                        newOrder = getOrderAmount(data.orderFilterSom, Const.OrderStatusStr.NEW_ORDER),
+                        readyToShip = getOrderAmount(data.orderFilterSom, Const.OrderStatusStr.READY_TO_SHIP)
                 )
         )
+    }
+
+    private fun getOrderAmount(orderFilterSom: OrderFilterSomModel?, orderStatus: String): Int {
+        return orderFilterSom?.statusList
+                ?.firstOrNull {
+                    it.key == orderStatus
+                }
+                ?.orderAmount.orZero()
     }
 
     private fun getFirstProduct(product: OrderProductModel?): OrderProductUiModel? {
@@ -144,8 +154,8 @@ class GetOrderUseCaseTest {
                         productCount = 1 //number of orders
                 )),
                 sellerOrderStatus = SellerOrderStatusUiModel(
-                        newOrder = 0,
-                        readyToShip = 1
+                        newOrder = 64,
+                        readyToShip = 218
                 )
         )
     }
