@@ -11,7 +11,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
-import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
@@ -19,7 +18,6 @@ import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.ChatWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
-import kotlin.math.absoluteValue
 
 /**
  * Created By @ilhamsuaib on 02/12/20
@@ -34,14 +32,10 @@ object ChatWidgetSuccessState {
         with(remoteViews) {
             setTextViewText(R.id.tvSawChatTotalChat, totalChats)
             setTextViewText(R.id.tvSawChatShopName, userSession.shopName)
-            val headerHeight = context.resources.getDimension(R.dimen.saw_chat_header_height).toInt()
-            val widgetItemHeight = context.resources.getDimension(R.dimen.saw_widget_item_height).toInt()
-            val widgetHeight = context.dpToPx(AppWidgetHelper.getAppWidgetHeight(context, widgetId)).toInt().minus(headerHeight)
-            val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
 
             //setup chat list
             val randomNumber = (Math.random() * 10000).toInt()
-            val chatItems = ArrayList(chat.chats.take(itemCount))
+            val chatItems = ArrayList(chat.chats)
             val intent = Intent(context, ChatWidgetRemoteViewService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))

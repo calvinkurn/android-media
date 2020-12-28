@@ -21,7 +21,6 @@ import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.OrderWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
-import kotlin.math.absoluteValue
 
 /**
  * Created By @ilhamsuaib on 18/11/20
@@ -82,14 +81,7 @@ object OrderWidgetSuccessState {
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val headerHeight = context.resources.getDimension(R.dimen.saw_order_header_height).toInt()
-            val widgetItemHeight = context.resources.getDimension(R.dimen.saw_widget_item_height).toInt()
-            val widgetHeight = context.dpToPx(AppWidgetHelper.getAppWidgetHeight(context, widgetId)).toInt().minus(headerHeight)
-            val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
-
-            val orderItemsByType = order.orders?.filter { it.statusId == orderStatusId }
-                    .orEmpty()
-                    .take(itemCount)
+            val orderItemsByType = order.orders?.filter { it.statusId == orderStatusId }.orEmpty()
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
