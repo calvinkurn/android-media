@@ -40,13 +40,6 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
         }
     }
 
-
-    private fun setActionMenu() {
-      //  val headerUnify = (activity as ThankYouPageActivity).getHeader()
-       // headerUnify.actionText = getString(R.string.thank_menu_detail)
-        //headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
-    }
-
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 

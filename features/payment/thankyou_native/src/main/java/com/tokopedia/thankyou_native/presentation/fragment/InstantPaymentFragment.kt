@@ -111,13 +111,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
-    private fun setActionMenu() {
-        // val headerUnify = (activity as ThankYouPageActivity).getHeader()
-        //headerUnify.actionText = getString(R.string.thank_menu_detail)
-        //headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
-    }
-
-
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
@@ -144,12 +137,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            /*
-            //todo instalment detail
-            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
-                tv_payment_interest.text = thanksPageData.additionalInfo.installmentInfo
-                tv_payment_interest.visible()
-            }*/
+            //use installment info here in case of credit card
         } else
             tv_payment_method.text = thanksPageData.gatewayName
 
