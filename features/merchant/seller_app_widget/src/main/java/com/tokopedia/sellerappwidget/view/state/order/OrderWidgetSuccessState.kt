@@ -82,9 +82,9 @@ object OrderWidgetSuccessState {
             setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
             setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
-            val headerHeight = 112
-            val widgetItemHeight = 64
-            val widgetHeight = AppWidgetHelper.getAppWidgetHeight(context, widgetId).minus(headerHeight)
+            val headerHeight = context.resources.getDimension(R.dimen.saw_order_header_height).toInt()
+            val widgetItemHeight = context.resources.getDimension(R.dimen.saw_widget_item_height).toInt()
+            val widgetHeight = context.dpToPx(AppWidgetHelper.getAppWidgetHeight(context, widgetId)).toInt().minus(headerHeight)
             val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
 
             val orderItemsByType = order.orders?.filter { it.statusId == orderStatusId }

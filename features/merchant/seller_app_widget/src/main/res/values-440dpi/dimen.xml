@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="saw_order_header_height">64dp</dimen>
+    <dimen name="saw_chat_header_height">44dp</dimen>
+    <dimen name="saw_widget_item_height">36dp</dimen>
+</resources>

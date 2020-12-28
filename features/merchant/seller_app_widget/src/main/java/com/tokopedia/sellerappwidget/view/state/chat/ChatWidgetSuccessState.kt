@@ -34,9 +34,9 @@ object ChatWidgetSuccessState {
         with(remoteViews) {
             setTextViewText(R.id.tvSawChatTotalChat, totalChats)
             setTextViewText(R.id.tvSawChatShopName, userSession.shopName)
-            val headerHeight = 64
-            val widgetItemHeight = 56
-            val widgetHeight = AppWidgetHelper.getAppWidgetHeight(context, widgetId).minus(headerHeight)
+            val headerHeight = context.resources.getDimension(R.dimen.saw_chat_header_height).toInt()
+            val widgetItemHeight = context.resources.getDimension(R.dimen.saw_widget_item_height).toInt()
+            val widgetHeight = context.dpToPx(AppWidgetHelper.getAppWidgetHeight(context, widgetId)).toInt().minus(headerHeight)
             val itemCount = (widgetHeight / widgetItemHeight).absoluteValue
 
             //setup chat list
