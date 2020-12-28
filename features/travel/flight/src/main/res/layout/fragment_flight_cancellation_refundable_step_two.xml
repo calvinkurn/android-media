@@ -30,8 +30,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 app:text_field_label="@string/flight_cancellation_reason_label"
-                app:text_field_placeholder="@string/flight_cancellation_reason_hint_label"
-                tools:layout_height="@dimen/layout_lvl5"/>
+                app:text_field_placeholder="@string/flight_cancellation_reason_hint_label"/>
 
             <LinearLayout
                 android:id="@+id/attachment_container"
