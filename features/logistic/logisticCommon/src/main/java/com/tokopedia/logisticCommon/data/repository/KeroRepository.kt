@@ -14,7 +14,7 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
 
     suspend fun getAutoComplete(keyword: String): AutoCompleteResponse {
         val param = mapOf("param" to keyword)
-        val request = GraphqlRequest(KeroLogisticQuery.autoCompleteGeocode,
+        val request = GraphqlRequest(KeroLogisticQuery.autoComplete,
                 AutoCompleteResponse::class.java, param)
         return gql.getResponse(request)
     }
