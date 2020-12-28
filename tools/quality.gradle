@@ -1,9 +1,7 @@
 if (project.hasProperty("quality")) {
     apply plugin: "com.vanniktech.code.quality.tools"
     apply plugin: 'org.sonarqube'
-}
 
-if (project.hasProperty("quality")) {
     codeQualityTools {
         boolean failEarly = true
         boolean xmlReports = true
