@@ -266,7 +266,7 @@ open class WishlistViewModel @Inject constructor(
 
                     addToCartUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(addToCartResult: AddToCartDataModel?) {
-                            val productId: Int
+                            val productId: Long
                             val isSuccess: Boolean
                             val cartId: String
                             val message: String

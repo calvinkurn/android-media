@@ -28,7 +28,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
 import com.tokopedia.home.explore.view.adapter.ExploreFragmentAdapter;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
@@ -135,7 +135,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
-    public void renderData(List<ExploreSectionViewModel> list) {
+    public void renderData(List<ExploreSectionDataModel> list) {
         fragmentAdapter.setData(list);
         setupTabIcon(list);
         if (getIntent().getExtras() != null) {
@@ -194,7 +194,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
 
-    private void setupTabIcon(List<ExploreSectionViewModel> list) {
+    private void setupTabIcon(List<ExploreSectionDataModel> list) {
         sectionList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             DynamicHomeIcon.UseCaseIcon model = list.get(i).getUseCaseIcon();

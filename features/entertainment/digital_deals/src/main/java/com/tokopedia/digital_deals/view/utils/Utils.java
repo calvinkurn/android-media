@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -153,15 +154,13 @@ public class Utils {
     }
 
     public Location getLocation(Context context) {
-
-        if (location == null) {
-            final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
-            String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
-            if (locationjson != null) {
-                Gson gson = new Gson();
-                location = gson.fromJson(locationjson, Location.class);
-            }
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
+        String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
+        if (locationjson != null) {
+            Gson gson = new Gson();
+            location = gson.fromJson(locationjson, Location.class);
         }
+
         if (location == null) {
             location = new Location();
             location.setName(LOCATION_NAME);

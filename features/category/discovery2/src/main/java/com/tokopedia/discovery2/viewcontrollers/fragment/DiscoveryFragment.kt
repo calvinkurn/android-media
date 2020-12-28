@@ -29,6 +29,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -651,6 +652,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onStop() {
         super.onStop()
         openScreenStatus = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        discoComponentQuery = null
     }
 
     override fun onProductCardHeaderClick(componentsItem: ComponentsItem) {

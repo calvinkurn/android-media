@@ -84,7 +84,6 @@ import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -500,58 +499,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorSendVote(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onSuccessSendVote(int rowNumber, String optionId,
-                                  VoteStatisticDomainModel voteStatisticDomainModel) {
-
-        int DEFAULT = 0;
-        int UNSELECTED = 1;
-        int SELECTED = 2;
-
-        if (adapter.getList().size() > 0
-                && adapter.getList().get(0) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getList().get(0);
-            for (BasePostViewModel basePostViewModel : model.getContentList()) {
-                if (basePostViewModel instanceof PollContentViewModel) {
-                    PollContentViewModel pollContentViewModel = (PollContentViewModel) basePostViewModel;
-                    pollContentViewModel.setVoted(true);
-
-                    int totalVoter;
-                    try {
-                        totalVoter = Integer.valueOf(voteStatisticDomainModel.getTotalParticipants());
-                    } catch (NumberFormatException ignored) {
-                        totalVoter = 0;
-                    }
-                    pollContentViewModel.setTotalVoterNumber(totalVoter);
-
-                    for (int i = 0; i < pollContentViewModel.getOptionList().size(); i++) {
-                        PollContentOptionViewModel optionViewModel
-                                = pollContentViewModel.getOptionList().get(i);
-
-                        optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
-                                SELECTED : UNSELECTED);
-
-                        int newPercentage = 0;
-                        try {
-                            newPercentage = Integer.valueOf(
-                                    voteStatisticDomainModel.getListOptions().get(i).getPercentage()
-                            );
-                        } catch (NumberFormatException | IndexOutOfBoundsException ignored) {
-                        }
-                        optionViewModel.setPercentage(newPercentage);
-                    }
-                }
-            }
-        }
-
-        adapter.notifyItemChanged(0);
-    }
-
-    @Override
     public void onErrorDeletePost(Throwable e) {
         NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
     }
@@ -900,7 +847,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             if (isVoted) {
                 onGoToLink(redirectLink);
             } else {
-                presenter.sendVote(0, pollId, optionId);
+
             }
         } else {
             RouteManager.route(getActivity(), ApplinkConst.LOGIN);
