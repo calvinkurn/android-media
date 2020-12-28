@@ -58,11 +58,6 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".detail.view.activity.FlightDetailOrderActivity"
-            android:label="@string/flight_order_list"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".cancellation.view.activity.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
