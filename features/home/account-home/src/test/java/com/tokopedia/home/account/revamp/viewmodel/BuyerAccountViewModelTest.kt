@@ -308,6 +308,9 @@ class BuyerAccountViewModelTest {
             Pair(adminDataResponse, null)
         }
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
         Assertions.assertThat(viewModel.canGoToSellerAccount.value).isEqualTo(!isLocationAdmin)
@@ -322,12 +325,16 @@ class BuyerAccountViewModelTest {
             accountAdminInfoUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
         assert(viewModel.buyerAccountDataData.value is Fail)
         assert(viewModel.canGoToSellerAccount.value == null)
     }
 
+    @Test
     fun `success get not null account admin data will refresh user session admin related data`() = runBlockingTest {
         val isShopOwner = false
         val isShopAdmin = true
@@ -350,9 +357,12 @@ class BuyerAccountViewModelTest {
             Pair(adminDataResponse, null)
         }
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
-        coVerifyAll {
+        coVerify {
             userSession.setIsShopOwner(isShopOwner)
             userSession.setIsLocationAdmin(isLocationAdmin)
             userSession.setIsShopAdmin(isShopAdmin)
@@ -360,6 +370,7 @@ class BuyerAccountViewModelTest {
         }
     }
 
+    @Test
     fun `success get not null account admin data will remove unnecessary shop data if is location admin`() = runBlockingTest {
         val isLocationAdmin = true
         val adminDataResponse = AdminDataResponse(
@@ -380,9 +391,12 @@ class BuyerAccountViewModelTest {
             Pair(adminDataResponse, null)
         }
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
-        coVerifyAll {
+        coVerify {
             userSession.shopAvatar = ""
             userSession.shopId = "0"
             userSession.shopName = ""
@@ -391,6 +405,7 @@ class BuyerAccountViewModelTest {
         }
     }
 
+    @Test
     fun `success get null account admin data will not update any related user session value`() = runBlockingTest {
         setDefaultEveryReturnForNonAdminRelatedData()
 
@@ -399,6 +414,9 @@ class BuyerAccountViewModelTest {
         } answers {
             Pair(null, null)
         }
+
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
 
         viewModel.getBuyerData()
 
@@ -415,6 +433,7 @@ class BuyerAccountViewModelTest {
         }
     }
 
+    @Test
     fun `success get non null shop data will refresh user session values`() = runBlockingTest {
         val shopID = "0"
         val domain = "terisugi"
@@ -431,9 +450,12 @@ class BuyerAccountViewModelTest {
             Pair(null, shopData)
         }
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
-        coVerifyAll {
+        coVerify {
             userSession.shopId = shopID
             userSession.shopName = name
             userSession.shopAvatar = logo
@@ -442,6 +464,7 @@ class BuyerAccountViewModelTest {
         }
     }
 
+    @Test
     fun `success get null shop data will not refresh user session values`() = runBlockingTest {
         setDefaultEveryReturnForNonAdminRelatedData()
 
@@ -451,12 +474,37 @@ class BuyerAccountViewModelTest {
             Pair(null, null)
         }
 
+        getUserSessionIsShopOwner_thenReturn(false)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
         viewModel.getBuyerData()
 
         coVerify(exactly = 0) {
             userSession.shopId = anyString()
             userSession.shopName = anyString()
             userSession.shopAvatar = anyString()
+            userSession.setIsGoldMerchant(anyBoolean())
+            userSession.setIsShopOfficialStore(anyBoolean())
+        }
+    }
+
+    @Test
+    fun `shop owner will not need to get admin info`() = runBlockingTest {
+        setDefaultEveryReturnForNonAdminRelatedData()
+        getUserSessionIsShopOwner_thenReturn(true)
+        getUserSessionIsLocationAdmin_thenReturn(anyBoolean())
+
+        viewModel.getBuyerData()
+
+        coVerify(exactly = 0) {
+            accountAdminInfoUseCase.executeOnBackground()
+            userSession.setIsShopOwner(anyBoolean())
+            userSession.setIsLocationAdmin(anyBoolean())
+            userSession.setIsShopAdmin(anyBoolean())
+            userSession.setIsMultiLocationShop(anyBoolean())
+            userSession.shopAvatar = anyString()
+            userSession.shopId = anyString()
+            userSession.shopName = anyString()
             userSession.setIsGoldMerchant(anyBoolean())
             userSession.setIsShopOfficialStore(anyBoolean())
         }
@@ -486,5 +534,17 @@ class BuyerAccountViewModelTest {
         } answers {
             ShortcutResponse()
         }
+    }
+
+    private fun getUserSessionIsShopOwner_thenReturn(isShopOwner: Boolean) {
+        coEvery {
+            userSession.isShopOwner
+        } returns isShopOwner
+    }
+
+    private infix fun getUserSessionIsLocationAdmin_thenReturn(isLocationAdmin: Boolean) {
+        coEvery {
+            userSession.isLocationAdmin
+        } returns isLocationAdmin
     }
 }
