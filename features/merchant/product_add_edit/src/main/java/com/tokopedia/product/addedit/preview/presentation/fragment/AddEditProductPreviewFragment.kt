@@ -978,7 +978,9 @@ class AddEditProductPreviewFragment:
             when(result) {
                 is Success -> {
                     result.data.let { isEligible ->
-                        if (!isEligible) {
+                        if (isEligible) {
+                            adminRevampGlobalError?.hide()
+                        } else {
                             adminRevampGlobalError?.run {
                                 val permissionGroup = SellerHomePermissionGroup.PRODUCT
                                 ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
@@ -993,6 +995,7 @@ class AddEditProductPreviewFragment:
                                         RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
                                     }
                                 }
+                                show()
                             }
                         }
                     }
