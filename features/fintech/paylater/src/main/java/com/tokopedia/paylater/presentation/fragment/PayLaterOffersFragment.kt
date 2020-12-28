@@ -7,15 +7,20 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
-import com.tokopedia.paylater.domain.model.*
+import com.tokopedia.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.paylater.domain.model.PayLaterProductData
+import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PayLaterOffersFragment : BaseDaggerFragment() {
@@ -31,6 +36,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private val pagerAdapter: PayLaterOfferPagerAdapter by lazy {
         PayLaterOfferPagerAdapter(childFragmentManager, 0)
     }
+    private var payLaterOfferCallback: PayLaterOfferCallback? = null
 
     override fun initInjector() {
         getComponent(PayLaterComponent::class.java).inject(this)
@@ -80,16 +86,34 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        // hide loading
-        if (data.productList?.isNullOrEmpty() == false)
-            payLaterViewModel.getPayLaterApplicationStatus()
+        payLaterViewModel.getPayLaterApplicationStatus()
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-        // show error layout
+        hideLoadingLayout()
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                payLaterOffersGlobalError.setType(GlobalError.NO_CONNECTION)
+            }
+            is IllegalStateException -> {
+                payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
+            }
+        }
+        payLaterOffersGlobalError.show()
+        payLaterOffersGlobalError.setActionClickListener {
+            payLaterOffersGlobalError.hide()
+            // notify payLater fragment to invoke again
+            payLaterOffersShimmerGroup.visible()
+            payLaterOfferCallback?.onRefreshPayLater()
+        }
     }
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+        hideLoadingLayout()
+        showViewPagerLayout()
         // set payLater + application status data in pager adapter
         val payLaterProductList = ArrayList<PayLaterItemProductData>()
         payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
@@ -97,16 +121,30 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterProductList.add(payLaterProductList[0])
         payLaterProductList.add(payLaterProductList[0])
         paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList, arrayListOf())
+            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList)
         }
+    }
+
+    private fun hideLoadingLayout() {
+        payLaterOffersShimmerGroup.gone()
+    }
+
+    private fun showViewPagerLayout() {
+        payLaterDataGroup.visible()
     }
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         // set payLater data in view pager
         paymentOptionViewPager.post {
+            if (payLaterViewModel.getPayLaterOptions().isEmpty()) {
+                onPayLaterDataLoadingFail(throwable)
+            } else
             pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
-
         }
+    }
+
+    fun setPayLaterProductCallback(payLaterOfferCallback: PayLaterOfferCallback) {
+        this.payLaterOfferCallback = payLaterOfferCallback
     }
 
     companion object {
@@ -114,5 +152,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance() =
                 PayLaterOffersFragment()
+    }
+
+    interface PayLaterOfferCallback {
+        fun onRefreshPayLater()
     }
 }

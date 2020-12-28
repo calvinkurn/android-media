@@ -11,4 +11,6 @@
     <dimen name="payLater_application_status_dp_62">62dp</dimen>
     <dimen name="payLater_signup_image_height_dp_72">72dp</dimen>
 
+    <dimen name="payLater_shimmer_width_dp_256">256dp</dimen>
+
 </resources>

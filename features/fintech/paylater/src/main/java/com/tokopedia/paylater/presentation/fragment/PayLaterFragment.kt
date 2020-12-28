@@ -30,6 +30,7 @@ import javax.inject.Inject
 
 class PayLaterFragment : BaseDaggerFragment(),
         SimulationFragment.RegisterPayLaterCallback,
+        PayLaterOffersFragment.PayLaterOfferCallback,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener {
 
@@ -66,7 +67,11 @@ class PayLaterFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
         initListeners()
-        payLaterViewModel.getPayLaterData()
+        fetchPayLaterProductData()
+    }
+
+    private fun fetchPayLaterProductData() {
+        payLaterViewModel.getPayLaterProductData()
     }
 
     private fun observeViewModel() {
@@ -119,20 +124,25 @@ class PayLaterFragment : BaseDaggerFragment(),
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list = mutableListOf<Fragment>()
-        val simulationFragment = SimulationFragment.newInstance()
+        val simulationFragment = SimulationFragment.newInstance(arguments)
+        val payLaterOffersFragment = PayLaterOffersFragment.newInstance()
         simulationFragment.setPayLaterClickedListener(this)
+        payLaterOffersFragment.setPayLaterProductCallback(this)
         list.add(simulationFragment)
-        list.add(PayLaterOffersFragment.newInstance())
+        list.add(payLaterOffersFragment)
         val pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter
+    }
+
+    override fun onRefreshPayLater() {
+        fetchPayLaterProductData()
     }
 
     override fun onRegisterPayLaterClicked() {
         if (payLaterDataList.isNotEmpty()) {
             PayLaterSignupBottomSheet.getInstance(
                     populatePayLaterBundle()).also {
-                //it.setViewModelStoreOwner(this)
                 it.setActionListener(object : PayLaterSignupBottomSheet.Listener {
                     override fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
                         PayLaterHelper.openBottomSheet(context, childFragmentManager, productItemData, partnerApplicationDetail)
@@ -152,7 +162,7 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        if (tab.position == SIMULATION_TAB_INDEX && applicationStatusList.getOrNull(0)?.payLaterApplicationStatus?.isEmpty() == true)
+        if (tab.position == SIMULATION_TAB_INDEX && PayLaterHelper.isKredivoApplicationStatusEmpty(applicationStatusList))
             daftarGroup.visible()
         else daftarGroup.gone()
     }
@@ -167,7 +177,7 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        if (position == 0 && applicationStatusList.getOrNull(0)?.payLaterApplicationStatus?.isEmpty() == true)
+        if (position == 0 && PayLaterHelper.isKredivoApplicationStatusEmpty(applicationStatusList))
             daftarGroup.visible()
         else daftarGroup.gone()
     }
@@ -180,8 +190,11 @@ class PayLaterFragment : BaseDaggerFragment(),
         const val PAY_LATER_PRODUCT_DETAIL_TAB_INDEX = 1
 
         @JvmStatic
-        fun newInstance() =
-                PayLaterFragment()
+        fun newInstance(bundle: Bundle) : PayLaterFragment {
+            val fragment = PayLaterFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
 }

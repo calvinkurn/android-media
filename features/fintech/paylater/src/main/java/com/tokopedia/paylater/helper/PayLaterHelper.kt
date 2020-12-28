@@ -43,7 +43,7 @@ object PayLaterHelper {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_suspended
                 payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
             }
-            is PayLaterStatusFailed-> {
+            is PayLaterStatusFailed -> {
                 payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_failed
                 payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
             }
@@ -84,5 +84,12 @@ object PayLaterHelper {
                 }
             }
         }
+    }
+
+    fun isKredivoApplicationStatusEmpty(payLaterApplicationStatus: ArrayList<PayLaterApplicationDetail>): Boolean {
+        for (payLaterItem in payLaterApplicationStatus) {
+            if (payLaterItem.payLaterGatewayCode == "KREDIVO" && payLaterItem.payLaterApplicationStatus.isEmpty()) return true
+        }
+        return false
     }
 }

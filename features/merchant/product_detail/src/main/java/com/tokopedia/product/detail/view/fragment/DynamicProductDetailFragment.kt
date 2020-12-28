@@ -2210,8 +2210,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
-        RouteManager.route(context, ApplinkConst.PAYLATER)
-
+        val intent = RouteManager.getIntent(activity, ApplinkConst.PAYLATER)
+        val bundle = Bundle().apply {
+            putInt(ProductDetailConstant.PARAM_PRICE, viewModel.getDynamicProductInfoP1?.finalPrice?: 0)
+        }
+        intent.putExtras(bundle)
+        startActivity(intent)
         /*val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1

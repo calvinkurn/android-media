@@ -13,6 +13,7 @@ import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
 class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
 
     private lateinit var payLaterComponent: PayLaterComponent
+
     override fun getScreenName(): String {
         return SCREEN_NAME
     }
@@ -29,7 +30,10 @@ class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
     override fun getParentViewResourceID(): Int = R.id.paylaterParentView
 
     override fun getNewFragment(): Fragment? {
-        return PayLaterFragment.newInstance()
+        val bundle = Bundle()
+        if (intent.extras != null)
+            bundle.putAll(intent.extras)
+        return PayLaterFragment.newInstance(bundle)
     }
 
     companion object {
