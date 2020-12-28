@@ -223,7 +223,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
-            setNavigationOnClickListener { }
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
             setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
