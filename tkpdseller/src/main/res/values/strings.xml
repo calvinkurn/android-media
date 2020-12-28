@@ -341,4 +341,6 @@
     <string name="title_action_add_returnable_policy_notes">Kebijakan Pengembalian</string>
     <string name="action_search">Cari</string>
     <string name="title_action_add_note">Tambah Catatan</string>
+    <string name="title_dollar">US$</string>
+    <string name="title_rupiah">Rp</string>
 </resources>

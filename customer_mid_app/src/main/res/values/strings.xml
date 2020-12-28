@@ -198,4 +198,6 @@
         online, terima order dan upload produk, kapan pun dan di mana pun.</string>
     <string name="title_add_product">TAMBAH PRODUK</string>
     <string name="action_reset">Reset</string>
+    <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
+    <string name="navigate_back">Kembali</string>
 </resources>

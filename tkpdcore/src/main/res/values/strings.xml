@@ -1,8 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <string name="app_id">126665634029576</string>
-    <string name="navigate_back">Kembali</string>
-    <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
-    <string name="title_dollar">US$</string>
-    <string name="title_rupiah">Rp</string>
 </resources>
