@@ -339,7 +339,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
+            val errorMessage = provider.getMinOrderExceedLimitQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
