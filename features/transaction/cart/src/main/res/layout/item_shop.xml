@@ -31,7 +31,7 @@
             android:paddingRight="@dimen/dp_9"
             android:paddingBottom="@dimen/dp_10">
 
-            <CheckBox
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_select_shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -33,6 +33,7 @@ import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
@@ -57,7 +58,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val llWarningAndError: LinearLayout
     private val flCartItemContainer: FrameLayout
-    private val cbSelectItem: CheckBox
+    private val cbSelectItem: CheckboxUnify
     private val ivProductImage: ImageView
 
     private val textProductName: Typography
@@ -231,9 +232,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         cbSelectItem.isEnabled = data.cartItemData?.isError == false
         cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+        cbSelectItem.skipAnimation()
 
         var prevIsChecked: Boolean = cbSelectItem.isChecked
-        cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
+        cbSelectItem.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
