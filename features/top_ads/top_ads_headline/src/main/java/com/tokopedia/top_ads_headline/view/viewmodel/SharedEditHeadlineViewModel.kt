@@ -41,6 +41,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
             bidInfoUseCase.executeQuerySafeMode({ result ->
                 result.topadsBidInfo.data.firstOrNull()?.let {
                     bidInfoData.value = it
+                    editHeadlineAdLiveData.value?.maxBid = it.maxBid
                 }
             }, {
                 it.printStackTrace()

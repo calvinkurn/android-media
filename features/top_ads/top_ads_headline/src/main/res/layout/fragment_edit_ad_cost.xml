@@ -75,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:text="@string/topads_headline_recommendasi"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/advertisingCost"
                 app:typographyType="body_3" />
@@ -85,6 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_2"
                 android:text="@string/topads_headline_recommendasi_price"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/recommendation_header"
                 app:layout_constraintStart_toEndOf="@id/recommendation_header"
                 app:layout_constraintTop_toTopOf="@id/recommendation_header"
@@ -97,6 +99,7 @@
                 android:layout_marginStart="@dimen/dp_2"
                 android:text="@string/topads_headline_recommendasi_price_apply"
                 android:textColor="@color/Green_G600"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/recommendation_header"
                 app:layout_constraintStart_toEndOf="@id/recommendation"
                 app:layout_constraintTop_toTopOf="@id/recommendation_header"
@@ -169,9 +172,9 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_500"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/keyword" />
 

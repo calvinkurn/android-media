@@ -47,11 +47,11 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/ctaBtn"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_72"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_72"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_72"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"

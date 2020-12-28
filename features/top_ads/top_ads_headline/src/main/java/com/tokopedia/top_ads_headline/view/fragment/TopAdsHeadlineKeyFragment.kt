@@ -1,5 +1,7 @@
 package com.tokopedia.top_ads_headline.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
@@ -54,6 +57,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private lateinit var keywordSelectedAdapter: TopAdsHeadlineKeySelectedAdapter
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    private var deletedKeywords: ArrayList<String> = arrayListOf()
+    private var addedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
+    private var editedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
+
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TopAdsHeadlineKeyViewModel::class.java)
@@ -65,7 +72,17 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         stepperModel?.selectedKeywords = getSelectedKeywords()
         stepperModel?.keywordOperations = getKeyWordOperations()
         stepperModel?.stateRestoreKeyword = true
-        stepperListener?.goToNextPage(stepperModel)
+        if (stepperListener != null) {
+            stepperListener?.goToNextPage(stepperModel)
+        } else {
+            val intent = Intent()
+            intent.putExtra(BaseStepperActivity.STEPPER_MODEL_EXTRA, stepperModel)
+            intent.putParcelableArrayListExtra(ADDED_KEYWORDS, addedKeywords)
+            intent.putParcelableArrayListExtra(EDITED_KEYWORDS, editedKeywords)
+            intent.putStringArrayListExtra(DELETED_KEYWORDS, deletedKeywords)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun getManualAddedKeywords(): MutableList<KeywordDataItem> {
@@ -196,14 +213,19 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onError)
-        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError, stepperModel?.selectedKeywords)
+        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
+        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onKeywordBidChange, stepperModel?.selectedKeywords)
         getLatestBid()
         viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
     }
 
-    private fun onError(enable: Boolean) {
+    private fun onKeywordBidChange(enable: Boolean, keywordData: KeywordDataItem) {
         btnNext?.isEnabled = enable
+        if (enable) {
+            if (!editedKeywords.contains(keywordData)) {
+                editedKeywords.add(keywordData)
+            }
+        }
     }
 
     private fun getLatestBid() {
@@ -218,8 +240,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
         stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
-        minSuggestedBid = data.firstOrNull()?.minBid?:0
-
+        minSuggestedBid = data.firstOrNull()?.minBid ?: 0
     }
 
     private fun setAdapter() {
@@ -240,6 +261,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
+                if(!addedKeywords.contains(item)){
+                    addedKeywords.add(item)
+                }
                 setCount()
             }
         }
@@ -256,11 +280,25 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         setCount()
     }
 
-    private fun onItemChecked(pos: Int) {
+    private fun onItemChecked(keywordData: KeywordDataItem) {
+        if(keywordData.onChecked){
+            if(!addedKeywords.contains(keywordData)){
+                addedKeywords.add(keywordData)
+            }
+            deletedKeywords.remove(keywordData.keyword)
+        }else{
+            if(!deletedKeywords.contains(keywordData.keyword)){
+                deletedKeywords.add(keywordData.keyword)
+            }
+            addedKeywords.remove(keywordData)
+        }
         setCount()
     }
 
-    private fun onItemUnselect(pos: Int) {
+    private fun onItemUnselect(pos: Int, keywordData: KeywordDataItem) {
+        if(!deletedKeywords.contains(keywordData.keyword)){
+            deletedKeywords.add(keywordData.keyword)
+        }
         removeFromList(pos)
         setCount()
     }

@@ -7,17 +7,23 @@ import com.tokopedia.topads.common.view.adapter.tips.delegate.TipsSortAdapterDel
 import com.tokopedia.topads.common.view.adapter.tips.viewholder.TipsUiSortViewHolder
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 
-class TipsListAdapter(sortItemClick: TipsUiSortViewHolder.OnUiSortItemClick? = null) : BaseAdapter<TipsUiModel>() {
+class TipsListAdapter : BaseAdapter<TipsUiModel>() {
+    private val tipsSortAdapterDelegate: TipsSortAdapterDelegate = TipsSortAdapterDelegate()
 
     init {
         delegatesManager
                 .addDelegate(TipsHeaderAdapterDelegate())
                 .addDelegate(TipsRowAdapterDelegate())
-                .addDelegate(TipsSortAdapterDelegate(sortItemClick))
+                .addDelegate(tipsSortAdapterDelegate)
     }
 
     fun setTipsItems(uiModels: List<TipsUiModel>) {
         setItems(uiModels)
         notifyDataSetChanged()
     }
+
+    fun setOnUiSortItemClickListener(sortItemClick: TipsUiSortViewHolder.OnUiSortItemClick){
+        this.tipsSortAdapterDelegate.onItemClick = sortItemClick
+    }
+
 }

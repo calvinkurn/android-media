@@ -51,6 +51,13 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".view.activity.EditTopAdsHeadlineKeywordActivity"
+            android:label="@string/topads_headline_product_list_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 
 </manifest>

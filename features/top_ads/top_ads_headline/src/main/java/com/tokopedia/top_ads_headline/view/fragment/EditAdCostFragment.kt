@@ -17,9 +17,8 @@ import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.adapter.tips.viewholder.TipsUiSortViewHolder
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
-import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiSortModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -33,8 +32,7 @@ import javax.inject.Inject
 private const val POSITION_KEYWORD = 0
 private const val POSITION_NEGATIVE_KEYWORD = 1
 
-class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortItemClick {
-    private var tipsSortListSheet: TipsListSheet? = null
+class EditAdCostFragment : BaseDaggerFragment() {
 
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
 
@@ -162,23 +160,16 @@ class EditAdCostFragment : BaseDaggerFragment(), TipsUiSortViewHolder.OnUiSortIt
         tooltipBtn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiSortModel(R.string.topads_headline_broad_sort_type_header, R.string.topads_headline_broad_sort_type_subheader, true))
-                add(TipsUiSortModel(R.string.topads_headline_specific_sort_type_header, R.string.topads_headline_specific_sort_type_subheader))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row1, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row2, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row3, R.drawable.topads_create_ic_checklist))
             }
-            tipsSortListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList, sortItemClick = this) }
+            val tipsSortListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsSortListSheet?.showHeader = true
             tipsSortListSheet?.showKnob = false
-            tipsSortListSheet?.setTitle(getString(R.string.topads_headline_sort_type_title))
+            tipsSortListSheet?.setTitle(getString(R.string.topads_headline_ad_cost_title))
             tipsSortListSheet?.show(childFragmentManager, "")
         }
     }
 
-    override fun onItemClick(sortModel: TipsUiSortModel) {
-        tipsSortListSheet?.getTipsList()?.forEach { model ->
-            if (model is TipsUiSortModel) {
-                model.isChecked = model == sortModel
-            }
-        }
-        tipsSortListSheet?.notifyDataSetChanged()
-    }
 }

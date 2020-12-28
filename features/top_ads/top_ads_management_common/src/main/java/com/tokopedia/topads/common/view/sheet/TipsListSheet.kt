@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class TipsListSheet : BottomSheetUnify() {
     private var tipsList: ArrayList<TipsUiModel> = ArrayList()
     private lateinit var tipsRecyclerView: RecyclerView
-    private lateinit var tipsAdapter: TipsListAdapter
+    private var tipsAdapter: TipsListAdapter = TipsListAdapter()
 
     init {
         clearContentPadding = true
@@ -28,14 +28,17 @@ class TipsListSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context, tipsList: ArrayList<TipsUiModel>, sortItemClick: TipsUiSortViewHolder.OnUiSortItemClick? = null): TipsListSheet {
+        fun newInstance(context: Context, tipsList: ArrayList<TipsUiModel>): TipsListSheet {
             return TipsListSheet().apply {
                 this.tipsList = tipsList
-                this.tipsAdapter = TipsListAdapter(sortItemClick)
                 val childView = LayoutInflater.from(context).inflate(R.layout.topads_common_tips_sheet_layout, null)
                 setChild(childView)
             }
         }
+    }
+
+    fun setOnUiSortItemClickListener(sortItemClick: TipsUiSortViewHolder.OnUiSortItemClick){
+        this.tipsAdapter.setOnUiSortItemClickListener(sortItemClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,10 +54,6 @@ class TipsListSheet : BottomSheetUnify() {
             tipsAdapter.setTipsItems(tipsList)
             addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
         }
-    }
-
-    fun notifyDataSetChanged() {
-        tipsAdapter.setTipsItems(tipsList)
     }
 
     fun getTipsList(): ArrayList<TipsUiModel> = tipsList

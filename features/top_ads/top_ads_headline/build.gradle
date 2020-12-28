@@ -43,6 +43,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation project(rootProject.ext.features.topAdsEdit)
+    implementation rootProject.ext.unifyDependencies.dialog
 }
 
 project.ext {

@@ -7,4 +7,13 @@ data class HeadlineEditAdKeywordModel(val keywordName: String,
                                       var searchType: String = "",
                                       var advertisingCost: String,
                                       var priceBid: Int = 0,
-                                      val isNegativeKeyword: Boolean = false) : KeywordUiModel
+                                      val isNegativeKeyword: Boolean = false,
+                                      var maximumBid: Int = 0, var minimumBid: Int = 0) : KeywordUiModel {
+    override fun equals(other: Any?): Boolean {
+        return other is HeadlineEditAdKeywordModel && other.keywordName == this.keywordName
+    }
+
+    override fun hashCode(): Int {
+        return keywordName.hashCode()
+    }
+}

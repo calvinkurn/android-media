@@ -10,6 +10,7 @@ import com.tokopedia.topads.common.view.adapter.keyword.viewmodel.HeadlineEditAd
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 
 class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlineAdEditItemClick? = null) : BaseViewHolder(itemView) {
     private val keywordName: Typography = itemView.findViewById(R.id.keywordName)
@@ -30,8 +31,11 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         keywordName.text = keywordModel.keywordName
         searchType.text = keywordModel.searchType
         advertisingCost.textFieldInput.setText(keywordModel.advertisingCost)
-        advertisingCost.setMessage(getString(R.string.topads_common_keyword_avg_cost, keywordModel.priceBid))
+        setBidInfo(keywordModel)
         searchTypeSelection.setImageDrawable(itemView.context?.getResDrawable(R.drawable.ic_dropdown_arrow))
+        searchType.setOnClickListener {
+            onItemClick?.onSearchTypeClick(keywordModel)
+        }
         searchTypeSelection.setOnClickListener {
             onItemClick?.onSearchTypeClick(keywordModel)
         }
@@ -40,8 +44,35 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         }
     }
 
+    private fun setBidInfo(keywordModel: HeadlineEditAdKeywordModel) {
+        advertisingCost.textFieldInput.addTextChangedListener(object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val result = number.toInt()
+                when {
+                    result < keywordModel.minimumBid -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_common_min_bid), keywordModel.minimumBid))
+                        onItemClick?.onEditPriceBid(false, keywordModel)
+                    }
+                    result > keywordModel.maximumBid -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_common_max_bid), keywordModel.maximumBid))
+                        onItemClick?.onEditPriceBid(false, keywordModel)
+                    }
+                    else -> {
+                        advertisingCost.setError(false)
+                        advertisingCost.setMessage("")
+                        onItemClick?.onEditPriceBid(true, keywordModel)
+                    }
+                }
+            }
+        })
+    }
+
     interface OnHeadlineAdEditItemClick {
         fun onDeleteItemClick(keywordModel: HeadlineEditAdKeywordModel)
         fun onSearchTypeClick(keywordModel: HeadlineEditAdKeywordModel)
+        fun onEditPriceBid(isEnabled:Boolean, keywordModel: HeadlineEditAdKeywordModel)
     }
 }
