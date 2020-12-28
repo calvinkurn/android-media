@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_REPLY_PLT_NETWORK_METRICS
@@ -44,7 +45,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         getDataFromAppLink()
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -55,10 +55,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 
     private fun getDataFromIntent() {
@@ -147,6 +143,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this)
         if(talkReplyFragment?.getDidUserWriteQuestion() == true) {
             talkReplyFragment?.goToReading()
             finish()

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -41,7 +42,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.usecase.*
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
@@ -413,10 +413,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
-                        it.basic.getProductId())
+                        it.basic.productID)
             } else null
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
-            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
+            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await()?.let {
                 _p2Data.postValue(it)
@@ -572,7 +572,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     productIDs = productIdsString,
                                     xSource = ProductDetailConstant.DEFAULT_X_SOURCE
                             )
-                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground())
+                            recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
                         }
 
                         val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
@@ -716,7 +716,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 })
     }
 
-    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
+    fun toggleTeaserNotifyMe(campaignId: Long, productId: Long, source: String) {
         launchCatchError(block = {
             toggleNotifyMeUseCase.get().createParams(campaignId, productId, notifyMeAction, source)
             val isSuccess = toggleNotifyMeUseCase.get().executeOnBackground().result.isSuccess
@@ -779,13 +779,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         tradeInParams.widgetString = validateTradeIn.widgetString
     }
 
-    private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {
+    private fun getProductInfoP2OtherAsync(productId: String, shopId: Int): Deferred<ProductInfoP2Other> {
         return async {
             getProductInfoP2OtherUseCase.get().executeOnBackground(GetProductInfoP2OtherUseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 
-    private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
+    private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
         return async {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.get().executeOnBackground()

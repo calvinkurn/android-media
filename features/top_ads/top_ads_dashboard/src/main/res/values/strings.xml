@@ -324,6 +324,7 @@
     <string name="topads_headline_empty_state_desc">Iklan akan tampil lebih besar dan teratas di halaman pencarian sehingga makin banyak dilihat calon pembeli.</string>
     <string name="topads_headlin_Search_empty_title">Headline tidak ditemukan</string>
     <string name="topads_headline_group_schedule">"Berakhir %s"</string>
+    <string name="topads_headline_info_ticker">Edit Iklan Toko untuk saat ini hanya bisa dilakukan melalui Tokopedia Seller desktop, ya!</string>
 
 </resources>
 

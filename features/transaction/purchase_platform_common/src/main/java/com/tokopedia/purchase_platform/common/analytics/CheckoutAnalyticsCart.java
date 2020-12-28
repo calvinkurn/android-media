@@ -1241,4 +1241,24 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+
+    // Global checkbox resurrection
+
+    public void eventCheckUncheckGlobalCheckbox(boolean isCheck) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                isCheck ? EventLabel.CHECKLIST : EventLabel.UN_CHECKLIST
+        );
+    }
+
+    public void eventClickGlobalDelete() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_ON_TOP_RIGHT_CORNER
+        );
+    }
+
 }

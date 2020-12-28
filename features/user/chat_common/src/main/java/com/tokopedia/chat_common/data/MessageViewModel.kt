@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
@@ -10,6 +11,27 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
 
     var blastId = 0
     var fraudStatus = 0
+
+    constructor(
+            reply: Reply
+    ) : super(
+            messageId = reply.msgId.toString(),
+            fromUid = reply.senderId.toString(),
+            from = reply.senderName,
+            fromRole = reply.role,
+            attachmentId = reply.attachment.id,
+            attachmentType = reply.attachment.type.toString(),
+            replyTime = reply.replyTime,
+            startTime = "",
+            isRead = reply.isRead,
+            isDummy = false,
+            isSender = !reply.isOpposite,
+            message = reply.msg,
+            source = reply.source,
+    ) {
+        blastId = reply.blastId
+        fraudStatus = reply.fraudStatus
+    }
 
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,

@@ -24,11 +24,6 @@ internal fun disableOnBoarding(context: Context) {
         it.putBoolean(SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
         it.applyEditor()
     }
-
-    LocalCacheHandler(context, SearchConstant.OnBoarding.LOCAL_CACHE_NAME).also {
-        it.putBoolean(SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN, true)
-        it.applyEditor()
-    }
 }
 
 internal fun createIntent(queryParams: String = QUERY_PARAMS_WITH_KEYWORD): Intent {
@@ -69,6 +64,9 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option) {}
     }
 }
 

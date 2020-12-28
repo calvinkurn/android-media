@@ -84,7 +84,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         //override customer app ab config features
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
-                HOME_EXP_NAME -> return HOME_VARIANT_REVAMP
+                NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
             }
         }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
@@ -196,8 +196,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         private const val CONSUMER_PRO_APPLICATION = 3;
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
-        private const val HOME_EXP_NAME = "Navigation Revamp"
-        private const val HOME_VARIANT_REVAMP = "Navigation Revamp"
+
+        const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"
+        const val NAVIGATION_VARIANT_OLD = "Navigation Revamp"
+        const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
     }
 
 }

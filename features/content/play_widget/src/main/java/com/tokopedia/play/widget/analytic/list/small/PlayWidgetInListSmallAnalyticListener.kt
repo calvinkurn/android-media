@@ -10,7 +10,8 @@ interface PlayWidgetInListSmallAnalyticListener {
 
     fun onClickViewAll(
             view: PlayWidgetSmallView,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickChannelCard(
@@ -18,12 +19,14 @@ interface PlayWidgetInListSmallAnalyticListener {
             item: PlayWidgetSmallChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
             view: PlayWidgetSmallView,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 
     fun onImpressChannelCard(
@@ -31,6 +34,7 @@ interface PlayWidgetInListSmallAnalyticListener {
             item: PlayWidgetSmallChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
-            widgetPosition: Int
+            verticalWidgetPosition: Int,
+            businessWidgetPosition: Int,
     ) {}
 }
