@@ -10,7 +10,6 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.net.SocketTimeoutException
@@ -150,7 +149,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown true`() {
-        testDispatcher.runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val isToasterRetry = true
 
             viewModel.getAllSettingShopInfo(isToasterRetry)
@@ -177,7 +176,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown false`() {
-        testDispatcher.runBlockingTest {
+        coroutineTestRule.runBlockingTest {
             val isToasterRetry = true
 
             viewModel.getAllSettingShopInfo(isToasterRetry)

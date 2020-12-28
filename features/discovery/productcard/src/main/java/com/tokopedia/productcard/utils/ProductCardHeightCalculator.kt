@@ -17,18 +17,31 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
         forEach { productCardModel ->
             val imageHeight = productImageWidth
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
-            val hasLabelCampaign = productCardModel.getLabelCampaign()?.isShowLabelCampaign() == true
+
+            val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
+            val bestSellerLabelHeight = getLabelBestSellerHeight(context, hasLabelBestSeller)
+
+            val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
-            val contentMarginTop = getGridViewContentMarginTop(context, hasLabelCampaign)
+
+            val contentMarginTop = getGridViewContentMarginTop(context, hasLabelBestSeller)
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             productCardHeightList.add(
-                    imageHeight + cardPaddingBottom + campaignLabelHeight + contentMarginTop + contentHeight + buttonAddToCartSectionHeight
+                            imageHeight +
+                            cardPaddingBottom +
+                            bestSellerLabelHeight +
+                            campaignLabelHeight +
+                            contentMarginTop +
+                            contentHeight +
+                            buttonAddToCartSectionHeight +
+                            buttonNotifyMeSectionHeight
             )
         }
 
-        productCardHeightList.max()?.toInt() ?: 0
+        productCardHeightList.maxOrNull()?.toInt() ?: 0
     }
 }
 
@@ -38,8 +51,14 @@ private fun getLabelCampaignHeight(context: Context, hasLabelCampaign: Boolean):
     else 0
 }
 
-private fun getGridViewContentMarginTop(context: Context, hasLabelCampaign: Boolean): Int {
-    return if (hasLabelCampaign)
+private fun getLabelBestSellerHeight(context: Context, hasLabelBestSeller: Boolean): Int {
+    return if (hasLabelBestSeller)
+        context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
+    else 0
+}
+
+private fun getGridViewContentMarginTop(context: Context, hasLabelBestSeller: Boolean): Int {
+    return if (hasLabelBestSeller)
         context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
     else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
 }
@@ -52,31 +71,39 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
         forEach { productCardModel ->
             val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
-            val hasLabelCampaign = productCardModel.getLabelCampaign()?.isShowLabelCampaign() == true
+
+            val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
+            val bestSellerLabelHeight = getLabelBestSellerHeight(context, hasLabelBestSeller)
+
+            val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
-            val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaign)
+
+            val contentMarginTop = getListViewContentMarginTop(context, hasLabelBestSeller)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             val totalHeight = cardPaddingTop +
+                    bestSellerLabelHeight +
                     campaignLabelHeight +
                     contentMarginTop +
                     cardPaddingBottom +
                     max(imageSize, contentHeight) +
                     buttonDeleteProductSectionHeight +
-                    buttonAddToCartSectionHeight
+                    buttonAddToCartSectionHeight +
+                    buttonNotifyMeSectionHeight
 
             productCardHeightList.add(totalHeight)
         }
 
-        productCardHeightList.max()?.toInt() ?: 0
+        productCardHeightList.maxOrNull()?.toInt() ?: 0
     }
 }
 
-private fun getListViewContentMarginTop(context: Context, hasLabelCampaign: Boolean): Int {
-    return if (hasLabelCampaign)
+private fun getListViewContentMarginTop(context: Context, hasLabelBestSeller: Boolean): Int {
+    return if (hasLabelBestSeller)
         context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
     else 0
 }
@@ -163,7 +190,8 @@ private fun ProductCardModel.getPriceSectionHeight(context: Context): Int {
         val priceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_price_margin_top)
         val priceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_price_height)
 
-        return priceMarginTop + priceHeight
+        return (priceMarginTop * 2) + // small hack
+                priceHeight
     }
     else 0
 }
@@ -301,6 +329,16 @@ private fun ProductCardModel.getButtonAddToCartSectionHeight(context: Context): 
         val buttonAddToCartHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_to_cart_height)
 
         buttonAddToCartMarginTop + buttonAddToCartHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getButtonNotifyMeSectionHeight(context: Context): Int {
+    return if (hasNotifyMeButton) {
+        val buttonNotifyMeMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_notify_me_margin_top)
+        val buttonNotifyMeHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_notify_me_height)
+
+        buttonNotifyMeMarginTop + buttonNotifyMeHeight
     }
     else 0
 }

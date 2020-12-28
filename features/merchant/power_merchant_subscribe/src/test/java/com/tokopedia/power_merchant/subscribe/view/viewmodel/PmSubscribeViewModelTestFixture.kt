@@ -3,8 +3,8 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
-import com.tokopedia.power_merchant.subscribe.common.coroutine.TestCoroutineDispatchers
-import com.tokopedia.power_merchant.subscribe.verification.verifyValueEquals
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantRemoteConfig
 import com.tokopedia.shop.common.data.source.cloud.model.ShopFreeShippingStatus
@@ -42,7 +42,7 @@ open class PmSubscribeViewModelTestFixture {
             getShopFreeShippingStatusUseCase,
             remoteConfig,
             userSession,
-            TestCoroutineDispatchers
+            CoroutineTestDispatchersProvider
         )
     }
 

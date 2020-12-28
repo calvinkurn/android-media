@@ -91,12 +91,11 @@ object ProductDetailConstant {
     const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
 
     //Mapper
-    const val SOCIAL_PROOF = "social_proof"
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val SHOP_INFO = "shop_info"
     const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
-    const val DISCUSSION = "discussion"
+    const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val REVIEW = "review"
@@ -181,10 +180,6 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
-
-    const val EXP_TOP_NAV = "Navigation Revamp"
-    const val VARIANT_OLD = "Existing Navigation"
-    const val VARIANT_REVAMP = "Navigation Revamp"
 
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"

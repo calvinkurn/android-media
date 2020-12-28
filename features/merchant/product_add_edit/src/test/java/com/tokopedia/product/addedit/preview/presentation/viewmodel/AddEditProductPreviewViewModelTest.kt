@@ -10,19 +10,17 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-
-@ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
     @Test
@@ -298,6 +296,26 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertFalse(viewModel.getIsDataChanged())
     }
 
+    @Test
+    fun  `When validate shop location should be true`() = runBlocking {
+        onGetShopInfoLocation_thenReturn()
+
+        viewModel.validateShopLocation(121313)
+
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocation()
+    }
+
+    @Test
+    fun  `When save shop location should be successful`() = runBlocking {
+        onSaveShopShipmentLocation_thenReturn()
+
+        viewModel.saveShippingLocation(mutableMapOf())
+
+        viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
+        verifyGetShopInfoLocation()
+    }
+
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
         coEvery { getProductDraftUseCase.executeOnBackground() } returns draft
     }
@@ -308,6 +326,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenReturn(product: Product) {
         coEvery { getProductUseCase.executeOnBackground() } returns product
+    }
+
+    private fun onGetShopInfoLocation_thenReturn() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onSaveShopShipmentLocation_thenReturn() {
+        coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } returns SaveShipmentLocation()
     }
 
     private fun onSaveProductDraft_thenFailed() {
@@ -358,5 +384,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
+    }
+
+    private fun verifyGetShopInfoLocation() {
+        assertTrue(viewModel.saveShopShipmentLocationResponse.value == Success(SaveShipmentLocation()))
+    }
+
+    private fun verifyValidateShopLocation() {
+        assertTrue(viewModel.locationValidation.value == Success(true))
     }
 }

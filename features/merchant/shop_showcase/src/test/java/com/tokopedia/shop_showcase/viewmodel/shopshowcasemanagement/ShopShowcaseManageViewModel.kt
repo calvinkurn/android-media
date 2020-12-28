@@ -1,11 +1,11 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
@@ -21,7 +21,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
-
 
 @ExperimentalCoroutinesApi
 class ShopShowcaseManageViewModel {
@@ -56,7 +55,7 @@ class ShopShowcaseManageViewModel {
                 deleteShowcase,
                 reorderShowcase,
                 getShopShowcaseTotalProductUseCase,
-                TestCoroutineDispatchers()
+                CoroutineTestDispatchersProvider
         )
     }
 

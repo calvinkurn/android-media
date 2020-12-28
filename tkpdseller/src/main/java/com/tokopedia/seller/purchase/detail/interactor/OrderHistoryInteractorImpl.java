@@ -1,8 +1,9 @@
 package com.tokopedia.seller.purchase.detail.interactor;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.purchase.detail.domain.OrderHistoryRepository;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryData;
+
+import java.util.HashMap;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,7 +28,7 @@ public class OrderHistoryInteractorImpl implements OrderHistoryInteractor {
 
     @Override
     public void requestOrderHistoryData(Subscriber<OrderHistoryData> subscriber,
-                                        TKPDMapParam<String, Object> params) {
+                                        HashMap<String, Object> params) {
         compositeSubscription.add(repository.requestOrderHistoryData(params)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

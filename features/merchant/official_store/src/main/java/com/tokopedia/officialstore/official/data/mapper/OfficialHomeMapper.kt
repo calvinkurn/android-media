@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.data.mapper
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
@@ -69,8 +70,12 @@ class OfficialHomeMapper (
                     categoryName.toEmptyStringIfNull(),
                     listener
             )
-            if(index == -1) add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            else set(index, officialFeaturedShop)
+            if(index == -1) {
+                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
+                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
+            } else {
+                set(index, officialFeaturedShop)
+            }
 
             adapter?.submitList(this.toMutableList())
         }
@@ -107,7 +112,13 @@ class OfficialHomeMapper (
 
             officialStoreChannels.forEachIndexed { position, officialStore ->
                 if (availableScreens.contains(officialStore.channel.layout)) {
-                    views.add(DynamicChannelDataModel(officialStore))
+                    when(officialStore.channel.layout) {
+                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
+                            views.add(MixLeftDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        else -> views.add(DynamicChannelDataModel(officialStore))
+                    }
                 } else if (availableLegoBannerScreens.contains(officialStore.channel.layout)) {
                     views.add(DynamicLegoBannerDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)

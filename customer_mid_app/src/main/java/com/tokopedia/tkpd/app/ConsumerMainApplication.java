@@ -13,6 +13,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,14 +44,16 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.customer_mid_app.BuildConfig;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -73,12 +76,20 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
 import timber.log.Timber;
 
+import static android.os.Process.killProcess;
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
@@ -89,7 +100,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
-    // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -124,11 +134,138 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
-        createAndCallPostSeqAbTesting();
+        initializeAbTestVariant();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
+        checkAppSignatureAsync();
+    }
 
+    private void checkAppSignatureAsync(){
+        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                if (!checkAppSignature()) {
+                    killProcess(android.os.Process.myPid());
+                }
+                if (!checkPackageName()){
+                    killProcess(android.os.Process.myPid());
+                }
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
+    }
+
+    private boolean checkPackageName(){
+        boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
+        if (!packageNameValid) {
+            Timber.w("P1#APP_SIGNATURE_FAILED#'packageName=%s'" , this.getPackageName());
+        }
+        return packageNameValid;
+    }
+
+    protected abstract String getOriginalPackageApp();
+
+    private boolean checkAppSignature() {
+        try {
+            PackageInfo info;
+            boolean signatureValid;
+            byte[] rawCertJava = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
+                    rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                }
+            } else {
+                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                if (null != info && info.signatures.length > 0) {
+                    rawCertJava = info.signatures[0].toByteArray();
+                }
+            }
+            byte[] rawCertNative = getJniBytes();
+            // handle if the library is failing
+            if (rawCertNative == null) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertNative==null'");
+                return true;
+            } else if (rawCertJava == null) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertJava==null'");
+                return true;
+            } else {
+                signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+            }
+            if (!signatureValid) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+            }
+            return signatureValid;
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
+            return false;
+        }
+    }
+
+    protected abstract byte[] getJniBytes();
+
+    private String getInfoFromBytes(byte[] bytes) {
+        if (null == bytes) {
+            return "null";
+        }
+
+        /*
+         * Get the X.509 certificate.
+         */
+        InputStream certStream = new ByteArrayInputStream(bytes);
+        StringBuilder sb = new StringBuilder();
+        try {
+            CertificateFactory certFactory = CertificateFactory.getInstance("X509");
+            X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(certStream);
+
+            sb.append("Certificate subject: ").append(x509Cert.getSubjectDN()).append("\n");
+            sb.append("Certificate issuer: ").append(x509Cert.getIssuerDN()).append("\n");
+            sb.append("Certificate serial number: ").append(x509Cert.getSerialNumber()).append("\n");
+            MessageDigest md;
+            try {
+                md = MessageDigest.getInstance("MD5");
+                md.update(bytes);
+                byte[] byteArray = md.digest();
+                sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
+                md.reset();
+                md = MessageDigest.getInstance("SHA");
+                md.update(bytes);
+                byteArray = md.digest();
+                sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
+                md.reset();
+                md = MessageDigest.getInstance("SHA256");
+                md.update(bytes);
+                byteArray = md.digest();
+                sb.append("SHA256: ").append(bytesToString(byteArray)).append("\n");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+
+            sb.append("\n");
+        } catch (CertificateException e) {
+
+        }
+        return sb.toString();
+    }
+
+
+    private String bytesToString(byte[] bytes) {
+        StringBuilder md5StrBuff = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            if (Integer.toHexString(0xFF & bytes[i]).length() == 1) {
+                md5StrBuff.append("0").append(Integer.toHexString(0xFF & bytes[i]));
+            } else {
+                md5StrBuff.append(Integer.toHexString(0xFF & bytes[i]));
+            }
+            if (bytes.length - 1 != i) {
+                md5StrBuff.append(":");
+            }
+        }
+        return md5StrBuff.toString();
     }
 
     private void initCacheManager() {
@@ -136,7 +273,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         cacheManager = PersistentCacheManager.instance;
     }
 
-    private void registerActivityLifecycleCallbacks() {
+    public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
@@ -147,10 +284,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+            }
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
 
@@ -180,18 +320,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
-    }
-
-    private void createAndCallPostSeqAbTesting() {
-        //don't convert to lambda does not work in kit kat
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                return executePostCreateSequenceAbTesting();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
     }
 
     private void createAndCallFontLoad() {
@@ -246,6 +374,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NonNull
     public abstract String versionName();
 
+    public abstract int versionCode();
+
     public abstract void initConfigValues();
 
     @NotNull
@@ -272,12 +402,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return true;
     }
 
-    @NotNull
-    private Boolean executePostCreateSequenceAbTesting() {
-        initializeAbTestVariant();
-        return true;
-    }
-
     private void getAmplificationPushData() {
         /*
          * Amplification of push notification.
@@ -289,7 +413,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
             } catch (Exception e) {
-                e.printStackTrace();
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
             }
         }
     }
@@ -390,8 +515,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            GlobalConfig.VERSION_CODE = versionCode();
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = versionCode();
         }
     }
 
@@ -474,6 +599,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (gratificationSubscriber != null) {
             if (context instanceof Activity) {
                 gratificationSubscriber.onNewIntent((Activity) context, intent);
+                if (CMInAppManager.getInstance() != null) {
+                    CMInAppManager.getInstance().activityLifecycleHandler.onNewIntent((Activity) context, intent);
+                }
             }
         }
     }

@@ -16,7 +16,7 @@ public class CartItemModel implements Parcelable {
     private long cartId;
     private String shopId;
     private String shopName;
-    private int productId;
+    private long productId;
     private String name;
     private double price;
     private double originalPrice;
@@ -115,11 +115,11 @@ public class CartItemModel implements Parcelable {
         this.shopName = shopName;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
@@ -554,7 +554,7 @@ public class CartItemModel implements Parcelable {
         dest.writeLong(this.cartId);
         dest.writeString(this.shopId);
         dest.writeString(this.shopName);
-        dest.writeInt(this.productId);
+        dest.writeLong(this.productId);
         dest.writeString(this.name);
         dest.writeDouble(this.price);
         dest.writeDouble(this.originalPrice);
@@ -597,7 +597,7 @@ public class CartItemModel implements Parcelable {
         this.cartId = in.readLong();
         this.shopId = in.readString();
         this.shopName = in.readString();
-        this.productId = in.readInt();
+        this.productId = in.readLong();
         this.name = in.readString();
         this.price = in.readDouble();
         this.originalPrice = in.readDouble();

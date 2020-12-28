@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -46,7 +46,7 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = FreeDeliveryVoucherCreateViewModel(TestCoroutineDispatchers, freeDeliveryValidationUseCase)
+        mViewModel = FreeDeliveryVoucherCreateViewModel(CoroutineTestDispatchersProvider, freeDeliveryValidationUseCase)
         mViewModel.expensesExtimationLiveData.observeForever(expenseEstimationObserver)
     }
 

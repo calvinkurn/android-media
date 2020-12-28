@@ -8,7 +8,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
-import com.tokopedia.statistic.utils.TestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -95,7 +95,7 @@ class StatisticViewModelTest {
                 Lazy { getTableDataUseCase },
                 Lazy { getPieChartDataUseCase },
                 Lazy { getBarChartDataUseCase },
-                TestDispatchersProvider
+                CoroutineTestDispatchersProvider
         )
 
         dynamicParameter = getDynamicParameter()

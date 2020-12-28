@@ -6,7 +6,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -47,7 +47,7 @@ class CreateMerchantVoucherStepsViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = CreateMerchantVoucherStepsViewModel(TestCoroutineDispatchers, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
+        mViewModel = CreateMerchantVoucherStepsViewModel(CoroutineTestDispatchersProvider, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
     }
 
     @Test

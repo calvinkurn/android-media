@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:paddingTop="@dimen/dp_10"
     android:paddingBottom="@dimen/dp_10"
@@ -15,16 +15,18 @@
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
         android:layout_gravity="center_vertical"
-        tools:src="@color/black" />
+        tools:src="@color/Unify_N700" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
-        style="@style/TextView.Small.Bold"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
         android:maxLines="2"
-        tools:text="Yellow Rose Bomber Biar panjaang Jacket Bordir - Not all roses are red" />
-
+        android:layout_width="wrap_content"
+        app:typographyWeight="bold"
+        android:layout_height="wrap_content"
+        tools:text="Yellow Rose Bomber Biar panjaang Jacket Bordir - Not all roses are red"
+        />
 </LinearLayout>

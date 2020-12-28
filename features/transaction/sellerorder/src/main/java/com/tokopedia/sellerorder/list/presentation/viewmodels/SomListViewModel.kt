@@ -186,7 +186,7 @@ class SomListViewModel @Inject constructor(
         launchCatchError(block = {
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
-            getUserRolesJob?.join()
+            getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first
             _orderListResult.postValue(Success(result.second))
         }, onError = {
@@ -203,7 +203,7 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             setSearchParam(currentSearchParam)
-            getUserRolesJob?.join()
+            getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = currentNextOrderId
             _orderListResult.postValue(Success(result.second))
         }, onError = {
@@ -256,7 +256,7 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: List<Int>) {
+    fun setOrderTypeFilter(orderTypes: MutableSet<Int>) {
         this.getOrderListParams.orderTypeList = orderTypes
     }
 

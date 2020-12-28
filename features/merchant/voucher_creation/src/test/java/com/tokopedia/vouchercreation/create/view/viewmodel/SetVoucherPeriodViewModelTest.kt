@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PeriodValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PeriodValidation
 import io.mockk.MockKAnnotations
@@ -43,7 +43,7 @@ class SetVoucherPeriodViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = SetVoucherPeriodViewModel(TestCoroutineDispatchers, periodValidationUseCase)
+        mViewModel = SetVoucherPeriodViewModel(CoroutineTestDispatchersProvider, periodValidationUseCase)
     }
 
     @Test
