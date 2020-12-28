@@ -105,7 +105,7 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     }
 
     fun getMinOrderExceedLimitQuantityErrorMessage(): String? {
-        return getString(R.string.error_minimum_order_exceeding_max_limit)
+        return getString(R.string.error_minimum_order_exceed_max_limit)
     }
 
     fun getMinOrderExceedStockErrorMessage(): String? {
