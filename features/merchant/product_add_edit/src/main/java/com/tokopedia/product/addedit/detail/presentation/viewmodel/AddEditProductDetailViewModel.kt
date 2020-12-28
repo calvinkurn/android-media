@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -337,6 +338,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
+        if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
+            val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
+            errorMessage?.let { orderQuantityMessage = it }
+            mIsOrderQuantityInputError.value = true
+            return
+        }
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigIntegerOrNull().orZero()
             if (productMinOrder > productStock) {
@@ -346,6 +353,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                 return
             }
         }
+
         orderQuantityMessage = ""
         mIsOrderQuantityInputError.value = false
     }
