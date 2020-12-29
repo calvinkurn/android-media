@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -207,6 +208,7 @@ class AddEditProductPreviewFragment:
 
     // admin revamp
     private var multiLocationTicker: Ticker? = null
+    private var adminRevampErrorLayout: FrameLayout? = null
     private var adminRevampGlobalError: GlobalError? = null
 
     private lateinit var userSession: UserSessionInterface
@@ -350,6 +352,7 @@ class AddEditProductPreviewFragment:
 
         // admin revamp
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
+        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
         adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
 
         addEditProductPhotoButton?.setOnClickListener {
@@ -1087,7 +1090,7 @@ class AddEditProductPreviewFragment:
                 is Success -> {
                     result.data.let { isEligible ->
                         if (isEligible) {
-                            adminRevampGlobalError?.hide()
+                            adminRevampErrorLayout?.hide()
                         } else {
                             adminRevampGlobalError?.run {
                                 val permissionGroup = SellerHomePermissionGroup.PRODUCT
@@ -1103,8 +1106,8 @@ class AddEditProductPreviewFragment:
                                         RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
                                     }
                                 }
-                                show()
                             }
+                            adminRevampErrorLayout?.show()
                         }
                     }
                 }

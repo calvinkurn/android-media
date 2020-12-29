@@ -184,15 +184,23 @@
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
+    <!-- admin no permission error view. Need to be contained in frame layout to make it centered -->
 
-    <!-- admin no permission error view -->
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/add_edit_admin_global_error"
+    <FrameLayout
+        android:id="@+id/add_edit_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_N0"
-        android:visibility="gone"/>
+        android:visibility="gone">
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/add_edit_admin_global_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:globalerrors_type="PAGE_NOT_FOUND"/>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

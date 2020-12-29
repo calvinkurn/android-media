@@ -76,7 +76,7 @@ class BuyerAccountViewModel @Inject constructor (
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
             val (adminDataResponse, shopData) =
-                    if (!userSession.isShopAdmin) {
+                    if (!userSession.isShopOwner) {
                         with(accountAdminInfoUseCase) {
                             isLocationAdmin = userSession.isLocationAdmin
                             executeOnBackground()

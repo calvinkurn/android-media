@@ -938,6 +938,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     result.data.let { isEligible ->
                         canDisplayOrderData = isEligible
                         if (isEligible) {
+                            somAdminPermissionView?.hide()
                             loadAllInitialData()
                         } else {
                             showAdminPermissionError()
