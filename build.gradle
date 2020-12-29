@@ -63,9 +63,11 @@ if (hasProperty('buildScan')) {
 apply from: 'buildproj.gradle'
 
 //Installing Git Hooks
-task installGitHooks(type: Copy) {
-    ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
-    Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+task installGitHooks {
+    doLast {
+        ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+        Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+    }
 }
 clean.dependsOn installGitHooks
 
