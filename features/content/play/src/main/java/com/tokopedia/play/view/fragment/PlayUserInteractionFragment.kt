@@ -320,6 +320,8 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
         PlayAnalytics.clickPinnedMessage(channelId, message, applink, playViewModel.channelType)
         openPageByApplink(applink)
+
+        playViewModel.openPiPBrowsingPage()
     }
 
     override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
