@@ -1,10 +1,10 @@
-package com.tokopedia.logisticaddaddress.di.shopeditaddress
+package com.tokopedia.editshipping.di.shopeditaddress
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.logisticaddaddress.features.shopeditaddress.ShopEditAddressViewModel
+import com.tokopedia.editshipping.ui.shopeditaddress.ShopEditAddressViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

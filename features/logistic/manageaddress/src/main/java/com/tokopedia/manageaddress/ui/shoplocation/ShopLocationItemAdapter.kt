@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
@@ -76,11 +77,11 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
             if (shopLocation.status == 1) {
                 tvShopLabel.text = itemView.context.getString(R.string.shop_active)
                 tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G600))
-                iconShopLabel.setColorFilter(com.tokopedia.unifyprinciples.R.color.light_G500)
+                iconShopLabel.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (shopLocation.status == 2) {
-                tvShopLabel.text = itemView.context.getString(R.string.shop_active)
+                tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
                 tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                iconShopLabel.setColorFilter(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                iconShopLabel.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico_inactive))
             }
         }
 

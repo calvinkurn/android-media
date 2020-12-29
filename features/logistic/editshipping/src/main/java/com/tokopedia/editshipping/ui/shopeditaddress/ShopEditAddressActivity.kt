@@ -1,11 +1,11 @@
-package com.tokopedia.logisticaddaddress.features.shopeditaddress
+package com.tokopedia.editshipping.ui.shopeditaddress
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.logisticaddaddress.di.shopeditaddress.DaggerShopEditAddressComponent
-import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressComponent
+import com.tokopedia.editshipping.di.shopeditaddress.DaggerShopEditAddressComponent
+import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
 
 class ShopEditAddressActivity : BaseSimpleActivity(), HasComponent<ShopEditAddressComponent> {
 

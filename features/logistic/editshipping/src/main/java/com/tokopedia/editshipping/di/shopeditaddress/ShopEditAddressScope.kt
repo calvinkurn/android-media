@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.di.shopeditaddress
+package com.tokopedia.editshipping.di.shopeditaddress
 
 import javax.inject.Scope
 

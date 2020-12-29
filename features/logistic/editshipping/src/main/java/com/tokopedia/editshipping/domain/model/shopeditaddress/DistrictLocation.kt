@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.domain.model.shopLocation
+package com.tokopedia.editshipping.domain.model.shopeditaddress
 
 data class DistrictLocation(
         var title: String = "",

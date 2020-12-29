@@ -1,14 +1,13 @@
-package com.tokopedia.logisticaddaddress.domain.mapper
+package com.tokopedia.editshipping.domain.mapper
 
+import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.Prediction
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 2019-05-20.
- */
 class AutoCompleteMapper @Inject constructor() {
 
     fun mapAutoComplete(response: AutoCompleteResponse): Place {
@@ -27,6 +26,15 @@ class AutoCompleteMapper @Inject constructor() {
                     it.placeId
             )
         }
+    }
+
+    fun mapDistrictLoc(response: GetDistrictResponse): DistrictLocation {
+        val data = response.keroPlacesGetDistrict.data
+        return DistrictLocation(
+                data.title,
+                data.latitude,
+                data.longitude
+        )
     }
 
 }

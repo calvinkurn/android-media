@@ -1,8 +1,8 @@
-package com.tokopedia.logisticaddaddress.di.shopeditaddress
+package com.tokopedia.editshipping.di.shopeditaddress
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.logisticaddaddress.features.shopeditaddress.ShopEditAddressActivity
-import com.tokopedia.logisticaddaddress.features.shopeditaddress.ShopEditAddressFragment
+import com.tokopedia.editshipping.ui.shopeditaddress.ShopEditAddressActivity
+import com.tokopedia.editshipping.ui.shopeditaddress.ShopEditAddressFragment
 import dagger.Component
 
 @ShopEditAddressScope

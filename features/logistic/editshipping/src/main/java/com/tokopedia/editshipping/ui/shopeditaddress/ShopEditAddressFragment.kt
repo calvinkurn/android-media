@@ -1,5 +1,6 @@
-package com.tokopedia.logisticaddaddress.features.shopeditaddress
+package com.tokopedia.editshipping.ui.shopeditaddress
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -15,12 +16,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
+import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
-import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.di.shopeditaddress.ShopEditAddressComponent
-import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -30,8 +34,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
-        DiscomBottomSheetFragment.ActionListener{
+class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,6 +47,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
     private val zipCodes: List<String> = ArrayList()
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
+    private var token: Token? = null
 
     private var etShopLocationWrapper: TextInputLayout? = null
     private var etShopLocation: TextInputEditText? = null
@@ -54,6 +58,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
     private var etShopDetailWrapper: TextInputLayout? = null
     private var etShopDetail: TextInputEditText? = null
     private var tvPinpointText: Typography? = null
+    private var btnSave: UnifyButton? = null
 
     private var mapView: MapView? = null
     private var btnOpenMap: UnifyButton? = null
@@ -61,6 +66,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
     private var isLogisticLabel: Boolean = true
+    private val FINISH_PINPOINT_FLAG = 8888
 
     override fun getScreenName(): String = ""
 
@@ -79,7 +85,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_edit_addres, container, false)
+        return inflater.inflate(R.layout.fragment_shop_edit_address, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -148,6 +154,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         etShopDetailWrapper = view?.findViewById(R.id.et_detail_alamat_shop_wrapper)
         etShopDetail = view?.findViewById(R.id.et_detail_alamat_shop)
         tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
+        btnSave = view?.findViewById(R.id.btn_save_warehouse)
 
         mapView = view?.findViewById(R.id.map_view_detail)
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
@@ -195,6 +202,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
 
         tvPinpointText?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_desc)).spannedString }
 
+        btnOpenMap?.setOnClickListener {
+            goToPinpointActivity(currentLat, currentLong, warehouseModel)
+        }
+
     }
 
     private fun setViewListener() {
@@ -202,7 +213,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         etKotaKecamatan?.apply {
             addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
             setOnClickListener {
-                showDistrictRecommendationBottomSheet()
+                val intent = activity?.let { showDistrictRecommendationBottomSheet(it) }
+                startActivityForResult(intent, 100)
             }
         }
 
@@ -213,25 +225,14 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
         }
     }
 
-    private fun showDistrictRecommendationBottomSheet() {
-        val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
-        districtRecommendationBottomSheetFragment.setActionListener(this)
-        fragmentManager?.run {
-            districtRecommendationBottomSheetFragment.show(this, "")
-        }
+    private fun showDistrictRecommendationBottomSheet(activity: Activity): Intent? {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+        intent.putExtra(ARGUMENT_DATA_TOKEN, token)
+        return intent
     }
 
     private fun showZipCodes() {
 
-    }
-
-    override fun onGetDistrict(districtAddress: Address) {
-        /*see AddEditAddressFragment*/
-        warehouseModel?.cityId = districtAddress.cityId
-        warehouseModel?.districtId = districtAddress.districtId
-        warehouseModel?.zipCodes = districtAddress.zipCodes
-        viewModel.getAutoCompleteList(districtAddress.districtName)
     }
 
     private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
@@ -279,6 +280,16 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback,
                 .build()
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    private fun goToPinpointActivity(lat: Double?, long: Double?, warehouseDataModel: Warehouse?) {
+        val intent = RouteManager.getIntent(
+                activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+        intent.putExtra("EXTRA_IS_FULL_FLOW", false)
+        intent.putExtra("EXTRA_LAT", lat)
+        intent.putExtra("EXTRA_LONG", long)
+        intent.putExtra("EXTRA_IS_WAREHOUSE", warehouseDataModel)
+        startActivityForResult(intent, 789)
     }
 
     companion object {

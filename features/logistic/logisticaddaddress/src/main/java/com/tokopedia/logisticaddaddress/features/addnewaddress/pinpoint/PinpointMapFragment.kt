@@ -33,6 +33,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
@@ -92,6 +93,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
+    private var warehouseDataModel: Warehouse? = null
 
     private var composite = CompositeSubscription()
 
@@ -133,6 +135,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     putBoolean(EXTRA_IS_FULL_FLOW, extra.getBoolean(EXTRA_IS_FULL_FLOW, true))
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true))
                     putBoolean(EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false))
+                    putParcelable("EXTRA_IS_WAREHOUSE", extra.getParcelable("EXTRA_IS_WAREHOUSE"))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
@@ -162,6 +165,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
             isCircuitBreaker = it.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false)
+            warehouseDataModel = it.getParcelable("EXTRA_IS_WAREHOUSE")
         }
     }
 

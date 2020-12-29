@@ -2,4 +2,5 @@
 <resources>
 
     <color name="label_color">#868686</color>
+    <color name="label_grey">#ae31353b</color>
 </resources>
