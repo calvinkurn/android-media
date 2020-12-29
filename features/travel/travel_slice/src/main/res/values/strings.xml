@@ -17,7 +17,7 @@
     <string name="slice_flight_see_more">Lihat Pesanan Lainnya</string>
     <string name="slice_flight_failed_desc">Gagal mendapatkan informasi pesawat</string>
 
-    <string name="travel_slice_host">travelslice</string>
-    <string name="tokopedia_scheme">tokopedia</string>
-    <string name="travel_slice_path">/main</string>
+    <string name="travel_slice_host_name">travelslice</string>
+    <string name="travel_slice_tokopedia_scheme">tokopedia</string>
+    <string name="travel_slice_path_name">/main</string>
 </resources>

@@ -24,9 +24,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/travel_slice_host"
-                    android:path="@string/travel_slice_path"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:host="@string/travel_slice_host_name"
+                    android:path="@string/travel_slice_path_name"
+                    android:scheme="@string/travel_slice_tokopedia_scheme" />
             </intent-filter>
         </activity>
     </application>
