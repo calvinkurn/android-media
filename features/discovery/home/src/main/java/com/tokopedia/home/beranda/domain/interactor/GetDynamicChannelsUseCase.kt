@@ -20,11 +20,12 @@ class GetDynamicChannelsUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(HomeChannelData::class.java)
     }
 
-    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0){
+    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = ""){
         params.parameters.clear()
         params.putString(GROUP_IDS, groupIds)
         params.putString(TOKEN, token)
         params.putInt(NUM_OF_CHANNEL, numOfChannel)
+        params.putString(PARAMS, queryParams)
     }
 
     override suspend fun executeOnBackground(): HomeChannelData {
@@ -37,6 +38,7 @@ class GetDynamicChannelsUseCase @Inject constructor(
         private const val GROUP_IDS = "groupIDs"
         private const val TOKEN = "token"
         private const val NUM_OF_CHANNEL = "numOfChannel"
+        private const val PARAMS = "params"
     }
 
 }

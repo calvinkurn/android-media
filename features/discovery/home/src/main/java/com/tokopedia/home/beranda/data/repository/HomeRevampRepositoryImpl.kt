@@ -6,10 +6,14 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.model.HomeAtfData
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
+import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
+import com.tokopedia.home.constant.AtfKey.TYPE_ICON
+import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
@@ -23,6 +27,16 @@ import rx.Observable
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
+/**
+ * Home repository class used to provide the data from Home Services
+ *
+ * - Above the fold data
+ * - Dynamic Channel
+ * - Slider Banner (HPB)
+ * - Icon
+ * - Ticker
+ *
+ */
 class HomeRevampRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
@@ -41,6 +55,18 @@ class HomeRevampRepositoryImpl @Inject constructor(
         it
     }
 
+    /**
+     * Home repository flow:
+     *
+     * 1.   Provide initial HomeData
+     * 2.   Get above the fold skeleton
+     * 3.   Get above the fold content
+     * 4.   Submit current data to database, to trigger HomeViewModel flow
+     * 5.   Get dynamic channel data
+     * 5.1. If channel cache is empty, proceed to channel pagination
+     * 5.2. If channel cache is not empty, proceed to full channel request
+     * 6.   Submit current data to database, to trigger HomeViewModel flow
+     */
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
             /**
@@ -52,25 +78,65 @@ class HomeRevampRepositoryImpl @Inject constructor(
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
-            val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }
-            val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
+
+            /**
+             * 1. Provide initial HomeData
+             */
+            var homeData = HomeData()
+
+            /**
+             * 2. Get above the fold skeleton
+             */
+            val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
+            homeData.atfData = homeAtfResponse
+
+            /**
+             * 3. Get above the fold content
+             */
+            homeData.atfData?.dataList?.map {
+                when(it.component) {
+                    TYPE_TICKER -> {
+                        val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                        ticker?.let { homeData.ticker = ticker.ticker }
+                    }
+                    TYPE_BANNER -> {
+                        val banner = homeRemoteDataSource.getHomePageBannerUseCase()
+                        banner?.let { homeData.banner = banner.banner }
+                    }
+                    TYPE_CHANNEL -> {
+                        val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = it.param)
+                        dynamicChannel.let {
+                            val currentDynamicHomeChannel = homeData.dynamicHomeChannel
+                            val channelFromResponse = it.dynamicHomeChannel
+
+                            /**
+                             * 3.1 Combine the channel
+                             */
+                            val combinationChannel = currentDynamicHomeChannel.channels.toMutableList()
+                            combinationChannel.addAll(channelFromResponse.channels)
+
+                            homeData.dynamicHomeChannel = DynamicHomeChannel(combinationChannel)
+                        }
+                    }
+                    TYPE_ICON -> {
+                        val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase()
+                        dynamicIcon?.let { homeData.dynamicHomeIcon = dynamicIcon.dynamicHomeIcon }
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+
+            /**
+             * 4. Submit current data to database, to trigger HomeViewModel flow
+             */
+            homeCachedDataSource.saveToDatabase(homeData)
+
+            /**
+             * 5.   Get dynamic channel data
+             */
             val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
-
-            val homeAtfResponseValue = try {
-                homeAtfResponse.await()
-            } catch (e: Exception) {
-                HomeAtfData()
-            }
-
-
-            var homeDataCombined: HomeData? = HomeData()
-
-            val homeDataResponseValue = try {
-                homeDataResponse.await()
-            } catch (e: Exception) {
-                HomeData()
-            }
-
             val dynamicChannelResponseValue = try {
                 dynamicChannelResponse.await()
             } catch (e: Exception) {
@@ -81,17 +147,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
             }
 
-            homeDataResponseValue?.atfData = homeAtfResponseValue
-            homeDataResponseValue?.banner?.timestamp = currentTimeMillisString
-
             /**
-             * Proceed to pagination mechanism if cache is not exist
+             * 5.1. If channel cache is empty, proceed to channel pagination
              */
             if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
                 val extractPair = extractToken(dynamicChannelResponseValue)
 
-                homeDataResponseValue?.let {
-                    it.dynamicHomeChannel = extractPair.second.dynamicHomeChannel
+                homeData.let {
+                    val combinedChannel = combineChannelWith(it.dynamicHomeChannel, extractPair.second.dynamicHomeChannel)
+                    it.dynamicHomeChannel = combinedChannel
                     it.token = extractPair.first
                     it.dynamicHomeChannel.channels.forEach { channel ->
                         channel.timestamp = currentTimeMillisString
@@ -99,17 +163,14 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     currentToken = it.token
                 }
 
-                if (homeDataResponseValue == null) {
-                    homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
-                } else {
-                    homeCachedDataSource.saveToDatabase(homeDataResponseValue)
-                }
+                homeCachedDataSource.saveToDatabase(homeData)
             } else if (dynamicChannelResponseValue == null) {
                 emit(Result.error(Throwable()))
                 return@coroutineScope
             }
 
             /**
+             * 5.2. If channel cache is not empty, proceed to full channel request
              * Proceed to full request dynamic channel
              * - if there is token and cache is not exist
              * - if cache is exist
@@ -118,12 +179,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
             if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                     isCacheExistForProcess) {
                 try {
-                    homeDataCombined = processFullPageDynamicChannel(homeDataResponseValue)
-                    homeDataCombined?.dynamicHomeChannel?.channels?.forEach {
+                    homeData = processFullPageDynamicChannel(homeData)?: HomeData()
+                    homeData.dynamicHomeChannel.channels.forEach {
                         it.timestamp = currentTimeMillisString
                     }
-                    homeDataCombined?.let {
+                    homeData.let {
                         emit(Result.success(null))
+                        /**
+                         * 6. Submit current data to database, to trigger HomeViewModel flow
+                         */
                         homeCachedDataSource.saveToDatabase(it)
                     }
                 } catch (e: Exception) {
@@ -152,7 +216,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
 
         homeDataResponse?.let {
             homeDataResponse.token = ""
-            homeDataResponse.dynamicHomeChannel.channels = currentChannelList.toList()
+            val combinedChannel = combineChannelWith(homeDataResponse.dynamicHomeChannel, dynamicChannelCompleteResponse.dynamicHomeChannel)
+            homeDataResponse.dynamicHomeChannel = combinedChannel
         }
         return homeDataResponse
     }
@@ -169,5 +234,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
             homeChannelData.dynamicHomeChannel.channels[0].token = ""
             Pair(token, homeChannelData)
         } else Pair("", homeChannelData)
+    }
+
+    private fun combineChannelWith(currentChannel: DynamicHomeChannel, newChannel: DynamicHomeChannel): DynamicHomeChannel {
+        val combinationChannel = currentChannel.channels.toMutableList()
+        combinationChannel.addAll(newChannel.channels)
+        return DynamicHomeChannel(combinationChannel)
     }
 }

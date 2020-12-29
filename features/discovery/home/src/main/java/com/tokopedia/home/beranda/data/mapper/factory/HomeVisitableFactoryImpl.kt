@@ -16,6 +16,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
+import com.tokopedia.home.constant.AtfKey.TYPE_ICON
+import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -48,8 +51,6 @@ class HomeVisitableFactoryImpl(
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
-        private const val ATF_TYPE_BANNER = "banner"
-        private const val ATF_TYPE_TICKER = "ticker"
     }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
@@ -162,8 +163,14 @@ class HomeVisitableFactoryImpl(
         homeData?.atfData?.let {
             it.dataList.forEach { data ->
                 when(data.component) {
-                    ATF_TYPE_TICKER -> {
+                    TYPE_TICKER -> {
                         addTickerData()
+                    }
+                    TYPE_BANNER -> {
+                        addBannerVisitable()
+                    }
+                    TYPE_ICON -> {
+                        addDynamicIconVisitable()
                     }
                 }
             }

@@ -132,7 +132,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var navRollanceType: String = ""
     var currentTopAdsBannerToken: String = ""
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
 
 // ============================================================================================
 // ================================ Live data UI Controller ===================================
