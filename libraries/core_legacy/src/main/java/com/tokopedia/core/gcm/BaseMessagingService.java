@@ -117,10 +117,14 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     }
 
     private boolean showPromoNotification() {
-        if (sharedPreferences == null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        boolean revert = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.REVERT_PUSH_NOTIFICATION);
+        if(!revert) {
+            return true;
+        } else{
+            if (sharedPreferences == null)
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        }
     }
 
     /**
