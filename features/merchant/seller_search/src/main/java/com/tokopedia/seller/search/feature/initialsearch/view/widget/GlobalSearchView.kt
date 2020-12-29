@@ -10,11 +10,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.seller.search.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_global_search_view.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -222,6 +226,25 @@ class GlobalSearchView : BaseCustomView {
             KeyboardHandler.DropKeyboard(activity, searchBarView?.searchBarTextField)
             activity?.finish()
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun EditText.getQueryTextChangeStateFlow(): StateFlow<String> {
+
+        val query = MutableStateFlow("")
+
+        addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                query.value = s?.trim().toString()
+            }
+        })
+
+        return query
     }
 
     interface GlobalSearchViewListener {
