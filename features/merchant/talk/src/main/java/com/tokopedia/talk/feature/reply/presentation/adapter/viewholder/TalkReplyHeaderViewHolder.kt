@@ -36,7 +36,7 @@ class TalkReplyHeaderViewHolder(view: View,
 
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {
-            showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask)
+            showQuestionWithCondition(isMasked, question, maskedContent, allowUnmask, isSeller)
             showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
@@ -53,7 +53,7 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
-        if(isMarkNotFraud) {
+        if (isMarkNotFraud) {
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
             threadListener.onDismissUnmaskCard(commentId)
@@ -61,7 +61,7 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
-        if(allowUnmask) {
+        if (allowUnmask) {
             itemView.replyUnmaskCard.apply {
                 show()
                 setListener(this@TalkReplyHeaderViewHolder, "")
@@ -130,11 +130,11 @@ class TalkReplyHeaderViewHolder(view: View,
         labelMyQuestion.hide()
     }
 
-    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean) {
+    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean, isSeller: Boolean) {
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                if(!allowUnmask) {
+                if (!allowUnmask && !isSeller) {
                     setType(Typography.BODY_2)
                     setWeight(Typography.REGULAR)
                     text = maskedContent
@@ -187,7 +187,7 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     private fun showTickerWithCondition(isMasked: Boolean, maskedContent: String) {
-        if(isMasked) {
+        if (isMasked) {
             itemView.replyQuestionTicker.apply {
                 show()
                 setTextDescription(maskedContent)

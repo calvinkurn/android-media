@@ -65,7 +65,7 @@
     <string name="reply_empty_title_default">Bantu jawab, yuk!</string>
     <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
     <string name="reply_product_deleted">Barang ini sudah dihapus</string>
-    <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
+    <string name="reply_unmask">Tokopedia tidak menampilkan konten diskusi ini karena melanggar S&amp;K. Tetap tampilkan?</string>
     <string name="reply_unmask_yes">Sembunyikan</string>
     <string name="reply_unmask_no">Tampilkan</string>
     <string name="reply_unmask_toaster_negative">Konten tidak ditampilkan.</string>

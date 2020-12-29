@@ -23,14 +23,15 @@ object TalkReplyMapper {
                     userThumbnail,
                     userName,
                     userId,
-                    questionState.isYours)
+                    questionState.isYours,
+                    discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.isSellerView)
         }
     }
 
-    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId:String): List<TalkReplyUiModel> {
+    fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, userId: String): List<TalkReplyUiModel> {
         val result = mutableListOf<TalkReplyUiModel>()
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.answer.forEach {
-            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID, it.userId == userId))
+            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID, it.userId == userId, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.isSellerView))
         }
         return result
     }
@@ -38,7 +39,7 @@ object TalkReplyMapper {
     fun mapResultProductsToAttachedProducts(resultProducts: List<ResultProduct>): MutableList<AttachedProduct> {
         val result = mutableListOf<AttachedProduct>()
         resultProducts.forEach {
-            result.add(AttachedProduct(it.productId.toString(), it.productImageThumbnail, it.name, it.productUrl, it.price ))
+            result.add(AttachedProduct(it.productId.toString(), it.productImageThumbnail, it.name, it.productUrl, it.price))
         }
         return result
     }

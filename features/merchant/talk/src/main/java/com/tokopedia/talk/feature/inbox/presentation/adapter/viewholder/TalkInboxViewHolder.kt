@@ -83,7 +83,7 @@ class TalkInboxViewHolder(
                 0 -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count_empty_seller)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                         setWeight(Typography.BOLD)
                     }
                 }
