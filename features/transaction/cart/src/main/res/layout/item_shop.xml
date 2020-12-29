@@ -36,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:button="@drawable/ic_cart_check_box"
                 android:paddingRight="@dimen/dp_10" />
 
             <LinearLayout
