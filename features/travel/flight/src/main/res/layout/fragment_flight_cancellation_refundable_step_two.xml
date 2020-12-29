@@ -47,7 +47,6 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     app:typographyType="body_3"
-                    android:id="@+id/attachment_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
