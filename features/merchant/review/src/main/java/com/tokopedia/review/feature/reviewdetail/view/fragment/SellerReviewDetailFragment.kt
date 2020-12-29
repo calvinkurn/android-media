@@ -133,7 +133,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
-                chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ""
+                chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ReviewConstants.ALL_VALUE
                 productImageUrl = getStringExtra(PRODUCT_IMAGE) ?: ""
             }
         }
