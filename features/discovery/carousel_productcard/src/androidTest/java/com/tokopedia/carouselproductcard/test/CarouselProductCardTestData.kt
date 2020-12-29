@@ -7,6 +7,7 @@ internal var productCardNameSuffix = 0
 internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>().also {
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
+    it.add(createCarouselProductCardGridWithLabelBestSeller())
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
     it.add(createCarouselProductCardGrid())
@@ -139,6 +140,17 @@ private fun createCarouselProductCardGridWithButtonATC(): List<ProductCardModel>
     }
 }
 
+private fun createCarouselProductCardGridWithLabelBestSeller(): List<ProductCardModel> {
+    return listOf(
+            createProductCardBestSellerLabel(),
+            createProductCardBestSellerLabel(),
+            createProductCardBestSellerLabel(),
+            createProductCardBestSellerLabel(),
+            createProductCardBestSellerLabel(),
+            createProductCardBestSellerLabel()
+    )
+}
+
 private fun createProductCardMaxInfoAndLabelATC(): ProductCardModel {
     productCardNameSuffix += 1
 
@@ -214,5 +226,24 @@ private fun createProductCardOneLineProductNameATC(): ProductCardModel {
             },
             shopLocation = "DKI Jakarta",
             hasAddToCartButton = true
+    )
+}
+
+private fun createProductCardBestSellerLabel(): ProductCardModel {
+    productCardNameSuffix += 1
+
+    val labelGroupIntegrity = ProductCardModel.LabelGroup(position = "integrity", title = "Terjual 12 rb", type = "textDarkGrey")
+    val labelBestSeller = ProductCardModel.LabelGroup(position = "best_seller", title = "Terlaris", type = "#E1AA1D")
+
+    return ProductCardModel(
+            productName = "$productCardNameSuffix Best seller label test very long long long name sfa;l fjslkdjfl;as jfdlkajsdf ",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>().also { badges ->
+                badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+            },
+            shopLocation = "DKI Jakarta",
+            countSoldRating = "4.8",
+            labelGroupList = listOf(labelBestSeller, labelGroupIntegrity)
     )
 }

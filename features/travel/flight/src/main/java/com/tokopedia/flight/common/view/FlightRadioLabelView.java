@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.flight.R;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 public class FlightRadioLabelView extends BaseCustomView {
     private TextView titleTextView;

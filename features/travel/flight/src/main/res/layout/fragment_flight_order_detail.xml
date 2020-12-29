@@ -9,8 +9,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/containerContentOrderDetail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:visibility="gone">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -149,7 +148,8 @@
         android:layout_height="match_parent"
         android:background="@color/Unify_N0"
         android:id="@+id/containerFlightOrderError"
-        android:padding="@dimen/spacing_lvl4">
+        android:padding="@dimen/spacing_lvl4"
+        tools:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivFlightOrderErrorImage"

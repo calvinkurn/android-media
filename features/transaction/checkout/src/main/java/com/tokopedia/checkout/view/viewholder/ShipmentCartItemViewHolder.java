@@ -113,7 +113,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         if (productInformationList != null && !productInformationList.isEmpty()) {
             for (int i = 0; i < productInformationList.size(); i++) {
                 Typography productInfo = new Typography(itemView.getContext());
-                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
+                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 productInfo.setType(Typography.SMALL);
                 if (mLayoutProductInfo.getChildCount() > 0) {
                     productInfo.setText(", " + productInformationList.get(i));
@@ -212,7 +212,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void disableItemView() {
-        int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
+        int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
         mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
@@ -231,12 +231,12 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void enableItemView() {
-        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
-        mTextVariant.setTextColor(ContextCompat.getColor(mTextVariant.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
-        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
+        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        mTextVariant.setTextColor(ContextCompat.getColor(mTextVariant.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         setImageFilterNormal();
     }
 

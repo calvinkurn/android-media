@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
@@ -35,12 +34,10 @@ class GyroListItemViewHolder(val view: View, val listener: GyroAdapterListener)
 
             view.setOnClickListener {
                 listener.onItemClicked(element, adapterPosition)
-                urlApp?.let {
+                if (!urlApp.isNullOrBlank()) {
                     listener.openAppLink(urlApp)
-                } ?: run {
-                    url?.let {
-                        listener.openWebUrl(url)
-                    }
+                } else if (!url.isNullOrBlank()) {
+                    listener.openWebUrl(url)
                 }
             }
         }

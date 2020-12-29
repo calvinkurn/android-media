@@ -60,6 +60,7 @@ class SomListViewModelTest {
 
     private lateinit var topAdsGetShopInfoField: Field
     private lateinit var getTopAdsGetShopInfoJobField: Field
+    private lateinit var getUserRolesJobField: Field
 
     private val shopID: Int = 123456
 
@@ -96,6 +97,9 @@ class SomListViewModelTest {
         getTopAdsGetShopInfoJobField = SomListViewModel::class.java.getDeclaredField("getTopAdsGetShopInfoJob").apply {
             isAccessible = true
         }
+        getUserRolesJobField = SomListViewModel::class.java.getDeclaredField("getUserRolesJob").apply {
+            isAccessible = true
+        }
     }
 
     // ticker_list
@@ -110,8 +114,8 @@ class SomListViewModelTest {
         somListViewModel.loadTickerList("")
 
         //then
-        assert(somListViewModel.tickerListResult.value is Success)
-        assert((somListViewModel.tickerListResult.value as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data[0].tickerId == 123)
+        assert(somListViewModel.tickerListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.tickerListResult.observeAwaitValue() as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data[0].tickerId == 123)
     }
 
     @Test
@@ -125,7 +129,7 @@ class SomListViewModelTest {
         somListViewModel.loadTickerList("")
 
         //then
-        assert(somListViewModel.tickerListResult.value is Fail)
+        assert(somListViewModel.tickerListResult.observeAwaitValue() is Fail)
     }
 
     @Test
@@ -139,8 +143,8 @@ class SomListViewModelTest {
         somListViewModel.loadTickerList("")
 
         //then
-        assert(somListViewModel.tickerListResult.value is Success)
-        assert((somListViewModel.tickerListResult.value as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data.size > 0)
+        assert(somListViewModel.tickerListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.tickerListResult.observeAwaitValue() as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data.size > 0)
     }
 
     // status_order_list
@@ -155,8 +159,8 @@ class SomListViewModelTest {
         somListViewModel.loadStatusOrderList("")
 
         //then
-        assert(somListViewModel.statusOrderListResult.value is Success)
-        assert((somListViewModel.statusOrderListResult.value as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data[0].id == 220)
+        assert(somListViewModel.statusOrderListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.statusOrderListResult.observeAwaitValue() as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data[0].id == 220)
     }
 
     @Test
@@ -170,7 +174,7 @@ class SomListViewModelTest {
         somListViewModel.loadStatusOrderList("")
 
         //then
-        assert(somListViewModel.statusOrderListResult.value is Fail)
+        assert(somListViewModel.statusOrderListResult.observeAwaitValue() is Fail)
     }
 
     @Test
@@ -184,8 +188,8 @@ class SomListViewModelTest {
         somListViewModel.loadStatusOrderList("")
 
         //then
-        assert(somListViewModel.statusOrderListResult.value is Success)
-        assert((somListViewModel.statusOrderListResult.value as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.size > 0)
+        assert(somListViewModel.statusOrderListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.statusOrderListResult.observeAwaitValue() as Success<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>>).data.size > 0)
     }
 
     // filter_list
@@ -199,9 +203,9 @@ class SomListViewModelTest {
 
         somListViewModel.loadFilter()
 
-        assert(somListViewModel.filterResult.value is Success)
-        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.firstOrNull()?.orderStatus == "400")
-        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
+        assert(somListViewModel.filterResult.observeAwaitValue() is Success)
+        assert((somListViewModel.filterResult.observeAwaitValue() as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.firstOrNull()?.orderStatus == "400")
+        assert((somListViewModel.filterResult.observeAwaitValue() as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
     }
 
     @Test
@@ -215,7 +219,7 @@ class SomListViewModelTest {
         somListViewModel.loadFilter()
 
         //then
-        assert(somListViewModel.filterResult.value is Fail)
+        assert(somListViewModel.filterResult.observeAwaitValue() is Fail)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -229,9 +233,9 @@ class SomListViewModelTest {
 
         somListViewModel.loadFilter()
 
-        assert(somListViewModel.filterResult.value is Success)
-        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.isNotEmpty())
-        assert((somListViewModel.filterResult.value as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
+        assert(somListViewModel.filterResult.observeAwaitValue() is Success)
+        assert((somListViewModel.filterResult.observeAwaitValue() as Success<SomListFilter.Data.OrderFilterSom>).data.statusList.isNotEmpty())
+        assert((somListViewModel.filterResult.observeAwaitValue() as Success<SomListFilter.Data.OrderFilterSom>).data.waitingPaymentCounter.amount > 0)
     }
 
     // order_list
@@ -251,8 +255,8 @@ class SomListViewModelTest {
 
         somListViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        assert(somListViewModel.orderListResult.value is Success)
-        assert((somListViewModel.orderListResult.value as Success<SomListOrder.Data.OrderList>).data.orders[0].orderId == "123")
+        assert(somListViewModel.orderListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.orderListResult.observeAwaitValue() as Success<SomListOrder.Data.OrderList>).data.orders[0].orderId == "123")
         assert(topAdsGetShopInfoField.get(somListViewModel) == topAdsGetShopInfoResult)
     }
 
@@ -264,7 +268,7 @@ class SomListViewModelTest {
 
         somListViewModel.loadOrderList(SomListOrderParam(), true)
 
-        assert(somListViewModel.orderListResult.value is Fail)
+        assert(somListViewModel.orderListResult.observeAwaitValue() is Fail)
     }
 
     @Test
@@ -281,37 +285,70 @@ class SomListViewModelTest {
         somListViewModel.loadTopAdsShopInfo(shopID)
         somListViewModel.loadOrderList(SomListOrderParam(), true)
 
-        assert(somListViewModel.orderListResult.value is Success)
-        assert((somListViewModel.orderListResult.value as Success<SomListOrder.Data.OrderList>).data.orders.isNotEmpty())
+        assert(somListViewModel.orderListResult.observeAwaitValue() is Success)
+        assert((somListViewModel.orderListResult.observeAwaitValue() as Success<SomListOrder.Data.OrderList>).data.orders.isNotEmpty())
         assert(topAdsGetShopInfoField.get(somListViewModel) == topAdsGetShopInfoResult)
     }
 
     @Test
     fun loadUserRoles_shouldReturnSuccess() {
-        //given
         coEvery {
             somGetUserRoleUseCase.execute()
         } returns Success(SomGetUserRoleUiModel())
 
-        //when
         somListViewModel.loadUserRoles(123456)
 
-        //then
-        assert(somListViewModel.userRoleResult.value is Success)
+        assert(somListViewModel.userRoleResult.observeAwaitValue() is Success)
     }
 
     @Test
     fun loadUserRoles_shouldReturnFail() {
-        //given
         coEvery {
             somGetUserRoleUseCase.execute()
         } returns Fail(Throwable())
 
-        //when
         somListViewModel.loadUserRoles(123456)
 
-        //then
-        assert(somListViewModel.userRoleResult.value is Fail)
+        assert(somListViewModel.userRoleResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun loadUserRoles_shouldNeverSendRequestWhenAnotherLoadUserRolesRequestIsOnProgress() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns false
+
+        getUserRolesJobField.set(somListViewModel, getUserRolesJob)
+        somListViewModel.loadUserRoles(123456)
+
+        coVerify(inverse = true) {
+            somGetUserRoleUseCase.execute()
+        }
+
+        assert(somListViewModel.userRoleResult.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun loadUserRoles_shouldSuccessWhenAnotherLoadUserRolesRequestIsCompleted() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
+        coEvery {
+            somGetUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns true
+
+        getUserRolesJobField.set(somListViewModel, getUserRolesJob)
+        somListViewModel.loadUserRoles(123456)
+
+        coVerify {
+            somGetUserRoleUseCase.execute()
+        }
+
+        assert(somListViewModel.userRoleResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -328,6 +365,22 @@ class SomListViewModelTest {
 
         assert(topAdsGetShopInfoField.get(somListViewModel) != null)
         assert(topAdsGetShopInfoField.get(somListViewModel) is Success<*>)
+    }
+
+    @Test
+    fun loadTopAdsShopInfo_shouldReturnFail() {
+        coEvery {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        } returns Fail(Throwable())
+
+        somListViewModel.loadTopAdsShopInfo(shopID)
+
+        coVerify {
+            topAdsGetShopInfoUseCase.execute(shopID)
+        }
+
+        assert(topAdsGetShopInfoField.get(somListViewModel) != null)
+        assert(topAdsGetShopInfoField.get(somListViewModel) is Fail)
     }
 
     @Test
@@ -348,13 +401,22 @@ class SomListViewModelTest {
         coVerify(inverse = true) {
             topAdsGetShopInfoUseCase.execute(shopID)
         }
+
+        assert(topAdsGetShopInfoField.get(somListViewModel) == null)
     }
 
     @Test
-    fun loadTopAdsShopInfo_shouldReturnFail() {
+    fun loadTopAdsShopInfo_shouldSuccessWhenAnotherLoadTopAdsShopInfoRequestIsCompleted() {
+        val getTopAdsGetShopInfoJob = mockk<Job>()
+        getTopAdsGetShopInfoJobField.set(somListViewModel, getTopAdsGetShopInfoJob)
+
         coEvery {
             topAdsGetShopInfoUseCase.execute(shopID)
-        } returns Fail(Throwable())
+        } returns Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo())
+
+        every {
+            getTopAdsGetShopInfoJob.isCompleted
+        } returns true
 
         somListViewModel.loadTopAdsShopInfo(shopID)
 
@@ -362,8 +424,7 @@ class SomListViewModelTest {
             topAdsGetShopInfoUseCase.execute(shopID)
         }
 
-        assert(topAdsGetShopInfoField.get(somListViewModel) != null)
-        assert(topAdsGetShopInfoField.get(somListViewModel) is Fail)
+        assert(topAdsGetShopInfoField.get(somListViewModel) is Success<*>)
     }
 
     @Test
@@ -376,7 +437,7 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnFalseWhenUserHasNoTopadsProduct() {
+    fun isTopAdsActive_shouldReturnFalseWhenUserHasNoTopAdsProduct() {
         topAdsGetShopInfoField.set(
                 somListViewModel,
                 Success(SomTopAdsGetShopInfoResponse.Data.TopAdsGetShopInfo.SomTopAdsShopInfo(SomConsts.TOPADS_NO_ADS)))

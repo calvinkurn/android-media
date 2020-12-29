@@ -4,7 +4,7 @@ package com.tokopedia.chatbot.domain.pojo.ratinglist
 import com.google.gson.annotations.SerializedName
 
 data class ChipGetChatRatingListResponse(
-    @SerializedName("chipGetChatRatingList")
+    @SerializedName("chipGetChatRatingListV5")
     val chipGetChatRatingList: ChipGetChatRatingList?
 ) {
     data class ChipGetChatRatingList(
@@ -29,7 +29,9 @@ data class ChipGetChatRatingListResponse(
                 @SerializedName("isSubmitted")
                 val isSubmitted: Boolean?,
                 @SerializedName("value")
-                val value: String?
+                val value: String?,
+                @SerializedName("attachmentType")
+                val attachmentType: Int?
             )
         }
     }

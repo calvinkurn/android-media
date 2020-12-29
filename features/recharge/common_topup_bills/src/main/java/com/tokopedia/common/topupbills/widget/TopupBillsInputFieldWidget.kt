@@ -74,10 +74,12 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
             }
             false
         }
-        ac_input.setKeyImeChangeListener { _, event ->
-            if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                actionListener?.onFinishInput(getInputText())
-                ac_input.clearFocus()
+        ac_input.keyImeChangeListener = object : TopupBillsBackEditText.KeyImeChange {
+            override fun onKeyIme(keyCode: Int, event: KeyEvent) {
+                if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                    actionListener?.onFinishInput(getInputText())
+                    ac_input.clearFocus()
+                }
             }
         }
         ac_input.setOnTouchListener { view, motionEvent ->

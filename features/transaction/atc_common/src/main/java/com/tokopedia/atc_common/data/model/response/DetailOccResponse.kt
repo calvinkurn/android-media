@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class DetailOccResponse(
         @SerializedName("cart_id")
         @Expose
-        val cartId: Int = 0,
+        val cartId: Long = 0,
 
         @SerializedName("product_id")
         @Expose
