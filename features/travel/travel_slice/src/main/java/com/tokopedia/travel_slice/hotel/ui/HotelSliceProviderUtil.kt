@@ -34,7 +34,7 @@ object HotelSliceProviderUtil {
                 title = context.getString(R.string.slice_get_hotel_result_title, cityName)
                 primaryAction = SliceAction.create(
                         buildIntentFromHotelDashboard(context),
-                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
             gridRow {
@@ -60,7 +60,7 @@ object HotelSliceProviderUtil {
                 subtitle = context.getString(R.string.slice_hotel_failed_desc)
                 primaryAction = SliceAction.create(
                         buildIntentFromHotelDashboard(context),
-                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
         }
@@ -74,7 +74,7 @@ object HotelSliceProviderUtil {
                 subtitle = context.getString(R.string.slice_empty_hotel_desc)
                 primaryAction = SliceAction.create(
                         buildIntentFromHotelDashboard(context),
-                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
         }
@@ -87,7 +87,7 @@ object HotelSliceProviderUtil {
                 title = context.getString(R.string.slice_hotel_title)
                 subtitle = context.getString(R.string.slice_empty_order_list)
                 primaryAction = SliceAction.create(buildIntentFromHotelOrderListApplink(context),
-                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
         }
@@ -102,7 +102,7 @@ object HotelSliceProviderUtil {
                 primaryAction = PendingIntent.getActivity(
                         context, 0, RouteManager.getIntent(context, ApplinkConst.LOGIN), 0
                 ).let {
-                    SliceAction.create(it, IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                    SliceAction.create(it, IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             SMALL_IMAGE, "")
                 }
             }
@@ -148,7 +148,7 @@ object HotelSliceProviderUtil {
             header {
                 title = context.getString(R.string.slice_hotel_order_title)
                 primaryAction = SliceAction.create(buildIntentFromHotelOrderListApplink(context),
-                        IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                         ListBuilder.ICON_IMAGE, "")
             }
 
@@ -159,7 +159,7 @@ object HotelSliceProviderUtil {
                     setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_hotel), SMALL_IMAGE)
 
                     primaryAction = SliceAction.create(buildIntentFromHotelOrderApplink(context, it.applink, it.title),
-                            IconCompat.createWithResource(context, R.drawable.tab_indicator_ab_tokopedia),
+                            IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
                             ListBuilder.ICON_IMAGE, "")
                 }
             }
