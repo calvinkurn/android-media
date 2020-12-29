@@ -224,6 +224,9 @@
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
+#Please refer to the link before manipulating this line https://help.branch.io/developers-hub/docs/android-basic-integration#proguard-settings
+-keep class com.google.android.gms.** { *; }
+
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
 -dontwarn com.tokopedia.tkpd.analytics.**

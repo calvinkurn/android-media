@@ -59,6 +59,34 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         runBlocking {
             coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
             shopPageProductListResultViewModel.getShop(
+                    shopId = "123",
+                    shopDomain = ""
+            )
+            verifyGetShopInfoUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
+            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop info success with shopId 0`() {
+        runBlocking {
+            coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            shopPageProductListResultViewModel.getShop(
+                    shopId = "0",
+                    shopDomain = "domain"
+            )
+            verifyGetShopInfoUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
+            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop info success with only shopId`() {
+        runBlocking {
+            coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            shopPageProductListResultViewModel.getShop(
                     shopId = "123"
             )
             verifyGetShopInfoUseCaseCalled()
@@ -68,16 +96,9 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     }
 
     @Test
-    fun `check whether response get shop info success without force refresh and empty domain copy`() {
+    fun `check whether response get shop info success with shopId 0 and domain empty`() {
         runBlocking {
-            shopPageProductListResultViewModel.getShop(null)
-        }
-    }
-
-    @Test
-    fun `check whether response get shop info success without force refresh and empty domain copy2`() {
-        runBlocking {
-            shopPageProductListResultViewModel.getShop("0")
+            shopPageProductListResultViewModel.getShop("0", "")
         }
     }
 
@@ -167,6 +188,105 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
             shopPageProductListResultViewModel.getShopProduct(
                     shopId = "123",
+                    etalaseType = 2,
+                    shopProductFilterParameter = ShopProductFilterParameter()
+            )
+            verifyGetShopProductUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(shopPageProductListResultViewModel.productData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop product success with force refresh`() {
+        runBlocking {
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+            shopPageProductListResultViewModel.getShopProduct(
+                    shopId = "123",
+                    etalaseType = 2,
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    isForceRefresh = true
+            )
+            verifyGetShopProductUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(shopPageProductListResultViewModel.productData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop product success with next page available`() {
+        runBlocking {
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20
+            )
+            shopPageProductListResultViewModel.getShopProduct(
+                    shopId = "123",
+                    etalaseType = 2,
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    isForceRefresh = true
+            )
+            verifyGetShopProductUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(shopPageProductListResultViewModel.productData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop product success with isMyShop is true`() {
+        runBlocking {
+            every { userSessionInterface.shopId } returns "123"
+            shopPageProductListResultViewModel.isMyShop("123")
+
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20
+            )
+            shopPageProductListResultViewModel.getShopProduct(
+                    shopId = "123",
+                    etalaseType = 2,
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    isForceRefresh = true
+            )
+            verifyGetShopProductUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(shopPageProductListResultViewModel.productData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop product success with isMyShop is false`() {
+        runBlocking {
+            every { userSessionInterface.shopId } returns "321"
+            shopPageProductListResultViewModel.isMyShop("123")
+
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20
+            )
+            shopPageProductListResultViewModel.getShopProduct(
+                    shopId = "123",
+                    etalaseType = 2,
+                    shopProductFilterParameter = ShopProductFilterParameter(),
+                    isForceRefresh = true
+            )
+            verifyGetShopProductUseCaseCalled()
+            assertTrue(shopPageProductListResultViewModel.productData.value is Success)
+            assertNotNull(shopPageProductListResultViewModel.productData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get shop product success with no default parameters`() {
+        runBlocking {
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20,
+                    data = listOf(ShopProduct())
+            )
+            shopPageProductListResultViewModel.getShopProduct(
+                    shopId = "123",
+                    page = 1,
+                    perPage = 10,
+                    etalase = "123",
+                    search = "search",
+                    isForceRefresh = true,
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter()
             )
@@ -332,13 +452,14 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check getSortNameById is return empty because no sort id match`() {
         runBlocking {
 
-            val sortDataExample = ShopProductSort()
-            sortDataExample.name = "sortExample"
-            sortDataExample.value = "321"
-            sortDataExample.inputType = "inputType"
-            sortDataExample.key = "key"
-            val sortList = mutableListOf<ShopProductSort>()
-            sortList.add(sortDataExample)
+            val sortList = mutableListOf<ShopProductSort>().apply {
+                add(ShopProductSort().apply {
+                    name = "sortExample"
+                    value = "321"
+                    inputType = "inputType"
+                    key = "key"
+                })
+            }
 
             coEvery {
                 getShopEtalaseByShopUseCase.createObservable(any())
@@ -370,13 +491,14 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check getSortNameById is return same value with mock value`() {
         runBlocking {
 
-            val sortDataExample = ShopProductSort()
-            sortDataExample.name = "sortExample"
-            sortDataExample.value = "123"
-            sortDataExample.inputType = "inputType"
-            sortDataExample.key = "key"
-            val sortList = mutableListOf<ShopProductSort>()
-            sortList.add(sortDataExample)
+            val sortList = mutableListOf<ShopProductSort>().apply {
+                add(ShopProductSort().apply {
+                    name = "sortExample"
+                    value = "123"
+                    inputType = "inputType"
+                    key = "key"
+                })
+            }
 
             coEvery {
                 getShopEtalaseByShopUseCase.createObservable(any())
@@ -401,6 +523,36 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             val actualResult : String = shopPageProductListResultViewModel.getSortNameById("123")
             assertNotNull(actualResult)
             assertTrue(actualResult == "sortExample")
+        }
+    }
+
+    @Test
+    fun `check getSortNameById is return empty because list is empty`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf()
+
+            coEvery {
+                shopProductSortMapper.convertSort(any())
+            } returns convertToUiModel(listOf())
+
+            shopPageProductListResultViewModel.getShopFilterData(
+                    shopInfo = ShopInfo(),
+                    isOwner = true
+            )
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            val actualResult : String = shopPageProductListResultViewModel.getSortNameById("123")
+            assertNotNull(actualResult)
+            assertTrue(actualResult == "")
         }
     }
 

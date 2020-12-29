@@ -355,7 +355,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
             RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
-                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
+                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)

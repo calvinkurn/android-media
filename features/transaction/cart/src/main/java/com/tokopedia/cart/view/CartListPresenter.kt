@@ -21,6 +21,8 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
@@ -1191,7 +1193,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processAddToCart(productModel: Any) {
         view?.showProgressLoading()
 
-        var productId = 0
+        var productId = 0L
         var shopId = 0
         var productName = ""
         var productCategory = ""
@@ -1200,16 +1202,16 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var quantity = 0
 
         if (productModel is CartWishlistItemHolderData) {
-            productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
-            shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productId = productModel.id.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
             productName = productModel.name
             productCategory = productModel.category
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
-            productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
-            shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productId = productModel.id.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
             productName = productModel.name
             productPrice = productModel.price
             quantity = productModel.minOrder
@@ -1218,7 +1220,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if(clickUrl.isNotEmpty() && productModel.isTopAds ) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
             val (_, recommendationItem) = productModel
-            productId = recommendationItem.productId
+            productId = recommendationItem.productId.toLong()
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
             productCategory = recommendationItem.categoryBreadcrumbs
@@ -1231,7 +1233,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
-            this.productId = productId.toLong()
+            this.productId = productId
             this.shopId = shopId
             this.quantity = quantity
             this.notes = ""
