@@ -261,6 +261,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
                         view.onErrorGetUserInfo(),
+                        getAdminTypeUseCase,
+                        view.showLocationAdminPopUp(),
+                        view.showGetAdminTypeError(),
                         onFinished = { idlingResourceProvider?.decrement() })
                 )
             }
