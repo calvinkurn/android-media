@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -48,7 +47,6 @@ class ThankYouPageAnalytics @Inject constructor(
             }
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
-
         } else {
             sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
         }
@@ -319,8 +317,7 @@ class ThankYouPageAnalytics @Inject constructor(
             withContext(bgDispatcher) {
                 BranchPurchaseEvent(userSession.get(), thanksPageData).sendBranchPurchaseEvent()
             }
-        }, onError = { it.printStackTrace()
-            })
+        }, onError = { it.printStackTrace() })
     }
 
     private fun addSlashInCategory(category: String?): String {
