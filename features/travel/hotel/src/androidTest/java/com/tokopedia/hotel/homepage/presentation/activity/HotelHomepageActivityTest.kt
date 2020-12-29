@@ -16,7 +16,6 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -90,7 +89,6 @@ class HotelHomepageActivityTest {
         clickSubmitButton()
 
         slidePromoBanner()
-        clickPromoBanner()
 
         clickRecentSearchWidget()
 
@@ -107,8 +105,6 @@ class HotelHomepageActivityTest {
         Thread.sleep(4000)
         intending(hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())
         onView(withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
-        intended(AllOf.allOf(hasComponent(HotelDestinationActivity::class.java.name)))
-
         onView(withId(R.id.tv_hotel_homepage_destination)).check(matches(withText("Jakarta")))
 
         Thread.sleep(2000)
@@ -142,6 +138,7 @@ class HotelHomepageActivityTest {
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.banner_hotel_homepage_promo)).perform(nestedScrollTo())
             onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(isDisplayed()))
+            onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
             Thread.sleep(1000)
         } else {
             Thread.sleep(1000)
@@ -157,14 +154,6 @@ class HotelHomepageActivityTest {
     private fun getLastSearchCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.rv_hotel_homepage_last_search)
         return recyclerView.adapter?.itemCount ?: 0
-    }
-
-    private fun clickPromoBanner() {
-        Thread.sleep(2000)
-
-        if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
-        }
     }
 
     private fun clickRecentSearchWidget() {
@@ -241,7 +230,7 @@ class HotelHomepageActivityTest {
                 try {
                     val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView?
                     if (nestedScrollView != null) {
-                        nestedScrollView.scrollTo(0, view.top)
+                        nestedScrollView.scrollTo(0, view.top + view.measuredHeight)
                     } else {
                         throw java.lang.Exception("Unable to find NestedScrollView parent.")
                     }

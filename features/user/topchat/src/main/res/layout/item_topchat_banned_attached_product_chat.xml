@@ -42,7 +42,7 @@
                 android:lineSpacingExtra="4sp"
                 android:maxWidth="@dimen/chatcommon_172dp"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"

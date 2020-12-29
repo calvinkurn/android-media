@@ -184,12 +184,10 @@ class OrderSummaryPageRobot {
 
     fun assertProfileAddress(headerMessage: String,
                              addressName: String,
-                             addressReceiver: String,
                              addressDetail: String,
                              isMainPreference: Boolean) {
         onView(withId(R.id.tv_card_header)).perform(scrollTo()).check(matches(withText(headerMessage)))
         onView(withId(R.id.tv_address_name)).check(matches(withText(addressName)))
-        onView(withId(R.id.tv_address_receiver)).check(matches(withText(addressReceiver)))
         onView(withId(R.id.tv_address_detail)).check(matches(withText(addressDetail)))
         onView(withId(R.id.lbl_main_preference)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()

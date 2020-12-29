@@ -221,7 +221,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when submitReview with no images should execute expected usecases`() {
-        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true))
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true, feedbackID = "feedbackId"))
 
         onSubmitReview_thenReturn(expectedResponse)
 
@@ -229,7 +229,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
-            verifySubmitReviewSuccess(com.tokopedia.review.common.data.Success(it.success))
+            verifySubmitReviewSuccess(com.tokopedia.review.common.data.Success(it.feedbackID))
         }
     }
 
@@ -418,7 +418,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         coEvery { uploaderUseCase.invoke(any()) } returns response
     }
 
-    private fun verifySubmitReviewSuccess(viewState: com.tokopedia.review.common.data.Success<Boolean>) {
+    private fun verifySubmitReviewSuccess(viewState: com.tokopedia.review.common.data.Success<String>) {
         viewModel.submitReviewResult.verifySuccessEquals(viewState)
     }
 

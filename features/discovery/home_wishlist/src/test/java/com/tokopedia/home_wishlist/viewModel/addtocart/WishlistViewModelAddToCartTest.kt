@@ -58,7 +58,7 @@ class WishlistViewModelAddToCartTest {
             (secondArg() as Subscriber<AddToCartDataModel>).onNext(
                     AddToCartDataModel(
                             status = AddToCartDataModel.STATUS_OK,
-                            data = DataModel(success = 1, productId = mockId2.toInt(), message = arrayListOf(""))
+                            data = DataModel(success = 1, productId = mockId2.toLong(), message = arrayListOf(""))
                     )
             )
         }
@@ -122,7 +122,7 @@ class WishlistViewModelAddToCartTest {
             (secondArg() as Subscriber<AddToCartDataModel>).onNext(
                     AddToCartDataModel(
                             status = "NOT OK",
-                            data = DataModel(success = 0, productId = mockId2.toInt(), message = arrayListOf(mockErrorMessage)),
+                            data = DataModel(success = 0, productId = mockId2.toLong(), message = arrayListOf(mockErrorMessage)),
                             errorMessage = arrayListOf(mockErrorMessage)
                     )
             )
