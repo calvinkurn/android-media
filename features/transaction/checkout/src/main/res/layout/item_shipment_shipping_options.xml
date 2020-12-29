@@ -16,17 +16,15 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_prioritas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
             android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box"
+            android:paddingEnd="@dimen/dp_4"
             android:layout_alignParentStart="true" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -104,28 +102,16 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_insurance"
             android:contentDescription="@string/content_desc_cb_insurance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
             android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box" />
+            android:paddingEnd="@dimen/dp_4" />
 
-        <CheckBox
-            android:id="@+id/cb_insurance_disabled"
-            android:contentDescription="@string/content_desc_cb_insurance_disabled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box"
-            android:enabled="false"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_insurance"
@@ -152,20 +138,19 @@
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
         android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
         tools:visibility="visible">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_dropshipper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
             android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box" />
+            android:paddingEnd="@dimen/dp_4" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_dropshipper"
