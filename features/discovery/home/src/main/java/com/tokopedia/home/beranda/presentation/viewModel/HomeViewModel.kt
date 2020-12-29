@@ -1453,6 +1453,27 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getDynamicChannelData() {
+        val dataModel = homeVisitableListData.find { it is CarouselPlayWidgetDataModel } ?: return
+        if (dataModel !is CarouselPlayWidgetDataModel) return
+
+        val index = homeVisitableListData.indexOfFirst { it is CarouselPlayWidgetDataModel }
+
+        launchCatchError(block = {
+            val response = playWidgetTools.get().getWidgetFromNetwork(
+                    PlayWidgetUseCase.WidgetType.Home,
+                    homeDispatcher.get().io()
+            )
+            val uiModel = playWidgetTools.get().mapWidgetToModel(response)
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
+                    widgetUiModel = uiModel
+            ), index, this@HomeViewModel))
+
+        }) {
+            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dataModel, index, this@HomeViewModel))
+        }
+    }
+
     fun setToggleReminderPlayWidget(channelId: String, remind: Boolean, position: Int) {
         launchCatchError(block = {
             val response = playWidgetTools.get().setToggleReminder(
