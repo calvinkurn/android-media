@@ -127,9 +127,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             mediaMap?.run {
                 shouldRenderImageVariant = true
                 listOfMedia = if (enableVideo) {
-                    DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
-                } else {
                     DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+                } else {
+                    DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
                 }
             }
 
@@ -409,9 +409,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateImageAfterClickVariant(it: MutableList<Media>, enableVideo: Boolean) {
         mediaMap?.shouldRenderImageVariant = true
         mediaMap?.listOfMedia = if (enableVideo) {
-            DynamicProductDetailMapper.convertMediaToDataModel(it.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
-        } else {
             DynamicProductDetailMapper.convertMediaToDataModel(it)
+        } else {
+            DynamicProductDetailMapper.convertMediaToDataModel(it.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
         }
     }
 
