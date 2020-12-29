@@ -13,6 +13,8 @@
     <string name="hotel_facility_title">Fasilitas</string>
     <string name="hotel_policy_title">Kebijakan</string>
 
+    <string name="hotel_ticker_desc">\u0020&lt;a href=&quot;%1$s&quot;&gt;Lihat detail&lt;/a&gt;</string>
+
     <string name="hotel_google_map_intent_link">geo:%1$f,%2$f?z=20&amp;q=%3$f,%4$f(%3$s)</string>
 
     <string name="hotel_search_result_applink_format">tokopedia://hotel/result?type=%1$s&amp;id=%2$s&amp;name=%3$s</string>

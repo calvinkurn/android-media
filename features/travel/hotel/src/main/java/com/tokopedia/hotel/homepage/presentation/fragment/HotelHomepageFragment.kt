@@ -257,7 +257,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        hotelHomepageTicker.setHtmlDescription(travelTickerModel.message)
+        if (travelTickerModel.title.isNotEmpty()) hotelHomepageTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelHomepageTicker.setHtmlDescription(message)
         hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
         hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
