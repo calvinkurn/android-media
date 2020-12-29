@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
 
+    var idlingResource: TkpdIdlingResource? = null
     @Inject
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
 
@@ -41,6 +43,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
+        idlingResource?.increment()
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -50,8 +54,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     override fun getParentViewResourceID(): Int = R.id.thank_parent_view
 
     override fun getNewFragment(): Fragment? {
-        var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
-        idlingResourceProvider?.increment()
         val bundle = Bundle()
         intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))

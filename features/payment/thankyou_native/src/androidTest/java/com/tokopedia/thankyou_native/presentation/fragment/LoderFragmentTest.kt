@@ -1,12 +1,8 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
-//import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-//import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -50,8 +46,8 @@ class LoaderFragmentTest {
         val purchaseranchIOQuery = "tracker/linker/purchase_branch_io.json"
         val purchaseAppsFlyerQuery = "tracker/temp_apps_flyer_events/temp_af_purchase_app_flyer.json"
 
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, purchaseranchIOQuery), hasAllSuccess())
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, purchaseAppsFlyerQuery), hasAllSuccess())
+     //   MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, purchaseranchIOQuery), hasAllSuccess())
     }
 
     private fun clearData() {

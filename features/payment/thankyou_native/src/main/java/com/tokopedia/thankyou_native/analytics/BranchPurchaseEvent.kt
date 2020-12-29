@@ -6,27 +6,33 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerCommerceData
 import com.tokopedia.linker.model.PaymentData
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
 import com.tokopedia.thankyou_native.data.mapper.ThankPageTypeMapper
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.thankyou_native.TkpdIdlingResource
+
 
 
 const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
 const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
-
+var idlingResource: TkpdIdlingResource? = null
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
 
     fun sendBranchPurchaseEvent() {
+        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         thanksPageData.shopOrder.forEach { shopOrder ->
             val linkerCommerceData = LinkerCommerceData()
             linkerCommerceData.userData = getLinkerUserData()
             linkerCommerceData.paymentData = getBranchPaymentData(shopOrder)
             sendBranchEvent(linkerCommerceData)
         }
+        idlingResource?.decrement()
+
     }
 
     private fun getBranchPaymentData(shopOrder: ShopOrder): PaymentData {

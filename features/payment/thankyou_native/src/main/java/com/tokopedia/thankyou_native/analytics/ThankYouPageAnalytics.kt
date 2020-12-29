@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
+import com.tokopedia.thankyou_native.TkpdIdlingResource
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -33,15 +33,14 @@ class ThankYouPageAnalytics @Inject constructor(
 
     private val IDR = "IDR"
 
+
     private lateinit var thanksPageData: ThanksPageData
-    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
 
     fun postThankYouPageLoadedEvent(thanksPageData: ThanksPageData) {
-
         if (thanksPageData.pushGtm) {
             when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                 MarketPlaceThankPage -> sendThankYouPageDataLoadEvent(thanksPageData)
@@ -49,10 +48,9 @@ class ThankYouPageAnalytics @Inject constructor(
             }
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
-            idlingResourceProvider?.decrement()
+
         } else {
             sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
-            idlingResourceProvider?.decrement()
         }
     }
 
@@ -321,7 +319,8 @@ class ThankYouPageAnalytics @Inject constructor(
             withContext(bgDispatcher) {
                 BranchPurchaseEvent(userSession.get(), thanksPageData).sendBranchPurchaseEvent()
             }
-        }, onError = { it.printStackTrace() })
+        }, onError = { it.printStackTrace()
+            })
     }
 
     private fun addSlashInCategory(category: String?): String {
