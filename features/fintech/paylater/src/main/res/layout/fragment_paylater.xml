@@ -25,8 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/payLater_margin_dp_10"
+        android:layout_marginEnd="@dimen/payLater_margin_dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/modeSwitcher" />
@@ -73,5 +73,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/paylaterTabLayout"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/parentDataGroup"
+        app:constraint_referenced_ids="paylaterTabLayout, payLaterViewPager, modeSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/payLaterParentGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_48"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,5 +29,7 @@ data class SimulationItemDetail(
         @SerializedName("is_recommended")
         val isRecommended: Boolean?,
         @SerializedName("tenure")
-        val tenure: Int?
+        val tenure: Int?,
+        @SerializedName("interest_pct")
+        val interestPercent: Float?
 )

@@ -21,7 +21,7 @@
         android:id="@+id/tvBenefitsDesc"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/payLater_benefit_margin_dp_10"
+        android:layout_marginStart="@dimen/payLater_margin_dp_10"
         android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
         android:layout_marginEnd="@dimen/unify_space_12"
         android:lineSpacingExtra="@dimen/unify_space_4"

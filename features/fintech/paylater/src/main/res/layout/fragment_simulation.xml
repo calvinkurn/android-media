@@ -151,6 +151,7 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_12"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnDaftarPayLater" />
@@ -214,7 +215,7 @@
         <androidx.constraintlayout.widget.Group
             android:id="@+id/simulationDataGroup"
             android:visibility="gone"
-            app:constraint_referenced_ids="tvTitleSimulation,llPayLaterPartner,hsvInstallment,ivShadow,tickerSimulation,paylaterDaftarWidget,btnDaftarPayLater, tvPartnerRegistration,ivSupervisor "
+            app:constraint_referenced_ids="tvTitleSimulation,llPayLaterPartner,hsvInstallment,ivShadow,tickerSimulation,btnDaftarPayLater, tvPartnerRegistration,ivSupervisor "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

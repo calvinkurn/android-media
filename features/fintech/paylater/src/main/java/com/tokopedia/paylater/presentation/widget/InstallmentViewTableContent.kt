@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
 
@@ -21,7 +22,7 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
         val tvInstallmentPrice = installmentView.findViewById<Typography>(R.id.tvInstallmentPrice)
 
         tvInstallmentPrice.text = getInstallmentText(tenureList[col], installmentMap)
-        if(isRecommendedInstallment(row)) tvInstallmentPrice.setWeight(Typography.BOLD)
+        if (isRecommendedInstallment(row)) tvInstallmentPrice.setWeight(Typography.BOLD)
         return installmentView
     }
 
@@ -29,13 +30,16 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
         return row == 1
     }
 
-    private fun showBackground(row : Int): Boolean {
+    private fun showBackground(row: Int): Boolean {
         return row % 2 == 0
     }
 
     private fun getInstallmentText(tenure: Int, installmentMap: HashMap<Int, SimulationItemDetail>): String {
-        return if (installmentMap.containsKey(tenure)) {
-            "Rp${installmentMap[tenure]?.installmentPerMonth}"
-        }  else "-"
+        return if (installmentMap.containsKey(tenure) && installmentMap[tenure]?.installmentPerMonth?.isNotEmpty() == true) {
+            val priceString = installmentMap[tenure]?.installmentPerMonth?.toIntOrNull() ?: -1
+            if (priceString != -1) {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
+            } else "-"
+        } else "-"
     }
 }

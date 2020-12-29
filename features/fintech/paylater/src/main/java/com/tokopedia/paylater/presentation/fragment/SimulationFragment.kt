@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.paylater.PRODUCT_PRICE
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
@@ -25,6 +27,7 @@ import com.tokopedia.paylater.presentation.widget.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_simulation.*
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -39,22 +42,20 @@ class SimulationFragment : BaseDaggerFragment() {
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
-    private val productPrice: Int by lazy {
-        arguments?.getInt(PRODUCT_PRICE) ?: 0
-    }
-
     private val simulationViewFactory: SimulationTableViewFactory by lazy {
         SimulationTableViewFactory(context)
     }
 
-    private var registerPayLaterCallback: RegisterPayLaterCallback? = null
+    private var payLaterSimulationCallback: PayLaterSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PayLaterComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_simulation, container, false)
     }
 
@@ -67,7 +68,6 @@ class SimulationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
         populateRowHeaders()
-        fetchSimulationData()
     }
 
     override fun getScreenName(): String {
@@ -76,16 +76,11 @@ class SimulationFragment : BaseDaggerFragment() {
 
     private fun initListeners() {
         btnDaftarPayLater.setOnClickListener {
-            registerPayLaterCallback?.onRegisterPayLaterClicked()
+            payLaterSimulationCallback?.onRegisterPayLaterClicked()
         }
         paylaterDaftarWidget.setOnClickListener {
-            registerPayLaterCallback?.onRegisterPayLaterClicked()
+            payLaterSimulationCallback?.onRegisterPayLaterClicked()
         }
-    }
-
-    private fun fetchSimulationData() {
-        shimmerGroup.visible()
-        payLaterViewModel.getPayLaterSimulationData(productPrice)
     }
 
     private fun observeViewModel() {
@@ -95,25 +90,38 @@ class SimulationFragment : BaseDaggerFragment() {
                 is Fail -> onSimulationLoadingFail(it.throwable)
             }
         })
+        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(
+                viewLifecycleOwner,
+                {
+                    when (it) {
+                        is Success -> onApplicationStatusLoaded(it.data)
+                        is Fail -> onApplicationStatusLoadingFail(it.throwable)
+                    }
+                },
+        )
     }
 
     private fun onSimulationDataLoaded(data: ArrayList<PayLaterSimulationGatewayItem>) {
+        payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
         simulationDataGroup.visible()
         populateSimulationTable(data)
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
+        payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                simulationGlobalError.setType(GlobalError.NO_CONNECTION)
+                payLaterSimulationCallback?.noInternetCallback()
+                return
             }
             is IllegalStateException -> {
                 simulationGlobalError.setType(GlobalError.PAGE_FULL)
             }
             is PayLaterException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.paylater_not_applicable_ticker_text) ?: "")
                 return
             }
             else -> {
@@ -122,11 +130,25 @@ class SimulationFragment : BaseDaggerFragment() {
         }
         simulationGlobalError.show()
         simulationGlobalError.setActionClickListener {
-            simulationGlobalError.hide()
+            simulationGlobalError.gone()
             shimmerGroup.visible()
-            fetchSimulationData()
+            payLaterSimulationCallback?.getSimulationProductInfo()
         }
 
+    }
+
+    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
+        Timber.d(throwable)
+    }
+
+    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList)) {
+            btnDaftarPayLater.visible()
+            paylaterDaftarWidget.gone()
+        } else {
+            btnDaftarPayLater.gone()
+            paylaterDaftarWidget.visible()
+        }
     }
 
     private fun populateRowHeaders() {
@@ -155,7 +177,7 @@ class SimulationFragment : BaseDaggerFragment() {
                 val contentRow = TableRow(it)
                 for (j in 0 until colCount) {
                     when (i) {
-                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, j), contentLayoutParam)
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, simulationDataList[i - 1].installmentMap, j), contentLayoutParam)
                         1 -> {
                             contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
                             contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[i - 1].installmentMap, tenureList, i, j), contentLayoutParam)
@@ -188,13 +210,13 @@ class SimulationFragment : BaseDaggerFragment() {
         return installmentView.initUI(installmentMap, tenureList, row, col)
     }
 
-    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, position: Int): View {
+    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<Int, SimulationItemDetail>, position: Int): View {
         val installmentColumnHeader = simulationViewFactory.create(InstallmentViewTableColumnHeader::class.java, contentLayoutParam)
-        return installmentColumnHeader.initUI(position == 0)
+        return installmentColumnHeader.initUI(installmentMap, position)
     }
 
-    fun setPayLaterClickedListener(registerPayLaterCallback: RegisterPayLaterCallback) {
-        this.registerPayLaterCallback = registerPayLaterCallback
+    fun setPayLaterClickedListener(payLaterSimulationCallback: PayLaterSimulationCallback) {
+        this.payLaterSimulationCallback = payLaterSimulationCallback
     }
 
     companion object {
@@ -203,14 +225,13 @@ class SimulationFragment : BaseDaggerFragment() {
         const val CONTENT_WIDTH = 110
 
         @JvmStatic
-        fun newInstance(arguments: Bundle?): SimulationFragment {
-            val fragment = SimulationFragment()
-            arguments?.let { fragment.arguments = arguments }
-            return fragment
-        }
+        fun newInstance() = SimulationFragment()
     }
 
-    interface RegisterPayLaterCallback {
+    interface PayLaterSimulationCallback {
         fun onRegisterPayLaterClicked()
+        fun noInternetCallback()
+        fun getPayLaterProductInfo()
+        fun getSimulationProductInfo()
     }
 }

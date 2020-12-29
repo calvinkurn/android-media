@@ -86,14 +86,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        payLaterViewModel.getPayLaterApplicationStatus()
+        payLaterOfferCallback?.getApplicationStatusInfo()
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-        hideLoadingLayout()
+        payLaterOffersShimmerGroup.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                payLaterOffersGlobalError.setType(GlobalError.NO_CONNECTION)
+                payLaterOfferCallback?.noInternetCallback()
+                return
             }
             is IllegalStateException -> {
                 payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
@@ -107,14 +108,14 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             payLaterOffersGlobalError.hide()
             // notify payLater fragment to invoke again
             payLaterOffersShimmerGroup.visible()
-            payLaterOfferCallback?.onRefreshPayLater()
+            payLaterOfferCallback?.getPayLaterProductInfo()
         }
     }
 
+    // set payLater + application status data in pager adapter
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        hideLoadingLayout()
-        showViewPagerLayout()
-        // set payLater + application status data in pager adapter
+        payLaterOffersShimmerGroup.gone()
+        payLaterDataGroup.visible()
         val payLaterProductList = ArrayList<PayLaterItemProductData>()
         payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
         // @Todo remove below lines
@@ -123,14 +124,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         paymentOptionViewPager.post {
             pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList)
         }
-    }
-
-    private fun hideLoadingLayout() {
-        payLaterOffersShimmerGroup.gone()
-    }
-
-    private fun showViewPagerLayout() {
-        payLaterDataGroup.visible()
     }
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
@@ -155,6 +148,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     interface PayLaterOfferCallback {
-        fun onRefreshPayLater()
+        fun getPayLaterProductInfo()
+        fun getApplicationStatusInfo()
+        fun noInternetCallback()
     }
 }
