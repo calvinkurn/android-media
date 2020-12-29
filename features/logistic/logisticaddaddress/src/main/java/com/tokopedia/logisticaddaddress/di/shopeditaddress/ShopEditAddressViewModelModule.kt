@@ -9,7 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@ShopEditAddressScope
 @Module
 abstract class ShopEditAddressViewModelModule {
 
@@ -17,6 +16,7 @@ abstract class ShopEditAddressViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @ShopEditAddressScope
     @Binds
     @IntoMap
     @ViewModelKey(ShopEditAddressViewModel::class)

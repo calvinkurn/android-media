@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ShopLocationScope
 class ShopLocationModule {
 
     @Provides

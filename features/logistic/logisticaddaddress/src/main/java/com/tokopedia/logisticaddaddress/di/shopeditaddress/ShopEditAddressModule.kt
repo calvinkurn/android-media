@@ -6,7 +6,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ShopEditAddressScope
 class ShopEditAddressModule {
 
     @Provides
