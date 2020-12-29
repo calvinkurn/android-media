@@ -11,7 +11,7 @@ data class VariantChildCommon(
 
         @SerializedName("productID")
         @Expose
-        val productId: Int = -1, //ex: 15212348
+        val productId: String = "-1", //ex: 15212348
 
         @SerializedName("price")
         @Expose
@@ -186,7 +186,7 @@ data class Campaign(
 
         @SerializedName("endDateUnix")
         @Expose
-        val endDateUnix: Int? = null,
+        val endDateUnix: String? = null,
 
         @SerializedName("stockSoldPercentage")
         @Expose

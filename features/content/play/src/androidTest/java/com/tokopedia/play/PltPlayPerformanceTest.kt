@@ -4,11 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.test.espresso.Espresso.onIdle
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.data.PlayMockModelConfig
@@ -27,39 +27,10 @@ import org.junit.Test
 class PltPlayPerformanceTest {
 
     @get:Rule
-    var intentsTestRule: IntentsTestRule<PlayActivity> = IntentsTestRule(PlayActivity::class.java, false, false)
+    var activityTestRule: ActivityTestRule<PlayActivity> = ActivityTestRule(PlayActivity::class.java, false, false)
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
-
-
-    @Before
-    fun setup() {
-        setupGraphqlMockResponseWithCheck(PlayMockModelConfig())
-    }
-
-    @Test
-    fun testPageLoadTimePerformance() {
-        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        intentsTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
-            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/10708")
-        })
-        IdlingRegistry.getInstance().register(idlingResource)
-
-        onIdle()
-        intentsTestRule.activity.getPltPerformanceResultData()?.let { data->
-            PerformanceDataFileUtils.writePLTPerformanceFile(
-                    intentsTestRule.activity,
-                    TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE,
-                    data)
-        }
-    }
-
-    @After
-    fun tearDown() {
-        intentsTestRule.activity.finishAndRemoveTask()
-        IdlingRegistry.getInstance().unregister(idlingResource)
-    }
 
     private val idlingResource: IdlingResource by lazy {
         object : IdlingResource {
@@ -68,8 +39,8 @@ class PltPlayPerformanceTest {
             private var callback: IdlingResource.ResourceCallback? = null
 
             override fun isIdleNow(): Boolean {
-                val textView = intentsTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
-                val isIdle =  !TextUtils.isEmpty(textView.text.toString())
+                val textView = activityTestRule.activity.findViewById<AppCompatTextView>(R.id.tv_partner_name)
+                val isIdle = !TextUtils.isEmpty(textView.text.toString())
                 if (isIdle) callback?.onTransitionToIdle()
                 return isIdle
             }
@@ -80,7 +51,53 @@ class PltPlayPerformanceTest {
         }
     }
 
+    @Before
+    fun setup() {
+        setupGraphqlMockResponseWithCheck(PlayMockModelConfig())
+    }
+
+    @Test
+    fun testPageLoadTimePerformance() {
+        launchActivity()
+
+        IdlingRegistry.getInstance().register(idlingResource)
+
+        Espresso.onIdle()
+        writePerformanceReport()
+
+        clearTask()
+    }
+
+    private fun launchActivity() {
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        activityTestRule.launchActivity(Intent(targetContext, PlayActivity::class.java).apply {
+            data = Uri.parse("${ApplinkConstInternalContent.INTERNAL_PLAY}/$CHANNEL_ID")
+        })
+    }
+
+    private fun clearTask() {
+        activityTestRule.activity.finishAndRemoveTask()
+    }
+
+    private fun writePerformanceReport() {
+        activityTestRule.activity.getPltPerformanceResultData()?.let { data->
+            PerformanceDataFileUtils.writePLTPerformanceFile(
+                    activityTestRule.activity,
+                    TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE,
+                    data)
+        }
+    }
+
+    @After
+    fun tearDown() {
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
     companion object {
+
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_test_case_page_load_time"
+
+        const val CHANNEL_ID = "15774"
+
     }
 }

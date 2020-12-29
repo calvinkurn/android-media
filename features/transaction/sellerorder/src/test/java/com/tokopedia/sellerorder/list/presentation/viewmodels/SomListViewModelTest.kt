@@ -20,16 +20,11 @@ import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.Ordering
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -115,8 +110,8 @@ class SomListViewModelTest {
             startDate = "12/12/2014"
             endDate = "12/12/2017"
             statusList = listOf(220, 400, 500)
-            shippingList = listOf(12)
-            orderTypeList = listOf(12)
+            shippingList = mutableSetOf(12)
+            orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
             nextOrderId = 123456
         }
@@ -657,17 +652,42 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun getUserRoles_shouldSkippedWhenAlreadyRunning() = runBlocking {
-        viewModel::class.java.superclass!!.getDeclaredField("getUserRolesJob").apply {
-            isAccessible = true
-        }.set(viewModel, launch { delay(10000) })
+    fun loadUserRoles_shouldNeverSendRequestWhenAnotherLoadUserRolesRequestIsOnProgress() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
 
+        every {
+            getUserRolesJob.isCompleted
+        } returns false
+
+        viewModel.setUserRolesJob(getUserRolesJob)
         viewModel.getUserRoles()
 
-        coVerify(inverse = true) { getUserRoleUseCase.execute() }
+        coVerify(inverse = true) {
+            getUserRoleUseCase.execute()
+        }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        return@runBlocking
+        assert(viewModel.userRoleResult.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun loadUserRoles_shouldSuccessWhenAnotherLoadUserRolesRequestIsCompleted() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
+        coEvery {
+            getUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns true
+
+        viewModel.setUserRolesJob(getUserRolesJob)
+        viewModel.getUserRoles()
+
+        coVerify {
+            getUserRoleUseCase.execute()
+        }
+
+        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -729,7 +749,14 @@ class SomListViewModelTest {
 
     @Test
     fun isTopAdsActive_shouldReturnFalseWhenSuccess() {
-        doGetTopAdsCategory_shouldSuccess(0)
+        doGetTopAdsCategory_shouldSuccess()
+
+        assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalse() {
+        doGetTopAdsCategory_shouldSuccess(2)
 
         assert(!viewModel.isTopAdsActive())
     }
@@ -742,10 +769,22 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnTrue() {
-        getTopAdsCategory_shouldSuccess()
-
+    fun isTopAdsActive_shouldReturnFalseWhenValueIsNull() {
         assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingManualAds() {
+        doGetTopAdsCategory_shouldSuccess(3)
+
+        assert(viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingAutoAds() {
+        doGetTopAdsCategory_shouldSuccess(4)
+
+        assert(viewModel.isTopAdsActive())
     }
 
     @Test
@@ -788,7 +827,7 @@ class SomListViewModelTest {
 
     @Test
     fun setOrderTypeFilterTest() {
-        val orderTypes = listOf(1, 2, 3, 4, 5)
+        val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
         assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)

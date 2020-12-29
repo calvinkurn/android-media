@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reviewlist.view.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -30,7 +29,7 @@ class SellerReviewListViewHolder(val view: View,
     private val ivRating: AppCompatImageView = view.findViewById(R.id.ivRating)
 
     override fun bind(element: ProductReviewUiModel) {
-        view.itemRatingProduct.setBackgroundColor(Color.WHITE)
+        view.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName

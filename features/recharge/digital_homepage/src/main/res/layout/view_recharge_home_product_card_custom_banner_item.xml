@@ -18,7 +18,7 @@
 
             <View
                 android:id="@+id/view_header_card"
-                android:layout_width="3dp"
+                android:layout_width="@dimen/recharge_custom_product_card_header_card_width"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:background="@drawable/bg_red_custom_banner_header"
@@ -30,14 +30,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/unify_space_12"
-                android:textColor="@color/Red_R400"
+                android:textColor="@color/Unify_R400"
                 app:layout_constraintBottom_toBottomOf="@id/view_header_card"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="@id/view_header_card"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="PAKET DATA"
-                tools:textSize="10sp"
+                tools:textSize="@dimen/fontSize_lvl1"
                 tools:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -59,7 +59,7 @@
                 android:lines="3"
                 android:maxLines="3"
                 android:minLines="3"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="@id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_recharge_product_title"
@@ -86,11 +86,11 @@
                     android:paddingTop="@dimen/spacing_lvl1"
                     android:paddingRight="@dimen/spacing_lvl2"
                     android:paddingBottom="@dimen/spacing_lvl1"
-                    android:textColor="@color/Red_R400"
+                    android:textColor="@color/Unify_R400"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="20%"
-                    tools:textSize="10sp"
+                    tools:textSize="@dimen/fontSize_lvl1"
                     tools:textStyle="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -102,7 +102,7 @@
                     android:paddingTop="@dimen/spacing_lvl1"
                     android:paddingBottom="@dimen/spacing_lvl1"
                     android:singleLine="true"
-                    android:textColor="@color/Neutral_N700_32"
+                    android:textColor="@color/Unify_N700_44"
                     app:typographyType="small"
                     tools:text="Rp150.000" />
             </LinearLayout>
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:layout_marginBottom="@dimen/unify_space_12"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="@id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
@@ -121,7 +121,7 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp100.000"
-                tools:textSize="14sp" />
+                tools:textSize="@dimen/fontSize_lvl3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

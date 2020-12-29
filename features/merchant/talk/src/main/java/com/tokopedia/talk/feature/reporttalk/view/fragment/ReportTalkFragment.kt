@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
 import com.tokopedia.talk.feature.reporttalk.di.DaggerReportTalkComponent
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
@@ -174,13 +174,13 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     private fun disableSendButton(context: Context) {
         sendButton.isEnabled = false
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_12))
+        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_disabled))
     }
 
     private fun enableSendButton(context: Context) {
         sendButton.isEnabled = true
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
+        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_green))
     }

@@ -27,7 +27,7 @@
         android:layout_marginRight="@dimen/dp_40"
         android:gravity="center"
         android:text="@string/title_empty_address"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography

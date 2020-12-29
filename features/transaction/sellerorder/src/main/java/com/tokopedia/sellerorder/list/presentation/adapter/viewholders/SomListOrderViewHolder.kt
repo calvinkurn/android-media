@@ -5,10 +5,13 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -17,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
@@ -58,6 +62,7 @@ class SomListOrderViewHolder(
             setupCheckBox(element)
             setupOrderStatus(element)
             setupInvoice(element)
+            setupBuyerName(element)
             setupDeadline(element)
             // body
             setupTicker(element)
@@ -121,7 +126,7 @@ class SomListOrderViewHolder(
     private fun setupDestinationInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListDestinationValue.text = element.destinationProvince
-            tvSomListDestinationLabel.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
+            icSomListDestination.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
             tvSomListDestinationValue.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
         }
     }
@@ -130,7 +135,7 @@ class SomListOrderViewHolder(
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
-            tvSomListCourierLabel.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
+            icSomListCourier.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
         }
     }
@@ -154,31 +159,27 @@ class SomListOrderViewHolder(
                     if (productVariant.isBlank()) {
                         maxLines = 2
                         isSingleLine = false
-                        if (element.orderProduct.size > 1) {
-                            setPadding(0, 0, 0, 0)
-                        } else {
-                            setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
-                        }
                     } else {
                         maxLines = 1
                         isSingleLine = true
                     }
+                    if (element.orderProduct.size == 1 && productVariant.isBlank()) {
+                        setPadding(0, 0, 1.5f.dpToPx().toInt(), 0)
+                    } else {
+                        setPadding(0, 0, 0, 0)
+                    }
                     text = productName
-                    val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.verticalBias = if (element.orderProduct.size == 1) {
-                        0.5f
-                    } else 0f
-                    this.layoutParams = layoutParams
                     return@apply
                 }
                 tvSomListProductVariant.apply {
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
+                tvSomListProductExtra.apply {
+                    text = getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                    showWithCondition(element.orderProduct.size > 1)
+                }
             }
-            tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
-                getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-            } else ""
         }
     }
 
@@ -194,6 +195,7 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDeadline(element: SomListOrderUiModel) {
         with(itemView) {
             val deadlineText = element.deadlineText
@@ -218,6 +220,7 @@ class SomListOrderViewHolder(
                     val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }
+                tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 tvSomListResponseLabel.show()
                 tvSomListDeadline.show()
                 icDeadline.show()
@@ -230,14 +233,23 @@ class SomListOrderViewHolder(
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListInvoice.text = element.orderResi
+        itemView.tvSomListInvoice.apply {
+            text = element.orderResi
+            showWithCondition(element.orderResi.isNotBlank())
+        }
+    }
+
+    private fun setupBuyerName(element: SomListOrderUiModel) {
+        itemView.tvSomListBuyerName.apply {
+            text = element.buyerName
+            showWithCondition(element.buyerName.isNotBlank())
         }
     }
 
     private fun setupOrderStatus(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListOrderStatus.text = element.status
+        itemView.tvSomListOrderStatus.apply {
+            text = element.status
+            showWithCondition(element.status.isNotBlank())
         }
     }
 
@@ -284,6 +296,17 @@ class SomListOrderViewHolder(
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
+                KEY_CHANGE_COURIER -> listener.onChangeCourierClicked(element.orderId)
+            }
+        }
+    }
+
+    private fun composeDeadlineLabel(isPreOrder: Boolean): SpannableStringBuilder {
+        return SpannableStringBuilder(getString(R.string.som_list_response_before_label)).apply {
+            if (isPreOrder) {
+                val preOrderFlagString = getString(R.string.som_list_pre_order_flag)
+                append(" $preOrderFlagString")
+                setSpan(StyleSpan(Typeface.BOLD), length - preOrderFlagString.length - 1, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
     }
@@ -299,6 +322,7 @@ class SomListOrderViewHolder(
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
+        fun onChangeCourierClicked(orderId: String)
         fun onFinishBindNewOrder(view: View, itemIndex: Int)
         fun isMultiSelectEnabled(): Boolean
     }

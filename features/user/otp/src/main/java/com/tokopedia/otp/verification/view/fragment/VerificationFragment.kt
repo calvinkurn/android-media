@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -19,6 +20,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,21 +34,21 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
-import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
-import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver.ReceiveSMSListener
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
-import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver.ReceiveSMSListener
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
@@ -54,6 +56,7 @@ import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -61,10 +64,11 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
+class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
     @Inject
     lateinit var verificationPref: VerificationPref
 
@@ -87,11 +91,32 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
 
+    private var tempOtp: CharSequence? = null
+    private var indexTempOtp = 0
+    private val delayAnimateText: Long = 350
+
+    private val handler: Handler = Handler()
+
+    private val characterAdder: Runnable = object : Runnable {
+        override fun run() {
+            tempOtp?.let {
+                viewBound.pin?.value = it.subSequence(0, indexTempOtp++)
+                if (indexTempOtp <= it.length) {
+                    handler.postDelayed(this, delayAnimateText)
+                }
+            }
+        }
+    }
+
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
 
     override val viewBound = VerificationViewBinding()
+  
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+  
+    private val permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun getScreenName() = when (otpData.otpType) {
         OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
@@ -124,8 +149,10 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     override fun onResume() {
         super.onResume()
         context?.let {
-            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-                phoneCallBroadcastReceiver.registerReceiver(it, this)
+            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
+                    phoneCallBroadcastReceiver.registerReceiver(it, this)
+                }
             } else {
                 smsBroadcastReceiver.register(it, getOtpReceiverListener())
             }
@@ -136,7 +163,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     override fun onPause() {
         super.onPause()
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            if (::phoneCallBroadcastReceiver.isInitialized) activity?.unregisterReceiver(phoneCallBroadcastReceiver)
+            if (::phoneCallBroadcastReceiver.isInitialized) activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
         } else {
             if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
         }
@@ -156,6 +183,15 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
             analytics.trackClickBackRegisterPhoneOtp()
         }
         return true
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context?.let {
+                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            }
+        }
     }
 
     private fun sendOtp() {
@@ -186,8 +222,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-
-        showLoading()
         viewModel.otpValidate(
                 code = code,
                 otpType = otpData.otpType.toString(),
@@ -229,7 +263,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                             }
                         }
                     }
-                    hideLoading()
                     setPrefixMiscall(otpRequestData.prefixMisscall)
                     startCountDown()
                     viewBound.containerView?.let {
@@ -252,7 +285,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private fun onFailedSendOtp(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -286,7 +318,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                             analytics.trackSuccessClickVerificationRegisterEmailButton()
                         }
                     }
-                    hideLoading()
                     resetCountDown()
 
                     activity?.let { activity ->
@@ -325,7 +356,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private fun onFailedOtpValidate(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -346,10 +376,17 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private fun getOtpReceiverListener(): ReceiveSMSListener {
         return object : ReceiveSMSListener {
             override fun onReceiveOTP(otpCode: String) {
-                viewBound.pin?.value = otpCode
-                validate(otpCode)
+                animateText(otpCode)
             }
         }
+    }
+
+    fun animateText(txt: CharSequence) {
+        tempOtp = txt
+        indexTempOtp = 0
+        viewBound.pin?.value = ""
+        handler.removeCallbacks(characterAdder)
+        handler.postDelayed(characterAdder, delayAnimateText)
     }
 
     private fun isCountdownFinished(): Boolean {
@@ -521,7 +558,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -542,7 +579,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -561,7 +598,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -580,7 +617,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -617,11 +654,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         autoFillPhoneNumber(phoneNumber)
     }
 
-    private fun showLoading() {
-        viewBound.loader?.show()
-        viewBound.containerView?.hide()
-    }
-
     private fun autoFillPhoneNumber(number: String) {
         val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
         var phoneNumber = replaceRegionPhoneCode(number)
@@ -645,9 +677,12 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         return result.replace(symbolRegex, "")
     }
 
-    private fun hideLoading() {
-        viewBound.loader?.hide()
-        viewBound.containerView?.show()
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
+                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
+        )
     }
 
     companion object {

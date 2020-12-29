@@ -97,6 +97,10 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return 0
+    }
+
     override fun type(viewModel: LoadingModel): Int {
         return RechargeHomepageLoadingViewholder.LAYOUT
     }
