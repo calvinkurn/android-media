@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -44,6 +45,7 @@ import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -144,9 +146,9 @@ open class AddToCartDoneBottomSheet :
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)?.let {
-            it.setBackgroundResource(android.R.color.transparent)
+            it?.setBackgroundColor(Color.TRANSPARENT)
             bottomSheetBehavior = BottomSheetBehavior.from(it)
-            if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+            if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
                 dialog.setCanceledOnTouchOutside(false)
                 recyclerView.isNestedScrollingEnabled = false
                 val bottomSheetBehavior = BottomSheetBehavior.from<View>(it)
@@ -249,8 +251,8 @@ open class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
-                    if (abValue.isNotEmpty() && abValue != oldVariantPDP) {
+                    val abValue = getRemoteConfig()?.getString(abNewPdpAfterAtcKey)
+                    if (abValue?.isNotEmpty() == true && abValue != oldVariantPDP) {
                         atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId
                                 ?: -1))
                     } else {
@@ -305,12 +307,12 @@ open class AddToCartDoneBottomSheet :
     }
 
     private fun configBottomSheetHeight() {
-        if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
+        if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
             dialog?.run {
                 val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-                val displaymetrics = DisplayMetrics()
-                activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-                val screenHeight = displaymetrics.heightPixels
+                val displayMetrics = DisplayMetrics()
+                activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+                val screenHeight = displayMetrics.heightPixels
                 val maxHeight = (screenHeight * 0.9f).toInt()
                 val params = parent.layoutParams
                 params.height = maxHeight
@@ -453,6 +455,19 @@ open class AddToCartDoneBottomSheet :
     override fun onButtonGoToCartClicked() {
         productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
         goToCart()
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        return try{
+            RemoteConfigInstance.getInstance().abTestPlatform
+        }catch (e: Exception){
+            activity?.application?.let { RemoteConfigInstance.initAbTestPlatform(it) }
+            return try {
+                RemoteConfigInstance.getInstance().abTestPlatform
+            }catch (e: Exception){
+                null
+            }
+        }
     }
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()

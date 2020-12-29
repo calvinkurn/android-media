@@ -1036,7 +1036,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_LABEL to "$categoryIdLevel3 - $insuranceBrandUrl",
                     ProductTrackingConstant.Tracking.CATEGORY to ProductTrackingConstant.Tracking.KEY_INSURANCE,
                     ProductTrackingConstant.Tracking.BUSINESS_UNIT to ProductTrackingConstant.Tracking.KEY_FINTECH,
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID_ to (productInfo?.basic?.getProductId() ?: ""),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID_ to (productInfo?.basic?.productID ?: ""),
                     ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE_FINTECH
                     ) as MutableMap<String, Any>
 
@@ -1076,7 +1076,7 @@ object DynamicProductDetailTracking {
                     "category" to categoryNameLevel1,
                     "categoryId" to categoryIdLevel1,
                     "productName" to (productInfo?.getProductName ?: ""),
-                    "productId" to (productInfo?.basic?.getProductId() ?: ""),
+                    "productId" to (productInfo?.basic?.productID ?: ""),
                     "productUrl" to (productInfo?.basic?.url ?: ""),
                     "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
@@ -1119,7 +1119,7 @@ object DynamicProductDetailTracking {
                     "category" to categoryNameLevel1,
                     "categoryId" to categoryIdLevel1,
                     "productName" to (productInfo?.getProductName ?: ""),
-                    "productId" to productInfo?.basic?.getProductId(),
+                    "productId" to (productInfo?.basic?.productID ?: ""),
                     "productUrl" to productInfo?.basic?.url,
                     "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
@@ -1198,7 +1198,7 @@ object DynamicProductDetailTracking {
                                 put("subcategory_id", basic.category.detail[1].id)
                             }
                             put("product_name", getProductName)
-                            put("product_id", basic.getProductId())
+                            put("product_id", basic.productID)
                             put("product_url", basic.url)
                             put("product_price", data.price.value)
                             put("product_price_fmt", TrackingUtil.getFormattedPrice(data.price.value))
@@ -1216,7 +1216,7 @@ object DynamicProductDetailTracking {
                 productInfo.let {
                     val mutableMap = mutableMapOf(
                             "af_description" to "productView",
-                            "af_content_id" to it.basic.getProductId(),
+                            "af_content_id" to it.basic.productID,
                             "af_content_type" to "product",
                             "af_price" to it.data.price.value,
                             "af_currency" to "IDR",
@@ -1232,7 +1232,7 @@ object DynamicProductDetailTracking {
                         if ("af_content_view" == eventName) {
                             val jsonArray = JSONArray()
                             val jsonObject = JSONObject()
-                            jsonObject.put("id", it.basic.getProductId())
+                            jsonObject.put("id", it.basic.productID)
                             jsonObject.put("quantity", 1)
                             jsonArray.put(jsonObject)
                             this["af_content"] = jsonArray.toString()
@@ -1314,7 +1314,7 @@ object DynamicProductDetailTracking {
 
             arrayListOf(Product(
                     productInfo?.getProductName ?: "",
-                    productInfo?.basic?.getProductId().toString(),
+                    productInfo?.basic?.productID ?: "",
                     productInfo?.data?.price?.value?.toDouble() ?: 0.0,
                     productInfo?.getProductName,
                     ProductTrackingConstant.Tracking.DEFAULT_VALUE,

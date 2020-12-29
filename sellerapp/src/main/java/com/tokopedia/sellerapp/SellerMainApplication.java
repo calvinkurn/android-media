@@ -38,6 +38,7 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -170,7 +171,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
-        SlicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        initSlicePermission();
     }
 
     private void initCacheManager(){
@@ -264,6 +265,20 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
     }
+
+    private void initSlicePermission() {
+        if (getSliceRemoteConfig()) {
+            SlicePermission slicePermission = new SlicePermission();
+            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        }
+    }
+
+    private Boolean getSliceRemoteConfig() {
+        return remoteConfig != null
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
+    }
+
+
 
     @Override
     public Class<?> getDeeplinkClass() {
