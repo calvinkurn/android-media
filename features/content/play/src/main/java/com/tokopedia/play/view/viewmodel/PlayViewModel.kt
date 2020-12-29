@@ -472,7 +472,7 @@ class PlayViewModel @Inject constructor(
                 launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
                 launch { getBadgeCart(channel.configuration.showCart) }
-                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+                launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
                 startWebSocket(channelId)
 
