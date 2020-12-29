@@ -560,11 +560,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         detailResponse?.run {
             val dataShipping = SomDetailShipping(
                     shipment.name + " - " + shipment.productName,
-                    receiver.name,
-                    receiver.phone,
-                    receiver.street,
-                    detailResponse?.receiver?.district + ", " + receiver.city + " " + receiver.postal,
-                    receiver.province,
+                    receiverName = receiver.name,
+                    receiverPhone = receiver.phone,
+                    receiverStreet = receiver.street,
+                    receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
+                    receiverProvince = receiver.province,
                     flagOrderMeta.flagFreeShipping,
                     bookingInfo.driver.photo,
                     bookingInfo.driver.name,
@@ -630,6 +630,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                            buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                         }
                     }
                 }
