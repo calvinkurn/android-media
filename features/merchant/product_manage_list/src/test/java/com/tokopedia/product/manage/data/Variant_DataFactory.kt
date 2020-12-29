@@ -54,9 +54,10 @@ fun createProductVariant(
         sku: String = "sku",
         stock: Int = 0,
         pictures: List<Picture> = emptyList(),
+        isAllStockEmpty: Boolean = true,
         access: ProductManageAccess = createShopOwnerAccess()
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, access)
+    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, isAllStockEmpty, access)
 }
 
 fun createGetVariantResponse(

@@ -15,9 +15,12 @@ import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
@@ -62,31 +65,34 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-    private val editPriceUseCase: EditPriceUseCase,
-    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-    private val getProductListUseCase: GQLGetProductListUseCase,
-    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-    private val editStockUseCase: EditStockUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase,
-    private val multiEditProductUseCase: MultiEditProductUseCase,
-    private val getProductListMetaUseCase: GetProductListMetaUseCase,
-    private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
-    private val editProductVariantUseCase: EditProductVariantUseCase,
-    private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+        private val editPriceUseCase: EditPriceUseCase,
+        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+        private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+        private val getProductListUseCase: GQLGetProductListUseCase,
+        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+        private val editStockUseCase: EditStockUseCase,
+        private val deleteProductUseCase: DeleteProductUseCase,
+        private val multiEditProductUseCase: MultiEditProductUseCase,
+        private val getProductListMetaUseCase: GetProductListMetaUseCase,
+        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+        private val editProductVariantUseCase: EditProductVariantUseCase,
+        private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     companion object {
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
-        private const val REQUEST_DELAY = 1000L
+        const val REQUEST_DELAY = 1000L
     }
 
     val viewState: LiveData<ViewState>
         get() = _viewState
+    val getProductVariantsResult: LiveData<Result<GetVariantResult>>
+        get() = _getProductVariantsResult
     val productListResult: LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
     val productListFeaturedOnlyResult: LiveData<Result<Int>>
@@ -125,6 +131,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _deleteProductDialog
 
     private val _viewState = MutableLiveData<ViewState>()
+    private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
@@ -142,6 +149,7 @@ class ProductManageViewModel @Inject constructor(
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
+    private val _chatBlastSeller = MutableLiveData<String>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
 
@@ -270,6 +278,28 @@ class ProductManageViewModel @Inject constructor(
             hideProgressDialog()
             _productListResult.value = Fail(it)
         }).let { getProductListJob = it }
+    }
+
+    fun getProductVariants(productId: String) {
+        showLoadingDialog()
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val requestParams = GetProductVariantUseCase.createRequestParams(productId, false)
+                val response = getProductVariantUseCase.execute(requestParams)
+
+                val variant = response.getProductV3
+                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess())
+            }
+
+            if (result.variants.isNotEmpty()) {
+                _getProductVariantsResult.value = Success(result)
+            }
+
+            hideLoadingDialog()
+        }, onError = {
+            _getProductVariantsResult.value = Fail(it)
+            hideLoadingDialog()
+        })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -587,7 +617,12 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    private fun setProductListFeaturedOnly(productsSize: Int){
+    private fun getAccess(): ProductManageAccess {
+        return (_productManageAccess.value as? Success<ProductManageAccess>)?.data
+            ?: ProductManageAccessMapper.mapProductManageOwnerAccess()
+    }
+
+    private fun setProductListFeaturedOnly(productsSize: Int) {
         _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 
@@ -601,5 +636,13 @@ class ProductManageViewModel @Inject constructor(
 
     private fun hideProgressDialog() {
         _viewState.value = HideProgressDialog
+    }
+
+    private fun showLoadingDialog() {
+        _viewState.value = ShowLoadingDialog
+    }
+
+    private fun hideLoadingDialog() {
+        _viewState.value = HideLoadingDialog
     }
 }

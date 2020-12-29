@@ -22,9 +22,17 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_ERROR
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,6 +51,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
+        private val validateProductNameUseCase: ValidateProductNameUseCase,
+        private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
+        private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
         private val userSession: UserSessionInterface,
@@ -109,6 +120,15 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
+    private val mValidationResult = MutableLiveData<ValidationResultModel>()
+    val validationResult: LiveData<ValidationResultModel> get() = mValidationResult
+
+    private val mLocationValidation = MutableLiveData<Result<Boolean>>()
+    val locationValidation: LiveData<Result<Boolean>> get() = mLocationValidation
+
+    private val mSaveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
+    val saveShopShipmentLocationResponse: LiveData<Result<SaveShipmentLocation>> get() = mSaveShopShipmentLocationResponse
+
     val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
@@ -140,6 +160,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         } else {
+                            productInputModel.itemSold = 0 // reset item sold when duplicate product
                             productInputModel.detailInputModel.currentProductName = ""
                         }
 
@@ -321,6 +342,72 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
+    fun validateProductNameInput(productName: String) {
+        mIsLoading.value = true
+        productInputModel.value?.detailInputModel?.apply {
+            if (productName == currentProductName) {
+                mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                mIsLoading.value = false
+                return
+            }
+        }
+        launchCatchError(block = {
+            val response = withContext(dispatcher.io) {
+                validateProductNameUseCase.setParamsProductName(productId.value, productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults
+                    .joinToString("\n")
+            val validationResult = if (response.productValidateV3.isSuccess)
+                VALIDATION_SUCCESS else VALIDATION_ERROR
+            mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mIsLoading.value = false
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
+                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mIsLoading.value = false
+        })
+    }
+
+    fun validateShopLocation(shopId: Int) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
+            val shopLocation = withContext(Dispatchers.IO) {
+                getShopInfoLocationUseCase.executeOnBackground()
+            }
+            mLocationValidation.value = Success(shopLocation)
+            mIsLoading.value = false
+        }, onError = {
+            mLocationValidation.value = Fail(it)
+            mIsLoading.value = false
+        })
+    }
+
+    fun saveShippingLocation(dataParam: MutableMap<String, Any>) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            withContext(dispatcher.io) {
+                saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
+                val saveShipmentLocationData = saveShopShipmentLocationUseCase.executeOnBackground()
+                saveShipmentLocationData.let {
+                    mSaveShopShipmentLocationResponse.postValue(Success(it))
+                }
+            }
+            mIsLoading.value = false
+        }) {
+            mSaveShopShipmentLocationResponse.value = Fail(it)
+            mIsLoading.value = false
+        }
+    }
+
+    fun resetValidateResult() {
+        mValidationResult.value?.result = UNVALIDATED
+        mValidationResult.value?.message = ""
+    }
 
     private fun authorizeAccess() {
         mIsLoading.value = true

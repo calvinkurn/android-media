@@ -97,7 +97,7 @@ object VariantCommonMapper {
 
         //If all options has images, show images, if not show colour type / chip type
         val hasCustomImage = variant.options.all {
-            it.picture?.thumbnail?.isNotEmpty() == true
+            it.picture?.url100?.isNotEmpty() == true
         }
 
         val partialSelectedListByLevel = if (selectedOptionIds.isNotEmpty()) {
@@ -172,7 +172,7 @@ object VariantCommonMapper {
             return@map VariantOptionWithAttribute(
                     variantName = option.value.orEmpty(),
                     variantId = option.id.orZero(),
-                    image200 = option.picture?.thumbnail.orEmpty(),
+                    image100 = option.picture?.url100.orEmpty(),
                     imageOriginal = option.picture?.original.orEmpty(),
                     variantHex = option.hex.orEmpty(),
                     currentState = currentState,

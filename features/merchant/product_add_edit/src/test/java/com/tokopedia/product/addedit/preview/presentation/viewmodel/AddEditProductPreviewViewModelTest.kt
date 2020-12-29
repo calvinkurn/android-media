@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -311,6 +312,26 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun  `When validate shop location should be true`() = runBlocking {
+        onGetShopInfoLocation_thenReturn()
+
+        viewModel.validateShopLocation(121313)
+
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocation()
+    }
+
+    @Test
+    fun  `When save shop location should be successful`() = runBlocking {
+        onSaveShopShipmentLocation_thenReturn()
+
+        viewModel.saveShippingLocation(mutableMapOf())
+
+        viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
+        verifyGetShopInfoLocation()
+    }
+
+    @Test
     fun `When is shop owner should not get admin permission and role is eligible`() {
         onGetIsShopOwner_thenReturn(true)
 
@@ -485,6 +506,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { getProductUseCase.executeOnBackground() } returns product
     }
 
+    private fun onGetShopInfoLocation_thenReturn() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onSaveShopShipmentLocation_thenReturn() {
+        coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } returns SaveShipmentLocation()
+    }
+
     private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
         coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
     }
@@ -602,6 +631,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
+    }
+
+    private fun verifyGetShopInfoLocation() {
+        assertTrue(viewModel.saveShopShipmentLocationResponse.value == Success(SaveShipmentLocation()))
+    }
+
+    private fun verifyValidateShopLocation() {
+        assertTrue(viewModel.locationValidation.value == Success(true))
     }
 
     private fun verifyGetAdminProductPermissionFailed() {

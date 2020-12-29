@@ -7,6 +7,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -29,6 +30,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -47,7 +49,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
+class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -65,6 +67,8 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     override var viewBound = VerificationMethodViewBinding()
+
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_VERIFICATION_METHOD
 
@@ -169,6 +173,8 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
+        loadTickerTrouble(otpModeListData)
+
         when (otpModeListData.linkType) {
             TYPE_HIDE_LINK -> onTypeHideLink()
             TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
@@ -208,11 +214,11 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
                 analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
                 if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
-                } else {
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
+                } else {
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
                 }
                 startActivity(intent)
             }
@@ -233,19 +239,28 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                     }
                 },
                 message.indexOf(getString(R.string.setting)),
                 message.indexOf(getString(R.string.setting)) + getString(R.string.setting).length,
                 0)
         viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Neutral_N700_68) }?.let {
+        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
             viewBound.phoneInactive?.setTextColor(it)
         }
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
 
+    }
+
+    private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
+        if (otpModeListData.enableTicker) {
+            viewBound.ticker?.show()
+            viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
+        } else {
+            viewBound.ticker?.hide()
+        }
     }
 
     private fun showLoading() {

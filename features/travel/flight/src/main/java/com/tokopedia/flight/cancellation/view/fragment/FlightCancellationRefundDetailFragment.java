@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,6 +26,7 @@ import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundD
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationRefundDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private ProgressBar progressBar;
     private LinearLayout container;
     private AppCompatTextView tvTotalRefund;
-    private AppCompatButton btnNext;
+    private UnifyButton btnNext;
     private AppCompatTextView tvDescription;
 
     @Inject
@@ -93,7 +93,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
         tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
-        btnNext = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.btn_next);
+        btnNext = (UnifyButton) view.findViewById(com.tokopedia.flight.R.id.btn_next);
         btnNext.setOnClickListener(getNextButtonClickListener());
 
         tvStepTitle.setText(String.format(
@@ -187,7 +187,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
         int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(

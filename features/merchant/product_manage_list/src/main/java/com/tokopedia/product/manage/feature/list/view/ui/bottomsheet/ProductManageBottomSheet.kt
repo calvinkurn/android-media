@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -26,7 +26,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.bottom_sheet_product_manage
-        private val TAG: String = ProductManageBottomSheet::class.java.simpleName
+        private val TAG: String? = ProductManageBottomSheet::class.java.canonicalName
 
         private const val EXTRA_FEATURE_ACCESS = "extra_feature_access"
 
@@ -89,7 +89,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
                         SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product)
+                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product),
+                        SellerFeatureUiModel.BroadcastChatProductManageUiModel(product)
                 ))
             }
 
@@ -146,6 +147,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         }
                     }
 
+                    add(CreateBroadcastChat(product))
+
                     if(access.setCashBack) {
                         add(SetCashBack(product))
                     }
@@ -177,5 +180,9 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         this.product = product
         this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
         show(fm, TAG)
+    }
+
+    fun dismiss(fm: FragmentManager) {
+        (fm.findFragmentByTag(TAG) as? BottomSheetUnify)?.dismissAllowingStateLoss()
     }
 }

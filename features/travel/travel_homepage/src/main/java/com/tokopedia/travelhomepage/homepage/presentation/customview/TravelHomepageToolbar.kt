@@ -19,6 +19,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     fun toInitialMode() {
         hideShadow()
+        title = context.getString(R.string.travel_title_subhomepage)
         setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setBackgroundColor(resources.getColor(R.color.travel_subhome_transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -28,6 +29,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     fun toOnScrolledMode() {
         showShadow()
+        title = context.getString(R.string.travel_title_subhomepage)
         setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             navigationIcon?.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))

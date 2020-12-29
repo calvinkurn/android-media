@@ -82,6 +82,7 @@ class BuyerAccountMapper @Inject constructor(
             isAffiliate = accountDataModel.isAffiliate
         }
 
+        userSession.shopName = buyerCardViewModel.shopName
         userSession.setHasPassword(accountDataModel.userProfileCompletion.isCreatedPassword)
 
         return buyerCardViewModel
@@ -253,7 +254,7 @@ class BuyerAccountMapper @Inject constructor(
 
     private fun useUoh(): Boolean {
         return try {
-            val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, UOH_AB_TEST_VALUE)
             val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)

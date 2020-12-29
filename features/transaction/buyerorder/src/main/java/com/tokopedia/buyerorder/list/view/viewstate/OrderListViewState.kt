@@ -5,7 +5,6 @@ import com.tokopedia.buyerorder.list.data.MetaData
 
 sealed class OrderListViewState
 data class DotMenuVisibility(val visibility: Int) : OrderListViewState()
-data class SetActionButtonData(val leftActionButton: ActionButton?, val rightActionButton: ActionButton?, val leftVisibility: Int, val rightVisibility: Int) : OrderListViewState()
 data class SetCategoryAndTitle(val categoryName: String, val title: String): OrderListViewState()
 data class SetItemCount(val itemCount: Int): OrderListViewState()
 data class SetTotal(val totalLabel: String, val totalValue: String, val textColor: String): OrderListViewState()

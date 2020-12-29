@@ -47,6 +47,9 @@ class QuickEditVariantViewModel @Inject constructor(
     val tickerList: LiveData<List<ProductManageTicker>>
         get() = _tickerList
 
+    val showStockInfo: LiveData<Boolean>
+        get() = _showStockInfo
+
     private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _editVariantResult = MutableLiveData<EditVariantResult>()
     private val _productManageAccess = MutableLiveData<ProductManageAccess>()
@@ -54,6 +57,7 @@ class QuickEditVariantViewModel @Inject constructor(
     private val _showErrorView = MutableLiveData<Boolean>()
     private val _showSaveBtn = MutableLiveData<Boolean>()
     private val _tickerList = MutableLiveData<List<ProductManageTicker>>()
+    private val _showStockInfo = MutableLiveData<Boolean>()
 
     fun getData(productId: String) {
         hideErrorView()
@@ -126,7 +130,10 @@ class QuickEditVariantViewModel @Inject constructor(
     }
 
     fun setVariantStock(variantId: String, stock: Int) {
-        updateVariant(variantId) { it.copy(stock = stock) }
+        updateVariant(variantId) {
+            it.copy(stock = stock)
+        }
+        setShowStockInfo()
     }
 
     fun setVariantStatus(variantId: String, status: ProductStatus) {
@@ -142,6 +149,17 @@ class QuickEditVariantViewModel @Inject constructor(
 
     private fun setEmptyTicker() {
         _tickerList.value = emptyList()
+    }
+
+    private fun setShowStockInfo() {
+        val editVariantResult = _editVariantResult.value
+        val isAllStockEmpty = editVariantResult?.isAllStockEmpty() == true
+        val showStockInfo = _showStockInfo.value == true
+        val shouldShow = !isAllStockEmpty
+
+        if(showStockInfo != shouldShow) {
+            _showStockInfo.value = shouldShow
+        }
     }
 
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {

@@ -46,6 +46,7 @@ class ProductVariantStockViewHolder(
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
+        setupStockHint(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -96,6 +97,12 @@ class ProductVariantStockViewHolder(
     private fun setupStatusLabel(variant: ProductVariant) {
         val shouldShow = variant.isInactive() || variant.isEmpty()
         itemView.labelInactive.showWithCondition(shouldShow)
+    }
+
+    private fun setupStockHint(variant: ProductVariant) {
+        val stock = getCurrentStockInput()
+        val shouldShow = stock == 0 && !variant.isAllStockEmpty
+        itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
     private fun setStockMinMaxValue() {
@@ -183,6 +190,7 @@ class ProductVariantStockViewHolder(
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
+                setupStockHint(variant)
                 setupStatusLabel(variant)
             }
         }
@@ -208,6 +216,7 @@ class ProductVariantStockViewHolder(
                     ProductManageTracking.eventClickChangeAmountVariant()
                 }
 
+                setupStockHint(variant)
                 setupStatusLabel(variant)
             }
         }
@@ -233,6 +242,15 @@ class ProductVariantStockViewHolder(
                 delay(delayMs)
                 block()
             }, onError = {})
+    }
+
+    private fun getCurrentStockInput(): Int {
+        val input = itemView.quantityEditorStock.editText.text.toString()
+        return if(input.isNotEmpty()) {
+            input.toIntOrZero()
+        } else {
+            MINIMUM_STOCK
+        }
     }
 
     interface ProductVariantStockListener {

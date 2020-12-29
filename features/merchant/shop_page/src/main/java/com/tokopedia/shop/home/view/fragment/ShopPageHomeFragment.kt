@@ -1,14 +1,18 @@
 package com.tokopedia.shop.home.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,13 +24,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -40,13 +47,20 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -57,10 +71,10 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_RENDER
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -79,6 +93,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -89,6 +104,7 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -99,7 +115,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
+import kotlin.math.min
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
@@ -132,6 +154,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
         const val NUM_VOUCHER_DISPLAY = 10
 
+        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
+
         fun createInstance(
                 shopId: String,
                 isOfficialStore: Boolean,
@@ -139,7 +163,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopName: String,
                 shopAttribution: String,
                 shopRef: String
-        ): Fragment {
+        ): ShopPageHomeFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
             bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
@@ -162,6 +186,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     lateinit var shopPlayWidgetAnalytic: ShopPlayWidgetAnalyticListener
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var dispatcher: CoroutineDispatchers
+
     private var viewModel: ShopHomeViewModel? = null
     private var shopId: String = ""
     private var isOfficialStore: Boolean = false
@@ -201,10 +228,33 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
     }
 
+    private val widgetDeleteDialogContainer by lazy {
+        PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
+            override fun onDeleteButtonClicked(channelId: String) {
+                shopPlayWidgetAnalytic.onClickDialogDeleteChannel(channelId)
+                deleteChannel(channelId)
+            }
+        })
+    }
+
+    private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
+
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
+
+    private val viewJob = SupervisorJob()
+
+    private val viewScope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = viewJob + dispatcher.main
+    }
+    private var isLoadInitialData = false
+    private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    private var initialProductListData : ShopProduct.GetShopProduct? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        if (isShopHomeTabSelected())
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
         getIntentData()
         setupPlayWidget()
         super.onCreate(savedInstanceState)
@@ -218,6 +268,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         setupPlayWidgetAnalyticListener()
+    }
+
+    private fun isShopHomeTabSelected(): Boolean {
+        return (parentFragment as? ShopPageFragment)?.isTabSelected(this::class.java) ?: false
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -283,12 +337,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeLiveData()
+        isLoadInitialData = true
         loadInitialData()
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
+                gridType = it
                 changeProductListGridView(it)
             }
         })
@@ -322,6 +378,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
+        loadInitialData()
     }
 
     override fun onPause() {
@@ -337,11 +394,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if (::playWidgetCoordinator.isInitialized) {
             playWidgetCoordinator.onDestroy()
         }
+        viewJob.cancelChildren()
     }
 
     override fun onDestroy() {
-        viewModel?.initialProductListData?.removeObservers(this)
-        viewModel?.newProductListData?.removeObservers(this)
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
         viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
@@ -358,15 +414,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
-        shopHomeAdapter.clearAllElements()
-        recycler_view.visible()
-        recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        globalError_shopPage.hide()
-        showLoading()
-        shopHomeAdapter.isOwner = isOwner
-        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
-        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
-        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
+        if (isLoadInitialData && isShopHomeTabSelected()  && userVisibleHint) {
+            shopHomeAdapter.clearAllElements()
+            recycler_view.visible()
+            recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
+            globalError_shopPage.hide()
+            showLoading()
+            shopHomeAdapter.isOwner = isOwner
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+            viewModel?.getShopPageHomeData(
+                    shopId,
+                    shopProductFilterParameter ?: ShopProductFilterParameter(),
+                    initialProductListData
+            )
+            isLoadInitialData = false
+        }
     }
 
     private fun getIntentData() {
@@ -407,28 +470,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_RENDER)
                     stopMonitoringPltRenderPage()
                     stopMonitoringPerformance()
-                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    view?.let { view ->
+                        getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         })
 
-        viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
+        viewModel?.productListData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
                     addProductListHeader()
                     updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
-                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
-                }
-            }
-        })
-
-        viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, false)
-                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
+                    productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
                 }
             }
         })
@@ -528,7 +583,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun addChangeProductGridSection(totalProductData: Int) {
-        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -812,6 +867,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
+                    changeShopProductFilterParameterSharedData()
                     changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
                 }
@@ -1324,6 +1380,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOwner,
                 customDimensionShopPage
         )
+        changeShopProductFilterParameterSharedData()
         changeSortData("")
         scrollToEtalaseTitlePosition()
     }
@@ -1514,7 +1571,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
-        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter(),true)
+        viewModel?.getShopPageHomeData(
+                shopId,
+                shopProductFilterParameter ?: ShopProductFilterParameter(),
+                initialProductListData
+        )
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
@@ -1526,7 +1587,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopHomeAdapter.changeProductCardGridType(gridType)
     }
 
@@ -1546,6 +1607,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if(isResetButtonVisible == false){
             sortId = ""
         }
+        changeShopProductFilterParameterSharedData()
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToEtalaseTitlePosition()
         applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
@@ -1553,15 +1615,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun changeSortData(sortId: String){
         this.sortId = sortId
-        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
-                shopProductFilterParameter?:ShopProductFilterParameter()
-        )
         shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
                 shopProductFilterParameter?.getMapData()
         ))
+        initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        refreshProductList()
+        if(!isLoadInitialData)
+            refreshProductList()
+    }
+
+    private fun changeShopProductFilterParameterSharedData(){
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -1584,6 +1651,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
         }
     }
+
+    fun setInitialProductListData(productListData: ShopProduct.GetShopProduct) {
+        this.initialProductListData = productListData
+    }
+
+    //region play widget
     /**
      * Play Widget
      */
@@ -1592,8 +1665,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
-        val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
+        if (GlobalConfig.isSellerApp()) {
+            if (isCustomerAppInstalled()) {
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    data = Uri.parse(appLink)
+                })
+            } else {
+                widgetWatchDialogContainer.openPlayStore(requireContext())
+            }
+        } else {
+            val intent = RouteManager.getIntent(requireContext(), appLink)
+            startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
+        }
     }
 
     override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
@@ -1609,6 +1693,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
+        viewModel?.deleteChannel(channelId)
+    }
+
+    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        showPlayWidgetBottomSheet(item)
+    }
+
     private fun setupPlayWidget() {
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@ShopPageHomeFragment)
@@ -1618,7 +1710,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun setupPlayWidgetAnalyticListener() {
         playWidgetCoordinator.apply {
             shopPlayWidgetAnalytic.shopId = shopId
-            setAnalyticListener(shopPlayWidgetAnalytic)
+            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(shopPlayWidgetAnalytic))
         }
     }
 
@@ -1632,6 +1724,37 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
             shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.widgetUiModel)
+
+            val widget = carouselPlayWidgetUiModel?.widgetUiModel
+
+            if (widget is PlayWidgetUiModel.Medium) {
+                if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
+
+                val parent = parentFragment
+                if (parent is ShopPageFragment) {
+                    val recyclerView = getRecyclerView(view)
+
+                    if (parent.isNewlyBroadcastSaved() == true) {
+                        parent.clearIsNewlyBroadcastSaved()
+                        recyclerView.addOneTimeGlobalLayoutListener {
+                            viewScope.launch {
+                                parent.collapseAppBar()
+                                val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
+                                val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
+                                recyclerView.stepScrollToPositionWithDelay(finalPosition, 40)
+                            }
+                        }
+                    }
+                }
+            }
+
+            carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
+                when (it) {
+                    is CarouselPlayWidgetUiModel.Action.Delete -> showWidgetDeletedToaster()
+                    is CarouselPlayWidgetUiModel.Action.DeleteFailed -> showWidgetDeleteFailedToaster(it.channelId, it.reason)
+                    else -> {}
+                }
+            }
         })
     }
 
@@ -1663,4 +1786,115 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             else playWidgetCoordinator.onPause()
         }
     }
+
+    private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel) {
+        shopPlayWidgetAnalytic.onImpressMoreActionChannel(channelUiModel)
+        getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
+    }
+
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel): PlayWidgetSellerActionBottomSheet {
+        if (!::playWidgetActionBottomSheet.isInitialized) {
+            playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
+        }
+
+        val bottomSheetActionList = mutableListOf<PlayWidgetSellerActionBottomSheet.Action>()
+        if (channelUiModel.share.isShow) {
+            bottomSheetActionList.add(
+                PlayWidgetSellerActionBottomSheet.Action(
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                        getString(R.string.shop_page_play_widget_sgc_copy_link)
+                ) {
+                    shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
+                    copyToClipboard(channelUiModel.share.fullShareContent)
+                    showLinkCopiedToaster()
+                    playWidgetActionBottomSheet.dismiss()
+                }
+            )
+        }
+        bottomSheetActionList.add(
+                PlayWidgetSellerActionBottomSheet.Action(
+                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()) {
+                    shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
+                    showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
+                    playWidgetActionBottomSheet.dismiss()
+                }
+        )
+
+        playWidgetActionBottomSheet.setActionList(bottomSheetActionList)
+        return playWidgetActionBottomSheet
+    }
+
+    private fun deleteChannel(channelId: String) {
+        viewModel?.deleteChannel(channelId)
+    }
+
+    private fun showWidgetDeletedToaster() {
+        activity?.run {
+            Toaster.build(
+                    findViewById(android.R.id.content),
+                    getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
+        shopPlayWidgetAnalytic.onImpressErrorDeleteChannel(channelId, reason.localizedMessage.orEmpty())
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_fail),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
+                    clickListener = View.OnClickListener {
+                        deleteChannel(channelId)
+                    }
+            ).show()
+        }
+    }
+
+    private fun showWidgetTranscodeSuccessToaster() {
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showDeleteWidgetConfirmationDialog(channelId: String) {
+        shopPlayWidgetAnalytic.onImpressDialogDeleteChannel(channelId)
+        widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
+    }
+
+    private fun showLinkCopiedToaster() {
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_link_copied),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun copyToClipboard(shareContents: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-widget", shareContents))
+    }
+
+    private fun isCustomerAppInstalled() = try {
+        requireActivity().packageManager.getPackageInfo(CUSTOMER_APP_PACKAGE, 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+    //endregion
 }

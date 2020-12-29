@@ -26,6 +26,22 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_campaign_stock_variant_name"
         tools:text="Merah | S"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyStockInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_stock_info_description"
+        android:textColor="@color/pm_light_grey_color"
+        android:lines="2"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_campaign_stock_inactive"
         android:layout_width="wrap_content"

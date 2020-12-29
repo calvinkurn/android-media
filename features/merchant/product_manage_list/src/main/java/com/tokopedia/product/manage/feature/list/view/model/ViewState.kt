@@ -5,5 +5,7 @@ sealed class ViewState {
     object ShowProgressDialog: ViewState()
     object HideProgressDialog: ViewState()
     object RefreshList: ViewState()
+    object ShowLoadingDialog: ViewState()
+    object HideLoadingDialog: ViewState()
     object ShowStockTicker: ViewState()
 }

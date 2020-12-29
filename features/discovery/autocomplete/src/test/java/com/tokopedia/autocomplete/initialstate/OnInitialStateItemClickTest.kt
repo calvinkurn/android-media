@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
@@ -175,6 +176,43 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         val userId = "0"
 
         trackEventClickDynamicSectionItem(userId, expectedLabel, item.featureId)
+        route(item.applink, initialStatePresenter.getSearchParameter())
+        finish()
+    }
+
+    @Test
+    fun `Test click Curated Campaign Card`() {
+        val item = CuratedCampaignViewModel(
+                imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/8/24/4814934/4814934_8de36a7f-e5e3-4053-8089-1f42cdb17030_1414_1414",
+                applink = "tokopedia://product/20100686",
+                url = "/bgsport/bola-sepak-3",
+                title = "Waktu Indonesia Belanja",
+                subtitle = "Flashsale Rp50 rb & Cashback 90%"
+        )
+        val initialStateData = initialStateWithSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+
+        `given initial state use case capture request params`(initialStateData)
+
+        `When recent dynamic section item is clicked`(item)
+        `Then verify view interaction is correct for dynamic section`(item)
+    }
+
+    private fun `When recent dynamic section item is clicked`(item: CuratedCampaignViewModel) {
+        initialStatePresenter.onCuratedCampaignCardClicked(item)
+    }
+
+    private fun `Then verify view interaction is correct for dynamic section`(item: CuratedCampaignViewModel) {
+        verifyOrder {
+            initialStateView.onClickCuratedCampaignCard(item)
+        }
+
+        confirmVerified(initialStateView)
+    }
+
+    private fun InitialStateContract.View.onClickCuratedCampaignCard(item: CuratedCampaignViewModel) {
+        val expectedLabel = "${item.title} - ${item.applink}"
+        val userId = "0"
+        trackEventClickCuratedCampaignCard(userId, expectedLabel, item.type)
         route(item.applink, initialStatePresenter.getSearchParameter())
         finish()
     }
