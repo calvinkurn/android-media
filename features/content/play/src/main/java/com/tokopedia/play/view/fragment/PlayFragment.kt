@@ -47,7 +47,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.PiPMode
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
