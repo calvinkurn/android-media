@@ -103,8 +103,8 @@ class SomListViewModelTest {
             startDate = "12/12/2014"
             endDate = "12/12/2017"
             statusList = listOf(220, 400, 500)
-            shippingList = listOf(12)
-            orderTypeList = listOf(12)
+            shippingList = mutableSetOf(12)
+            orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
             nextOrderId = 123456
         }
@@ -715,7 +715,7 @@ class SomListViewModelTest {
 
     @Test
     fun setOrderTypeFilterTest() {
-        val orderTypes = listOf(1, 2, 3, 4, 5)
+        val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
         assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)
