@@ -5,8 +5,11 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCase
 import com.tokopedia.review.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 
@@ -28,5 +31,6 @@ abstract class SellerReviewListViewModelTextFixture {
         MockKAnnotations.init(this)
         viewModel = SellerReviewListViewModel(CoroutineTestDispatchersProvider,
                 getProductRatingOverallUse, getReviewProductListUseCase)
+        mockkObject(GetProductRatingOverallUseCase)
     }
 }
