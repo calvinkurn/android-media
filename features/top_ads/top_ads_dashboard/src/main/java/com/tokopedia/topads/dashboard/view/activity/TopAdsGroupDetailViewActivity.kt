@@ -135,7 +135,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
         tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
         tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
-        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
+        tab_layout?.customTabMode = TabLayout.MODE_FIXED
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)

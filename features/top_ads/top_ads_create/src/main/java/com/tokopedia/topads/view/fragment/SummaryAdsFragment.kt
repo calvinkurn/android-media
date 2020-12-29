@@ -69,6 +69,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
+        private const val MAXIMUM_LIMIT = 10000000
         private const val UNLIMITED_BUDGET = "0"
         private const val DEFINED_BUDGET = "1"
         private const val INPUT = "input"
@@ -229,6 +230,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    btn_submit.isEnabled = false
+                } else if(input > MAXIMUM_LIMIT && daily_budget.isVisible) {
+                    daily_budget.setError(true)
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
                     btn_submit.isEnabled = false
                 } else {
                     stepperModel?.dailyBudget = input
