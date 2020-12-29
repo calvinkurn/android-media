@@ -6,30 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@color/Neutral_N0">
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:id="@+id/iv_product_card"-->
-    <!--        android:layout_width="@dimen/dp_56"-->
-    <!--        android:layout_height="@dimen/dp_56"-->
-    <!--        android:layout_alignTop="@+id/tv_product_name"-->
-    <!--        android:layout_marginStart="@dimen/dp_16"-->
-    <!--        android:layout_marginLeft="@dimen/dp_16"-->
-    <!--        android:layout_marginTop="@dimen/dp_4"-->
-    <!--        android:clipChildren="true"-->
-    <!--        app:cardCornerRadius="@dimen/dp_6"-->
-    <!--        app:cardElevation="@dimen/dp_0"-->
-    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/tv_product_name">-->
-
-    <!--        <ImageView-->
-    <!--            android:id="@+id/iv_image_product"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            android:alpha="0.5"-->
-    <!--            app:srcCompat="@drawable/empty_photo"-->
-    <!--            tools:ignore="ContentDescription" />-->
-
-    <!--    </androidx.cardview.widget.CardView>-->
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_image_product"
         android:layout_width="@dimen/dp_56"

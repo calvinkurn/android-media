@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_30"
-                    android:paddingRight="@dimen/dp_8" />
+                    android:paddingEnd="@dimen/dp_8" />
 
                 <RelativeLayout
                     android:id="@+id/rl_product_info"
@@ -84,7 +84,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_product_name"
-                        android:layout_toRightOf="@+id/text_product_variant"
+                        android:layout_toEndOf="@+id/text_product_variant"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
                         android:textColor="@color/Red_R600"
@@ -249,12 +249,8 @@ barangnya gan! coy coy coy" />
                         android:id="@+id/tv_error_form_remark_validation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/et_remark"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
                         android:maxLines="1"
                         android:paddingStart="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_4"
                         android:textColor="@color/text_cart_item_error_red"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
@@ -269,9 +265,6 @@ barangnya gan! coy coy coy" />
                         android:id="@+id/tv_note_char_counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/et_remark"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
                         android:layout_gravity="end"
                         android:lineSpacingExtra="0sp"
                         android:visibility="gone"
@@ -325,7 +318,6 @@ barangnya gan! coy coy coy" />
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
                                 android:layout_marginEnd="@dimen/dp_18"
-                                android:layout_marginRight="@dimen/dp_18"
                                 app:srcCompat="@drawable/ic_delete_cart"
                                 tools:ignore="ContentDescription" />
 
@@ -363,7 +355,7 @@ barangnya gan! coy coy coy" />
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:gravity="right"
+                            android:gravity="end"
                             android:maxLines="2"
                             android:textAlignment="gravity"
                             android:textColor="@color/text_cart_item_error_red"
