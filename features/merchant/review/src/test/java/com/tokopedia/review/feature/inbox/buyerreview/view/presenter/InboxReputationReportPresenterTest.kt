@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.report.ReportReviewUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import io.mockk.every
@@ -25,7 +26,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_SPAM, anyString())
+        presenter.reportReview(anyString(), anyString(), R.id.report_spam, anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -46,7 +47,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onError(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_SARA, anyString())
+        presenter.reportReview(anyString(), anyString(), R.id.report_sara, anyString())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()
@@ -66,7 +67,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_OTHER, anyString())
+        presenter.reportReview(anyString(), anyString(),R.id.report_other, anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
