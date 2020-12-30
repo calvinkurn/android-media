@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import com.tokopedia.favorite.data.source.apis.converterfactory.GeneratedHostConverter
 import com.tokopedia.favorite.di.qualifier.TopAdsQualifier
 import com.tokopedia.favorite.di.scope.FavoriteScope
-import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.converter.StringResponseConverter
 import dagger.Module
 import dagger.Provides
@@ -27,7 +26,6 @@ class FavoriteRetrofitBuilderModule {
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
     }
 
 }

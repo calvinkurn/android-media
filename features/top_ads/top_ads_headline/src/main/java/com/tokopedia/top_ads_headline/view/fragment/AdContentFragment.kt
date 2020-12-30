@@ -208,14 +208,16 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     override fun onDeletePreview(position: Int) {
-        val product = stepperModel?.selectedTopAdsProducts?.getOrNull(position)
-        stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
-            if (arrayList.contains(product)) {
-                arrayList.remove(product)
+        if (position < selectedTopAdsProducts.size) {
+            val product = stepperModel?.selectedTopAdsProducts?.getOrNull(position)
+            stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
+                if (arrayList.contains(product)) {
+                    arrayList.remove(product)
+                }
             }
+            stepperModel?.selectedTopAdsProducts?.removeAt(position)
+            setUpSelectedText()
         }
-        stepperModel?.selectedTopAdsProducts?.removeAt(position)
-        setUpSelectedText()
     }
 
     override fun onClickPreview(position: Int) {
