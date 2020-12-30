@@ -199,4 +199,8 @@ open class PageLoadTimePerformanceCallback(
             }
         }
     }
+
+    override fun getAttribution(): HashMap<String, String> {
+        return attributionValue
+    }
 }
