@@ -222,15 +222,15 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
             urlThumbnail = "www.gmail.com"
         }
         var product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
-            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
         }
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
         var imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        var originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        var editted = arrayListOf(true,false,true)
+        var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
+        var editted = arrayListOf(false,false,true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()

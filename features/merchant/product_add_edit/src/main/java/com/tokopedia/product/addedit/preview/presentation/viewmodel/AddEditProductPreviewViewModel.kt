@@ -198,7 +198,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
                 if (!editted[index]) {
                     val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
-                    if(picture.isNotBlank()) {
+                    if(picture != "null" && picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }
