@@ -48,6 +48,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -347,6 +348,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun initView() {
+        iv_hotel_homepage_background.loadImage(HOMEPAGE_BG_IMAGE_URL)
         checkCheckInAndCheckOutDate()
 
         tv_hotel_homepage_destination.textFieldInput.tag = R.id.tv_hotel_homepage_destination.toString()
@@ -743,6 +745,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_TYPE = "param_type"
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
+
+        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/android/res/singleDpi/bg_hotel_homepage_tiny.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
