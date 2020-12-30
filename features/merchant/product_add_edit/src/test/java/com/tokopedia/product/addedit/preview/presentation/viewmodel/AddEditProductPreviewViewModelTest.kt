@@ -219,6 +219,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
             fileName = "apa"
+            urlThumbnail = "www.gmail.com"
         }
         var product = ProductInputModel().apply {
             detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
@@ -256,13 +257,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         assertTrue(viewModel.imageUrlOrPathList.value != null)
 
-        pictureInputModel = PictureInputModel().apply {
+        val pictureInputModel2 = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
             fileName = "apa"
-            urlThumbnail = "www.gmail.com"
+            urlThumbnail = ""
         }
         product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel2)
             detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
         }
         viewModel.productInputModel.value = product

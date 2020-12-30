@@ -196,7 +196,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.filterIndexed { index, _ -> !editted[index] }
 
             val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-                if (editted[index]) urlOrPath else pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                if (!editted[index]) {
+                    val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                    if(picture.isNotBlank()) {
+                        return@mapIndexed picture
+                    }
+                }
+                urlOrPath
             }.toMutableList()
 
             this.detailInputModel.value = it.detailInputModel.apply {
