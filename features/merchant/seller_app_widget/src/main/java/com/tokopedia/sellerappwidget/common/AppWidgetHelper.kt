@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.R
 import kotlin.math.ceil
@@ -54,5 +55,9 @@ object AppWidgetHelper {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(appLinkIntent)
+    }
+
+    fun getCacheHandler(context: Context): LocalCacheHandler {
+        return LocalCacheHandler(context, Const.SHARED_PREF_NAME)
     }
 }

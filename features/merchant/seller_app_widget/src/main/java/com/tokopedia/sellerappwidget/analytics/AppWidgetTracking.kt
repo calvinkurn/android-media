@@ -1,9 +1,8 @@
 package com.tokopedia.sellerappwidget.analytics
 
 import android.content.Context
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSession
@@ -32,8 +31,8 @@ class AppWidgetTracking(context: Context) {
     private val userSession: UserSessionInterface by lazy {
         UserSession(context)
     }
-    private val appWidgetPref: SellerAppWidgetPreferences by lazy {
-        SellerAppWidgetPreferencesImpl(context)
+    private val cacheHandler: LocalCacheHandler by lazy {
+        LocalCacheHandler(context, Const.SHARED_PREF_NAME)
     }
 
     fun sendEventImpressionSuccessStateChatWidget() {
@@ -252,14 +251,14 @@ class AppWidgetTracking(context: Context) {
     }
 
     private fun sendEventChatWidget(eventMap: Map<String, Any>) {
-        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
         if (isWidgetEnabled) {
             TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
         }
     }
 
     private fun sendEventOrderWidget(eventMap: Map<String, Any>) {
-        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         if (isWidgetEnabled) {
             TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
         }
@@ -273,10 +272,10 @@ class AppWidgetTracking(context: Context) {
         val actionKey = "chat_" + action.replace(" ", "")
         val nowMillis = System.currentTimeMillis()
         val oneDayMillis = TimeUnit.DAYS.toMillis(1)
-        val lastSend = appWidgetPref.getLong(actionKey, nowMillis)
-        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        val lastSend = cacheHandler.getLong(actionKey, nowMillis)
+        val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
         if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
-            appWidgetPref.putLong(actionKey, nowMillis)
+            cacheHandler.putLong(actionKey, nowMillis)
             callback()
         }
     }
@@ -289,10 +288,10 @@ class AppWidgetTracking(context: Context) {
         val actionKey = "order_" + action.replace(" ", "")
         val nowMillis = System.currentTimeMillis()
         val oneDayMillis = TimeUnit.DAYS.toMillis(1)
-        val lastSend = appWidgetPref.getLong(actionKey, nowMillis)
-        val isWidgetEnabled = appWidgetPref.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        val lastSend = cacheHandler.getLong(actionKey, nowMillis)
+        val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
-            appWidgetPref.putLong(actionKey, nowMillis)
+            cacheHandler.putLong(actionKey, nowMillis)
             callback()
         }
     }

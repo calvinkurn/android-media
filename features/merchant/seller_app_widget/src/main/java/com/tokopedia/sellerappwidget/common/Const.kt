@@ -6,6 +6,8 @@ package com.tokopedia.sellerappwidget.common
 
 object Const {
 
+    const val SHARED_PREF_NAME = "seller_app_widget_preferences"
+
     object OrderStatusId {
         const val NEW_ORDER = 220
         const val READY_TO_SHIP = 400

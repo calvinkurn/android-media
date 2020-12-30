@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.domain.mapper.ChatMapper
 import com.tokopedia.sellerappwidget.domain.usecase.GetChatUseCase
 import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
@@ -16,8 +15,6 @@ import com.tokopedia.sellerappwidget.view.state.chat.ChatWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.ChatAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetChatWorker
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 
 /**
@@ -42,7 +39,7 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
         val getChatUseCase = GetChatUseCase(GraphqlInteractor.getInstance().graphqlRepository, ChatMapper())
         return@lazy ChatAppWidgetViewModel(getChatUseCase, CoroutineDispatchersProvider)
     }
-    private val sharedPref: SellerAppWidgetPreferences by lazy { SellerAppWidgetPreferences.getInstance(context) }
+    private val cacheHandler by lazy { AppWidgetHelper.getCacheHandler(context) }
 
     fun run() {
         showLoadingState()
@@ -51,7 +48,7 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
     }
 
     override fun onSuccess(result: ChatUiModel) {
-        sharedPref.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
         ChatAppWidget.setOnSuccess(context, result)
         GetChatWorker.runWorkerPeriodically(context)
         viewModel.unbind()

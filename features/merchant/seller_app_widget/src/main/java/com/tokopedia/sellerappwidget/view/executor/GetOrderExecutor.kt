@@ -7,9 +7,9 @@ import android.widget.RemoteViews
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
 import com.tokopedia.sellerappwidget.domain.usecase.GetOrderUseCase
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
@@ -47,8 +47,8 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         val getReadyToShipOrderUseCase = GetOrderUseCase(gqlRepository, mapper)
         return@lazy OrderAppWidgetViewModel(getNewOrderUseCase, getReadyToShipOrderUseCase, CoroutineDispatchersProvider)
     }
-    private val sharedPref: SellerAppWidgetPreferences by lazy {
-        SellerAppWidgetPreferences.getInstance(context)
+    private val cacheHandler by lazy {
+        AppWidgetHelper.getCacheHandler(context)
     }
     private var orderStatusId = OrderAppWidget.DEFAULT_ORDER_STATUS_ID
 
@@ -65,7 +65,7 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
     }
 
     override fun onSuccess(result: OrderUiModel) {
-        sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
         OrderAppWidget.setOnSuccess(context, result, orderStatusId)
         GetOrderWorker.runWorker(context)
         viewModel.unbind()

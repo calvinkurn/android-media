@@ -3,8 +3,8 @@ package com.tokopedia.sellerappwidget.view.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
 import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
@@ -33,7 +33,7 @@ class AppWidgetBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun fetchOrderWidgetData(context: Context) {
-        val orderStatusId: Int = SellerAppWidgetPreferences.getInstance(context)
+        val orderStatusId: Int = AppWidgetHelper.getCacheHandler(context)
                 .getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
         GetOrderExecutor.run(context, orderStatusId)
     }

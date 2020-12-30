@@ -8,11 +8,10 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.common.registerAppLinkIntent
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -81,8 +80,8 @@ abstract class AppWidgetStateHelper {
     }
 
     protected fun getWidgetLastUpdatedFmt(context: Context, prefKey: String): String {
-        val sharedPref: SellerAppWidgetPreferences = SellerAppWidgetPreferencesImpl(context)
-        val lastUpdatedMillis = sharedPref.getLong(prefKey, System.currentTimeMillis())
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        val lastUpdatedMillis = cacheHandler.getLong(prefKey, System.currentTimeMillis())
         val now = Date()
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         val dateSdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())

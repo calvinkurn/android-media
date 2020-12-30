@@ -14,10 +14,9 @@ import com.tokopedia.sellerappwidget.analytics.AppWidgetTracking
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
+import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
 import com.tokopedia.sellerappwidget.view.model.OrderItemUiModel
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
-import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
 import com.tokopedia.sellerappwidget.view.state.order.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -76,14 +75,14 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
-        sharedPref.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
-        sharedPref.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         super.onDisabled(context)
     }
 
@@ -167,8 +166,8 @@ class OrderAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
                 .sendEventClickRefreshButtonOrderWidget()
 
-        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
-        val lastSelectedOrderStatusId = sharedPref.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, DEFAULT_ORDER_STATUS_ID)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        val lastSelectedOrderStatusId = cacheHandler.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, DEFAULT_ORDER_STATUS_ID)
         GetOrderExecutor.run(context, lastSelectedOrderStatusId)
     }
 

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -28,13 +28,13 @@ abstract class BaseAppWidgetWorker(private val context: Context, params: WorkerP
     }
 
     private fun pruneWorkIfPossible() {
-        val sharedPref = SellerAppWidgetPreferences.getInstance(context)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
         val nowMillis = System.currentTimeMillis()
         val oneHourMillis = TimeUnit.HOURS.toMillis(1)
-        val lastPrune = sharedPref.getLong(Const.SharedPrefKey.LAST_PRUNE_WORK, System.currentTimeMillis())
+        val lastPrune = cacheHandler.getLong(Const.SharedPrefKey.LAST_PRUNE_WORK, System.currentTimeMillis())
         if (lastPrune <= nowMillis.minus(oneHourMillis)) {
             WorkManager.getInstance(context).pruneWork()
-            sharedPref.putLong(Const.SharedPrefKey.LAST_PRUNE_WORK, nowMillis)
+            cacheHandler.putLong(Const.SharedPrefKey.LAST_PRUNE_WORK, nowMillis)
         }
     }
 }
