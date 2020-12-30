@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
+import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.report.ReportReviewUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import io.mockk.every
 import io.mockk.mockk
@@ -24,7 +25,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), anyInt(), anyString())
+        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_SPAM, anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -45,9 +46,30 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onError(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), anyInt(), anyString())
+        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_SARA, anyString())
 
         testSubscriber.assertError(expectedResponse)
+        testSubscriber.assertCompleted()
+        verifyReportReviewUseCaseExecuted()
+    }
+
+    @Test
+    fun `when reportReview other success should execute expected usecase and perform expected view actions`() {
+        val expectedResponse = mockk<ReportReviewDomain>(relaxed = true)
+        val testSubscriber: TestSubscriber<ReportReviewDomain> = TestSubscriber()
+
+        every {
+            reportReviewUseCase.execute(any(), any())
+        } answers {
+            testSubscriber.onStart()
+            testSubscriber.onCompleted()
+            testSubscriber.onNext(expectedResponse)
+        }
+
+        presenter.reportReview(anyString(), anyString(), ReportReviewUseCase.REPORT_OTHER, anyString())
+
+        testSubscriber.assertNoErrors()
+        testSubscriber.assertValue(expectedResponse)
         testSubscriber.assertCompleted()
         verifyReportReviewUseCaseExecuted()
     }
