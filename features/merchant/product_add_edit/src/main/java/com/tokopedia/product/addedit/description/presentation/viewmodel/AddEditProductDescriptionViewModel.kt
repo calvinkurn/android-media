@@ -131,18 +131,20 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun getVariantTypeMessage(position: Int): String {
-        val variantInputModel = variantInputModel ?: VariantInputModel()
-        variantInputModel.selections.getOrNull(position)?.let {
-            return it.variantName
+        variantInputModel?.apply {
+            selections.getOrNull(position)?.let {
+                return it.variantName
+            }
         }
         return ""
     }
 
     fun getVariantCountMessage(position: Int): String {
-        val variantInputModel = variantInputModel ?: VariantInputModel()
-        variantInputModel.selections.getOrNull(position)?.let {
-            // generate count of variant eg. 4 Varian
-            return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
+        variantInputModel?.apply {
+            selections.getOrNull(position)?.let {
+                // generate count of variant eg. 4 Varian
+                return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
+            }
         }
         return ""
     }
