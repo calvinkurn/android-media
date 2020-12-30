@@ -190,26 +190,28 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
-        val pictureList = productInputModel.value?.detailInputModel?.pictureList?.filter {
+        val productInputModel = productInputModel.value ?: ProductInputModel()
+        val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
-        }?.filterIndexed { index, _ -> !editted[index] }.orEmpty()
+        }.filterIndexed { index, _ -> !editted[index] }
 
         val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
         }.toMutableList()
 
-        this.detailInputModel.value = productInputModel.value?.detailInputModel?.apply {
+        this.detailInputModel.value = productInputModel.detailInputModel.apply {
             this.pictureList = pictureList
             this.imageUrlOrPathList = imageUrlOrPathList
-        } ?: DetailInputModel(pictureList = pictureList, imageUrlOrPathList = imageUrlOrPathList)
+        }
 
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
     fun updateProductStatus(isActive: Boolean) {
+        val productInputModel = productInputModel.value ?: ProductInputModel()
         val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
-        productInputModel.value?.detailInputModel?.status = newStatus
-        productInputModel.value?.variantInputModel?.products?.forEach {
+        productInputModel.detailInputModel.status = newStatus
+        productInputModel.variantInputModel.products.forEach {
             it.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
         }
     }
@@ -299,11 +301,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.isDataChanged = isChanged
     }
 
-    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+    fun getIsDataChanged(): Boolean {
+        productInputModel.value?.let {
+            return it.isDataChanged
+        }
+        return false
+    }
 
     fun validateProductNameInput(productName: String) {
         mIsLoading.value = true
-        productInputModel.value?.detailInputModel?.apply {
+        val productInputModel = productInputModel.value ?: ProductInputModel()
+        productInputModel.detailInputModel.apply {
             if (productName == currentProductName) {
                 mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
                 mIsLoading.value = false
