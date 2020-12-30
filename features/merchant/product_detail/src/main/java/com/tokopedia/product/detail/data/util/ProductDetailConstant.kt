@@ -6,6 +6,7 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
+    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
 
     //report product
     const val PATH_PRODUCT_TYPE = "v4/product/"

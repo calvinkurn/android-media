@@ -1288,7 +1288,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun enableVideo(): Boolean {
         if (!::remoteConfig.isInitialized) return false
 
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_VIDEO_PDP, true)
+        return remoteConfig.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true)
     }
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
