@@ -30,14 +30,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl6">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_hotel_homepage"
-                android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                />
+                android:scaleType="centerCrop"
+                app:imageDpiSupportType="singleDpi"
+                app:layout_constraintTop_toTopOf="parent"
+                app:remoteFileName="bg_hotel_homepage.png" />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:layout_width="match_parent"
