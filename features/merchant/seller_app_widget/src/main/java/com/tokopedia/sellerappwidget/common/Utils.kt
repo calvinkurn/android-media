@@ -56,7 +56,7 @@ object Utils {
     }
 
     fun getLocale(): Locale {
-        return Locale("id")
+        return Locale.getDefault()
     }
 
     fun loadImageIntoAppWidget(context: Context, remoteViews: RemoteViews, imgViewId: Int, imgUrl: String, widgetId: Int) {
