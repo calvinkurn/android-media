@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
+
+   <FrameLayout
+       android:id="@+id/containerPaymentInfo"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_margin="@dimen/spacing_lvl4"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerTop"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_height="1dp"/>
+
+    <FrameLayout
+        android:id="@+id/containerPaymentInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"/>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

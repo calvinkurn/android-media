@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGateWayName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Alfamaart" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivGateWayImage"
+        android:layout_width="@dimen/spacing_lvl8"
+        android:layout_height="@dimen/spacing_lvl8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvGateWayName" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPaymentAccountTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        tools:text="Kode Pembaryaran"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@+id/ivGateWayImage"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPaymentAccountNumber"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@+id/tvPaymentAccountTitle"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="DFGHJKL:IUOP" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAccountName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@+id/tvPaymentAccountNumber"
+        app:typographyType="body_3"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="PT. Tokopedia (Cabang Kebon Jeruk)" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTakeScreenshot"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="Simpan Screenshot"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPaymentAccountNumber"
+        app:layout_constraintEnd_toStartOf="@+id/ivTakeScreenshot"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivTakeScreenshot"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTakeScreenshot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTakeScreenshot" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTotalPayment"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:text="Total Pembayaran"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccountName"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTotalPaymentAmount"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalPayment"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp1.000.000" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerAmountNote"
+        app:tickerType="announcement"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalPaymentAmount"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
