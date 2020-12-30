@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
 import com.tokopedia.sellerappwidget.domain.usecase.GetOrderUseCase
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
@@ -19,6 +18,7 @@ import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.AppWidgetView
 import com.tokopedia.sellerappwidget.view.work.GetOrderWorker
+import com.tokopedia.utils.time.TimeHelper
 import timber.log.Timber
 import java.util.*
 
@@ -56,8 +56,8 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         this.orderStatusId = orderStatusId
 
         val dateFormat = "dd/MM/yyyy"
-        val endDateFmt = Utils.formatDate(Date(Utils.getNowTimeStamp()), dateFormat)
-        val startDateFmt = Utils.getNPastMonthTimeText(3)
+        val endDateFmt = TimeHelper.formatDate(Date(TimeHelper.getNowTimeStamp()), dateFormat)
+        val startDateFmt = TimeHelper.getNPastMonthTimeText(3)
 
         showLoadingState()
         viewModel.bindView(this)

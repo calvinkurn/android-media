@@ -1,10 +1,10 @@
 package com.tokopedia.sellerappwidget.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.data.model.GetChatResponse
 import com.tokopedia.sellerappwidget.view.model.ChatItemUiModel
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
+import com.tokopedia.utils.time.TimeHelper
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -42,7 +42,7 @@ class ChatMapper {
             return when {
                 diffMillis < oneDayMillis -> { //ex : 13:00
                     val format = "HH:mm"
-                    Utils.formatDate(lastReplyTimeDate, format)
+                    TimeHelper.formatDate(lastReplyTimeDate, format)
                 }
                 diffMillis in oneDayMillis until twoDaysMillis -> { //ex : Kemarin
                     val yesterday = "Kemarin"
@@ -50,7 +50,7 @@ class ChatMapper {
                 }
                 else -> { //ex : 08 Nov
                     val format = "dd MMM"
-                    Utils.formatDate(lastReplyTimeDate, format)
+                    TimeHelper.formatDate(lastReplyTimeDate, format)
                 }
             }
         } catch (e: NumberFormatException) {
