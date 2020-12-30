@@ -37,6 +37,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.util.*
 import com.tokopedia.home_component.model.ChannelGrid
@@ -133,6 +134,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var navRollanceType: String = ""
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
+    private lateinit var initialShimmerData: HomeInitialShimmerDataModel
 
 // ============================================================================================
 // ================================ Live data UI Controller ===================================
@@ -258,6 +260,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var onRefreshState = true
 
     init {
+        initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
         initFlow()
     }
@@ -406,10 +409,6 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         getTokocashBalance()
         getTokopoint()
-    }
-
-    fun getAtfData() {
-
     }
 
     fun updateBannerTotalView(channelId: String, totalView: String) {
@@ -867,6 +866,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun initFlow() {
         _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
+            addInitialShimmering()
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     onRefreshState = false
@@ -880,7 +880,6 @@ open class HomeRevampViewModel @Inject constructor(
                         //initialize master list data here
                         homeVisitableListData = it.list.toMutableList()
                     }
-                    getAtfData()
                     getPlayWidget()
                     getHeaderData()
                     getReviewData()
@@ -901,6 +900,7 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
+            removeInitialShimmering()
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
     }
@@ -1359,6 +1359,14 @@ open class HomeRevampViewModel @Inject constructor(
                     isTokoPointDataError = true
             )
         }
+    }
+
+    private fun addInitialShimmering() {
+        homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
+    }
+
+    private fun removeInitialShimmering() {
+        homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
     }
 
     fun injectCouponTimeBased() {
