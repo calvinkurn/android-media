@@ -17,16 +17,18 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
+import com.tokopedia.top_ads_headline.Constants.ACTION_DELETE
+import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
+import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
+import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.HeadlineEditKeywordViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.topads.common.constant.Constants.KEYWORD_TYPE_EXACT
-import com.tokopedia.topads.common.constant.Constants.KEYWORD_TYPE_NEGATIVE_EXACT
-import com.tokopedia.topads.common.constant.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
-import com.tokopedia.topads.common.constant.Constants.KEYWORD_TYPE_PHRASE
 import com.tokopedia.topads.common.constant.Constants.TITLE_1
 import com.tokopedia.topads.common.constant.Constants.TITLE_2
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
@@ -46,13 +48,19 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiSortModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_EXACT
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_SPECIFIC
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
 import com.tokopedia.topads.edit.view.activity.SelectNegKeywordActivity
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_headline_edit_keyword.*
 import javax.inject.Inject
-
 
 const val KEYWORD_POSITIVE = "keywordPositive"
 const val KEYWORD_NEGATIVE = "keywordNegative"
@@ -82,11 +90,12 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     private lateinit var adapter: KeywordListAdapter
     private var groupId = 0
     private var stepperModel: HeadlineAdStepperModel? = null
-    private var restoreNegativeKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var restoreNegativeKeywords: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+
+    private var negativeAddedKeywords: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
     private var selectedKeywordsList: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
-    private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
-    private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
-    private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+
+    private var saveButtonState: SaveButtonState? = activity as? SaveButtonState
 
     companion object {
         fun getInstance(keywordType: String, groupId: Int): HeadlineEditKeywordFragment {
@@ -131,11 +140,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         setAdapter()
         setUpSearchTypeTipsSheet()
         add_keyword.setOnClickListener {
-            if (keywordType == KEYWORD_POSITIVE) {
-                openPositiveAdKeywordActivity()
-            } else {
-                openNegativeAdKeywordActivity()
-            }
+            onCtaBtnClick()
         }
     }
 
@@ -147,6 +152,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun openPositiveAdKeywordActivity() {
+        stepperModel?.selectedKeywords = getSelectedKeywords(selectedKeywordsList)
         val intent = Intent(context, EditTopAdsHeadlineKeywordActivity::class.java).apply {
             putExtra(BaseStepperActivity.STEPPER_MODEL_EXTRA, stepperModel)
         }
@@ -166,12 +172,6 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
             stepperModel = it
-            stepperModel?.selectedKeywords = getSelectedKeywords(selectedKeywordsList)
-        })
-        sharedEditHeadlineViewModel?.getBidInfoData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel?.minBid = it.minBid
-            stepperModel?.maxBid = it.maxBid
-            stepperModel?.dailyBudget = it.minDailyBudget.toFloat()
             setUpKeywords()
         })
     }
@@ -210,25 +210,35 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun fetchNextPage() {
-        viewModel.getAdKeyword(userSession.shopId, groupId, cursor, this::onSuccessKeyword)
-    }
-
-    private fun setUpKeywords() {
-        val keywordUiModels: ArrayList<KeywordUiModel> = getKeywordUiModels(selectedKeywordsList)
-        adapter.setKeywordItems(keywordUiModels)
+        viewModel.getAdKeyword(userSession.shopId, groupId, cursor, this::onSuccessKeyword, keywordType = keywordType)
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         selectedKeywordsList = data as ArrayList<GetKeywordResponse.KeywordsItem>
-        stepperModel?.selectedKeywords = getSelectedKeywords(data)
+        if(keywordType== KEYWORD_NEGATIVE){
+            getRestoredNegativeKeywords()
+        }
         this.cursor = cursor
+        if (stepperModel != null) {
+            setUpKeywords()
+        }
+    }
+
+    private fun getRestoredNegativeKeywords() {
+        selectedKeywordsList.filter { it.type == KEYWORD_TYPE_NEGATIVE_PHRASE || it.type == KEYWORD_TYPE_NEGATIVE_EXACT }.let {
+            restoreNegativeKeywords.clear()
+            it.forEach { item ->
+                item.isChecked = true
+                restoreNegativeKeywords.add(item)
+            }
+        }
     }
 
     private fun getKeywordUiModels(data: List<GetKeywordResponse.KeywordsItem>): java.util.ArrayList<KeywordUiModel> {
         val keywordUiModels = ArrayList<KeywordUiModel>()
         data.forEach { result ->
             if (result.status != -1) {
-                val keywordSubType: String = getKeywordSubType(result.type)
+                val keywordSubType: String = getKeywordSearchTitle(result.type)
                 if (keywordType == KEYWORD_POSITIVE && (result.type == KEYWORD_TYPE_PHRASE || result.type == KEYWORD_TYPE_EXACT)) {
                     keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
                             advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid,
@@ -268,7 +278,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         }
     }
 
-    private fun getKeywordSubType(type: Int): String {
+    private fun getKeywordSearchTitle(type: Int): String {
         return if (type == KEYWORD_TYPE_PHRASE || type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
             TITLE_1
         } else {
@@ -317,16 +327,29 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun deleteKeyword(keywordModel: HeadlineEditAdKeywordModel) {
-        var deletedItem: GetKeywordResponse.KeywordsItem? = null
-        selectedKeywordsList.forEach {
-            if (it.tag == keywordModel.keywordName) {
-                deletedKeywords.add(it)
-                deletedItem = it
-            }
-        }
+        val deletedItem: GetKeywordResponse.KeywordsItem? = selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }
         selectedKeywordsList.remove(deletedItem)
+        if(keywordType == KEYWORD_POSITIVE){
+            val removedItem = stepperModel?.selectedKeywords?.find { it.keyword == keywordModel.keywordName }
+            stepperModel?.selectedKeywords?.remove(removedItem)
+        }else{
+            restoreNegativeKeywords.remove(deletedItem)
+        }
         adapter.removeItem(keywordModel)
-        adapter.notifyDataSetChanged()
+        if (adapter.itemCount != 0) {
+            updateCounter(adapter.itemCount)
+            adapter.notifyDataSetChanged()
+        } else {
+            setUpKeywords()
+        }
+    }
+
+    private fun updateCounter(itemCount: Int) {
+        val keywordCount = keyword_counter.text
+        val spaceIndex = keywordCount.indexOf(' ')
+        if (spaceIndex != -1) {
+            keyword_counter.text = keywordCount.replaceRange(0 until spaceIndex, itemCount.toString())
+        }
     }
 
     override fun onSearchTypeClick(keywordModel: HeadlineEditAdKeywordModel) {
@@ -347,18 +370,10 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     override fun onEditPriceBid(isEnabled: Boolean, keywordModel: HeadlineEditAdKeywordModel) {
-        activity?.findViewById<UnifyButton>(R.id.btn_submit)?.isEnabled = isEnabled
+        saveButtonState?.setButtonState(isEnabled)
         if (isEnabled) {
-            selectedKeywordsList.forEach {
-                if (it.tag == keywordModel.keywordName) {
-                    it.priceBid = keywordModel.priceBid
-                    val editedKeyword = editedKeywords.find { editedKeyword -> editedKeyword.tag == keywordModel.keywordName }
-                    if (editedKeyword != null) {
-                        editedKeyword.priceBid = keywordModel.priceBid
-                    } else {
-                        editedKeywords.add(it)
-                    }
-                }
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName && keyword.priceBid != keywordModel.priceBid }?.let {
+                it.priceBid = keywordModel.priceBid
             }
         }
     }
@@ -379,26 +394,16 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
 
     private fun changeSearchStatus(keywordModel: HeadlineEditAdKeywordModel, searchType: String) {
         if (searchType.equals(TITLE_1, false)) {
-            selectedKeywordsList.forEach {
-                if (it.tag == keywordModel.keywordName) {
-                    if (keywordType == KEYWORD_POSITIVE) {
-                        it.type = KEYWORD_TYPE_PHRASE
-                    } else {
-                        it.type = KEYWORD_TYPE_NEGATIVE_PHRASE
-                    }
-                    editedKeywords.add(it)
-                }
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type = if (keywordType == KEYWORD_POSITIVE) {
+                KEYWORD_TYPE_PHRASE
+            } else {
+                KEYWORD_TYPE_NEGATIVE_PHRASE
             }
         } else {
-            selectedKeywordsList.forEach {
-                if (it.tag == keywordModel.keywordName) {
-                    if (keywordType == KEYWORD_POSITIVE) {
-                        it.type = KEYWORD_TYPE_EXACT
-                    } else {
-                        it.type = KEYWORD_TYPE_NEGATIVE_EXACT
-                    }
-                }
-                editedKeywords.add(it)
+            selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type = if (keywordType == KEYWORD_POSITIVE) {
+                KEYWORD_TYPE_EXACT
+            } else {
+                KEYWORD_TYPE_NEGATIVE_EXACT
             }
         }
         keywordModel.searchType = searchType
@@ -409,7 +414,11 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     override fun onCtaBtnClick() {
-        openNegativeAdKeywordActivity()
+        if (keywordType == KEYWORD_POSITIVE) {
+            openPositiveAdKeywordActivity()
+        } else {
+            openNegativeAdKeywordActivity()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -424,76 +433,107 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun getDataForPositiveKeywordActivity(data: Intent?) {
-        data?.getParcelableArrayListExtra<KeywordDataItem>(ADDED_KEYWORDS)?.let {
-            it.forEach { data ->
-                addedKeywords.add(GetKeywordResponse.KeywordsItem(tag = data.keyword, priceBid = data.bidSuggest))
+        data?.getStringArrayListExtra(DELETED_KEYWORDS)?.let { list ->
+            val deletedItems = ArrayList<GetKeywordResponse.KeywordsItem>()
+            list.forEach { keyword ->
+                selectedKeywordsList.find { item -> item.tag == keyword }?.let {
+                    deletedItems.add(it)
+                }
             }
+            selectedKeywordsList.removeAll(deletedItems)
         }
         data?.getParcelableArrayListExtra<KeywordDataItem>(EDITED_KEYWORDS)?.let { it ->
             it.forEach { data ->
-                selectedKeywordsList.forEach { selectedKeyword ->
-                    if (selectedKeyword.tag == data.keyword) {
-                        selectedKeyword.priceBid = data.bidSuggest
-                        editedKeywords.add(selectedKeyword)
-                    }
+                selectedKeywordsList.find { keyword -> keyword.tag == data.keyword }?.let {
+                    it.priceBid = data.bidSuggest
                 }
             }
         }
-        data?.getStringArrayExtra(DELETED_KEYWORDS)?.let {
-            it.forEach { keyword ->
-                selectedKeywordsList.forEach { selectedKeyword ->
-                    if (keyword == selectedKeyword.tag) {
-                        deletedKeywords.add(selectedKeyword)
-                    }
-                }
+        data?.getParcelableArrayListExtra<KeywordDataItem>(ADDED_KEYWORDS)?.let {
+            it.forEach { data ->
+                selectedKeywordsList.add(GetKeywordResponse.KeywordsItem(tag = data.keyword, priceBid = data.bidSuggest))
             }
         }
         data?.getParcelableExtra<HeadlineAdStepperModel>(BaseStepperActivity.STEPPER_MODEL_EXTRA)?.let {
             stepperModel = it
-            val tempSelectedKeywordList = ArrayList<GetKeywordResponse.KeywordsItem>()
-            it.selectedKeywords.forEach { data ->
-                for(selectedKeyword in selectedKeywordsList){
-                    if(data.keyword == selectedKeyword.tag){
-                        selectedKeyword.priceBid = data.bidSuggest
-                        tempSelectedKeywordList.add(selectedKeyword)
-                        break
-                    }
-                }
-                addedKeywords.forEach { addedKeyword ->
-                    if (addedKeyword.tag == data.keyword) {
-                        tempSelectedKeywordList.add(addedKeyword)
-                    }
-                }
-            }
-            selectedKeywordsList.removeAll(tempSelectedKeywordList)
-            selectedKeywordsList.forEach { selectedKeyword ->
-                if(!deletedKeywords.contains(selectedKeyword)){
-                    deletedKeywords.add(selectedKeyword)
-                }
-            }
-            selectedKeywordsList.clear()
-            selectedKeywordsList.addAll(tempSelectedKeywordList)
-            addKeywords(selectedKeywordsList)
         }
+        setUpKeywords(selectedKeywordsList)
     }
 
     private fun getDataForNegativeKeywordActivity(data: Intent?) {
         val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(Constants.SELECTED_KEYWORD)
-        restoreNegativeKeywords = data?.getParcelableArrayListExtra(RESTORED_DATA)
+        data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)?.let {
+            restoreNegativeKeywords = it
+        }
         if (selected?.size != 0) {
-            selected?.let { addKeywords(it) }
+            selected?.let { setUpKeywords(it) }
             selected?.forEach {
                 if (!selectedKeywordsList.contains(it)) {
-                    addedKeywords.add(it)
+                    negativeAddedKeywords.add(it)
                 }
             }
         }
         selectedKeywordsList = selected as ArrayList<GetKeywordResponse.KeywordsItem>
     }
 
-    private fun addKeywords(list: java.util.ArrayList<GetKeywordResponse.KeywordsItem>) {
+    private fun setUpKeywords(list: ArrayList<GetKeywordResponse.KeywordsItem> = selectedKeywordsList) {
         adapter.clearAllItems()
         val keywordUiModels = getKeywordUiModels(list)
         adapter.setKeywordItems(keywordUiModels)
+    }
+
+    fun getKeywordOperations(): List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
+        val list = ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>()
+        val commonItems = ArrayList<GetKeywordResponse.KeywordsItem>()
+        val tempList = ArrayList<GetKeywordResponse.KeywordsItem>()
+        tempList.addAll(selectedKeywordsList)
+        viewModel.getSelectedKeywords().forEach {
+            val item = selectedKeywordsList.find { keywordsItem -> keywordsItem.tag == it.tag }?.let { keywordItem ->
+                if (it.priceBid != keywordItem.priceBid || it.type != keywordItem.type) {
+                    list.add(getKeywordOperation(keywordItem, ACTION_EDIT))
+                }
+                commonItems.add(keywordItem)
+            }
+            if (item == null) {
+                list.add(getKeywordOperation(it, ACTION_DELETE))
+            }
+        }
+        tempList.removeAll(commonItems)
+        tempList.forEach {
+            list.add(getKeywordOperation(it, ACTION_CREATE))
+        }
+        return list
+    }
+
+    private fun getKeywordOperation(it: GetKeywordResponse.KeywordsItem, action: String): TopAdsManageHeadlineInput.Operation.Group.KeywordOperation {
+        return TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
+                action = action,
+                keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
+                    id = it.keywordId
+                    priceBid = it.priceBid
+                    tag = it.tag
+                    status = ACTIVE_STATUS
+                    type = getKeywordSearchType(it.type)
+                })
+    }
+
+    private fun getKeywordSearchType(type: Int): String {
+        return when (type) {
+            KEYWORD_TYPE_PHRASE -> {
+                POSITIVE_PHRASE
+            }
+            KEYWORD_TYPE_EXACT -> {
+                POSITIVE_SPECIFIC
+            }
+            KEYWORD_TYPE_NEGATIVE_PHRASE -> {
+                NEGATIVE_PHRASE
+            }
+            KEYWORD_TYPE_NEGATIVE_EXACT -> {
+                NEGATIVE_SPECIFIC
+            }
+            else -> {
+                ""
+            }
+        }
     }
 }

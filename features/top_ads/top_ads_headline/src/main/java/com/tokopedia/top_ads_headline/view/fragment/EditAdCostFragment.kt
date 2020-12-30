@@ -14,9 +14,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.OnMinBidChangeListener
+import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
@@ -43,6 +46,13 @@ class EditAdCostFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var stepperModel: HeadlineAdStepperModel? = null
+    private val saveButtonState by lazy {
+        activity as? SaveButtonState
+    }
+
+    private val onMinBidChange by lazy {
+        activity as? OnMinBidChangeListener
+    }
 
     private var groupId: Int = 0
     override fun getScreenName(): String {
@@ -85,8 +95,10 @@ class EditAdCostFragment : BaseDaggerFragment() {
 
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
+            if (it.minBid != stepperModel?.minBid) {
+                setAdvertisingCost(it.minBid)
+            }
             stepperModel = it
-            setAdvertisingCost(it.minBid)
         })
     }
 
@@ -106,18 +118,21 @@ class EditAdCostFragment : BaseDaggerFragment() {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.minBid?.toLong()
                                 ?: 0)))
+                        saveButtonState?.setButtonState(false)
                     }
                     input > stepperModel?.maxBid ?: 0 -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), Utils.convertToCurrency(stepperModel?.maxBid?.toLong()
                                 ?: 0)))
+                        saveButtonState?.setButtonState(false)
                     }
                     else -> {
+                        stepperModel?.minBid = input
                         stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
+                        onMinBidChange?.onMinBidChange(input)
                         advertisingCost.setMessage("")
                         advertisingCost.setError(false)
-                        //handle the case when the advertising cost will be changed and then daily budget will also has to change
-                        //accordingly
+                        saveButtonState?.setButtonState(true)
                     }
                 }
             }
@@ -172,4 +187,17 @@ class EditAdCostFragment : BaseDaggerFragment() {
         }
     }
 
+    fun onClickSubmit() {
+        val fragments = (view_pager.adapter as KeywordEditPagerAdapter).list
+        stepperModel?.keywordOperations?.clear()
+        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+        for (fragment in fragments) {
+            when (fragment) {
+                is HeadlineEditKeywordFragment -> {
+                    stepperModel?.keywordOperations?.addAll(fragment.getKeywordOperations())
+                }
+            }
+        }
+        stepperModel?.let { sharedEditHeadlineViewModel?.saveKeywordOperation(it) }
+    }
 }

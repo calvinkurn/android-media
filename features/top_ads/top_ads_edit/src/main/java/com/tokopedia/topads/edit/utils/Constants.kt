@@ -48,7 +48,7 @@ object Constants {
     const val ACTION_CREATE = "create"
     const val ACTION_DELETE = "delete"
     const val PUBLISHED = "published"
-    const val POSTIVE_PHRASE = "positive_phrase"
+    const val POSITIVE_PHRASE = "positive_phrase"
     const val POSITIVE_SPECIFIC = "positive_exact"
     const val NEGATIVE_PHRASE = "negative_phrase"
     const val NEGATIVE_SPECIFIC = "negative_exact"

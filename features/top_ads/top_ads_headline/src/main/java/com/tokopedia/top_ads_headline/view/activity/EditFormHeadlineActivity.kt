@@ -1,14 +1,20 @@
 package com.tokopedia.top_ads_headline.view.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
+import com.tokopedia.top_ads_headline.Constants.HEADLINE_EDIT_SOURCE
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
@@ -21,13 +27,20 @@ import com.tokopedia.topads.common.constant.Constants.TAB_POSITION
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_edit_headline_activity.*
 import javax.inject.Inject
 
-class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsComponent> {
+private const val FRAGMENT_1 = 0
+private const val FRAGMENT_2 = 1
+private const val FRAGMENT_3 = 2
+
+class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsComponent>, SaveButtonState, OnMinBidChangeListener {
 
     private lateinit var adapter: TopAdsEditPagerAdapter
+
+    private lateinit var submitButton: UnifyButton
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -43,12 +56,63 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_edit_headline_activity)
+        submitButton = findViewById(R.id.btn_submit)
         component.inject(this)
         setUpToolbar()
         getDataFromIntent()
         setUpObservers()
         fetchAdDetails()
         renderTabAndViewPager()
+        submitButton.setOnClickListener {
+            saveData()
+        }
+    }
+
+    private fun saveData() {
+        val fragments = (view_pager.adapter as TopAdsEditPagerAdapter).list
+        var valid1 = true
+        for (fragment in fragments) {
+            if (valid1) {
+                when (fragment) {
+                    is AdContentFragment -> {
+                        valid1 = fragment.onClickSubmit()
+                    }
+                    is EditAdCostFragment -> {
+                        fragment.onClickSubmit()
+                    }
+                    is EditAdOthersFragment -> {
+                        fragment.onClickSubmit()
+                    }
+                }
+            } else {
+                setButtonState(false)
+                return
+            }
+        }
+        sharedEditHeadlineViewModel.getEditHeadlineAdLiveData().value?.let {
+            val input = getTopAdsManageHeadlineInput(it)
+            editFormHeadlineViewModel.editHeadlineAd(input, this::finish, this::onError)
+        }
+    }
+
+    private fun getTopAdsManageHeadlineInput(stepperModel: HeadlineAdStepperModel): TopAdsManageHeadlineInput {
+        return TopAdsManageHeadlineInput().apply {
+            source = HEADLINE_EDIT_SOURCE
+            operation = TopAdsManageHeadlineInput.Operation(
+                    action = ACTION_EDIT,
+                    group = TopAdsManageHeadlineInput.Operation.Group(
+                            id = groupId,
+                            shopID = userSession.shopId,
+                            name = stepperModel.groupName,
+                            status = sharedEditHeadlineViewModel.getStatus(),
+                            priceBid = stepperModel.minBid.toFloat(),
+                            dailyBudget = stepperModel.dailyBudget,
+                            scheduleStart = stepperModel.startDate,
+                            scheduleEnd = stepperModel.endDate,
+                            adOperations = stepperModel.adOperations,
+                            keywordOperations = stepperModel.keywordOperations)
+            )
+        }
     }
 
     private fun setUpObservers() {
@@ -56,7 +120,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         sharedEditHeadlineViewModel = ViewModelProvider(this, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
     }
 
-    private fun onError(message:String){
+    private fun onError(message: String) {
         Toaster.build(root, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
@@ -75,6 +139,16 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
@@ -84,6 +158,19 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         tab_layout?.addNewTab(Constants.OTHERS)
         tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
         view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    FRAGMENT_2 -> {
+                        ((view_pager.adapter as? TopAdsEditPagerAdapter)?.getItem(FRAGMENT_1) as? AdContentFragment)?.setSelectedProductIds()
+                    }
+                }
+            }
+        })
         tab_layout.setupWithViewPager(view_pager)
     }
 
@@ -102,4 +189,19 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
                 .build()
     }
 
+    override fun setButtonState(isEnabled: Boolean) {
+        submitButton.isEnabled = isEnabled
+    }
+
+    override fun onMinBidChange(minBid: Int) {
+        ((view_pager.adapter as? TopAdsEditPagerAdapter)?.getItem(FRAGMENT_3) as? EditAdOthersFragment)?.setDailyBudget(minBid)
+    }
+}
+
+interface SaveButtonState {
+    fun setButtonState(isEnabled: Boolean)
+}
+
+interface OnMinBidChangeListener {
+    fun onMinBidChange(minBid: Int)
 }

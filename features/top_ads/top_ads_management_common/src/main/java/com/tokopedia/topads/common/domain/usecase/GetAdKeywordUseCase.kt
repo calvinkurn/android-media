@@ -49,10 +49,11 @@ const val GET_AD_KEYWORD_QUERY = """query topAdsListKeyword(${'$'}source: String
 @GqlQuery("GetAdKeywordQuery", GET_AD_KEYWORD_QUERY)
 class GetAdKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<GetKeywordResponse>(graphqlRepository) {
 
-    fun setParams(groupId: Int, cursor: String, shopId: String, source:String, limit:Int = 50) {
+    fun setParams(groupId: Int, cursor: String, shopId: String, source:String, limit:Int = 50, keywordStatus:List<Int> = emptyList()) {
         val map = HashMap<String, Any?>()
         map[ParamObject.SHOP_id] = shopId
         map[ParamObject.GROUP_ID] = groupId.toString()
+        map[ParamObject.KEYWORD_STATUS] = keywordStatus
         val page = HashMap<String, Any?>()
         page[NEXT_CURSOR] = cursor
         page[LIMIT] = limit

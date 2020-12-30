@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.top_ads_headline.Constants.EDIT_HEADLINE_PAGE
+import com.tokopedia.top_ads_headline.Constants.HEADLINE
+import com.tokopedia.top_ads_headline.Constants.STATUS_INACTIVE
+import com.tokopedia.top_ads_headline.Constants.STATUS_PUBLISHED
+import com.tokopedia.top_ads_headline.Constants.TYPE_HEADLINE_KEYWORD
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
@@ -24,29 +28,33 @@ class SharedEditHeadlineViewModel @Inject constructor(
         private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
         private val bidInfoUseCase: BidInfoUseCase) : ViewModel() {
 
+    private var adId: Int = 0
+    private var status: String = ""
     private val editHeadlineAdLiveData: MutableLiveData<HeadlineAdStepperModel> = MutableLiveData()
-    private val bidInfoData:MutableLiveData<TopadsBidInfo.DataItem> = MutableLiveData()
-
 
     fun getEditHeadlineAdLiveData(): LiveData<HeadlineAdStepperModel> = editHeadlineAdLiveData
 
-    fun getBidInfoData():LiveData<TopadsBidInfo.DataItem> = bidInfoData
-
-    private fun getBidInfoDetail() {
+    private fun getBidInfoDetail(headlineAdStepperModel: HeadlineAdStepperModel) {
         viewModelScope.launch {
-            val dummyId: MutableList<Int> = mutableListOf()
-            val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
-            suggestionsDefault.add(DataSuggestions(ParamObject.PRODUCT, dummyId))
-            bidInfoUseCase.setParams(suggestionsDefault, ParamObject.HEADLINE, ParamObject.EDIT_HEADLINE_PAGE)
+            val selectedProductIds: MutableList<Int>? = editHeadlineAdLiveData.value?.selectedProductIds
+                    ?: mutableListOf()
+            val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+            bidInfoUseCase.setParams(listOf(suggestions), HEADLINE, EDIT_HEADLINE_PAGE)
             bidInfoUseCase.executeQuerySafeMode({ result ->
                 result.topadsBidInfo.data.firstOrNull()?.let {
-                    bidInfoData.value = it
-                    editHeadlineAdLiveData.value?.maxBid = it.maxBid
+                    setBiddingValueIntoStepperModel(headlineAdStepperModel, it)
                 }
             }, {
                 it.printStackTrace()
             })
         }
+    }
+
+    private fun setBiddingValueIntoStepperModel(stepperModel: HeadlineAdStepperModel, bidData: TopadsBidInfo.DataItem) {
+        stepperModel.maxBid = bidData.maxBid
+        stepperModel.minBid = bidData.minBid
+        stepperModel.dailyBudget = bidData.minDailyBudget.toFloat()
+        editHeadlineAdLiveData.value = stepperModel
     }
 
     fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
@@ -55,6 +63,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
             topAdsGetGroupProductUseCase.executeQuerySafeMode(
                     {
                         if (it.data.isNotEmpty()) {
+                            adId = it.data.first().adId
                             getHeadlineAdDetail(it.data.first().adId.toString(), shopId.toString(), onError)
                         }
                     },
@@ -63,7 +72,6 @@ class SharedEditHeadlineViewModel @Inject constructor(
                         it.printStackTrace()
                     }
             )
-
         }
     }
 
@@ -73,11 +81,12 @@ class SharedEditHeadlineViewModel @Inject constructor(
             topAdsGetPromoUseCase.execute(
                     {
                         if (it.topAdsGetPromo.data.isNotEmpty()) {
-                            setEditAdHeadlineData(it.topAdsGetPromo.data.first())
+                            status = it.topAdsGetPromo.data.first().status
+                            val headlineAdStepperModel = setEditAdHeadlineData(it.topAdsGetPromo.data.first())
+                            getBidInfoDetail(headlineAdStepperModel)
                         } else if (it.topAdsGetPromo.errors.isNotEmpty()) {
                             onError(it.topAdsGetPromo.errors.first().detail)
                         }
-                        getBidInfoDetail()
                     },
                     {
                         onError(it.message ?: "")
@@ -87,15 +96,15 @@ class SharedEditHeadlineViewModel @Inject constructor(
         }
     }
 
-    private fun setEditAdHeadlineData(ad: SingleAd) {
+    private fun setEditAdHeadlineData(ad: SingleAd): HeadlineAdStepperModel {
         val editHeadlineAdModel = HeadlineAdStepperModel()
         editHeadlineAdModel.minBid = ad.priceBid
         editHeadlineAdModel.startDate = "${ad.adStartDate} ${ad.adStartTime}"
         editHeadlineAdModel.endDate = "${ad.adEndDate} ${ad.adEndTime}"
+        editHeadlineAdModel.stateRestoreKeyword = true
         ad.cpmDetails.firstOrNull()?.let {
             editHeadlineAdModel.groupName = it.title
             editHeadlineAdModel.slogan = it.description.slogan
-
             val selectedProductMap = HashMap<Category, ArrayList<TopAdsProductModel>>()
             it.product.forEach { product ->
                 editHeadlineAdModel.selectedProductIds.add(product.productID)
@@ -111,7 +120,41 @@ class SharedEditHeadlineViewModel @Inject constructor(
             }
             editHeadlineAdModel.selectedTopAdsProducts = it.product as ArrayList<TopAdsProductModel>
         }
-        editHeadlineAdLiveData.value = editHeadlineAdModel
+        return editHeadlineAdModel
     }
 
+    fun saveProductData(stepperModel: HeadlineAdStepperModel) {
+        stepperModel.adOperations.firstOrNull()?.ad?.id = adId.toString()
+        val tempHeadlineAdStepperModel = editHeadlineAdLiveData.value
+        tempHeadlineAdStepperModel?.let {
+            it.slogan = stepperModel.slogan
+            it.selectedProductIds = stepperModel.selectedProductIds
+            it.adOperations = stepperModel.adOperations
+            getBidInfoDetail(it)
+        }
+    }
+
+    fun saveKeywordOperation(stepperModel: HeadlineAdStepperModel) {
+        editHeadlineAdLiveData.value?.let {
+            it.minBid = stepperModel.minBid
+            it.keywordOperations = stepperModel.keywordOperations
+        }
+    }
+
+    fun saveOtherDetails(stepperModel: HeadlineAdStepperModel) {
+        editHeadlineAdLiveData.value?.let {
+            it.startDate = stepperModel.startDate
+            it.endDate = stepperModel.endDate
+            it.groupName = stepperModel.groupName
+            it.dailyBudget = stepperModel.dailyBudget
+        }
+    }
+
+    fun getStatus(): String {
+        return if (status == "1") {
+            STATUS_PUBLISHED
+        } else {
+            STATUS_INACTIVE
+        }
+    }
 }

@@ -31,7 +31,6 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         keywordName.text = keywordModel.keywordName
         searchType.text = keywordModel.searchType
         advertisingCost.textFieldInput.setText(keywordModel.advertisingCost)
-        setBidInfo(keywordModel)
         searchTypeSelection.setImageDrawable(itemView.context?.getResDrawable(R.drawable.ic_dropdown_arrow))
         searchType.setOnClickListener {
             onItemClick?.onSearchTypeClick(keywordModel)
@@ -41,6 +40,9 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         }
         deleteKeyword.setOnClickListener {
             onItemClick?.onDeleteItemClick(keywordModel)
+        }
+        if (keywordModel.minimumBid != 0 && keywordModel.maximumBid != 0) {
+            setBidInfo(keywordModel)
         }
     }
 
@@ -61,6 +63,7 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
                         onItemClick?.onEditPriceBid(false, keywordModel)
                     }
                     else -> {
+                        keywordModel.priceBid = result
                         advertisingCost.setError(false)
                         advertisingCost.setMessage("")
                         onItemClick?.onEditPriceBid(true, keywordModel)
@@ -73,6 +76,6 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
     interface OnHeadlineAdEditItemClick {
         fun onDeleteItemClick(keywordModel: HeadlineEditAdKeywordModel)
         fun onSearchTypeClick(keywordModel: HeadlineEditAdKeywordModel)
-        fun onEditPriceBid(isEnabled:Boolean, keywordModel: HeadlineEditAdKeywordModel)
+        fun onEditPriceBid(isEnabled: Boolean, keywordModel: HeadlineEditAdKeywordModel)
     }
 }

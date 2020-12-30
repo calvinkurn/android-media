@@ -35,8 +35,8 @@ import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.POSTIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
 import com.tokopedia.user.session.UserSessionInterface
@@ -172,7 +172,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             keyword.status = ACTIVE
             keyword.tag = keyPos.tag
             if (keyPos.type == KEYWORD_TYPE_PHRASE) {
-                keyword.type = POSTIVE_PHRASE
+                keyword.type = POSITIVE_PHRASE
             } else {
                 keyword.type = POSITIVE_SPECIFIC
             }

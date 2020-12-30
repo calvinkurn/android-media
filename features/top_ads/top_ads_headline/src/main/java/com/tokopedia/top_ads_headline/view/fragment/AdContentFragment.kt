@@ -12,20 +12,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
+import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
-import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
-import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
-import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
-import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
+import com.tokopedia.top_ads_headline.view.activity.*
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -53,6 +51,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
 
     @Inject
     lateinit var cpmModelMapper: CpmModelMapper
+
+    private var selectedProductsChanged = false
+    private val saveButtonState by lazy {
+        activity as? SaveButtonState
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -114,7 +117,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         }
     }
 
-    private fun onClickSubmit() {
+    fun onClickSubmit(): Boolean {
         stepperModel?.selectedTopAdsProducts = getSelectedProducts()
         when {
             ifLessProductSelected() -> {
@@ -123,15 +126,25 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
                     Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
+                return false
             }
             stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
                     Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
+                return false
             }
             else -> {
-                gotoNextPage()
+                stepperModel?.slogan = promotionalMessageInputText.textFieldInput.text.toString()
+                stepperModel?.selectedProductIds = getAdItems()
+                stepperModel?.adOperations = getAdOperations()
+                if (stepperListener == null) {
+                    saveProductData()
+                } else {
+                    gotoNextPage()
+                }
+                return true
             }
         }
     }
@@ -187,6 +200,8 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                     ?: HashMap()
             stepperModel?.selectedTopAdsProducts = getSelectedProducts()
             if (data?.getBooleanExtra(IS_EDITED, false) == true) {
+                selectedProductsChanged = true
+                saveButtonState?.setButtonState(true)
                 onProductsSelectionChange()
             }
             if (stepperModel?.selectedTopAdsProducts?.isNotEmpty() == true) {
@@ -208,13 +223,14 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     override fun onDeletePreview(position: Int) {
-        if (position < selectedTopAdsProducts.size) {
+        if (position < stepperModel?.selectedTopAdsProducts?.size ?: 0) {
             val product = stepperModel?.selectedTopAdsProducts?.getOrNull(position)
             stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
                 if (arrayList.contains(product)) {
                     arrayList.remove(product)
                 }
             }
+            selectedProductsChanged = true
             stepperModel?.selectedTopAdsProducts?.removeAt(position)
             setUpSelectedText()
         }
@@ -239,9 +255,6 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     override fun gotoNextPage() {
-        stepperModel?.slogan = promotionalMessageInputText.textFieldInput.text.toString()
-        stepperModel?.selectedProductIds = getAdItems()
-        stepperModel?.adOperations = getAdOperations()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -253,7 +266,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
 
     private fun getAdOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> {
         return mutableListOf(TopAdsManageHeadlineInput.Operation.Group.AdOperation(
-                action = ParamObject.ACTION_CREATE,
+                action = if (stepperListener == null) {
+                    ACTION_EDIT
+                } else {
+                    ACTION_CREATE
+                },
                 ad = TopAdsManageHeadlineInput.Operation.Group.AdOperation.Ad(
                         id = "0",
                         title = stepperModel?.groupName ?: "",
@@ -272,5 +289,17 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         return stepperModel?.selectedTopAdsProducts?.map {
             it.productID
         }?.toMutableList() ?: mutableListOf()
+    }
+
+    fun setSelectedProductIds() {
+        if (selectedProductsChanged) {
+            stepperModel?.selectedProductIds = getAdItems()
+            saveProductData()
+            selectedProductsChanged = false
+        }
+    }
+
+    private fun saveProductData() {
+        stepperModel?.let { sharedEditHeadlineViewModel?.saveProductData(it) }
     }
 }

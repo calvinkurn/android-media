@@ -11,6 +11,8 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
+import com.tokopedia.top_ads_headline.Constants.HEADLINE_SOURCE
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
@@ -19,8 +21,6 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewModel
 import com.tokopedia.topads.common.activity.*
-import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
-import com.tokopedia.topads.common.data.internal.ParamObject.HEADLINE_SOURCE
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday

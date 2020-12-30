@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.EditAdOthersViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
@@ -56,6 +57,10 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private var stepperModel: HeadlineAdStepperModel? = null
 
+    private val saveButtonState by lazy {
+        activity as? SaveButtonState
+    }
+
     override fun getScreenName(): String {
         return EditAdOthersFragment::class.java.simpleName
     }
@@ -83,12 +88,13 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpAdScheduleView()
-        setUpLimitView()
-        setUpObservers()
         budgetCost.textFieldInput.isSaveEnabled = false
         startDate.textFieldInput.isSaveEnabled = false
         endDate.textFieldInput.isSaveEnabled = false
+        setUpObservers()
+        setUpAdScheduleView()
+        setUpLimitView()
+        setUpToolTip()
     }
 
     private fun setUpAdScheduleView() {
@@ -109,29 +115,30 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
             stepperModel = it
             setUpAdNameEditText()
-            setUpToolTip()
             setUpScheduleView()
-        })
-        sharedEditHeadlineViewModel?.getBidInfoData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel?.minBid = it.minBid
-            stepperModel?.maxBid = it.maxBid
-            stepperModel?.dailyBudget = it.minDailyBudget.toFloat()
             setMinBid()
         })
+    }
+
+    fun setDailyBudget(minBid: Int) {
+        val budget: Long = (minBid * MULTIPLIER).toLong()
+        stepperModel?.minBid = minBid
+        stepperModel?.dailyBudget = budget.toFloat()
+        budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
     }
 
     private fun setMinBid() {
         stepperModel?.minBid?.let {
             Utils.convertToCurrency(it.toLong())
-            var budget: Int
+            val budget: Long
             if (stepperModel?.dailyBudget ?: 0F == 0F) {
-                budget = it * MULTIPLIER
+                budget = (it * MULTIPLIER).toLong()
                 stepperModel?.dailyBudget = budget.toFloat()
             } else {
-                budget = stepperModel?.dailyBudget?.toInt() ?: 0
+                budget = stepperModel?.dailyBudget?.toLong() ?: 0
                 limitBudgetSwitch.isChecked = true
             }
-            budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget.toLong()))
+            budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
         }
@@ -148,13 +155,16 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))
+                    saveButtonState?.setButtonState(false)
                 } else if (number > maxDailyBudget) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
+                    saveButtonState?.setButtonState(false)
                 } else {
                     stepperModel?.dailyBudget = number.toFloat()
                     budgetCost.setMessage("")
                     budgetCost.setError(false)
+                    saveButtonState?.setButtonState(true)
                 }
             }
         }
@@ -364,7 +374,27 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun errorTextVisibility(visible: Boolean) {
+        saveButtonState?.setButtonState(!visible)
         headlineAdNameInput?.setError(visible)
+    }
+
+    fun onClickSubmit() {
+        stepperModel?.groupName = headlineAdNameInput?.textFieldInput?.text.toString()
+        stepperModel?.startDate = if (adScheduleSwitch.isChecked) {
+            selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        } else {
+            context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        }
+        stepperModel?.endDate = if (adScheduleSwitch.isChecked) {
+            selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        } else {
+            ""
+        }
+        stepperModel?.dailyBudget = if (limitBudgetSwitch.isChecked) {
+            budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero()
+        } else
+            0.0F
+        stepperModel?.let { sharedEditHeadlineViewModel?.saveOtherDetails(it) }
     }
 
 }

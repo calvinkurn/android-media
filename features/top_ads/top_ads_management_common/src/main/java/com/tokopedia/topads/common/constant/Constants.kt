@@ -5,10 +5,6 @@ object Constants {
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
     const val TAB_POSITION = "tab_position"
-    const val KEYWORD_TYPE_PHRASE = 11
-    const val KEYWORD_TYPE_EXACT = 21
-    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
-    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val TITLE_1 = "Pencarian luas"
     const val TITLE_2 = "Pencarian Spesifik"
     const val KEYWORD_CHARACTER_COUNT = 70

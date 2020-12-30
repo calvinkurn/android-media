@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
+import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
+import com.tokopedia.top_ads_headline.Constants.TYPE_HEADLINE_KEYWORD
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
@@ -21,7 +24,6 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -31,6 +33,7 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
@@ -91,14 +94,14 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         }.toMutableList()
     }
 
-    private fun getKeyWordOperations(): List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
+    private fun getKeyWordOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
         return ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>().apply {
             stepperModel?.selectedKeywords?.forEach {
                 add(TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
-                        action = ParamObject.ACTION_CREATE,
+                        action = ACTION_CREATE,
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
-                                type = ParamObject.HEADLINE_KEYWORD_TYPE,
-                                status = ParamObject.ACTIVE_STATUS,
+                                type = POSITIVE_PHRASE,
+                                status = ACTIVE_STATUS,
                                 priceBid = it.bidSuggest,
                                 tag = it.keyword)
                 ))
@@ -231,7 +234,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun getLatestBid() {
         val selectedProductIds: MutableList<Int>? = stepperModel?.selectedProductIds
                 ?: mutableListOf()
-        val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+        val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
