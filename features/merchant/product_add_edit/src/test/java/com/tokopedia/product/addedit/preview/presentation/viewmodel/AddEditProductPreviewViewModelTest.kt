@@ -394,6 +394,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS))
 
+        viewModel.validateProductNameInput("another test")
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+
         viewModel.resetValidateResult()
         viewModel.validationResult.getOrAwaitValue()
 
