@@ -709,9 +709,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             return;
         }
         if (shipmentAdapter.getShipmentDataList().get(lastItemPosition) instanceof ShipmentButtonPaymentModel) {
-            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(R.dimen.dp_48));
+            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48));
         } else {
-            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(R.dimen.dp_16));
+            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
         }
     }
 
