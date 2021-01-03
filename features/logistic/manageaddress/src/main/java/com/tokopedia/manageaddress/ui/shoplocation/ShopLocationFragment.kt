@@ -212,7 +212,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             intent.putExtra("EXTRA_LAT", data.latLon.substringBefore(",").toDouble())
             intent.putExtra("EXTRA_LONG", data.latLon.substringAfter(",").toDouble())
         }
-        intent.putExtra("WAREHOUSE_DATA", data)
+        intent.putExtra("EXTRA_WAREHOUSE_DATA", data)
         startActivityForResult(intent, 121)
     }
 
