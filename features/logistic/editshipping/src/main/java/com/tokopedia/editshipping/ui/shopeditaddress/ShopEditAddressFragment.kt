@@ -1,13 +1,17 @@
 package com.tokopedia.editshipping.ui.shopeditaddress
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.*
@@ -49,7 +53,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private var warehouseModel: Warehouse? = null
-    private val zipCodes: List<String> = ArrayList()
+    private var zipCodes: List<String> = ArrayList()
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var token: Token? = null
@@ -59,7 +63,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var etKotaKecamatanWrapper: TextInputLayout? = null
     private var etKotaKecamatan: TextInputEditText? = null
     private var etZipCodeWrapper: TextInputLayout? = null
-    private var etZipCode: TextInputEditText? = null
+    private var etZipCode: AutoCompleteTextView? = null
     private var etShopDetailWrapper: TextInputLayout? = null
     private var etShopDetail: TextInputEditText? = null
     private var tvPinpointText: Typography? = null
@@ -112,6 +116,11 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
                     val address: DistrictRecommendationAddress? = data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
                     etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
+
+                    if (address?.zipCodes != null) {
+                        zipCodes = ArrayList(address.zipCodes)
+                        initZipCode()
+                    }
                 }
             }
 
@@ -125,6 +134,27 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }*/
 
+        }
+    }
+
+    private fun initZipCode() {
+        etZipCode?.setText("")
+        val zipCodeAdapter = context?.let {
+            ArrayAdapter(
+                    it,
+                    com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                    com.tokopedia.design.R.id.item,
+                zipCodes)
+        }
+
+        etZipCode?.setAdapter(zipCodeAdapter)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun onZipCodeTouch(): View.OnTouchListener? {
+        return View.OnTouchListener { _: View?, _: MotionEvent ->
+            if (etZipCode?.isPopupShowing == false) etZipCode?.showDropDown()
+            false
         }
     }
 
@@ -253,13 +283,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         etZipCode?.apply {
             setOnClickListener {
-                /*zip code*/
+               onZipCodeTouch()
             }
         }
-    }
-
-    private fun showZipCodes() {
-
     }
 
     private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {

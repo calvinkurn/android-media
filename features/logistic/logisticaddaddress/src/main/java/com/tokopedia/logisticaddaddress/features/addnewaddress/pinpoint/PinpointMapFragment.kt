@@ -136,7 +136,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     putBoolean(EXTRA_IS_FULL_FLOW, extra.getBoolean(EXTRA_IS_FULL_FLOW, true))
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true))
                     putBoolean(EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false))
-                    putParcelable("EXTRA_IS_WAREHOUSE", extra.getParcelable("EXTRA_IS_WAREHOUSE"))
+                    putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
