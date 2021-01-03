@@ -1,13 +1,11 @@
 package com.tokopedia.editshipping.ui.shopeditaddress
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -121,6 +119,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         zipCodes = ArrayList(address.zipCodes)
                         initZipCode()
                     }
+
+                    address?.districtName?.let { viewModel.getAutoCompleteList(it) }
                 }
             }
 
@@ -148,14 +148,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         etZipCode?.setAdapter(zipCodeAdapter)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun onZipCodeTouch(): View.OnTouchListener? {
-        return View.OnTouchListener { _: View?, _: MotionEvent ->
-            if (etZipCode?.isPopupShowing == false) etZipCode?.showDropDown()
-            false
-        }
     }
 
     override fun onResume() {
@@ -282,9 +274,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         etZipCode?.apply {
-            setOnClickListener {
-               onZipCodeTouch()
-            }
+            setOnTouchListener(View.OnTouchListener { v, event ->
+                if (etZipCode?.isPopupShowing == false) {
+                    etZipCode?.showDropDown()
+                }
+                false
+            })
         }
     }
 

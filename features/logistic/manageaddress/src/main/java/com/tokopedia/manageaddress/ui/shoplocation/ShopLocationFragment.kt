@@ -24,6 +24,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -44,6 +45,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         ViewModelProvider(this, viewModelFactory).get(ShopLocationViewModel::class.java)
     }
 
+    private var tickerShopLocation: Ticker? = null
     private var addressList: RecyclerView? = null
     private var bottomSheetAddressType: BottomSheetUnify? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -70,6 +72,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun initViews() {
+        tickerShopLocation = view?.findViewById(R.id.ticker_shop_location)
         addressList = view?.findViewById(R.id.address_list)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
@@ -123,6 +126,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun updateData(data: List<Warehouse>) {
+        tickerShopLocation?.visibility = View.GONE
         adapter.addList(data)
     }
 
