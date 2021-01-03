@@ -25,6 +25,7 @@ import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
 import com.tokopedia.editshipping.util.*
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
@@ -112,7 +113,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
-                    val address: DistrictRecommendationAddress? = data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
+                    val address = data?.getParcelableExtra<DistrictRecommendationAddress>(RESULT_INTENT_DISTRICT_RECOMMENDATION)
                     etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
 
                     if (address?.zipCodes != null) {
@@ -120,7 +121,18 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         initZipCode()
                     }
 
-                    address?.districtName?.let { viewModel.getAutoCompleteList(it) }
+                    address?.let {
+                        viewModel.getAutoCompleteList(it.districtName)
+                        warehouseModel?.districtId = it.districtId
+                    }
+                }
+
+                OPEN_MAP_REQUEST_CODE -> {
+                   val addressModel = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
+                    addressModel?.let {
+                        currentLat = it.latitude.toDouble()
+                        currentLong = it.latitude.toDouble()
+                    }
                 }
             }
 
@@ -221,7 +233,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     val intent = RouteManager.getIntent(
                             activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
                     startActivityForResult(intent, 1234)
-                    view?.let { view -> Toaster.build(view, "Detail lokasi bla", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
+                    view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
                 }
                 is Fail -> Timber.d(it.throwable)
             }
@@ -256,9 +268,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
+                val latLong = "$currentLat, $currentLong"
                 viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation.toString(),
-                        2, "latlong", userSession.email, etShopDetail.toString(),
-                        "postalCode", userSession.phoneNumber) }
+                        it.warehouseId, latLong, userSession.email, etShopDetail.toString(),
+                        etZipCode.toString(), userSession.phoneNumber) }
         }
 
     }
@@ -345,6 +358,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
         private const val OPEN_MAP_REQUEST_CODE = 200
         private const val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
+        private const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL";
+        const val EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL"
 
         fun newInstance(extra: Bundle): ShopEditAddressFragment {
             return ShopEditAddressFragment().apply {
