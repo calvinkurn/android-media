@@ -94,6 +94,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isCircuitBreaker: Boolean = false
     private var isGpsEnable: Boolean = true
     private var warehouseDataModel: Warehouse? = null
+    private var isEditWarehouse: Boolean = false
 
     private var composite = CompositeSubscription()
 
@@ -165,7 +166,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
             isCircuitBreaker = it.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false)
-            warehouseDataModel = it.getParcelable("EXTRA_IS_WAREHOUSE")
+            warehouseDataModel = it.getParcelable(EXTRA_WAREHOUSE_DATA)
+            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
         }
     }
 
@@ -195,6 +197,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
         if (!isMismatch) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
+        if (isEditWarehouse) {
+            detail_address_layout.visibility = View.GONE
+        } else {
+            detail_address_layout.visibility = View.VISIBLE
+        }
     }
 
     private fun setViewListener() {

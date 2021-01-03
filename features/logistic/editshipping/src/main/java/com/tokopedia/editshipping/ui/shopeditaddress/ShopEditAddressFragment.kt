@@ -21,15 +21,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
-import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
+import com.tokopedia.editshipping.util.*
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -38,6 +41,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: ShopEditAddressViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopEditAddressViewModel::class.java)
@@ -101,8 +106,16 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        /*if (resultCode == Activity.RESULT_OK) {
-            if (data != null) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
+                    val address: DistrictRecommendationAddress? = data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
+                    etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
+                }
+            }
+
+            /*if (data != null) {
                 if (data.hasExtra(EXTRA_WAREHOUSE_DATA)) {
                     warehouseModel = data.getParcelableExtra(EXTRA_WAREHOUSE_DATA)
                     warehouseModel?.let {
@@ -110,8 +123,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         currentLong = it.latLon.substringAfter(",").toDouble()
                     }
                 }
-            }
-        }*/
+            }*/
+
+        }
     }
 
     override fun onResume() {
@@ -178,6 +192,18 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 is Fail -> Timber.d(it.throwable)
             }
         })
+
+        viewModel.saveEditShop.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val intent = RouteManager.getIntent(
+                            activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
+                    startActivityForResult(intent, 1234)
+                    view?.let { view -> Toaster.build(view, "Detail lokasi bla", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
+                }
+                is Fail -> Timber.d(it.throwable)
+            }
+        })
     }
 
     private fun prepareMap() {
@@ -206,6 +232,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
 
+        btnSave?.setOnClickListener {
+            warehouseModel?.let { it ->
+                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation.toString(),
+                        2, "latlong", userSession.email, etShopDetail.toString(),
+                        "postalCode", userSession.phoneNumber) }
+        }
+
     }
 
     private fun setViewListener() {
@@ -213,22 +246,16 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         etKotaKecamatan?.apply {
             addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
             setOnClickListener {
-                val intent = activity?.let { showDistrictRecommendationBottomSheet(it) }
-                startActivityForResult(intent, 100)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+                startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE)
             }
         }
 
         etZipCode?.apply {
             setOnClickListener {
-
+                /*zip code*/
             }
         }
-    }
-
-    private fun showDistrictRecommendationBottomSheet(activity: Activity): Intent? {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
-        intent.putExtra(ARGUMENT_DATA_TOKEN, token)
-        return intent
     }
 
     private fun showZipCodes() {
@@ -285,17 +312,18 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun goToPinpointActivity(lat: Double?, long: Double?, warehouseDataModel: Warehouse?) {
         val intent = RouteManager.getIntent(
                 activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-        intent.putExtra("EXTRA_IS_FULL_FLOW", false)
-        intent.putExtra("EXTRA_LAT", lat)
-        intent.putExtra("EXTRA_LONG", long)
-        intent.putExtra("EXTRA_IS_WAREHOUSE", warehouseDataModel)
-        startActivityForResult(intent, 789)
+        intent.putExtra(EXTRA_IS_FULL_FLOW, false)
+        intent.putExtra(EXTRA_LAT, lat)
+        intent.putExtra(EXTRA_LONG, long)
+        intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
+        intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
+        startActivityForResult(intent, OPEN_MAP_REQUEST_CODE)
     }
 
     companion object {
-        const val EXTRA_WAREHOUSE_DATA = "WAREHOUSE_DATA"
-        const val EXTRA_LAT = "EXTRA_LAT"
-        const val EXTRA_LONG = "EXTRA_LONG"
+        private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
+        private const val OPEN_MAP_REQUEST_CODE = 200
+        private const val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
 
         fun newInstance(extra: Bundle): ShopEditAddressFragment {
             return ShopEditAddressFragment().apply {
