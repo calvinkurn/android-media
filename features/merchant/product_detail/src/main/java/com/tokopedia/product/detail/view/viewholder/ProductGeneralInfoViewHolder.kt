@@ -12,6 +12,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.ProductGeneralItemAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*

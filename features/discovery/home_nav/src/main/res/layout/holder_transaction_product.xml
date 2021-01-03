@@ -14,8 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.unifycomponents.LoaderUnify
+        <ImageView
             android:id="@+id/order_product_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:contentDescription="@string/content_desc_image_transaction"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/order_product_image_shimmer"
             app:loader_corner_radius="@dimen/dp_8"
             app:loader_type="rect"
             app:layout_constraintStart_toStartOf="parent"

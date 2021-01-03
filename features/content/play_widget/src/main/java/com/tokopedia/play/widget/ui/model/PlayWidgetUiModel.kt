@@ -12,10 +12,10 @@ sealed class PlayWidgetUiModel {
             val title: String,
             val actionTitle: String,
             val actionAppLink: String,
-            val actionWebLink: String,
+            val isActionVisible: Boolean,
             override val config: PlayWidgetConfigUiModel,
             val useHeader: Boolean,
-            val items: List<PlayWidgetSmallItemUiModel>
+            val items: List<PlayWidgetSmallItemUiModel>,
     ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
 
         override val impressHolder = ImpressHolder()
@@ -25,10 +25,10 @@ sealed class PlayWidgetUiModel {
             val title: String,
             val actionTitle: String,
             val actionAppLink: String,
-            val actionWebLink: String,
+            val isActionVisible: Boolean,
             override val config: PlayWidgetConfigUiModel,
             val background: PlayWidgetBackgroundUiModel,
-            val items: List<PlayWidgetMediumItemUiModel>
+            val items: List<PlayWidgetMediumItemUiModel>,
     ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
 
         override val impressHolder = ImpressHolder()

@@ -58,9 +58,11 @@ import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -158,7 +160,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun getSettingItems(): List<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
-                getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
+                getString(R.string.general_setting_title_account_setting_item), getString(R.string.subtitle_account_setting)))
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
@@ -497,7 +499,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     }
 
     private fun setupTickerSellerMigration() {
-        initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
+        if(isSellerMigrationEnabled(context) && userSession.hasShop()) {
+            initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
+        } else {
+            tickerSellerMigrationAccountSetting.hide()
+        }
     }
 
     companion object {
