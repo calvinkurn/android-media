@@ -74,7 +74,7 @@ class ProductGeneralItemAdapter(private var listOfData: List<Content>, val name:
                 listener.onInfoClicked(name, ComponentTrackDataModel(componentType, componentName, componentPosition))
             }
             if (data.icon.isNotEmpty()) {
-                ImageHandler.loadImage(view.context, view.ic_info_item, data.icon, R.drawable.ic_loading_image)
+                view.ic_info_item.loadImage(data.icon)
                 view.ic_info_item.show()
             } else {
                 view.ic_info_item.hide()
