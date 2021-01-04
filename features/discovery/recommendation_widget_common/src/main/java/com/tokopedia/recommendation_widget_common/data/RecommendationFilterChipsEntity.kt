@@ -33,7 +33,7 @@ data class RecommendationFilterChipsEntity (
             var isSelected: Boolean = false
     )
 
-    data class RecommendationFilterChip(
+    data class  RecommendationFilterChip(
             @SerializedName("title")
             val title: String = "",
             @SerializedName("name")
