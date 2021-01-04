@@ -26,6 +26,6 @@ data class ErrorWhitelist(
 )
 
 data class DataWhitelist(
-        @SerializedName("message")
-        var message: String = ""
+        @SerializedName("eligibility_state")
+        var eligibilityState: Int = -1
 )

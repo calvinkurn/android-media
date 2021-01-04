@@ -20,6 +20,7 @@ import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -66,9 +67,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        checkWhitelistedUser()
         initViews()
         initViewModel()
         fetchData()
+    }
+
+    private fun checkWhitelistedUser() {
+        viewModel.getWhitelistData(userSession?.shopId.toInt())
     }
 
     private fun initViews() {
@@ -82,6 +88,31 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun initViewModel() {
+        viewModel.shopWhitelist.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShopLocationState.Success -> {
+                    if (it.data.data.eligibilityState == 1) {
+                        swipeRefreshLayout?.isRefreshing = false
+                        fetchData()
+                    } else {
+                        val intent = context?.let { context -> ShopSettingsAddressActivity.createIntent(context) }
+                        startActivityForResult(intent, 1998)
+                    }
+                }
+
+                is ShopLocationState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
+                    }
+                }
+
+                else -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        })
+
         viewModel.shopLocation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShopLocationState.Success -> {

@@ -73,7 +73,7 @@ object ShopLocationQuery {
     """.trimIndent()
 
     val shopLocationWhitelist = """
-        query ShopGetAllLocations(${'$'}shop_id: Int!) {
+        query ShopLocWhitelist(${'$'}shop_id: Int!) {
           ShopLocWhitelist (input: {shop_id: ${'$'}shop_id}) {
             status
             message
