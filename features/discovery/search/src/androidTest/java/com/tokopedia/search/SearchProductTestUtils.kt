@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -20,7 +21,6 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import org.hamcrest.Matcher
-
 
 internal const val QUERY_PARAMS_WITH_KEYWORD = "?q=samsung"
 
@@ -136,4 +136,36 @@ internal fun clickChildViewWithId(id: Int): ViewAction {
             v.performClick()
         }
     }
+}
+
+internal fun List<Visitable<*>>.getGlobalNavViewModelPosition(): Int {
+    return indexOfFirst { it is GlobalNavViewModel }
+}
+
+internal fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
+    return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+}
+
+internal fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
+    return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
+}
+
+internal fun List<Visitable<*>>.getEmptySearchProductViewModelPosition(): Int {
+    return indexOfFirst { it is EmptySearchProductViewModel }
+}
+
+internal fun List<Visitable<*>>.getRecommendationTitleViewModelPosition(): Int {
+    return indexOfFirst { it is RecommendationTitleViewModel }
+}
+
+internal fun List<Visitable<*>>.getRecommendationItemViewModelPosition(): Int {
+    return indexOfFirst { it is RecommendationItemViewModel }
+}
+
+internal fun List<Visitable<*>>.getSuggestionViewModelPosition(): Int {
+    return indexOfFirst { it is SuggestionViewModel }
+}
+
+internal fun List<Visitable<*>>.getBroadMatchViewModelPosition(): Int {
+    return indexOfFirst { it is BroadMatchViewModel }
 }

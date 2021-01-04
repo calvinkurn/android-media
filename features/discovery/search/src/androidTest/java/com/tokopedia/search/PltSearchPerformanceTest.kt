@@ -37,7 +37,7 @@ class PltSearchPerformanceTest {
 
     @Before
     fun setUp() {
-        setupGraphqlMockResponseWithCheck(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_common_response))
+        setupGraphqlMockResponseWithCheck(SearchMockModelConfig())
         setupTotalSizeInterceptor(listOf("SearchProduct"))
         setupActivity()
         setupIdlingResource()
