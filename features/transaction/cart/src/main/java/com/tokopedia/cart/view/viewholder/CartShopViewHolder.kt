@@ -183,7 +183,7 @@ class CartShopViewHolder(itemView: View,
         } else {
             cbSelectShop.isEnabled = true
             flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
-            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(R.color.white))
+            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             layoutError.gone()
         }
     }

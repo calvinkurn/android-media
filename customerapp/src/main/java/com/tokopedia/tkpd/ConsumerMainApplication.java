@@ -11,6 +11,7 @@ import com.tokopedia.utils.permission.SlicePermission;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
+import static com.tokopedia.utils.permission.SlicePermission.TRAVEL_SLICE_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -98,6 +99,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if(getSliceRemoteConfig()) {
             SlicePermission slicePermission = new SlicePermission();
             slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
+            slicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
         }
     }
 

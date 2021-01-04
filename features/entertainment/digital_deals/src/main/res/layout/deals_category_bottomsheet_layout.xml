@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/category_title"
-            android:textColor="#f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 

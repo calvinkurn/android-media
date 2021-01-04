@@ -69,7 +69,6 @@ abstract class BaseWidgetUiTest{
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,

@@ -1,0 +1,48 @@
+{
+  "data": {
+    "orderList": {
+      "list": [
+        {
+          "order_id": "665019822",
+          "order_status_id": 400,
+          "deadline_text": "5 Hari 23 Jam",
+          "order_product": [
+            {
+              "product_id": "199047330",
+              "product_name": "Product 48",
+              "picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2016/12/17/12299749/12299749_a943a8f6-af0e-4507-8bbd-399f397a081a_300_300.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    "orderFilterSom": {
+      "status_list": [
+        {
+          "key": "all_order",
+          "order_status_amount": 0
+        },
+        {
+          "key": "new_order",
+          "order_status_amount": 64
+        },
+        {
+          "key": "confirm_shipping",
+          "order_status_amount": 218
+        },
+        {
+          "key": "in_shipping",
+          "order_status_amount": 149
+        },
+        {
+          "key": "done",
+          "order_status_amount": 7
+        },
+        {
+          "key": "order_canceled",
+          "order_status_amount": 14
+        }
+      ]
+    }
+  }
+}

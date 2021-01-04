@@ -149,7 +149,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
             show()
         }
@@ -163,7 +163,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             actionListener?.onShowTickerTobacco()
             show()
         }
@@ -173,11 +173,11 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.text_move_to_wishlist?.apply {
             if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
                 setOnClickListener { }
             } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
                 setOnClickListener {
                     itemView.iu_image_product?.let {
                         actionListener?.onAddDisabledItemToWishlist(data, it)

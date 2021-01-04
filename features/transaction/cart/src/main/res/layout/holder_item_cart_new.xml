@@ -61,7 +61,7 @@
                         android:layout_toEndOf="@+id/iu_image_product"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyType="body_2"
                         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
@@ -73,7 +73,7 @@
                         android:layout_toEndOf="@+id/iu_image_product"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Biru, XL"
@@ -87,7 +87,7 @@
                         android:layout_toEndOf="@+id/text_product_variant"
                         android:gravity="center_vertical"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Red_R600"
+                        android:textColor="@color/Unify_R600"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Sisa 3"
@@ -127,7 +127,7 @@
                             android:layout_marginEnd="@dimen/dp_4"
                             android:layout_toEndOf="@+id/label_slash_price_percentage"
                             android:gravity="center_vertical"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_3"
                             tools:text="Rp300.000"
                             tools:visibility="visible" />
@@ -140,7 +140,7 @@
                             android:layout_alignBottom="@+id/label_slash_price_percentage"
                             android:layout_toEndOf="@+id/text_slash_price"
                             android:gravity="center_vertical"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_2"
                             app:typographyWeight="bold"
                             tools:text="Rp100.000" />
@@ -166,7 +166,7 @@
                         android:layout_below="@+id/layout_product_info"
                         android:layout_toEndOf="@+id/iu_image_product"
                         android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Campaign"
@@ -195,7 +195,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:textColor="@color/light_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
                             tools:text="sdkjf skdjbfg jksdg kjsdbg sfdsf jksdbg!"
@@ -206,7 +206,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_button_add_note"
-                            android:textColor="@color/Neutral_N700_68"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
                             app:typographyWeight="reguler"
                             tools:text="Ubah" />
@@ -236,11 +236,11 @@
                         android:paddingBottom="@dimen/dp_16"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textColor="@color/black_70"
-                        android:textColorHighlight="@color/tkpd_main_green"
+                        android:textColor="@color/Unify_N700_68"
+                        android:textColorHighlight="@color/Unify_G400"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
-                        app:backgroundTint="@color/tkpd_main_green"
+                        app:backgroundTint="@color/Unify_G400"
                         tools:ignore="TextFields"
                         tools:text="Saya pesan warna merah yah min, jangan sampai salah kirim
 barangnya gan! coy coy coy" />
@@ -251,7 +251,7 @@ barangnya gan! coy coy coy" />
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:paddingStart="@dimen/dp_4"
-                        android:textColor="@color/text_cart_item_error_red"
+                        android:textColor="@color/Unify_R600"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
                         android:visibility="gone"
@@ -305,7 +305,7 @@ barangnya gan! coy coy coy" />
                                 android:paddingEnd="@dimen/dp_16"
                                 android:paddingBottom="@dimen/dp_8"
                                 android:text="@string/label_move_to_wishlist"
-                                android:textColor="@color/Neutral_N700_68"
+                                android:textColor="@color/Unify_N700_68"
                                 app:typographyType="body_3" />
 
                             <View
@@ -335,10 +335,10 @@ barangnya gan! coy coy coy" />
                                 android:imeOptions="actionDone"
                                 android:inputType="number"
                                 android:maxLength="6"
-                                android:textColor="@color/black_70"
-                                android:textColorHighlight="@color/tkpd_main_green"
+                                android:textColor="@color/Unify_N700_68"
+                                android:textColorHighlight="@color/Unify_G400"
                                 android:textSize="@dimen/sp_16"
-                                app:backgroundTint="@color/tkpd_main_green"
+                                app:backgroundTint="@color/Unify_G400"
                                 tools:text="10000" />
 
                             <ImageView
@@ -358,7 +358,7 @@ barangnya gan! coy coy coy" />
                             android:gravity="end"
                             android:maxLines="2"
                             android:textAlignment="gravity"
-                            android:textColor="@color/text_cart_item_error_red"
+                            android:textColor="@color/Unify_R600"
                             android:textSize="@dimen/sp_12"
                             android:visibility="gone"
                             app:typographyType="body_3"
@@ -384,6 +384,6 @@ barangnya gan! coy coy coy" />
         android:layout_marginLeft="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>
