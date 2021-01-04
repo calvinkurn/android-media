@@ -24,8 +24,10 @@ public class CartItemModel implements Parcelable {
     private String variant;
 
     private int weightUnit;
-    private double weight;
+    private int weight;
     private String weightFmt;
+    private int weightActual;
+    private int weightVolume;
 
     private int quantity;
     private String noteToSeller;
@@ -163,11 +165,11 @@ public class CartItemModel implements Parcelable {
         this.weightUnit = weightUnit;
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 
@@ -467,6 +469,22 @@ public class CartItemModel implements Parcelable {
         this.productInformation = productInformation;
     }
 
+    public int getWeightActual() {
+        return weightActual;
+    }
+
+    public void setWeightActual(int weightActual) {
+        this.weightActual = weightActual;
+    }
+
+    public int getWeightVolume() {
+        return weightVolume;
+    }
+
+    public void setWeightVolume(int weightVolume) {
+        this.weightVolume = weightVolume;
+    }
+
     public CartItemModel() {
     }
 
@@ -561,8 +579,10 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.currency);
         dest.writeString(this.variant);
         dest.writeInt(this.weightUnit);
-        dest.writeDouble(this.weight);
+        dest.writeInt(this.weight);
         dest.writeString(this.weightFmt);
+        dest.writeInt(this.weightActual);
+        dest.writeInt(this.weightVolume);
         dest.writeInt(this.quantity);
         dest.writeString(this.noteToSeller);
         dest.writeString(this.imageUrl);
@@ -604,8 +624,10 @@ public class CartItemModel implements Parcelable {
         this.currency = in.readInt();
         this.variant = in.readString();
         this.weightUnit = in.readInt();
-        this.weight = in.readDouble();
+        this.weight = in.readInt();
         this.weightFmt = in.readString();
+        this.weightActual = in.readInt();
+        this.weightVolume = in.readInt();
         this.quantity = in.readInt();
         this.noteToSeller = in.readString();
         this.imageUrl = in.readString();

@@ -28,6 +28,8 @@ public class Product implements Parcelable {
     private String productWholesalePriceFmt;
     private String productWeightFmt;
     private int productWeight;
+    private int productWeightActual;
+    private int productWeightVolume;
     private int productCondition;
     private String productUrl;
     private String freeReturnLogo;
@@ -431,6 +433,22 @@ public class Product implements Parcelable {
         this.productInformation = productInformation;
     }
 
+    public int getProductWeightActual() {
+        return productWeightActual;
+    }
+
+    public void setProductWeightActual(int productWeightActual) {
+        this.productWeightActual = productWeightActual;
+    }
+
+    public int getProductWeightVolume() {
+        return productWeightVolume;
+    }
+
+    public void setProductWeightVolume(int productWeightVolume) {
+        this.productWeightVolume = productWeightVolume;
+    }
+
     public Product() {
     }
 
@@ -454,6 +472,8 @@ public class Product implements Parcelable {
         dest.writeString(productWholesalePriceFmt);
         dest.writeString(productWeightFmt);
         dest.writeInt(productWeight);
+        dest.writeInt(productWeightActual);
+        dest.writeInt(productWeightVolume);
         dest.writeInt(productCondition);
         dest.writeString(productUrl);
         dest.writeString(freeReturnLogo);
@@ -503,6 +523,8 @@ public class Product implements Parcelable {
         productWholesalePriceFmt = in.readString();
         productWeightFmt = in.readString();
         productWeight = in.readInt();
+        productWeightActual = in.readInt();
+        productWeightVolume = in.readInt();
         productCondition = in.readInt();
         productUrl = in.readString();
         freeReturnLogo = in.readString();

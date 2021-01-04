@@ -173,6 +173,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
         shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
         shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
+        // Todo : add volumetric params
         shippingParam.setShopId(shipmentDetailData.getShopId());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
         shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());

@@ -45,6 +45,12 @@ public class Product {
     @SerializedName("product_weight")
     @Expose
     private int productWeight;
+    @SerializedName("product_weight_actual")
+    @Expose
+    private int productWeightActual;
+    @SerializedName("product_weight_volume")
+    @Expose
+    private int productWeightVolume;
     @SerializedName("product_condition")
     @Expose
     private int productCondition;
@@ -191,6 +197,14 @@ public class Product {
 
     public int getProductWeight() {
         return productWeight;
+    }
+
+    public int getProductWeightActual() {
+        return productWeightActual;
+    }
+
+    public int getProductWeightVolume() {
+        return productWeightVolume;
     }
 
     public int getProductCondition() {
