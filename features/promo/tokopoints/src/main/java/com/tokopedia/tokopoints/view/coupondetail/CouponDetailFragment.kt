@@ -581,15 +581,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     }
                 }
 
-                val timerValue = item.usage.expiredCountDown
-                val cal = Calendar.getInstance()
-                val seconds = timerValue?.rem(60)
-                val minutes = (timerValue?.rem((60 * 60)))?.div(60)
-                val hours = timerValue?.div((60 * 60))
-                cal.add(Calendar.HOUR, hours.toInt())
-                cal.add(Calendar.MINUTE, minutes.toInt())
-                cal.add(Calendar.SECOND, seconds.toInt())
-                progressBar?.targetDate = cal
+                val timerValue = convertSecondsToHrMmSs(item.usage.expiredCountDown)
+                progressBar?.targetDate = timerValue
             } else {
                 btnContinue.text = item.usage.btnUsage.text
                 btnContinue.isEnabled = true
