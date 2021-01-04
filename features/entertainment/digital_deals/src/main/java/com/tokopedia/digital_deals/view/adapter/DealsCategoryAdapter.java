@@ -73,6 +73,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static final int CATEGORY_PAGE = 3;
     public static final int BRAND_PAGE = 4;
     public static final int DETAIL_PAGE = 5;
+    private static final int REQUEST_CODE_DEALDETAILACTIVITY = 103;
+    private static final int REQUEST_CODE_LOGIN = 102;
     private int pageType = 1;
     private String categoryName;
 
@@ -443,7 +445,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
                     Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-//                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
+                    toActivityRequest.onNavigateToActivityRequest(intent, REQUEST_CODE_LOGIN, position);
                 }
         ).show();
     }
@@ -642,7 +644,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-                toActivityRequest.onNavigateToActivityRequest(detailsIntent, 103, getIndex());
+                toActivityRequest.onNavigateToActivityRequest(detailsIntent, REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
                 if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                     dealsAnalytics.sendTrendingDealClickEvent(categoryItems.get(getIndex()), DealsAnalytics.EVENT_CLICK_TRENDING_DEALS, position, 0);
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)) {
