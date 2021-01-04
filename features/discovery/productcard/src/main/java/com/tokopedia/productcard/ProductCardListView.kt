@@ -56,6 +56,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        renderAddToCartButtonType(productCardModel.addToCartButtonType)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -144,7 +145,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
-    override fun getAddToCartButton(): UnifyButton? = buttonAddToCart
+    private fun renderAddToCartButtonType(buttonType: Int) {
+        if (buttonType > 0) {
+            buttonAddToCart?.buttonType = buttonType
+        }
+    }
 
     /**
      * Special cases for specific pages

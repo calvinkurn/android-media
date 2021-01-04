@@ -51,7 +51,8 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                                         type = recommendationLabel.type
                                 )
                             },
-                            hasAddToCartButton = true
+                            hasAddToCartButton = true,
+                            addToCartButtonType = UnifyButton.Type.MAIN
                     )
             )
             setOnClickListener {
@@ -62,7 +63,6 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
-            getAddToCartButton()?.buttonType = UnifyButton.Type.MAIN
 
             setImageProductViewHintListener(
                     element.recommendationItem,

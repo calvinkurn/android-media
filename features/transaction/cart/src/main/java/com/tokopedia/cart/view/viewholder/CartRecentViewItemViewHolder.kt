@@ -50,7 +50,8 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
                                         type = recommendationLabel.type
                                 )
                             },
-                            hasAddToCartButton = true
+                            hasAddToCartButton = true,
+                            addToCartButtonType = UnifyButton.Type.MAIN
                     )
             )
             setImageProductViewHintListener(element, object : ViewHintListener {
@@ -65,7 +66,6 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
-            getAddToCartButton()?.buttonType = UnifyButton.Type.MAIN
         }
 
         isTopAds = element.isTopAds
