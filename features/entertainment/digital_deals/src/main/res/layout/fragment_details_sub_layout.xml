@@ -17,6 +17,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:text="5 Persons Package (Include 5 Main Dish, 3 Appetizer, Drinks)" />
 
     <TextView
