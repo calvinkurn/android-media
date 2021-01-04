@@ -55,6 +55,7 @@ import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.webview.TkpdWebView
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
@@ -562,34 +563,33 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         if (item.usage.activeCountDown < 1) {
             if (item.usage.expiredCountDown > 0 && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_timer)
+                val progressBar = view!!.findViewById<TimerUnifySingle>(R.id.progress_timer)
                 progressBar.visibility = View.VISIBLE
-                progressBar.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
-                label.setTextColor(context!!.resources.getColor(com.tokopedia.design.R.color.r_400))
-                label.setType(Typography.SMALL)
-                label.invalidate()
-                mTimer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
-                    override fun onTick(l: Long) {
-                        label.setPadding(resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
-                        item.usage.expiredCountDown = l / 1000
-                        val seconds = (l / 1000).toInt() % 60
-                        val minutes = (l / (1000 * 60) % 60).toInt()
-                        val hours = (l / (1000 * 60 * 60) % 24).toInt()
-                        label.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
-                        progressBar.progress = l.toInt() / 1000
-                    }
-
-                    override fun onFinish() {
+                label.hide()
+                progressBar.apply {
+                    timerTextWidth = TimerUnifySingle.TEXT_WRAP
+                    onFinish = {
                         progressBar.visibility = View.GONE
+                        label.show()
                         label.text = "00 : 00 : 00"
                         btnContinue.text = "Expired"
                         btnContinue.isEnabled = false
                         btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
                     }
-                }.start()
+                    onTick = {
+                        item.usage.expiredCountDown = it / 1000
+                    }
+                }
+
+                val timerValue = item.usage.expiredCountDown
+                val cal = Calendar.getInstance()
+                val seconds = timerValue?.rem(60)
+                val minutes = (timerValue?.rem((60 * 60)))?.div(60)
+                val hours = timerValue?.div((60 * 60))
+                cal.add(Calendar.HOUR, hours.toInt())
+                cal.add(Calendar.MINUTE, minutes.toInt())
+                cal.add(Calendar.SECOND, seconds.toInt())
+                progressBar?.targetDate = cal
             } else {
                 btnContinue.text = item.usage.btnUsage.text
                 btnContinue.isEnabled = true

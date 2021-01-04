@@ -89,13 +89,18 @@
                         app:layout_constraintTop_toTopOf="@+id/img_time"
                         app:typographyType="body_3" />
 
-                    <ProgressBar
+                    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
                         android:id="@+id/progress_timer"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:indeterminate="false"
-                        android:progressDrawable="@drawable/bg_tp_coupon_timer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:timer_unify_single_remainingHours="0"
+                        app:timer_unify_single_remainingMinutes="0"
+                        app:timer_unify_single_remainingSeconds="0"
+                        app:timer_unify_single_showClockIcon="true"
+                        app:timer_unify_single_textWidth="wrap"
+                        app:timer_unify_single_type="auto"
+                        app:timer_unify_single_variant="main"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
                         app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
