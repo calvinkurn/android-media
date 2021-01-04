@@ -274,6 +274,7 @@
 /libraries/fingerprint/									@tokopedia/android-core-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
+/libraries/image_picker_common/						    @tokopedia/android-core-dev
 /libraries/image_preview/								@tokopedia/android-core-dev
 /libraries/imageuploader/								@tokopedia/android-core-dev
 /libraries/inappupdate/									@tokopedia/android-core-dev
