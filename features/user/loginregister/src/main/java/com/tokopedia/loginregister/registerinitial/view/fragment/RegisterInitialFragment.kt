@@ -1086,7 +1086,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun sendTrackingSuccessRegister() {
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
-                userSession.userId.toIntOrZero(),
+                userSession.userId,
                 userSession.name,
                 userSession.email,
                 userSession.phoneNumber,
