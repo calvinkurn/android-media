@@ -68,6 +68,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
@@ -87,6 +88,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -103,6 +105,7 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -141,7 +144,8 @@ public class ProductListFragment
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
-        SearchNavigationClickListener {
+        SearchNavigationClickListener,
+        TopAdsImageViewListener  {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -315,7 +319,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this,
-                this, this, this, this, this,
+                this, this, this,
+                this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1809,5 +1814,28 @@ public class ProductListFragment
 
         staggeredGridLayoutManager.setSpanCount(2);
         adapter.changeSearchNavigationDoubleGridView(position);
+    }
+
+    @Override
+    public void onTopAdsImageViewImpressed(
+            String className,
+            @NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel
+    ) {
+        if (className == null || getContext() == null) return;
+
+        new TopAdsUrlHitter(getContext()).hitImpressionUrl(
+                className,
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getAdViewUrl(),
+                "",
+                "",
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getImageUrl()
+        );
+    }
+
+    @Override
+    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel) {
+        if (getContext() == null) return;
+
+        RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
     }
 }

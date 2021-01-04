@@ -203,4 +203,17 @@
     <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
 
+
+    <!-- Travel slice custom query -->
+    <string-array name="HotelSliceCustomQuery">
+        <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
+        <item>Book (a)? hotel(s)? in $city1</item>
+        <item>Search for cheap hotels in $city1</item>
+    </string-array>
+
+    <string-array name="TravelOrderListCustomQuery">
+        <item>(view)? my $type1 reservation(s)?</item>
+        <item>(check)? my $type1 reservation(s)?</item>
+        <item>(view)? my $type1 booking(s)?</item>
+    </string-array>
 </resources>

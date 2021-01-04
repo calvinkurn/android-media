@@ -36,9 +36,6 @@ class GetPdpLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var gqlUseCase: MultiRequestGraphqlUseCase
 
-    @RelaxedMockK
-    lateinit var requestParams: RequestParams
-
     @get:Rule
     public val thrown = ExpectedException.none()
 

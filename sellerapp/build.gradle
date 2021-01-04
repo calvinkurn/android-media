@@ -208,6 +208,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
+    implementation project(rootProject.ext.features.sellerAppWidget)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)

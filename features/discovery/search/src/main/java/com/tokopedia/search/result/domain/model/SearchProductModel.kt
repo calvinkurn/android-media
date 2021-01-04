@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import java.util.*
 
@@ -36,6 +37,15 @@ data class SearchProductModel(
         @Expose
         val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget()
 ) {
+
+    private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
+
+    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
+        this.topAdsImageViewModelList.clear()
+        this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
+    }
+
+    fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
     data class SearchProduct (
             @SerializedName("header")
