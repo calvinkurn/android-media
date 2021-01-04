@@ -109,7 +109,4 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
-    <!-- Seller App Widget -->
-    <string name="saw_seller_order">Penjualan</string>
-    <string name="saw_chat">Chat</string>
 </resources>
