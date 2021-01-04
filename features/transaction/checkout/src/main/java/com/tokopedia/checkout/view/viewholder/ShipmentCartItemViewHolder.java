@@ -162,12 +162,10 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
 
             if (cartItem.isProtectionCheckboxDisabled()) {
-                mCbPPP.setVisibility(View.VISIBLE);
                 mCbPPP.setEnabled(false);
                 mCbPPP.setChecked(true);
                 mCbPPP.setClickable(false);
             } else {
-                mCbPPP.setVisibility(View.VISIBLE);
                 mCbPPP.setEnabled(true);
                 mCbPPP.setChecked(cartItem.isProtectionOptIn());
                 mCbPPP.setClickable(true);
