@@ -366,12 +366,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setUpRecyclerView(view: View) {
-        val recyclerView = super.getRecyclerView(view)
-        recyclerView.setHasFixedSize(true)
-        for (i in 0 until recyclerView.itemDecorationCount) {
-            recyclerView.removeItemDecorationAt(i)
+        rv?.apply {
+            setHasFixedSize(true)
+            for (i in 0 until itemDecorationCount) {
+                removeItemDecorationAt(i)
+            }
+            addItemDecoration(ChatListItemDecoration(context))
+            itemAnimator = null
         }
-        recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
     private fun setupObserver() {
