@@ -162,9 +162,15 @@ public class ApplinkNotificationHelper {
     }
 
     public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        return true;
-//        return (applinkNotificationModel.getTargetApp() == null) ||
-//                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        //Tokopedia Pro
+        if (GlobalConfig.APPLICATION_TYPE == 3) {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.PACKAGE_CONSUMER_APP));
+        }
+        else {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        }
     }
 }
 
