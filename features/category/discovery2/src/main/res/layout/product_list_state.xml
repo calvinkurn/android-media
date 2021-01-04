@@ -15,8 +15,8 @@
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/vertical_image_empty_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="@dimen/dp_180"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_28"
         app:layout_constraintLeft_toLeftOf="parent"
