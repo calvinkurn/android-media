@@ -118,13 +118,12 @@
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/img_time"
-                            android:layout_width="@dimen/dp_20"
-                            android:layout_height="@dimen/dp_20"
-                            android:padding="@dimen/dp_2"
+                            android:layout_width="@dimen/dp_22"
+                            android:layout_height="@dimen/dp_22"
                             android:visibility="visible"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_tp_timer_grey" />
+                            app:srcCompat="@drawable/ic_tp_green_clock" />
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/text_time_label"
@@ -189,11 +188,11 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_rp"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_tp_min_transk" />
+                        app:srcCompat="@drawable/ic_tp_green_money" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_min_txn_label"
