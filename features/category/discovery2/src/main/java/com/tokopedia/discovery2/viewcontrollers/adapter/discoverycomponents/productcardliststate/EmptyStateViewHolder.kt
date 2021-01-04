@@ -5,6 +5,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.discovery2.Constant.EmptyStateTexts.EMPTY_IMAGE
+import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_EMPTY_IMAGE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.emptystate.EmptyStateModel
 import com.tokopedia.discovery2.di.getSubComponent
@@ -53,13 +55,13 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalDecription.text = emptyStateModel.description
         if (emptyStateModel.isFilterState) {
             verticalButton.show()
-            verticalImageView.loadRemoteImageDrawable("filtered_product_empty_state.png")
+            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE)
             verticalButton.setOnClickListener {
                 emptyStateViewModel.handleEmptyStateReset()
             }
         }else{
             verticalButton.hide()
-            verticalImageView.loadRemoteImageDrawable("ic_product_empty_state.png")
+            verticalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
         }
     }
 
