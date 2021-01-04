@@ -107,6 +107,10 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+            }
+
+            Given("shop data list for COD eligibility checking") {
                 every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
@@ -143,7 +147,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
             }
 
             Given("attach view") {
@@ -416,7 +420,7 @@ object CartListPresenterUpdateCartTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
             }
 
             When("process to update cart data") {
