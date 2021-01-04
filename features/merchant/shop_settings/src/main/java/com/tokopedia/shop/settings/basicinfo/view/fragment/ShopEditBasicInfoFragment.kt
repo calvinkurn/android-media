@@ -121,11 +121,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.detachView()
-    }
-
     override fun onPause() {
         super.onPause()
         dismissToaster()
@@ -246,7 +241,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     if (input.isBlank()) {
                         val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
                         showShopNameInputError(message)
-                        viewModel.cancelValidateShopName()
                     } else {
                         resetShopNameInput()
                         viewModel.validateShopName(input)
@@ -270,7 +264,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                     if (input.isBlank()) {
                         val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
                         showShopDomainInputError(message)
-                        viewModel.cancelValidateShopDomain()
                     } else {
                         resetShopDomainInput()
                         viewModel.validateShopDomain(input)
@@ -308,12 +301,12 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun disableSaveBtn() {
         tvSave?.isEnabled = false
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300))
     }
 
     private fun enableSaveBtn() {
         tvSave?.isEnabled = true
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
+        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
     }
 
     private fun isShopNameTextFieldError(): Boolean {
@@ -525,9 +518,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopEditTicker.setHtmlDescription(message)
         shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (type == Ticker.TYPE_WARNING) {
-                    clickReadMore(linkUrl)
-                }
+                clickReadMore(linkUrl)
             }
             override fun onDismiss() {}
         })

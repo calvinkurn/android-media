@@ -33,7 +33,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TAB_SETUP_DELAY_MS
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {

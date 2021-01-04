@@ -1,15 +1,16 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
-import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
@@ -20,37 +21,52 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class ProductManageViewModelTestFixture {
+open class ProductManageViewModelTestFixture {
 
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     lateinit var editStockUseCase: EditStockUseCase
+
     @RelaxedMockK
     lateinit var editPriceUseCase: EditPriceUseCase
+
     @RelaxedMockK
     lateinit var gqlGetShopInfoUseCase: GQLGetShopInfoUseCase
+
     @RelaxedMockK
     lateinit var geetShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase
+
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
+
     @RelaxedMockK
     lateinit var topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase
+
     @RelaxedMockK
     lateinit var popupManagerAddProductUseCase: PopupManagerAddProductUseCase
+
     @RelaxedMockK
     lateinit var getProductListUseCase: GQLGetProductListUseCase
+
     @RelaxedMockK
     lateinit var setFeaturedProductUseCase: SetFeaturedProductUseCase
+
     @RelaxedMockK
     lateinit var deleteProductUseCase: DeleteProductUseCase
+
     @RelaxedMockK
     lateinit var multiEditProductUseCase: MultiEditProductUseCase
+
     @RelaxedMockK
     lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
+
     @RelaxedMockK
     lateinit var editProductVariantUseCase: EditProductVariantUseCase
+
+    @RelaxedMockK
+    lateinit var getProductVariantUseCase: GetProductVariantUseCase
 
     protected lateinit var viewModel: ProductManageViewModel
 
@@ -59,20 +75,21 @@ abstract class ProductManageViewModelTestFixture {
         MockKAnnotations.init(this)
 
         viewModel = ProductManageViewModel(
-            editPriceUseCase,
-            gqlGetShopInfoUseCase,
-            geetShopInfoTopAdsUseCase,
-            userSessionInterface,
-            topAdsGetShopDepositGraphQLUseCase,
-            popupManagerAddProductUseCase,
-            getProductListUseCase,
-            setFeaturedProductUseCase,
-            editStockUseCase,
-            deleteProductUseCase,
-            multiEditProductUseCase,
-            getProductListMetaUseCase,
-            editProductVariantUseCase,
-            TestCoroutineDispatchers
+                editPriceUseCase,
+                gqlGetShopInfoUseCase,
+                geetShopInfoTopAdsUseCase,
+                userSessionInterface,
+                topAdsGetShopDepositGraphQLUseCase,
+                popupManagerAddProductUseCase,
+                getProductListUseCase,
+                setFeaturedProductUseCase,
+                editStockUseCase,
+                deleteProductUseCase,
+                multiEditProductUseCase,
+                getProductListMetaUseCase,
+                editProductVariantUseCase,
+                getProductVariantUseCase,
+                CoroutineTestDispatchersProvider
         )
     }
 }

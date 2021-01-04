@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -37,22 +39,29 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCESSED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CUSTOMER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIKIRIM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIPROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
@@ -72,7 +81,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_MP_FINI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.MENUNGGU_KONFIRMASI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.NOTES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_NAME
@@ -81,12 +90,16 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUANTITY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIKIRIM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIPROSES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA_DI_TUJUAN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_EVENTS
@@ -96,9 +109,12 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAIN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -107,7 +123,6 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
-import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
@@ -131,7 +146,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottomsheet_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
@@ -145,7 +159,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 
 /**
@@ -158,6 +171,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var uohItemAdapter: UohItemAdapter
+    private lateinit var userSession: UserSession
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
     private var refreshHandler: RefreshHandler? = null
     private var paramUohOrder = UohListParam()
@@ -193,7 +207,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultStartDateStr = ""
     private var defaultEndDate = ""
     private var defaultEndDateStr = ""
-    private var arrayFilterDate = arrayOf<String>()
+    private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -204,11 +218,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var filterStatus = ""
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
-    private var userSession: UserSessionInterface? = null
     private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
+    private val REQUEST_CODE_LOGIN = 288
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -226,78 +240,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
-        isFirstLoad = true
-        if (arguments?.getString(SOURCE_FILTER) != null) {
-            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
-            if (filterStatus.isNotEmpty()) {
-                var status = ""
-                when (filterStatus) {
-                    PARAM_DALAM_PROSES -> {
-                        status = DALAM_PROSES
-                        paramUohOrder.createTimeStart = ""
-                        paramUohOrder.createTimeEnd = ""
-                    }
-                    PARAM_E_TIKET -> {
-                        status = E_TIKET
-                        paramUohOrder.createTimeStart = ""
-                        paramUohOrder.createTimeEnd = ""
-                    }
-                    PARAM_SEMUA_TRANSAKSI -> {
-                        status = SEMUA_TRANSAKSI
-                    }
-                    PARAM_MARKETPLACE -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
-                    }
-                    PARAM_MARKETPLACE_DALAM_PROSES -> {
-                        status = DALAM_PROSES
-                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
-                    }
-                    PARAM_DIGITAL -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DIGITAL
-                    }
-                    PARAM_EVENTS -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
-                    }
-                    PARAM_DEALS -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
-                    }
-                    PARAM_PESAWAT -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
-                    }
-                    PARAM_GIFTCARDS -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
-                    }
-                    PARAM_INSURANCE -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
-                    }
-                    PARAM_MODALTOKO -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
-                    }
-                    PARAM_HOTEL -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
-                    }
-                    PARAM_TRAVEL_ENTERTAINMENT -> {
-                        status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
-                    }
-                }
-                paramUohOrder.status = status
-                currFilterType = UohConsts.TYPE_FILTER_STATUS
-                currFilterStatusKey = status
-                currFilterStatusLabel = status
-            }
+        if (userSession.isLoggedIn) {
+            initialLoad()
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
-        setInitialValue()
-        loadOrderHistoryList("")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -319,9 +266,135 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         loadOrderHistoryList("")
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                initialLoad()
+            } else {
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun initialLoad() {
+        isFirstLoad = true
+        if (arguments?.getString(SOURCE_FILTER) != null) {
+            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
+            if (filterStatus.isNotEmpty()) {
+                var status = ""
+                var statusLabel = ""
+                when (filterStatus) {
+                    PARAM_DALAM_PROSES -> {
+                        status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
+                        paramUohOrder.createTimeStart = ""
+                        paramUohOrder.createTimeEnd = ""
+                    }
+                    PARAM_E_TIKET -> {
+                        status = E_TIKET
+                        statusLabel = status
+                        paramUohOrder.createTimeStart = ""
+                        paramUohOrder.createTimeEnd = ""
+                    }
+                    PARAM_SEMUA_TRANSAKSI -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                    }
+                    PARAM_MARKETPLACE -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_MARKETPLACE_DALAM_PROSES -> {
+                        status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_WAITING_CONFIRMATION -> {
+                        status = STATUS_MENUNGGU_KONFIRMASI
+                        statusLabel = MENUNGGU_KONFIRMASI
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_PROCESSED -> {
+                        status = STATUS_DIPROSES
+                        statusLabel = DIPROSES
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_SENT -> {
+                        status = STATUS_DIKIRIM
+                        statusLabel = DIKIRIM
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_DELIVERED -> {
+                        status = STATUS_TIBA_DI_TUJUAN
+                        statusLabel = TIBA_DI_TUJUAN
+                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_DIGITAL -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DIGITAL
+                    }
+                    PARAM_EVENTS -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
+                    }
+                    PARAM_DEALS -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
+                    }
+                    PARAM_PESAWAT -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
+                    }
+                    PARAM_TRAIN -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAIN
+                    }
+                    PARAM_GIFTCARDS -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
+                    }
+                    PARAM_INSURANCE -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
+                    }
+                    PARAM_MODALTOKO -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
+                    }
+                    PARAM_HOTEL -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
+                    }
+                    PARAM_TRAVEL_ENTERTAINMENT -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+                    }
+                }
+                paramUohOrder.status = status
+                currFilterType = UohConsts.TYPE_FILTER_STATUS
+                currFilterStatusKey = status
+                currFilterStatusLabel = statusLabel
+            }
+        }
+        setInitialValue()
+        loadOrderHistoryList("")
+    }
+
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = resources.getStringArray(R.array.filter_date)
+        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as? Array<String>
     }
 
     private fun observingData() {
@@ -359,7 +432,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
-                    userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
+                    userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
                 }
             }
 
@@ -417,7 +490,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             paramUohOrder.uUID = ""
             paramUohOrder.page = currPage
         }
-        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
+        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
 
     private fun loadRecommendationList() {
@@ -449,15 +522,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 }
                             }
                         }
-                        userSession?.isLoggedIn?.let { it1 -> userSession?.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
+                        userSession.isLoggedIn?.let { it1 -> userSession.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
                     } else {
                         if (currPage == 1) {
                             loadRecommendationList()
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -472,6 +547,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
+                    UohIdlingResource.decrement()
+                }
+                is Fail -> {
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -494,9 +573,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -512,9 +593,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -537,9 +620,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -560,10 +645,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -584,10 +671,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -603,9 +692,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -634,20 +725,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || isFirstLoad) {
-            ChipsUnify.TYPE_NORMAL
-        } else {
-            ChipsUnify.TYPE_SELECTED
-        }
-
-        filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
-        filter1?.listener = {
-            onClickFilterDate()
-        }
-        filter1?.let {
-            chips.add(it)
-        }
-
+        // status
         val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
                 || filterStatus.equals(PARAM_MARKETPLACE, true)
                 || filterStatus.equals(PARAM_DIGITAL, true)
@@ -658,6 +736,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 || filterStatus.equals(PARAM_INSURANCE, true)
                 || filterStatus.equals(PARAM_MODALTOKO, true)
                 || filterStatus.equals(PARAM_HOTEL, true)
+                || filterStatus.equals(PARAM_TRAIN, true)
                 || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
@@ -676,8 +755,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
         filter2?.let { chips.add(it) }
 
+        // category
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
                 filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+                filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true) ||
+                filterStatus.equals(PARAM_UOH_PROCESSED, true) ||
+                filterStatus.equals(PARAM_UOH_SENT, true) ||
+                filterStatus.equals(PARAM_UOH_DELIVERED, true) ||
                 filterStatus.equals(PARAM_DIGITAL, true) ||
                 filterStatus.equals(PARAM_EVENTS, true) ||
                 filterStatus.equals(PARAM_DEALS, true) ||
@@ -685,6 +769,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_GIFTCARDS, true) ||
                 filterStatus.equals(PARAM_INSURANCE, true) ||
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
+                filterStatus.equals(PARAM_TRAIN, true) ||
                 filterStatus.equals(PARAM_HOTEL, true) ||
                 filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_SELECTED
@@ -692,15 +777,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ChipsUnify.TYPE_NORMAL
         }
 
-        filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
+        filter3 = SortFilterItem(ALL_PRODUCTS, typeCategory, ChipsUnify.SIZE_SMALL)
         filter3?.listener = {
             onClickFilterCategory()
         }
         if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
-            filter3?.title = ALL_CATEGORIES
+            filter3?.title = ALL_PRODUCTS
 
-        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+                        || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_PROCESSED, true)
+                        || filterStatus.equals(PARAM_UOH_SENT, true)
+                        || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
             filter3?.title = orderList.categories.first().label
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
@@ -708,14 +797,30 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
                         || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
             filter3?.title = orderList.categories[2].label
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
-                filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
+                        filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             filter3?.title = orderList.categories[3].label
         }
         filter3?.let { chips.add(it) }
+
+        // date
+        val typeDate = if (isReset || isFirstLoad) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+
+        filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
+        filter1?.listener = {
+            onClickFilterDate()
+        }
+        filter1?.let {
+            chips.add(it)
+        }
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
@@ -724,11 +829,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
-            showToaster(resetMsg, Toaster.TYPE_NORMAL)
+            val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
+            resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             resetFilter()
             refreshHandler?.startRefresh()
-            userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
+            userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
         }
 
         filter1?.refChipUnify?.setChevronClickListener { onClickFilterDate() }
@@ -739,19 +844,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterDate() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
-        var i = 0
-        arrayFilterDate.forEach { optionDate ->
-            val mapKey = HashMap<String, String>()
-            mapKey["$i"] = optionDate
-            arrayListMap.add(mapKey)
-            i++
+        val arrayListDateFilterBundle = arrayListOf<UohFilterBundle>()
+        arrayFilterDate?.let {
+            if (it.isNotEmpty()) {
+                it.forEachIndexed { index, s ->
+                    arrayListDateFilterBundle.add(UohFilterBundle(key = index.toString(), value = s, type = 0))
+                }
+            }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListDateFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -761,17 +866,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
-        orderList.filters.forEach { option ->
-            val mapKey = HashMap<String, String>()
-            mapKey[option] = option
-            arrayListMap.add(mapKey)
+        val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
+        orderList.v2Filters.forEach { v2Filter ->
+            val type = if (v2Filter.isPrimary) 0
+            else 1
+            arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
-        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
-        if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
+        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
+        if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
         uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -781,23 +886,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterCategory() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
-        val mapKeyDefault = HashMap<String, String>()
-        mapKeyDefault[ALL_CATEGORIES] = ALL_CATEGORIES_TRANSACTION
-        arrayListMap.add(mapKeyDefault)
+        val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
+        arrayListStatusFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         orderList.categories.forEach { category ->
-            val mapKey = HashMap<String, String>()
-            mapKey[category.value] = category.label
-            arrayListMap.add(mapKey)
+            arrayListStatusFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
         }
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
-        if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
-        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
+        if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
+        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
         if ((filterStatus.equals(PARAM_MARKETPLACE, true)
-                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+                        || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
+                        || filterStatus.equals(PARAM_UOH_PROCESSED, true)
+                        || filterStatus.equals(PARAM_UOH_SENT, true)
+                        || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                         && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
 
@@ -808,6 +913,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_DEALS, true)
                         || filterStatus.equals(PARAM_PESAWAT, true)
                         || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
                         && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
@@ -847,7 +953,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uoh_sort_filter?.resetAllFilters()
         filter1?.title = ALL_DATE
         filter2?.title = ALL_STATUS
-        filter3?.title = ALL_CATEGORIES
+        filter3?.title = ALL_PRODUCTS
         paramUohOrder = UohListParam()
         setInitialValue()
     }
@@ -882,32 +988,38 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 searchBarIsNotEmpty -> {
                     emptyStatus = context?.let { context ->
+                            ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
+                                activity?.resources?.let { resource ->
+                                    UohEmptyState(drawable,
+                                            resource.getString(R.string.uoh_search_empty),
+                                            resource.getString(R.string.uoh_search_empty_desc),
+                                            false, "")
+                                }
 
-                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_search_empty),
-                                    resources.getString(R.string.uoh_search_empty_desc),
-                                    false, "")
-                        }
+                            }
                     }
                 }
                 paramUohOrder.status.isNotEmpty() -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_filter_empty),
-                                    resources.getString(R.string.uoh_filter_empty_desc),
-                                    true, resources.getString(R.string.uoh_filter_empty_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_filter_empty),
+                                        resource.getString(R.string.uoh_filter_empty_desc),
+                                        true, resource.getString(R.string.uoh_filter_empty_btn))
+                            }
                         }
                     }
                 }
                 else -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_no_order),
-                                    resources.getString(R.string.uoh_no_order_desc),
-                                    true, resources.getString(R.string.uoh_no_order_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_no_order),
+                                        resource.getString(R.string.uoh_no_order_desc),
+                                        true, resource.getString(R.string.uoh_no_order_btn))
+                            }
                         }
                     }
                 }
@@ -933,7 +1045,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         activity?.let {
             DaggerUohListComponent.builder()
                     .baseAppComponent(getBaseAppComponent())
-                    .uohListModule(context?.let { UohListModule(it)})
+                    .uohListModule(context?.let { UohListModule(it) })
                     .build()
                     .inject(this)
         }
@@ -989,13 +1101,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                         }
 
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         val labelTrackingStatus: String
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
-                        if (tempFilterStatusKey != SEMUA_TRANSAKSI) {
+                        if (tempFilterStatusKey.isNotEmpty() && tempFilterStatusKey != ALL_STATUS_TRANSACTION) {
                             filter2?.type = ChipsUnify.TYPE_SELECTED
                             filter2?.title = currFilterStatusLabel
                             labelTrackingStatus = currFilterStatusLabel
@@ -1004,22 +1116,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter2?.title = ALL_STATUS
                             labelTrackingStatus = ALL_STATUS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
-                        if (tempFilterCategoryKey != ALL_CATEGORIES) {
+                        if (tempFilterCategoryKey.isNotEmpty() && tempFilterCategoryKey != ALL_PRODUCTS) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
                             filter3?.title = currFilterCategoryLabel
                             labelTrackingCategory = currFilterCategoryLabel
                         } else {
                             filter3?.type = ChipsUnify.TYPE_NORMAL
-                            filter3?.title = ALL_CATEGORIES
-                            labelTrackingCategory = ALL_CATEGORIES
+                            filter3?.title = ALL_PRODUCTS
+                            labelTrackingCategory = ALL_PRODUCTS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
+                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
                     }
                 }
                 bottomSheetOption?.dismiss()
@@ -1064,19 +1176,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var actionStatus = ""
                 if (status.isNotEmpty() && status.toIntOrZero() < 600) actionStatus = ACTION_FINISH_ORDER
 
-                val paramFinishOrder = userSession?.userId?.let { it1 ->
+                val paramFinishOrder = userSession.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
                 if (paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_order), paramFinishOrder)
+                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
 
-                userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
-                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1095,7 +1207,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             bottomSheetLsFinishOrder?.dismiss()
             currIndexNeedUpdate = index
             uohItemAdapter.showLoaderAtIndex(index)
-            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
+            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_lsprint), orderId)
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1143,16 +1255,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
+                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
                 val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
+                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_train), param)
             }
-            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
+            userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1172,17 +1284,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
-    override fun onOptionItemClick(option: String, label: String, filterType: Int) {
+    override fun onOptionItemClick(label: String, value: String, filterType: Int) {
         isFilterClicked = true
         tempFilterType = filterType
 
         when (filterType) {
             UohConsts.TYPE_FILTER_DATE -> {
-                tempFilterDateKey = option
-                tempFilterDateLabel = label
-                if (option.isNotEmpty()) {
+                tempFilterDateKey = label
+                tempFilterDateLabel = value
+                if (label.isNotEmpty()) {
                     when {
-                        option.toInt() == 0 -> {
+                        label.toInt() == 0 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1190,7 +1302,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = ""
 
                         }
-                        option.toInt() == 1 -> {
+                        label.toInt() == 1 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1200,7 +1312,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = endDate
 
                         }
-                        option.toInt() == 2 -> {
+                        label.toInt() == 2 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1209,7 +1321,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = endDate
 
                         }
-                        option.toInt() == 3 -> {
+                        label.toInt() == 3 -> {
                             val inputFormat = SimpleDateFormat("yyyy-MM-dd")
                             val outputFormat = SimpleDateFormat("d MMM yyyy")
                             val startDateStrInput = inputFormat.parse(orderList.dateLimit)
@@ -1239,23 +1351,23 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                     }
                 }
-                userSession?.userId?.let { UohAnalytics.clickDateFilterChips(it) }
+                userSession.userId?.let { UohAnalytics.clickDateFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
-                tempFilterStatusKey = option
-                tempFilterStatusLabel = label
-                paramUohOrder.status = option
-                userSession?.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
+                tempFilterStatusKey = label
+                tempFilterStatusLabel = value
+                paramUohOrder.status = label
+                userSession.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
-                tempFilterCategoryKey = option
-                tempFilterCategoryLabel = label
-                if (tempFilterCategoryKey == ALL_CATEGORIES) {
+                tempFilterCategoryKey = label
+                tempFilterCategoryLabel = value
+                if (tempFilterCategoryKey == ALL_PRODUCTS) {
                     paramUohOrder.verticalCategory = ""
                 } else {
-                    paramUohOrder.verticalCategory = option
+                    paramUohOrder.verticalCategory = label
                 }
-                userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
+                userSession.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
         }
     }
@@ -1353,7 +1465,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
                 RouteManager.route(context, ApplinkConst.CART)
-                userSession?.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
+                userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }
             }).show()
         }
     }
@@ -1361,7 +1473,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
         showBottomSheetKebabMenu(orderIndex)
         uohBottomSheetKebabMenuAdapter.addList(order)
-        userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
+        userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
     override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
@@ -1401,12 +1513,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     RouteManager.route(context, applinkTrack)
                 }
                 dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                    val linkUrl = dotMenu.appURL
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
             }
         }
-        userSession?.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
+        userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
     }
 
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
@@ -1442,7 +1554,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
-        userSession?.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+        userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
@@ -1467,26 +1579,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetLsFinishOrder(index, order.verticalID)
                 }
                 button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = LS_LACAK_MWEB.replace(REPLACE_ORDER_ID, order.verticalID)
+                    val linkUrl = button.appURL
                     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                 }
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     currIndexNeedUpdate = index
                     orderIdNeedUpdated = order.orderUUID
                     if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(activity?.resources, R.raw.recharge_set_fail), order.verticalID.toInt())
                     }
                 }
             }
         }
 
-        userSession?.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
     }
 
     override fun onEmptyResultResetBtnClicked() {
         resetFilter()
         refreshHandler?.startRefresh()
-        userSession?.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
+        userSession.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
     }
 
     override fun onTickerDetailInfoClicked(url: String) {
@@ -1513,9 +1625,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             var eeProductId = ""
             var eeProductPrice = ""
             if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i).asJsonObject
-                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                val objProduct = jsonArray.get(i)?.asJsonObject
+                eeProductId = objProduct?.get(EE_PRODUCT_ID).toString()
+                eeProductPrice = objProduct?.get(EE_PRODUCT_PRICE).toString()
             }
 
             arrayListProducts.add(ECommerceImpressions.Impressions(
@@ -1532,7 +1644,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onMulaiBelanjaBtnClicked() {
         RouteManager.route(context, ApplinkConst.HOME)
-        userSession?.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
+        userSession.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
     }
 
     override fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -1548,7 +1660,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession?.userId?.let {
+        userSession.userId?.let {
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                     name = productName,
                     id = recommendationItem.productId.toString(),
@@ -1567,7 +1679,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        userSession?.userId?.let {
+        userSession.userId?.let {
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                     name = productName,
                     id = recommendationItem.productId.toString(),
@@ -1623,7 +1735,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -1663,9 +1775,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
                 listParamAtcMulti.add(AddToCartMultiParam(
-                        productId = objParam.get(PRODUCT_ID).asInt,
+                        productId = objParam.get(PRODUCT_ID).asLong,
                         productName = objParam.get(PRODUCT_NAME).asString,
-                        productPrice = objParam.get(PRODUCT_PRICE).asInt,
+                        productPrice = objParam.get(PRODUCT_PRICE).asLong,
                         qty = objParam.get(QUANTITY).asInt,
                         notes = objParam.get(NOTES).asString,
                         shopId = objParam.get(SHOP_ID).asInt,
@@ -1674,8 +1786,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            uohListViewModel.doAtcMulti(userSession?.userId
-                    ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+            uohListViewModel.doAtcMulti(userSession.userId
+                    ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1689,7 +1801,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         dimension79 = objProduct.get(EE_SHOP_ID).asString
                 ))
             }
-            userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
+            userSession.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
         }
     }
 }

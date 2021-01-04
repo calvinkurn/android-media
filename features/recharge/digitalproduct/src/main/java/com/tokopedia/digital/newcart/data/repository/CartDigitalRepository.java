@@ -6,15 +6,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.newcart.data.entity.response.ResponsePatchOtpSuccess;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCartData;
 import com.tokopedia.digital.newcart.domain.ICartDigitalRepository;
+import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.Map;

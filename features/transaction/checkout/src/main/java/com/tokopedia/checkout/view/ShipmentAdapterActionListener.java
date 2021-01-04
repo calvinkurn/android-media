@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
@@ -33,7 +33,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment);
 
-    void onFinishChoosingShipment();
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 

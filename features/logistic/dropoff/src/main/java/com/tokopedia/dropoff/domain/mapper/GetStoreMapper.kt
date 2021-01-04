@@ -4,7 +4,7 @@ import com.tokopedia.dropoff.data.response.getStore.Data
 import com.tokopedia.dropoff.data.response.getStore.GetStoreResponse
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffUiModel
-import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import javax.inject.Inject
 
 

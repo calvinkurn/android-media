@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -36,6 +38,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
 
+        renderLabelBestSeller(labelBestSeller, productCardModel)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
@@ -52,6 +56,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         setAddToCartButtonText(productCardModel)
 
@@ -83,6 +90,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -132,8 +143,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getThreeDotsButton(): View? = imageThreeDots
 
-
-
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     /**
      * Special cases for specific pages

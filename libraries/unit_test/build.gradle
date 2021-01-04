@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+
+dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.testDependencies.archCoreTesting
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    api rootProject.ext.miscDependencies.coroutineTest
+}
+
+project.ext {
+    artifactId = 'coroutines-test'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "unit_test-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.presentation.compoundview.adapter.DigitalCartDetailAdapter;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
 
 import java.util.ArrayList;
 import java.util.List;

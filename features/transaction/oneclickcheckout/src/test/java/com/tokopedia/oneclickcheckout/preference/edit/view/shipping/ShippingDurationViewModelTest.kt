@@ -1,13 +1,13 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -92,7 +92,7 @@ class ShippingDurationViewModelTest {
         }
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
 
         assertEquals(OccState.Success(ShippingListModel()), shippingDurationViewModel.shippingDuration.value)
     }
@@ -130,7 +130,7 @@ class ShippingDurationViewModelTest {
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
         shippingDurationViewModel.selectedId = 2
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
 
         val data = ShippingListModel(listOf(ServicesItemModel(servicesId = 1, texts = TextsModel()), ServicesItemModel(servicesId = 2, isSelected = true, texts = TextsModel())))
         assertEquals(OccState.Success(data), shippingDurationViewModel.shippingDuration.value)
@@ -141,7 +141,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
 
         assertEquals(OccState.Failed(Failure(response)), shippingDurationViewModel.shippingDuration.value)
     }
@@ -151,7 +151,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(null, null)
+        shippingDurationViewModel.getRates(null, null, false)
 
         verify(inverse = true) { useCaseRates.execute(any()) }
     }
@@ -161,7 +161,7 @@ class ShippingDurationViewModelTest {
         val response = Throwable()
         every { useCaseRates.execute(any()) } returns Observable.error(response)
 
-        shippingDurationViewModel.getRates(null, shippingParam)
+        shippingDurationViewModel.getRates(null, shippingParam, false)
 
         verify(inverse = true) { useCaseRates.execute(any()) }
     }
@@ -231,7 +231,7 @@ class ShippingDurationViewModelTest {
         }
         every { useCaseRates.execute(any()) } returns Observable.just(response)
 
-        shippingDurationViewModel.getRates(ArrayList(), shippingParam)
+        shippingDurationViewModel.getRates(ArrayList(), shippingParam, false)
         shippingDurationViewModel.setSelectedShipping(2)
 
         val data = ShippingListModel(listOf(ServicesItemModel(servicesId = 1, texts = TextsModel()), ServicesItemModel(servicesId = 2, isSelected = true, texts = TextsModel())))

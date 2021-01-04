@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
@@ -20,7 +20,7 @@ class GetAllShopInfoUseCase constructor(
         private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
         private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
         private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
-        private val dispatcher: SellerHomeCoroutineDispatcher
+        private val dispatcher: CoroutineDispatchers
 ) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>(){
 
     override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> = coroutineScope {
@@ -32,7 +32,7 @@ class GetAllShopInfoUseCase constructor(
     }
 
     private suspend fun getPartialShopInfoData(shopId: Int): PartialSettingResponse {
-        return withContext(dispatcher.io()) {
+        return withContext(dispatcher.io) {
             try {
                 shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
                 getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
@@ -49,7 +49,7 @@ class GetAllShopInfoUseCase constructor(
     }
 
     private suspend fun getPartialTopAdsData(shopId: String): PartialSettingResponse {
-        return withContext(dispatcher.io()) {
+        return withContext(dispatcher.io) {
             try {
                 topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
                 topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)

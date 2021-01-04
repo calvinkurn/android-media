@@ -180,8 +180,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void showErrorMessage() {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-        });
+        Toaster.INSTANCE.build(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR , getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        }).show();
     }
 
 

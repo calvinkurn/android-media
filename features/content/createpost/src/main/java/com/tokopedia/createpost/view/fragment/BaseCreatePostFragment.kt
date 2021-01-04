@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.TYPE_AFFILIATE
@@ -443,7 +444,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.make(this, getString(com.tokopedia.attachproduct.R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
             }
         }
@@ -694,7 +695,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (isFormInvalid()) {
             return
         }
-
+        context?.let {
+            val input = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            input.hideSoftInputFromWindow(view?.applicationWindowToken, 0)
+        }
         if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
         else {
             submitPost()
@@ -714,10 +718,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             hideLoading()
 
-            if (isTypeAffiliate()) {
-                goToProfile()
-            } else {
-                goToFeed()
+            when {
+                GlobalConfig.isSellerApp() -> {
+                    activity?.setResult(Activity.RESULT_OK)
+                }
+                isTypeAffiliate() -> {
+                    goToProfile()
+                }
+                else -> {
+                    goToFeed()
+                }
             }
 
             it.finish()

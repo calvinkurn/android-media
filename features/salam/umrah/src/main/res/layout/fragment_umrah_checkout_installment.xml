@@ -21,26 +21,26 @@
         android:layout_below="@+id/tv_umrah_checkout_installment" />
 
     <LinearLayout
-        android:background="@color/white"
+        android:background="@color/Neutral_N0"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:id="@+id/btn_umrah_checkout_installment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:text="@string/umrah_checkout_installment_button_next"
-        app:unifyButtonSize="large"
-        app:unifyButtonType="main"
-        tools:targetApi="m"
-        tools:ignore="UnusedAttribute" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:id="@+id/btn_umrah_checkout_installment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/umrah_checkout_installment_button_next"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            tools:targetApi="m"
+            tools:ignore="UnusedAttribute" />
     </LinearLayout>
 </RelativeLayout>

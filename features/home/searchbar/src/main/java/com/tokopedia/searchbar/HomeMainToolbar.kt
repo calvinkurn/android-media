@@ -33,7 +33,6 @@ import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
-
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
@@ -64,7 +63,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var searchMagnifierIcon: Drawable
 
-    private lateinit var afterInflationCallable: Callable<Any?>
+    private var afterInflationCallable: Callable<Any?>? = null
 
     private lateinit var animationJob: Job
 
@@ -181,7 +180,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             viewHomeMainToolBar = view
             actionAfterInflation(context, view)
             setViewAttributesAfterInflation()
-            afterInflationCallable.call()
+            afterInflationCallable?.call()
             this@HomeMainToolbar.addView(view)
         }
         if (inflateFinishCallBack != null) {

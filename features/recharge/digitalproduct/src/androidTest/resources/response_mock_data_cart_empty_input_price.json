@@ -1,0 +1,132 @@
+{
+  "data": {
+    "type": "cart",
+    "id": "14496977-26-7e9a253f9ee52647b80f21ff5363c52c",
+    "attributes": {
+      "user_id": 14496977,
+      "client_number": "410505******5403",
+      "title": "Detail Pembayaran",
+      "category_name": "Kartu Kredit",
+      "operator_name": "BNI",
+      "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/6/5/47197032/47197032_1edffc51-b255-4465-80db-a1e0761ea2ea.png",
+      "price": "Rp 19.797.948",
+      "price_plain": 19797948,
+      "instant_checkout": false,
+      "need_otp": false,
+      "sms_state": "",
+      "voucher_autocode": "",
+      "user_input_price": {
+        "min_payment": "Rp 1",
+        "max_payment": "Rp 50.000.000",
+        "min_payment_plain": 1,
+        "max_payment_plain": 50000000,
+        "min_payment_error": "Nominal pembayaran di bawah batas pembayaran",
+        "max_payment_error": "Nominal pembayaran di atas batas pembayaran"
+      },
+      "main_info": [
+        {
+          "label": "Bank",
+          "value": "BNI"
+        },
+        {
+          "label": "Nomor Kartu",
+          "value": "4105-05**-****-5403"
+        },
+        {
+          "label": "Nama",
+          "value": "AFFIANDINI"
+        },
+        {
+          "label": "Total Tagihan",
+          "value": "Rp 19.797.948"
+        },
+        {
+          "label": "Biaya Admin",
+          "value": "Rp 9.000"
+        }
+      ],
+      "additional_info": [
+        {
+          "title": "Data Pelanggan",
+          "detail": [
+            {
+              "label": "Statement Date",
+              "value": "20/09/2020"
+            },
+            {
+              "label": "Jatuh Tempo",
+              "value": "10/10/2020"
+            }
+          ]
+        }
+      ],
+      "enable_voucher": true,
+      "is_coupon_active": 1,
+      "autoapply": {
+        "success": false,
+        "Message": {
+          "state": "",
+          "color": "",
+          "text": ""
+        },
+        "code": "",
+        "is_coupon": 0,
+        "discount_amount": 0,
+        "discount_price": "Rp 0",
+        "discounted_amount": 19797948,
+        "discounted_price": "Rp 19.797.948",
+        "title_description": "",
+        "promo_code_id": 0,
+        "promo_id": 0,
+        "message_success": ""
+      },
+      "default_promo_dialog_tab": "voucher",
+      "cross_selling_type": 0,
+      "cross_selling_config": {
+        "is_skipable": true,
+        "is_checked": false,
+        "wording": {
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        },
+        "wording_is_subscribed": {
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        }
+      },
+      "pop_up": null,
+      "fintech_product": null,
+      "atc_source": "",
+      "admin_fee": "Rp 9.000",
+      "admin_fee_plain": 9000,
+      "back_url": "",
+      "promo_service_id": "819380128012836"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "type": "category",
+          "id": "26"
+        }
+      },
+      "operator": {
+        "data": {
+          "type": "operator",
+          "id": "266"
+        }
+      },
+      "product": {
+        "data": {
+          "type": "product",
+          "id": "1326"
+        }
+      }
+    }
+  }
+}

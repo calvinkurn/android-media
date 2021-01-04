@@ -30,10 +30,12 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
@@ -53,6 +55,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -65,7 +68,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_sah.*
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
@@ -122,6 +124,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomeTable: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeMultiLineGraph: PerformanceMonitoring? = null
+    private var performanceMonitoringAnnouncement: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
@@ -154,6 +158,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
+        observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
     }
@@ -186,7 +192,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         menu.clear()
         inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
         this.menu = menu
-        showGlobalSearchIcon()
         showNotificationBadge()
     }
 
@@ -335,7 +340,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
+            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilter)
+        }
         performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
@@ -366,6 +374,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeBarChart = PerformanceMonitoring.start(SELLER_HOME_BAR_CHART_TRACE)
         sellerHomeViewModel.getBarChartWidgetData(dataKeys)
+    }
+
+    private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
+        performanceMonitoringSellerHomeMultiLineGraph = PerformanceMonitoring.start(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        performanceMonitoringAnnouncement = PerformanceMonitoring.start(SELLER_HOME_ANNOUNCEMENT_TRACE)
+        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
@@ -425,16 +447,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
     }
 
-    override fun sendPostListImpressionEvent(dataKey: String) {
-        SellerHomeTracking.sendImpressionPostEvent(dataKey)
+    override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendImpressionPostEvent(element, userSession.userId)
     }
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         SellerHomeTracking.sendClickPostItemEvent(dataKey, title)
     }
 
-    override fun sendPostListCtaClickEvent(dataKey: String) {
-        SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+    override fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendClickPostSeeMoreEvent(element, userSession.userId)
+    }
+
+    override fun sendPostListFilterClick(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendPostListFilterClick(element, userSession.userId)
+    }
+
+    override fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendPostEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
@@ -450,6 +480,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }
 
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
+        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+    }
+
+    override fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {
+        SellerHomeTracking.sendTableEmptyStateCtaClick(element, userSession.userId)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
@@ -460,9 +498,40 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
     }
 
-    private fun showGlobalSearchIcon() {
-        val menuItem = menu?.findItem(SEARCH_MENU_ID)
-        menuItem?.isVisible = remoteConfig.isGlobalSearchEnabled()
+    override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphImpressionEvent(element, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphMetricClick(element: MultiLineGraphWidgetUiModel, metric: MultiLineMetricUiModel) {
+        SellerHomeTracking.sendMultiLineGraphMetricClick(element, metric, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphCtaClick(element, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphEmptyStateCtaClick(element, userSession.userId)
+    }
+
+    override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {
+        SellerHomeTracking.sendAnnouncementImpressionEvent(element, userSession.userId)
+    }
+
+    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+        SellerHomeTracking.sendAnnouncementClickEvent(element, userSession.userId)
+    }
+
+    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
+                ?: PostFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(requireContext(), element.postFilter) {
+            element.data = null
+            notifyWidgetChanged(adapterPosition)
+            getPostData(listOf(element))
+        }.show(childFragmentManager)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {
@@ -501,7 +570,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
 
-        swipeRefreshLayout.isRefreshing = true
+        view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
         startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
@@ -515,7 +584,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
-    private fun stopHomeLayoutRenderMonitoring() {
+    private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
+        performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
@@ -525,30 +595,42 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.sahGlobalError?.gone()
         recyclerView.visible()
 
-        // somehow the recyclerview won't show the items if we use diffutil when the adapter is still empty
-        if (adapter.data.isEmpty()) {
-            super.renderList(widgets)
-            swipeRefreshLayout.isRefreshing = true
-        } else {
-            val newWidgets = adapter.data.toMutableList().mapIndexed { i, widget ->
+        adapter.hideLoading()
+        hideSnackBarRetry()
+        updateScrollListenerState(false)
+
+        val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
+        val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+        mostWidgetData.forEachIndexed { i, widget ->
+            widgets.getOrNull(i)?.let { newWidget ->
                 // "if" is true only on the first load, "else" is always true when we reload
-                if (isTheSameWidget(widget, widgets[i]) && widget.isFromCache && !widgets[i].isFromCache) {
+                if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
                     widget.apply { isFromCache = false }
+                    newWidgets.add(widget)
                 } else {
-                    widgets[i]
+                    newWidgets.add(newWidget)
                 }
             }
-
-            val diffUtilCallback = SellerHomeDiffUtilCallback(
-                    adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                    newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
-            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-            diffUtilResult.dispatchUpdatesTo(adapter)
-            adapter.data.clear()
-            adapter.data.addAll(newWidgets)
         }
 
-        requestVisibleWidgetsData()
+        val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+        diffUtilResult.dispatchUpdatesTo(adapter)
+        adapter.data.clear()
+        adapter.data.addAll(newWidgets)
+
+        val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
+        if (!isAnyWidgetFromCache) {
+            view?.swipeRefreshLayout?.isEnabled = true
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
+
+        recyclerView.post {
+            requestVisibleWidgetsData()
+        }
+
         setProgressBarVisibility(false)
     }
 
@@ -560,6 +642,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets = widgets.groupBy { it.widgetType }
+        groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { getAnnouncementData(this) }
         groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
         groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
         groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
@@ -568,6 +651,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.TABLE]?.run { getTableData(this) }
         groupedWidgets[WidgetType.PIE_CHART]?.run { getPieChartData(this) }
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
+        groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             forEach {
                 if (!it.isLoaded) {
@@ -682,11 +766,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             WidgetType.TABLE -> performanceMonitoringSellerHomeTable?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringSellerHomePieChart?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringSellerHomeBarChart?.stopTrace()
+            WidgetType.MULTI_LINE_GRAPH -> performanceMonitoringSellerHomeMultiLineGraph?.stopTrace()
+            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncement?.stopTrace()
         }
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
-        stopPltMonitoringIfNotCompleted()
+        val isFromCache = firstOrNull()?.isFromCache == true
+        stopPltMonitoringIfNotCompleted(isFromCache)
         forEach { widgetData ->
             adapter.data.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
@@ -735,9 +822,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading }
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
-            swipeRefreshLayout.isRefreshing = false
+            view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
     }
@@ -781,11 +868,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun stopPltMonitoringIfNotCompleted() {
+    private fun stopPltMonitoringIfNotCompleted(fromCache: Boolean) {
         if (!performanceMonitoringSellerHomePltCompleted) {
             performanceMonitoringSellerHomePltCompleted = true
             recyclerView.addOneTimeGlobalLayoutListener {
-                stopHomeLayoutRenderMonitoring()
+                stopHomeLayoutRenderMonitoring(fromCache)
             }
         }
     }

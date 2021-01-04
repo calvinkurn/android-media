@@ -19,4 +19,29 @@ object Constant {
         const val OFFICIAL_STORE_URL =  "https://ecs7.tokopedia.net/img/official_store_badge.png"
         const val POWER_MERCHANT_URL = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
     }
+
+    object TOP_NAV_BUTTON {
+        const val BACK_BUTTON = "Back Button"
+        const val SEARCH_BAR = "Search Bar"
+        const val SHARE = "Share"
+        const val CART = "Cart"
+        const val GLOBAL_MENU = "Global Menu"
+    }
+
+    object ProductTemplate {
+        const val GRID =  "grid"
+        const val LIST = "list"
+    }
+
+    object StaticFontColor{
+        const val FONT_COLOR =  "#03AC0E"
+    }
+
+    object ProductCardModel{
+        const val SALE_PRODUCT_STOCK = 100
+        const val PRODUCT_STOCK = 0
+        const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
+        const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
+        const val PDP_VIEW_THRESHOLD = 1000
+    }
 }

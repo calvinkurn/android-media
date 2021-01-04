@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
@@ -69,8 +70,10 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.homeNav)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.rechargeComponent)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
@@ -103,6 +106,8 @@ dependencies {
 
     // Unify
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
 
@@ -168,7 +173,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

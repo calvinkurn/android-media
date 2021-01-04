@@ -12,28 +12,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_banner_empty" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_home_banner_empty_title"
+    <LinearLayout
+        android:id="@+id/recharge_home_banner_empty_text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/banner_margin_top"
-        android:layout_marginRight="@dimen/layout_lvl3"
-        android:text="@string/recharge_home_empty_banner_title"
-        android:textColor="@color/Neutral_N0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        android:orientation="vertical"
+        android:layout_marginHorizontal="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recharge_home_banner_empty_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl3"
-        android:text="@string/recharge_home_empty_banner_desc"
-        android:textColor="@color/Neutral_N0"
-        app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_banner_empty_title"
-        app:typographyType="body_3" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recharge_home_banner_empty_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recharge_home_empty_banner_title"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="heading_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recharge_home_banner_empty_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/recharge_home_empty_banner_desc"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

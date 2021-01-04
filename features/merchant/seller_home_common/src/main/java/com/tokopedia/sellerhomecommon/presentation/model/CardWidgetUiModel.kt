@@ -15,11 +15,13 @@ data class CardWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: CardDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

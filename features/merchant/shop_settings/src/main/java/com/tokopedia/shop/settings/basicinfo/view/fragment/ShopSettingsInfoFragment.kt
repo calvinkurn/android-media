@@ -178,6 +178,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             moveToShopEditBasicInfoFragment()
+            ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
         vgShopStatusContainer.setOnClickListener {
@@ -508,10 +509,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoViewModel.detachView()
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
         shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
-        shopSettingsInfoViewModel.flush()
     }
 }

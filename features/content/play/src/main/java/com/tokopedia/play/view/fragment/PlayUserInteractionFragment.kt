@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -64,6 +67,7 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -152,6 +156,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     private var mMaxTopChatMode: Int? = null
+    private var toasterBottomMargin = 0
 
     /**
      * Animation
@@ -256,6 +261,17 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
         shouldOpenCartPage()
+    }
+
+    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
+        copyToClipboard(content)
+        showLinkCopiedToaster()
+
+        PlayAnalytics.clickCopyLink(
+                channelId = channelId,
+                channelType = playViewModel.channelType,
+                userId = playViewModel.userId
+        )
     }
 
     /**
@@ -511,6 +527,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeChannelInfo() {
         playViewModel.observableCompleteChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
+            toolbarView.setShareInfo(it.channelInfo.shareInfo)
         })
     }
 
@@ -630,6 +647,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
+                toolbarView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -926,6 +944,23 @@ class PlayUserInteractionFragment @Inject constructor(
             chatListHeightManager = PlayChatListHeightManager(requireView() as ViewGroup, screenOrientationDataSource, chatListHeightMap)
         }
         return chatListHeightManager!!
+    }
+
+    private fun copyToClipboard(content: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-room", content))
+    }
+
+    private fun showLinkCopiedToaster() {
+        if (toasterBottomMargin == 0) {
+            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
+            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
+        }
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+        Toaster.build(
+                container,
+                getString(R.string.play_link_copied),
+                type = Toaster.TYPE_NORMAL).show()
     }
 
     //region OnStateChanged

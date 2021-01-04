@@ -1,25 +1,33 @@
 package com.tokopedia.tokopoints.view.tokopointhome.catalog
 
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CatalogListCarouselAdapter
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
-import com.tokopedia.unifycomponents.TimerUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.*
 
 class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeViewModel)
     : RecyclerView.ViewHolder(view) {
-
+    val countDownView = view.findViewById<TimerUnifySingle>(R.id.tp_count_down_view_column)
+    val timerMessage = view.findViewById<View>(R.id.timer_msg)
     val layoutManager: LinearLayoutManager by lazy { LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false) }
     fun bind(content: SectionContent) {
 
@@ -28,14 +36,47 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             return
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
-        if (content.countdownAttr != null &&
-                content.countdownAttr.isShowTimer && content.countdownAttr.expiredCountDown > 0) {
-            val countDownView = view.findViewById<TimerUnify>(R.id.tp_count_down_view)
-            countDownView?.findViewById<View>(R.id.tp_count_down_view_column)?.visibility = View.VISIBLE
-            countDownView?.remainingMilliseconds = content.countdownAttr.expiredCountDown * 1000
-            countDownView?.onFinish = { view?.visibility = View.GONE }
+        if (content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown!!
+                && content.layoutCatalogAttr.countdownInfo?.countdownUnix != null && content.layoutCatalogAttr.countdownInfo?.countdownUnix!! > 0) {
+            if (countDownView.timer != null) {
+                countDownView.timer!!.cancel()
+            }
+            countDownView?.show()
+            timerMessage?.show()
+            val countDownInfo = content.layoutCatalogAttr?.countdownInfo
+            val timerValue = countDownInfo?.countdownUnix
+            val timerStr = countDownInfo?.countdownStr
+            val timerType = countDownInfo?.type
+            val timerFlagType = countDownInfo?.backgroundColor
+            if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
+                countDownView.timerVariant = TimerUnifySingle.VARIANT_MAIN
+            } else {
+                countDownView.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+            }
+            countDownView?.timerTextWidth=TimerUnifySingle.TEXT_WRAP
+            if (!countDownInfo?.label.isNullOrEmpty()) {
+                (timerMessage as TextView).text = countDownInfo?.label
+            } else {
+                timerMessage.hide()
+            }
+            if (content.layoutCatalogAttr?.countdownInfo != null) {
+                if (timerStr != null && timerType != null && timerValue != null)
+                    setTimer(timerValue, timerStr, timerType)
+            }
+            countDownView?.onFinish = {
+                if (content.layoutCatalogAttr.countdownInfo?.countdownUnix!! > 0) {
+                    if (timerStr != null && timerType != null && timerValue != null)
+                        setTimer(timerValue, timerStr, timerType)
+                } else {
+                    countDownView?.visibility = View.GONE
+                }
+            }
+            countDownView?.onTick = {
+                content.layoutCatalogAttr.countdownInfo?.countdownUnix = it / 1000
+            }
             view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
+            countDownView?.hide()
             view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
         }
         if (!content.cta.isEmpty) {
@@ -64,8 +105,9 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
         if (rvCarousel.itemDecorationCount == 0) {
             rvCarousel.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(16, rvCarousel.context)))
         }
-        rvCarousel.adapter = CatalogListCarouselAdapter(mPresenter, content.layoutCatalogAttr.catalogList, rvCarousel)
-
+        if (!content.layoutCatalogAttr.catalogList.isNullOrEmpty()) {
+            rvCarousel.adapter = CatalogListCarouselAdapter(content.layoutCatalogAttr.catalogList!!, rvCarousel)
+        }
     }
 
     fun handledClick(appLink: String?, webLink: String?, action: String?, label: String?) {
@@ -88,4 +130,22 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
         }
     }
 
+    private fun setTimer(timerValue: Long, timerStr: String, timerType: Int) {
+        if (timerType == 1) {
+            val seconds = timerValue?.rem(60)
+            val minutes = (timerValue?.rem((60 * 60)))?.div(60)
+            val hours = timerValue?.div((60 * 60))
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.HOUR, hours.toInt())
+            cal.add(Calendar.MINUTE, minutes.toInt())
+            cal.add(Calendar.SECOND, seconds.toInt())
+            countDownView?.targetDate = cal
+        } else {
+            countDownView.timerFormat = TimerUnifySingle.FORMAT_DAY
+            val cal = Calendar.getInstance()
+            var noOfDay = timerStr?.replace("[^0-9]".toRegex(), "")
+            noOfDay?.toInt()?.let { cal.add(Calendar.DAY_OF_MONTH, it + 1) }
+            countDownView.targetDate = cal
+        }
+    }
 }

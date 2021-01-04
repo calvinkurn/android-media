@@ -7,6 +7,6 @@
     <corners android:radius="@dimen/layout_lvl1" />
 
     <stroke
-        android:color="@color/Unify_G500"
+        android:color="@color/Unify_N200"
         android:width="1dp"/>
 </shape>

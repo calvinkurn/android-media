@@ -28,7 +28,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import javax.inject.Named;
 
 import dagger.Component;
-import kotlinx.coroutines.CoroutineDispatcher;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -67,8 +66,6 @@ public interface ShopComponent {
     GQLGetShopFavoriteStatusUseCase getGQLGetShopFavoriteStatusUseCase();
 
     GetShopReputationUseCase getShopReputationUseCase();
-
-    CoroutineDispatcher getCoroutineDispatcher();
 
     GraphqlRepository getGraphqlRepository();
 

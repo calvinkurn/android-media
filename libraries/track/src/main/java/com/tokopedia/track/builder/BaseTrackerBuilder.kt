@@ -69,6 +69,15 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
         return this
     }
 
+    override fun constructBasicGeneralClick(event: String, eventCategory: String, eventAction: String, eventLabel: String): BaseTrackerBuilderInterface {
+        dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel)
+        return this
+    }
+
     override fun appendEvent(value: String): BaseTrackerBuilderInterface {
         dataLayer[Event.KEY] = value
         return this

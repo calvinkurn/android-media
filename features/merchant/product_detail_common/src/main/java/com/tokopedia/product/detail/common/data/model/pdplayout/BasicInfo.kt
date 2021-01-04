@@ -68,9 +68,6 @@ data class BasicInfo(
     companion object {
         const val KG = "kilogram"
         const val KILO = 1000
-
-        const val LABEL_KG = "Kg"
-        const val LABEL_GRAM = "gram"
     }
 
     fun getDefaultOngkirInt(): Int = defaultOngkirEstimation.toIntOrNull() ?: 30000
@@ -79,6 +76,9 @@ data class BasicInfo(
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
+    }
+    fun isWarehouse(): Boolean {
+        return status == ProductStatusTypeDef.WAREHOUSE
     }
 
     fun statusMessage(context: Context): String {

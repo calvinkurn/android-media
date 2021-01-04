@@ -16,9 +16,19 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val appLink: String
     val dataKey: String
     val ctaText: String
+    val isShowEmpty: Boolean
     var data: T?
     var impressHolder: ImpressHolder
     var isLoaded: Boolean
     var isLoading: Boolean
     var isFromCache: Boolean
+    var emptyState: WidgetEmptyStateUiModel
 }
+
+data class WidgetEmptyStateUiModel(
+        val imageUrl: String = "",
+        val title: String = "",
+        val description: String = "",
+        val ctaText: String = "",
+        val appLink: String = ""
+)

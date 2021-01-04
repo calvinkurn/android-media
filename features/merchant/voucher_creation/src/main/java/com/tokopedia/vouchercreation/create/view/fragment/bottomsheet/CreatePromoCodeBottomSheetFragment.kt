@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
@@ -41,6 +42,10 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
         private const val MIN_TEXTFIELD_LENGTH = 5
         private const val MAX_TEXTFIELD_LENGTH = 10
+
+        private const val ERROR_MESSAGE = "Error validate voucher promo code"
+
+        const val TAG = "CreatePromoCodeBottomSheet"
 
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
@@ -145,6 +150,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
                 is Fail -> {
                     val error = result.throwable.message.toBlankOrString()
                     showErrorToaster(error)
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                 }
             }
             isWaitingForValidation = false

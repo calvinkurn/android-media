@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.processor.beta.AddToCartBundler;
 import com.tokopedia.abstraction.processor.beta.AddToCartProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
@@ -90,6 +89,8 @@ public class TopChatAnalytics {
         String EVENT_NAME_ATC = "addToCart";
         String EVENT_NAME_PRODUCT_PREVIEW = "productView";
 
+        String CLICK_CHAT_DETAIL = "ClickChatDetail";
+
     }
 
     public interface Action {
@@ -131,6 +132,7 @@ public class TopChatAnalytics {
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
         String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
+        String CLICK_PRODUCT_REAL_IMAGE = "click on product image";
     }
 
     public interface Label {
@@ -414,8 +416,18 @@ public class TopChatAnalytics {
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                AttachProductAnalytics.getEventClickChatAttachedProductImage().getEvent()
+                getEventClickChatAttachedProductImage()
         );
+    }
+
+    private Map<String, Object> getEventClickChatAttachedProductImage() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Name.CLICK_CHAT_DETAIL);
+        eventTracking.put("eventCategory", Category.CHAT_DETAIL);
+        eventTracking.put("eventAction", Action.CLICK_PRODUCT_REAL_IMAGE);
+        eventTracking.put("eventLabel", "");
+
+        return eventTracking;
     }
 
     // #AP7

@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.view;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -65,12 +67,12 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.domain.param.EditAddressParam;
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase;
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -103,19 +105,21 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -128,8 +132,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -158,6 +160,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
     private final ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
+    private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -171,10 +174,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
+    private Gson gson;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private CheckoutData checkoutData;
-    private boolean partialCheckout;
     private boolean couponStateChanged;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
@@ -186,9 +189,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     private CheckoutAnalyticsCourierSelection mTrackerShipment;
     private CodAnalytics mTrackerCod;
-    private String PARAM_GLOBAL = "global";
-    private String PARAM_MERCHANT = "merchant";
-    private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
@@ -215,7 +215,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
-                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
+                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
+                             Gson gson,
+                             ExecutorSchedulers executorSchedulers) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
@@ -238,6 +240,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
+        this.gson = gson;
+        this.executorSchedulers = executorSchedulers;
     }
 
     @Override
@@ -317,6 +321,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getEgoldAttributeModel() != null && getEgoldAttributeModel().isEligible()) {
             updateEgoldBuyValue();
         }
+    }
+
+    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
+        return dataCheckoutRequestList;
     }
 
     @Override
@@ -566,12 +574,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
-                                                                  boolean isTradeIn,
-                                                                  boolean isSkipUpdateOnboardingState,
-                                                                  @Nullable String cornerId,
-                                                                  @Nullable String deviceId,
-                                                                  @Nullable String leasingId) {
+    public Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
+                                                                 boolean isTradeIn,
+                                                                 boolean isSkipUpdateOnboardingState,
+                                                                 @Nullable String cornerId,
+                                                                 @Nullable String deviceId,
+                                                                 @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
@@ -581,7 +589,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 int tmpCornerId = Integer.parseInt(cornerId);
                 params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID, tmpCornerId);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Timber.d(e);
             }
         }
         if (leasingId != null && !leasingId.isEmpty()) {
@@ -589,7 +597,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 int tmpLeasingId = Integer.parseInt(leasingId);
                 params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID, tmpLeasingId);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Timber.d(e);
             }
         }
         if (isTradeIn) {
@@ -717,11 +725,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
-                                                       boolean isTradeIn,
-                                                       boolean isTradeInDropOff,
-                                                       String deviceId,
-                                                       CheckoutRequest checkoutRequest) {
+    public Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
+                                                      boolean isTradeIn,
+                                                      boolean isTradeInDropOff,
+                                                      String deviceId,
+                                                      CheckoutRequest checkoutRequest) {
         Map<String, Object> params = new HashMap<>();
         params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestGqlDataMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
@@ -807,20 +815,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
             dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList, false);
-            partialCheckout = true;
         }
     }
 
     @Override
-    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest) {
+    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest,
+                                                int lastSelectedCourierOrderIndex,
+                                                String cartString) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                        @Override
                                        public void onCompleted() {
@@ -881,6 +890,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                                    cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
                                                }
+
+                                               reloadCourierForMvc(validateUsePromoRevampUiModel, lastSelectedCourierOrderIndex, cartString);
                                            }
                                        }
                                    }
@@ -889,8 +900,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     }
 
+    // Re-fetch rates to get promo mvc icon
+    private void reloadCourierForMvc(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int lastSelectedCourierOrderIndex, String cartString) {
+        List<PromoSpIdUiModel> promoSpids = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        if (promoSpids.size() > 0 && lastSelectedCourierOrderIndex > -1) {
+            for (PromoSpIdUiModel promoSpId : promoSpids) {
+                if (promoSpId.getUniqueId().equalsIgnoreCase(cartString)) {
+                    getView().prepareReloadRates(lastSelectedCourierOrderIndex, false);
+                    break;
+                }
+            }
+        }
+    }
+
     private void updateTickerAnnouncementData(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
+        if (!UtilsKt.isNullOrEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
             if (tickerAnnouncementHolderData == null) {
                 setTickerAnnouncementHolderData(
                         new TickerAnnouncementHolderData(
@@ -970,7 +994,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    private Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step) {
+    public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step) {
         if (checkoutRequest != null) {
             Map<String, Object> checkoutMapData = new HashMap<>();
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
@@ -1061,8 +1085,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                             @Override
                             public void onCompleted() {
@@ -1152,8 +1176,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                             @Override
                             public void onCompleted() {
@@ -1204,6 +1228,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
+        // Set promo merchant request data
         if (validateUsePromoRevampUiModel != null) {
             if (dataCheckoutRequestList != null) {
                 setCheckoutRequestPromoData(dataCheckoutRequestList);
@@ -1239,6 +1264,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             builder.cornerData(cornerData);
         }
 
+        // Set promo global request data
         if (validateUsePromoRevampUiModel != null) {
             // Clear data first
             builder.promos(null);
@@ -1296,6 +1322,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (shopProductCheckoutRequest.promoCodes != null &&
                                     shopProductCheckoutRequest.promoCodes.size() > 0 &&
                                     !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
+                                // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                 shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
                             } else {
                                 ArrayList<String> codes = new ArrayList<>();
@@ -1306,6 +1333,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (voucherOrder.getCode().length() > 0 && voucherOrder.getType().length() > 0) {
                                 if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0 &&
                                         !hasInsertPromo(shopProductCheckoutRequest.promos, voucherOrder.getCode())) {
+                                    // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
                                     promoRequest.setType(voucherOrder.getType());
@@ -1464,9 +1492,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
             compositeSubscription.add(
                     editAddressUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
+                            .subscribeOn(executorSchedulers.getIo())
+                            .observeOn(executorSchedulers.getMain())
+                            .unsubscribeOn(executorSchedulers.getIo())
                             .subscribe(new Subscriber<String>() {
                                 @Override
                                 public void onCompleted() {
@@ -1488,18 +1516,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (getView() != null) {
                                         getView().setHasRunningApiCall(false);
                                         getView().hideLoading();
-                                        JSONObject response = null;
+                                        JsonObject response = null;
                                         String messageError = null;
                                         boolean statusSuccess;
                                         try {
-                                            response = new JSONObject(stringResponse);
-                                            int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                                    .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
+                                            response = new JsonParser().parse(stringResponse).getAsJsonObject();
+                                            int statusCode = response.getAsJsonObject().getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
+                                                    .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).getAsInt();
                                             statusSuccess = statusCode == 1;
                                             if (!statusSuccess) {
-                                                messageError = response.getJSONArray("message_error").getString(0);
+                                                messageError = response.getAsJsonArray("message_error").get(0).getAsString();
                                             }
-                                        } catch (JSONException e) {
+                                        } catch (Exception e) {
                                             Timber.d(e);
                                             statusSuccess = false;
                                         }
@@ -1511,7 +1539,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
-                                            if (TextUtils.isEmpty(messageError)) {
+                                            if (UtilsKt.isNullOrEmpty(messageError)) {
                                                 messageError = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
                                             }
                                             getView().navigateToSetPinpoint(messageError, locationPass);
@@ -1595,7 +1623,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     @Override
                     public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
-                            if (!TextUtils.isEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                            if (!UtilsKt.isNullOrEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
@@ -1685,9 +1713,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 changeShippingAddressGqlUseCase.createObservable(requestParam)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
+                        .unsubscribeOn(executorSchedulers.getIo())
                         .subscribe(new Subscriber<SetShippingAddressData>() {
                             @Override
                             public void onCompleted() {
@@ -1748,7 +1776,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
-                                                RecipientAddressModel recipientAddressModel) {
+                                                RecipientAddressModel recipientAddressModel,
+                                                boolean isForceReload, boolean skipMvc) {
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1759,12 +1788,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
 
-        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+        String mvc = generateRatesMvcParam(cartString);
+
+        RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
                 .codHistory(counter)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
-                .build();
+                .mvc("");
+
+        if (!skipMvc) {
+            ratesParamBuilder.mvc(mvc);
+        }
+
+        RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
@@ -1780,8 +1817,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
                                 shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
-                                isInitialLoad, isTradeInDropOff
+                                isInitialLoad, isTradeInDropOff, isForceReload
                         ));
+    }
+
+    @Override
+    public String generateRatesMvcParam(String cartString) {
+        String mvc = "";
+
+        List<MvcShippingBenefitUiModel> tmpMvcShippingBenefitUiModel = new ArrayList<>();
+        List<PromoSpIdUiModel> promoSpIdUiModels = new ArrayList<>();
+        if (validateUsePromoRevampUiModel != null) {
+            promoSpIdUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        } else if (lastApplyData != null) {
+            promoSpIdUiModels = lastApplyData.getAdditionalInfo().getPromoSpIds();
+        }
+
+        if (promoSpIdUiModels.size() > 0) {
+            for (PromoSpIdUiModel promoSpIdUiModel : promoSpIdUiModels) {
+                if (cartString.equals(promoSpIdUiModel.getUniqueId())) {
+                    tmpMvcShippingBenefitUiModel.addAll(promoSpIdUiModel.getMvcShippingBenefits());
+                }
+            }
+        }
+
+        if (tmpMvcShippingBenefitUiModel.size() > 0) {
+            mvc = gson.toJson(tmpMvcShippingBenefitUiModel);
+        }
+
+        return mvc.replace("\n", "").replace(" ", "");
     }
 
     @NonNull
@@ -1805,7 +1869,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
+        int addressId = 0;
+        try {
+            addressId = Integer.parseInt(recipientAddressModel.getId());
+        } catch (NumberFormatException e) {
+            // No-op
+        }
+        shippingParam.setAddressId(addressId);
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
@@ -1917,7 +1987,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {
                     Data data = response.getValidateCheckoutCod().getData().getData();
-                    if (TextUtils.isEmpty(data.getErrorMessage())
+                    if (UtilsKt.isNullOrEmpty(data.getErrorMessage())
                             && data.getPriceSummary() != null && data.getPriceSummary().size() > 0) {
                         // validation succeeded, go to cod confirmation page
                         mTrackerCod.eventClickBayarDiTempatShipmentSuccessEligible();
@@ -1947,7 +2017,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void releaseBooking() {
         // As deals product is using OCS, the shipment should only contain 1 product
-        int productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
+        long productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
         if (productId != 0) {
             compositeSubscription.add(releaseBookingUseCase
                     .execute(productId)
@@ -1982,8 +2052,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel
-                                                         validateUsePromoRevampUiModel) {
+    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
     }
 

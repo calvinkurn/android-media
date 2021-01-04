@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.CodProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodProductData;
 
 /**
  * Created by Irfan Khoirul on 25/01/18.
@@ -61,6 +61,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String etaText;
     private int etaErrorCode;
     private String shipperName;
+    private MerchantVoucherProductModel merchantVoucherProductModel;
 
     public CourierItemData() {
     }
@@ -567,5 +568,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setShipperName(String shipperName) {
         this.shipperName = shipperName;
+    }
+
+    public MerchantVoucherProductModel getMerchantVoucherProductModel() {
+        return merchantVoucherProductModel;
+    }
+
+    public void setMerchantVoucherProductModel(MerchantVoucherProductModel merchantVoucherProductModel) {
+        this.merchantVoucherProductModel = merchantVoucherProductModel;
     }
 }

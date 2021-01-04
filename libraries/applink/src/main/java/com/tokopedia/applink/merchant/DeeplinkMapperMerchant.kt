@@ -23,7 +23,7 @@ object DeeplinkMapperMerchant {
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
     private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
-
+    private const val PARAM_PRODUCT_ID = "productId"
 
     private const val PARAM_URL = "url"
 
@@ -31,11 +31,23 @@ object DeeplinkMapperMerchant {
         if (deeplink.startsWith(ApplinkConst.REPUTATION)) {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
+            if (segments.size > 1) {
+                val feedbackId = segments.last()
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)
+            }
             if (segments.size > 0) {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
             return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+        }
+        return deeplink
+    }
+
+    fun getRegisteredNavigationSellerReviewDetail(deeplink: String): String {
+        if (deeplink.startsWith(ApplinkConst.SELLER_REVIEW)) {
+            val productId = Uri.parse(deeplink).getQueryParameter(PARAM_PRODUCT_ID)
+            return Uri.parse(ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL).buildUpon().appendQueryParameter(PARAM_PRODUCT_ID, productId).build().toString()
         }
         return deeplink
     }
@@ -229,11 +241,13 @@ object DeeplinkMapperMerchant {
 
     fun isShopPageFeedDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) && uri.lastPathSegment == FEED_SEGMENT
+        return (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) ||
+                deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)) &&
+                uri.lastPathSegment == FEED_SEGMENT
     }
 
     fun getRegisteredNavigationShopFeed(deeplink: String): String {
-        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED) || deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_FEED)) {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
             return if (segments.size == SHOP_FEED_SEGMENT_SIZE) {

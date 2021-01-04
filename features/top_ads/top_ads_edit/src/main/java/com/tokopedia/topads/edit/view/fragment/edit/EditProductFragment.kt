@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -57,14 +56,12 @@ class EditProductFragment : BaseDaggerFragment() {
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
+
     private val viewModel by lazy {
-        viewModelProvider.get(EditFormDefaultViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
     }
     private val sharedViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+        ViewModelProvider(requireActivity(), viewModelFactory).get(SharedViewModel::class.java)
     }
 
     companion object {
@@ -272,14 +269,12 @@ class EditProductFragment : BaseDaggerFragment() {
         }
 
         //remove the delete items which are not originally in the group
-        var indi: MutableList<Int> = mutableListOf()
-        deletedProducts.forEachIndexed { index, deleted ->
-            if ((originalIdList.find { it -> deleted.itemID == it }) == null) {
-                indi.add(index)
+        val iteratorDel = deletedProducts.iterator()
+        while (iteratorDel.hasNext()) {
+            val key = iteratorDel.next()
+            if (!originalIdList.contains(key.itemID)) {
+                iteratorDel.remove()
             }
-        }
-        for (index in indi) {
-            deletedProducts.removeAt(index)
         }
     }
 

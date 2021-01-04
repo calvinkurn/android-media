@@ -17,10 +17,15 @@ object ApplinkConstInternalOrder {
     const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
     const val PARAM_MARKETPLACE = "marketplace"
     const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
+    const val PARAM_UOH_WAITING_CONFIRMATION = "uoh_waiting_confirmation"
+    const val PARAM_UOH_PROCESSED = "uoh_processed"
+    const val PARAM_UOH_SENT = "uoh_sent"
+    const val PARAM_UOH_DELIVERED = "uoh_delivered"
     const val PARAM_DIGITAL = "digital"
     const val PARAM_EVENTS = "events"
     const val PARAM_DEALS = "deals"
     const val PARAM_PESAWAT = "pesawat"
+    const val PARAM_TRAIN = "kereta"
     const val PARAM_BELANJA = "belanja"
     const val PARAM_GIFTCARDS = "giftcards"
     const val PARAM_INSURANCE = "insurance"
@@ -99,6 +104,9 @@ object ApplinkConstInternalOrder {
     val CANCELLED = "$INTERNAL_SELLER/cancelled"
 
     @JvmField
+    val CANCELLATION_REQUEST = "$INTERNAL_SELLER/cancellationrequest"
+
+    @JvmField
     val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
 
     @JvmField
@@ -135,6 +143,18 @@ object ApplinkConstInternalOrder {
     val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
 
     @JvmField
+    val UNIFY_ORDER_WAITING_CONFIRMATION = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_WAITING_CONFIRMATION"
+
+    @JvmField
+    val UNIFY_ORDER_PROCESSED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_PROCESSED"
+
+    @JvmField
+    val UNIFY_ORDER_SENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_SENT"
+
+    @JvmField
+    val UNIFY_ORDER_DELIVERED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_DELIVERED"
+
+    @JvmField
     val UNIFY_ORDER_DIGITAL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DIGITAL"
 
     @JvmField
@@ -145,6 +165,9 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val UNIFY_ORDER_PESAWAT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_PESAWAT"
+
+    @JvmField
+    val UNIFY_ORDER_TRAIN = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAIN"
 
     @JvmField
     val UNIFY_ORDER_GIFTCARDS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_GIFTCARDS"

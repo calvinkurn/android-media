@@ -39,7 +39,7 @@ class FlightCancellationReviewActivity : BaseSimpleActivity(),
 
     private fun setupToolbar() {
         toolbar.contentInsetStartWithNavigation = 0
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.flight_subtitle_text_color))
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200))
         val title = getString(R.string.activity_label_flight_review_cancellation)
         val subtitle = String.format(
                 getString(R.string.flight_cancellation_subtitle_order_id),

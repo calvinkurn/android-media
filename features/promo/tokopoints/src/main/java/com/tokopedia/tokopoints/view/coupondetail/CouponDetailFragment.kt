@@ -49,8 +49,8 @@ import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
-import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.COUPON_MIME_TYPE
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster

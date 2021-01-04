@@ -1,6 +1,6 @@
 package com.tokopedia.shop.favourite.domain.interactor
 
-import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
@@ -17,7 +17,7 @@ import javax.inject.Named
 class GetShopFollowerListUseCase @Inject constructor(
         @Named(QUERY_SHOP_FOLLOWER_LIST) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ) : UseCase<GetShopFollowerListData>() {
 
     companion object {

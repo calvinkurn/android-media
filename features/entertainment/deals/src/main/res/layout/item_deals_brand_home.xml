@@ -7,7 +7,8 @@
     android:layout_marginLeft="@dimen/spacing_lvl2"
     android:layout_marginRight="@dimen/spacing_lvl2"
     android:padding="@dimen/spacing_lvl2"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/brand_view_holder_layout">
 
     <LinearLayout
         android:id="@+id/ll_brand"
@@ -31,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/fontSize_lvl1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:ellipsize="end"
             android:maxLines="2"
             android:lines="2"

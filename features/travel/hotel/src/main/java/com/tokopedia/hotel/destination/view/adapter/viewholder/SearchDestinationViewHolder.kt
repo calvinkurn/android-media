@@ -20,13 +20,13 @@ import kotlinx.android.synthetic.main.item_search_destination_result.view.*
 
 class SearchDestinationViewHolder(val view: View, val searchDestinationListener: SearchDestinationListener) : AbstractViewHolder<SearchDestination>(view) {
 
-    val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
+    val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
 
     override fun bind(searchDestination: SearchDestination) {
         with(itemView) {
             search_destination_name.text = getSpandableBoldText(searchDestination.name, searchDestinationListener.getFilterText())
             search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText(),
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
                 getString(R.string.hotel_destination_popular_search_hotel_count, HotelStringUtils.convertPriceValue(searchDestination.hotelCount.toDouble(), false)) else ""
             search_destination_type.text = searchDestination.tag

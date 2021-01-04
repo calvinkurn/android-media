@@ -189,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/action_continue"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white"
+                android:textColor="@color/Unify_N0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

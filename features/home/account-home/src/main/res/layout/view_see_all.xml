@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/dp_16"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_N0"
     >
 
     <androidx.recyclerview.widget.RecyclerView
@@ -12,5 +13,5 @@
         android:layout_height="wrap_content"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:spanCount="4"
-        tools:listitem="@layout/item_menu_grid_item"/>
+        tools:listitem="@layout/item_menu_grid_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
