@@ -171,7 +171,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         if (viewModel.hasFilter() || containerListener?.role == RoleType.SELLER) {
-            return EmptyNotificationUiModel()
+            return EmptyNotificationUiModel(viewModel.hasFilter())
         }
         return super.getEmptyDataViewModel()
     }
