@@ -7,6 +7,7 @@ object ProductDetailConstant {
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
+    const val ENABLE_NEW_PDP = "app_enable_new_pdp"
 
     //report product
     const val PATH_PRODUCT_ACTION = "v4/action/product/"

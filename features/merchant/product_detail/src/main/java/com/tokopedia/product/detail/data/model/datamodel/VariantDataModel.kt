@@ -1,7 +1,6 @@
-package com.tokopedia.product.detail.data.model.variant
+package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.variant_common.model.VariantCategory
 

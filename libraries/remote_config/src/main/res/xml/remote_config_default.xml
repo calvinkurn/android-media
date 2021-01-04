@@ -517,4 +517,8 @@
         <key>app_enable_video_pdp</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>app_enable_new_pdp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

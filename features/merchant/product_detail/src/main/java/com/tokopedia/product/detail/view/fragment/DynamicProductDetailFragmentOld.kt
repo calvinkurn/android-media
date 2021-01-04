@@ -168,7 +168,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
+class DynamicProductDetailFragmentOld : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
         DynamicProductDetailListener,
         ProductVariantListener,
         ProductAccessRequestDialogFragment.Listener,
@@ -187,7 +187,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerListName: String? = null,
                         affiliateString: String? = null,
                         deeplinkUrl: String? = null,
-                        layoutId: String? = null) = DynamicProductDetailFragment().also {
+                        layoutId: String? = null) = DynamicProductDetailFragmentOld().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
                 warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
@@ -221,7 +221,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
         base_btn_follow?.run {
-            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragmentOld)
         }
     }
 
@@ -3157,7 +3157,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     this.dismiss()
                     productDetailTracking.eventClickReportOnHelpPopUpAtc()
                     showProgressDialog()
-                    viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragment::onErrorSubmitHelpTicket, this@DynamicProductDetailFragment::onSuccessSubmitHelpTicket)
+                    viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragmentOld::onErrorSubmitHelpTicket, this@DynamicProductDetailFragmentOld::onSuccessSubmitHelpTicket)
                 }
                 show()
             }
@@ -3250,7 +3250,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             CheckImeiBottomSheet.showPermissionDialog(this) {
                 DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
+                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragmentOld)
             }
         }
     }
