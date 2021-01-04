@@ -350,8 +350,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     companion object {
         const val TAG = "Gallery Image Picker"
 
-        const val MINIMUM_COVER_WIDTH = 300
-        const val MINIMUM_COVER_HEIGHT = 533
+        const val MINIMUM_COVER_WIDTH = 324
+        const val MINIMUM_COVER_HEIGHT = 576
 
         private const val SAVED_ALBUM_TITLE = "SAVED_ALBUM_TITLE"
 

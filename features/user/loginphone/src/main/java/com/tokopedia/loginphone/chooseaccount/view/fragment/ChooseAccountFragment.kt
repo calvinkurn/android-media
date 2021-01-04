@@ -313,6 +313,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 userData.userId = userSessionInterface.userId
                 userData.email = userSessionInterface.email
                 userData.phoneNumber = userSessionInterface.phoneNumber
+                userData.medium = userSessionInterface.loginMethod
 
                 //Identity Event
                 LinkerManager.getInstance().sendEvent(

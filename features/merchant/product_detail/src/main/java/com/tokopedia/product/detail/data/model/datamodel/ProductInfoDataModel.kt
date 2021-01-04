@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoContent
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -13,7 +13,7 @@ data class ProductInfoDataModel(
         val name: String = "",
 
         val data: List<ProductInfoContent>? = null,
-        var videos: List<Video> = listOf()
+        var youtubeVideos: List<YoutubeVideo> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
