@@ -341,9 +341,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE, R.string.title_create_review))
 
             add(DFP({
-                DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) ||
-                        DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
@@ -558,9 +556,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE_SELLER_APP, R.string.title_create_review))
 
             add(DFP({
-                DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) ||
-                        DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
