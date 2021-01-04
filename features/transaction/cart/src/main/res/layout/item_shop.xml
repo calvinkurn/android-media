@@ -34,7 +34,7 @@
                 android:id="@+id/cb_select_shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_6"
                 android:paddingRight="@dimen/dp_10" />
 
             <LinearLayout
