@@ -1,4 +1,4 @@
-package com.tokopedia.search
+package com.tokopedia.search.testcase
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents.intending
@@ -16,21 +15,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.search.*
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
-private const val TAG = "SearchProductTest"
-
-internal class SearchProductTrackingTest {
+internal class TopNavChipsTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
@@ -45,7 +39,7 @@ internal class SearchProductTrackingTest {
     fun setUp() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        setupGraphqlMockResponse(SearchMockModelConfig())
+        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_paket_data))
 
         disableOnBoarding(context)
 
@@ -64,24 +58,17 @@ internal class SearchProductTrackingTest {
     }
 
     @Test
-    fun testTracking() {
+    fun testTopNavChips() {
         performUserJourney()
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
     }
 
     private fun performUserJourney() {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
         val productListAdapter = recyclerView.getProductListAdapter()
-        val topAdsItemPosition = productListAdapter.itemList.getFirstTopAdsProductPosition()
-        val organicItemPosition = productListAdapter.itemList.getFirstOrganicProductPosition()
+        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsItemPosition, click()))
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
-
-        activityRule.activity.finish()
+        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<GlobalNavViewHolder>(globalNavViewModelPosition, clickChildViewWithId(R.id.globalNavPillItemContainer)))
     }
 
     @After
