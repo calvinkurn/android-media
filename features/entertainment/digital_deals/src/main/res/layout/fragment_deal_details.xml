@@ -32,7 +32,10 @@
                 <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                     android:id="@+id/deals_images"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/image_width_deals_details_header" />
+                    android:layout_height="@dimen/image_width_deals_details_header"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    />
 
 
                 <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
