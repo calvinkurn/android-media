@@ -64,6 +64,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.name = it.name
             dataItem.price = it.price
             dataItem.rating = it.rating.toString()
+            dataItem.averageRating = it.ratingAverage
             dataItem.imageUrlMobile = it.imageUrl
             dataItem.isTopads = it.isTopAds
             dataItem.topadsClickUrl = it.clickUrl
@@ -84,7 +85,6 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.officialStore = it.isOfficial
             dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
             dataItem.labelsGroupList = labelsGroupList
-            dataItem.isOldRating = true
             dataItems.add(dataItem)
             componentsItem.id = it.productId.toString()
             componentsItem.data = dataItems

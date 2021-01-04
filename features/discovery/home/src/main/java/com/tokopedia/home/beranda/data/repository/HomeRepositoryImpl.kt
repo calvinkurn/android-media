@@ -34,6 +34,7 @@ class HomeRepositoryImpl @Inject constructor(
 
     var CHANNEL_LIMIT_FOR_PAGINATION = 1
     var isCacheExist = false
+    private val queryHashingKey = "android_do_query_hashing"
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -53,7 +54,7 @@ class HomeRepositoryImpl @Inject constructor(
             var currentToken = ""
 
             val homeDataResponse = async { homeRemoteDataSource.getHomeData() }
-            val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
+            val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION, doQueryHash = remoteConfig.getBoolean(queryHashingKey, false)) }
 
             var homeDataCombined: HomeData? = HomeData()
 
@@ -126,7 +127,7 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
-        val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(groupIds = groupId)
+        val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(groupIds = groupId,doQueryHash = remoteConfig.getBoolean(queryHashingKey, false))
         val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
 
         return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(
@@ -137,7 +138,7 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData?): HomeData? {
-        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse?.token?:"")
+        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse?.token?:"",doQueryHash = remoteConfig.getBoolean(queryHashingKey, false))
         val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList()?: mutableListOf()
         currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 
