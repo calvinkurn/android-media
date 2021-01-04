@@ -702,10 +702,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             return;
         }
         int lastItemPosition = layoutManager.findLastVisibleItemPosition();
-        if (lastItemPosition == RecyclerView.NO_POSITION) {
-            return;
-        }
-        if (lastItemPosition >= shipmentAdapter.getShipmentDataList().size()) {
+        if (lastItemPosition == RecyclerView.NO_POSITION ||
+                shipmentAdapter.getShipmentDataList() == null ||
+                lastItemPosition >= shipmentAdapter.getShipmentDataList().size()) {
             return;
         }
         if (shipmentAdapter.getShipmentDataList().get(lastItemPosition) instanceof ShipmentButtonPaymentModel) {
@@ -3009,11 +3008,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                rvShipment.smoothScrollToPosition(position);
-
                 if (isTriggeredByPaymentButton) {
                     showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
                 }
+
+                rvShipment.smoothScrollToPosition(position);
             } else {
                 int notSelectCourierCount = 0;
                 int firstFoundPosition = 0;
@@ -3033,8 +3032,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                rvShipment.smoothScrollToPosition(firstFoundPosition);
-
                 if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
                     if (notSelectCourierCount == 1) {
                         showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
@@ -3043,6 +3040,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
+                rvShipment.smoothScrollToPosition(firstFoundPosition);
             }
         }
     }
