@@ -10,6 +10,7 @@ import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterVerificationBottomSheet
 import com.tokopedia.unifycomponents.Label
+import java.io.File
 
 object PayLaterHelper {
 
@@ -91,5 +92,11 @@ object PayLaterHelper {
             if (payLaterItem.payLaterGatewayCode == "KREDIVO" && payLaterItem.payLaterApplicationStatus.isEmpty()) return true
         }
         return false
+    }
+
+    fun getJson(path : String) : String {
+        val uri = this.javaClass.classLoader?.getResource(path)
+        val file = File(uri?.path)
+        return String(file.readBytes())
     }
 }
