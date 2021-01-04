@@ -99,7 +99,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         public void bindData(Location location) {
             locationName.setText(location.getName());
-            ImageHandler.loadImage(context, locImage, location.getIcon(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, locImage, location.getIcon(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             itemView.setOnClickListener(this);
         }
 
