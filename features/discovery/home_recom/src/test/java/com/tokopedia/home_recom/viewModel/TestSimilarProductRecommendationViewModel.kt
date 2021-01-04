@@ -157,7 +157,7 @@ class TestSimilarProductRecommendationViewModel {
 
     @Test
     fun `get success quick filter click`(){
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
+        coEvery { getRecommendationFilterChips.executeOnBackground(any()) } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(RecommendationItem())
         viewModel.getRecommendationFromQuickFilter("", "", "","")
@@ -225,7 +225,7 @@ class TestSimilarProductRecommendationViewModel {
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(RecommendationItem()) andThen listOf()
         viewModel.getSimilarProductRecommendation(1, "", "", "")
         viewModel.getRecommendationFromFullFilter(mapOf("terlaris" to "true"), mapOf("os" to "true"), "", "", "")
-        assert(viewModel.filterSortChip.value?.isEmpty() == true)
+        assert(viewModel.filterSortChip.value?.isEmpty() == false)
         assert(viewModel.recommendationItem.value?.isEmpty() == true)
     }
 

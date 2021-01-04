@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -42,7 +42,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductInfoViewHolder
      */
-    fun gotoVideoPlayer(videos: List<Video>, index: Int)
+    fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int)
     fun gotoDescriptionTab(descriptionText: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)

@@ -9,15 +9,9 @@ object ProductDetailConstant {
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
 
     //report product
-    const val PATH_PRODUCT_TYPE = "v4/product/"
-    const val PATH_REPORT_TYPE = "get_product_report_type.pl"
-
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
-    const val PATH_REPORT = "report_product.pl"
 
     const val PARAM_PRODUCT_ID = "product_id"
-    const val PARAM_REPORT_TYPE = "report_type"
-    const val PARAM_TEXT_MESSAGE = "text_message"
 
     const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
     const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
@@ -30,10 +24,7 @@ object ProductDetailConstant {
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
 
-    const val PARAM_PRICE = "price"
-
     const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
-
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -68,11 +59,9 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_P3 = 2
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
-    const val PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW = 521
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
 
@@ -103,14 +92,12 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
-    const val SOCIAL_PROOF_PV = "social_proof_pv"
     const val PDP_3 = "pdp_3"
     const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"

@@ -50,7 +50,7 @@ data class ComponentData(
         @SerializedName("variant")
         val variant: Variant = Variant(),
         @SerializedName("videos")
-        val videos: List<Video> = listOf(),
+        val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")

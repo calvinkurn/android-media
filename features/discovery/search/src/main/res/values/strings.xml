@@ -80,8 +80,6 @@
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
 
-    <string name="search_product_filter_onboarding_title">Urutkan &amp; filter kini jadi satu</string>
-    <string name="search_product_filter_onboarding_description">Kamu bisa lebih mudah cari barang sesuai lokasi, kurir, hingga mengurutkannya sesuai harga dalam satu tempat.</string>
     <string name="search_product_three_dots_onboarding_title">Tertarik dengan barangnya?</string>
     <string name="search_product_three_dots_onboarding_description">Kamu bisa simpan ke Wishlist, kunjungi tokonya, hingga langsung tambah ke Keranjang di sini.</string>
 

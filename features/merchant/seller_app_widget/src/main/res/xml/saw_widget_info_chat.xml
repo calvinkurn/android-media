@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/saw_app_widget_chat"
+    android:minWidth="@dimen/saw_app_widget_5_grids"
+    android:minHeight="@dimen/saw_app_widget_3_grids"
+    android:minResizeWidth="@dimen/saw_app_widget_4_grids"
+    android:minResizeHeight="@dimen/saw_app_widget_3_grids"
+    android:previewImage="@drawable/saw_chat_widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

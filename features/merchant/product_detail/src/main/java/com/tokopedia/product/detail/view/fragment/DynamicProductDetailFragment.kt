@@ -10,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -83,7 +84,7 @@ import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategor
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -158,6 +159,7 @@ import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -406,10 +408,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun setNavToolBarCartCounter() {
-        val localCacheHandler = LocalCacheHandler(context, "CART")
-        val cartCount = localCacheHandler.getInt("CACHE_TOTAL_CART", 0)
-        navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
+    private fun setNavToolBarCartCounter(){
+        val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
+        val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
+        navToolbar?.setBadgeCounter(IconList.ID_CART, if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
+            getString(R.string.pdp_label_cart_count_max).toIntOrZero()
+        } else if (!viewModel.isUserSessionActive) {
+            0
+        } else {
+            cartCount
+        })
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -626,16 +634,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onDestroy()
     }
 
-    override fun gotoVideoPlayer(videos: List<Video>, index: Int) {
+    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, videos.map { it.url }, index))
+                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + videos[index].url)))
+                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
                 } catch (e: Throwable) {
                 }
             }
@@ -666,7 +674,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      */
     override fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickShopMiniShopInfo(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
+        val shopCredibilityIndex = dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopCredibility)
+
+        if (shopCredibilityIndex != RecyclerView.NO_POSITION) {
+            scrollToPosition(shopCredibilityIndex)
+        } else {
+            scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
+        }
     }
 
     /**
@@ -1387,6 +1401,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
             }, {
+                Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
                 logException(it)
                 renderPageError(it)
             })
@@ -3211,7 +3226,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpUiUpdater?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
-                    viewModel.toggleTeaserNotifyMe(data.campaignID.toIntOrZero(), productId?.toIntOrZero()
+                    viewModel.toggleTeaserNotifyMe(data.campaignID.toLongOrZero(), productId?.toLongOrZero()
                             ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()
@@ -3333,19 +3348,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform
-        } catch (e: java.lang.IllegalStateException) {
-            null
-        }
-    }
-
+    //Will be delete soon
     override fun isNavOld(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
-        }
-        return true
+        return GlobalConfig.isSellerApp()
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {

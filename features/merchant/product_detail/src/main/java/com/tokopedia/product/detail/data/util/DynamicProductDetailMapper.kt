@@ -109,7 +109,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos)
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
@@ -143,8 +143,8 @@ object DynamicProductDetailMapper {
                         ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
             }
 
-            Variant(pv = it.pv.toIntOrZero(),
-                    v = it.v.toIntOrZero(),
+            Variant(pv = it.pv,
+                    v = it.v,
                     name = it.name,
                     identifier = it.identifier,
                     options = newOption)
@@ -162,15 +162,15 @@ object DynamicProductDetailMapper {
                     stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
                     ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick)
 
-            VariantChildCommon(productId = it.productId.toIntOrZero(), price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
+            VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
                     optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
                     campaign = campaign)
         }
 
         return ProductVariantCommon(
-                parentId = networkData.parentId.toIntOrZero(),
+                parentId = networkData.parentId,
                 errorCode = networkData.errorCode,
-                defaultChild = networkData.defaultChild.toIntOrZero(),
+                defaultChild = networkData.defaultChild,
                 sizeChart = networkData.sizeChart,
                 variant = variants,
                 children = child
@@ -293,7 +293,7 @@ object DynamicProductDetailMapper {
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.videos
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
                 ?: listOf(), productInfoContent, forceRefresh)
     }
 }

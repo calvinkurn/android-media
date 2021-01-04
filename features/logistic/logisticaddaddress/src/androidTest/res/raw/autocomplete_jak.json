@@ -2,6 +2,7 @@
   {
     "data": {
       "kero_maps_autocomplete": {
+        "error_code" : 0,
         "data": {
           "predictions": [
             {

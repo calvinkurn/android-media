@@ -41,7 +41,7 @@
             android:id="@+id/img_cross"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_arrow_back_black" />
+            app:srcCompat="@drawable/ic_arrow_back_black_youtube" />
 
         <TextView
             android:id="@+id/tv_head_title"
