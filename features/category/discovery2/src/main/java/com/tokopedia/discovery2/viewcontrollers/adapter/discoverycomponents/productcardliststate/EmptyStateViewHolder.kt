@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.emptystate.EmptyStateModel
 import com.tokopedia.discovery2.di.getSubComponent
@@ -24,6 +25,7 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private val horizontalTitle: Typography = itemView.findViewById(R.id.horizontal_title_tv)
     private val horizontalDecription: Typography = itemView.findViewById(R.id.horizontal_decription_tv)
     private val verticalButton: UnifyButton = itemView.findViewById(R.id.vertical_button)
+    private val verticalImageView: DeferredImageView = itemView.findViewById(R.id.vertical_image_empty_state)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as EmptyStateViewModel
@@ -51,9 +53,13 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalDecription.text = emptyStateModel.description
         if (emptyStateModel.isFilterState) {
             verticalButton.show()
+            verticalImageView.loadRemoteImageDrawable("filtered_product_empty_state.png")
             verticalButton.setOnClickListener {
                 emptyStateViewModel.handleEmptyStateReset()
             }
+        }else{
+            verticalButton.hide()
+            verticalImageView.loadRemoteImageDrawable("ic_product_empty_state.png")
         }
     }
 
