@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:background="@color/Unify_N0">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -30,7 +30,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/bottomnav_bg"
+                    android:background="@color/Unify_N0"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -58,7 +58,7 @@
                     android:id="@+id/cl_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/bottomnav_bg">
+                    android:background="@color/Unify_N0">
 
 
                     <ImageView
@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:text="@string/location_text_search"
-                        android:textColor="@color/clr_ae31353b"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_14"
                         app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                         app:layout_constraintLeft_toRightOf="@+id/iv_map"
@@ -92,7 +92,7 @@
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:drawablePadding="@dimen/dp_4"
-                        android:textColor="@color/clr_f531353b"
+                        android:textColor="@color/Unify_N700_96"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_14"
                         android:padding="@dimen/dp_4"
@@ -112,13 +112,13 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/search_divider_color" />
+            android:background="@color/Unify_N75" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
@@ -126,7 +126,7 @@
             android:id="@+id/app_bar_brands"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             app:elevation="@dimen/dp_4">
 
             <TextView
@@ -136,7 +136,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_16"
                 android:text="@string/brands_title_search"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll" />
@@ -157,7 +157,7 @@
                 android:background="@drawable/bg_green_selected_border"
                 android:text="@string/brand_count_text"
                 android:textSize="@dimen/sp_12"
-                android:textColor="#03ac0e"
+                android:textColor="@color/Unify_G500"
                 android:gravity="center"
                 android:visibility="gone"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -185,7 +185,7 @@
                     android:gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_12"
                     android:text="@string/no_brand_text"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_16" />
 
                 <TextView
@@ -198,7 +198,7 @@
                     android:gravity="center_horizontal"
                     android:layout_marginBottom="@dimen/dp_12"
                     android:text="@string/no_brand_subtext"
-                    android:textColor="@color/clr_ae31353b"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>
 
@@ -211,7 +211,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/products_title_search"
                 android:textSize="@dimen/sp_12"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="visible"
                 app:layout_scrollFlags="scroll" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -228,7 +228,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_80"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/dp_16"
@@ -264,7 +264,7 @@
             android:id="@+id/rv_search_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:layout_marginTop="@dimen/dp_6"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_top_suggestions" />
@@ -277,7 +277,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
