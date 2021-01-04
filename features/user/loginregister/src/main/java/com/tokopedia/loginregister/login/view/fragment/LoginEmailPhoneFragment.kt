@@ -922,7 +922,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun showNotRegisteredEmailDialog(email: String, isPending: Boolean) {
         dismissLoadingLogin()
         activity?.let {
-            val dialog: DialogUnify? = RegisteredDialog.createRegisteredEmailDialog(context, email)
+            val dialog: DialogUnify? = RegisteredDialog.createNotRegisteredEmailDialog(context, email)
             dialog?.let { dialog ->
                 dialog.setPrimaryCTAClickListener {
                     analytics.eventClickYesSmartLoginDialogButton()

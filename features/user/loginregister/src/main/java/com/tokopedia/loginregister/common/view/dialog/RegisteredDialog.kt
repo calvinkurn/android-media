@@ -37,5 +37,20 @@ class RegisteredDialog {
             }
             return null
         }
+
+
+        fun createNotRegisteredEmailDialog(context: Context?, email: String): DialogUnify? {
+            context?.run {
+                val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(getString(R.string.email_not_registered))
+                dialog.setDescription(
+                        String.format(resources.getString(
+                                R.string.email_not_registered_info), email))
+                dialog.setPrimaryCTAText(getString(R.string.not_registered_yes))
+                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+                return dialog
+            }
+            return null
+        }
     }
 }
