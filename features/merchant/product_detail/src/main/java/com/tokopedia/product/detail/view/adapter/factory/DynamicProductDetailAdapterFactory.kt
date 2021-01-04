@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -27,5 +26,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: TopAdsImageDataModel): Int
     fun type(reportData: ProductReportDataModel): Int
     fun type(data: ProductDetailInfoDataModel): Int
+    fun type(data: ProductLoadingDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
