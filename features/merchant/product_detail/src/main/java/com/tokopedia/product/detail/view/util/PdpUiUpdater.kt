@@ -60,9 +60,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
 
-    val productLastSeenMap: ProductLastSeenDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
-
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
@@ -175,15 +172,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             productReviewOldMap?.run {
                 totalRating = it.basic.stats.countReview.toIntOrZero()
                 ratingScore = it.basic.stats.rating
-            }
-
-            productLastSeenMap?.run {
-                /*
-                 * Sometimes this lastUpdateUnix doesn't has Long value like "123"
-                 * If P1 updated by selected variant this value will be formatted dated "dd-mm-yyy , hh:mm"
-                 */
-                val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
-                lastSeen = "$dateFormatted WIB"
             }
         }
     }

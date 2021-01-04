@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -328,7 +327,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
-                addStaticComponent(it)
+
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
                 }
@@ -372,10 +371,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
         }
-    }
-
-    private fun addStaticComponent(it: ProductDetailDataModel) {
-        it.listOfLayout.add(ProductLastSeenDataModel())
     }
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
