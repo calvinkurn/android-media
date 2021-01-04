@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
@@ -32,7 +31,9 @@ import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATC
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
@@ -57,8 +58,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val llWarningAndError: LinearLayout
     private val flCartItemContainer: FrameLayout
-    private val cbSelectItem: CheckBox
-    private val ivProductImage: ImageView
+    private val cbSelectItem: CheckboxUnify
+    private val ivProductImage: ImageUnify
 
     private val textProductName: Typography
     private val textProductVariant: Typography
@@ -109,7 +110,8 @@ class CartItemViewHolder constructor(itemView: View,
         cbSelectItem = itemView.findViewById(R.id.cb_select_item)
         tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation)
         tvErrorFormRemarkValidation = itemView.findViewById(R.id.tv_error_form_remark_validation)
-        ivProductImage = itemView.findViewById(R.id.iv_image_product)
+//        ivProductImage = itemView.findViewById(R.id.iv_image_product)
+        ivProductImage = itemView.findViewById(R.id.iu_image_product)
         textProductName = itemView.findViewById(R.id.text_product_name)
         textProductVariant = itemView.findViewById(R.id.text_product_variant)
         textQtyLeft = itemView.findViewById(R.id.text_qty_left)
@@ -231,9 +233,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         cbSelectItem.isEnabled = data.cartItemData?.isError == false
         cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+        cbSelectItem.skipAnimation()
 
         var prevIsChecked: Boolean = cbSelectItem.isChecked
-        cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
+        cbSelectItem.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -314,10 +317,13 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderImage(data: CartItemHolderData) {
-        ImageHandler.loadImageRounded2(
-                this.itemView.context, this.ivProductImage,
-                data.cartItemData?.originData?.productImage
-        )
+//        ImageHandler.loadImageRounded2(
+//                this.itemView.context, this.ivProductImage,
+//                data.cartItemData?.originData?.productImage
+//        )
+        data.cartItemData?.originData?.productImage?.let {
+            ivProductImage.setImageUrl(it)
+        }
         ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
