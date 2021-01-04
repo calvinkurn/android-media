@@ -340,7 +340,15 @@ object DeeplinkDFMapper : CoroutineScope {
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE, R.string.title_create_review))
 
-            add(DFP({ DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) || DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) }, DF_BASE, R.string.title_product_detail))
+            add(DFP({
+                DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) ||
+                        DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+            }, DF_BASE, R.string.title_product_detail))
 
             // Operational
             add(DFP({
@@ -549,7 +557,15 @@ object DeeplinkDFMapper : CoroutineScope {
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE_SELLER_APP, R.string.title_create_review))
 
-            add(DFP({ DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) || DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) }, DF_BASE_SELLER_APP, R.string.title_product_detail))
+            add(DFP({
+                DeeplinkMapperMerchant.isProductDetailPageDeeplink(it) ||
+                        DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(it) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+            }, DF_BASE_SELLER_APP, R.string.title_product_detail))
             // User
             add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
         }
