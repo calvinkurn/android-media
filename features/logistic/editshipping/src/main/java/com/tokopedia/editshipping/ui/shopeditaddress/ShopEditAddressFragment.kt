@@ -132,6 +132,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     addressModel?.let {
                         currentLat = it.latitude.toDouble()
                         currentLong = it.latitude.toDouble()
+                        warehouseModel?.districtId = it.districtId
                     }
                 }
             }
@@ -272,7 +273,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             warehouseModel?.let { it ->
                 val latLong = "$currentLat,$currentLong"
                 viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
-                        it.warehouseId, latLong, userSession.email, etShopDetail?.text.toString(),
+                        it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
                         etZipCode?.text.toString(), userSession.phoneNumber) }
         }
 
