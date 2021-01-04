@@ -8,7 +8,7 @@ import com.tokopedia.paylater.domain.model.PayLaterProductData
 import javax.inject.Inject
 import javax.inject.Named
 
-class PayLaterProductDataUseCase @Inject constructor(
+class PayLaterProductDetailUseCase @Inject constructor(
         @Named(GQL_PAY_LATER_ACTIVITY_DATA) val query: String, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<PayLaterActivityResponse>(graphqlRepository) {
 

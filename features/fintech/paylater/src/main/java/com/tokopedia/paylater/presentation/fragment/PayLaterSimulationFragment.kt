@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
@@ -32,7 +33,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class SimulationFragment : BaseDaggerFragment() {
+class PayLaterSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -138,7 +139,8 @@ class SimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-        Timber.d(throwable)
+        btnDaftarPayLater.visible()
+        paylaterDaftarWidget.gone()
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
@@ -177,7 +179,7 @@ class SimulationFragment : BaseDaggerFragment() {
                 val contentRow = TableRow(it)
                 for (j in 0 until colCount) {
                     when (i) {
-                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, simulationDataList[i - 1].installmentMap, j), contentLayoutParam)
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, simulationDataList[i].installmentMap, j), contentLayoutParam)
                         1 -> {
                             contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
                             contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[i - 1].installmentMap, tenureList, i, j), contentLayoutParam)
@@ -205,12 +207,12 @@ class SimulationFragment : BaseDaggerFragment() {
         return recommendationView.initUI()
     }
 
-    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<Int, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
+    private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
         val installmentView = simulationViewFactory.create(InstallmentViewTableContent::class.java, contentLayoutParam)
         return installmentView.initUI(installmentMap, tenureList, row, col)
     }
 
-    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<Int, SimulationItemDetail>, position: Int): View {
+    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, position: Int): View {
         val installmentColumnHeader = simulationViewFactory.create(InstallmentViewTableColumnHeader::class.java, contentLayoutParam)
         return installmentColumnHeader.initUI(installmentMap, position)
     }
@@ -225,7 +227,7 @@ class SimulationFragment : BaseDaggerFragment() {
         const val CONTENT_WIDTH = 110
 
         @JvmStatic
-        fun newInstance() = SimulationFragment()
+        fun newInstance() = PayLaterSimulationFragment()
     }
 
     interface PayLaterSimulationCallback {

@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.presentation.fragment.PayLaterOffersFragment
-import com.tokopedia.paylater.presentation.fragment.SimulationFragment
+import com.tokopedia.paylater.presentation.fragment.PayLaterSimulationFragment
 import timber.log.Timber
 
 class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {
@@ -19,7 +19,7 @@ class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour:
     override fun getPageTitle(position: Int): CharSequence? {
         Timber.d("PayLater Pager Adapter")
         return when(getItem(position)) {
-            is SimulationFragment -> context.getString(R.string.payLater_simulation_header_title)
+            is PayLaterSimulationFragment -> context.getString(R.string.payLater_simulation_header_title)
             is PayLaterOffersFragment -> context.getString(R.string.paylater_title_detail)
             else -> null
         }

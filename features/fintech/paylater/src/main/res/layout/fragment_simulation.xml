@@ -16,17 +16,17 @@
             android:id="@+id/payLaterTermsEmptyView"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            app:unifyEmptyStateTitle="@string/paylater_simulation_empty_view_title"
-            app:unifyEmptyStateDescription="@string/paylater_simulation_empty_view_description"
-            app:unifyEmptyStateOrientation="vertical"
-            app:unifyEmptyStatePrimaryCTAText=""
-            app:unifyEmptyStateSecondaryCTAText=""
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/unify_space_16"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unifyEmptyStateDescription="@string/paylater_simulation_empty_view_description"
+            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
+            app:unifyEmptyStateOrientation="vertical"
+            app:unifyEmptyStatePrimaryCTAText=""
+            app:unifyEmptyStateSecondaryCTAText=""
+            app:unifyEmptyStateTitle="@string/paylater_simulation_empty_view_title" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerVertical"
@@ -42,11 +42,10 @@
             android:id="@+id/simulationGlobalError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleSimulation"
@@ -67,18 +66,17 @@
             android:layout_marginStart="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
-            app:loader_type="rect"
-            />
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/simulationShimmerView"
             android:layout_width="0dp"
             android:layout_height="270dp"
-            app:loader_type="rect"
             android:layout_marginTop="@dimen/unify_space_16"
-            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:loader_type="rect" />
 
         <LinearLayout
             android:id="@+id/llPayLaterPartner"
@@ -93,11 +91,11 @@
             android:id="@+id/hsvInstallment"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/llPayLaterPartner"
-            app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
             app:layout_constraintVertical_bias="1.0">
 
             <TableLayout
@@ -115,18 +113,18 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:scaleType="centerInside"
-            app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
-            app:layout_constraintEnd_toEndOf="@+id/llPayLaterPartner"
-            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner"
+            android:src="@drawable/ic_paylater_simulation_divider_shadow"
             app:layout_constraintBottom_toBottomOf="@+id/llPayLaterPartner"
-            android:src="@drawable/ic_paylater_simulation_divider_shadow"/>
+            app:layout_constraintEnd_toEndOf="@+id/llPayLaterPartner"
+            app:layout_constraintStart_toEndOf="@+id/llPayLaterPartner"
+            app:layout_constraintTop_toTopOf="@id/llPayLaterPartner" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/tableBarrier"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="llPayLaterPartner, simulationShimmerView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="llPayLaterPartner, simulationShimmerView" />
 
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -166,8 +164,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnDaftarPayLater"
-            app:loader_type="rect"
-            />
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnDaftarPayLater"
@@ -177,53 +174,35 @@
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:text="Daftar PayLater Sekarang"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tickerSimulation"
-            />
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPartnerRegistration"
-            android:layout_width="wrap_content"
+        <include
+            android:id="@+id/supervisorWidget"
+            layout="@layout/paylater_supervisor_widget"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_32"
-            android:layout_marginBottom="@dimen/unify_space_32"
-            android:text="@string/paylater_simulation_supervised_text"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivSupervisor"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
-            app:typographyType="small" />
-
-        <ImageView
-            android:id="@+id/ivSupervisor"
-            android:layout_width="@dimen/unify_space_64"
-            android:layout_height="@dimen/unify_space_24"
-            android:layout_marginStart="@dimen/unify_space_8"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="@+id/tvPartnerRegistration"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvPartnerRegistration"
-            app:layout_constraintTop_toTopOf="@+id/tvPartnerRegistration"
-            android:src="@drawable/ic_paylater_financial_authority" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/simulationDataGroup"
-            android:visibility="gone"
-            app:constraint_referenced_ids="tvTitleSimulation,llPayLaterPartner,hsvInstallment,ivShadow,tickerSimulation,btnDaftarPayLater, tvPartnerRegistration,ivSupervisor "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvTitleSimulation,llPayLaterPartner,hsvInstallment,ivShadow,tickerSimulation, supervisorWidget " />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/shimmerGroup"
-            app:constraint_referenced_ids="titleShimmer, registerShimmer, simulationShimmerView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="titleShimmer, registerShimmer, simulationShimmerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

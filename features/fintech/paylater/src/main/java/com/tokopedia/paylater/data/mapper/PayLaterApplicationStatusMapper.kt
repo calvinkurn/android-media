@@ -12,6 +12,7 @@ const val STATUS_SUSPENDED = "Suspended"
 const val STATUS_EXPIRED = "Expired"
 const val STATUS_FAILED = "Failed"
 const val STATUS_CANCELLED = "Cancelled"
+const val STATUS_EMPTY = "Empty"
 
 
 sealed class PayLaterApplicationStatus(val tag: String)
@@ -23,6 +24,7 @@ object PayLaterStatusSuspended: PayLaterApplicationStatus(STATUS_SUSPENDED)
 object PayLaterStatusExpired: PayLaterApplicationStatus(STATUS_EXPIRED)
 object PayLaterStatusFailed: PayLaterApplicationStatus(STATUS_FAILED)
 object PayLaterStatusCancelled: PayLaterApplicationStatus(STATUS_CANCELLED)
+object PayLaterStatusEmpty: PayLaterApplicationStatus(STATUS_EMPTY)
 object PayLaterApplicationStatusMapper {
 
     fun getApplicationStatusType(payLaterApplicationStatus: PayLaterApplicationDetail): PayLaterApplicationStatus {
@@ -34,7 +36,8 @@ object PayLaterApplicationStatusMapper {
             STATUS_SUSPENDED -> PayLaterStatusSuspended
             STATUS_EXPIRED -> PayLaterStatusExpired
             STATUS_FAILED -> PayLaterStatusFailed
-            else -> PayLaterStatusCancelled
+            STATUS_CANCELLED -> PayLaterStatusCancelled
+            else -> PayLaterStatusEmpty
         }
     }
 }

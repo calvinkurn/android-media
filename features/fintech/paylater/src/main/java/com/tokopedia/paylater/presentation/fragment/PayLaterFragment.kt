@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -32,10 +34,11 @@ import javax.inject.Inject
 
 
 class PayLaterFragment : BaseDaggerFragment(),
-        SimulationFragment.PayLaterSimulationCallback,
+        PayLaterSimulationFragment.PayLaterSimulationCallback,
         PayLaterOffersFragment.PayLaterOfferCallback,
         TabLayout.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener {
+        ViewPager.OnPageChangeListener,
+        CompoundButton.OnCheckedChangeListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -131,6 +134,7 @@ class PayLaterFragment : BaseDaggerFragment(),
         paylaterDaftarWidget.setOnClickListener {
             onRegisterPayLaterClicked()
         }
+        modeSwitcher.setOnCheckedChangeListener(this)
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
         payLaterViewPager.addOnPageChangeListener(this)
     }
@@ -146,7 +150,7 @@ class PayLaterFragment : BaseDaggerFragment(),
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list = mutableListOf<Fragment>()
-        val simulationFragment = SimulationFragment.newInstance()
+        val simulationFragment = PayLaterSimulationFragment.newInstance()
         val payLaterOffersFragment = PayLaterOffersFragment.newInstance()
         simulationFragment.setPayLaterClickedListener(this)
         payLaterOffersFragment.setPayLaterProductCallback(this)
@@ -215,6 +219,16 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onPageScrollStateChanged(state: Int) {
+    }
+
+    override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
+        val text = if(!isChecked) "This is PayLater" else "This is Kartu Kredit"
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+        if (modeButton.text == context?.getString(R.string.payLater_content_switcher_heading)) {
+            // paylater
+        } else {
+            // credit card
+        }
     }
 
     companion object {

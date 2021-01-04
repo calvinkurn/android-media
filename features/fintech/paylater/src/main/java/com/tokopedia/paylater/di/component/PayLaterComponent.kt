@@ -7,10 +7,9 @@ import com.tokopedia.paylater.di.module.GqlQueryModule
 import com.tokopedia.paylater.di.module.PayLaterModule
 import com.tokopedia.paylater.di.module.ViewModelModule
 import com.tokopedia.paylater.di.scope.PayLaterScope
-import com.tokopedia.paylater.presentation.activity.PayLaterActivity
 import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
 import com.tokopedia.paylater.presentation.fragment.PayLaterOffersFragment
-import com.tokopedia.paylater.presentation.fragment.SimulationFragment
+import com.tokopedia.paylater.presentation.fragment.PayLaterSimulationFragment
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
 import dagger.Component
 
@@ -27,6 +26,6 @@ interface PayLaterComponent {
 
     fun inject(payLaterFragment: PayLaterFragment)
     fun inject(payLaterOffersFragment: PayLaterOffersFragment)
-    fun inject(simulationFragment: SimulationFragment)
+    fun inject(simulationFragment: PayLaterSimulationFragment)
     fun inject(payLaterSignupBottomSheet: PayLaterSignupBottomSheet)
 }

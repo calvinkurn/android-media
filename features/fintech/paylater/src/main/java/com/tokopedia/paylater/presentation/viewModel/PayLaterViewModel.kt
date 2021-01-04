@@ -9,7 +9,7 @@ import com.tokopedia.paylater.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.paylater.domain.model.*
 import com.tokopedia.paylater.domain.usecase.PayLaterApplicationStatusUseCase
-import com.tokopedia.paylater.domain.usecase.PayLaterProductDataUseCase
+import com.tokopedia.paylater.domain.usecase.PayLaterProductDetailUseCase
 import com.tokopedia.paylater.domain.usecase.PayLaterSimulationUseCase
 import com.tokopedia.paylater.helper.PayLaterException
 import com.tokopedia.paylater.helper.PayLaterHelper
@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-        private val payLaterDataUseCase: PayLaterProductDataUseCase,
+        private val payLaterProductDetailUseCase: PayLaterProductDetailUseCase,
         private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
-        private val simulationDataUseCase: PayLaterSimulationUseCase,
+        private val payLaterSimulationDataUseCase: PayLaterSimulationUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -33,8 +33,8 @@ class PayLaterViewModel @Inject constructor(
     val payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
 
     fun getPayLaterProductData() {
-        payLaterDataUseCase.cancelJobs()
-        payLaterDataUseCase.getPayLaterData(
+        payLaterProductDetailUseCase.cancelJobs()
+        payLaterProductDetailUseCase.getPayLaterData(
                 ::onPayLaterDataSuccess,
                 ::onPayLaterDataError
         )
@@ -52,9 +52,9 @@ class PayLaterViewModel @Inject constructor(
      * invoke only when amount in 10000..30000000
      */
     fun getPayLaterSimulationData(amount: Int = 1000000) {
-        simulationDataUseCase.cancelJobs()
+        payLaterSimulationDataUseCase.cancelJobs()
         if (amount in 10000..30000000)
-            simulationDataUseCase.getSimulationData(
+            payLaterSimulationDataUseCase.getSimulationData(
                     ::onSimulationDataSuccess,
                     ::onSimulationDataError,
                     amount
@@ -121,7 +121,7 @@ class PayLaterViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        payLaterDataUseCase.cancelJobs()
+        payLaterProductDetailUseCase.cancelJobs()
         super.onCleared()
     }
 

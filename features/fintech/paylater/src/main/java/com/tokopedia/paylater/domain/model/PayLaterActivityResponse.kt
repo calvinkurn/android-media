@@ -6,13 +6,13 @@ import kotlinx.android.parcel.Parcelize
 
 data class PayLaterActivityResponse(
         @SerializedName("paylater_getActiveProduct")
-        val productData: PayLaterProductData
+        val productData: PayLaterProductData = PayLaterProductData()
 )
 
 @Parcelize
 data class PayLaterProductData(
         @SerializedName("product")
-        val productList: ArrayList<PayLaterItemProductData>?
+        val productList: ArrayList<PayLaterItemProductData>? = arrayListOf()
 ) : Parcelable
 
 @Parcelize

@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.data.mapper.EmptyInstallment
+import com.tokopedia.paylater.data.mapper.PayLaterSimulationResponseMapper
+import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -14,7 +17,7 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
 
     fun getLayout() = R.layout.paylater_simulation_table_content
 
-    fun initUI(installmentMap: HashMap<Int, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
+    fun initUI(installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
         val installmentView = LayoutInflater.from(context).inflate(getLayout(), null)
         installmentView.layoutParams = layoutParams
         if (showBackground(row))
@@ -34,12 +37,15 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
         return row % 2 == 0
     }
 
-    private fun getInstallmentText(tenure: Int, installmentMap: HashMap<Int, SimulationItemDetail>): String {
-        return if (installmentMap.containsKey(tenure) && installmentMap[tenure]?.installmentPerMonth?.isNotEmpty() == true) {
-            val priceString = installmentMap[tenure]?.installmentPerMonth?.toIntOrNull() ?: -1
-            if (priceString != -1) {
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
-            } else "-"
+    private fun getInstallmentText(tenure: Int, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>): String {
+        val tenureType = PayLaterSimulationResponseMapper.getSimulationTenureType(tenure)
+        return if (tenureType != EmptyInstallment
+                && installmentMap.containsKey(tenureType)
+                && installmentMap[tenureType]?.installmentPerMonth?.isNotEmpty() == true) {
+
+            val priceString = installmentMap[tenureType]?.installmentPerMonth?.toIntOrNull() ?: -1
+            if (priceString != -1) CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
+            else "-"
         } else "-"
     }
 }

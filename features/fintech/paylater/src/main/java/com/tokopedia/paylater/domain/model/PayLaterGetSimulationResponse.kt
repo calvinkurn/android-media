@@ -1,6 +1,7 @@
 package com.tokopedia.paylater.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
 
 
 data class PayLaterGetSimulationResponse(
@@ -20,7 +21,8 @@ data class PayLaterSimulationGatewayItem(
         val gatewayName: String?,
         @SerializedName("simulation_detail")
         val simulationDetailList: ArrayList<SimulationItemDetail>,
-        var installmentMap: HashMap<Int, SimulationItemDetail>
+        // To have a map of tenure to installment item aiding in setting in table
+        var installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>
 )
 
 data class SimulationItemDetail(
