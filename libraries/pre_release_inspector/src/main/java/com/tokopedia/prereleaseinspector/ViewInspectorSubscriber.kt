@@ -10,11 +10,15 @@ class ViewInspectorSubscriber() : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        ViewInspectorManager.register(activity)
+        if (activity is BaseActivity) {
+            activity.addListener(ViewInspectorVolumeListener(activity))
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
-        ViewInspectorManager.unregister()
+        if (activity is BaseActivity) {
+            activity.removeDebugVolumeListener()
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {
