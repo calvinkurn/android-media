@@ -110,7 +110,6 @@ class CartItemViewHolder constructor(itemView: View,
         cbSelectItem = itemView.findViewById(R.id.cb_select_item)
         tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation)
         tvErrorFormRemarkValidation = itemView.findViewById(R.id.tv_error_form_remark_validation)
-//        ivProductImage = itemView.findViewById(R.id.iv_image_product)
         ivProductImage = itemView.findViewById(R.id.iu_image_product)
         textProductName = itemView.findViewById(R.id.text_product_name)
         textProductVariant = itemView.findViewById(R.id.text_product_variant)
@@ -317,10 +316,6 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderImage(data: CartItemHolderData) {
-//        ImageHandler.loadImageRounded2(
-//                this.itemView.context, this.ivProductImage,
-//                data.cartItemData?.originData?.productImage
-//        )
         data.cartItemData?.originData?.productImage?.let {
             ivProductImage.setImageUrl(it)
         }
