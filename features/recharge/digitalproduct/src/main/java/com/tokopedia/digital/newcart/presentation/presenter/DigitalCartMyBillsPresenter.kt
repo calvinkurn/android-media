@@ -52,16 +52,15 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         view.renderMyBillsEgoldView(view.cartInfoData.attributes?.fintechProduct?.getOrNull(0))
     }
 
+    override fun renderBaseCart(cartDigitalInfoData: CartDigitalInfoData?) {
+        super.renderBaseCart(cartDigitalInfoData)
+
+        // Update total price based on fintech amount if already shown and checked
+        view.updateTotalPriceWithFintechAmount()
+    }
+
     override fun onEgoldCheckedListener(checked: Boolean) {
-        view.cartInfoData.attributes?.pricePlain?.let { pricePlain ->
-            var totalPrice = pricePlain
-            if (checked) {
-                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount
-                        ?: 0
-                totalPrice += egoldPrice
-            }
-            view.renderCheckoutView(totalPrice)
-        }
+        updateTotalPriceWithFintechAmount(checked)
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
@@ -99,6 +98,18 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
     override fun onEgoldMoreInfoClicked() {
         view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.info?.run {
             view.renderEgoldMoreInfo(title, tooltipText, urlLink)
+        }
+    }
+
+    override fun updateTotalPriceWithFintechAmount(checked: Boolean) {
+        view.cartInfoData.attributes?.pricePlain?.let { pricePlain ->
+            var totalPrice = pricePlain
+            if (checked) {
+                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount
+                        ?: 0
+                totalPrice += egoldPrice
+            }
+            view.renderCheckoutView(totalPrice)
         }
     }
 }

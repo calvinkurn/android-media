@@ -29,13 +29,10 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
-import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,7 +53,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
-    lateinit var sortMenu: HotelClosedSortBottomSheets
     lateinit var filterBottomSheet: HotelFilterBottomSheets
 
     @Inject
@@ -203,8 +199,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         super.renderList(searchProperties, searchProperties.isNotEmpty())
 
-        generateSortMenu(data.displayInfo.sort)
-
         if (isFirstInitializeFilter) {
             isFirstInitializeFilter = false
             initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
@@ -314,26 +308,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
     }
 
-    private fun generateSortMenu(sort: List<Sort>) {
-        sortMenu = HotelClosedSortBottomSheets()
-                .setSheetTitle(getString(R.string.hotel_bottomsheet_sort_title))
-                .setMode(MODE_CHECKED)
-                .setMenu(sort)
-                .setSelectedItem(searchResultviewModel.selectedSort)
-
-        sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
-            override fun onSelect(sort: Sort) {
-                trackingHotelUtil.hotelUserClickSort(context, sort.displayName, SEARCH_SCREEN_NAME)
-
-                searchResultviewModel.addSort(sort)
-                if (sortMenu.isAdded) {
-                    sortMenu.dismiss()
-                }
-                loadInitialData()
-            }
-        }
-    }
-
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory = PropertyAdapterTypeFactory(this)
 
     override fun onItemClicked(t: Property) {
@@ -391,11 +365,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onEmptyButtonClicked() {
         if (!searchResultviewModel.isFilter) activity?.onBackPressed()
         else {
-            filterBottomSheet = HotelFilterBottomSheets()
-                    .setSubmitFilterListener(this)
-                    .setSelected(searchResultviewModel.getSelectedFilter())
-                    .setFilter((searchResultviewModel.liveSearchResult.value as Success<PropertySearch>).data.filters)
-            filterBottomSheet.show(childFragmentManager, javaClass.simpleName)
+            val searchResultValue = searchResultviewModel.liveSearchResult.value as Success
+            initiateAdvancedFilter(searchResultValue.data.filters.toMutableList(), searchResultValue.data.displayInfo.sort)
         }
     }
 

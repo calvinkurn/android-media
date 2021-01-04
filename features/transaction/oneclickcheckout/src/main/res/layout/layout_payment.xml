@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:lineSpacingExtra="4sp"
         android:text="@string/label_pay_total"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_payment_error"
         app:typographyType="body_3"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/tv_total_payment_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_label"
         app:typographyType="heading_4"
@@ -70,6 +70,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_payment_error"
         app:unifyButtonSize="large"
-        app:unifyButtonType="transaction" />
+        app:unifyButtonType="main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
