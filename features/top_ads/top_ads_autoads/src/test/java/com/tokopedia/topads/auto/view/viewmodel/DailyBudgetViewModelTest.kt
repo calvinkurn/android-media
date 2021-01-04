@@ -5,16 +5,17 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
-import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
+import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.Deposit
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,6 +24,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +39,7 @@ class DailyBudgetViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: DailyBudgetViewModel
-
+    private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
     private lateinit var dispatcher: AutoAdsDispatcherProvider
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
@@ -49,7 +51,7 @@ class DailyBudgetViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         repository = mockk()
         context = mockk()
-        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries))
+        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, topAdsGetShopDepositUseCase, rawQueries))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -131,27 +133,23 @@ class DailyBudgetViewModelTest {
     @Test
     fun `test exception in getTopAdsDeposit`() {
         val t = Exception("my excep")
-        coEvery { repository.getReseponse(any(), any()) } throws t
+        coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } coAnswers { throw t}
 
-        viewModel.getTopAdsDeposit(0)
+        viewModel.getTopAdsDeposit()
 
         assertEquals(null, viewModel.topAdsDeposit.value)
     }
 
     @Test
     fun `test result in getTopAdsDeposit`() {
-        val expected = 2
-        val successData: TopAdsDepositResponse.Data = mockk(relaxed = true)
-        val response: GraphqlResponse = mockk(relaxed = true)
+            val expected = 2
+            val successData :Deposit = mockk(relaxed = true)
+            coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } returns successData
+            every { successData.topadsDashboardDeposits.data.amount } returns expected
 
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(TopAdsDepositResponse.Data::class.java) } returns listOf()
-        every { response.getData<TopAdsDepositResponse.Data>(TopAdsDepositResponse.Data::class.java) } returns successData
-        every { successData.topadsDashboardDeposits.data.amount } returns expected
+            viewModel.getTopAdsDeposit()
 
-        viewModel.getTopAdsDeposit(0)
-
-        assertEquals(expected, viewModel.topAdsDeposit.value)
+            assertEquals(expected, viewModel.topAdsDeposit.value)
     }
 
 
@@ -236,7 +234,7 @@ class DailyBudgetViewModelTest {
     fun `test checkBudget when number is less than maxDailyBudget and greater than minDailyBudget`() {
         val expected = "test string"
 
-        every { context.getString(any(),any()) } returns expected
+        every { context.getString(any(), any()) } returns expected
 
         val actual = viewModel.checkBudget(5.0, 3.0, 10.0)
 

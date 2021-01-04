@@ -9,12 +9,10 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.common.data.internal.ParamObject.CREDIT_DATA
-import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_DATA
-import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseCreateGroup
-import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -24,33 +22,20 @@ import javax.inject.Named
 
 class SummaryViewModel @Inject constructor(
         private val context: Context,
-        private val userSession: UserSessionInterface,
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
+        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    fun getTopAdsDeposit(onSuccessGetDeposit: ((TopAdsDepositResponse.Data) -> Unit),
+    fun getTopAdsDeposit(onSuccessGetDeposit: ((DepositAmount) -> Unit),
                          onErrorGetAds: ((Throwable) -> Unit)) {
-        launchCatchError(
-                block = {
-                    val param = mapOf(SHOP_Id to userSession.shopId.toInt(),
-                            CREDIT_DATA to "unclaimed", SHOP_DATA to "0")
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_topads_deposit),
-                                TopAdsDepositResponse.Data::class.java,
-                                param, false)
-                        val cacheStrategy = GraphqlCacheStrategy
-                                .Builder(CacheType.ALWAYS_CLOUD).build()
-                        repository.getReseponse(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<TopAdsDepositResponse.Data>().let {
-                        onSuccessGetDeposit(it)
-                    }
-                },
-                onError = {
-                    onErrorGetAds(it)
-                }
-        )
+
+        topAdsGetShopDepositUseCase.execute({
+            onSuccessGetDeposit(it.topadsDashboardDeposits.data)
+        }
+                , {
+            onErrorGetAds(it)
+        })
     }
 
 
