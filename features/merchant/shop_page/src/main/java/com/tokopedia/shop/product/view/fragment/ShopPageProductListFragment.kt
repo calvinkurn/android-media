@@ -69,6 +69,7 @@ import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -206,7 +207,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
-    private var initialProductListData : GetShopProductUiModel? = null
+    private var initialProductListData : ShopProduct.GetShopProduct? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -760,7 +761,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
             showLoading()
             initialProductListData?.let{
-                viewModel.setInitialProductList(it)
+                viewModel.setInitialProductList(shopId, it)
             }
             viewModel.getShopFilterData(shopId)
             isOnViewCreated = false
@@ -1270,7 +1271,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 )
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
-        if (initialProductListData?.listShopProductUiModel?.isNotEmpty() == true) {
+        if (initialProductListData?.data?.isNotEmpty() == true) {
             updateEtalaseTitleSection()
         }
         if (!viewModel.isMyShop(shopId)) {
@@ -1390,7 +1391,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getBottomSheetFilterData()
     }
 
-    fun setInitialProductListData(initialProductListData: GetShopProductUiModel) {
+    fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
         this.initialProductListData = initialProductListData
     }
 

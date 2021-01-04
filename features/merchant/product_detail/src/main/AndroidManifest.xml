@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.product.detail" >
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application android:label="@string/app_name"
@@ -38,11 +39,6 @@
 
         <activity android:name=".estimasiongkir.view.activity.RatesEstimationDetailActivity"
             android:label="@string/label_rates_estimation_detail"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".view.activity.ProductInstallmentActivity"
-            android:label="@string/label_product_installment"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

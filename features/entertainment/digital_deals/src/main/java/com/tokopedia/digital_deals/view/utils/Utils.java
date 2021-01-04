@@ -13,8 +13,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import androidx.annotation.RequiresApi;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -27,7 +25,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
@@ -150,29 +151,29 @@ public class Utils {
         ArrayList<CategoryItem> categoryRespons = new ArrayList<>();
         if (dealsResponse != null && dealsResponse.size() > 0) {
             for (CategoryItem categoryItem : dealsResponse) {
-                    CategoryItem category = new CategoryItem();
-                    category.setTitle(categoryItem.getTitle());
-                    category.setCategoryId(categoryItem.getCategoryId());
-                    category.setCount(categoryItem.getCount());
-                    category.setName(categoryItem.getName());
-                    category.setMediaUrl(categoryItem.getMediaUrl());
-                    category.setCategoryUrl(categoryItem.getCategoryUrl());
-                    category.setUrl(categoryItem.getUrl());
-                    category.setItems(categoryItem.getItems());
-                    category.setIsCard(categoryItem.getIsCard());
-                    category.setPriority(categoryItem.getPriority());
+                CategoryItem category = new CategoryItem();
+                category.setTitle(categoryItem.getTitle());
+                category.setCategoryId(categoryItem.getCategoryId());
+                category.setCount(categoryItem.getCount());
+                category.setName(categoryItem.getName());
+                category.setMediaUrl(categoryItem.getMediaUrl());
+                category.setCategoryUrl(categoryItem.getCategoryUrl());
+                category.setUrl(categoryItem.getUrl());
+                category.setItems(categoryItem.getItems());
+                category.setIsCard(categoryItem.getIsCard());
+                category.setPriority(categoryItem.getPriority());
 
-                    switch (categoryItem.getName().toLowerCase()) {
-                        case "top":
-                            categoryRespons.add(0, category);
-                            break;
-                        case "carousel":
-                            categoryRespons.add(0, category);
-                            break;
-                        default:
-                            categoryRespons.add(category);
-                            break;
-                    }
+                switch (categoryItem.getName().toLowerCase()) {
+                    case "top":
+                        categoryRespons.add(0, category);
+                        break;
+                    case "carousel":
+                        categoryRespons.add(0, category);
+                        break;
+                    default:
+                        categoryRespons.add(category);
+                        break;
+                }
             }
 
             applyFilterOnCategories(categoryRespons);
@@ -184,18 +185,18 @@ public class Utils {
 
     public void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons) {
         Map<Integer, Integer> sortOrder = new HashMap<>();
-            for (CategoryItem categoryItem : categoryRespons) {
-                if (categoryItem.getName().equalsIgnoreCase("carousel")) {
-                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
-                } else if (categoryItem.getName().equalsIgnoreCase("top")) {
-                    sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
-                } else {
-                    sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
-                }
-                if (sortOrder.size() == categoryRespons.size()) {
-                    Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
-                }
+        for (CategoryItem categoryItem : categoryRespons) {
+            if (categoryItem.getName().equalsIgnoreCase("carousel")) {
+                sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
+            } else if (categoryItem.getName().equalsIgnoreCase("top")) {
+                sortOrder.put(categoryItem.getCategoryId(), Integer.MAX_VALUE);
+            } else {
+                sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
             }
+            if (sortOrder.size() == categoryRespons.size()) {
+                Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
+            }
+        }
     }
 
     public void sortOutletsWithLocation(List<Outlet> outlets, Location location) {
@@ -281,16 +282,14 @@ public class Utils {
     }
 
     public Location getLocation(Context context) {
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
+        String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
+        if (locationjson != null) {
+            Gson gson = new Gson();
+            location = gson.fromJson(locationjson, Location.class);
+        }
 
         if (location == null) {
-            final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
-            String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
-            if (locationjson != null) {
-                Gson gson = new Gson();
-                location = gson.fromJson(locationjson, Location.class);
-            }
-        }
-        if(location == null) {
             location = new Location();
             location.setName(LOCATION_NAME);
             location.setId(LOCATION_ID);
@@ -337,10 +336,10 @@ public class Utils {
         if (locationToast) {
             String str = context.getResources().getString(com.tokopedia.digital_deals.R.string.location_changed_to);
             str += text.toUpperCase();
-            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.design.R.color.black_40)));
+            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44)));
         } else {
-            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.red_50));
-            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.digital_deals.R.color.red_error));
+            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_R100));
+            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
             tvmsg.setText(text);
         }
 
@@ -405,16 +404,16 @@ public class Utils {
         return newUri.build();
     }
 
-    public static boolean hasShown(Context context, String tag){
+    public static boolean hasShown(Context context, String tag) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
                 Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(tag, false);
     }
 
-    public static void setShown(Context context, String tag, boolean hasShown){
+    public static void setShown(Context context, String tag, boolean hasShown) {
         SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
                 Context.MODE_PRIVATE).edit();
-        sharedPreferencesEditor.putBoolean (tag, hasShown);
+        sharedPreferencesEditor.putBoolean(tag, hasShown);
         sharedPreferencesEditor.apply();
     }
 
@@ -448,6 +447,7 @@ public class Utils {
                 }));
 
     }
+
     public void detectAndSendLocation(Activity activity, PermissionCheckerHelper permissionCheckerHelper, CurrentLocationCallBack currentLocationCallBack) {
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,

@@ -24,7 +24,7 @@
             android:name=".chatsetting.view.activity.ChatSettingActivity"
             android:label="@string/title_chat_setting"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.ChatSetting">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -57,7 +57,7 @@
         <activity
             android:name=".chattemplate.view.activity.TemplateChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.ChatSetting">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -73,7 +73,7 @@
         <activity
             android:name=".chattemplate.view.activity.EditTemplateChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.ChatSetting"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".chatroom.view.activity.TopChatRoomActivity"
