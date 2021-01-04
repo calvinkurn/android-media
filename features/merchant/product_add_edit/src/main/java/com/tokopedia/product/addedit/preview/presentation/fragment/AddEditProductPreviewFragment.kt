@@ -214,6 +214,8 @@ class AddEditProductPreviewFragment:
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
+    private var isAdminEligible = true
+
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
@@ -1089,6 +1091,8 @@ class AddEditProductPreviewFragment:
             when(result) {
                 is Success -> {
                     result.data.let { isEligible ->
+                        isAdminEligible = isEligible
+                        doneButton?.showWithCondition(isAdminEligible)
                         if (isEligible) {
                             adminRevampErrorLayout?.hide()
                         } else {
@@ -1409,7 +1413,7 @@ class AddEditProductPreviewFragment:
     }
 
     private fun hideLoading() {
-        doneButton?.show()
+        doneButton?.showWithCondition(isAdminEligible)
         loadingLayout?.transitionToEnd()
         loadingLayout?.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {

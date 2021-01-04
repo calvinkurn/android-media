@@ -142,8 +142,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
-    private var getAdminPermissionJob: Job? = null
-
     // Enable showing ticker if seller has multi location shop
     val shouldShowMultiLocationTicker
         get() = isAdding && userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin)
@@ -263,11 +261,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                     getProductUseCase.executeOnBackground()
                 }
-                getAdminPermissionJob?.join()
                 mGetProductResult.value = Success(data)
                 mIsLoading.value = false
             }, onError = {
-                getAdminPermissionJob?.cancel()
                 mGetProductResult.value = Fail(it)
             })
         } else {
