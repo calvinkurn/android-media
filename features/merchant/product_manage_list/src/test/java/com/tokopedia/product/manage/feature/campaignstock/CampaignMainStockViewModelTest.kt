@@ -1,5 +1,8 @@
 package com.tokopedia.product.manage.feature.campaignstock
 
+import com.tokopedia.product.manage.data.createShopOwnerAccess
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
@@ -28,22 +31,65 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
     }
 
     @Test
-    fun `adding non empty stock variant product with empty stock product will also set the warning to be displayed`() {
+    fun `when set one of product with empty stock should set displayVariantStockWarning false`() {
+        val sellableProductList = listOf(
+            SellableStockProductUIModel(
+                productId = "0",
+                productName = "Name 1",
+                stock = "0",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess()
+            ),
+            SellableStockProductUIModel(
+                productId = "1",
+                productName = "Name 2",
+                stock = "0",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess()
+            )
+        )
+
+        viewModel.setStockAvailability(sellableProductList)
         viewModel.setVariantStock("1", 1)
         viewModel.setVariantStock("0", 0)
 
-        assert(viewModel.shouldDisplayVariantStockWarningLiveData.value == true)
+        val expectedShowWarning = false
+        val actualShowWarning = viewModel.shouldDisplayVariantStockWarningLiveData.value
+
+        assertEquals(expectedShowWarning, actualShowWarning)
     }
 
     @Test
-    fun `adding empty stock variant product with non-empty stock product will not change the warning show condition`() {
+    fun `when set all of product with empty stock should set displayVariantStockWarning true`() {
+        val sellableProductList = listOf(
+            SellableStockProductUIModel(
+                productId = "0",
+                productName = "Name 1",
+                stock = "1",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess()
+            ),
+            SellableStockProductUIModel(
+                productId = "1",
+                productName = "Name 2",
+                stock = "1",
+                isActive = true,
+                isAllStockEmpty = false,
+                access = createShopOwnerAccess()
+            )
+        )
+
+        viewModel.setStockAvailability(sellableProductList)
+        viewModel.setVariantStock("1", 0)
         viewModel.setVariantStock("0", 0)
 
-        val currentWarningShowCondition = viewModel.shouldDisplayVariantStockWarningLiveData.value
+        val expectedShowWarning = true
+        val actualShowWarning = viewModel.shouldDisplayVariantStockWarningLiveData.value
 
-        viewModel.setVariantStock("1", 1)
-
-        assert(viewModel.shouldDisplayVariantStockWarningLiveData.value == currentWarningShowCondition)
+        assertEquals(expectedShowWarning, actualShowWarning)
     }
 
     @Test

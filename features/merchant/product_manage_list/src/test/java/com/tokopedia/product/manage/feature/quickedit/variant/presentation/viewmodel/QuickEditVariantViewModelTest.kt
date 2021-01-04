@@ -50,8 +50,8 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
 
-//        viewModel.getDataResult
-//            .verifyValueEquals(expectedResult)
+        viewModel.getProductVariantsResult
+            .verifyValueEquals(expectedResult)
 
         verifyHideProgressBar()
     }

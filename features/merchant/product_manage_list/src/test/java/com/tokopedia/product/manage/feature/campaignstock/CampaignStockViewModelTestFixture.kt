@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.campaignstock
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
@@ -11,7 +12,9 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignS
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.After
 import org.junit.Before
@@ -38,6 +41,12 @@ open class CampaignStockViewModelTestFixture {
     lateinit var editProductVariantUseCase: EditProductVariantUseCase
 
     @RelaxedMockK
+    lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
+
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
     lateinit var getStockAllocationLiveDataObserver: Observer<in Result<StockAllocationResult>>
 
     protected lateinit var viewModel: CampaignStockViewModel
@@ -45,13 +54,28 @@ open class CampaignStockViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = CampaignStockViewModel(campaignStockAllocationUseCase, otherCampaignStockDataUseCase, getProductVariantUseCase, editStockUseCase, editProductVariantUseCase, CoroutineTestDispatchersProvider).also {
+        viewModel = CampaignStockViewModel(
+            campaignStockAllocationUseCase,
+            otherCampaignStockDataUseCase,
+            getProductVariantUseCase,
+            editStockUseCase,
+            editProductVariantUseCase,
+            getProductManageAccessUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
+        ).also {
             it.getStockAllocationData.observeForever(getStockAllocationLiveDataObserver)
         }
+
+        onGetIsShopOwner_thenReturn(true)
     }
 
     @After
     fun cleanup() {
         viewModel.getStockAllocationData.removeObserver(getStockAllocationLiveDataObserver)
+    }
+
+    protected fun onGetIsShopOwner_thenReturn(isShopOwner: Boolean) {
+        every { userSession.isShopOwner } returns isShopOwner
     }
 }

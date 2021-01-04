@@ -3,12 +3,15 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import javax.inject.Inject
 
-class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
+class CampaignMainStockViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val mVariantStockAvailabilityLiveData = MutableLiveData<HashMap<String, Boolean>>(hashMapOf())
     private val mShowStockInfo = MutableLiveData<Boolean>()
@@ -17,7 +20,7 @@ class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
         addSource(mVariantStockAvailabilityLiveData) { variantMap ->
             variantMap.all { it.value }.let { isAllStockEmpty ->
                 if (value != isAllStockEmpty) {
-                    value = isAllStockEmpty
+                    postValue(isAllStockEmpty)
                 }
                 setShowStockInfo(isAllStockEmpty)
             }
@@ -38,14 +41,14 @@ class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
             variantStockMap[it.productId] = isStockEmpty
         }
 
-        mVariantStockAvailabilityLiveData.value = variantStockMap
+        mVariantStockAvailabilityLiveData.postValue(variantStockMap)
     }
 
     fun setVariantStock(productId: String, stock: Int) {
         mVariantStockAvailabilityLiveData.value?.let {
             val isStockEmpty = stock == 0
             it[productId] = isStockEmpty
-            mVariantStockAvailabilityLiveData.value = it
+            mVariantStockAvailabilityLiveData.postValue(it)
         }
     }
 
@@ -54,7 +57,7 @@ class CampaignMainStockViewModel @Inject constructor(): ViewModel() {
         val shouldShow = !isAllStockEmpty
 
         if(showStockInfo != shouldShow) {
-            mShowStockInfo.value = !isAllStockEmpty
+            mShowStockInfo.postValue(shouldShow)
         }
     }
 }

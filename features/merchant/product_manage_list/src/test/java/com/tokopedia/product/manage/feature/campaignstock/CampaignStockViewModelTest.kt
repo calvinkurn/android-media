@@ -11,12 +11,12 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Upd
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.data.createShopOwnerAccess
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
@@ -37,7 +37,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetCampaignStockAllocationCalled()
         verifyGetOtherCampaignStockDataCalled()
 
-        val expectedResult = Success(NonVariantStockAllocationResult(getStockAllocationData, otherCampaignStockData))
+        val expectedResult = Success(NonVariantStockAllocationResult(
+            getStockAllocationData,
+            otherCampaignStockData,
+            createShopOwnerAccess()
+        ))
 
         verifyGetStockAllocationSuccessResult(expectedResult)
     }
@@ -65,9 +69,10 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(VariantStockAllocationResult(
-                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, access),
+                ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, createShopOwnerAccess()),
                 getStockAllocationData,
-                otherCampaignStockData))
+                otherCampaignStockData,
+                createShopOwnerAccess()))
 
         verifyGetStockAllocationSuccessResult(expectedResult)
     }
@@ -203,16 +208,11 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun verifyGetStockAllocationSuccessResult(expectedResult: Success<StockAllocationResult>) {
         val actualResult = viewModel.getStockAllocationData.value
-        assertEquals(actualResult, expectedResult)
+        assertEquals(expectedResult, actualResult)
     }
 
     private fun verifyProductUpdateResponseResult(expectedResult: Success<UpdateCampaignStockResult>) {
         val actualResult = viewModel.productUpdateResponseLiveData.value
         assertEquals(expectedResult, actualResult)
     }
-
-    private suspend fun joinCoroutineJob() {
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-    }
-
 }
