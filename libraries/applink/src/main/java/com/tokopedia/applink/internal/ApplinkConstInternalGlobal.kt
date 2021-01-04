@@ -357,7 +357,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
 
-
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
 

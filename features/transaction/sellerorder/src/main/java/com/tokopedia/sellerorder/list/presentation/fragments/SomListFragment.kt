@@ -1509,10 +1509,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun setInitialOrderListParams() {
         val orderTypes = if (filterOrderType == 0) {
-            emptyList()
+            mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            listOf(filterOrderType)
+            mutableSetOf(filterOrderType)
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)
@@ -1583,6 +1583,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         orderListParam.statusList = filterCancelWrapper.orderStatusIdList
         viewModel.updateGetOrderListParams(orderListParam)
         this.filterDate = filterCancelWrapper.filterDate
+        this.filterOrderType = if (filterCancelWrapper.requestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
     }
 
     private fun setCoachMarkStepListener() {

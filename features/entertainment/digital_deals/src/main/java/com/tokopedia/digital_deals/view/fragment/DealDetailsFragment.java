@@ -65,9 +65,11 @@ import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.CustomWidthToaster;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -317,7 +319,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             tvBrandAddress.setText(outlet.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(com.tokopedia.digital_deals.R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
-            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             if (dealDetail.getBrand().getUrl() != null) {
                 ivBrandLogo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -363,7 +365,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         {
             buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_disable_buy_now));
             buyDealNow.setClickable(false);
-            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.digital_deals.R.color.search_divider_color));
+            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75));
         } else {
             buyDealNow.setClickable(true);
             buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.buy_now));
@@ -488,12 +490,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 if (tvDealDetails.getText() != null) {
                     collapsingToolbarLayout.setTitle(tvDealDetails.getText());
                 }
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
             } else {
                 collapsingToolbarLayout.setTitle(" ");
-                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
-                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                setDrawableColorFilter(item.getIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
         });
     }
@@ -550,14 +552,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @SuppressLint("Range")
     @Override
     public void showLoginSnackbar(String message, int position) {
-
-        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
-                getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        int dimen = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_96);
+        CustomWidthToaster.showCustomeToaster(dimen, rootView, message,
+                getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login),
+                v -> {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
-                }
-        ).show();
-
+                });
     }
 
     @Override
@@ -729,7 +731,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     private Unit showErrorMessage(){
-        NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.how_to_redeem_error));
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        Toaster.build(rootView, getResources().getString(R.string.how_to_redeem_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show();
         return Unit.INSTANCE;
     }
 

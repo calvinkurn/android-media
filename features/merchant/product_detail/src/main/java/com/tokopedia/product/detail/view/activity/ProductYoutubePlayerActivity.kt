@@ -9,7 +9,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import kotlinx.android.synthetic.main.activity_product_youtube_player.*
 
@@ -42,7 +42,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         youtube_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         if (videoUrls.size > 1){
-            youtube_list.adapter = YoutubeThumbnailAdapter(videoUrls.map { Video(url = it) }.toMutableList()){
+            youtube_list.adapter = YoutubeThumbnailAdapter(videoUrls.map { YoutubeVideo(url = it) }.toMutableList()){
                 _, index -> playVideoAt(index)
             }
         }
