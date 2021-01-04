@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipe_refresh"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
+    android:layout_marginStart="@dimen/unify_space_16"
+    android:layout_marginEnd="@dimen/unify_space_16"
+    android:enabled="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_info_pengiriman"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:tckv_content_text_size = "@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="loose" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_layanan_pengiriman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            android:text="Layanan Pengiriman"
+            app:layout_constraintTop_toBottomOf="@id/ticker_info_pengiriman"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_dijemput_kurir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_24"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            android:text="Dijemput Kurir"
+            app:layout_constraintTop_toBottomOf="@id/tv_layanan_pengiriman"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_dijemput_kurir_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:typographyType="body_3"
+            android:text="Kurir akan menjemput pesanan di alamatmu untuk diantar"
+            app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/address_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir_detail" />
+
+        <View
+            android:id="@+id/divider_shipping_editor_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:background="@color/Unify_N75"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/address_list" />
+
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
