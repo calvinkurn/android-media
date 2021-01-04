@@ -3,6 +3,8 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse.*
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
@@ -12,14 +14,22 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
-import com.tokopedia.product.manage.data.*
+import com.tokopedia.product.manage.data.createEditVariantResult
+import com.tokopedia.product.manage.data.createGetVariantResponse
+import com.tokopedia.product.manage.data.createOptionResponse
+import com.tokopedia.product.manage.data.createProduct
+import com.tokopedia.product.manage.data.createProductVariant
+import com.tokopedia.product.manage.data.createProductVariantResponse
+import com.tokopedia.product.manage.data.createProductViewModel
+import com.tokopedia.product.manage.data.createSelectionResponse
+import com.tokopedia.product.manage.data.createShopOwnerAccess
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.Active
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
@@ -27,27 +37,49 @@ import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.Edit
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.DELETE_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.DUPLICATE_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.EDIT_PRICE
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.EDIT_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.EDIT_STOCK
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.ETALASE_LIST
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.MULTI_SELECT
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.PRODUCT_LIST
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.SET_CASHBACK
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.SET_FEATURED
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.SET_TOP_ADS
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.AccessId.STOCK_REMINDER
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.AUTO_ADS
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.MANUAL_ADS
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModelTest.TopAdsCategory.UNKNOWN_ADS
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
-import com.tokopedia.unit.test.ext.verifyErrorEquals
-import com.tokopedia.unit.test.ext.verifySuccessEquals
-import com.tokopedia.unit.test.ext.verifyValueEquals
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsCategory.AUTO_ADS
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.Data
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.ShopInfoTopAds
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListData
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.*
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.CashBackOnly
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.FeaturedOnly
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.NewOnly
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption.SortByName
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption.ASC
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -58,7 +90,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import rx.Subscriber
 
-class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
+class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     @Test
     fun `when editPrice success should return_edit price success result`() {
@@ -67,7 +99,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val price = "10000"
             val productName = "Amazing Product"
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                    ProductUpdateV3Data(isSuccess = true)
+            ProductUpdateV3Data(isSuccess = true)
             )
 
             onEditPrice_thenReturn(productUpdateV3Response)
@@ -89,7 +121,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val productName = "Amazing Product"
             val status = ProductStatus.ACTIVE
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                ProductUpdateV3Data(isSuccess = true)
+            ProductUpdateV3Data(isSuccess = true)
             )
 
             onEditStock_thenReturn(productUpdateV3Response)
@@ -109,7 +141,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val productId = "0"
             val productName = "Amazing Product"
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                ProductUpdateV3Data(isSuccess = true)
+            ProductUpdateV3Data(isSuccess = true)
             )
 
             onDeleteProduct_thenReturn(productUpdateV3Response)
@@ -130,7 +162,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val price = "10000"
             val productName = "Amazing Product"
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                ProductUpdateV3Data(isSuccess = false)
+            ProductUpdateV3Data(isSuccess = false)
             )
 
             onEditPrice_thenReturn(productUpdateV3Response)
@@ -153,7 +185,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val productName = "Amazing Product"
             val status = ProductStatus.ACTIVE
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                ProductUpdateV3Data(isSuccess = false)
+            ProductUpdateV3Data(isSuccess = false)
             )
 
             onEditStock_thenReturn(productUpdateV3Response)
@@ -174,7 +206,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val productId = "0"
             val productName = "Amazing Product"
             val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-                ProductUpdateV3Data(isSuccess = false)
+            ProductUpdateV3Data(isSuccess = false)
             )
 
             onDeleteProduct_thenReturn(productUpdateV3Response)
@@ -244,9 +276,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     @Test
     fun `when setFilter should update filter accordingly`() {
         val filterOptionWrapper = FilterOptionWrapper(
-                SortByName(ASC),
-                listOf(CashBackOnly, NewOnly),
-                listOf(true, true, false, true))
+            SortByName(ASC),
+            listOf(CashBackOnly, NewOnly),
+            listOf(true, true, false, true))
         val selectedFilter = listOf(CashBackOnly, NewOnly)
 
         viewModel.setFilterOptionWrapper(filterOptionWrapper)
@@ -258,9 +290,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     @Test
     fun `when setFilterOptionWrapper should update filterOptionWrapper accordingly`() {
         val filterOptionWrapper = FilterOptionWrapper(
-                SortByName(ASC),
-                listOf(CashBackOnly, NewOnly),
-                listOf(true, true, false, true))
+            SortByName(ASC),
+            listOf(CashBackOnly, NewOnly),
+            listOf(true, true, false, true))
 
         viewModel.setFilterOptionWrapper(filterOptionWrapper)
 
@@ -314,7 +346,50 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             viewModel.productListResult
                 .verifySuccessEquals(expectedProductList)
 
+            viewModel.showStockTicker
+                .verifyValueEquals(false)
+
             verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `given multi location shop true when get product list should show stock ticker`() {
+        runBlocking {
+            val isMultiLocationShop = true
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId)
+
+            verifyShowStockTicker()
+            verifyHideProgressBar()
+        }
+    }
+
+    @Test
+    fun `given isRefresh true when get product list should set refreshList true`() {
+        runBlocking {
+            val isRefresh = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId, isRefresh = isRefresh)
+
+            viewModel.refreshList
+                .verifyValueEquals(true)
         }
     }
 
@@ -418,7 +493,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     fun `edit multiple products by status should return success and failed response`() {
         val status = ProductStatus.ACTIVE
         val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
-        val failedResponse =  MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val failedResponse = MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
         val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
         onMultiEditProducts_thenReturn(response)
@@ -451,7 +526,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         val menuId = "1"
         val menuName = "Etalase Toko"
         val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
-        val failedResponse =  MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val failedResponse = MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
         val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
         onMultiEditProducts_thenReturn(response)
@@ -545,7 +620,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
     fun `when isPowerMerchant should return power merchant status`() {
-        val actualIsPowerMerchant= viewModel.isPowerMerchant()
+        val actualIsPowerMerchant = viewModel.isPowerMerchant()
         val expectedIsPowerMerchant = false
         assertEquals(expectedIsPowerMerchant, actualIsPowerMerchant)
     }
@@ -707,25 +782,25 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         runBlocking {
             val productName = "Tokopedia"
             val variantList = listOf(
-                    createProductVariantResponse(combination = listOf(0, 1)),
-                    createProductVariantResponse(combination = listOf(1, 0))
+                createProductVariantResponse(combination = listOf(0, 1)),
+                createProductVariantResponse(combination = listOf(1, 0))
             )
             val firstOption = listOf(
-                    createOptionResponse(value = "Biru"),
-                    createOptionResponse(value = "Hijau")
+                createOptionResponse(value = "Biru"),
+                createOptionResponse(value = "Hijau")
             )
             val secondOption = listOf(
-                    createOptionResponse(value = "S"),
-                    createOptionResponse(value = "M")
+                createOptionResponse(value = "S"),
+                createOptionResponse(value = "M")
             )
             val selections = listOf(
-                    createSelectionResponse(options = firstOption),
-                    createSelectionResponse(options = secondOption)
+                createSelectionResponse(options = firstOption),
+                createSelectionResponse(options = secondOption)
             )
             val response = createGetVariantResponse(
-                    productName,
-                    products = variantList,
-                    selections = selections
+                productName,
+                products = variantList,
+                selections = selections
             )
 
             val productId = "1400068494"
@@ -735,8 +810,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             viewModel.getProductVariants(productId)
 
             val productVariants = listOf(
-                    createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
-                    createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
+                createProductVariant(name = "Biru | M", combination = listOf(0, 1)),
+                createProductVariant(name = "Hijau | S", combination = listOf(1, 0))
             )
             val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
@@ -774,12 +849,286 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when getTopAdsInfo success should set expected top ads info`() {
+        testGetTopAdsInfo(
+            adsCategory = MANUAL_ADS,
+            expectedIsTopAds = true,
+            expectedIsAutoAds = false
+        )
+
+        testGetTopAdsInfo(
+            adsCategory = AUTO_ADS,
+            expectedIsTopAds = true,
+            expectedIsAutoAds = true
+        )
+
+        testGetTopAdsInfo(
+            adsCategory = UNKNOWN_ADS,
+            expectedIsTopAds = false,
+            expectedIsAutoAds = false
+        )
+    }
+
+    @Test
+    fun `when getTopAdsInfo error should set default top ads info false`() {
+        onGetShopInfoTopAds_thenReturnError()
+
+        viewModel.getTopAdsInfo()
+
+        val expectedTopAdsInfo = TopAdsInfo(
+            isTopAds = false,
+            isAutoAds = false
+        )
+
+        viewModel.topAdsInfo
+            .verifyValueEquals(expectedTopAdsInfo)
+    }
+
+    @Test
+    fun `given productId when promo top ads clicked should set live data with top ads page`() {
+        val productId = "1"
+
+        testOnClickPromoTopAds(
+            productId = productId,
+            adsCategory = MANUAL_ADS,
+            expectedPage = TopAdsPage.ManualAds(productId)
+        )
+
+        testOnClickPromoTopAds(
+            productId = productId,
+            adsCategory = AUTO_ADS,
+            expectedPage = TopAdsPage.AutoAds(productId)
+        )
+
+        testOnClickPromoTopAds(
+            productId = productId,
+            adsCategory = UNKNOWN_ADS,
+            expectedPage = TopAdsPage.OnBoarding(productId)
+        )
+    }
+
+    @Test
+    fun `given topAdsInfo NULL when promo top ads clicked should set live data with onboarding page`() {
+        val productId = "1"
+
+        viewModel.onPromoTopAdsClicked(productId)
+
+        val expectedPage = TopAdsPage.OnBoarding(productId)
+
+        viewModel.onClickPromoTopAds
+            .verifyValueEquals(expectedPage)
+    }
+
+    @Test
+    fun `given user is shop owner when get product manage access should set live data with owner access`() {
+        onGetIsShopOwner_thenReturn(isShopOwner = true)
+
+        viewModel.getProductManageAccess()
+
+        val expectedResult = Success(createShopOwnerAccess())
+
+        viewModel.productManageAccess
+            .verifySuccessEquals(expectedResult)
+
+        verifyGetProductManageAccessNotCalled()
+    }
+
+    @Test
+    fun `given user is NOT shop owner when getProductManageAccess should map data from accessIdList`() {
+        onGetIsShopOwner_thenReturn(isShopOwner = false)
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(ADD_PRODUCT)),
+            expectedProductManageAccess = createProductManageAccess(addProduct = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(EDIT_PRODUCT)),
+            expectedProductManageAccess = createProductManageAccess(editProduct = true, editPrice = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(ETALASE_LIST)),
+            expectedProductManageAccess = createProductManageAccess(etalaseList = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(MULTI_SELECT)),
+            expectedProductManageAccess = createProductManageAccess(multiSelect = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(EDIT_STOCK)),
+            expectedProductManageAccess = createProductManageAccess(editStock = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(EDIT_PRICE)),
+            expectedProductManageAccess = createProductManageAccess(editProduct = true, editPrice = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(DUPLICATE_PRODUCT)),
+            expectedProductManageAccess = createProductManageAccess(duplicateProduct = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(STOCK_REMINDER)),
+            expectedProductManageAccess = createProductManageAccess(setStockReminder = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(DELETE_PRODUCT)),
+            expectedProductManageAccess = createProductManageAccess(deleteProduct = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(SET_TOP_ADS)),
+            expectedProductManageAccess = createProductManageAccess(setTopAds = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(SET_CASHBACK)),
+            expectedProductManageAccess = createProductManageAccess(setCashBack = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(SET_FEATURED)),
+            expectedProductManageAccess = createProductManageAccess(setFeatured = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(Access(PRODUCT_LIST)),
+            expectedProductManageAccess = createProductManageAccess(productList = true)
+        )
+
+        testGetProductManageAccess(
+            accessList = listOf(),
+            expectedProductManageAccess = createProductManageAccess(
+                addProduct = false,
+                editProduct = false,
+                etalaseList = false,
+                multiSelect = false,
+                editPrice = false,
+                editStock = false,
+                duplicateProduct = false,
+                setStockReminder = false,
+                deleteProduct = false,
+                setTopAds = false,
+                setCashBack = false,
+                setFeatured = false,
+                productList = false
+            )
+        )
+    }
+
+    @Test
+    fun `when get product manage access error should set access live data fail`() {
+        val error = IllegalStateException()
+        onGetProductManageAccess_thenReturnError(error)
+
+        viewModel.getProductManageAccess()
+
+        val expectedResult = Fail(error)
+
+        viewModel.productManageAccess
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when delete single product should set live data with delete single product data`() {
+        val productId = "1"
+        val productName = "name"
+        val isMultiLocationShop = true
+
+        onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+
+        viewModel.onDeleteSingleProduct(productName, productId)
+
+        val expectedDeleteProductDialog = DeleteProductDialogType.SingleProduct(
+            productId,
+            productName,
+            isMultiLocationShop
+        )
+
+        viewModel.deleteProductDialog
+            .verifyValueEquals(expectedDeleteProductDialog)
+    }
+
+    @Test
+    fun `when delete multiple product should set live data with delete multiple product data`() {
+        val isMultiLocationShop = false
+
+        onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+
+        viewModel.onDeleteMultipleProducts()
+
+        val expectedDeleteProductDialog = DeleteProductDialogType.MultipleProduct(isMultiLocationShop)
+
+        viewModel.deleteProductDialog
+            .verifyValueEquals(expectedDeleteProductDialog)
+    }
+
+    private fun testGetProductManageAccess(
+        accessList: List<Access>,
+        expectedProductManageAccess: ProductManageAccess
+    ) {
+        val accessData = Data(accessList)
+        val accessResponse = Response(data = accessData)
+
+        onGetProductManageAccess_thenReturn(accessResponse)
+
+        viewModel.getProductManageAccess()
+
+        val expectedResult = Success(expectedProductManageAccess)
+
+        viewModel.productManageAccess
+            .verifySuccessEquals(expectedResult)
+    }
+
+    private fun testOnClickPromoTopAds(
+        productId: String,
+        adsCategory: Int,
+        expectedPage: TopAdsPage
+    ) {
+        val topAdsData = ShopInfoTopAds(Data(category = adsCategory))
+        val response = ShopInfoTopAdsResponse(topAdsData)
+
+        onGetShopInfoTopAds_thenReturn(response)
+
+        viewModel.getTopAdsInfo()
+        viewModel.onPromoTopAdsClicked(productId)
+
+
+        viewModel.onClickPromoTopAds
+            .verifyValueEquals(expectedPage)
+    }
+
+    private fun testGetTopAdsInfo(
+        adsCategory: Int,
+        expectedIsTopAds: Boolean,
+        expectedIsAutoAds: Boolean
+    ) {
+        val topAdsData = ShopInfoTopAds(Data(category = adsCategory))
+        val response = ShopInfoTopAdsResponse(topAdsData)
+
+        onGetShopInfoTopAds_thenReturn(response)
+
+        viewModel.getTopAdsInfo()
+
+        val expectedTopAdsInfo = TopAdsInfo(expectedIsTopAds, expectedIsAutoAds)
+
+        viewModel.topAdsInfo
+            .verifyValueEquals(expectedTopAdsInfo)
+    }
+
     private fun onGetVariants_thenReturn(response: GetProductVariantResponse) {
         coEvery { getProductVariantUseCase.execute(any()) } returns response
     }
 
     private fun verifyGetVariantsCalled() {
-        coVerify { getProductVariantUseCase.execute(any())}
+        coVerify { getProductVariantUseCase.execute(any()) }
     }
 
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
@@ -827,7 +1176,11 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     private fun onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse: ShopInfoTopAdsResponse) {
-        coEvery { geetShopInfoTopAdsUseCase.execute(any()) } returns shopInfoTopAdsResponse
+        coEvery { getShopInfoTopAdsUseCase.execute(any()) } returns shopInfoTopAdsResponse
+    }
+
+    private fun onGetShopInfoTopAds_thenReturnError() {
+        coEvery { getShopInfoTopAdsUseCase.execute(any()) } throws Throwable()
     }
 
     private fun onGetShopInfo_thenError(error: Throwable) {
@@ -874,6 +1227,30 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         }
     }
 
+    private fun onGetIsShopOwner_thenReturn(isShopOwner: Boolean) {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns isShopOwner
+    }
+
+    private fun onGetProductManageAccess_thenReturn(response: Response) {
+        coEvery {
+            getProductManageAccessUseCase.execute(any())
+        } returns response
+    }
+
+    private fun onGetProductManageAccess_thenReturnError(error: Throwable) {
+        coEvery {
+            getProductManageAccessUseCase.execute(any())
+        } throws error
+    }
+
+    private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {
+        coEvery {
+            userSessionInterface.isMultiLocationShop
+        } returns isMultiLocationShop
+    }
+
     private fun verifyEditPriceUseCaseCalled() {
         coVerify { editPriceUseCase.executeOnBackground() }
     }
@@ -891,7 +1268,11 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     private fun verifyGetProductListCalled() {
-        coVerify { getProductListUseCase.execute(any())}
+        coVerify { getProductListUseCase.execute(any()) }
+    }
+
+    private fun verifyGetProductManageAccessNotCalled() {
+        coVerify(exactly = 0) { getProductManageAccessUseCase.execute(any()) }
     }
 
     private fun verifySetFeaturedProductResponseEquals(expectedResponse: Success<SetFeaturedProductResult>) {
@@ -911,5 +1292,63 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun verifyHideProgressBar() {
         viewModel.viewState.verifyValueEquals(HideProgressDialog)
+    }
+
+    private fun verifyShowStockTicker() {
+        viewModel.showStockTicker.verifyValueEquals(true)
+    }
+
+    private fun createProductManageAccess(
+        addProduct: Boolean = false,
+        editProduct: Boolean = false,
+        etalaseList: Boolean = false,
+        multiSelect: Boolean = false,
+        editPrice: Boolean = false,
+        editStock: Boolean = false,
+        duplicateProduct: Boolean = false,
+        setStockReminder: Boolean = false,
+        deleteProduct: Boolean = false,
+        setTopAds: Boolean = false,
+        setCashBack: Boolean = false,
+        setFeatured: Boolean = false,
+        productList: Boolean = false
+    ): ProductManageAccess {
+        return ProductManageAccess(
+            addProduct,
+            editProduct,
+            etalaseList,
+            multiSelect,
+            editPrice,
+            editStock,
+            duplicateProduct,
+            setStockReminder,
+            deleteProduct,
+            setTopAds,
+            setCashBack,
+            setFeatured,
+            productList
+        )
+    }
+
+    private object AccessId {
+        const val ADD_PRODUCT = "101"
+        const val EDIT_PRODUCT = "121"
+        const val ETALASE_LIST = "106"
+        const val MULTI_SELECT = "107"
+        const val EDIT_STOCK = "124"
+        const val EDIT_PRICE = "121"
+        const val DUPLICATE_PRODUCT = "123"
+        const val STOCK_REMINDER = "109"
+        const val DELETE_PRODUCT = "16"
+        const val SET_TOP_ADS = "114"
+        const val SET_CASHBACK = "116"
+        const val SET_FEATURED = "113"
+        const val PRODUCT_LIST = "100"
+    }
+
+    private object TopAdsCategory {
+        const val MANUAL_ADS = 3
+        const val AUTO_ADS = 4
+        const val UNKNOWN_ADS = -1
     }
 }

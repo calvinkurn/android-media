@@ -91,6 +91,10 @@ class ProductManageViewModel @Inject constructor(
 
     val viewState: LiveData<ViewState>
         get() = _viewState
+    val showStockTicker: LiveData<Boolean>
+        get() = _showStockTicker
+    val refreshList: LiveData<Boolean>
+        get() = _refreshList
     val getProductVariantsResult: LiveData<Result<GetVariantResult>>
         get() = _getProductVariantsResult
     val productListResult: LiveData<Result<List<ProductViewModel>>>
@@ -129,8 +133,12 @@ class ProductManageViewModel @Inject constructor(
         get() = _productManageAccess
     val deleteProductDialog: LiveData<DeleteProductDialogType>
         get() = _deleteProductDialog
+    val topAdsInfo: LiveData<TopAdsInfo>
+        get() = _topAdsInfo
 
     private val _viewState = MutableLiveData<ViewState>()
+    private val _showStockTicker = MutableLiveData<Boolean>()
+    private val _refreshList = MutableLiveData<Boolean>()
     private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
@@ -149,7 +157,6 @@ class ProductManageViewModel @Inject constructor(
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
-    private val _chatBlastSeller = MutableLiveData<String>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
 
@@ -263,10 +270,7 @@ class ProductManageViewModel @Inject constructor(
                 val productListResponse = getProductList.productList
                 productListResponse?.data
             }
-
-            if(isRefresh) {
-                refreshList()
-            }
+            _refreshList.value = isRefresh
 
             showStockTicker()
             showProductList(productList)
@@ -611,10 +615,8 @@ class ProductManageViewModel @Inject constructor(
     private fun showStockTicker() {
         val isInitialLoad = _productListResult.value == null
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-
-        if(isInitialLoad && isMultiLocationShop) {
-            _viewState.value = ShowStockTicker
-        }
+        val shouldShow = isInitialLoad && isMultiLocationShop
+        _showStockTicker.value = shouldShow
     }
 
     private fun getAccess(): ProductManageAccess {
@@ -624,10 +626,6 @@ class ProductManageViewModel @Inject constructor(
 
     private fun setProductListFeaturedOnly(productsSize: Int) {
         _productListFeaturedOnlyResult.value = Success(productsSize)
-    }
-
-    private fun refreshList() {
-        _viewState.value = RefreshList
     }
 
     private fun showProgressDialog() {

@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
@@ -42,7 +43,8 @@ fun createProductViewModel(
     multiSelectActive: Boolean = false,
     isChecked: Boolean = false,
     hasStockReserved: Boolean = false,
-    topAds: TopAdsInfo? = null
+    topAds: TopAdsInfo? = null,
+    access: ProductManageAccess? = null
 ): ProductViewModel {
     return ProductViewModel(
         id,
@@ -59,6 +61,7 @@ fun createProductViewModel(
         multiSelectActive,
         isChecked,
         hasStockReserved,
-        topAds
+        topAds,
+        access
     )
 }

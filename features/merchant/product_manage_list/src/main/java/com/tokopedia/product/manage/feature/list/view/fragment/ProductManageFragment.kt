@@ -2132,12 +2132,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeViewState() {
         observe(viewModel.viewState) {
             when (it) {
-                is ShowStockTicker -> showStockTicker()
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
-                is RefreshList -> resetProductList()
                 is ShowLoadingDialog -> showProgressDialogVariant()
                 is HideLoadingDialog -> hideProgressDialogVariant()
+            }
+        }
+        observe(viewModel.showStockTicker) { shouldShow ->
+            stockTicker.showWithCondition(shouldShow)
+        }
+        observe(viewModel.refreshList) { shouldRefresh ->
+            if(shouldRefresh) {
+                resetProductList()
             }
         }
     }
@@ -2261,10 +2267,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideErrorPage() {
         errorPage.hide()
-    }
-
-    private fun showStockTicker() {
-        stockTicker.show()
     }
 
     private fun hideStockTicker() {

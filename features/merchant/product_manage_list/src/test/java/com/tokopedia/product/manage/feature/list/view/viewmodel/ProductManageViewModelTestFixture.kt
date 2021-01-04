@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
@@ -36,7 +37,7 @@ open class ProductManageViewModelTestFixture {
     lateinit var gqlGetShopInfoUseCase: GQLGetShopInfoUseCase
 
     @RelaxedMockK
-    lateinit var geetShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase
+    lateinit var getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -68,6 +69,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getProductVariantUseCase: GetProductVariantUseCase
 
+    @RelaxedMockK
+    lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -77,7 +81,7 @@ open class ProductManageViewModelTestFixture {
         viewModel = ProductManageViewModel(
                 editPriceUseCase,
                 gqlGetShopInfoUseCase,
-                geetShopInfoTopAdsUseCase,
+                getShopInfoTopAdsUseCase,
                 userSessionInterface,
                 topAdsGetShopDepositGraphQLUseCase,
                 popupManagerAddProductUseCase,
@@ -87,6 +91,7 @@ open class ProductManageViewModelTestFixture {
                 deleteProductUseCase,
                 multiEditProductUseCase,
                 getProductListMetaUseCase,
+                getProductManageAccessUseCase,
                 editProductVariantUseCase,
                 getProductVariantUseCase,
                 CoroutineTestDispatchersProvider
