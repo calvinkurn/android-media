@@ -1390,8 +1390,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
-        redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option option) {
+        redirectionStartActivity(option.getBannerApplinkUrl(), option.getBannerLinkUrl());
+
+        SearchTracking.trackEventClickInspirationCarouselGridBanner(
+                option.getInspirationCarouselType(), getQueryKey(), option.getBannerDataLayer(), getUserId()
+        );
     }
 
     @Override

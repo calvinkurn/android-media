@@ -36,6 +36,15 @@ class InspirationCarouselViewModel(
             return typeFactory.type(layout)
         }
 
+        fun getBannerDataLayer(): Any {
+            return DataLayer.mapOf(
+                "creative", title,
+                "id", "{{banner_id}}",
+                "name", "/search - $title",
+                "position", 0
+            )
+        }
+
         class Product(
             val id: String = "",
             val name: String = "",
