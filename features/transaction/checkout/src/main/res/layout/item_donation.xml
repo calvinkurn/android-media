@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:paddingTop="@dimen/dp_6"
-        android:paddingBottom="@dimen/dp_6"
-        android:paddingRight="@dimen/dp_4" />
+        android:paddingRight="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_6" />
 
     <TextView
         android:id="@+id/tv_donation_title"

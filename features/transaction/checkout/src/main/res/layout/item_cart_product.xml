@@ -170,10 +170,10 @@
             android:layout_below="@+id/tv_product_price"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginLeft="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_4"
             android:layout_toRightOf="@+id/iv_product_card"
             android:foregroundGravity="center_vertical"
-            app:flexWrap="wrap"/>
+            android:paddingTop="@dimen/dp_4"
+            app:flexWrap="wrap" />
 
     </RelativeLayout>
 
