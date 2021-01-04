@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/sawChatShimmerName"
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_marginStart="@dimen/unify_space_12"
@@ -14,6 +15,7 @@
         android:background="@drawable/saw_shape_shimmer_radius_6dp" />
 
     <RelativeLayout
+        android:id="@+id/sawChatShimmerLastMsg"
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_marginStart="@dimen/unify_space_12"
