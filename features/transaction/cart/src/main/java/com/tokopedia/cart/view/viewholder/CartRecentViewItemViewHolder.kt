@@ -7,6 +7,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_product_recent_view.view.*
 
 /**
@@ -49,7 +50,8 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
                                         type = recommendationLabel.type
                                 )
                             },
-                            hasAddToCartButton = true
+                            hasAddToCartButton = true,
+                            addToCartButtonType = UnifyButton.Type.MAIN
                     )
             )
             setImageProductViewHintListener(element, object : ViewHintListener {
