@@ -17,7 +17,6 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
-import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.cache.InboxCacheState
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
@@ -51,7 +50,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     lateinit var navHeader: NavigationHeader
 
     @Inject
-    lateinit var cacheManager: InboxCacheManager
+    lateinit var cacheState: InboxCacheState
 
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
@@ -70,9 +69,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupInjector()
-        InboxCacheState.init(cacheManager)
-        setupLastPreviousState()
         setContentView(R.layout.activity_inbox)
+        setupLastPreviousState()
         setupView()
         setupConfig()
         setupNavigator()
@@ -94,12 +92,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupLastPreviousState() {
-        InboxCacheState.role?.let {
-            InboxConfig.setRole(it)
-        }
-        InboxCacheState.initialPage?.let {
-            InboxConfig.initialPage = it
-        }
+        InboxConfig.setRole(cacheState.role)
+        InboxConfig.initialPage = cacheState.initialPage
     }
 
     override fun clearNotificationCounter() {
@@ -169,14 +163,13 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onDestroy() {
         super.onDestroy()
-        InboxCacheState.saveAllCache(cacheManager)
         InboxConfig.removeListener(this)
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
-        InboxCacheState.updateRole(role)
+        cacheState.saveRoleCache(role)
         showNotificationRoleChanged(role)
         updateBadgeCounter()
     }
@@ -260,17 +253,17 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             setOnNavigationItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
-                        InboxCacheState.updateInitialPage(InboxFragmentType.NOTIFICATION)
+                        cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                         updateToolbarIcon()
                     }
                     R.id.menu_inbox_chat -> {
-                        InboxCacheState.updateInitialPage(InboxFragmentType.CHAT)
+                        cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
                         onBottomNavSelected(InboxFragmentType.CHAT)
                         updateToolbarIcon(true)
                     }
                     R.id.menu_inbox_discussion -> {
-                        InboxCacheState.updateInitialPage(InboxFragmentType.DISCUSSION)
+                        cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
                         updateToolbarIcon()
                     }
