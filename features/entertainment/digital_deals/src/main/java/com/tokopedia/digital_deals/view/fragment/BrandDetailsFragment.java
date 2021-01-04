@@ -100,9 +100,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
                 if (verticalOffset >= difference) {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
                 } else {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
                 }
             }
         });
@@ -167,7 +167,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             locationName = location.getName();
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
         if (productItems != null && productItems.size() > 0) {
             dealsAdapter.clearList();
             recyclerViewDeals.clearOnScrollListeners();
@@ -211,13 +211,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onLoadStarted(Drawable placeholder) {
                 super.onLoadStarted(placeholder);
-                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 super.onLoadFailed(errorDrawable);
-                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
         });
     }

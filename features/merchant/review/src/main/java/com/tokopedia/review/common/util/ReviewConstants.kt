@@ -16,7 +16,6 @@ object ReviewConstants {
     const val LAST_MONTH_VALUE = "30 Hari Terakhir"
     const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
     const val ALL_VALUE = "Semua"
-    const val ALL_RATING = "all"
 
     const val MOST_REVIEW_KEY = "review_count desc"
     const val HIGHEST_RATING_KEY = "rating_avg desc"
