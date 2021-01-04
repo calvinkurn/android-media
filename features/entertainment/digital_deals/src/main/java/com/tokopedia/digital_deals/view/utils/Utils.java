@@ -336,10 +336,10 @@ public class Utils {
         if (locationToast) {
             String str = context.getResources().getString(com.tokopedia.digital_deals.R.string.location_changed_to);
             str += text.toUpperCase();
-            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.design.R.color.black_40)));
+            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44)));
         } else {
-            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.design.R.color.red_50));
-            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.digital_deals.R.color.red_error));
+            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_R100));
+            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
             tvmsg.setText(text);
         }
 
