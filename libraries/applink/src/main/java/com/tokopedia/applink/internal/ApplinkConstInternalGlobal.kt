@@ -561,11 +561,12 @@ object ApplinkConstInternalGlobal {
 
     /**
      * TermPrivacyActivity
-     * @applink : tokopedia-android-internal://global/term-privacy/{page}
+     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
      **/
     @JvmField
-    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}"
-    const val PAGE_TERM_AND_CONDITION = "termAndCondition"
-    const val PAGE_PRIVACY_POLICY = "privacyPolicy"
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
+    /** for param term privacy */
+    const val PAGE_TERM_AND_CONDITION = "term-condition"
+    const val PAGE_PRIVACY_POLICY = "privacy-policy"
 
 }

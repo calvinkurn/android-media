@@ -463,7 +463,7 @@ class RegisterAnalytics @Inject constructor() {
 
     fun trackSuccessRegister(
             loginMethod: String,
-            userId: Int,
+            userId: String,
             name: String,
             email: String,
             phoneNumber: String,
@@ -543,12 +543,12 @@ class RegisterAnalytics @Inject constructor() {
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, EMAIL_METHOD)
         sendBranchRegisterEvent(userId, MEDIUM_EMAIL)
     }
 
-    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
+    private fun sendSuccessRegisterToMoengage(userId: String, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId,email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
     }
 
     private fun sendBranchRegisterEvent(userId: String, medium: String) {
