@@ -1,9 +1,7 @@
 package com.tokopedia.home.viewModel.homepage
 
 import android.app.Activity
-import android.app.Application
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -26,7 +24,6 @@ import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -76,37 +73,36 @@ fun createHomeViewModel(
 ): HomeViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeViewModel(
+            homeUseCase = Lazy{ getHomeUseCase },
+            userSession = Lazy{userSessionInterface},
+            closeChannelUseCase = Lazy{closeChannelUseCase},
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
+            getAtcUseCase = Lazy{getAtcUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
+            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
-            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
             getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
             getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
-            getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
-            homeDispatcher = Lazy{ dispatchers },
-            homeUseCase = Lazy{ getHomeUseCase },
-            popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
-            sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
-            getAtcUseCase = Lazy{getAtcUseCase},
-            userSession = Lazy{userSessionInterface},
-            closeChannelUseCase = Lazy{closeChannelUseCase},
-            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
-            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
-            declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
-            getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
-            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
-            topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
-            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             getRecommendationUseCase = Lazy{ getRecommendationUseCase},
             getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
+            getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
+            popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
+            sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
+            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
-            playWidgetTools = Lazy { playWidgetTools },
+            declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
+            getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
+            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
+            topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor }
+            homeDispatcher = Lazy{ dispatchers },
+            homeProcessor = Lazy{ homeProcessor },
+            playWidgetTools = Lazy { playWidgetTools }
     )
 }
 
