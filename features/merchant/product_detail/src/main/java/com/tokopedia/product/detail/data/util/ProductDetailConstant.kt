@@ -6,6 +6,7 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
+    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
 
     //report product
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
@@ -170,6 +171,12 @@ object ProductDetailConstant {
 
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
+
+    //View Constant
+    const val SHOW_VALUE = 1F
+    const val HIDE_VALUE = 0F
+    const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
+
 
     //General Ticker
     const val LAYOUT_FLOATING = "floating"
