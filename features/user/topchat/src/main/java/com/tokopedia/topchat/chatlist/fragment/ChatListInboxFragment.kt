@@ -676,6 +676,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
+        webSocket.clearPendingMessages()
         viewModel.flush()
     }
 
