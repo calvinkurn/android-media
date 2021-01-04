@@ -94,6 +94,7 @@ dependencies {
     implementation project(rootProject.ext.features.liveness)
     implementation project(rootProject.ext.features.updateinactivephone)
 
+    implementation project(rootProject.ext.features.sellerAppWidget)
     implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
