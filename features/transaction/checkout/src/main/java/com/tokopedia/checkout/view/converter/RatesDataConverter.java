@@ -58,7 +58,7 @@ public class RatesDataConverter {
                                                 ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        int orderValue = 0;
+        long orderValue = 0;
         int totalWeight = 0;
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {

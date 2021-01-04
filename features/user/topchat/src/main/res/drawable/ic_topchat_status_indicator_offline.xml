@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="#BFBFBF" />
+    <solid android:color="@color/Unify_N150" />
     <size
         android:width="@dimen/dp_topchat_14"
         android:height="@dimen/dp_topchat_14" />
     <stroke
         android:width="@dimen/chatcommon_3dp"
-        android:color="@color/white" />
+        android:color="@color/Unify_N0" />
 </shape>

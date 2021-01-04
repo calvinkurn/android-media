@@ -2,6 +2,8 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -33,7 +35,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `When Load Data`(searchParameter)
 
-        `Then verify use case request params START should be 0`()
+        `Then verify use case request params`()
         `Then verify view interaction when load data success`(searchProductModel)
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
@@ -49,10 +51,17 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun `Then verify use case request params START should be 0`() {
+    private fun `Then verify use case request params`() {
         val requestParams = requestParamsSlot.captured
 
-        requestParams.getString(SearchApiConst.START, null) shouldBe "0"
+        val params = requestParams.getSearchProductParams()
+        params.getOrDefault(SearchApiConst.START, null) shouldBe "0"
+
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe false
     }
 
     private fun `Then verify view interaction when load data success`(searchProductModel: SearchProductModel) {
@@ -90,7 +99,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException)
         `Then verify start from is not incremented`()
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.parameters)
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.getSearchProductParams())
     }
 
     private fun `Given Search Product API will throw exception`(exception: Exception?) {
@@ -102,6 +111,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
         verifyOrder {
             productListView.isAnyFilterActive
+
+            productListView.isAnyFilterActive
+            productListView.isAnySortActive
 
             productListView.stopPreparePagePerformanceMonitoring()
             productListView.startNetworkRequestPerformanceMonitoring()
@@ -135,7 +147,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `When View is created`()
 
-        `Then verify use case request params START should be 0`()
+        `Then verify use case request params`()
         `Then verify view interaction when created`(searchProductModel)
         `Then verify start from is incremented`()
         `Then verify visitable list with product items`(visitableListSlot, searchProductModel)

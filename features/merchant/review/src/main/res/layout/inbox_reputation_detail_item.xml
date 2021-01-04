@@ -11,7 +11,7 @@
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_8"
-    app:cardBackgroundColor="@color/cardview_light_background">
+    app:cardBackgroundColor="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"/>
+            android:background="@color/Unify_N100"/>
 
         <LinearLayout
             android:id="@+id/add_review_layout"

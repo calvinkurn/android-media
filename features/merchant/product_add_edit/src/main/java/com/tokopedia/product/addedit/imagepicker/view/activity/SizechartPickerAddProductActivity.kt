@@ -65,9 +65,11 @@ class SizechartPickerAddProductActivity : ImagePickerActivity() {
                     false,
                     null)
 
-            return ImagePickerBuilder(context.getString(com.tokopedia.product.addedit.R.string.choose_image), intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                    ImagePickerTabTypeDef.TYPE_CAMERA,
-                    ImagePickerTabTypeDef.TYPE_INSTAGRAM),
+            return ImagePickerBuilder(context.getString(com.tokopedia.product.addedit.R.string.choose_image),
+                    intArrayOf(
+                            ImagePickerTabTypeDef.TYPE_GALLERY,
+                            ImagePickerTabTypeDef.TYPE_CAMERA
+                    ),
                     GalleryType.IMAGE_ONLY,
                     ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,

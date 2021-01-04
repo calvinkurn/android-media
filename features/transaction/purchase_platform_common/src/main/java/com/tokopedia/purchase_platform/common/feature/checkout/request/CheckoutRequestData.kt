@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.checkout.request
 
 import com.google.gson.annotations.SerializedName
-import kotlin.collections.ArrayList
 
 /**
  * Since original class CheckoutRequest contains many unnecessary data, which is currently used for analytics purpose,
@@ -119,7 +118,7 @@ data class DropshipGqlData(
 
 data class ProductGqlData(
         @SerializedName("product_id")
-        var productId: Int = 0,
+        var productId: Long = 0,
         @SerializedName("is_ppp")
         var isPurchaseProtection: Boolean = false,
         @SerializedName("product_quantity")
