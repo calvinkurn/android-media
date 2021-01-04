@@ -52,7 +52,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        renderAddToCartButtonType(productCardModel.addToCartButtonType)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -127,10 +127,4 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
-
-    private fun renderAddToCartButtonType(buttonType: Int) {
-        if (buttonType > 0) {
-            buttonAddToCart?.buttonType = buttonType
-        }
-    }
 }
