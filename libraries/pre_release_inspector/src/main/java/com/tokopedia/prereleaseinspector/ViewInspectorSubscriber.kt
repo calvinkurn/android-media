@@ -3,6 +3,7 @@ package com.tokopedia.prereleaseinspector
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 
 class ViewInspectorSubscriber() : Application.ActivityLifecycleCallbacks {
 
