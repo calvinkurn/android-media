@@ -114,7 +114,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
-    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?) {
+    fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo:Boolean) {
         dataP1?.let {
             basicContentMap?.run {
                 data = it
@@ -126,7 +126,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             mediaMap?.run {
                 shouldRenderImageVariant = true
-                listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+                listOfMedia = if (enableVideo) {
+                    DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+                } else {
+                    DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
+                }
             }
 
             miniShopInfo?.run {
@@ -357,10 +361,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 imageReviews = it.imageReviews
             }
 
-            mediaMap?.run {
-                shouldShowImageReview = it.imageReviews?.isNotEmpty() ?: false
-            }
-
             productDiscussionMostHelpfulMap?.run {
                 if (it.discussionMostHelpful == null) {
                     isShimmering = true
@@ -406,9 +406,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateImageAfterClickVariant(it: MutableList<Media>) {
+    fun updateImageAfterClickVariant(it: MutableList<Media>, enableVideo: Boolean) {
         mediaMap?.shouldRenderImageVariant = true
-        mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
+        mediaMap?.listOfMedia = if (enableVideo) {
+            DynamicProductDetailMapper.convertMediaToDataModel(it)
+        } else {
+            DynamicProductDetailMapper.convertMediaToDataModel(it.filter { it.type != ProductMediaDataModel.VIDEO_TYPE }.toMutableList())
+        }
     }
 
     fun updateVariantData(processedVariant: List<VariantCategory>?) {
