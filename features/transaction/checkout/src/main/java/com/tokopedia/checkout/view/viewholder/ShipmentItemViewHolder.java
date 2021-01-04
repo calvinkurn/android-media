@@ -582,11 +582,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
-                cbPPP.setVisibility(View.VISIBLE);
                 cbPPP.setEnabled(false);
                 cbPPP.setChecked(true);
             } else {
-                cbPPP.setVisibility(View.VISIBLE);
                 cbPPP.setEnabled(true);
                 cbPPP.setChecked(cartItemModel.isProtectionOptIn());
                 cbPPP.setOnCheckedChangeListener((compoundButton, checked) -> notifyOnPurchaseProtectionChecked(checked, 0));
@@ -1381,7 +1379,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
                 tvLabelInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance);
-                cbInsurance.setVisibility(View.VISIBLE);
                 cbInsurance.setEnabled(false);
                 cbInsurance.setChecked(true);
                 if (useInsurance == null) {
@@ -1389,7 +1386,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                 }
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
-                cbInsurance.setVisibility(View.VISIBLE);
                 cbInsurance.setEnabled(true);
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
@@ -1399,7 +1395,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                 tvLabelInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance);
                 llInsurance.setVisibility(View.VISIBLE);
-                cbInsurance.setVisibility(View.VISIBLE);
                 cbInsurance.setEnabled(true);
                 TypedValue outValue = new TypedValue();
                 llInsurance.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
