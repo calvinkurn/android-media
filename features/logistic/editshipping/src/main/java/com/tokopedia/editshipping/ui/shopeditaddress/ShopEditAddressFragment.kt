@@ -235,7 +235,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     startActivityForResult(intent, 1234)
                     view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
                 }
-                is Fail -> Timber.d(it.throwable)
+                is Fail -> {
+                    view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+                }
             }
         })
     }
@@ -268,10 +270,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
-                val latLong = "$currentLat, $currentLong"
-                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation.toString(),
-                        it.warehouseId, latLong, userSession.email, etShopDetail.toString(),
-                        etZipCode.toString(), userSession.phoneNumber) }
+                val latLong = "$currentLat,$currentLong"
+                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                        it.warehouseId, latLong, userSession.email, etShopDetail?.text.toString(),
+                        etZipCode?.text.toString(), userSession.phoneNumber) }
         }
 
     }

@@ -38,6 +38,7 @@
     <string name="tv_pinpoint_location">Pinpoint Lokasi</string>
     <string name="tv_pinpoint_desc">Tandai lokasi agar bisa gunakan layanan &lt;b&gt;Dijemput Kurir&lt;/b&gt;</string>
     <string name="open_map">Buka Peta</string>
+    <string name="change_pinpoint">Ubah Pinpoint</string>
     <string name="tv_transaction_desc">Transaksi yang sedang diproses akan menggunakan almaat lama. Alamat baru berlaku di transaksi berikutnya.</string>
     <string name="save_changes">Simpan Perubahan</string>
     <string name="pointer">Map Pointer</string>
@@ -45,4 +46,5 @@
     <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
     <string name="et_kode_pos_label">Kode Pos</string>
     <string name="detail_alamat">Detail Alamat</string>
+    ,
 </resources>

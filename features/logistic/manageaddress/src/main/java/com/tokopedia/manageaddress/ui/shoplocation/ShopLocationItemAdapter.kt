@@ -25,6 +25,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
     interface ShopLocationItemAdapterListener {
         fun onShopLocationStateStatusClicked(data: Warehouse)
         fun onShopEditAddress(data: Warehouse)
+        fun onImageMainInfoIconClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopLocationViewHolder {
@@ -53,6 +54,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         private val tvAddressCity = itemView.findViewById<Typography>(R.id.tv_address_city)
         private val tvAddressZipCode = itemView.findViewById<Typography>(R.id.tv_address_zipcode)
         private val labelMainShop = itemView.findViewById<Label>(R.id.lbl_main_shop)
+        private val imgInfoIcon = itemView.findViewById<ImageView>(R.id.img_info_icon)
         private val imgPinpointState = itemView.findViewById<ImageView>(R.id.img_location_state)
         private val tvPinpointState = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         private val btnSetLocation = itemView.findViewById<IconUnify>(R.id.icon_kebab)
@@ -68,10 +70,12 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         }
 
         private fun setHeadquarter(shopLocation: Warehouse) {
-            if (shopLocation.warehouseType == 1) {
+            if (shopLocation.warehouseType == 0) {
                 labelMainShop.visibility = View.VISIBLE
+                imgInfoIcon.visibility = View.VISIBLE
             } else {
                 labelMainShop.visibility = View.GONE
+                imgInfoIcon.visibility = View.GONE
             }
 
             if (shopLocation.status == 1) {
@@ -129,6 +133,9 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
             }
             btnEditocation.setOnClickListener {
                 listener.onShopEditAddress(shopLocation)
+            }
+            imgInfoIcon.setOnClickListener {
+                listener.onImageMainInfoIconClicked()
             }
         }
     }

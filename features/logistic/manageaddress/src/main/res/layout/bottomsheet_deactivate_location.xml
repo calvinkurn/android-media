@@ -22,17 +22,18 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_no_1"
+        app:srcCompat="@drawable/ic_no_1_warehouse"
         app:layout_constraintTop_toBottomOf="@id/tv_deactivate_location" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_one"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/grayMainInformation"
+        android:text="@string/deactivate_info_one"
+        app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_one"
         app:layout_constraintTop_toTopOf="@id/iv_point_one" />
@@ -42,18 +43,19 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_no_2"
+        app:srcCompat="@drawable/ic_no_2_warehouse"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_one" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_two"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/grayMainInformation"
+        android:text="@string/deactivate_info_two"
+        app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_two"
         app:layout_constraintTop_toTopOf="@id/iv_point_two" />
@@ -70,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@id/point_two">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_nonaktifkan"
+            android:id="@+id/btn_kembali"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"
@@ -81,7 +83,7 @@
             app:unifyButtonVariant="filled" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_aktifkan"
+            android:id="@+id/btn_nonaktifkan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"

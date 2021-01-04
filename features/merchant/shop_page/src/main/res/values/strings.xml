@@ -234,7 +234,7 @@
     <string name="shop_page_setting_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
     <!-- shipping -->
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
-    <string name="shop_page_setting_action_edit_location">Tambah dan ubah lokasi toko</string>
+    <string name="shop_page_setting_action_edit_location">Lokasi toko</string>
     <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
     <string name="video_component_tag">video_container</string>
     <string name="close_youtube">Close</string>

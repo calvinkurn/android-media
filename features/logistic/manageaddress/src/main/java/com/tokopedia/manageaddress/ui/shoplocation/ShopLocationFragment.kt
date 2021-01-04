@@ -25,6 +25,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,9 +50,15 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private var tickerShopLocation: Ticker? = null
     private var addressList: RecyclerView? = null
     private var bottomSheetAddressType: BottomSheetUnify? = null
+    private var bottomSheetAddressConfirmation: BottomSheetUnify? = null
+    private var bottomSheetMainLocationInfo: BottomSheetUnify? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
     private var buttonSetLocationStatus: Typography? = null
+    private var buttonBackAddressConfirm: UnifyButton? = null
+    private var buttonDeactivateAddressConfirm: UnifyButton? = null
+    private var buttonMengerti: UnifyButton? = null
+    private var tickerMainLocationInfo: Ticker? = null
     private var warehouseName: String = ""
     private var warehouseStatus: Int? = null
 
@@ -95,6 +102,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                         swipeRefreshLayout?.isRefreshing = false
                         fetchData()
                     } else {
+                        activity?.finish()
                         val intent = context?.let { context -> ShopSettingsAddressActivity.createIntent(context) }
                         startActivityForResult(intent, 1998)
                     }
@@ -186,12 +194,40 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             buttonSetLocationStatus?.text = getString(R.string.activate_location)
         }
         buttonSetLocationStatus?.setOnClickListener {
+            openBottomSheetAddressConfirmation(data)
+        }
+    }
+
+    private fun openBottomSheetAddressConfirmation(shopLocation: Warehouse) {
+        bottomSheetAddressConfirmation = BottomSheetUnify()
+        val viewBottomSheetAddressConfirmation = View.inflate(context, R.layout.bottomsheet_deactivate_location, null)
+        setupChildAddressConfirmation(shopLocation, viewBottomSheetAddressConfirmation)
+
+        bottomSheetAddressConfirmation?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetAddressConfirmation)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetAddressConfirmation?.show(it, "show")
+        }
+    }
+
+    private fun setupChildAddressConfirmation(data: Warehouse, child: View) {
+        buttonBackAddressConfirm = child.findViewById(R.id.btn_kembali)
+        buttonDeactivateAddressConfirm = child.findViewById(R.id.btn_nonaktifkan)
+
+        buttonBackAddressConfirm?.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
+        buttonDeactivateAddressConfirm?.setOnClickListener {
             viewModel.setShopLocationState(data.warehouseId, data.status)
             warehouseStatus = data.status
             warehouseName = data.warehouseName
+            bottomSheetAddressConfirmation?.dismiss()
             bottomSheetAddressType?.dismiss()
         }
     }
+
 
     private fun handleError(throwable: Throwable) {
         when (throwable) {
@@ -239,6 +275,32 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onShopEditAddress(data: Warehouse) {
         openFormShopEditAddress(data)
+    }
+
+    override fun onImageMainInfoIconClicked() {
+        bottomSheetMainLocationInfo = BottomSheetUnify()
+        val viewBottomSheetMainLocation = View.inflate(context, R.layout.bottomsheet_main_address_information, null)
+        setupChildMainInfo(viewBottomSheetMainLocation)
+
+        bottomSheetMainLocationInfo?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetMainLocation)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetMainLocationInfo?.show(it, "show")
+        }
+    }
+
+    private fun setupChildMainInfo(child: View) {
+        buttonMengerti = child.findViewById(R.id.btn_mengerti_info)
+        tickerMainLocationInfo = child.findViewById(R.id.ticker_address_info)
+
+        tickerMainLocationInfo?.setHtmlDescription(getString(R.string.ticker_main_info))
+        buttonMengerti?.setOnClickListener {
+            bottomSheetMainLocationInfo?.dismiss()
+        }
     }
 
     private fun openFormShopEditAddress(data: Warehouse) {

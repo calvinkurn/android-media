@@ -53,6 +53,9 @@
     <string name="text_activate_success">Lokasi “%1$s” berhasil diaktifkan</string>
     <string name="shop_active">Aktif</string>
     <string name="shop_inactive">Tidak Aktif</string>
+    <string name="deactivate_info_one">Stok di lokasi ini tidak akan ditampilkan ke pembeli atau dinonaktifkan sementara</string>
+    <string name="deactivate_info_two">Pesanan yang sudah masukke lokasi ini akan tetap diproses</string>
+    <string name="ticker_main_info">Jika ingin nonaktifkan semua lokasi toko, kamu bisa atur jadwal buka-tutup toko di tab informasi</string>
 
     <!--Shop Location Old-->
     <string name="shop_settings_manage_address">Lokasi</string>

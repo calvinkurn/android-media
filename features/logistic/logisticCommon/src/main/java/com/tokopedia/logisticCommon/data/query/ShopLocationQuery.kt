@@ -74,7 +74,7 @@ object ShopLocationQuery {
 
     val shopLocationWhitelist = """
         query ShopLocWhitelist(${'$'}shop_id: Int!) {
-          ShopLocWhitelist (input: {shop_id: ${'$'}shop_id}) {
+          ShopLocWhitelist (shop_id: ${'$'}shop_id) {
             status
             message
             data {
