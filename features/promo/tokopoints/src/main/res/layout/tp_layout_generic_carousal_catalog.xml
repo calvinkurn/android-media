@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title_column"
