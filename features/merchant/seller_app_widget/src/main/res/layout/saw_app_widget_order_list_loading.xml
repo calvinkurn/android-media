@@ -4,9 +4,7 @@
     android:id="@+id/containerSawOrderListLoading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
-    android:visibility="gone"
-    tools:visibility="visible">
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp">
 
     <RelativeLayout
         android:id="@+id/shimmerSawLoadingHeader"
@@ -121,9 +119,7 @@
         android:id="@+id/orderLoadingStateNormal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/shimmerSawLoadingHeader"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:layout_below="@+id/shimmerSawLoadingHeader">
 
         <include
             android:id="@+id/shimmerSawLoadingItem1"
