@@ -9,6 +9,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Completable;
@@ -19,11 +20,13 @@ import timber.log.Timber;
 public class StorageProvider implements InterfaceDataStore {
     private InAppDataDao inAppDataDao;
     private ElapsedTimeDao elapsedTimeDao;
+    private StorageProviderListener storageProviderListener;
     String TAG = "GratifTag";
 
-    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao) {
+    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao, StorageProviderListener storageProviderListener) {
         this.inAppDataDao = inAppDataDao;
         this.elapsedTimeDao = elapsedTimeDao;
+        this.storageProviderListener = storageProviderListener;
     }
 
     @Override
@@ -31,18 +34,51 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
-                List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
-                if (dataFromParentID == null || dataFromParentID.isEmpty()) {
+                List<CMInApp> dataFromParentIDPerstOff = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
+                if (dataFromParentIDPerstOff == null || dataFromParentIDPerstOff.isEmpty()) {
                     CMInApp oldData = inAppDataDao.getInAppData(value.id);
-                    if (oldData != null) {
-                        Timber.d(TAG + " in-app NotificationId - " + value.id + " insert fail - it is already present");
-                    } else {
-                        Timber.d(TAG + " in-app NotificationId - " + value.id + " insert success");
+
+                    checkIfInappAlreadyExists(oldData, value);
+
+                    String newScreenData = value.screen;
+                    CMInApp dataForParentIdAndScreen = inAppDataDao.getDataForParentIdAndScreen(value.parentId, newScreenData);
+                    if (dataForParentIdAndScreen != null) {
+                        String existingScreenData = dataForParentIdAndScreen.screen;
+                        //if both new inapp and existing inapp have multiple screen names then check
+                        // if they have any common screen to ignore the new popup
+                        if (newScreenData.contains(",") && existingScreenData.contains(",")) {
+                            List<String> newScreenDataList = Arrays.asList(newScreenData.split(","));
+                            String[] existingScreenDataList = existingScreenData.split(",");
+                            for (String screen : existingScreenDataList) {
+                                if (newScreenDataList.contains(screen)) {
+                                    storageProviderListener.onInappWithScreenAlreadyExists(value);
+                                    return;
+                                }
+                            }
+                        } else {
+                            storageProviderListener.onInappWithScreenAlreadyExists(value);
+                            return;
+                        }
                     }
-                    long rowId = inAppDataDao.insert(value);
+                    CMInApp dataForParentId = inAppDataDao.getDataForParentId(value.parentId);
+                    if (dataForParentId == null) {
+                        inAppDataDao.insert(value);
+
+                    } else if (dataForParentId.freq != 0) {
+                        //to keep the frequency consistent with inapp popups having the same parentId
+                        value.freq = dataForParentId.freq;
+                        inAppDataDao.insert(value);
+                    }
                 }
             }
         }).subscribeOn(Schedulers.io());
+    }
+
+    private void checkIfInappAlreadyExists(CMInApp oldData, CMInApp value) {
+        if (oldData != null) {
+            storageProviderListener.onInappDuplicate(oldData);
+            inAppDataDao.deleteRecord(value.id);
+        }
     }
 
     @Override
@@ -65,23 +101,27 @@ public class StorageProvider implements InterfaceDataStore {
 
     @Override
     public List<CMInApp> getDataFromStore(String key, boolean isActivity) {
-        List<CMInApp> list = inAppDataDao.getDataForScreen(key);
-        List<CMInApp> finalList = new ArrayList<>();
-        if (list != null) {
-            for (CMInApp cmInApp : list) {
-                String screenNames = cmInApp.getScreen();
-                if (!TextUtils.isEmpty(screenNames)) {
-                    String[] screenNamesArray = screenNames.split(",");
-                    for (String screenName : screenNamesArray) {
-                        if (key.equals(screenName) || (isActivity && screenName.equals("*"))) {
-                            finalList.add(cmInApp);
-                            break;
+        boolean fetchInapp = storageProviderListener.onFetchInappFromStore();
+        if (fetchInapp) {
+            List<CMInApp> list = inAppDataDao.getDataForScreen(key);
+            List<CMInApp> finalList = new ArrayList<>();
+            if (list != null) {
+                for (CMInApp cmInApp : list) {
+                    String screenNames = cmInApp.getScreen();
+                    if (!TextUtils.isEmpty(screenNames)) {
+                        String[] screenNamesArray = screenNames.split(",");
+                        for (String screenName : screenNamesArray) {
+                            if (key.equals(screenName) || (isActivity && screenName.equals("*"))) {
+                                finalList.add(cmInApp);
+                                break;
+                            }
                         }
                     }
                 }
             }
+            return finalList;
         }
-        return finalList;
+        return null;
     }
 
     @Override
@@ -119,17 +159,17 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
-                inAppDataDao.updateFrequency(id);
-            }
-        }).subscribeOn(Schedulers.io());
-    }
-
-    @Override
-    public Completable updateInAppDataFreq(final long id, final long newSt) {
-        return Completable.fromAction(new Action0() {
-            @Override
-            public void call() {
-                inAppDataDao.updateFrequency(id, newSt);
+                CMInApp inAppData = inAppDataDao.getInAppData(id);
+                boolean isFreqUpdated = false;
+                if (inAppData != null) {
+                    List<CMInApp> allDataForParentId = inAppDataDao.getAllDataForParentId(inAppData.parentId);
+                    for (CMInApp data : allDataForParentId) {
+                        inAppDataDao.updateFrequency(data.id);
+                        isFreqUpdated = true;
+                    }
+                }
+                if (isFreqUpdated)
+                    storageProviderListener.onInappFreqUpdated();
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -152,5 +192,15 @@ public class StorageProvider implements InterfaceDataStore {
                 inAppDataDao.updateFreqWithPerst(id);
             }
         }).subscribeOn(Schedulers.io());
+    }
+
+    public interface StorageProviderListener {
+        void onInappDuplicate(CMInApp cmInApp);
+
+        void onInappWithScreenAlreadyExists(CMInApp cmInApp);
+
+        void onInappFreqUpdated();
+
+        boolean onFetchInappFromStore();
     }
 }
