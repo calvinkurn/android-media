@@ -284,7 +284,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun initView() {
-        setBackgroundColor()
         initRecyclerView()
         setupPickerLayout()
         loadShowcaseList()
@@ -673,12 +672,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             rvPicker?.visible()
             footer?.visible()
             headerLayout?.visible()
-        }
-    }
-
-    private fun setBackgroundColor() {
-        context?.let {
-            view?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

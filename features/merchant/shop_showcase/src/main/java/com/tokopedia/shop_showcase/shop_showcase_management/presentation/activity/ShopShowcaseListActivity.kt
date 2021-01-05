@@ -66,6 +66,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
 
         getShopType()
+        setBackgroundColor()
 
         super.onCreate(savedInstanceState)
     }
@@ -157,6 +158,12 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
                 ShopType.REGULAR
             }
         }
+    }
+
+    private fun setBackgroundColor() {
+        window.decorView.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
 }
