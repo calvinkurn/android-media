@@ -312,15 +312,13 @@ public class DigitalAnalytics {
     }
 
 
-
     public void eventUssdAttempt(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
-                DigitalEventTracking.Category.DIGITAL + DigitalEventTracking.Category.PULSA ,
+                DigitalEventTracking.Category.DIGITAL + DigitalEventTracking.Category.PULSA,
                 DigitalEventTracking.Action.USSD_ATTEMPT,
                 label
         ));
     }
-
 
 
     public void eventUssdAttempt(String categoryName, String label) {
@@ -393,7 +391,7 @@ public class DigitalAnalytics {
     public void eventCheckInstantSaldo(String categoryName, boolean isChecked) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                 DigitalEventTracking.Category.RECHARGE + categoryName,
-                isChecked? DigitalEventTracking.Action.CHECK_INSTANT_SALDO :  DigitalEventTracking.Action.UNCHECK_INSTANT_SALDO,
+                isChecked ? DigitalEventTracking.Action.CHECK_INSTANT_SALDO : DigitalEventTracking.Action.UNCHECK_INSTANT_SALDO,
                 DigitalEventTracking.Label.PRODUCT + categoryName));
     }
 
@@ -412,10 +410,10 @@ public class DigitalAnalytics {
                 categoryName.toLowerCase() + " - " + promoCode.toLowerCase()));
     }
 
-    public void onClickSliceRecharge(String userId,  String rechargeProductFromSlice) {
+    public void onClickSliceRecharge(String userId, String rechargeProductFromSlice) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 DigitalEventTracking.Event.EVENT_KEY, "clickGAMain",
-                DigitalEventTracking.Event. EVENT_CATEGORY, "ga main app",
+                DigitalEventTracking.Event.EVENT_CATEGORY, "ga main app",
                 DigitalEventTracking.Event.EVENT_ACTION, "click item transaction",
                 DigitalEventTracking.Event.EVENT_LABEL, rechargeProductFromSlice,
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
@@ -424,10 +422,76 @@ public class DigitalAnalytics {
         ));
     }
 
-    public void  onOpenPageFromSlice() {
+    public void onOpenPageFromSlice() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 DigitalEventTracking.Event.EVENT_KEY, "openScreen",
                 DigitalEventTracking.Event.EVENT_SCREEN_NAME, "digital product - from voice search - mainapp"
+        ));
+    }
+
+    public void eventClickSubscription(boolean tick, String categoryName, String operatorName, String userId) {
+        String actionValue;
+        if (tick) {
+            actionValue = DigitalEventTracking.Action.TICK_AUTODEBIT;
+        } else {
+            actionValue = DigitalEventTracking.Action.UNTICK_AUTODEBIT;
+        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
+                DigitalEventTracking.Event.EVENT_ACTION, actionValue,
+                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
+                DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
+                DigitalEventTracking.Event.USER_ID, userId
+        ));
+    }
+
+    public void eventClickCrossSell(boolean tick, String categoryName, String operatorName, String userId) {
+        String actionValue;
+        if (tick) {
+            actionValue = DigitalEventTracking.Action.TICK_CROSSSELL;
+        } else {
+            actionValue = DigitalEventTracking.Action.UNTICK_CROSSSELL;
+        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
+                DigitalEventTracking.Event.EVENT_ACTION, actionValue,
+                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
+                DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
+                DigitalEventTracking.Event.USER_ID, userId
+        ));
+    }
+
+    public void eventClickProtection(boolean tick, String categoryName, String operatorName, String userId) {
+        String actionValue;
+        if (tick) {
+            actionValue = DigitalEventTracking.Action.TICK_PROTECTION;
+        } else {
+            actionValue = DigitalEventTracking.Action.UNTICK_PROTECTION;
+        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
+                DigitalEventTracking.Event.EVENT_ACTION, actionValue,
+                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
+                DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
+                DigitalEventTracking.Event.USER_ID, userId
+        ));
+    }
+
+    public void eventClickPromoButton(String categoryName, String operatorName, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
+                DigitalEventTracking.Event.EVENT_ACTION, DigitalEventTracking.Action.CLICK_PROMO,
+                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
+                DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
+                DigitalEventTracking.Event.USER_ID, userId
         ));
     }
 }

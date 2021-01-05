@@ -64,6 +64,13 @@ public interface DigitalEventTracking {
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String CLICK_USE_COUPON = "click gunakan kode promo atau kupon";
         String CLICK_CANCEL_APPLY_COUPON = "click x on ticker";
+        String TICK_AUTODEBIT = "tick auto debit";
+        String TICK_CROSSSELL = "tick cross sell";
+        String TICK_PROTECTION = "tick protection";
+        String UNTICK_AUTODEBIT = "untick auto debit";
+        String UNTICK_CROSSSELL = "untick cross sell";
+        String UNTICK_PROTECTION = "untick protection";
+        String CLICK_PROMO = "click promo button";
     }
 
     interface Label {

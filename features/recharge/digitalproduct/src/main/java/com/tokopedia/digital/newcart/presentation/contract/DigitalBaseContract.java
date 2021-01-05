@@ -128,6 +128,8 @@ public interface DigitalBaseContract {
 
         void onViewCreated();
 
+        void onClickPromoButton();
+
         void onReceivePromoCode(PromoData promoData);
 
         void processToCheckout();
