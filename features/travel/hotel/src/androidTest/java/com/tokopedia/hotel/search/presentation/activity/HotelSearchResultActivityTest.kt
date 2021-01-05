@@ -15,6 +15,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -22,7 +23,6 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -37,7 +37,7 @@ import org.junit.Assert.assertThat
  */
 class HotelSearchResultActivityTest {
 
-    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
@@ -46,6 +46,11 @@ class HotelSearchResultActivityTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HotelSearchMockResponseConfig())
+            val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchResultFragment.PREFERENCES_NAME)
+            localCacheHandler.apply {
+                putBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+                applyEditor()
+            }
         }
 
         override fun getActivityIntent(): Intent {
@@ -68,6 +73,8 @@ class HotelSearchResultActivityTest {
         clickQuickFilterChips()
         clickOnSortAndFilter()
         clickOnChangeDestination()
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         validateHotelSearchPageTracking()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
@@ -88,17 +95,13 @@ class HotelSearchResultActivityTest {
 
     private fun clickQuickFilterChips() {
         Thread.sleep(4000)
-        onView(AllOf.allOf(withText("Hygiene Verified"), isDescendantOfA(withId(R.id.sort_filter_items)))).perform(click())
+        onView(AllOf.allOf(withText("Hygiene Verified"))).perform(click())
     }
 
     private fun clickOnSortAndFilter() {
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.fb_text), withText("Sort"))).perform(click())
-        onView(withId(R.id.hotel_closed_sort_recycler_view)).perform(RecyclerViewActions
-                .actionOnItemAtPosition<HotelOptionMenuAdapter.HotelOptionMenuViewHolder>(0, click()))
-        Thread.sleep(3000)
 
-        onView(AllOf.allOf(withId(R.id.fb_text), withText("Filter"))).perform(click())
+        onView(AllOf.allOf(withText("Filters"))).perform(click())
         onView(AllOf.allOf(withId(R.id.hotel_selection_chip_title), withText("3"))).perform(click())
         Thread.sleep(2000)
         onView(withId(R.id.hotel_filter_submit_button)).perform(click())

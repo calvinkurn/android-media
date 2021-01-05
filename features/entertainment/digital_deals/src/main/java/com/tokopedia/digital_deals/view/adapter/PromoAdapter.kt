@@ -25,7 +25,7 @@ class PromosViewHolder(itemView: View) : CircularViewHolder(itemView) {
     var index: Int = 0
 
     override fun bind(item: CircularModel, listener: CircularListener) {
-        ImageHandler.loadImage(itemView.context, promoImage, item.url, com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100)
+        ImageHandler.loadImage(itemView.context, promoImage, item.url, com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         promoImage.setOnClickListener {
             listener.onClick(adapterPosition)
         }

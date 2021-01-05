@@ -151,4 +151,5 @@
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
+    <string name="mock_report_live_duration">00:00</string>
 </resources>

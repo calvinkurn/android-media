@@ -53,6 +53,7 @@ import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayou
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -75,6 +76,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
 
+    private var rechargeProductFromSlice: String = ""
     private var clientNumber = ""
     private var operatorId = ""
     private var autoSelectTabProduct = false
@@ -164,6 +166,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         initViewPager()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+        if(rechargeProductFromSlice.isNotEmpty()) {
+            rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
+        }
     }
 
     private fun prepareProductForCheckout(telcoProduct: TelcoProduct) {
@@ -312,6 +318,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                     menuId = digitalTelcoExtraParam.menuId.toInt()
                 }
+                rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
@@ -653,10 +660,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
+        private const val TITLE_PAGE = "telco prepaid"
+
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

@@ -1,7 +1,7 @@
 package com.tokopedia.buyerorder
 
-import android.app.Application
-import android.content.Context
+import android.app.Activity
+import android.app.Instrumentation
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,18 +13,16 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.PreferenceMatchers.withTitle
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
-import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert
-import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.*
 
 
 /**
@@ -103,11 +101,32 @@ class UohRobot {
         waitForData()
     }
 
+    fun scrollToRecommendationList() {
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
+        waitForData()
+    }
+
+    fun clickAtcRecommendation() {
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
+                        clickOnViewChild(R.id.buttonAddToCart)))
+        waitForData()
+    }
+
+    fun clickRecommendationCard() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
+                        clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_product_item)))
+        waitForData()
+    }
+
     private fun waitForData() {
         Thread.sleep(5000)
     }
 
-    private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?>? {
+    private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {
         return object : TypeSafeMatcher<View?>() {
             override fun describeTo(description: Description) {
                 description.appendText("position $childPosition of parent ")

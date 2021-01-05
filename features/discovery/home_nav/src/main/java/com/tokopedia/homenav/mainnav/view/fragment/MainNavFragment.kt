@@ -166,7 +166,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
         startActivity(intent)
     }
 
@@ -245,7 +245,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
         var windowHeight = 0

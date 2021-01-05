@@ -48,6 +48,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -64,7 +65,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
-
+    private var rechargeProductFromSlice: String = ""
     private var traceStop = false
     private var operatorSelected: RechargePrefix? = null
         set(value) {
@@ -117,6 +118,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         renderClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+        if(rechargeProductFromSlice.isNotEmpty()) {
+            rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
+        }
     }
 
     private fun initViewPager() {
@@ -235,6 +240,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                     categoryId = digitalTelcoExtraParam.categoryId.toInt()
                 }
+                rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER, "")
@@ -337,7 +343,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
         view?.run {
             errorEnquiry.throwable?.let {
-                Toaster.make(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.build(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
     }
@@ -459,7 +465,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun showErrorCartDigital(message: String) {
         view?.run {
-            Toaster.make(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -484,12 +490,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         const val KEY_CLIENT_NUMBER = "clientNumber"
         const val KEY_PRODUCT_ID = "productId"
+        private const val TITLE_PAGE = "telco post paid"
 
 
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPostpaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }
