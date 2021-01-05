@@ -1,11 +1,14 @@
 package com.tokopedia.buyerorder.detail.view;
 
+import android.os.Bundle;
+
 import javax.inject.Inject;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
@@ -44,6 +47,11 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
     private static final String EVENT_ACTION_TULIS_REVIEW = "click button tulis review";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
+    private static final String EVENT_ACTION_ORDER_DETAIL_IMPRESSION = "impression order detail page";
+    private static final String EVENT_ACTION_CLICK_LIHAT_INVOICE = "click lihat invoice";
+    private static final String EVENT_ACTION_CLICK_COPY_BUTTON = "click copy button";
+    private static final String EVENT_ACTION_CLICK_PRIMARY_BUTTON = "click primary button";
+    private static final String EVENT_ACTION_CLICK_SECONDARY_BUTTON = "click secondary button";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
     private static final String SEARCH_EVENT_CANCEL_ACTION = "click cancel search";
@@ -61,6 +69,7 @@ public class OrderListAnalytics {
     private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
     private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+    private static final String EVENT_CATEGORY_ORDER_DETAIL_PAGE = "digital - order detail page";
 
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
@@ -108,6 +117,8 @@ public class OrderListAnalytics {
     private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
     private static final String PRODUCT_VIEW = "productView";
     private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
+    private static final String PROMO_VIEW = "promoView";
+    private static final String CLICK_CHECKOUT = "clickCheckout";
     private static final String EVENT = "event";
     private static final String EVENT_CATEGORY = "eventCategory";
     private static final String EVENT_ACTION = "eventAction";
@@ -122,6 +133,16 @@ public class OrderListAnalytics {
     private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
     private static final String TICKER_EVENT_ACTION = "view ticker";
     private static final String TICKER_EVENT_NAME = "viewPurchaseList";
+
+    private static final String BUSINESS_UNIT = "businessUnit";
+    private static final String CURRENT_SITE = "currentSite";
+    private static final String CREATIVE_SLOT = "creativeSlot";
+    private static final String PROMOTIONS = "promotions";
+    private static final String USER_ID = "userId";
+
+    private static final String CREATIVE_NAME = "creative_name";
+    private static final String ITEM_ID = "item_id";
+    private static final String ITEM_NAME = "item_name";
 
     private static final String ORDER_LIST = "/order list";
 
@@ -601,4 +622,77 @@ public class OrderListAnalytics {
                                         ))))));
 
     }
+
+    public void sendOrderDetailImpression(String categoryName, String productName, String userId) {
+        Bundle eventDataLayer = new Bundle();
+        eventDataLayer.putString(TrackAppUtils.EVENT, PROMO_VIEW);
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE);
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_ORDER_DETAIL_IMPRESSION);
+//        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName + operatorName);
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName);
+        eventDataLayer.putString(BUSINESS_UNIT, "recharge");
+        eventDataLayer.putString(CURRENT_SITE, "tokopediadigital");
+        eventDataLayer.putString(USER_ID, userId);
+
+        ArrayList<Bundle> promotions = new ArrayList<>();
+        Bundle promotion = new Bundle();
+        promotion.putString(CREATIVE_NAME, "");
+        promotion.putString(ITEM_ID, "");
+        promotion.putString(ITEM_NAME, productName);
+        promotions.add(promotion);
+        eventDataLayer.putParcelableArrayList(PROMOTIONS, promotions);
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(PROMO_VIEW, eventDataLayer);
+    }
+
+    public void sendInvoiceClickEvent(String categoryName, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_LIHAT_INVOICE,
+//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName,
+                TrackAppUtils.EVENT_LABEL, categoryName,
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
+    public void sendCopyButtonClickEvent(String categoryName, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_COPY_BUTTON,
+//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName,
+                TrackAppUtils.EVENT_LABEL, categoryName,
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
+    public void sendActionButtonClickEvent(
+            String categoryName,
+            String buttonId,
+            String buttonName,
+            String userId
+    ) {
+        String eventAction;
+        if (buttonId == ActionButton.PRIMARY_BUTTON) {
+            eventAction = EVENT_ACTION_CLICK_PRIMARY_BUTTON;
+        } else {
+            eventAction = EVENT_ACTION_CLICK_SECONDARY_BUTTON;
+        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, eventAction,
+//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName + buttonName,
+                TrackAppUtils.EVENT_LABEL, categoryName + buttonName,
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
 }

@@ -32,6 +32,7 @@ public interface DigitalEventTracking {
         String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
         String DIGITAL_HOMEPAGE = "homepage digital";
         String DIGITAL_CHECKOUT = "digital - checkout";
+        String DIGITAL_CHECKOUT_PAGE = "digital - checkout page";
         String DIGITAL_MULTIPLE_CHECKOUT = "digital - multiple checkout";
         String DIGITAL = "digital - ";
         String RECHARGE = "Recharge - ";
