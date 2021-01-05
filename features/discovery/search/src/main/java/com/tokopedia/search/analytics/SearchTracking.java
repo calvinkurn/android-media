@@ -716,7 +716,7 @@ public class SearchTracking {
                         USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(
                                 SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(
-                                        PROMOTIONS, bannerData
+                                        PROMOTIONS, DataLayer.listOf(bannerData)
                                 )
                         )
                 )

@@ -80,7 +80,7 @@
       ]
     },
     {
-      "event": "promoClick",
+      "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click lihat sekarang - carousel banner",
       "eventLabel": "{{.+}} - {{.+}}",
