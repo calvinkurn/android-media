@@ -1,5 +1,7 @@
 package com.tokopedia.managepassword.forgotpassword.view.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -7,6 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.managepassword.ManagePasswordWebViewActivity
+import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
@@ -65,14 +69,34 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         getAbTestPlatform()?.fetch(null)
 
         if (isDirectToWebView) {
-            if (userSession.isLoggedIn) {
-                RouteManager.route(this, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
-            } else {
-                RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
-            }
-            finish()
+
+            // if possible
+            // remove header webview if user logged in
+            gotoWebView(urlResetPassword())
             return
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_WEB_VIEW) {
+            if (data != null && data.extras != null) {
+                val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
+                if (isContainsLoginApplink) gotoLogin()
+            }
+        }
+    }
+
+    private fun gotoWebView(url: String) {
+        val intent = ManagePasswordWebViewActivity.createIntent(this, url)
+        startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+        startActivity(intent)
+        finish()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
@@ -92,6 +116,8 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     companion object {
+        private const val REQUEST_CODE_WEB_VIEW = 100
+
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
         private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
