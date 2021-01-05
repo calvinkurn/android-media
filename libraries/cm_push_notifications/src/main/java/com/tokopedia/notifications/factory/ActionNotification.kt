@@ -71,9 +71,9 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         var expandedView: RemoteViews
         expandedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             RemoteViews(context.applicationContext.packageName,
-                    R.layout.cm_layout_big_image_pre_dark_mode)
+                    R.layout.cm_layout_big_image)
         else RemoteViews(context.applicationContext.packageName,
-                R.layout.cm_layout_big_image)
+                R.layout.cm_layout_big_image_pre_dark_mode)
         if (baseNotificationModel.media == null) {
             expandedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                 RemoteViews(context.applicationContext.packageName,

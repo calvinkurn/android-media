@@ -51,12 +51,19 @@ class PersistentNotification internal constructor(
         // close button of persistent notification
         remoteView.setOnClickPendingIntent(R.id.image_icon5, getPersistentClosePendingIntent())
 
-        remoteView.setImageViewResource(R.id.image_icon5, if (CMNotificationUtils.isDarkMode(context)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            R.drawable.cm_ic_btn_close_white
-        } else {
-            R.drawable.cm_ic_btn_close_black
-        })
+        //if Q and dark mode - white
+        //if Q and light mode - black
+        //if not Q and any mode - black
+        remoteView.setImageViewResource(R.id.image_icon5,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (CMNotificationUtils.isDarkMode(context)) {
+                        R.drawable.cm_ic_btn_close_white
+                    } else {
+                        R.drawable.cm_ic_btn_close_black
+                    }
+                } else {
+                    R.drawable.cm_ic_btn_close_black
+                })
 
         // list of persistent button
         persistentButtonList?.let {
