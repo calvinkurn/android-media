@@ -23,6 +23,7 @@ class EmptyStateUseCase @Inject constructor() {
                     this?.searchParameter?.getSearchParameterHashMap()?.clear()
                     val optionLists = addFilterOptions(this?.data?.firstOrNull()?.filter
                             ?: arrayListOf())
+                    this?.filterController?.resetAllFilters()
                     if (optionLists.isNotEmpty()) {
                         this?.filters?.clear()
                         this?.selectedFilters?.clear()

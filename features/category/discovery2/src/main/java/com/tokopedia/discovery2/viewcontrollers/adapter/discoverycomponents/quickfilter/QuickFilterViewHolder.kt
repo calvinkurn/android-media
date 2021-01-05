@@ -35,12 +35,12 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            quickFilterViewModel.getDynamicFilterModelLiveData().observe(it, Observer { filterModel ->
+            quickFilterViewModel.getDynamicFilterModelLiveData().observe(it, { filterModel ->
                 if (filterModel != null) {
                     dynamicFilterModel = filterModel
                 }
             })
-            quickFilterViewModel.getSyncPageLiveData().observe(it, Observer { item ->
+            quickFilterViewModel.getSyncPageLiveData().observe(it, { item ->
                 if (item) {
                     (fragment as DiscoveryFragment).reSync()
                     quickFilterViewModel.fetchQuickFilters()
@@ -48,7 +48,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             })
         }
     }
-
 
     private fun setQuickFilters(filters: ArrayList<Option>) {
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
@@ -148,7 +147,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun onViewAttachedToWindow() {
-        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, Observer { filters ->
+        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
             setQuickFilters(filters)
         })
     }

@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.EMPTY_IMAGE
 import com.tokopedia.discovery2.Constant.EmptyStateTexts.FILTER_EMPTY_IMAGE
 import com.tokopedia.discovery2.R
@@ -55,7 +56,7 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
         verticalDecription.text = emptyStateModel.description
         if (emptyStateModel.isFilterState) {
             verticalButton.show()
-            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE)
+            verticalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
             verticalButton.setOnClickListener {
                 emptyStateViewModel.handleEmptyStateReset()
             }
