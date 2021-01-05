@@ -5,6 +5,7 @@ package com.tokopedia.navigation.domain.model;
  */
 public class Notification {
 
+    public int totalNewInbox = 0;
     private Integer totalInbox;
     private Integer totalNotif;
     private Integer totalCart;
