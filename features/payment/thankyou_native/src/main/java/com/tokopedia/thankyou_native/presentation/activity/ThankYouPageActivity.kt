@@ -206,10 +206,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun isGlobalNavEnable(): Boolean {
         getAbTestPlatform()?.let {
-            val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-            val toolbarType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    EXP_NAME, TOOLBAR_VARIANT_BASIC)
-            return toolbarType == TOOLBAR_VARIANT_NAVIGATION
+            return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, TOOLBAR_VARIANT_BASIC)
+                    == TOOLBAR_VARIANT_NAVIGATION)
         }
         return false
     }
