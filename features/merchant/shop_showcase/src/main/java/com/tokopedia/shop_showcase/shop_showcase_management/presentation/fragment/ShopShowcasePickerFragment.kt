@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater

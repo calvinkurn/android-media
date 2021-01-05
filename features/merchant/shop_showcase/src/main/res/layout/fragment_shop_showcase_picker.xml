@@ -16,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
 
             <com.tokopedia.header.HeaderUnify
                 android:id="@+id/showcase_picker_toolbar"
@@ -209,19 +210,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_picker_save"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:text="@string/save_product_action_text"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            />
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_picker_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="@string/save_product_action_text"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
