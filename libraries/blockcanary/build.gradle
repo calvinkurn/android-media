@@ -16,8 +16,6 @@ android {
     }
 }
 
-apply plugin: 'io.hansel.preprocessor.module'
-
 buildscript {
     repositories {
         mavenCentral()

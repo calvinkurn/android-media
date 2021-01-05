@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.collection.SparseArrayCompat;
 import android.view.ViewGroup;
 
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditPreviewFragment;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 
 import java.util.ArrayList;
 
@@ -22,14 +22,14 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Integer> currentEditStepIndexList;
     private int minResolution;
-    private ArrayList<ArrayList<ImageRatioTypeDef>> ratioTypeList;
+    private ArrayList<ArrayList<ImageRatioType>> ratioTypeList;
     private boolean isCirclePreview;
 
     public ImageEditorViewPagerAdapter(FragmentManager fm,
                                        ArrayList<ArrayList<String>> edittedImagePaths,
                                        ArrayList<Integer> currentEditStepIndexList,
                                        int minResolution,
-                                       ArrayList<ArrayList<ImageRatioTypeDef>> ratioTypeList,
+                                       ArrayList<ArrayList<ImageRatioType>> ratioTypeList,
                                        boolean isCirclePreview) {
         super(fm);
         this.edittedImagePaths = edittedImagePaths;

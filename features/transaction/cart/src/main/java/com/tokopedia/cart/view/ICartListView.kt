@@ -62,15 +62,11 @@ interface ICartListView : CustomerView {
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
-
-    fun showToastMessageRed(throwable: Throwable, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
+    fun showToastMessageRed(message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 
-    fun showToastMessageGreen(message: String, showDefaultAction: Boolean = true)
-
-    fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener? = null)
+    fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
     fun renderLoadGetCartData()
 
