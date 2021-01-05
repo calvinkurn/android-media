@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentOld
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -202,7 +202,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
                 isFromAffiliate ?: false, trackerAttribution,
                 trackerListName, affiliateString, deeplinkUrl, layoutId)
     } else {
-        DynamicProductDetailFragmentOld.newInstance(productId, warehouseId, shopDomain,
+        DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
                 productKey, isFromDeeplink,
                 isFromAffiliate ?: false, trackerAttribution,
                 trackerListName, affiliateString, deeplinkUrl, layoutId)
