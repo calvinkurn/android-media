@@ -537,22 +537,22 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setupInfoPager(howToUse: String, tnc: String) {
-        val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
+        val tvHowToUse: TkpdWebView? = view?.findViewById(R.id.how_to_use_content)
+        val tvTnc: TkpdWebView? = view?.findViewById(R.id.tnc_content)
 
         if (tnc.isNotEmpty() && tnc != "<br>") {
-            tvTnc.loadData(tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvTnc?.loadData(tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
             view?.findViewById<View>(R.id.mid_separator)?.hide()
-            tvTnc.hide()
+            tvTnc?.hide()
         }
         if (!howToUse.isEmpty() && howToUse != "<br>") {
-            tvHowToUse.loadData(howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvHowToUse?.loadData(howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             view?.findViewById<View>(R.id.mid_separator)?.hide()
-            tvHowToUse.hide()
+            tvHowToUse?.hide()
         }
     }
 

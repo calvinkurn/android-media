@@ -421,8 +421,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val quotaContainer: LinearLayout? = view?.findViewById(R.id.quota_container)
         val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        val imgTimer = view?.findViewById<AppCompatImageView>(R.id.img_time)
-        val imgMoney = view?.findViewById<AppCompatImageView>(R.id.iv_rp)
         btnAction2.isEnabled = !data.isDisabledButton
         if (data.isDisabledButton) {
             btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.disabled_color))
@@ -448,8 +446,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled) {
             ImageUtil.dimImage(imgBanner)
-            imgMoney?.loadImageDrawable(R.drawable.ic_tp_min_transk)
-            imgTimer?.loadImageDrawable(R.drawable.ic_tp_timer_grey)
         } else {
             ImageUtil.unDimImage(imgBanner)
         }
@@ -508,8 +504,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
         val labelPoint: Typography = view!!.findViewById(R.id.text_point_label)
         val textDiscount: Typography = view!!.findViewById(R.id.text_point_discount)
-        val imgTimer = view?.findViewById<AppCompatImageView>(R.id.img_time)
-        val imgMoney = view?.findViewById<AppCompatImageView>(R.id.iv_rp)
         btnAction2.visibility = View.VISIBLE
         btnAction2.isEnabled = !data.isDisabledButton
         description.text = data.title
@@ -558,12 +552,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             disabledError.text = data.disableErrorMessage
         }
 
-        if (data.minUsageValue.isNullOrEmpty()) {
+        if (data.minimumUsageLabel.isNullOrEmpty()) {
             transactionContainer?.hide()
         } else {
             transactionContainer?.show()
             minUsageLabel?.show()
             minUsageLabel?.text = data.minimumUsageLabel
+        }
+
+        if (data.minUsageValue.isNullOrEmpty()) {
+            minUsageValue?.hide()
+        } else {
             minUsageValue?.show()
             minUsageValue?.text = data.minUsageValue
         }
@@ -577,8 +576,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (data.isDisabled) {
             ImageUtil.dimImage(imgBanner)
             pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
-            imgMoney?.loadImageDrawable(R.drawable.ic_tp_min_transk)
-            imgTimer?.loadImageDrawable(R.drawable.ic_tp_timer_grey)
         } else {
             ImageUtil.unDimImage(imgBanner)
             pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
@@ -659,10 +656,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun showTimer(item: CatalogsValueEntity) {
-
-        if (progressBar?.timer != null) {
-            progressBar?.timer!!.cancel()
-        }
+        progressBar?.timer?.cancel()
         val flipTimer = view?.findViewById<ViewFlipper>(R.id.flip_timer)
         val couponExpire = view?.findViewById<Typography>(R.id.text_timer_value)
 
