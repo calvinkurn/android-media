@@ -213,7 +213,8 @@ class PlayVideoFragment @Inject constructor(
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
                         partnerId = playViewModel.partnerId,
-                        channelType = playViewModel.channelType
+                        channelType = playViewModel.channelType,
+                        videoOrientation = playViewModel.videoOrientation,
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener

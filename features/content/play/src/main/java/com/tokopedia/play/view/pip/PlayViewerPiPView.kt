@@ -7,7 +7,9 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
@@ -98,6 +100,17 @@ class PlayViewerPiPView : ConstraintLayout {
 
     fun setPiPInfo(pipInfo: PiPInfoUiModel) {
         mPiPInfo = pipInfo
+
+        pvVideo.resizeMode = if (!pipInfo.videoOrientation.isHorizontal) {
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        } else AspectRatioFrameLayout.RESIZE_MODE_FIT
+
+        setBackgroundColor(
+                MethodChecker.getColor(rootView.context,
+                        if (pipInfo.videoOrientation.isHorizontal) R.color.play_solid_black
+                        else R.color.transparent
+                )
+        )
     }
 
     fun getPlayerView(): PlayerView = pvVideo
