@@ -344,7 +344,7 @@ ext {
             principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}",
             components      : "com.tokopedia.unify:components:${unifyComponentsVersion}",
             coach_mark      : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
-            calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
+            calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}",
             banner          : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
