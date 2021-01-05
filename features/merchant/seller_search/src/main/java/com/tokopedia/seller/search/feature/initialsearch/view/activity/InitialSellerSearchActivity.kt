@@ -107,7 +107,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     override fun onQueryTextChangeListener(keyword: String) {
-        viewModel.loadTypingSearch(keyword)
+        viewModel.getTypingSearch(keyword)
     }
 
     override fun onClearTextBoxListener() {

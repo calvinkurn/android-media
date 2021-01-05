@@ -2,7 +2,6 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
@@ -26,21 +25,16 @@ class InitialSearchActivityViewModel @Inject constructor(
 
     private val _searchPlaceholder = MutableLiveData<Result<String>>()
 
+    private val _searchResult = MutableLiveData<Result<String>>()
+    val searchResult: LiveData<Result<String>>
+        get() = _searchResult
+
+
     private val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
-    val searchResult = queryChannel.asFlow()
-            .debounce(DEBOUNCE_DELAY_MILLIS)
-            .distinctUntilChanged()
-            .mapLatest {
-                try {
-                    Success(it)
-                } catch (e: Throwable) {
-                    Fail(e)
-                }
-            }.catch {
-                emit(Fail(it))
-            }
-            .asLiveData()
+    init {
+        getKeywordSearch()
+    }
 
     fun getSearchPlaceholder() {
         launchCatchError(block = {
@@ -55,8 +49,29 @@ class InitialSearchActivityViewModel @Inject constructor(
         }
     }
 
-    fun loadTypingSearch(keyword: String) {
+    fun getTypingSearch(keyword: String) {
         queryChannel.offer(keyword)
+    }
+
+    private fun getKeywordSearch() {
+        launchCatchError(block =  {
+            queryChannel.asFlow()
+                    .debounce(DEBOUNCE_DELAY_MILLIS)
+                    .distinctUntilChanged()
+                    .mapLatest {
+                        try {
+                            Success(it)
+                        } catch (e: Throwable) {
+                            Fail(e)
+                        }
+                    }.catch {
+                        emit(Fail(it))
+                    }.collectLatest {
+                        _searchResult.value = it
+                    }
+        }) {
+            _searchResult.value = Fail(it)
+        }
     }
 
     companion object {
