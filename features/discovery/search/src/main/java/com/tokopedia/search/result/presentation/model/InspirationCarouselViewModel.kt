@@ -29,19 +29,20 @@ class InspirationCarouselViewModel(
             val bannerApplinkUrl: String = "",
             val product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
-            val layout: String = ""
+            val layout: String = "",
+            val position: Int = 0
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
         }
 
-        fun getBannerDataLayer(): Any {
+        fun getBannerDataLayer(keyword: String): Any {
             return DataLayer.mapOf(
                 "creative", title,
-                "id", "{{banner_id}}",
-                "name", "/search - $title",
-                "position", 0
+                "id", "0",
+                "name", "/search - $keyword",
+                "position", position
             )
         }
 

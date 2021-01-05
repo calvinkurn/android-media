@@ -340,14 +340,19 @@ public class ProductViewModelMapper {
                     data.getType(),
                     data.getPosition(),
                     data.getLayout(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout())
+                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout(), data.getPosition())
             ));
         }
 
         return inspirationCarousel;
     }
 
-    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType, String layout) {
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(
+            List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions,
+            String inspirationCarouselType,
+            String layout,
+            int carouselPosition
+    ) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
@@ -361,7 +366,8 @@ public class ProductViewModelMapper {
                     opt.getBannerApplinkUrl(),
                     convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType, layout),
                     inspirationCarouselType,
-                    layout
+                    layout,
+                    carouselPosition
             ));
         }
 

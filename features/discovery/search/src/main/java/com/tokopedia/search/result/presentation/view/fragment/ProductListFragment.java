@@ -1394,7 +1394,7 @@ public class ProductListFragment
         redirectionStartActivity(option.getBannerApplinkUrl(), option.getBannerLinkUrl());
 
         SearchTracking.trackEventClickInspirationCarouselGridBanner(
-                option.getInspirationCarouselType(), getQueryKey(), option.getBannerDataLayer(), getUserId()
+                option.getInspirationCarouselType(), getQueryKey(), option.getBannerDataLayer(getQueryKey()), getUserId()
         );
     }
 
