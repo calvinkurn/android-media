@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.variant_common.model.VariantCategory
 
@@ -28,4 +30,41 @@ data class VariantDataModel(
     override fun name(): String = name
 
     override val impressHolder = ImpressHolder()
+
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return if (newData is VariantDataModel) {
+            isVariantError == newData.isVariantError
+                    && listOfVariantCategory?.size == newData.listOfVariantCategory?.size
+                    && listOfVariantCategory == newData.listOfVariantCategory
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): DynamicPdpDataModel {
+        return this.copy()
+    }
+
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        val bundle = Bundle()
+        return if (newData is VariantDataModel && isSelectedVariantChanged(newData)) {
+            bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
+            bundle
+        } else {
+            null
+        }
+    }
+
+    private fun isSelectedVariantChanged(newVariantDataModel: VariantDataModel): Boolean {
+        var isChanged = false
+        for ((key, value) in newVariantDataModel.mapOfSelectedVariant) {
+            val currentValue = mapOfSelectedVariant[key]
+
+            if (currentValue != value) {
+                isChanged = true
+                break
+            }
+        }
+        return isChanged
+    }
 }

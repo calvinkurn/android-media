@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.content.Context
+import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.productThousandFormatted
@@ -36,6 +37,24 @@ data class ProductMiniSocialProofDataModel(
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return if (newData is ProductMiniSocialProofDataModel) {
+            wishlistCount == newData.wishlistCount &&
+                    viewCount == newData.viewCount &&
+                    shouldRenderSocialProof == newData.shouldShowSingleViewSocialProof()
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): DynamicPdpDataModel {
+        return this.copy()
+    }
+
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        return null
     }
 
     private fun firstPositionData(): Pair<String, Int> {

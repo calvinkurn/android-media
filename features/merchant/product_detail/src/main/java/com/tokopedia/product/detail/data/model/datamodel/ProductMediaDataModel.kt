@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductMediaDataModel(
@@ -10,7 +12,7 @@ data class ProductMediaDataModel(
         var shouldRefreshViewPagger: Boolean = true,
         var shouldRenderImageVariant: Boolean = true
 ) : DynamicPdpDataModel {
-    companion object{
+    companion object {
         const val VIDEO_TYPE = "video"
     }
 
@@ -25,6 +27,31 @@ data class ProductMediaDataModel(
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return if (newData is ProductMediaDataModel) {
+            listOfMedia.size == newData.listOfMedia.size &&
+                    listOfMedia.firstOrNull()?.id == newData.listOfMedia.firstOrNull()?.id
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): DynamicPdpDataModel {
+        return this.copy()
+    }
+
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        val bundle = Bundle()
+        return if (newData is ProductMediaDataModel) {
+            if (shouldRenderImageVariant) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
+            }
+            return bundle
+        } else {
+            null
+        }
+    }
 }
 
 data class MediaDataModel(
@@ -37,5 +64,5 @@ data class MediaDataModel(
         val videoUrl: String = "",
         val isAutoPlay: Boolean = false
 ) {
-    fun isVideoType():Boolean = type == ProductMediaDataModel.VIDEO_TYPE
+    fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }

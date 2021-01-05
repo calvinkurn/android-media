@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -33,7 +32,7 @@ import kotlin.math.roundToLong
  */
 class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
-    val miniSocialProofMap: ProductMiniSocialProofDataModel?
+    private val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
     val basicContentMap: ProductContentDataModel?
@@ -114,7 +113,16 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo:Boolean) {
         dataP1?.let {
             basicContentMap?.run {
-                data = it
+                data = ProductContentMainData(
+                        campaign = it.data.campaign,
+                        freeOngkir = it.data.isFreeOngkir,
+                        cashbackPercentage = it.data.isCashback.percentage,
+                        price = it.data.price,
+                        stockWording = it.data.stock.stockWording,
+                        isVariant = it.data.variant.isVariant,
+                        productName = it.data.name,
+                        isProductActive = it.basic.isActive()
+                )
             }
 
             productNewVariantDataModel?.run {
@@ -328,7 +336,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             campaignID = selectedUpcoming?.campaignId ?: ""
             campaignType = selectedUpcoming?.campaignType ?: ""
             campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
-            endDate = selectedUpcoming?.endDate ?: ""
             startDate = selectedUpcoming?.startDate ?: ""
             notifyMe = selectedUpcoming?.notifyMe ?: false
             upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType

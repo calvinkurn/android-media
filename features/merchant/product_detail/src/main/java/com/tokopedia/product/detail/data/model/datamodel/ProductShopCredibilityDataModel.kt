@@ -1,10 +1,12 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.content.Context
+import android.os.Bundle
 import androidx.annotation.DrawableRes
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
@@ -15,7 +17,7 @@ import java.text.SimpleDateFormat
 /**
  * Created by Yehezkiel on 15/06/20
  */
-class ProductShopCredibilityDataModel(
+data class ProductShopCredibilityDataModel(
         val name: String = "",
         val type: String = "",
 
@@ -66,6 +68,45 @@ class ProductShopCredibilityDataModel(
         return listOfData
                 .filter { it.value.isNotEmpty() && it.value != "0" }
                 .take(2)
+    }
+
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return if (newData is ProductShopCredibilityDataModel) {
+            shopLocation == newData.shopLocation &&
+                    shopAva == newData.shopAva
+                    && shopChatSpeed == newData.shopChatSpeed
+                    && shopLastActive == newData.shopLastActive
+                    && shopRating == newData.shopRating
+                    && isGoApotik == newData.isGoApotik
+                    && isFavorite == newData.isFavorite
+                    && enableButtonFavorite == newData.enableButtonFavorite
+        } else {
+            false
+        }
+    }
+
+    override fun newInstance(): DynamicPdpDataModel {
+        return this.copy()
+    }
+
+    override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
+        val bundle = Bundle()
+        return if (newData is ProductShopCredibilityDataModel) {
+            if (shopAva != newData.shopAva) {
+                //Means this is update from backend, not click the follow button
+                //We dont want to only update with payload, but update entire component
+                return null
+            }
+
+            if (isFavorite != newData.isFavorite && enableButtonFavorite != newData.enableButtonFavorite) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+            } else {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+            }
+            bundle
+        } else {
+            null
+        }
     }
 }
 

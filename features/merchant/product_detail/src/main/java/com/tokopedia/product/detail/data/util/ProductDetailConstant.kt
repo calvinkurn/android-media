@@ -65,6 +65,7 @@ object ProductDetailConstant {
     const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
+    const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
