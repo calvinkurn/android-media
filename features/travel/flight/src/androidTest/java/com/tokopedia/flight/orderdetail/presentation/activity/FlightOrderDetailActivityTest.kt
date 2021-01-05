@@ -18,8 +18,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.flight.CustomScrollActions.nestedScrollTo
 import com.tokopedia.flight.R
-import com.tokopedia.flight.homepage.presentation.activity.FlightHomepageActivityTest
+import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
@@ -72,6 +73,7 @@ class FlightOrderDetailActivityTest {
 
         Thread.sleep(1000)
 
+        onView(withId(R.id.tgFlightOrderTerminalNote)).perform(nestedScrollTo())
         onView(withId(R.id.btnFlightOrderDetailSendEticket)).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.bottom_sheet_close)).perform(click())
@@ -83,6 +85,41 @@ class FlightOrderDetailActivityTest {
         Thread.sleep(2000)
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ORDER_DETAIL),
+                hasAllSuccess())
+    }
+
+    @Test
+    fun validateTrackingWebCheckIn() {
+        Thread.sleep(1000)
+
+        onView(withId(R.id.containerContentOrderDetail)).perform(swipeUp())
+        onView(withText("Web Check-in")).perform(click())
+        Thread.sleep(1000)
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(1000)
+
+        onView(getElementFromMatchAtPosition(withId(R.id.btnFlightOrderDetailWebCheckIn), 0)).perform(click())
+        onView(withId(R.id.rvFlightOrderDetailWebCheckIn)).perform(swipeUp())
+        onView(getElementFromMatchAtPosition(withId(R.id.btnFlightOrderDetailWebCheckIn), 1)).perform(click())
+        Thread.sleep(1000)
+
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ORDER_DETAIL_WEB_CHECK_IN),
+                hasAllSuccess())
+    }
+
+    @Test
+    fun validateTrackingDownload() {
+        Thread.sleep(1000)
+
+        onView(withId(R.id.tgFlightOrderTerminalNote)).perform(nestedScrollTo())
+        onView(withId(R.id.btnFlightOrderDetailViewEticket)).perform(click())
+        Thread.sleep(1000)
+
+        onView(withId(R.id.menu_flight_download)).perform(click())
+        Thread.sleep(1000)
+
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ORDER_DETAIL_BROWSER),
                 hasAllSuccess())
     }
 

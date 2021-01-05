@@ -139,7 +139,88 @@
                   "endTime": "2030-11-11T00:00:00Z",
                   "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
                   "appURL": "",
-                  "webURL": ""
+                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
+                }
+              },
+              {
+                "id": 4176163,
+                "status": 7,
+                "departureID": "CGK",
+                "departureTime": "2020-12-04T06:00:00Z",
+                "departureAirportName": "Soekarno Hatta",
+                "departureCityName": "Jakarta",
+                "arrivalID": "DPS",
+                "arrivalTime": "2020-12-04T08:00:00Z",
+                "arrivalAirportName": "Ngurah Rai",
+                "arrivalCityName": "Denpasar",
+                "totalTransit": 0,
+                "totalStop": 0,
+                "addDayArrival": 0,
+                "duration": "2j",
+                "durationMinute": 120,
+                "fare": {
+                  "adultNumeric": 14800,
+                  "childNumeric": 0,
+                  "infantNumeric": 0
+                },
+                "routes": [
+                  {
+                    "departureID": "CGK",
+                    "departureTime": "2020-12-04T06:00:00Z",
+                    "departureAirportName": "Soekarno Hatta",
+                    "departureCityName": "Jakarta",
+                    "arrivalID": "DPS",
+                    "arrivalTime": "2020-12-04T08:00:00Z",
+                    "arrivalAirportName": "Ngurah Rai",
+                    "arrivalCityName": "Denpasar",
+                    "pnr": "DUMMY294",
+                    "airlineID": "SI",
+                    "airlineName": "Susi Air",
+                    "airlineLogo": "",
+                    "operatorAirlineID": "",
+                    "flightNumber": "101",
+                    "duration": "2 jam",
+                    "durationMinute": 120,
+                    "layover": "",
+                    "layoverMinute": 0,
+                    "refundable": true,
+                    "departureTerminal": "X1",
+                    "arrivalTerminal": "Z1",
+                    "stop": 0,
+                    "carrier": "",
+                    "stopDetails": [],
+                    "ticketNumbers": [
+                      {
+                        "passengerID": 5147802,
+                        "ticketNumber": "TICKET125"
+                      }
+                    ],
+                    "freeAmenities": {
+                      "cabinBaggage": {
+                        "isUpTo": false,
+                        "unit": "kg",
+                        "value": 7
+                      },
+                      "freeBaggage": {
+                        "isUpTo": false,
+                        "unit": "",
+                        "value": 0
+                      },
+                      "meal": true,
+                      "usbPort": false,
+                      "wifi": false,
+                      "others": []
+                    }
+                  }
+                ],
+                "webCheckIn": {
+                  "title": "Web Check-in",
+                  "subTitle": "Maskapai ini tidak menerima web check-in",
+                  "startTime": "2020-11-11T00:00:00Z",
+                  "endTime": "2030-11-11T00:00:00Z",
+                  "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
+                  "appURL": "",
+                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
                 }
               }
             ],
