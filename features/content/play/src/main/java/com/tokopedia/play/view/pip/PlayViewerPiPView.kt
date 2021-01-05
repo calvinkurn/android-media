@@ -12,10 +12,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by jegul on 27/11/20
@@ -29,6 +34,11 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private val playVideoManager: PlayVideoManager
         get() = PlayVideoManager.getInstance(context)
+
+    private val userSession: UserSessionInterface = UserSession(context.applicationContext)
+    private val pipAnalytic: PlayPiPAnalytic = PlayPiPAnalytic(userSession)
+
+    private var timePipAttached: Long? = null
 
     private val pipAdapter = FloatingWindowAdapter(context)
 
@@ -46,7 +56,7 @@ class PlayViewerPiPView : ConstraintLayout {
         }
     }
 
-    private var mChannelId: String? = null
+    private var mPiPInfo: PiPInfoUiModel? = null
 
     private val pvVideo: PlayerView
     private val flLoading: FrameLayout
@@ -71,6 +81,8 @@ class PlayViewerPiPView : ConstraintLayout {
 
         playVideoManager.resumeOrPlayPreviousVideo(true)
         playVideoManager.mute(false)
+
+        timePipAttached = System.currentTimeMillis()
     }
 
     override fun onDetachedFromWindow() {
@@ -80,10 +92,12 @@ class PlayViewerPiPView : ConstraintLayout {
             if (playVideoManager.isVideoLive()) playVideoManager.release()
             else playVideoManager.stop()
         }
+
+        pipRemovedAnalytic()
     }
 
-    fun setChannelId(channelId: String) {
-        mChannelId = channelId
+    fun setPiPInfo(pipInfo: PiPInfoUiModel) {
+        mPiPInfo = pipInfo
     }
 
     fun getPlayerView(): PlayerView = pvVideo
@@ -95,9 +109,9 @@ class PlayViewerPiPView : ConstraintLayout {
         }
 
         setOnClickListener {
-            mChannelId?.let { channelId ->
+            mPiPInfo?.let { pipInfo ->
                 isRoutingToRoom = true
-                val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, channelId)
+                val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, pipInfo.channelId)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }
@@ -116,5 +130,20 @@ class PlayViewerPiPView : ConstraintLayout {
     private fun onVideoEnded() {
         flLoading.visibility = View.VISIBLE
         ivLoading.visibility = View.GONE
+    }
+
+    private fun pipRemovedAnalytic() {
+        val pipInfo = mPiPInfo ?: return
+
+        val timePiPStart = timePipAttached ?: return
+        val timeSeconds = TimeUnit.SECONDS
+        val durationPiPAttachedInSeconds = timeSeconds.convert(System.currentTimeMillis() - timePiPStart, TimeUnit.MILLISECONDS)
+
+        pipAnalytic.exitPiP(
+                channelId = pipInfo.channelId,
+                shopId = pipInfo.partnerId,
+                channelType = pipInfo.channelType,
+                durationInSecond = durationPiPAttachedInSeconds
+        )
     }
 }

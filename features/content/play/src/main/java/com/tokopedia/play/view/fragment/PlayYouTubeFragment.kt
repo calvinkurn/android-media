@@ -19,7 +19,7 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.PiPMode
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
