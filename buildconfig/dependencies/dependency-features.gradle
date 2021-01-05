@@ -141,6 +141,7 @@ ext {
             review                          : ":features:merchant:review",
             sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
+            sellerAppWidget                 : ":features:merchant:seller_app_widget",
             sellerHome                      : ":features:merchant:seller_home",
             sellerHomeCommon                : ":features:merchant:seller_home_common",
             sellerMenu                      : ":features:merchant:seller_menu",
@@ -251,6 +252,7 @@ ext {
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp",
+            travel_slice                    : ":features:travel:travel_slice",
             customer_mid_app                : ":customer_mid_app"
     ]
 }
