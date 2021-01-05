@@ -115,6 +115,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterSimulationCallback?.noInternetCallback()
+                shimmerGroup.visible()
                 return
             }
             is IllegalStateException -> {
