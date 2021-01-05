@@ -87,6 +87,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setDiscoveryLiveState(it.pageInfo)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
+                            findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
                         setPageInfo(it)

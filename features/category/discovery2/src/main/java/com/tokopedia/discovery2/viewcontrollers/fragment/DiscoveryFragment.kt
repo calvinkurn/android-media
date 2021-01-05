@@ -158,6 +158,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDiscoveryFab = view.findViewById(R.id.fab)
         initToolbar(view)
         initView(view)
     }
