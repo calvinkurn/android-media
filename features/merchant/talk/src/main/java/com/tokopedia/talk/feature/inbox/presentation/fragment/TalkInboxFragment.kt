@@ -274,6 +274,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         hideLoading()
                         if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
+                            setFilterCounter()
                             hideLoading()
                             if (it.data.inbox.isEmpty()) {
                                 when (it.filter) {
@@ -296,7 +297,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                 return@Observer
                             }
                         }
-                        setFilterCounter()
                         if (isNewView()) {
                             renderData(inbox.map { inbox -> TalkInboxUiModel(inbox, isSellerView()) }, it.data.hasNext)
                         } else {
