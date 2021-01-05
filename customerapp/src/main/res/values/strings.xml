@@ -194,4 +194,17 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
+
+    <!-- Travel slice custom query -->
+    <string-array name="HotelSliceCustomQuery">
+        <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
+        <item>Book (a)? hotel(s)? in $city1</item>
+        <item>Search for cheap hotels in $city1</item>
+    </string-array>
+
+    <string-array name="TravelOrderListCustomQuery">
+        <item>(view)? my $type1 reservation(s)?</item>
+        <item>(check)? my $type1 reservation(s)?</item>
+        <item>(view)? my $type1 booking(s)?</item>
+    </string-array>
 </resources>

@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
@@ -84,7 +84,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
                 }
             }
 
-            val vids = descriptionData.videoUrlList.map { Video(url = it) }
+            val vids = descriptionData.videoUrlList.map { YoutubeVideo(url = it) }
             if (vids.size > 0) {
                 youtube_scroll.adapter = YoutubeThumbnailAdapter(vids.toMutableList()) { _, index ->
                     gotoVideoPlayer(vids, index)
@@ -116,7 +116,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
     }
 
-    private fun gotoVideoPlayer(vids: List<Video>, index: Int) {
+    private fun gotoVideoPlayer(vids: List<YoutubeVideo>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {

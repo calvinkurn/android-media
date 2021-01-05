@@ -45,9 +45,9 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         ImageHandler.LoadImage(itemView.img_logo, data.imageUrl)
 
         val fontColor = if (data.disabled) {
-            ContextCompat.getColor(itemView.context, R.color.font_disabled)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
         } else {
-            ContextCompat.getColor(itemView.context, R.color.font_black_primary_70)
+            ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
         }
 
         itemView.tv_title.setTextColor(fontColor)

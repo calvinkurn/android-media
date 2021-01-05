@@ -52,6 +52,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 

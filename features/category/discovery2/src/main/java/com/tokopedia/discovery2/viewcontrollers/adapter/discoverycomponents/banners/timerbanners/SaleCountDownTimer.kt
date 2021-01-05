@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.os.CountDownTimer
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
-import kotlin.math.roundToInt
 
 class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
                          private val showDays: Boolean = false,
@@ -15,12 +14,12 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
     override fun onTick(millisUntilFinished: Long) {
         timeDiffModel.timeFinish = false
         if (isCurrentTimer) {
-            var seconds = (millisUntilFinished / 1000f).roundToInt()
+            var seconds = (millisUntilFinished / 1000)
             var minutes = seconds / 60
             var hours = minutes / 60
 
             if (showDays) {
-                days = hours / 24
+                days = (hours / 24).toInt()
                 hours %= 24
             }
             minutes %= 60
