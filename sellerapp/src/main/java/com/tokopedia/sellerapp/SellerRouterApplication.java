@@ -455,5 +455,4 @@ public abstract class SellerRouterApplication extends MainApplication
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
-
 }

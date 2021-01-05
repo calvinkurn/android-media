@@ -1,9 +1,11 @@
 package com.tokopedia.categorylevels.analytics
 
 import com.tokopedia.discovery2.analytics.*
+import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -206,4 +208,40 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
+        additionalInfo?.categoryData?.let {
+            if(it[KEY_REDIRECTION_URL].isNullOrEmpty())
+                TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME, createOpenScreenEventMap(rootId = it[KEY_ROOT_ID], parent = it[KEY_PARENT], id = it[KEY_CATEGORY_ID_MAP], url = it[KEY_URL]))
+        }
+    }
+
+    private fun createOpenScreenEventMap(id: String?,
+                                 parent: String?,
+                                 rootId: String?,
+                                 url: String?): Map<String, String> {
+        val map = HashMap<String, String>()
+        val substring = url?.split("/p/")
+        if(substring?.isNullOrEmpty() == false) {
+            val levels = substring[1].split("/")
+            map[KEY_CATEGORY] = levels[0]
+            map[KEY_CATEGORY_ID] = rootId ?: ""
+            map[KEY_SUBCATEGORY] = ""
+            map[KEY_SUBCATEGORY_ID] = ""
+            map[KEY_PRODUCT_GROUP_NAME] = ""
+            map[KEY_PRODUCT_GROUP_ID] = ""
+            when (levels.size) {
+                LVL2 -> {
+                    map[KEY_SUBCATEGORY] = levels[1]
+                    map[KEY_SUBCATEGORY_ID] = id ?: ""
+                }
+                LVL3 -> {
+                    map[KEY_SUBCATEGORY] = levels[1]
+                    map[KEY_SUBCATEGORY_ID] = parent ?: ""
+                    map[KEY_PRODUCT_GROUP_NAME] = levels[2]
+                    map[KEY_PRODUCT_GROUP_ID] = id ?: ""
+                }
+            }
+        }
+        return map
+    }
 }
