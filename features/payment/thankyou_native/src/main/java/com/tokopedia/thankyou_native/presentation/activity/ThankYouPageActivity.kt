@@ -40,10 +40,6 @@ const val ARG_MERCHANT = "merchant"
 
 private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
-const val TOOLBAR_VARIANT_BASIC = AbTestPlatform.NAVIGATION_VARIANT_OLD
-const val TOOLBAR_VARIANT_NAVIGATION = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-
-
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
 
@@ -206,8 +202,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun isGlobalNavEnable(): Boolean {
         getAbTestPlatform()?.let {
-            return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, TOOLBAR_VARIANT_BASIC)
-                    == TOOLBAR_VARIANT_NAVIGATION)
+            return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
         }
         return false
     }
