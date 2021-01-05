@@ -18,7 +18,7 @@ data class DataResponse(
 
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: Long = 0,
 
         @SerializedName("quantity")
         @Expose

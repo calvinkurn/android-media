@@ -33,7 +33,7 @@
             android:layout_toRightOf="@+id/iv_product_card"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
             android:layout_toEndOf="@+id/iv_product_card"
             android:layout_toRightOf="@+id/iv_product_card"
             android:gravity="center_vertical"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_name"
@@ -68,7 +68,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toRightOf="@+id/text_slash_price"
             android:gravity="center_vertical"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
             app:typographyType="body_3"
@@ -96,7 +96,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@+id/iv_product_card"
             android:layout_toRightOf="@+id/iv_product_card"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
             app:layout_constraintTop_toBottomOf="@+id/text_product_price"
             app:typographyType="small"
@@ -113,7 +113,7 @@
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
             app:unify_image_type="rect"
-            tools:src="@color/unify_G500" />
+            tools:src="@color/Unify_G500" />
 
         <com.tokopedia.unifycomponents.UnifyImageButton
             android:id="@+id/btn_delete_wishlist"
@@ -143,7 +143,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn_delete_wishlist"
             app:layout_constraintTop_toTopOf="@+id/btn_delete_wishlist"
             app:unifyButtonSize="small"
-            app:unifyButtonType="transaction"
+            app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

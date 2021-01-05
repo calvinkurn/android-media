@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class DataModel(
         var success: Int = 0,
         var cartId: String = "",
-        var productId: Int = 0,
+        var productId: Long = 0,
         var quantity: Int = 0,
         var notes: String = "",
         var shopId: Int = 0,

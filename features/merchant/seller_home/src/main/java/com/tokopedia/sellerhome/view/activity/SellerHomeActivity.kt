@@ -60,6 +60,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
+        private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -110,6 +111,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        fetchSellerAppWidget()
     }
 
     override fun onResume() {
@@ -180,6 +182,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = ACTION_GET_ALL_APP_WIDGET_DATA
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     fun attachCallback(callback: StatusBarCallback) {

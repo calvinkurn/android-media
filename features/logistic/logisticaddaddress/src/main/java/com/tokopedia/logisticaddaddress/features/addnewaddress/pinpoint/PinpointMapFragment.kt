@@ -839,7 +839,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     }
 
                     override fun onPermissionGranted() {
-                        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                            if (data != null) {
+                                moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL) } }
                         googleMap?.isMyLocationEnabled = true
                     }
 
