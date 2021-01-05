@@ -186,6 +186,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         clearAllData()
         setInboxType()
         initSortFilter()
+        talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), viewModel.getUnreadCount())
     }
 
     override fun onPageClickedAgain() {
@@ -215,6 +216,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromArgument()
         super.onCreate(savedInstanceState)
+        talkInboxTracking.openScreen(screenName)
         setInboxType()
     }
 

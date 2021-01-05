@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.inbox.analytics
 
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
+import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -158,11 +159,17 @@ class TalkInboxTracking @Inject constructor() {
 
     private fun getFilter(filter: String): String {
         return when (filter) {
-            TalkInboxTrackingConstants.STATUS_READ -> {
+            TalkInboxFilter.READ_FILTER -> {
                 TalkInboxTrackingConstants.FILTER_READ
             }
-            TalkInboxTrackingConstants.STATUS_UNREAD -> {
+            TalkInboxFilter.UNREAD_FILTER -> {
                 TalkInboxTrackingConstants.FILTER_UNREAD
+            }
+            TalkInboxFilter.PROBLEM_FILTER -> {
+                TalkInboxTrackingConstants.FILTER_PROBLEM
+            }
+            TalkInboxFilter.UNRESPONDED_FILTER -> {
+                TalkInboxTrackingConstants.FILTER_UNRESPONDED
             }
             else -> {
                 ""
