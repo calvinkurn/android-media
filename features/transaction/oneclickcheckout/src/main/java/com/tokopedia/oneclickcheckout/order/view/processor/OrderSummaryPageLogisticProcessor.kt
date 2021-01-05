@@ -61,6 +61,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             addressId = address.addressId
             products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir))
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
+            weightActualInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weightActual / 1000.0
+            weightVolumeInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weightVolume / 1000.0
             productInsurance = orderProduct.productFinsurance
             orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
         }

@@ -16,6 +16,8 @@ data class OrderProduct(
         var isFreeOngkir: Boolean = false,
         var freeOngkirImg: String = "",
         var weight: Int = 0,
+        var weightActual: Int = 0,
+        var weightVolume: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
         var cashback: String = "",

@@ -118,6 +118,8 @@ class GetOccCartMapper @Inject constructor() {
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
+            weightActual = product.productWeightActual
+            weightVolume = product.productWeightVolume
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = product.freeShipping.badgeUrl
             wholesalePrice = mapWholesalePrice(product.wholesalePrice)
