@@ -38,7 +38,7 @@ const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
 const val ARG_MERCHANT = "merchant"
 
-`private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
+private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
 const val TOOLBAR_VARIANT_BASIC = AbTestPlatform.NAVIGATION_VARIANT_OLD
 const val TOOLBAR_VARIANT_NAVIGATION = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
