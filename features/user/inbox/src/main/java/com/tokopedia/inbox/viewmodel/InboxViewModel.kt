@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inbox.common.InboxCoroutineDispatcher
-import com.tokopedia.inbox.common.config.InboxConfig
-import com.tokopedia.inbox.domain.data.notification.InboxCounter
+import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,15 +16,14 @@ class InboxViewModel @Inject constructor(
         dispatchers: InboxCoroutineDispatcher
 ) : BaseViewModel(dispatchers.IO) {
 
-    private val _notifications = MutableLiveData<Result<InboxCounter>>()
-    val notifications: LiveData<Result<InboxCounter>>
+    private val _notifications = MutableLiveData<Result<Notifications>>()
+    val notifications: LiveData<Result<Notifications>>
         get() = _notifications
 
     fun getNotifications() {
         notificationUseCase.getNotification(
                 {
                     _notifications.value = Success(it)
-                    InboxConfig.inboxCounter = it
                 },
                 {
                     _notifications.value = Fail(it)

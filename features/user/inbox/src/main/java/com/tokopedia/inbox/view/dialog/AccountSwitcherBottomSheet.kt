@@ -99,13 +99,18 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
 
     private fun initClickListener() {
         sellerItem?.setOnClickListener {
-            InboxConfig.setRole(sellerItem?.role)
-            dismiss()
+            updateRole(sellerItem?.role)
         }
         buyerItem?.setOnClickListener {
-            InboxConfig.setRole(buyerItem?.role)
-            dismiss()
+            updateRole(buyerItem?.role)
         }
+    }
+
+    private fun updateRole(role: Int?) {
+        if (InboxConfig.role != role) {
+            InboxConfig.setRole(role)
+        }
+        dismiss()
     }
 
     private fun initBadgeCounter() {

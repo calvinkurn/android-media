@@ -256,7 +256,7 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: List<Int>) {
+    fun setOrderTypeFilter(orderTypes: MutableSet<Int>) {
         this.getOrderListParams.orderTypeList = orderTypes
     }
 

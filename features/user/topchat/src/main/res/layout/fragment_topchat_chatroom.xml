@@ -186,7 +186,7 @@
                     android:layout_marginEnd="@dimen/spacing_lvl3"
                     android:layout_marginBottom="@dimen/dp_topchat_14"
                     android:hint="@string/chat_edit_text"
-                    android:textColorHint="@color/Unify_N700_96"
+                    android:textColorHint="@color/Unify_N700_32"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
                     android:minHeight="@dimen/dp_topchat_40"

@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.view.custom
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.config.InboxConfig
@@ -47,7 +47,16 @@ class NavigationHeader @Inject constructor(
             userName: String,
             thumbnailUrl: String
     ) {
-        ImageHandler.LoadImage(thumbnail, thumbnailUrl)
+        bindImageProfile(thumbnailUrl)
+        bindUserName(userName)
+    }
+
+    private fun bindImageProfile(thumbnailUrl: String) {
+        thumbnail?.scaleType = ImageView.ScaleType.CENTER_CROP
+        thumbnail?.setImageUrl(thumbnailUrl)
+    }
+
+    private fun bindUserName(userName: String) {
         name?.text = MethodChecker.fromHtml(userName)
     }
 

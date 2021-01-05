@@ -4,7 +4,7 @@
 
     <stroke
         android:width="1px"
-        android:color="@color/grey_300" />
+        android:color="@color/Unify_N100" />
     <corners android:radius="@dimen/dp_8"/>
 
 </shape>

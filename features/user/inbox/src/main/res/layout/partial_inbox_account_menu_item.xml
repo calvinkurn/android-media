@@ -10,13 +10,15 @@
     android:paddingStart="@dimen/dp_inbox_12"
     android:paddingEnd="@dimen/spacing_lvl4">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_photo_profile"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle"
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography

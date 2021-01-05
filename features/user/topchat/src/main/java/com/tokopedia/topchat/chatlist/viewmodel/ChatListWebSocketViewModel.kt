@@ -91,4 +91,8 @@ class ChatListWebSocketViewModel @Inject constructor(
         this.role = role
     }
 
+    fun clearPendingMessages() {
+        pendingMessages.clear()
+    }
+
 }

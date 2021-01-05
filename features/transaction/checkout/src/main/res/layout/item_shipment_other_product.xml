@@ -21,13 +21,13 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_height="0.5dp"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
     <RelativeLayout
         android:id="@+id/rl_expand_other_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:foreground="?selectableItemBackground">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -38,7 +38,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:padding="@dimen/dp_16"
-            android:textColor="@color/address_green"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="+3 Produk Lainnya" />
@@ -59,6 +59,6 @@
         android:id="@+id/v_separator_below_product"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

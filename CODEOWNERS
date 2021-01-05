@@ -97,6 +97,7 @@
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
+/features/merchant/seller_app_widget/                   @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home/                         @tokopedia/android-minionstuart-dev
 /features/merchant/seller_home_common/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_menu/                         @tokopedia/android-minionstuart-dev
@@ -205,6 +206,7 @@
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
+/features/user/home_account/                            @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
 /features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev
