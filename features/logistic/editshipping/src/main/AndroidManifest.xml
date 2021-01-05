@@ -9,6 +9,12 @@
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
+        </activity>
+
+        <activity android:name=".ui.shippingeditor.ShippingEditorActivity"
+            android:label="@string/title_shipping_editor"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -21,5 +27,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>
