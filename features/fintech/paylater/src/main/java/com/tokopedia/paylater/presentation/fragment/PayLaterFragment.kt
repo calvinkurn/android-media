@@ -2,6 +2,7 @@ package com.tokopedia.paylater.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
@@ -9,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +19,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.PRODUCT_PRICE
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.data.mapper.CreditCard
+import com.tokopedia.paylater.data.mapper.PayLater
+import com.tokopedia.paylater.data.mapper.PaymentMode
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
@@ -32,13 +35,12 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater.*
 import javax.inject.Inject
 
-
 class PayLaterFragment : BaseDaggerFragment(),
         PayLaterSimulationFragment.PayLaterSimulationCallback,
         PayLaterOffersFragment.PayLaterOfferCallback,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
-        CompoundButton.OnCheckedChangeListener {
+        CompoundButton.OnCheckedChangeListener, View.OnTouchListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -52,6 +54,7 @@ class PayLaterFragment : BaseDaggerFragment(),
         arguments?.getInt(PRODUCT_PRICE) ?: 0
     }
 
+    private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
 
@@ -61,10 +64,6 @@ class PayLaterFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         getComponent(PayLaterComponent::class.java).inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -134,31 +133,50 @@ class PayLaterFragment : BaseDaggerFragment(),
         paylaterDaftarWidget.setOnClickListener {
             onRegisterPayLaterClicked()
         }
+        modeSwitcher.setOnTouchListener(this)
         modeSwitcher.setOnCheckedChangeListener(this)
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
         payLaterViewPager.addOnPageChangeListener(this)
     }
 
     private fun renderTabAndViewPager() {
-        payLaterViewPager.adapter = getViewPagerAdapter()
+        setUpTabLayout()
+        val pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
+        pagerAdapter.setList(getFragments())
+        payLaterViewPager.adapter = pagerAdapter
+    }
+
+    private fun setUpTabLayout() {
         paylaterTabLayout?.run {
             setupWithViewPager(payLaterViewPager)
+            getUnifyTabLayout().removeAllTabs()
             addNewTab(context.getString(R.string.payLater_simulation_tab_title))
-            addNewTab(context.getString(R.string.payLater_offer_details_tab_title))
+            when (paymentMode) {
+                is CreditCard -> addNewTab(context.getString(R.string.payLater_credit_card_tnc_title))
+                else -> addNewTab(context.getString(R.string.payLater_offer_details_tab_title))
+            }
         }
     }
 
-    private fun getViewPagerAdapter(): PagerAdapter {
-        val list = mutableListOf<Fragment>()
-        val simulationFragment = PayLaterSimulationFragment.newInstance()
-        val payLaterOffersFragment = PayLaterOffersFragment.newInstance()
-        simulationFragment.setPayLaterClickedListener(this)
-        payLaterOffersFragment.setPayLaterProductCallback(this)
-        list.add(simulationFragment)
-        list.add(payLaterOffersFragment)
-        val pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
-        pagerAdapter.setList(list)
-        return pagerAdapter
+    private fun getFragments(): List<Fragment> {
+        val fragmentList = mutableListOf<Fragment>()
+        when (paymentMode) {
+            is CreditCard -> {
+                val simulationFragment = CreditCardSimulationFragment.newInstance()
+                val tncFragment = CreditCardTncFragment.newInstance()
+                fragmentList.add(simulationFragment)
+                fragmentList.add(tncFragment)
+            }
+            else -> {
+                val simulationFragment = PayLaterSimulationFragment.newInstance()
+                val payLaterOffersFragment = PayLaterOffersFragment.newInstance()
+                simulationFragment.setSimulationListener(this)
+                payLaterOffersFragment.setPayLaterProductCallback(this)
+                fragmentList.add(simulationFragment)
+                fragmentList.add(payLaterOffersFragment)
+            }
+        }
+        return fragmentList
     }
 
     override fun onRegisterPayLaterClicked() {
@@ -177,10 +195,6 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun noInternetCallback() {
-        handleNoInternetVisibility()
-    }
-
-    private fun handleNoInternetVisibility() {
         parentDataGroup.gone()
         daftarGroup.gone()
         payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
@@ -191,13 +205,11 @@ class PayLaterFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun populatePayLaterBundle(): Bundle {
-        val payLaterBundle = Bundle()
-        if (applicationStatusList.isNotEmpty())
-            payLaterBundle.putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
-        payLaterBundle.putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
-        return payLaterBundle
+    private fun populatePayLaterBundle() = Bundle().apply {
+        putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
+        putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
     }
+
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         onPageSelected(tab.position)
@@ -222,13 +234,11 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
-        val text = if(!isChecked) "This is PayLater" else "This is Kartu Kredit"
+        val text = if (isChecked) "This is Kartu Kredit" else "This is PayLater"
+        // @Todo comment it out afterwards
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-        if (modeButton.text == context?.getString(R.string.payLater_content_switcher_heading)) {
-            // paylater
-        } else {
-            // credit card
-        }
+        if (isChecked) paymentMode = CreditCard else paymentMode = PayLater
+        renderTabAndViewPager()
     }
 
     companion object {
@@ -240,6 +250,17 @@ class PayLaterFragment : BaseDaggerFragment(),
             val fragment = PayLaterFragment()
             fragment.arguments = bundle
             return fragment
+        }
+    }
+
+    override fun onTouch(view: View, event: MotionEvent): Boolean {
+        return when(event.action) {
+            MotionEvent.ACTION_UP -> {
+                val xPosition = event.x.toInt()
+                val isModeChanged = xPosition >= modeSwitcher.width / 2
+                modeSwitcher.isChecked = isModeChanged
+                true
+            } else -> false
         }
     }
 

@@ -27,8 +27,7 @@ import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_simulation.*
-import timber.log.Timber
+import kotlinx.android.synthetic.main.fragment_paylater_simulation.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -57,7 +56,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_simulation, container, false)
+        return inflater.inflate(R.layout.fragment_paylater_simulation, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,7 +121,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             }
             is PayLaterException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
-                tickerSimulation.setHtmlDescription(context?.getString(R.string.paylater_not_applicable_ticker_text) ?: "")
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.paylater_not_applicable_ticker_text)
+                        ?: "")
                 return
             }
             else -> {
@@ -217,7 +217,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         return installmentColumnHeader.initUI(installmentMap, position)
     }
 
-    fun setPayLaterClickedListener(payLaterSimulationCallback: PayLaterSimulationCallback) {
+    fun setSimulationListener(payLaterSimulationCallback: PayLaterSimulationCallback) {
         this.payLaterSimulationCallback = payLaterSimulationCallback
     }
 

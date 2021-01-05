@@ -16,15 +16,6 @@ class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour:
         return itemTabList[position]
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        Timber.d("PayLater Pager Adapter")
-        return when(getItem(position)) {
-            is PayLaterSimulationFragment -> context.getString(R.string.payLater_simulation_header_title)
-            is PayLaterOffersFragment -> context.getString(R.string.paylater_title_detail)
-            else -> null
-        }
-    }
-
     override fun getCount(): Int {
         return 2
     }

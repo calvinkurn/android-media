@@ -53,7 +53,7 @@ class PayLaterViewModel @Inject constructor(
      */
     fun getPayLaterSimulationData(amount: Int = 1000000) {
         payLaterSimulationDataUseCase.cancelJobs()
-        if (amount in 10000..30000000)
+        if (amount in 10000..25000000)
             payLaterSimulationDataUseCase.getSimulationData(
                     ::onSimulationDataSuccess,
                     ::onSimulationDataError,
