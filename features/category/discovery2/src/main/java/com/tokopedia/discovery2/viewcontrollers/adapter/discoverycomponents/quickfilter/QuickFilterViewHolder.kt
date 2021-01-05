@@ -16,7 +16,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -163,6 +162,8 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         quickFilterViewModel.filterProductsCount(mapParameter)
     }
 
+
+
     override fun onViewAttachedToWindow() {
         quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, Observer { filters ->
             setQuickFilters(filters)
@@ -172,6 +173,4 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun onViewDetachedToWindow() {
         quickFilterViewModel.getQuickFilterLiveData().removeObservers(fragment.viewLifecycleOwner)
     }
-
 }
-

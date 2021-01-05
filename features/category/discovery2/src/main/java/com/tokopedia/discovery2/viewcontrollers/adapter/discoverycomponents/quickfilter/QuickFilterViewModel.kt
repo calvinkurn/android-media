@@ -23,6 +23,7 @@ import javax.inject.Inject
 import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 
+const val RPC_FILTER_KEY = "rpc_"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
@@ -202,7 +203,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                 launchCatchError(block = {
                     productCountMutableLiveData.value = quickFilterGQLRepository
                             .getQuickFilterProductCountData(targetList.first(),
-                                    components.pageEndPoint, selectedFilterMapParameter,
+                                    components.pageEndPoint, appendRPCInKey(selectedFilterMapParameter),
                                     getUserId()).component?.compAdditionalInfo?.totalProductData
                             ?.productCountWording ?: ""
                 }, onError = {
@@ -210,5 +211,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                 })
             }
         }
+    }
+
+    private fun appendRPCInKey(selectedFilterMapParameter: Map<String, String>): MutableMap<String, String> {
+        val filtersQueryParameterMap = mutableMapOf<String, String>()
+        selectedFilterMapParameter.forEach { (key, value) ->
+            if (value.isNotEmpty()) {
+                filtersQueryParameterMap[RPC_FILTER_KEY + key] = value
+            }
+        }
+        return filtersQueryParameterMap
     }
 }
