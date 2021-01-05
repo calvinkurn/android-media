@@ -9,10 +9,12 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class HomeAccountUserAdapter(
-        listener: HomeAccountUserListener
+        listener: HomeAccountUserListener,
+        financialAdapter: HomeAccountFinancialAdapter?,
+        memberAdapter: HomeAccountMemberAdapter?
 ): BaseCommonAdapter() {
     init {
-        delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener))
+        delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, financialAdapter, memberAdapter))
         delegatesManager.addDelegate(HomeAccountUserSettingDelegate(listener))
         delegatesManager.addDelegate(HomeAccountRecommendationTitleDelegate())
         delegatesManager.addDelegate(HomeAccountRecommendationItemDelegate(listener))

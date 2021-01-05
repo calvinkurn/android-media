@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
@@ -48,7 +48,7 @@
                 android:layout_marginStart="@dimen/dp_6"
                 android:layout_marginLeft="@dimen/dp_6"
                 android:ellipsize="end"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Ada xx promo terbaik untukmu" />
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_6"
                 android:layout_marginLeft="@dimen/dp_6"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 app:typographyType="body_3"
                 tools:text="Kamu bisa hemat Rpxx.000" />
         </LinearLayout>

@@ -6,7 +6,7 @@
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <include
@@ -61,7 +61,7 @@
                     android:id="@+id/tv_shop_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_6"
                     tools:text="Loaa Store df" />
 
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler"
                     tools:text="Tangerang Selatan" />
@@ -104,7 +104,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Estimasi Tiba: 2 Hari" />
@@ -125,7 +125,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.Label
@@ -144,7 +144,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.Label
@@ -163,7 +163,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
@@ -172,7 +172,7 @@
                     android:layout_height="@dimen/dp_20"
                     android:gravity="center_vertical"
                     android:scaleType="fitStart"
-                    tools:src="@color/unify_G500"
+                    tools:src="@color/Unify_G500"
                     app:unify_image_type="rect" />
 
             </com.google.android.flexbox.FlexboxLayout>

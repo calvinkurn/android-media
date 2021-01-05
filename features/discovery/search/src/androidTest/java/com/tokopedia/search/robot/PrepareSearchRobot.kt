@@ -43,11 +43,6 @@ internal class PrepareSearchRobot {
             it.putBoolean(SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
             it.applyEditor()
         }
-
-        LocalCacheHandler(context, SearchConstant.OnBoarding.LOCAL_CACHE_NAME).also {
-            it.putBoolean(SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN, true)
-            it.applyEditor()
-        }
     }
 
     fun loginAsTopAdsUser() {
