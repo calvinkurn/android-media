@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -26,67 +25,55 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.ImageEditActionType;
+import com.tokopedia.imagepicker.common.ImageEditorBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
+import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImagePickerView,
+public final class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImagePickerView,
         ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener,
         ImageEditActionMainWidget.OnImageEditActionMainWidgetListener,
         ImageEditCropListWidget.OnImageEditCropWidgetListener, ImageRatioCropPresenter.ImageRatioCropView {
-
-    public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
-    public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
-    public static final String EXTRA_EDIT_ACTION_TYPE = "EDIT_ACTION_TYPE";
-    public static final String EXTRA_RATIO = "RATIO";
-    public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
-    public static final String EXTRA_MAX_FILE_SIZE = "MAX_FILE_SIZE";
-    public static final String EXTRA_RATIO_OPTION_LIST = "RATIO_OPTION_LIST";
-    public static final String EXTRA_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
-    public static final String EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE = "EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE";
-    public static final String EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE = "EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE";
-    public static final String EXTRA_RECHECK_SIZE_AFTER_RESIZE = "EXTRA_RECHECK_SIZE_AFTER_RESIZE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
     public static final String SAVED_CURRENT_STEP_INDEX = "SAVED_STEP_INDEX";
     public static final String SAVED_IN_EDIT_MODE = "SAVED_IN_EDIT_MODE";
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
-
-    public static final String RESULT_IS_EDITTED = "is_editted";
-    public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
+    public static final String SAVED_RATIO = "RATIO";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
 
     protected ArrayList<String> extraImageUrls;
     private int minResolution;
-    private @ImageEditActionTypeDef
-    int[] imageEditActionType;
+    private ImageEditActionType[] imageEditActionType;
     private String belowMinResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
     private boolean recheckSizeAfterResize;
@@ -98,9 +85,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     private int currentImageIndex;
     private boolean isInEditMode;
-    private @ImageEditActionTypeDef
-    int currentEditActionType;
-    private ArrayList<ArrayList<ImageRatioTypeDef>> imageRatioTypeDefStepList;
+    private ImageEditActionType currentEditActionType;
+    private ArrayList<ArrayList<ImageRatioType>> imageRatioTypeDefStepList;
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
@@ -134,62 +120,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     //to give flag if the image is editted or not, in case the caller need it.
     protected ArrayList<Boolean> isEdittedList;
     private boolean isPermissionGotDenied;
-    private ImageRatioTypeDef defaultRatio;
-    private ArrayList<ImageRatioTypeDef> imageRatioOptionList;
+    private ImageRatioType defaultRatio;
+    private ArrayList<ImageRatioType> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
-    protected ArrayList<String> imageDescriptionList;
 
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls,
-                                   ArrayList<String> imageDescription,
-                                   int minResolution,
-                                   @ImageEditActionTypeDef int[] imageEditActionType,
-                                   ImageRatioTypeDef defaultRatio,
-                                   boolean isCirclePreview,
-                                   long maxFileSize,
-                                   ArrayList<ImageRatioTypeDef> ratioOptionList,
-                                   String belowMinResolutionErrorMessage,
-                                   String imageTooLargeErrorMessage,
-                                   boolean recheckSizeAfterResize) {
+    public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
-        intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
-        intent.putExtra(EXTRA_IMAGE_DESCRIPTION_LIST, imageDescription);
-        intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
-        intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
-        intent.putExtra(EXTRA_RATIO, defaultRatio);
-        intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
-        intent.putExtra(EXTRA_MAX_FILE_SIZE, maxFileSize);
-        intent.putExtra(EXTRA_RATIO_OPTION_LIST, ratioOptionList);
-        intent.putExtra(EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE, belowMinResolutionErrorMessage);
-        intent.putExtra(EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE, imageTooLargeErrorMessage);
-        intent.putExtra(EXTRA_RECHECK_SIZE_AFTER_RESIZE, recheckSizeAfterResize);
+        intent.putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder);
         return intent;
-    }
-
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls,
-                                   ArrayList<String> imageDescription,
-                                   int minResolution,
-                                   @ImageEditActionTypeDef int[] imageEditActionType,
-                                   ImageRatioTypeDef defaultRatio,
-                                   boolean isCirclePreview,
-                                   long maxFileSize,
-                                   ArrayList<ImageRatioTypeDef> ratioOptionList) {
-        return getIntent(context, imageUrls, imageDescription, minResolution, imageEditActionType, defaultRatio
-                , isCirclePreview, maxFileSize, ratioOptionList, "", "", false);
-    }
-
-    public static Intent getIntent(Context context, String imageUrl, String imageDescription, int minResolution,
-                                   @ImageEditActionTypeDef int[] imageEditActionType,
-                                   ImageRatioTypeDef imageRatioTypeDef,
-                                   boolean isCirclePreview,
-                                   long maxFileSize,
-                                   ArrayList<ImageRatioTypeDef> ratioOptionList) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        imageUrls.add(imageUrl);
-        ArrayList<String> imageDescriptions = new ArrayList<>();
-        imageDescriptions.add(imageDescription);
-        return getIntent(context, imageUrls, imageDescriptions,
-                minResolution, imageEditActionType, imageRatioTypeDef, isCirclePreview, maxFileSize,
-                ratioOptionList);
     }
 
     @Override
@@ -202,26 +140,38 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         Intent intent = getIntent();
-        // For test:
-        // extraImageUrls = new ArrayList<>();
-        // extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
-        if (intent.hasExtra(EXTRA_IMAGE_URLS)) {
-            extraImageUrls = intent.getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        }
-        if (extraImageUrls == null || extraImageUrls.size() == 0) {
+        if (!intent.hasExtra(EXTRA_IMAGE_EDITOR_BUILDER)) {
             finish();
             return;
         }
-        minResolution = intent.getIntExtra(EXTRA_MIN_RESOLUTION, 0);
-        belowMinResolutionErrorMessage = intent.getStringExtra(EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE);
-        imageTooLargeErrorMessage = intent.getStringExtra(EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE);
-        imageEditActionType = intent.getIntArrayExtra(EXTRA_EDIT_ACTION_TYPE);
-        isCirclePreview = intent.getBooleanExtra(EXTRA_IS_CIRCLE_PREVIEW, false);
-        maxFileSize = intent.getLongExtra(EXTRA_MAX_FILE_SIZE, DEFAULT_MAX_IMAGE_SIZE_IN_KB);
-        defaultRatio = (ImageRatioTypeDef) intent.getSerializableExtra(EXTRA_RATIO);
-        imageRatioOptionList = (ArrayList<ImageRatioTypeDef>) intent.getSerializableExtra(EXTRA_RATIO_OPTION_LIST);
-        imageDescriptionList = intent.getStringArrayListExtra(EXTRA_IMAGE_DESCRIPTION_LIST);
-        recheckSizeAfterResize = intent.getBooleanExtra(EXTRA_RECHECK_SIZE_AFTER_RESIZE, false);
+        ImageEditorBuilder imageEditorBuilder = intent.getParcelableExtra(EXTRA_IMAGE_EDITOR_BUILDER);
+        if (imageEditorBuilder == null) {
+            finish();
+            return;
+        }
+        // For test:
+        // extraImageUrls = new ArrayList<>();
+        // extraImageUrls.add("https://scontent-sit4-1.cdninstagram.com/vp/4d462c7e62452e54862602872a4f2f55/5B772ADA/t51.2885-15/e35/30603662_2044572549200360_6725615414816014336_n.jpg");
+        extraImageUrls = imageEditorBuilder.getImageUrls();
+
+        if (extraImageUrls.size() == 0) {
+            finish();
+            return;
+        }
+        if (!checkImagePathsExist(extraImageUrls)) {
+            Toast.makeText(getContext(), R.string.error_message_invalid_photos, Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        minResolution = imageEditorBuilder.getMinResolution();
+        belowMinResolutionErrorMessage = imageEditorBuilder.getBelowMinResolutionErrorMessage();
+        imageTooLargeErrorMessage = imageEditorBuilder.getImageTooLargeErrorMessage();
+        imageEditActionType = imageEditorBuilder.getImageEditActionType();
+        isCirclePreview = imageEditorBuilder.isCirclePreview();
+        maxFileSize = imageEditorBuilder.getMaxFileSize();
+        defaultRatio = imageEditorBuilder.getDefaultRatio();
+        imageRatioOptionList = imageEditorBuilder.getRatioOptionList();
+        recheckSizeAfterResize = imageEditorBuilder.getRecheckSizeAfterResize();
 
         if (belowMinResolutionErrorMessage == null || belowMinResolutionErrorMessage.isEmpty()) {
             belowMinResolutionErrorMessage = getString(R.string.image_under_x_resolution, minResolution);
@@ -234,12 +184,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             currentImageIndex = 0;
             edittedImagePaths = new ArrayList<>();
             isInEditMode = false;
-            currentEditActionType = ImageEditActionTypeDef.ACTION_CROP_ROTATE;
+            currentEditActionType = ImageEditActionType.ACTION_CROP_ROTATE;
             currentEditStepIndexList = new ArrayList<>();
 
             imageRatioTypeDefStepList = new ArrayList<>();
-            for (int i = 0, sizei = extraImageUrls.size(); i<sizei; i++) {
-                ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList = new ArrayList<>();
+            for (int i = 0, sizei = extraImageUrls.size(); i < sizei; i++) {
+                ArrayList<ImageRatioType> imageRatioTypeDefArrayList = new ArrayList<>();
                 imageRatioTypeDefArrayList.add(defaultRatio);
                 imageRatioTypeDefStepList.add(imageRatioTypeDefArrayList);
             }
@@ -248,10 +198,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             //noinspection unchecked
             edittedImagePaths = (ArrayList<ArrayList<String>>) savedInstanceState.getSerializable(SAVED_EDITTED_PATHS);
             isInEditMode = savedInstanceState.getBoolean(SAVED_IN_EDIT_MODE);
-            currentEditActionType = savedInstanceState.getInt(SAVED_EDIT_TYPE);
+            currentEditActionType = savedInstanceState.getParcelable(SAVED_EDIT_TYPE);
             currentEditStepIndexList = savedInstanceState.getIntegerArrayList(SAVED_CURRENT_STEP_INDEX);
-            imageRatioTypeDefStepList = (ArrayList<ArrayList<ImageRatioTypeDef>>)
-                    savedInstanceState.getSerializable(EXTRA_RATIO);
+            imageRatioTypeDefStepList = (ArrayList<ArrayList<ImageRatioType>>)
+                    savedInstanceState.getSerializable(SAVED_RATIO);
         }
 
         super.onCreate(savedInstanceState);
@@ -318,26 +268,39 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment != null) {
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.ACTION_CROP:
+                case ACTION_CROP:
                     fragment.cancelCropImage();
                     break;
-                case ImageEditActionTypeDef.ACTION_ROTATE:
-                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                case ACTION_ROTATE:
+                case ACTION_CROP_ROTATE:
                     fragment.cancelCropRotateImage();
                     break;
-                case ImageEditActionTypeDef.ACTION_WATERMARK:
+                case ACTION_WATERMARK:
                     //TODO undo watermark here
                     break;
-                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                case ACTION_BRIGHTNESS:
                     fragment.cancelBrightness();
                     break;
-                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                case ACTION_CONTRAST:
                     fragment.cancelContrast();
                     break;
             }
 
         }
-        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionType.ACTION_CROP_ROTATE);
+    }
+
+    private boolean checkImagePathsExist(ArrayList<String> selectedImagePaths) {
+        boolean imagePathsExist = true;
+        for (String selectedImagePath : selectedImagePaths) {
+            if (!URLUtil.isNetworkUrl(selectedImagePath)) {
+                File file = new File(selectedImagePath);
+                if (!file.exists()) {
+                    imagePathsExist = false;
+                }
+            }
+        }
+        return imagePathsExist;
     }
 
     private void onSaveEditClicked() {
@@ -345,26 +308,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             showEditLoading();
             ImageEditPreviewFragment fragment = getCurrentFragment();
             switch (currentEditActionType) {
-                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ACTION_ROTATE:
                     if (fragment != null) {
                         fragment.rotateAndSaveImage();
                     }
                     break;
-                case ImageEditActionTypeDef.ACTION_CROP:
-                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                case ACTION_CROP:
+                case ACTION_CROP_ROTATE:
                     if (fragment != null) {
                         fragment.cropAndSaveImage();
                     }
                     break;
-                case ImageEditActionTypeDef.ACTION_WATERMARK:
+                case ACTION_WATERMARK:
                     // currently not supported
                     break;
-                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                case ACTION_BRIGHTNESS:
                     if (fragment != null) {
                         fragment.saveBrightnessImage();
                     }
                     break;
-                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                case ACTION_CONTRAST:
                     if (fragment != null) {
                         fragment.saveContrastImage();
                     }
@@ -406,8 +369,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         edittedImagePaths.get(currentImageIndex).add(path);
 
         //getselectedRatio from view
-        ImageRatioTypeDef imageRatioTypeDef;
-        if (imageEditCropListWidget!= null) {
+        ImageRatioType imageRatioTypeDef;
+        if (imageEditCropListWidget != null) {
             imageRatioTypeDef = imageEditCropListWidget.getSelectedImageRatio();
             if (imageRatioTypeDef == null) {
                 imageRatioTypeDef = defaultRatio;
@@ -434,13 +397,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         refreshCurrentPage();
         imageEditThumbnailListWidget.notifyDataSetChanged();
 
-        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionType.ACTION_CROP_ROTATE);
     }
 
     @Override
     public void onEditDoNothing() {
         hideEditLoading();
-        setupEditMode(false, ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+        setupEditMode(false, ImageEditActionType.ACTION_CROP_ROTATE);
     }
 
     private void refreshCurrentPage() {
@@ -496,11 +459,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     }
 
     @Override
-    public void onEditActionClicked(@ImageEditActionTypeDef int editActionType) {
+    public void onEditActionClicked(ImageEditActionType editActionType) {
         setupEditMode(true, editActionType);
     }
 
-    private void setupEditMode(boolean isInEditMode, int editActionType) {
+    private void setupEditMode(boolean isInEditMode, ImageEditActionType editActionType) {
         this.isInEditMode = isInEditMode;
         this.currentEditActionType = editActionType;
 
@@ -516,7 +479,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             getSupportActionBar().setTitle("");
 
             switch (editActionType) {
-                case ImageEditActionTypeDef.ACTION_CROP:
+                case ACTION_CROP:
                     if (fragment != null) {
                         fragment.setEditCropMode(true);
                     }
@@ -525,26 +488,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                     layoutCrop.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.crop));
                     break;
-                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ACTION_ROTATE:
                     hideAllControls();
                     setupRotateWidget();
                     layoutRotate.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.rotate));
                     break;
-                case ImageEditActionTypeDef.ACTION_WATERMARK:
+                case ACTION_WATERMARK:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                case ACTION_CROP_ROTATE:
                     //currently not supported.
                     break;
-                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                case ACTION_BRIGHTNESS:
                     hideAllControls();
                     setupBrightnessWidget();
                     setUIBrightnessValue(0);
                     layoutBrightness.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.brightness));
                     break;
-                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                case ACTION_CONTRAST:
                     hideAllControls();
                     setupContrastWidget();
                     setUIContrastValue(INITIAL_CONTRAST_VALUE);
@@ -658,13 +621,13 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             imageEditCropListWidget.setOnImageEditCropWidgetListener(this);
             imageEditCropListWidget.setData(imageRatioOptionList, defaultRatio);
         } else {
-            ImageRatioTypeDef imageRatioTypeDef = imageRatioTypeDefStepList.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+            ImageRatioType imageRatioTypeDef = imageRatioTypeDefStepList.get(currentImageIndex).get(getCurrentStepForCurrentImage());
             imageEditCropListWidget.setRatio(imageRatioTypeDef);
         }
     }
 
     @Override
-    public void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef) {
+    public void onEditCropClicked(ImageRatioType imageRatioTypeDef) {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
         imageEditPreviewFragment.setPreviewCropTo(imageRatioTypeDef);
     }
@@ -728,7 +691,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     }
 
     @Override
-    public ImageRatioTypeDef getCurrentRatio() {
+    public ImageRatioType getCurrentRatio() {
         return imageRatioTypeDefStepList.get(currentImageIndex).get(getCurrentStepForCurrentImage());
     }
 
@@ -774,7 +737,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     private void onDoneButtonClicked() {
         ArrayList<String> resultList = new ArrayList<>();
-        ArrayList<ImageRatioTypeDef> ratioResultList = new ArrayList<>();
+        ArrayList<ImageRatioType> ratioResultList = new ArrayList<>();
         isEdittedList = new ArrayList<>();
         for (int i = 0, sizei = edittedImagePaths.size(); i < sizei; i++) {
             int currentStep = currentEditStepIndexList.get(i);
@@ -876,14 +839,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         Intent intent = getFinishIntent(imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
         trackContinue();
+        ImagePickerGlobalSettings.clearAllGlobalSettings();
         finish();
     }
 
-    protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList){
+    protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
-        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         return intent;
     }
@@ -907,15 +870,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             finish();
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
-            } else {
-                onResumeAfterCheckPermission();
-            }
-        } else { // under jellybean, no need to check runtime permission
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
+        } else {
             onResumeAfterCheckPermission();
         }
     }
@@ -973,7 +932,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         if (imageRatioCropPresenter == null) {
             imageRatioCropPresenter = new ImageRatioCropPresenter();
             imageRatioCropPresenter.attachView(this);
-        } else if(!imageRatioCropPresenter.isViewAttached()) {
+        } else if (!imageRatioCropPresenter.isViewAttached()) {
             imageRatioCropPresenter.attachView(this);
         }
     }
@@ -1093,8 +1052,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         outState.putSerializable(SAVED_EDITTED_PATHS, edittedImagePaths);
         outState.putIntegerArrayList(SAVED_CURRENT_STEP_INDEX, currentEditStepIndexList);
         outState.putBoolean(SAVED_IN_EDIT_MODE, isInEditMode);
-        outState.putInt(SAVED_EDIT_TYPE, currentEditActionType);
-        outState.putSerializable(EXTRA_RATIO, imageRatioTypeDefStepList);
+        outState.putParcelable(SAVED_EDIT_TYPE, currentEditActionType);
+        outState.putSerializable(SAVED_RATIO, imageRatioTypeDefStepList);
     }
 
     @Override
@@ -1104,20 +1063,26 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     @Override
     public boolean isInEditCropMode() {
-        return isInEditMode && (currentEditActionType == ImageEditActionTypeDef.ACTION_CROP
-                || currentEditActionType == ImageEditActionTypeDef.ACTION_CROP_ROTATE);
+        return isInEditMode && (currentEditActionType == ImageEditActionType.ACTION_CROP
+                || currentEditActionType == ImageEditActionType.ACTION_CROP_ROTATE);
     }
 
-    public void trackOpen(){
-        //to be overridden
+    public void trackOpen() {
+        if (ImagePickerGlobalSettings.onImageEditorOpen != null){
+            ImagePickerGlobalSettings.onImageEditorOpen.invoke();
+        }
     }
 
-    public void trackBack(){
-        //to be overridden
+    public void trackBack() {
+        if (ImagePickerGlobalSettings.onImageEditorBack != null){
+            ImagePickerGlobalSettings.onImageEditorBack.invoke();
+        }
     }
 
-    public void trackContinue(){
-        //to be overridden
+    public void trackContinue() {
+        if (ImagePickerGlobalSettings.onImageEditorContinue != null){
+            ImagePickerGlobalSettings.onImageEditorContinue.invoke();
+        }
     }
 
 }
