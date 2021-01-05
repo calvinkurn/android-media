@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.datasource.remote
 
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeAtfData
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
@@ -44,10 +45,11 @@ class HomeRemoteDataSource(
     suspend fun getDynamicChannelData(groupIds: String = "",
                                       token: String = "",
                                       numOfChannel: Int = 0,
-                                      params: String = ""
+                                      params: String = "",
+                                      doQueryHash: Boolean = false
     ): HomeChannelData = withContext(dispatchers.io()) {
         getDynamicChannelsUseCase.setParams(
-                groupIds, token, numOfChannel, params
+                groupIds, token, numOfChannel, params, doQueryHash
         )
         getDynamicChannelsUseCase.executeOnBackground()
     }
