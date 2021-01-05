@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -15,6 +16,24 @@ class DynamicProductDetailAdapter(
         adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl,
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
+
+    override fun showLoading() {
+        if (!isLoading) {
+            visitables.add(ProductLoadingDataModel())
+            notifyItemInserted(visitables.size)
+        }
+    }
+
+    override fun isLoading(): Boolean {
+        val lastIndex = lastIndex
+        return if (lastIndex > -1) {
+            visitables[lastIndex] is LoadingModel ||
+                    visitables[lastIndex] is LoadingMoreModel ||
+                    visitables[lastIndex] is ProductLoadingDataModel
+        } else {
+            false
+        }
+    }
 
     fun notifyBasicContentWithPayloads(contentData: ProductContentDataModel?, payload: Int? = null) {
         contentData?.let {
@@ -57,15 +76,15 @@ class DynamicProductDetailAdapter(
     }
 
     fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
-        productRecommendationDataModel?.let{productRecommendationDataModel->
+        productRecommendationDataModel?.let { productRecommendationDataModel ->
             val index = list.indexOf(productRecommendationDataModel)
-            if(index != -1) notifyItemChanged(index)
+            if (index != -1) notifyItemChanged(index)
         }
     }
 
-    fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
+    fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel) {
         val index = list.indexOf(productRecommendationDataModel)
-        if(index != -1) notifyItemChanged(index, Bundle().apply {
+        if (index != -1) notifyItemChanged(index, Bundle().apply {
             putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
         })
     }
@@ -95,7 +114,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun <T: DynamicPdpDataModel> getItemComponentIndex(data: T?) : Int{
+    fun <T : DynamicPdpDataModel> getItemComponentIndex(data: T?): Int {
         return if (data != null) {
             list.indexOf(data)
         } else {

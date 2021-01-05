@@ -5,17 +5,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 
 /**
  * Created by Yehezkiel on 04/01/21
  */
-class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>, private val adapterTypeFactory: DynamicProductDetailAdapterFactory) :
+class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
+                           private val listener: DynamicProductDetailListener,
+                           private val adapterTypeFactory: DynamicProductDetailAdapterFactory) :
         ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
@@ -45,6 +53,16 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         } else currentList[position].type(adapterTypeFactory)
     }
 
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is ProductRecommendationViewHolder &&
+                holder.adapterPosition < currentList.size &&
+                currentList[holder.adapterPosition] is ProductRecommendationDataModel &&
+                (currentList[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
+            listener.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
+        }
+    }
+
     fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel) {
         holder.bind(item)
     }
@@ -56,10 +74,23 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     fun showLoading() {
-        submitList(listOf(ProductLoadingDataModel()))
+        if (!isLoading()) {
+            submitList(listOf(ProductLoadingDataModel()))
+        }
     }
 
     fun showError(data: PageErrorDataModel) {
         submitList(listOf(data))
+    }
+
+    private fun isLoading(): Boolean {
+        val lastIndex = if (currentList.size == 0) -1 else currentList.size
+        return if (lastIndex > -1) {
+            currentList[lastIndex] is LoadingModel ||
+                    currentList[lastIndex] is LoadingMoreModel ||
+                    currentList[lastIndex] is ProductLoadingDataModel
+        } else {
+            false
+        }
     }
 }

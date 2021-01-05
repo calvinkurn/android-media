@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -43,10 +42,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductShopInfoDataModel): Int {
         return ProductShopInfoViewHolder.LAYOUT
-    }
-
-    override fun type(viewModel: LoadingModel): Int {
-        return ProductShimmeringViewHolder.LAYOUT
     }
 
     override fun type(data: PageErrorDataModel): Int {
