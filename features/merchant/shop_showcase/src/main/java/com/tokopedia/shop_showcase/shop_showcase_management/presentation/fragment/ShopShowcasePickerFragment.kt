@@ -678,7 +678,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun setBackgroundColor() {
-        view?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            view?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
     }
 
     private fun hideSoftKeyboard() {

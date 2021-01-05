@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
@@ -138,7 +138,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 app:typographyType="heading_5"
                 android:layout_marginTop="@dimen/dp_13"
-                android:textColor="@color/primary_text_color"
+                android:textColor="@color/Unify_N700_96"
                  />
 
         </RelativeLayout>

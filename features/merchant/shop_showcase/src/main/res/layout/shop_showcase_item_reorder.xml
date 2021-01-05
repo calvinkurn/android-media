@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_16"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <LinearLayout
@@ -33,7 +33,7 @@
                 android:singleLine="true"
                 android:textStyle="bold"
                 android:text="@string/batik_solo"
-                android:textColor="@color/primary_text_color" />
+                android:textColor="@color/Unify_N700_96" />
         </LinearLayout>
 
         <ImageView
@@ -48,6 +48,6 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/line_separator" />
+        android:background="@color/Unify_N75" />
 
 </LinearLayout>
