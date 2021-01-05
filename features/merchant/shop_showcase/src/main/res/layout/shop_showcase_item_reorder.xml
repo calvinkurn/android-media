@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
@@ -40,9 +41,9 @@
             android:id="@+id/img_move"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_12"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_material" />
+            app:srcCompat="@drawable/ic_material"
+            android:contentDescription="@string/arrang_menu_text"/>
     </LinearLayout>
 
     <View
