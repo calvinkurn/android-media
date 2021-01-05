@@ -427,6 +427,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void onLihatInvoiceButtonClick(String invoiceUrl) {
         orderListAnalytics.sendInvoiceClickEvent(
                 OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
                 userSessionInterface.getUserId()
         );
     }
@@ -435,6 +436,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void onCopyButtonClick(String copiedValue) {
         orderListAnalytics.sendCopyButtonClickEvent(
                 OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
                 userSessionInterface.getUserId()
         );
     }
@@ -443,6 +445,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void onActionButtonClick(String buttonId, String buttonName) {
         orderListAnalytics.sendActionButtonClickEvent(
                 OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
                 buttonId,
                 buttonName,
                 userSessionInterface.getUserId()

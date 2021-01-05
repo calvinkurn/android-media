@@ -628,8 +628,7 @@ public class OrderListAnalytics {
         eventDataLayer.putString(TrackAppUtils.EVENT, PROMO_VIEW);
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE);
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_ORDER_DETAIL_IMPRESSION);
-//        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName + operatorName);
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName);
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName + productName);
         eventDataLayer.putString(BUSINESS_UNIT, "recharge");
         eventDataLayer.putString(CURRENT_SITE, "tokopediadigital");
         eventDataLayer.putString(USER_ID, userId);
@@ -645,26 +644,24 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(PROMO_VIEW, eventDataLayer);
     }
 
-    public void sendInvoiceClickEvent(String categoryName, String userId) {
+    public void sendInvoiceClickEvent(String categoryName, String productName, String userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_LIHAT_INVOICE,
-//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName,
-                TrackAppUtils.EVENT_LABEL, categoryName,
+                TrackAppUtils.EVENT_LABEL, categoryName + productName,
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
         ));
     }
 
-    public void sendCopyButtonClickEvent(String categoryName, String userId) {
+    public void sendCopyButtonClickEvent(String categoryName, String productName, String userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_COPY_BUTTON,
-//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName,
-                TrackAppUtils.EVENT_LABEL, categoryName,
+                TrackAppUtils.EVENT_LABEL, categoryName + productName,
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
@@ -673,6 +670,7 @@ public class OrderListAnalytics {
 
     public void sendActionButtonClickEvent(
             String categoryName,
+            String productName,
             String buttonId,
             String buttonName,
             String userId
@@ -687,8 +685,7 @@ public class OrderListAnalytics {
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, eventAction,
-//                TrackAppUtils.EVENT_LABEL, categoryName + operatorName + buttonName,
-                TrackAppUtils.EVENT_LABEL, categoryName + buttonName,
+                TrackAppUtils.EVENT_LABEL, categoryName + productName + buttonName,
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
