@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -38,6 +39,11 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setBackgroundColor()
+    }
+
     override fun getNewFragment(): Fragment? {
         intent?.extras?.let {
             isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
@@ -71,6 +77,12 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
             currentFocus?.clearFocus()
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun setBackgroundColor() {
+        window.decorView.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
 }
