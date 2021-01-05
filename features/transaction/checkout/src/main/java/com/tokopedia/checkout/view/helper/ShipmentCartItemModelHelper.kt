@@ -3,12 +3,10 @@ package com.tokopedia.checkout.view.helper
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources
+import android.net.http.SslError
 import android.os.Build
 import android.view.View
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.checkout.R
@@ -51,6 +49,12 @@ object ShipmentCartItemModelHelper {
                 val webUrl = view.url
                 Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
                         request.url, error.errorCode, error.description, webUrl)
+                failedLoading = true
+            }
+
+            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+                super.onReceivedSslError(view, handler, error)
+                handler?.cancel()
                 failedLoading = true
             }
         }
