@@ -85,7 +85,9 @@ class InspirationCarouselViewHolder(
                 layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
                 bannerImageUrl = option.bannerImageUrl,
                 bannerLinkUrl = option.bannerLinkUrl,
-                bannerApplinkUrl = option.bannerApplinkUrl
+                bannerApplinkUrl = option.bannerApplinkUrl,
+                inspirationCarouselType = option.inspirationCarouselType,
+                position = option.position
         )
     }
 

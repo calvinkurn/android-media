@@ -83,7 +83,7 @@
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click lihat sekarang - carousel banner",
-      "eventLabel": "{{.+}} - {{.+}}",
+      "eventLabel": "{{.+ - .+}}",
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}",
       "businessUnit": "search",
@@ -93,7 +93,7 @@
           "creative_name": "{{.+}}",
           "creative_slot": "{{.+}}",
           "item_id": "{{.+}}",
-          "item_name": "/search - {{.+}}"
+          "item_name": "{{/search - .+}}"
         }
       ]
     }
