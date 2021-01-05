@@ -11,6 +11,8 @@ import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +31,7 @@ class VerificationViewModel @Inject constructor(
         private val sendOtpUseCase: SendOtpUseCase,
         private val sendOtpUseCase2FA: SendOtp2FAUseCase,
         private val userSession: UserSessionInterface,
+        private val remoteConfig: RemoteConfig,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
 
@@ -225,9 +228,12 @@ class VerificationViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        //if user interrupted otp flow (not done), delete the token
-        if(!done) {
-            userSession.setToken(null, null, null)
+        val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
+        if(clear) {
+            //if user interrupted otp flow (not done), delete the token
+            if(!done) {
+                userSession.setToken(null, null, null)
+            }
         }
         super.onCleared()
     }

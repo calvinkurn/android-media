@@ -240,4 +240,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
+
+    public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
 }
