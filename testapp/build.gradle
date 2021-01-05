@@ -62,9 +62,9 @@ android {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
-    implementation (project(rootProject.ext.features.sessioncommon))
-    implementation (project(rootProject.ext.libraries.remoteConfig))
-    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
@@ -113,3 +113,4 @@ dependencies {
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
 }
+
