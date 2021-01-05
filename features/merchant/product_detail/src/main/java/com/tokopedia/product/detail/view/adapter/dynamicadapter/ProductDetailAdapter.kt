@@ -22,7 +22,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHol
  * Created by Yehezkiel on 04/01/21
  */
 class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel>,
-                           private val listener: DynamicProductDetailListener,
+                           private val listener: DynamicProductDetailListener?,
                            private val adapterTypeFactory: DynamicProductDetailAdapterFactory) :
         ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
 
@@ -59,7 +59,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
                 holder.adapterPosition < currentList.size &&
                 currentList[holder.adapterPosition] is ProductRecommendationDataModel &&
                 (currentList[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
-            listener.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
+            listener?.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
         }
     }
 

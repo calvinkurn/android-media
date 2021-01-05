@@ -12,7 +12,10 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -24,7 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
@@ -33,9 +36,6 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -95,15 +95,15 @@ import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.di.DaggerProductDetailComponent
-import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
+import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
+import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
@@ -128,8 +128,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -158,6 +156,7 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import timber.log.Timber
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -168,7 +167,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
+class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
         DynamicProductDetailListener,
         ProductVariantListener,
         ProductAccessRequestDialogFragment.Listener,
@@ -231,7 +230,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
-    private lateinit var remoteConfig: RemoteConfig
 
     // This productId is only use for backend hit
     private var productId: String? = null
@@ -268,8 +266,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     private var navToolbar: NavToolbar? = null
     private var toasterWishlistText = ""
 
-    private var productDaggerComponent: ProductDetailComponent? = null
-
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
     }
@@ -290,43 +286,68 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView(view)
         initBtnAction()
         navAbTestCondition({ initNavToolbar() }, { initToolbar() })
         initStickyLogin(view)
         renderInitialAffiliate()
     }
 
-    override fun isLoadMoreEnabledByDefault(): Boolean = false
-
-    override fun hasInitialSwipeRefresh(): Boolean = true
-
     override fun onSwipeRefresh() {
         productVideoCoordinator?.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
-        isLoadingInitialData = true
         ticker_occ_layout.gone()
-        loadProductData(true)
+        super.onSwipeRefresh()
+    }
+
+    override fun createAdapterInstance(): ProductDetailAdapter {
+        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
+                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
+                .build()
+        return ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
+    }
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        activity?.let {
+            productDaggerComponent?.inject(this)
+        }
+    }
+
+    override fun observeData() {
+        observeP1()
+        observeP2Data()
+        observeP2Login()
+        observeP3()
+        observeToggleFavourite()
+        observeToggleNotifyMe()
+        observeMoveToWarehouse()
+        observeMoveToEtalase()
+        observeRecommendationProduct()
+        observeImageVariantPartialyChanged()
+        observeAddToCart()
+        observeInitialVariantData()
+        observeonVariantClickedData()
+        observeDiscussionData()
+        observeP2Other()
+        observeTopAdsImageData()
+        observeVideoDetail()
+    }
+
+    override fun loadProductData(forceRefresh: Boolean) {
+        if (productId != null || (productKey != null && shopDomain != null)) {
+            (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
-        activity?.let {
-            productDaggerComponent = DaggerProductDetailComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build()
-        }
-
-        super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
@@ -342,14 +363,10 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         }
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
-        setHasOptionsMenu(true)
         assignDeviceId()
-        setupRemoteConfig()
+        super.onCreate(savedInstanceState)
 
-        loadProductData()
+        setupRemoteConfig()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -375,128 +392,24 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         reloadCartCounter()
     }
 
-    private fun trackVideoState() {
-        if (!alreadyHitVideoTracker && productVideoCoordinator != null) {
-            val videoTrackerData = viewModel.videoTrackerData
-            val isAutoPlay = if (context == null) false else DeviceConnectionInfo.isConnectWifi(requireContext())
-
-            videoTrackerData?.let {
-                DynamicProductDetailTracking.Click.eventVideoStateChange(
-                        viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
-                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
-                )
-                alreadyHitVideoTracker = true
-            }
-        }
-    }
-
-    private fun reloadCartCounter() {
-        activity?.run {
-            if (isAdded) {
-                navAbTestCondition({ setNavToolBarCartCounter() }, {
-                    menu?.let {
-                        if (it.size() > 2) {
-                            val menuCart = it.findItem(R.id.action_cart)
-                            menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
-                            setBadgeMenuCart(menuCart)
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    private fun setNavToolBarCartCounter(){
-        val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
-        val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
-        navToolbar?.setBadgeCounter(IconList.ID_CART, if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
-            getString(R.string.pdp_label_cart_count_max).toIntOrZero()
-        } else if (!viewModel.isUserSessionActive) {
-            0
-        } else {
-            cartCount
-        })
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        // handling menu toolbar / cart counter / settings / etc
-        activity?.let {
-            handlingMenuPreparation(menu)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                activity?.onBackPressed(); true
-            }
-            R.id.action_share -> {
-                shareProductFromToolbar(); true
-            }
-            R.id.action_cart -> {
-                gotoCart(); true
-            }
-            R.id.action_report -> {
-                reportProductFromToolbar(); true
-            }
-            R.id.action_warehouse -> {
-                warehouseProduct(); true
-            }
-            R.id.action_etalase -> {
-                moveProductToEtalase(); true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
-        activity?.let {
-            val productDetailSheet = ProductDetailInfoBottomSheet()
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
-                    viewModel.getDynamicProductInfoP1,
-                    viewModel.variantData?.sizeChart ?: "",
-                    dataContent, shouldRefreshProductInfoBottomSheet
-            )
-            cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
-
-            productDetailSheet.arguments = Bundle().apply {
-                putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
-            }
-            shouldRefreshProductInfoBottomSheet = false
-            productDetailSheet.show(it.supportFragmentManager, productDaggerComponent, this)
-        }
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl> {
-        return dynamicAdapter
-    }
-
-    override fun getRecyclerViewResourceId(): Int {
-        return R.id.rv_pdp
-    }
-
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.swipeRefreshPdp
-    }
-
-    override fun getAdapterTypeFactory(): DynamicProductDetailAdapterFactoryImpl = adapterFactory
-
-    override fun onItemClicked(t: DynamicPdpDataModel) {
-        //No OP
-    }
-
-    override fun getScreenName(): String = ""
-
-    override fun initInjector() {
-        activity?.let {
-            productDaggerComponent?.inject(this)
-        }
-    }
-
-    override fun loadData(page: Int) {
-        //NO OP
+    override fun onDestroy() {
+        hideProgressDialog()
+        viewModel.p2Data.removeObservers(this)
+        viewModel.p2Other.removeObservers(this)
+        viewModel.productLayout.removeObservers(this)
+        viewModel.p2Login.removeObservers(this)
+        viewModel.productInfoP3.removeObservers(this)
+        viewModel.loadTopAdsProduct.removeObservers(this)
+        viewModel.moveToWarehouseResult.removeObservers(this)
+        viewModel.moveToEtalaseResult.removeObservers(this)
+        viewModel.updatedImageVariant.removeObservers(this)
+        viewModel.initialVariantData.removeObservers(this)
+        viewModel.onVariantClickedData.removeObservers(this)
+        viewModel.toggleTeaserNotifyMe.removeObservers(this)
+        viewModel.addToCartLiveData.removeObservers(this)
+        viewModel.discussionMostHelpful.removeObservers(this)
+        viewModel.flush()
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -504,11 +417,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         initToolBarMethod?.invoke()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -612,24 +520,98 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         }
     }
 
-    override fun onDestroy() {
-        hideProgressDialog()
-        viewModel.p2Data.removeObservers(this)
-        viewModel.p2Other.removeObservers(this)
-        viewModel.productLayout.removeObservers(this)
-        viewModel.p2Login.removeObservers(this)
-        viewModel.productInfoP3.removeObservers(this)
-        viewModel.loadTopAdsProduct.removeObservers(this)
-        viewModel.moveToWarehouseResult.removeObservers(this)
-        viewModel.moveToEtalaseResult.removeObservers(this)
-        viewModel.updatedImageVariant.removeObservers(this)
-        viewModel.initialVariantData.removeObservers(this)
-        viewModel.onVariantClickedData.removeObservers(this)
-        viewModel.toggleTeaserNotifyMe.removeObservers(this)
-        viewModel.addToCartLiveData.removeObservers(this)
-        viewModel.discussionMostHelpful.removeObservers(this)
-        viewModel.flush()
-        super.onDestroy()
+    private fun trackVideoState() {
+        if (!alreadyHitVideoTracker && productVideoCoordinator != null) {
+            val videoTrackerData = viewModel.videoTrackerData
+            val isAutoPlay = if (context == null) false else DeviceConnectionInfo.isConnectWifi(requireContext())
+
+            videoTrackerData?.let {
+                DynamicProductDetailTracking.Click.eventVideoStateChange(
+                        viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
+                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
+                )
+                alreadyHitVideoTracker = true
+            }
+        }
+    }
+
+    private fun reloadCartCounter() {
+        activity?.run {
+            if (isAdded) {
+                navAbTestCondition({ setNavToolBarCartCounter() }, {
+                    menu?.let {
+                        if (it.size() > 2) {
+                            val menuCart = it.findItem(R.id.action_cart)
+                            menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
+                            setBadgeMenuCart(menuCart)
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    private fun setNavToolBarCartCounter(){
+        val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
+        val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
+        navToolbar?.setBadgeCounter(IconList.ID_CART, if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
+            getString(R.string.pdp_label_cart_count_max).toIntOrZero()
+        } else if (!viewModel.isUserSessionActive) {
+            0
+        } else {
+            cartCount
+        })
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        // handling menu toolbar / cart counter / settings / etc
+        activity?.let {
+            handlingMenuPreparation(menu)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed(); true
+            }
+            R.id.action_share -> {
+                shareProductFromToolbar(); true
+            }
+            R.id.action_cart -> {
+                gotoCart(); true
+            }
+            R.id.action_report -> {
+                reportProductFromToolbar(); true
+            }
+            R.id.action_warehouse -> {
+                warehouseProduct(); true
+            }
+            R.id.action_etalase -> {
+                moveProductToEtalase(); true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
+        activity?.let {
+            val productDetailSheet = ProductDetailInfoBottomSheet()
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
+                    viewModel.getDynamicProductInfoP1,
+                    viewModel.variantData?.sizeChart ?: "",
+                    dataContent, shouldRefreshProductInfoBottomSheet
+            )
+            cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
+
+            productDetailSheet.arguments = Bundle().apply {
+                putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
+            }
+            shouldRefreshProductInfoBottomSheet = false
+            productDetailSheet.show(it.supportFragmentManager, productDaggerComponent, this)
+        }
     }
 
     override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
@@ -864,7 +846,7 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     }
 
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
-        return getRecyclerView(view).recycledViewPool
+        return getRecyclerView()?.recycledViewPool
     }
 
     override fun getRecommendationCarouselSavedState(): SparseIntArray {
@@ -879,7 +861,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
-        clearAllData()
         showLoading()
         onSwipeRefresh()
     }
@@ -1208,26 +1189,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
-    private fun observeData() {
-        observeP1()
-        observeP2Data()
-        observeP2Login()
-        observeP3()
-        observeToggleFavourite()
-        observeToggleNotifyMe()
-        observeMoveToWarehouse()
-        observeMoveToEtalase()
-        observeRecommendationProduct()
-        observeImageVariantPartialyChanged()
-        observeAddToCart()
-        observeInitialVariantData()
-        observeonVariantClickedData()
-        observeDiscussionData()
-        observeP2Other()
-        observeTopAdsImageData()
-        observeVideoDetail()
-    }
-
     private fun observeVideoDetail() {
         sharedViewModel?.productVideoData?.observe(requireActivity(), {
             if (it.isEmpty()) return@observe
@@ -1298,9 +1259,7 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     }
 
     private fun enableVideo(): Boolean {
-        if (!::remoteConfig.isInitialized) return false
-
-        return remoteConfig.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true)
+        return remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
     }
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
@@ -1401,7 +1360,9 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
             }, {
                 Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
                 logException(it)
-                renderPageError(it)
+                context?.let { ctx ->
+                    renderPageError(ProductDetailErrorHelper.getErrorType(ctx, it, isFromDeeplink, deeplinkUrl))
+                }
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
             (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
@@ -1654,7 +1615,7 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
             setupProductVideoCoordinator()
 
             activity?.invalidateOptionsMenu()
-            renderList(data)
+            submitInitialList(data)
         }
     }
 
@@ -1826,18 +1787,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
             }
         } catch (ex: IllegalStateException) {
             ex.printStackTrace()
-        }
-    }
-
-    private fun renderPageError(t: Throwable) {
-        context?.let { ctx ->
-            dynamicAdapter.clearAllElements()
-            dynamicAdapter.addElement(ProductDetailErrorHelper.getErrorType(ctx, t, isFromDeeplink, deeplinkUrl))
-            if (swipeToRefresh != null) {
-                swipeToRefresh.isEnabled = false
-            }
-            actionButtonView.visibility = false
-            ticker_occ_layout.gone()
         }
     }
 
@@ -2027,11 +1976,11 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
+        val fireBaseRemoteMsgGuest = remoteConfig?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "") ?: ""
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
         if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
-            val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
+            val fireBaseRemoteMsg = remoteConfig?.getString(RemoteConfigKey.fireBaseShareMsgKey, "") ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
                 return
@@ -2162,13 +2111,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         }
     }
 
-    private fun loadProductData(forceRefresh: Boolean = false) {
-        if (productId != null || (productKey != null && shopDomain != null)) {
-            (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
-        }
-    }
-
     private fun gotoRateEstimation() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
@@ -2244,13 +2186,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
                 menuEtalase.isEnabled = isOwned && (basic.status !in arrayOf(ProductStatusTypeDef.ACTIVE, ProductStatusTypeDef.PENDING))
             }
         }
-    }
-
-    private fun initRecyclerView(view: View) {
-        context?.let {
-            getRecyclerView(view).layoutManager = CenterLayoutManager(it, LinearLayoutManager.VERTICAL, false)
-        }
-        getRecyclerView(view).itemAnimator = null
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -2470,14 +2405,14 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
             return
         }
 
-        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+        var isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true) ?: true
         if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
             stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
             if (stickyLoginView?.isShowing() == true) {
                 stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
             }
         } else {
-            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
+            isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true) ?: true
             if (!isCanShowing) {
                 stickyLoginView?.visibility = View.GONE
                 return
@@ -3063,18 +2998,6 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
         }
     }
 
-    private fun scrollToPosition(position: Int) {
-        if (position >= 0) {
-            getRecyclerView(view).post {
-                try {
-                    getRecyclerView(view).smoothScrollToPosition(position)
-                } catch (e: Throwable) {
-
-                }
-            }
-        }
-    }
-
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
             loadingProgressDialog = activity?.createDefaultProgressDialog(
@@ -3336,14 +3259,8 @@ class DynamicProductDetailFragmentDiffutil : BaseListFragment<DynamicPdpDataMode
     }
 
     private fun setupRemoteConfig() {
-        activity?.run {
-            remoteConfig = FirebaseRemoteConfigImpl(this)
-        }
-
-        if (::remoteConfig.isInitialized) {
-            viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
-            enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
-        }
+        viewModel.enableCaching = remoteConfig?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true) ?: true
+        enableCheckImeiRemoteConfig = remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
     }
 
     //Will be delete soon
