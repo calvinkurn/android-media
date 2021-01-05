@@ -226,7 +226,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromArgument()
         super.onCreate(savedInstanceState)
-        talkInboxTracking.openScreen(screenName)
         setInboxType()
     }
 
