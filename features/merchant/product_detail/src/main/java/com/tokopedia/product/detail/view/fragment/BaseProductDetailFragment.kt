@@ -38,13 +38,13 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     protected abstract fun createAdapterInstance(): ProductDetailAdapter
 
-    protected abstract fun loadProductData(forceRefresh:Boolean = false)
+    protected abstract fun loadData(forceRefresh:Boolean = false)
 
     protected abstract fun observeData()
 
     open fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
-        loadProductData(true)
+        loadData(true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
-        loadProductData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -137,6 +136,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
+        showLoading()
 
         rvPdp?.adapter = productAdapter
     }

@@ -337,7 +337,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         observeVideoDetail()
     }
 
-    override fun loadProductData(forceRefresh: Boolean) {
+    override fun loadData(forceRefresh: Boolean) {
         if (productId != null || (productKey != null && shopDomain != null)) {
             (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
             viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
@@ -363,10 +363,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
-        assignDeviceId()
         super.onCreate(savedInstanceState)
-
         setupRemoteConfig()
+        assignDeviceId()
+        loadData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
