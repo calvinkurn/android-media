@@ -19,6 +19,8 @@ public class ShippingParam implements Parcelable {
     private String destinationLatitude;
     private String destinationLongitude;
     private double weightInKilograms;
+    private double weightActualInKilograms;
+    private double weightVolumeInKilograms;
     private String shopId;
     private String token;
     private String ut;
@@ -49,6 +51,8 @@ public class ShippingParam implements Parcelable {
         destinationLatitude = in.readString();
         destinationLongitude = in.readString();
         weightInKilograms = in.readDouble();
+        weightActualInKilograms = in.readDouble();
+        weightVolumeInKilograms = in.readDouble();
         shopId = in.readString();
         token = in.readString();
         ut = in.readString();
@@ -78,6 +82,8 @@ public class ShippingParam implements Parcelable {
         dest.writeString(destinationLatitude);
         dest.writeString(destinationLongitude);
         dest.writeDouble(weightInKilograms);
+        dest.writeDouble(weightActualInKilograms);
+        dest.writeDouble(weightVolumeInKilograms);
         dest.writeString(shopId);
         dest.writeString(token);
         dest.writeString(ut);
@@ -299,5 +305,21 @@ public class ShippingParam implements Parcelable {
 
     public void setPreOrderDuration(int preOrderDuration) {
         this.preOrderDuration = preOrderDuration;
+    }
+
+    public double getWeightActualInKilograms() {
+        return weightActualInKilograms;
+    }
+
+    public void setWeightActualInKilograms(double weightActualInKilograms) {
+        this.weightActualInKilograms = weightActualInKilograms;
+    }
+
+    public double getWeightVolumeInKilograms() {
+        return weightVolumeInKilograms;
+    }
+
+    public void setWeightVolumeInKilograms(double weightVolumeInKilograms) {
+        this.weightVolumeInKilograms = weightVolumeInKilograms;
     }
 }
