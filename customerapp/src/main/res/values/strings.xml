@@ -181,6 +181,7 @@
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_draft_product">Draft Produk</string>
+    <string name="label_title_category_picker">Pilih Kategori</string>
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
@@ -193,4 +194,17 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
+
+    <!-- Travel slice custom query -->
+    <string-array name="HotelSliceCustomQuery">
+        <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
+        <item>Book (a)? hotel(s)? in $city1</item>
+        <item>Search for cheap hotels in $city1</item>
+    </string-array>
+
+    <string-array name="TravelOrderListCustomQuery">
+        <item>(view)? my $type1 reservation(s)?</item>
+        <item>(check)? my $type1 reservation(s)?</item>
+        <item>(view)? my $type1 booking(s)?</item>
+    </string-array>
 </resources>

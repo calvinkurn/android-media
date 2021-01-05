@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
@@ -79,7 +80,14 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
 
-        `Then verify initial state impression is called`()
+        val item = CuratedCampaignViewModel(
+                imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/8/24/4814934/4814934_8de36a7f-e5e3-4053-8089-1f42cdb17030_1414_1414",
+                applink = "tokopedia://product/20100686",
+                url = "/bgsport/bola-sepak-3",
+                title = "Waktu Indonesia Belanja",
+                subtitle = "Flashsale Rp50 rb & Cashback 90%"
+        )
+        `Then verify initial state impression is called`(item)
         `Then verify list impression data`(initialStateData)
 
         `When see more recent search is clicked`()
@@ -87,8 +95,9 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Then verify recent search impressed the hidden item`(initialStateData)
     }
 
-    private fun `Then verify initial state impression is called`() {
+    private fun `Then verify initial state impression is called`(curatedCampaignViewModel: CuratedCampaignViewModel) {
         verifyOrder {
+            initialStateView.onCuratedCampaignCardImpressed(curatedCampaignViewModel)
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onSeeMoreRecentSearchImpressed(any())
@@ -97,15 +106,21 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         }
     }
 
+    private fun InitialStateContract.View.onCuratedCampaignCardImpressed(curatedCampaignViewModel: CuratedCampaignViewModel) {
+        val expectedLabel = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+        val userId = "0"
+        onCuratedCampaignCardImpressed(userId, expectedLabel, curatedCampaignViewModel.type)
+    }
+
     private fun `Then verify list impression data`(initialStateData: List<InitialStateData>) {
         val recentViewItemList = slotRecentViewItemList.captured
         val recentSearchItemList = slotRecentSearchItemList.captured
         val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
-        val recentViewListResponse = getDataLayerForRecentView(initialStateData[0].items)
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items.take(3))
-        val popularSearchListResponse = getDataLayerForPromo(initialStateData[2].items)
+        val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
+        val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
         val dynamicSectionResponse = getDataLayerForPromo(initialStateCommonData[3].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
@@ -127,7 +142,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     private fun `Then verify recent search impressed the hidden item`(initialStateData: List<InitialStateData>) {
         val recentSearchItemList = slotRecentSearchItemList.captured
 
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items).takeLast(2)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items).takeLast(2)
 
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
     }

@@ -118,8 +118,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-            });
+            Toaster.INSTANCE.build(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke),v1 -> {
+            }).show();
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
         dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
@@ -241,7 +241,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.black_38));
+                ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
             }
         }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
@@ -343,7 +343,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 imageViewBrandItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
                 brandName = view.findViewById(com.tokopedia.digital_deals.R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());
-                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 view.setLayoutParams(params);
                 brandLayout.addView(view);
                 final int position1 = index;
@@ -515,8 +515,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
-            });
+            Toaster.INSTANCE.build(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL ,this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke),v1 -> {
+            }).show();
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }

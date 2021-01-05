@@ -1,0 +1,95 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "preference - click tambah template",
+      "eventLabel": "",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "preference - click pilih template lain",
+      "eventLabel": "",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "viewCheckoutExpressIris",
+      "eventCategory": "order summary",
+      "eventAction": "view profile list",
+      "eventLabel": "",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "preference - click profile option on profile list",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "address - click arrow to change address option",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "duration - click arrow to change duration option",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "duration - click selected duration option",
+      "eventLabel": "{{\\d+}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "payment - click arrow to change payment option",
+      "eventLabel": "{{.*}}",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickCheckoutExpress",
+      "eventCategory": "order summary",
+      "eventAction": "preference - click tambah template beli langsung on order summary",
+      "eventLabel": "",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{\\d+}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

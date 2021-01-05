@@ -45,7 +45,6 @@ public class CommonNetwork {
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                 .client(tkpdOkHttpBuilder.build()).build();
     }
 
@@ -69,7 +68,6 @@ public class CommonNetwork {
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                 .client(tkpdOkHttpBuilder.build()).build();
     }
 }

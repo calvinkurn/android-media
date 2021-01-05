@@ -55,6 +55,10 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     val eticketData: LiveData<Result<String>>
         get() = mutableETicketData
 
+    private val mutableInvoiceData = MutableLiveData<Result<String>>()
+    val invoiceData: LiveData<Result<String>>
+        get() = mutableInvoiceData
+
     private val mutableCancellationData = MutableLiveData<List<FlightCancellationJourney>>()
     val cancellationData: LiveData<List<FlightCancellationJourney>>
         get() = mutableCancellationData
@@ -89,6 +93,16 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         }
     }
 
+    fun fetchInvoiceData() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            val invoiceData = getInvoiceEticketUseCase.executeGetInvoice(orderId)
+            if (invoiceData.isNotEmpty()) mutableInvoiceData.postValue(Success(invoiceData))
+        }) {
+            it.printStackTrace()
+            mutableInvoiceData.postValue(Fail(it))
+        }
+    }
+
     fun fetchCrossSellData() {
         launch(dispatcherProvider.ui()) {
             mutableCrossSell.postValue(crossSellUseCase.execute(TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
@@ -107,8 +121,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {
             for (journey in flightOrderDetailData.journeys) {
-                val webCheckInOpenTime = FlightDateUtil.stringToDate(journey.webCheckIn.startTime)
-                val webCheckInCloseTime = FlightDateUtil.stringToDate(journey.webCheckIn.endTime)
+                val webCheckInOpenTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.startTime)
+                val webCheckInCloseTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.endTime)
                 if (webCheckInOpenTime.before(today) && webCheckInCloseTime.after(today)) {
                     checkInAvailable = true
                     subtitle = journey.webCheckIn.subtitle

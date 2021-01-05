@@ -74,4 +74,15 @@
 
     <string name="onboarding_nonlogin_p1_s2_title">Ada yang mau kamu tanyakan?</string>
     <string name="onboarding_nonlogin_p1_s2_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
+
+    <string name="error_state_bu_title">Gagal memuat menu ini</string>
+    <string name="error_state_bu_description">Klik untuk coba lagi.</string>
+
+    <string name="error_state_transaction_title">Gagal memuat transaksi</string>
+    <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+
+    <string name="error_state_shop_info">Gagal memuat toko</string>
+
+    <string name="content_desc_image_transaction">image transaction</string>
+    <string name="content_desc_image_payment">image payment</string>
 </resources>

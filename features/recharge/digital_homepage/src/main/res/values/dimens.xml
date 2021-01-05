@@ -2,7 +2,6 @@
 <resources>
     <dimen name="toolbar_padding">24dp</dimen>
     <dimen name="toolbar_transition_range">32dp</dimen>
-    <dimen name="banner_margin_top">80dp</dimen>
     <dimen name="card_image_corner_radius">14dp</dimen>
     <dimen name="order_list_icon_size">20dp</dimen>
 

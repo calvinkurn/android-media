@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraException;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +69,8 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     public String finalCameraResultFilePath;
     protected ImageView cameraOverlayImage;
     protected TextView headerText;
+
+    private static int IMAGE_QUALITY = 95;
 
     @Override
     protected void initInjector() {
@@ -200,18 +205,18 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     protected void onSuccessImageTakenFromCamera(File imgFile) {
         String imagePath = imgFile.getAbsolutePath();
-
         finalCameraResultFilePath = imagePath;
         try {
             File file = new File(imagePath);
             if (file.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-
                 if (myBitmap != null) {
                     if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
-                        imageCaptured.setImageBitmap(ImageHandler.flip(myBitmap, true, false));
+                        Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
+                        myBitmap.recycle();
+                        loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
                     } else {
-                        imageCaptured.setImageBitmap(myBitmap);
+                        loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
                     }
                 }
             }
@@ -222,6 +227,32 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         reset();
 
     }
+
+    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap){
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
+        if(loadFitCenter)
+            Glide.with(context).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
+        else
+            Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
+    }
+
+
+    private byte[] bitmapToByte(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
+        return stream.toByteArray();
+    }
+
 
     private void reset() {
         mCapturingPicture = false;

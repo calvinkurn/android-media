@@ -77,6 +77,8 @@ dependencies {
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
+    implementation project(rootProject.ext.features.recharge_slice)
+    implementation project(rootProject.ext.features.travel_slice)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)

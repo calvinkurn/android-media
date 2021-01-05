@@ -138,7 +138,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
                             LoggingUtils.logGqlResponseCode(result.code(), requests.toString(), gResponse.originalResponse.toString())
                         }
-                        LoggingUtils.logGqlSize("kt", requests.toString(), gResponse.originalResponse.toString())
+                        LoggingUtils.logGqlSize("kt", requests, gResponse.originalResponse.toString())
                         //Handling backend cache
                         val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
                         //handling query hash

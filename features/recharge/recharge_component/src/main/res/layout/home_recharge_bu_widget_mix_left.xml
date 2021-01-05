@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recharge_bu_content_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/recharge_bu_widget_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@+id/recharge_bu_widget_header_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <FrameLayout
+            android:id="@+id/recharge_bu_parallax_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="-40dp"
+            android:layout_marginEnd="-40dp">
+
+            <View
+                android:id="@+id/recharge_bu_parallax_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/recharge_bu_parallax_image"
+                android:layout_marginStart="@dimen/spacing_lvl8"
+                android:layout_height="match_parent"
+                android:layout_width="@dimen/product_card_flashsale_width"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"/>
+
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recharge_bu_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:itemCount="10"
+            tools:spanCount="3"
+            tools:orientation="horizontal"
+            tools:listitem="@layout/home_banner_item_flashsale_carousel"/>
+    </FrameLayout>
+
+    <include
+        android:id="@+id/recharge_bu_content_shimmering"
+        android:visibility="gone"
+        layout="@layout/home_recharge_bu_widget_mix_left_shimmering"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

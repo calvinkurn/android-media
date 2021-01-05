@@ -11,7 +11,7 @@ class InitialShimmeringDataViewHolder (itemView: View)
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_nav_shimmer_data
+        val LAYOUT = R.layout.holder_nav_shimmer_bu_data
     }
 
     override fun bind(element: InitialShimmerDataModel) {

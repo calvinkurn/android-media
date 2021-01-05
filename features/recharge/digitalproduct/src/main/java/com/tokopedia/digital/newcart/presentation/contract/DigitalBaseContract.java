@@ -81,7 +81,7 @@ public interface DigitalBaseContract {
 
         String getClientNumber();
 
-        int getOrderId();
+        long getOrderId();
 
         String getZoneId();
 
