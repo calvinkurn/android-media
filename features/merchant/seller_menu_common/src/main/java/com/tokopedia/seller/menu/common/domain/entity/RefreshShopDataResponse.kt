@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.data.pojo
+package com.tokopedia.seller.menu.common.domain.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

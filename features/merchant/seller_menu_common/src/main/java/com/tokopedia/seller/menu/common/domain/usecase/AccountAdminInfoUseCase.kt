@@ -1,9 +1,9 @@
-package com.tokopedia.home.account.domain
+package com.tokopedia.seller.menu.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home.account.data.exception.RefreshShopDataException
+import com.tokopedia.seller.menu.common.exception.RefreshShopDataException
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData

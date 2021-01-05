@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
-import com.tokopedia.home.account.domain.AccountAdminInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel

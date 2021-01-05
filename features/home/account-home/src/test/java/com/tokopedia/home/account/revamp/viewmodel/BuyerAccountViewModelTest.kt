@@ -3,7 +3,7 @@ package com.tokopedia.home.account.revamp.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
-import com.tokopedia.home.account.domain.AccountAdminInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.TestDispatcherProvider
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
@@ -27,7 +27,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifyAll
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.data.exception
+package com.tokopedia.seller.menu.common.exception
 
 import com.tokopedia.network.exception.MessageErrorException
 
