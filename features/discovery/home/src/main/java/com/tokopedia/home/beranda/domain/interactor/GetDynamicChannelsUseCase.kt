@@ -21,7 +21,7 @@ class GetDynamicChannelsUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(HomeChannelData::class.java)
     }
 
-    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, doQueryHash: Boolean = false, queryParams: String = ""){
+    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", doQueryHash: Boolean = false){
         params.parameters.clear()
         params.putString(GROUP_IDS, groupIds)
         params.putString(TOKEN, token)

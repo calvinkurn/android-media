@@ -2,10 +2,8 @@ package com.tokopedia.home.beranda.data.datasource.remote
 
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import kotlinx.coroutines.withContext
 
