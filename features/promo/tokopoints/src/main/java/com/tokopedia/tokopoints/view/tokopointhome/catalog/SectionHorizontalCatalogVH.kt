@@ -19,6 +19,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
+import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
@@ -78,11 +79,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
 
         if ((content.layoutCatalogAttr.countdownInfo == null || content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown != null
                 && !content.layoutCatalogAttr.countdownInfo?.isShown!!) && content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
-            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(constraintLayout)
-            constraintSet.connect(R.id.text_see_all_column, ConstraintSet.TOP, R.id.text_title_column, ConstraintSet.TOP, 0)
-            constraintSet.applyTo(constraintLayout)
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_column, R.id.text_title_column, ConstraintSet.TOP)
         }
 
         if (!content.cta.isEmpty) {

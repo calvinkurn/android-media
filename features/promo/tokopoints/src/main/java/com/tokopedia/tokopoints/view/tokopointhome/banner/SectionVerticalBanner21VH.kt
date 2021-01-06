@@ -15,6 +15,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import java.util.HashMap
 
 class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) {
@@ -26,11 +27,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
 
         if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty){
-            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(constraintLayout)
-            constraintSet.connect(R.id.text_see_all, ConstraintSet.TOP, R.id.text_title, ConstraintSet.TOP, 0)
-            constraintSet.applyTo(constraintLayout)
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.TOP)
         }
 
         if (!content.cta.isEmpty) {

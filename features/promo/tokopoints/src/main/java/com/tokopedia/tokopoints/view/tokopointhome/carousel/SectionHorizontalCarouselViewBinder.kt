@@ -19,6 +19,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionHorizontalCarouselViewBinder()
@@ -45,12 +46,8 @@ class SectionHorizontalCarouselVH(val view: View) : RecyclerView.ViewHolder(view
             return
         }
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
-        if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty){
-            val constraintLayout: ConstraintLayout = view.findViewById(R.id.parent_layout)
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(constraintLayout)
-            constraintSet.connect(R.id.text_see_all_carousel, ConstraintSet.BASELINE, R.id.text_title_carousel, ConstraintSet.BASELINE, 0)
-            constraintSet.applyTo(constraintLayout)
+        if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_carousel, R.id.text_title_carousel,ConstraintSet.BASELINE)
         }
 
         if (!content.cta.isEmpty) {
