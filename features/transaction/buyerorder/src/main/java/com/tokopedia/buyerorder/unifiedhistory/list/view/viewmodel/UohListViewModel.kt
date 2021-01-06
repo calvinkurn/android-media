@@ -97,7 +97,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            _finishOrderResult.postValue(uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
+            _finishOrderResult.value = (uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
         }
     }
 
