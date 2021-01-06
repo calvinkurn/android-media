@@ -60,4 +60,16 @@ object AppWidgetHelper {
     fun getCacheHandler(context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, Const.SHARED_PREF_NAME)
     }
+
+    fun setOrderAppWidgetEnabled(context: Context, isEnabled: Boolean) {
+        val cacheHandler = getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, isEnabled)
+        cacheHandler.applyEditor()
+    }
+
+    fun setChatAppWidgetEnabled(context: Context, isEnabled: Boolean) {
+        val cacheHandler = getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, isEnabled)
+        cacheHandler.applyEditor()
+    }
 }

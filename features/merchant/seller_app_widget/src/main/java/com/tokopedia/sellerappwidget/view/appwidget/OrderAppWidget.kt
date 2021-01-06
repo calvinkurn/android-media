@@ -56,6 +56,12 @@ class OrderAppWidget : AppWidgetProvider() {
             Const.Action.SWITCH_ORDER -> switchOrder(context, intent)
             Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
         }
+
+        if (intent.action != AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED) {
+            AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
+        }
+
         super.onReceive(context, intent)
     }
 
@@ -75,16 +81,12 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
-        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
-        cacheHandler.applyEditor()
+        AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
-        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
-        cacheHandler.applyEditor()
+        AppWidgetHelper.setOrderAppWidgetEnabled(context, false)
         super.onDisabled(context)
     }
 

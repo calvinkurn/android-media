@@ -52,6 +52,12 @@ class ChatAppWidget : AppWidgetProvider() {
             Const.Action.ITEM_CLICK -> onChatItemClick(context, intent)
             Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
         }
+
+        if (intent.action != AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED) {
+            AppWidgetHelper.setChatAppWidgetEnabled(context, true)
+        }
+
         super.onReceive(context, intent)
     }
 
@@ -71,16 +77,12 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
-        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, true)
-        cacheHandler.applyEditor()
+        AppWidgetHelper.setChatAppWidgetEnabled(context, true)
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
-        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
-        cacheHandler.applyEditor()
+        AppWidgetHelper.setChatAppWidgetEnabled(context, false)
         super.onDisabled(context)
     }
 
