@@ -1,5 +1,6 @@
 package com.tokopedia.top_ads_headline.view.activity
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -93,8 +94,13 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         }
         sharedEditHeadlineViewModel.getEditHeadlineAdLiveData().value?.let {
             val input = getTopAdsManageHeadlineInput(it)
-            editFormHeadlineViewModel.editHeadlineAd(input, this::finish, this::onError)
+            editFormHeadlineViewModel.editHeadlineAd(input, ::onSuccess, ::onError)
         }
+    }
+
+    private fun onSuccess(){
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     private fun getTopAdsManageHeadlineInput(stepperModel: HeadlineAdStepperModel): TopAdsManageHeadlineInput {

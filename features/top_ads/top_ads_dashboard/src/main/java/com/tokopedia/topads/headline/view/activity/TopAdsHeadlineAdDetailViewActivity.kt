@@ -36,6 +36,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -82,6 +83,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     internal var endDate: Date? = null
     private var priceDaily = 0
     private var groupTotal = 0
+    private var isDataChanged = false
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
@@ -161,7 +163,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
             loadStatisticsData()
         }
         header_toolbar.setNavigationOnClickListener {
-            super.onBackPressed()
+            onBackPressed()
         }
         hari_ini?.date_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -197,6 +199,15 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(isDataChanged){
+            val intent = Intent()
+            intent.putExtra(IS_CHANGED, isDataChanged)
+            setResult(Activity.RESULT_OK, intent)
+        }
+        super.onBackPressed()
     }
 
     private fun loadData() {
@@ -238,9 +249,15 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == EDIT_GROUP_REQUEST_CODE){
                 loadData()
+            }else if(requestCode == EDIT_HEADLINE_REQUEST_CODE){
+                isDataChanged = true
+                loadData()
+                loadStatisticsData()
+                renderTabAndViewPager()
+            }
         }
     }
 

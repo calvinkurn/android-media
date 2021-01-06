@@ -18,4 +18,15 @@ object Constants {
     const val AD_CONTENT = "Konten Iklan"
     const val AD_AND_KEYWORD_COST = "Biaya Iklan & Kata Kunci"
     const val OTHERS = "Lainnya"
+    const val RESTORED_DATA = "restoreData"
+    const val CURRENT_LIST = "currentKeywords"
+    const val KEYWORD_TYPE_PHRASE = 11
+    const val KEYWORD_TYPE_EXACT = 21
+    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
+    const val SELECTED_KEYWORD = "selectKeywords"
+    const val POSITIVE_PHRASE = "positive_phrase"
+    const val POSITIVE_SPECIFIC = "positive_exact"
+    const val NEGATIVE_PHRASE = "negative_phrase"
+    const val NEGATIVE_SPECIFIC = "negative_exact"
 }

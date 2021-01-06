@@ -2,10 +2,14 @@ package com.tokopedia.top_ads_headline.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.top_ads_headline.Constants.EDIT_HEADLINE_PAGE
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_EXACT
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_NEGATIVE_EXACT
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_PHRASE
 import com.tokopedia.top_ads_headline.view.fragment.KEYWORD_POSITIVE
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
-import com.tokopedia.topads.edit.utils.Constants
+
 import javax.inject.Inject
 
 class HeadlineEditKeywordViewModel @Inject constructor(
@@ -39,10 +43,10 @@ class HeadlineEditKeywordViewModel @Inject constructor(
 
     private fun addSelectedKeywords(keywordType: String, keywords: List<GetKeywordResponse.KeywordsItem>) {
         if (keywordType == KEYWORD_POSITIVE) {
-            val positiveKeywordList = keywords.filter { it.type == Constants.KEYWORD_TYPE_PHRASE || it.type == Constants.KEYWORD_TYPE_EXACT }
+            val positiveKeywordList = keywords.filter { it.type == KEYWORD_TYPE_PHRASE || it.type == KEYWORD_TYPE_EXACT }
             selectedKeywords.addAll(positiveKeywordList)
         } else {
-            val positiveKeywordList = keywords.filter { it.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || it.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT }
+            val positiveKeywordList = keywords.filter { it.type == KEYWORD_TYPE_NEGATIVE_PHRASE || it.type == KEYWORD_TYPE_NEGATIVE_EXACT }
             selectedKeywords.addAll(positiveKeywordList)
         }
     }

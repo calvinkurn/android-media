@@ -151,7 +151,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         viewModel.getGroupProductData(page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 groupFilterSheet.getSelectedStatusId(), startDate
-                , endDate, ::onProductFetch, ::onEmptyProduct)
+                , endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
 
@@ -308,7 +308,7 @@ class ProductTabFragment : BaseDaggerFragment() {
 
         viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
                 ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {

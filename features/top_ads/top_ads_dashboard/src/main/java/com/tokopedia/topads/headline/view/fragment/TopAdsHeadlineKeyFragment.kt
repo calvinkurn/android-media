@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -124,7 +125,11 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         btnAddItem?.setOnClickListener{
-
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
+                putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            }
+            activity?.startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
         }
     }
 

@@ -121,7 +121,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(ParamObject.GROUP_ID, groupId.toString())
         }
-        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
+        activity?.startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

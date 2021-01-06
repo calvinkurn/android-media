@@ -16,7 +16,6 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsU
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -51,7 +50,6 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
         private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
         private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
@@ -60,7 +58,7 @@ class GroupDetailViewModel @Inject constructor(
         topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, userSession.shopId.toIntOrZero())
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
-                    if(it.data.isEmpty()) {
+                    if (it.data.isEmpty()) {
                         onEmpty()
                     } else {
                         onSuccess(it)
@@ -129,8 +127,8 @@ class GroupDetailViewModel @Inject constructor(
 
     @GqlQuery("StatsList", TopAdsDashboardPresenter.STATS_URL)
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String) {
-       val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-               selectedStatisticType, userSession.shopId, groupId)
+        val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
+                selectedStatisticType, userSession.shopId, groupId)
         topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
         topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {

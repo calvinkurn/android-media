@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,6 +24,17 @@ import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.ACTION_DELETE
 import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
 import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
+import com.tokopedia.top_ads_headline.Constants.CURRENT_LIST
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_EXACT
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_NEGATIVE_EXACT
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.NEGATIVE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.NEGATIVE_SPECIFIC
+import com.tokopedia.top_ads_headline.Constants.POSITIVE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.POSITIVE_SPECIFIC
+import com.tokopedia.top_ads_headline.Constants.RESTORED_DATA
+import com.tokopedia.top_ads_headline.Constants.SELECTED_KEYWORD
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
@@ -45,18 +58,6 @@ import com.tokopedia.topads.common.view.adapter.tips.viewholder.TipsUiSortViewHo
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiSortModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
-import com.tokopedia.topads.edit.utils.Constants
-import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_EXACT
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
-import com.tokopedia.topads.edit.view.activity.SelectNegKeywordActivity
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_headline_edit_keyword.*
 import javax.inject.Inject
@@ -143,9 +144,10 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun openNegativeAdKeywordActivity() {
-        val intent = Intent(context, SelectNegKeywordActivity::class.java)
-        intent.putParcelableArrayListExtra(RESTORED_DATA, restoreNegativeKeywords)
-        intent.putStringArrayListExtra(CURRENTLIST, getCurrentItems())
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_NEGATIVE_KEYWORD_EDIT)?.apply {
+            putParcelableArrayListExtra(RESTORED_DATA, restoreNegativeKeywords)
+            putStringArrayListExtra(CURRENT_LIST, getCurrentItems())
+        }
         startActivityForResult(intent, NEGATIVE_KEYWORD_REQUEST_CODE)
     }
 
@@ -312,8 +314,8 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
             dialog.setTitle(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_negatif_title))
             dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_negatif_description, keywordModel.keywordName))
         }
-        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.edit.R.string.topads_edit_batal))
-        dialog.setSecondaryCTAText(getString(com.tokopedia.topads.edit.R.string.topads_edit_ya))
+        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_batal))
+        dialog.setSecondaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_ya))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
         }
@@ -461,7 +463,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun getDataForNegativeKeywordActivity(data: Intent?) {
-        val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(Constants.SELECTED_KEYWORD)
+        val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
         data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)?.let {
             restoreNegativeKeywords = it
         }

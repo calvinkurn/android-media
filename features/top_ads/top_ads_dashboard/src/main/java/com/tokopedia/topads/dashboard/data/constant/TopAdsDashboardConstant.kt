@@ -56,6 +56,7 @@ object TopAdsDashboardConstant {
     const val TANPA_GRUP = "Tanpa Grup"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
+    const val IS_CHANGED = "isChanged"
     const val EDIT_HEADLINE_REQUEST_CODE = 46
     const val EDIT_GROUP_REQUEST_CODE = 47
     const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
