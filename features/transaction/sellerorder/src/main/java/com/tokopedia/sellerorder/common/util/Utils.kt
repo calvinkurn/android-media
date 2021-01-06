@@ -111,17 +111,13 @@ object Utils {
         return sdf.format(this)
     }
 
-    fun getNPastDaysTimestamp(daysBefore: Long): Long {
-        return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
-    }
-
     fun getNPastYearTimeStamp(yearBefore: Int): Date {
         val date = Calendar.getInstance(getLocale())
         date.set(Calendar.YEAR, date.get(Calendar.YEAR) - yearBefore)
         return date.time
     }
 
-    fun getNPastMonthTimeStamp(monthBefore: Int): Long {
+    private fun getNPastMonthTimeStamp(monthBefore: Int): Long {
         val date = Calendar.getInstance(getLocale())
         date.set(Calendar.MONTH, date.get(Calendar.MONTH) - monthBefore)
         return date.timeInMillis
@@ -135,10 +131,6 @@ object Utils {
     fun getNPastMonthTimeText(monthBefore: Int): String {
         val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
         return format(pastTwoYear, PATTERN_DATE_PARAM)
-    }
-
-    fun getNNextDaysTimestamp(daysNext: Long): Long {
-        return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(daysNext))
     }
 
     fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {
@@ -163,6 +155,4 @@ object Utils {
     fun List<Int>.copyInt(): List<Int> {
         return this.map { it }
     }
-
-    fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
 }

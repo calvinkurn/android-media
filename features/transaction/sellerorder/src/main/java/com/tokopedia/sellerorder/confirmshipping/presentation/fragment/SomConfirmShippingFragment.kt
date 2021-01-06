@@ -48,9 +48,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private var currOrderId = ""
     private var currShipmentId = 0
-    private var currShipmentName = ""
     private var currShipmentProductId = "0"
-    private var currShipmentProductName = ""
     private var currIsChangeShipping = false
     private var confirmShippingResponseMsg = ""
     private var courierListResponse = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
