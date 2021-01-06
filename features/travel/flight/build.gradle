@@ -56,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
