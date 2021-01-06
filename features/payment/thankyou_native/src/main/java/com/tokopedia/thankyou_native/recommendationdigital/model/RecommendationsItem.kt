@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class RecommendationsItem(
 
         @SerializedName("productId")
-        val productId: Int,
+        val productId: Long,
 
         @SerializedName("webLink")
         val webLink: String? = "",
@@ -43,18 +43,9 @@ data class RecommendationsItem(
         @SerializedName("iconUrl")
         val iconUrl: String? = "",
 
-        @SerializedName("position")
-        val position: Int,
-
         @SerializedName("tag")
         val tag: String? = "",
 
-        @SerializedName("operatorID")
-        val operatorID: Int,
-
-        @SerializedName("categoryId")
-        val categoryId: Int,
-
         @SerializedName("productPrice")
-        val productPrice: Int
+        val productPrice: Double
 )

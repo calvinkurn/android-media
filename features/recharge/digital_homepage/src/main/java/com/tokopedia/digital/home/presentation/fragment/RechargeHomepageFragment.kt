@@ -64,6 +64,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
+    private var sliceOpenApp: Boolean = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
 
@@ -86,6 +87,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         arguments?.let {
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
             enablePersonalize = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
+            sliceOpenApp = it.getBoolean(RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
         searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
@@ -123,6 +125,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         // Recharge Branch Event
         rechargeHomepageAnalytics.eventHomepageLaunched(userSession.userId)
+
+        if(sliceOpenApp){
+            rechargeHomepageAnalytics.sliceOpenApp(userSession.userId)
+            rechargeHomepageAnalytics.onOpenPageFromSlice()
+        }
 
         loadData()
     }
@@ -375,15 +382,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     companion object {
         const val EXTRA_PLATFORM_ID = "platform_id"
         const val EXTRA_ENABLE_PERSONALIZE = "personalize"
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
 
-        fun newInstance(platformId: Int, enablePersonalize: Boolean = false): RechargeHomepageFragment {
+        fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
+            bundle.putBoolean(RECHARGE_HOME_PAGE_EXTRA, sliceOpenApp)
             fragment.arguments = bundle
             return fragment
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,8 +8,7 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,20 +17,25 @@
         android:background="@drawable/bg_outline_item_grey"
         android:padding="@dimen/dp_16">
 
-        <TextView
-            style="@style/TextSmallMediumBlack54"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_selller_cashback" />
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/tv_seller_cashback_price"
+            android:text="@string/label_seller_cashback"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_seller_cashback_price"
-            style="@style/TextSmallMediumBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:gravity="end"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:ignore="RelativeOverlap"
             tools:text="Rp1.400.000" />
 

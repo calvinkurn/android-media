@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.track)
 
@@ -58,10 +59,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex

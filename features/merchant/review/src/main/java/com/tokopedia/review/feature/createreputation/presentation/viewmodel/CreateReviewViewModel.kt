@@ -52,8 +52,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
-    private val _submitReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
-    val submitReviewResult: LiveData<ReviewViewState<Boolean>>
+    private val _submitReviewResult = MutableLiveData<ReviewViewState<String>>()
+    val submitReviewResult: LiveData<ReviewViewState<String>>
         get() = _submitReviewResult
 
     private val _editReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
@@ -94,7 +94,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
+    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
         val pictureList = originalImages.filter {
             originalImageUrl.contains(it)
         }.filterIndexed { index, _ -> !edited[index] }
@@ -221,7 +221,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }
@@ -249,7 +249,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }

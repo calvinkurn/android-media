@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
@@ -25,14 +26,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -196,7 +198,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
@@ -244,7 +246,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     showLoading()
                 }
                 is Success -> {
-                    onSuccessSubmitReview()
+                    onSuccessSubmitReview(it.data)
                 }
                 is Fail -> {
                     onFailSubmitReview(it.fail)
@@ -370,19 +372,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
         context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, false,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            createReviewViewModel.getSelectedImagesUrl(), null, -1, 5
-                    ))
-
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                    .apply {
+                        title = getString(R.string.image_picker_title)
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -456,10 +453,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
-                    val isEdited = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val selectedImage = result.imageUrlOrPathList
+                    val originalImageUrl = result.originalImageUrl
+                    val isEdited = result.isEditted
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -472,7 +469,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
 
                     if (!selectedImage.isNullOrEmpty()) {
-                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, originalImageUrl, isEdited)
+                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage as ArrayList<String>,
+                                originalImageUrl as ArrayList<String>, isEdited as ArrayList<Boolean>)
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
@@ -794,7 +792,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSubmitReview() {
+    private fun onSuccessSubmitReview(feedbackId: String = "") {
         stopLoading()
         showLayout()
         if (isUserEligible() && !isReviewIncomplete) {
@@ -802,7 +800,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             shouldShowThankYouBottomSheet = true && !isReviewIncomplete
             return
         }
-        finishIfRoot(true)
+        finishIfRoot(success = true, feedbackId = feedbackId)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -878,7 +876,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     }
 
-    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "") {
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String =  "") {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -888,11 +886,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 startActivity(intent)
             } else {
                 val intent = Intent()
-                intent.putExtra(ReviewConstants.ARGS_RATING, reviewClickAt.toFloat())
-                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                 if (success) {
+                    intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_RATING, reviewClickAt)
+                    intent.putExtra(ReputationCommonConstants.ARGS_PRODUCT_ID, productId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REPUTATION_ID, reputationId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.REVIEWED)
                     setResult(Activity.RESULT_OK, intent)
                 } else {
+                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.INVALID_TO_REVIEW)
                     setResult(Activity.RESULT_FIRST_USER, intent)
                 }
             }

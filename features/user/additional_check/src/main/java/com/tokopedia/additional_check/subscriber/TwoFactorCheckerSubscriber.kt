@@ -46,18 +46,24 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        DaggerAdditionalCheckComponents
-                .builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .additionalCheckModules(AdditionalCheckModules(activity))
-                .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
-                .build()
-                .inject(this)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-        doChecking(activity)
+        if (activity != null) {
+            if(!exceptionPage.contains(activity.javaClass.simpleName)) {
+                DaggerAdditionalCheckComponents
+                        .builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .additionalCheckModules(AdditionalCheckModules(activity))
+                        .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
+                        .build()
+                        .inject(this)
+                doChecking(activity)
+            }
+        }
     }
 
-    private fun getTwoFactorRemoteConfig(): Boolean? {
+    private fun getTwoFactorRemoteConfig(activity: Activity?): Boolean? {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
@@ -74,7 +80,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkMainApp(activity: Activity) {
-        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig() == true) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig(activity) == true) {
             checking(activity)
         }
     }
