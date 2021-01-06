@@ -975,6 +975,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         if (!onLoadMore) {
             uohItemAdapter.addList(listOrder)
+            scrollRecommendationListener.resetState()
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()
