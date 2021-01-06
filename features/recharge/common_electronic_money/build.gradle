@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
@@ -37,9 +36,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
 }
 
 project.ext {
