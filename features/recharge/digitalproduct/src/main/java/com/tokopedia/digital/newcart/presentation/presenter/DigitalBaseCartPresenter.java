@@ -472,6 +472,20 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
+    public void onClickPromoDetail() {
+        AttributesDigital attributes = getView().getCartInfoData().getAttributes();
+        if (attributes != null
+                && attributes.getCategoryName() != null
+                && attributes.getOperatorName() != null) {
+            digitalAnalytics.eventClickPromoButton(
+                    attributes.getCategoryName(),
+                    attributes.getOperatorName(),
+                    userSession.getUserId()
+            );
+        }
+    }
+
+    @Override
     public void onReceivePromoCode(PromoData promoData) {
         if (isViewAttached()) {
             VoucherDigital voucherDigital = new VoucherDigital();

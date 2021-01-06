@@ -440,7 +440,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
                 DigitalEventTracking.Event.EVENT_ACTION, actionValue,
-                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
                 DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
                 DigitalEventTracking.Event.USER_ID, userId
@@ -458,7 +458,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
                 DigitalEventTracking.Event.EVENT_ACTION, actionValue,
-                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
                 DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
                 DigitalEventTracking.Event.USER_ID, userId
@@ -476,7 +476,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
                 DigitalEventTracking.Event.EVENT_ACTION, actionValue,
-                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
                 DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
                 DigitalEventTracking.Event.USER_ID, userId
@@ -488,7 +488,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.EVENT_KEY, DigitalEventTracking.Event.CLICK_CHECKOUT,
                 DigitalEventTracking.Event.EVENT_CATEGORY, DigitalEventTracking.Category.DIGITAL_CHECKOUT_PAGE,
                 DigitalEventTracking.Event.EVENT_ACTION, DigitalEventTracking.Action.CLICK_PROMO,
-                DigitalEventTracking.Event.EVENT_LABEL, categoryName + operatorName,
+                DigitalEventTracking.Event.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
                 DigitalEventTracking.Event.BUSINESS_UNIT, "recharge",
                 DigitalEventTracking.Event.CURRENT_SITE, "tokopediadigital",
                 DigitalEventTracking.Event.USER_ID, userId

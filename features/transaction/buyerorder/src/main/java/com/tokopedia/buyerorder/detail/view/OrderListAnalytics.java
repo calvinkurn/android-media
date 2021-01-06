@@ -628,7 +628,7 @@ public class OrderListAnalytics {
         eventDataLayer.putString(TrackAppUtils.EVENT, PROMO_VIEW);
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE);
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_ORDER_DETAIL_IMPRESSION);
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, categoryName + productName);
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName));
         eventDataLayer.putString(BUSINESS_UNIT, "recharge");
         eventDataLayer.putString(CURRENT_SITE, "tokopediadigital");
         eventDataLayer.putString(USER_ID, userId);
@@ -649,7 +649,7 @@ public class OrderListAnalytics {
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_LIHAT_INVOICE,
-                TrackAppUtils.EVENT_LABEL, categoryName + productName,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName),
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
@@ -661,7 +661,7 @@ public class OrderListAnalytics {
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_COPY_BUTTON,
-                TrackAppUtils.EVENT_LABEL, categoryName + productName,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName),
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
@@ -685,7 +685,7 @@ public class OrderListAnalytics {
                 TrackAppUtils.EVENT, CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
                 TrackAppUtils.EVENT_ACTION, eventAction,
-                TrackAppUtils.EVENT_LABEL, categoryName + productName + buttonName,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", categoryName, productName, buttonName),
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
