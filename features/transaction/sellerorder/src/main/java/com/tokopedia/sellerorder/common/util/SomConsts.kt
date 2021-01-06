@@ -83,7 +83,6 @@ object SomConsts {
     const val TITLE_PILIH_PRODUK_KOSONG = "Pilih produk yang kosong"
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
-    const val TITLE_BATALKAN_PESANAN_PENALTY = "Batalkan Pesanan"
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
