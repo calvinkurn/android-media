@@ -33,6 +33,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.dialog.DialogUnify
@@ -1180,7 +1181,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 startActivity(intent)
             }
 
-            it.setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
+
+            it.setResult(Activity.RESULT_OK, intent)
             it.finish()
 
             saveFirstInstallTime()

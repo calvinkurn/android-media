@@ -65,6 +65,9 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
     @JvmField
+    val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
+
+    @JvmField
     val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
 
     @JvmField

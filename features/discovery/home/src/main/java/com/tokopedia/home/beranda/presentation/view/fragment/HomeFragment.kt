@@ -46,6 +46,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -196,6 +197,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_REVIEW = 999
         private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
+        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -672,7 +674,10 @@ open class HomeFragment : BaseDaggerFragment(),
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                onGoToLogin()
+                activity?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                }
             }
 
             override fun onDismiss() {
@@ -1310,7 +1315,20 @@ open class HomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_PLAY_ROOM -> {
                 if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
             }
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                if (data != null && data.extras != null) {
+                    val isSuccessRegister = data.extras?.getBoolean(PARAM_IS_SUCCESS_REGISTER) ?: false
+                    if (isSuccessRegister) gotoNewBuyerZone()
+                }
+            }
             PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
+        }
+    }
+
+    private fun gotoNewBuyerZone() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER)
+            startActivity(intent)
         }
     }
 
