@@ -1,0 +1,148 @@
+{
+  "data": {
+    "discoveryPageInfo": {
+      "data": {
+        "title": "topads test 2",
+        "components": [
+          {
+            "data": [
+              {
+                "background": "#ffffff",
+                "params_mobile": "item=1&dep_id=642&src=intermediary&template_id=3&ep=headline&device=android",
+                "title": "CPM",
+                "title_color": "#ffffff",
+                "url": ""
+              }
+            ],
+            "id": 10200,
+            "name": "topads",
+            "render_by_default": true,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "data": [
+              {
+                "background": "#ffffff",
+                "size_desktop": "16",
+                "size_mobile": "16"
+              }
+            ],
+            "id": 6526,
+            "name": "margin",
+            "render_by_default": true,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "creative_name": "",
+            "data": [],
+            "id": 34946,
+            "name": "product_card_carousel",
+            "properties": {
+              "limit_number": 20,
+              "limit_product": false
+            },
+            "render_by_default": true,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "data": [
+              {
+                "background_image": "https://images.tokopedia.net/img/cache/480/attachment/2020/3/15/53558266/53558266_df954b0c-0f5f-41b0-a17d-7f7dec60294a.jpg.webp?width=480&height=172",
+                "filter": "",
+                "filter_value": "",
+                "name": "Alat Tulis",
+                "target_component_id": "35003",
+                "text_color": "#ffffff"
+              },
+              {
+                "background_image": "https://images.tokopedia.net/img/cache/480/attachment/2020/3/15/53558266/53558266_df954b0c-0f5f-41b0-a17d-7f7dec60294a.jpg.webp?width=480&height=172",
+                "filter": "",
+                "filter_value": "",
+                "name": "Perlengkapan Menggambar",
+                "target_component_id": "35004",
+                "text_color": "#ffffff"
+              },
+              {
+                "background_image": "https://images.tokopedia.net/img/cache/480/attachment/2020/3/15/53558266/53558266_df954b0c-0f5f-41b0-a17d-7f7dec60294a.jpg.webp?width=480&height=172",
+                "filter": "",
+                "filter_value": "",
+                "name": "Office Kit",
+                "target_component_id": "35005",
+                "text_color": "#ffffff"
+              }
+            ],
+            "id": 35001,
+            "name": "tabs",
+            "properties": {
+              "background": "color",
+              "dynamic": false,
+              "sticky": false
+            },
+            "render_by_default": true,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "data": [],
+            "id": 35003,
+            "name": "product_card_revamp",
+            "render_by_default": false,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "data": [],
+            "id": 35004,
+            "name": "product_card_revamp",
+            "render_by_default": false,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          },
+          {
+            "data": [],
+            "id": 35005,
+            "name": "product_card_revamp",
+            "render_by_default": false,
+            "skiprender": false,
+            "target": [],
+            "title": ""
+          }
+        ],
+        "page_info": {
+          "Tags": "{\"categories\":{}}",
+          "Id": 11346,
+          "Identifier": "topads-test-2",
+          "Name": "topads test 2",
+          "Path": "discovery/topads-test-2",
+          "Type": "category_intermediary",
+          "TTL": 5,
+          "meta_title": "Cek topads test 2 | Tokopedia",
+          "meta_description": "Cek topads test 2! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia",
+          "robot": "index, follow",
+          "og_image": "https://ecs7.tokopedia.net/img/attachment/2019/5/9/22765891/22765891_454bf242-5c25-4158-a6f5-a0e711536974.jpg?width=600&height=314",
+          "search_applink": "tokopedia://search-autocomplete",
+          "search_url": "https://m.tokopedia.com/searchbox",
+          "share_config": {
+            "description": "Beli Produk Office & Stationery Berkualitas, Terbaru & Lengkap Dengan Harga Terbaik di Tokopedia. Belanja Cicilan Kredit 0%, & Pengiriman Cepat.",
+            "enabled": true,
+            "image": "https://ecs7.tokopedia.net/img/attachment/2019/5/9/22765891/22765891_454bf242-5c25-4158-a6f5-a0e711536974.jpg?width=600&height=314",
+            "title": "Jual Aneka Alat Tulis Kantor - Harga ATK Terbaik | Tokopedia",
+            "url": "https://www.tokopedia.com/discovery/topads-test-2"
+          },
+          "campaign_code": "",
+          "search_title": "Cari di Tokopedia"
+        },
+        "additional_info": {}
+      }
+    }
+  }
+}
