@@ -49,6 +49,7 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
 
     override fun onSuccess(result: ChatUiModel) {
         cacheHandler.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.applyEditor()
         ChatAppWidget.setOnSuccess(context, result)
         GetChatWorker.runWorkerPeriodically(context)
         viewModel.unbind()
