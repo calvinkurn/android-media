@@ -780,9 +780,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }.takeIf { it > -1 }?.let { index ->
                 val widget = adapter.data.getOrNull(index)
                 if (widget is W) {
-                    widget.data = widgetData
-                    widget.isLoading = widget.data?.isFromCache ?: false
-                    notifyWidgetChanged(index)
+                    if (!widget.isShowEmpty && widgetData.shouldRemove()) {
+                        adapter.data.removeAt(index)
+                        notifyWidgetRemoved(index)
+                    } else {
+                        widget.data = widgetData
+                        widget.isLoading = widget.data?.isFromCache ?: false
+                        notifyWidgetChanged(index)
+                    }
                 }
             }
         }
@@ -822,6 +827,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
+        if (!isAnyLoadingWidget) {
+            view?.swipeRefreshLayout?.isRefreshing = false
+            hideLoading()
+        }
+    }
+
+    private fun notifyWidgetRemoved(position: Int) {
+        adapter.notifyItemRemoved(position)
         val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
