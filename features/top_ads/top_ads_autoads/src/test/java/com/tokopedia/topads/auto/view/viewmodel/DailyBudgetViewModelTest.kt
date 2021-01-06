@@ -15,13 +15,16 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -133,7 +136,7 @@ class DailyBudgetViewModelTest {
     @Test
     fun `test exception in getTopAdsDeposit`() {
         val t = Exception("my excep")
-        coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } coAnswers { throw t}
+        coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } coAnswers { throw t }
 
         viewModel.getTopAdsDeposit()
 
@@ -141,15 +144,16 @@ class DailyBudgetViewModelTest {
     }
 
     @Test
-    fun `test result in getTopAdsDeposit`() {
-            val expected = 2
-            val successData :Deposit = mockk(relaxed = true)
-            coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } returns successData
-            every { successData.topadsDashboardDeposits.data.amount } returns expected
+    fun `test result in getTopAdsDeposit`() = runBlockingTest {
 
-            viewModel.getTopAdsDeposit()
+        coEvery {
+            topAdsGetShopDepositUseCase.execute(any(), any())
+        } answers {}
+        viewModel.getTopAdsDeposit()
 
-            assertEquals(expected, viewModel.topAdsDeposit.value)
+        coVerify {
+            topAdsGetShopDepositUseCase.execute(any(), any())
+        }
     }
 
 

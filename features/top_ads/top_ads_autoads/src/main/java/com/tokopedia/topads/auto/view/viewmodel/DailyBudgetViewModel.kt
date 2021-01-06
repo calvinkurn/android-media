@@ -74,11 +74,10 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
     fun getTopAdsDeposit() {
-        launchCatchError(block = {
-            val response = topAdsGetShopDepositUseCase.executeOnBackground()
-            topAdsDeposit.postValue(response.topadsDashboardDeposits.data.amount)
-        },
-        onError = {
+        topAdsGetShopDepositUseCase.execute(
+                {
+                    topAdsDeposit.value = it.topadsDashboardDeposits.data.amount
+                }, {
             it.printStackTrace()
         })
     }
