@@ -66,6 +66,7 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
 
     override fun onSuccess(result: OrderUiModel) {
         cacheHandler.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.applyEditor()
         OrderAppWidget.setOnSuccess(context, result, orderStatusId)
         GetOrderWorker.runWorker(context)
         viewModel.unbind()
