@@ -1,0 +1,41 @@
+[
+  {
+    "data": {
+      "discussionMostHelpful": {
+        "shopID": "123",
+        "shopURL": "",
+        "productID": "456",
+        "totalQuestion": 10,
+        "question": [
+          {
+            "questionID": "789",
+            "content": "Ada garansi nggak ya?",
+            "userName": "user",
+            "userThumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/209/user_thumbnail/desktop",
+            "userID": "209",
+            "createTime": "2020-04-24T12:31:06Z",
+            "createTimeFormatted": "24 Apr 2020",
+            "totalAnswer": 5,
+            "answer": {
+              "answerID": "543",
+              "content": "Ada, 1 tahun",
+              "userName": "asdfasdf",
+              "userThumbnail": "https://accounts-staging.tokopedia.com/image/v1/u/210/user_thumbnail/desktop",
+              "userThumbnail2": "https://accounts-staging.tokopedia.com/image/v1/u/210/user_thumbnail/desktop",
+              "userID": "210",
+              "isSeller": false,
+              "createTime": "2020-04-24T16:27:06Z",
+              "createTimeFormatted": "24 Apr 2020",
+              "attachedProductCount": 3
+            },
+            "answererThumbnail": [
+              "thumbnail1",
+              "thumbnail2",
+              "thumbnail3"
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

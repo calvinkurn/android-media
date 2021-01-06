@@ -78,7 +78,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.variantCommon)
@@ -87,6 +87,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icons
@@ -117,7 +118,7 @@ dependencies {
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
-    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -1,5 +1,7 @@
 package com.tokopedia.notifications.inApp.viewEngine;
 
+import android.text.TextUtils;
+
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,10 +68,33 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
                 cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));
 
-            if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME))
-                cmInApp.setScreen(map.get(RulesUtil.Constants.Payload.SCREEN_NAME));
-            else
+            if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
+                cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
+
+            String tempScreenName = "";
+
+            if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME)) {
+                tempScreenName = map.get(RulesUtil.Constants.Payload.SCREEN_NAME);
+                cmInApp.setScreen(tempScreenName);
+            }
+
+            if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
+                String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
+                if (!TextUtils.isEmpty(finalScreenName)) {
+                    StringBuilder sb = new StringBuilder(finalScreenName);
+                    if (!TextUtils.isEmpty(tempScreenName)) {
+                        sb.append(",");
+                        sb.append(tempScreenName);
+                    }
+                    cmInApp.setScreen(sb.toString());
+                }
+            }
+
+            boolean screenNameIsPresent = (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME) ||
+                    map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME));
+            if (!screenNameIsPresent) {
                 return null;
+            }
 
             if (!map.containsKey(RulesUtil.Constants.Payload.UI)) {
                 return null;

@@ -15,8 +15,8 @@ import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,7 +41,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase
+        private val adminPermissionUseCase: AdminPermissionUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
@@ -76,9 +76,9 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
-    private val _isOrderManageEligible = MutableLiveData<Result<Boolean>>()
-    val isOrderManageEligible: LiveData<Result<Boolean>>
-        get() = _isOrderManageEligible
+    private val _isAdminEligible = MutableLiveData<Result<Boolean>>()
+    val isAdminEligible: LiveData<Result<Boolean>>
+        get() = _isAdminEligible
 
     private val _canShowOrderData = MutableLiveData<Boolean>().apply {
         value = true
@@ -94,6 +94,8 @@ class SomListViewModel @Inject constructor(
             }
         }
     }
+
+    private var getAdminPermissionJob: Job? = null
 
     init {
         bulkAcceptOrderStatusResult.apply {
@@ -181,6 +183,7 @@ class SomListViewModel @Inject constructor(
     fun getFilters() {
         launchCatchError(block = {
             val filterResult = somListGetFilterListUseCase.execute()
+            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
                 _filterResult.postValue(filterResult)
             }
@@ -192,6 +195,7 @@ class SomListViewModel @Inject constructor(
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
             val waitingPaymentResult = somListGetWaitingPaymentUseCase.execute()
+            getAdminPermissionJob?.join()
             if (_canShowOrderData.value == true) {
                 _waitingPaymentCounterResult.postValue(waitingPaymentResult)
             }
@@ -204,7 +208,8 @@ class SomListViewModel @Inject constructor(
         launchCatchError(block = {
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
-            getUserRolesJob?.join()
+            getUserRolesJob()?.join()
+            getAdminPermissionJob?.join()
             getOrderListParams.nextOrderId = result.first
             if (_canShowOrderData.value == true) {
                 _orderListResult.postValue(Success(result.second))
@@ -223,7 +228,7 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             setSearchParam(currentSearchParam)
-            getUserRolesJob?.join()
+            getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = currentNextOrderId
             _orderListResult.postValue(Success(result.second))
         }, onError = {
@@ -276,7 +281,7 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: List<Int>) {
+    fun setOrderTypeFilter(orderTypes: MutableSet<Int>) {
         this.getOrderListParams.orderTypeList = orderTypes
     }
 
@@ -285,31 +290,19 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        when {
-            userSession.isShopOwner -> {
-                _isOrderManageEligible.postValue(Success(true))
-                _canShowOrderData.postValue(true)
-            }
-            userSession.isShopAdmin -> {
-                launchCatchError(
-                        block = {
-                            val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                            authorizeAccessUseCase.execute(requestParams).let { isEligible ->
-                                _isOrderManageEligible.postValue(Success(isEligible))
-                                _canShowOrderData.postValue(isEligible)
-                            }
-                        },
-                        onError = {
-                            _isOrderManageEligible.postValue(Fail(it))
-                            _canShowOrderData.postValue(false)
+        if (getAdminPermissionJob?.isCompleted != true && userSession.isShopAdmin) {
+            getAdminPermissionJob = launchCatchError(
+                    block = {
+                        val requestParams = AdminPermissionUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        adminPermissionUseCase.execute(requestParams, AdminPermissionGroup.ORDER).let { isEligible ->
+                            _isAdminEligible.postValue(Success(isEligible ?: false))
+                            _canShowOrderData.postValue(isEligible)
                         }
-                )
-            }
-            else -> {
-                _isOrderManageEligible.postValue(Success(false))
-                _canShowOrderData.postValue(false)
-            }
+                    },
+                    onError = {
+                        _isAdminEligible.postValue(Fail(it))
+                    }
+            )
         }
     }
-
 }

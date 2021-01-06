@@ -15,6 +15,8 @@ class ImagePreviewPdpViewModel @Inject constructor(
         val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
+    fun isShopOwner(shopId: String): Boolean = userSessionInterface.isLoggedIn && userSessionInterface.shopId == shopId
+
     private fun isProductIdValid(productId: String): Boolean {
         return productId.isNotEmpty() && productId.matches(Regex(PATTERN_REGEX))
     }

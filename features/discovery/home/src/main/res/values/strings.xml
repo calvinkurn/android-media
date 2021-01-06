@@ -42,6 +42,7 @@
     <string name="hampir_habis">Hampir Habis</string>
     <string name="home_header_fintech_scan">Scan</string>
     <string name="home_header_fintech_points">Points %1$s</string>
+    <string name="home_header_fintech_points_new">%1$s Points</string>
     <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
     <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
@@ -110,6 +111,6 @@
     <string name="onboarding_navigation_description">Ayo kenalan dengan tampilan &#38; navigasi baru untuk menjelajahi aplikasi Tokopedia!</string>
     <string name="onboarding_navigation_button">Yuk, Kenalan!</string>
 
-    <string name="onboarding_coachmark_title">Halo, ini akses cepat yang baru!</string>
+    <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
     <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
 </resources>

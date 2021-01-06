@@ -3,11 +3,11 @@
 
     <item>
         <shape>
-            <solid android:color="@color/white" />
+            <solid android:color="@color/Unify_N0" />
 
             <stroke
                 android:width="@dimen/dp_1"
-                android:color="@color/grey_350" />
+                android:color="@color/Unify_N150" />
 
             <corners android:radius="@dimen/dp_2" />
 

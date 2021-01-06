@@ -382,7 +382,8 @@ class ShopOpenRevampQuisionerFragment :
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation) {
-                    activity?.finish()
+                    // Should have stayed in the feature instead of finish the feature
+                    hideLoader()
                 } else {
                     hideLoader()
                     showExitOrPickLocationDialog()

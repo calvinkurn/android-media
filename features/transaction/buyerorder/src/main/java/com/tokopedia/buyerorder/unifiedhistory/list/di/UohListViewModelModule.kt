@@ -14,13 +14,13 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@UohListScope
 abstract class UohListViewModelModule {
 
     @UohListScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @UohListScope
     @Binds
     @IntoMap
     @ViewModelKey(UohListViewModel::class)

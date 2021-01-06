@@ -42,7 +42,7 @@
             android:id="@+id/status_bar_bg"
             android:background="@color/green_600"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|snap"
+            app:layout_scrollFlags="enterAlways"
             android:layout_height="@dimen/dp_25"/>
 
         <FrameLayout
@@ -52,7 +52,7 @@
             android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|snap"/>
+            app:layout_scrollFlags="enterAlways"/>
 
         <View
             android:visibility="invisible"

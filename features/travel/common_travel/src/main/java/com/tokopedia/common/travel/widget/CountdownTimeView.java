@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.common.travel.R;
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 import java.util.Calendar;
 import java.util.Date;
