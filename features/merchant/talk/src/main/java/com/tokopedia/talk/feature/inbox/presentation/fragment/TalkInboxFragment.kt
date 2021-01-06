@@ -267,7 +267,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             when (it) {
                 is TalkInboxViewState.Success -> {
                     with(it.data) {
-                        talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
+                        if(!isNewView()) {
+                            talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
+                        }
                         hideFullPageError()
                         hideFullPageLoading()
                         hideLoading()
