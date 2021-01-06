@@ -59,7 +59,9 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
         val endDateFmt = TimeHelper.formatDate(Date(TimeHelper.getNowTimeStamp()), dateFormat)
         val startDateFmt = TimeHelper.getNPastMonthTimeText(3)
 
-        showLoadingState()
+        if (AppWidgetHelper.isScreenOn(context)) {
+            showLoadingState()
+        }
         viewModel.bindView(this)
         viewModel.getOrderList(startDateFmt, endDateFmt)
     }

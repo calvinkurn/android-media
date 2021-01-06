@@ -42,7 +42,9 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
     private val cacheHandler by lazy { AppWidgetHelper.getCacheHandler(context) }
 
     fun run() {
-        showLoadingState()
+        if (AppWidgetHelper.isScreenOn(context)) {
+            showLoadingState()
+        }
         viewModel.bindView(this)
         viewModel.getChatList()
     }

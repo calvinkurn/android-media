@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PowerManager
 import android.widget.RemoteViews
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.RouteManager
@@ -71,5 +72,14 @@ object AppWidgetHelper {
         val cacheHandler = getCacheHandler(context)
         cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, isEnabled)
         cacheHandler.applyEditor()
+    }
+
+    fun isScreenOn(context: Context): Boolean {
+        val pm = context.getSystemService(Context.POWER_SERVICE) as? PowerManager ?: return false
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT_WATCH) {
+            pm.isInteractive
+        } else {
+            pm.isScreenOn
+        }
     }
 }
