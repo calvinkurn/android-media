@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.loginregister.external_register.base.viewmodel.ExternalRegisterViewModel
 import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddNameViewModel
+import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddPhoneViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -29,5 +31,15 @@ abstract class ExternalRegisterUseCaseViewModelModules {
     @IntoMap
     @ViewModelKey(OvoAddNameViewModel::class)
     internal abstract fun provideOvoAddNameViewModel(viewModel: OvoAddNameViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OvoAddPhoneViewModel::class)
+    internal abstract fun provideOvoAddPhoneViewModel(viewModel: OvoAddPhoneViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ExternalRegisterViewModel::class)
+    internal abstract fun provideExternalRegisterViewModel(viewModel: ExternalRegisterViewModel): ViewModel
 
 }

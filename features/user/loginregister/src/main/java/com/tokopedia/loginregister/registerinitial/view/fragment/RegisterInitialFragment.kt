@@ -50,6 +50,7 @@ import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
@@ -569,7 +570,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             val formattedPhone = removeSymbolPhone(phone)
             val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.OVO_ADD_NAME)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, formattedPhone)
-            startActivity(intent)
+            startActivityForResult(intent, ExternalRegisterConstants.REQUEST_OVO_REGISTER)
         }
     }
 
@@ -973,7 +974,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else {
+            } else if(requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED){
+
+            }
+            else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -1534,7 +1538,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
+        val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
         private val REQUEST_CHANGE_NAME = 111

@@ -11,7 +11,8 @@
     <application>
         <activity
             android:theme="@style/Theme.White"
-            android:name=".external_register.base.activity.ExternalRegisterWebViewActivity"></activity>
+            android:name=".external_register.base.activity.ExternalRegisterWebViewActivity"/>
+
         <activity
             android:name=".login.view.activity.LoginActivity"
             android:label="@string/login"
@@ -199,6 +200,14 @@
         </activity>
 
         <activity
+            android:name=".external_register.ovo.view.OvoAddPhoneActivity"
+            android:label="@string/title_external_register"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity
             android:name=".external_register.ovo.view.OvoRegisterInitialActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
@@ -215,6 +224,17 @@
                     android:path="@string/path_ovo_regis_init"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_ovo_regis_init"
+                    android:scheme="tokopedia" />
+            </intent-filter>
+
         </activity>
 
         <activity

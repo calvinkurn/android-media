@@ -9,6 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
  */
 class OvoFinalPageActivity: BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
-        return OvoSuccessFragment.createInstance()
+        return OvoFinalFragment.createInstance()
     }
 }

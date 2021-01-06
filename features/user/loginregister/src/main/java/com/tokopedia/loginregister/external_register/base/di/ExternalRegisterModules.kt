@@ -1,6 +1,8 @@
 package com.tokopedia.loginregister.external_register.base.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,13 +14,17 @@ import kotlinx.coroutines.Dispatchers
  */
 
 @Module
+@ExternalRegisterScope
 class ExternalRegisterModules(val context: Context) {
     @Provides
-    @ExternalRegisterScope
     @ExternalRegisterContext
     fun provideContext(): Context = context
 
     @Provides
-    @ExternalRegisterScope
     fun provideDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    fun provideExternalRegisterPreference(@ExternalRegisterContext context: Context): ExternalRegisterPreference {
+        return ExternalRegisterPreference(context)
+    }
 }

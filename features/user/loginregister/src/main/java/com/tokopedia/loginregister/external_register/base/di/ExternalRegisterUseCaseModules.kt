@@ -4,10 +4,12 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginregister.external_register.base.domain.usecase.ExternalRegisterUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.ActivateOvoUseCase
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import dagger.Module
 import dagger.Provides
 
@@ -40,5 +42,11 @@ class ExternalRegisterUseCaseModules {
     fun provideActivateOvoUseCase(graphqlRepository: GraphqlRepository): ActivateOvoUseCase {
         val useCase = GraphqlUseCase<ActivateOvoResponse>(graphqlRepository)
         return ActivateOvoUseCase(useCase)
+    }
+
+    @Provides
+    fun provideExternalRegisterUsecase(graphqlRepository: GraphqlRepository): ExternalRegisterUseCase {
+        val useCase = GraphqlUseCase<RegisterRequestPojo>(graphqlRepository)
+        return ExternalRegisterUseCase(useCase)
     }
 }

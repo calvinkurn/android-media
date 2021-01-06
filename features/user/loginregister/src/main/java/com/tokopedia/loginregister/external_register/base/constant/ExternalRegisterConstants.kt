@@ -16,6 +16,13 @@ object ExternalRegisterConstants {
     const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
 
 
+    const val PREF_KEY_GOAL_ID = "externalRegisterGoalKey"
+    const val PREF_KEY_AUTH_CODE = "externalRegisterAuthCode"
+    const val PREF_KEY_NAME = "externalRegisterFullname"
+    const val PREF_KEY_PHONE = "externalRegisterPhone"
+
+    const val REQUEST_OVO_REGISTER = 1001
+
     object PARAM {
         val PHONE_NO = "phone_number"
         val CLIENT_ID = "client_id"
@@ -23,6 +30,13 @@ object ExternalRegisterConstants {
         val DATE = "date"
 
         val URL = "external_url"
+
+        val GOAL_KEY = "goalKey"
+        val AUTH_CODE = "authCode"
+        val MSISDN = "msisdn"
+        val FULLNAME = "fullname"
+        val ACC_TYPE_NAME = "accounts_type_name"
+        val TYPE = "type"
     }
 
     object KEY {

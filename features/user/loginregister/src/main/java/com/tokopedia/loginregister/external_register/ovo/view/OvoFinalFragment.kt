@@ -1,7 +1,11 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
@@ -11,11 +15,11 @@ import com.tokopedia.loginregister.external_register.base.listener.BaseFinalList
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
+class OvoFinalFragment: ExternalAccountFinalFragment(), BaseFinalListener {
 
     companion object {
-        fun createInstance(): OvoSuccessFragment {
-            return OvoSuccessFragment()
+        fun createInstance(): OvoFinalFragment {
+            return OvoFinalFragment()
         }
     }
 
@@ -25,11 +29,14 @@ class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
             setTitle(getString(R.string.ovo_external_register_title_success))
             setDescription(getString(R.string.ovo_external_register_description_success))
             setMainImage(imgResId = R.drawable.img_ovo_collaboration)
-            setSuccessListener(this@OvoSuccessFragment)
+            setSuccessListener(this@OvoFinalFragment)
         }
     }
 
     override fun onMainSuccessButtonClicked() {
-
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        activity?.finish()
     }
 }

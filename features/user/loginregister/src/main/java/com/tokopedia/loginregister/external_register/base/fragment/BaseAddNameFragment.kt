@@ -38,13 +38,22 @@ abstract class BaseAddNameFragment: BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_base_add_name, container, false)
     }
 
+    fun startButtonLoading(){
+        base_add_name_button_next?.isLoading = true
+    }
+
+    fun stopButtonLoading(){
+        base_add_name_button_next?.isLoading = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.title_external_register_add_name) ?: "")
         setBottomText()
         base_add_name_button_next?.setOnClickListener {
-            if(view.base_add_name_textfield?.textFieldInput?.text?.toString()?.isNotEmpty() == true)
+            if(view.base_add_name_textfield?.textFieldInput?.text?.toString()?.isNotEmpty() == true) {
                 baseAddNameListener?.onNextButtonClicked()
+            }
             else {
                 view.base_add_name_textfield?.setMessage(getString(R.string.base_add_name_error_empty))
                 view.base_add_name_textfield?.setError(true)
