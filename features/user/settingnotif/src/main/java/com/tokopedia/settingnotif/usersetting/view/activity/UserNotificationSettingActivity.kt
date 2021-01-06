@@ -1,17 +1,14 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
-import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.SellerFieldFragment
+import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 
 typealias ParentActivity = UserNotificationSettingActivity
 
@@ -29,7 +26,6 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindView()
-        setupView()
 
         intent?.data?.let {
             if (it.getQueryParameter(PUSH_NOTIFICATION_PAGE) != null) {
@@ -49,11 +45,6 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
     private fun bindView() {
         fragmentContainer = findViewById(parentViewResourceID)
-    }
-
-    private fun setupView() {
-        val color = ContextCompat.getColor(this, Neutral_N0)
-        fragmentContainer?.setBackgroundColor(color)
     }
 
     override fun getNewFragment(): Fragment {

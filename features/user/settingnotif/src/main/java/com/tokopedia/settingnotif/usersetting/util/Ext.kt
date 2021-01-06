@@ -93,7 +93,7 @@ fun Context?.inflateView(@LayoutRes layoutId: Int): View {
  * and switch the color back if component is enabled
  */
 fun componentTextColor(state: Boolean): Int {
-    return if (state) R.color.charcoal_grey_96 else R.color.grey_600
+    return if (state) R.color.Unify_N700_96 else R.color.Unify_N700_68
 }
 
 
