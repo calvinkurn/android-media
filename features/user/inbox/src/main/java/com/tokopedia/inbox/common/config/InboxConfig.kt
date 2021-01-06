@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.common.config
 
 import com.tokopedia.inbox.common.InboxFragmentType
-import com.tokopedia.inbox.domain.data.notification.InboxCounter
+import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.inboxcommon.RoleType
 
 object InboxConfig {
@@ -12,7 +12,8 @@ object InboxConfig {
 
     @InboxFragmentType
     var initialPage = InboxFragmentType.NOTIFICATION
-    var inboxCounter: InboxCounter = InboxCounter()
+    var notifications: Notifications = Notifications()
+    val inboxCounter get() = notifications.inboxCounter
 
     interface ConfigListener {
         fun onRoleChanged(@RoleType role: Int)

@@ -8,6 +8,9 @@ abstract class BaseNotification {
     var chatInt: Int = 0
         set(value) {
             field = value
+            if (field < 0) {
+                field = 0
+            }
             updateTotal()
         }
 
@@ -22,6 +25,9 @@ abstract class BaseNotification {
     var talkInt: Int = 0
         set(value) {
             field = value
+            if (field < 0) {
+                field = 0
+            }
             updateTotal()
         }
 

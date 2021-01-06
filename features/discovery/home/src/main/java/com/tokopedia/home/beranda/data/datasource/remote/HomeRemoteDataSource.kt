@@ -16,9 +16,9 @@ class HomeRemoteDataSource(
         getHomeDataUseCase.executeOnBackground()
     }
 
-    suspend fun getDynamicChannelData(groupIds: String = "", token: String = "", numOfChannel: Int = 0): HomeChannelData = withContext(dispatchers.io()) {
+    suspend fun getDynamicChannelData(groupIds: String = "", token: String = "", numOfChannel: Int = 0, doQueryHash: Boolean = false): HomeChannelData = withContext(dispatchers.io()) {
         getDynamicChannelsUseCase.setParams(
-                groupIds, token, numOfChannel
+                groupIds, token, numOfChannel, doQueryHash
         )
         getDynamicChannelsUseCase.executeOnBackground()
     }

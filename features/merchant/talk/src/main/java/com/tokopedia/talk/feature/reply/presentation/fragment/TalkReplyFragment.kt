@@ -226,7 +226,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         if(text.length < MINIMUM_TEXT_LENGTH && replyEditText.hasFocus()) {
             showErrorToaster(getString(R.string.reply_toaster_length_too_short_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         } else {
-            TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
+            TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId, adapter?.hasProductHeader() ?: false)
             sendComment(text)
         }
     }

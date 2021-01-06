@@ -71,7 +71,6 @@
             app:layout_constraintTop_toTopOf="@+id/shimmer_4" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:id="@+id/shimmer_7"
             android:layout_width="@dimen/flight_dp_56"
             android:layout_height="@dimen/flight_dp_10"
             android:layout_marginStart="@dimen/spacing_lvl2"

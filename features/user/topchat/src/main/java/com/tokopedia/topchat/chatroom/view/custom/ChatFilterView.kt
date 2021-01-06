@@ -19,7 +19,6 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 
 class ChatFilterView : LinearLayout {
 
-    private var isWhiteListTopBot: Boolean = false
     private var rvFilter: RecyclerView? = null
     private var settingBtn: ImageView? = null
     private var isSeller = false
@@ -119,7 +118,7 @@ class ChatFilterView : LinearLayout {
     }
 
     fun updateIsWhiteListTopBot(whiteListTopBot: Boolean) {
-        isWhiteListTopBot = whiteListTopBot
+        if (!whiteListTopBot) return
         val topBotFilter = ChatFilterUiModel(R.string.filter_chat_smart_reply, PARAM_FILTER_TOPBOT)
         if (sellerFilter.size <= 2) {
             sellerFilter.add(topBotFilter)

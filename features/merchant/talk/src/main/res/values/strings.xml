@@ -72,9 +72,9 @@
     <string name="reply_empty_title_default">Bantu jawab, yuk!</string>
     <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
     <string name="reply_product_deleted">Barang ini sudah dihapus</string>
-    <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
-    <string name="reply_unmask_yes">Ya</string>
-    <string name="reply_unmask_no">Tidak</string>
+    <string name="reply_unmask">Tokopedia tidak menampilkan konten diskusi ini karena melanggar S&amp;K. Tetap tampilkan?</string>
+    <string name="reply_unmask_yes">Sembunyikan</string>
+    <string name="reply_unmask_no">Tampilkan</string>
     <string name="reply_unmask_toaster_negative">Konten tidak ditampilkan.</string>
     <string name="reply_unmask_toaster_positive">Konten berhasil ditampilkan.</string>
     <string name="reply_unmask_toaster_error">Ada kesalahan jaringan. Silakan pilih kembali jawabanmu.</string>
@@ -108,6 +108,10 @@
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
     <string name="inbox_unresponded">Belum Direspon</string>
     <string name="inbox_problem">Bermasalah</string>
+    <string name="inbox_problem_empty">Tidak ada diskusi yang bermasalah</string>
+    <string name="inbox_problem_empty_subtitle">Tetap pantau terus isi diskusimu, ya!</string>
+    <string name="inbox_unresponded_empty_title">Yay, semua diskusi sudah direspon</string>
+    <string name="inbox_unresponded_empty_subtitle">Gercep balas diskusi, pembeli jadi makin yakin dan hepi!</string>
     <string name="inbox_auto_replied">Dibalas Otomatis</string>
     <string name="inbox_coach_mark_filter_title">Cek filter baru diskusi di sini</string>
     <string name="inbox_coach_mark_filter_subtitle">Ada diskusi yang belum dibalas dan terlewat? Nggak perlu khawatir, kamu bisa langsung cari dengan filter Belum Direspon.</string>

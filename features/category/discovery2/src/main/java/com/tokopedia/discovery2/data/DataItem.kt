@@ -383,8 +383,6 @@ data class DataItem(
 
         var hasNotifyMe: Boolean = false,
 
-        var isOldRating: Boolean = false,
-
         var departmentID: Int = 0,
 
         var hasThreeDots: Boolean = false,

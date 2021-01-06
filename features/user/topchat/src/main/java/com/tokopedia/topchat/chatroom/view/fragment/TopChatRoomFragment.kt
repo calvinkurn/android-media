@@ -34,6 +34,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -69,8 +70,10 @@ import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -84,11 +87,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
@@ -100,6 +100,7 @@ import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -112,10 +113,14 @@ import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 import kotlin.math.abs
 
 /**
@@ -129,7 +134,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
         StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener,
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
-        RoomSettingFraudAlertViewHolder.Listener {
+        RoomSettingFraudAlertViewHolder.Listener,
+        ReviewViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -170,9 +176,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_ATTACH_INVOICE = 116
     private val REQUEST_ATTACH_VOUCHER = 117
     private val REQUEST_REPORT_USER = 118
+    private val REQUEST_REVIEW = 119
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
+    private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
@@ -682,7 +690,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 this, this, this, this,
                 this, this, this, this,
                 this, this, this, this,
-                this
+                this, this
         )
     }
 
@@ -969,6 +977,48 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
             REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
+            REQUEST_REVIEW -> onReturnFromReview(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromReview(data: Intent?, resultCode: Int) {
+        val reviewRequestResult = if (!reviewRequest.empty())
+            reviewRequest.pop() else null
+        reviewRequestResult ?: return
+        if (resultCode == RESULT_OK && data != null) {
+            val reviewClickAt = data.getIntExtra(
+                    ReputationCommonConstants.ARGS_RATING, -1
+            )
+            val state = data.getIntExtra(
+                    ReputationCommonConstants.ARGS_REVIEW_STATE, -1
+            )
+            adapter.updateReviewState(
+                    reviewRequestResult.review, reviewRequestResult.lastKnownPosition,
+                    reviewClickAt, state
+            )
+            if (state == ReputationCommonConstants.REVIEWED) {
+                showSnackBarSuccessReview()
+            }
+        } else {
+            adapter.resetReviewState(
+                    reviewRequestResult.review, reviewRequestResult.lastKnownPosition
+            )
+        }
+    }
+
+    private fun showSnackBarSuccessReview() {
+        view?.let { view ->
+            Toaster.toasterCustomCtaWidth = 116.toPx()
+            Toaster.build(
+                    view,
+                    getString(R.string.title_topchat_review_success),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.title_topchat_review_other),
+                    View.OnClickListener {
+                        RouteManager.route(it.context, ApplinkConst.REPUTATION)
+                    }
+            ).show()
         }
     }
 
@@ -1702,7 +1752,23 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.addAttachmentPreview(sendableVoucher)
     }
 
+    override fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int) {
+        val uriString = Uri.parse(review.reviewCard.reviewUrl).buildUpon()
+                .appendQueryParameter(PARAM_RATING, starCount.toString())
+                .build()
+                .toString()
+        val intent = RouteManager.getIntent(context, uriString)
+        val reviewRequestResult = ReviewRequestResult(
+                review, lastKnownPosition
+        )
+        reviewRequest.push(reviewRequestResult)
+        startActivityForResult(intent, REQUEST_REVIEW)
+    }
+
     companion object {
+        const val PARAM_RATING = "rating"
+        const val PARAM_UTM_SOURCE = "utmSource"
+        const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

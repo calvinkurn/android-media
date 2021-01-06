@@ -17,6 +17,8 @@ object TalkInboxTrackingConstants {
     const val EVENT_LABEL_LAZY_LOAD = "count page load:%s; count unread messages:%s; count read messages:%s; shop id:%s;"
     const val FILTER_READ = "sudah dibaca"
     const val FILTER_UNREAD = "belum dibaca"
+    const val FILTER_PROBLEM = "bermasalah"
+    const val FILTER_UNRESPONDED = "belum direspon"
     const val EVENT_ACTION_CLICK_TAB = "${TalkTrackingConstants.EVENT_ACTION_CLICK} %s tab"
     const val EVENT_LABEL_CLICK_TAB = "shop id:%s;count unread messages:%s;"
     const val TAB_SELLER = "seller"

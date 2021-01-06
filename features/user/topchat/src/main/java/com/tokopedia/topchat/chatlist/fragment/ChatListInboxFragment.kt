@@ -366,12 +366,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setUpRecyclerView(view: View) {
-        val recyclerView = super.getRecyclerView(view)
-        recyclerView.setHasFixedSize(true)
-        for (i in 0 until recyclerView.itemDecorationCount) {
-            recyclerView.removeItemDecorationAt(i)
+        rv?.apply {
+            setHasFixedSize(true)
+            for (i in 0 until itemDecorationCount) {
+                removeItemDecorationAt(i)
+            }
+            addItemDecoration(ChatListItemDecoration(context))
+            itemAnimator = null
         }
-        recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
     private fun setupObserver() {
@@ -631,6 +633,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun increaseNotificationCounter() {
+        containerListener?.increaseChatUnreadCounter()
         when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
@@ -638,6 +641,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun decreaseNotificationCounter() {
+        containerListener?.decreaseChatUnreadCounter()
         when (role) {
 //            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
 //            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()
@@ -674,6 +678,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onDestroy() {
         super.onDestroy()
         removeLiveDataObserver()
+        webSocket.clearPendingMessages()
         viewModel.flush()
     }
 
@@ -762,6 +767,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onSwipeRefresh() {
+        containerListener?.refreshNotificationCounter()
         super.onSwipeRefresh()
 //        chatTabListContract?.loadNotificationCounter()
     }

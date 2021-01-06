@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class VoucherOrdersItem(
@@ -18,9 +18,6 @@ data class VoucherOrdersItem(
 		@field:SerializedName("discount_amount")
 	val discountAmount: Int? = null,
 
-		@field:SerializedName("address_id")
-	val addressId: Int? = null,
-
 		@field:SerializedName("title_description")
 	val titleDescription: String? = null,
 
@@ -32,12 +29,6 @@ data class VoucherOrdersItem(
 
 		@field:SerializedName("type")
 	val type: String? = null,
-
-		@field:SerializedName("cart_id")
-	val cartId: Int? = null,
-
-		@field:SerializedName("shop_id")
-	val shopId: Int? = null,
 
 		@field:SerializedName("benefit_details")
 	val benefitDetails: List<BenefitDetailsItem?>? = null,

@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
@@ -13,6 +12,7 @@ import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class AccountSwitcherMenuItem : ConstraintLayout {
@@ -27,7 +27,7 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
     abstract val role: Int
 
     protected var name: Typography? = null
-    protected var photoProfile: ImageView? = null
+    protected var photoProfile: ImageUnify? = null
     protected var smallIcon: ImageView? = null
     protected var unreadCounter: Typography? = null
     protected var checkMark: ImageView? = null
@@ -43,7 +43,9 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
     }
 
     fun loadProfilePicture(imageUrl: String?) {
-        ImageHandler.loadImageCircle2(context, photoProfile, imageUrl)
+        imageUrl ?: return
+        photoProfile?.scaleType = ImageView.ScaleType.CENTER_CROP
+        photoProfile?.setImageUrl(imageUrl)
     }
 
     fun showCheckMark() {

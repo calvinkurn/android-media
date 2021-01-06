@@ -286,6 +286,5 @@ class ProductDetailActivityTest {
         const val SEE_ALL_ON_LATEST_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_see_all_on_latest_discussion.json"
         const val THREAD_DETAIL_ON_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_thread_detail_on_discussion.json"
         const val DISCUSSION_PRODUCT_TAB_PATH = "tracker/merchant/product_detail/pdp_click_discussion_product_tab.json"
-        const val SEE_ALL_DISCUSSION_TEXT = "Lihat Semua Diskusi"
     }
 }
