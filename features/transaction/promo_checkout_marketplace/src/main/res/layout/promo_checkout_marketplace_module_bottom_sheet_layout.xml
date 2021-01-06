@@ -40,7 +40,7 @@
             android:paddingTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16"
             android:text="@string/label_promo_last_seen_title"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"

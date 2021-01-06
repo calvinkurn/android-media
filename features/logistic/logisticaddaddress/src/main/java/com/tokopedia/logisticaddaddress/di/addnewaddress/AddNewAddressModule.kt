@@ -2,13 +2,15 @@ package com.tokopedia.logisticaddaddress.di.addnewaddress
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
-import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -19,6 +21,11 @@ import dagger.Provides
 
 @Module
 class AddNewAddressModule {
+
+    @Provides
+    @AddNewAddressScope
+    fun provideGraphQlRepository(): GraphqlRepository =
+            GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @AddNewAddressScope
