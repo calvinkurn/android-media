@@ -147,6 +147,7 @@ import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -277,6 +278,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
+        setupStockTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -745,6 +747,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
             }
         }
+    }
+
+    private fun setupStockTicker() {
+        (stockTicker as? Ticker)?.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            }
+            override fun onDismiss() {
+                viewModel.hideStockTicker()
+            }
+        })
     }
 
     private fun showFilterBottomSheet() {

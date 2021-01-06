@@ -605,6 +605,10 @@ class ProductManageViewModel @Inject constructor(
         setFeaturedProductUseCase.cancelJobs()
     }
 
+    fun hideStockTicker() {
+        _showStockTicker.value = false
+    }
+
     private fun showProductList(products: List<Product>?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
         val productManageAccess = (_productManageAccess.value as? Success)?.data
@@ -613,9 +617,10 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private fun showStockTicker() {
+        val showTicker = _showStockTicker.value == true
         val isInitialLoad = _productListResult.value == null
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val shouldShow = isInitialLoad && isMultiLocationShop
+        val shouldShow = isInitialLoad && isMultiLocationShop || showTicker
         _showStockTicker.value = shouldShow
     }
 
