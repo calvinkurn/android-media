@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.exception
+package com.tokopedia.sessioncommon.domain.exception
 
 import com.tokopedia.network.exception.MessageErrorException
 
