@@ -30,8 +30,7 @@ class ChatAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
-                showLoadingState(context, appWidgetManager, appWidgetIds)
-                GetChatExecutor.run(context)
+                GetChatExecutor.run(context, true)
             } else {
                 ChatWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -72,7 +71,7 @@ class ChatAppWidget : AppWidgetProvider() {
                 return
             }
         }
-        GetChatExecutor.run(context)
+        GetChatExecutor.run(context, true)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -106,15 +105,6 @@ class ChatAppWidget : AppWidgetProvider() {
         AppWidgetHelper.openAppLink(context, intent)
     }
 
-    private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {
-        val remoteViews = AppWidgetHelper.getChatWidgetRemoteView(context)
-        ids.forEach {
-            ChatWidgetStateHelper.updateViewOnLoading(remoteViews)
-            ChatWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)
-            awm.updateAppWidget(it, remoteViews)
-        }
-    }
-
     private fun onChatItemClick(context: Context, intent: Intent) {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val chatItemItem: ChatItemUiModel? = bundle?.getParcelable(Const.Extra.CHAT_ITEM)
@@ -143,7 +133,7 @@ class ChatAppWidget : AppWidgetProvider() {
         AppWidgetTracking.getInstance(context)
                 .sendEventClickRefreshButtonChatWidget()
 
-        GetChatExecutor.run(context)
+        GetChatExecutor.run(context, true)
     }
 
     private fun initUserSession(context: Context) {
