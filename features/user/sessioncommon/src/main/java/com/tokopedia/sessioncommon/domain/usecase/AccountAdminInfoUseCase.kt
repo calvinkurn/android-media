@@ -1,7 +1,10 @@
 package com.tokopedia.sessioncommon.domain.usecase
 
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
@@ -49,5 +52,13 @@ class AccountAdminInfoUseCase @Inject constructor(private val refreshShopBasicDa
                     }
                 }
         return Pair(adminDataResponse, shopData)
+    }
+
+    fun setStrategyCloudThenCache() {
+        setCacheStrategy(
+                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setSessionIncluded(true)
+                        .build())
     }
 }

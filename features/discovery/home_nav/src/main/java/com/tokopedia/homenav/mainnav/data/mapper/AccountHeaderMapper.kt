@@ -10,6 +10,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.user.session.UserSessionInterface
 
 class AccountHeaderMapper (

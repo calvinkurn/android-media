@@ -76,13 +76,13 @@ class BuyerAccountViewModel @Inject constructor (
             val isAffiliate = checkIsAffiliate()
             val shortcutResponse = shortcutDataUseCase.executeOnBackground()
             val (adminDataResponse, shopData) =
-                    if (!userSession.isShopOwner) {
+                    if (userSession.isShopOwner) {
+                        Pair(null, null)
+                    } else {
                         with(accountAdminInfoUseCase) {
                             isLocationAdmin = userSession.isLocationAdmin
                             executeOnBackground()
                         }
-                    } else {
-                        Pair(null, null)
                     }
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
