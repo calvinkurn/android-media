@@ -147,10 +147,6 @@ class BannerComponentViewHolder(itemView: View,
         bannerListener?.onPageDragStateChanged(isDrag)
     }
 
-    private fun onPromoAllClick(applink: String) {
-        bannerListener?.onPromoAllClick(applink)
-    }
-
     private fun setHeaderComponent(element: BannerDataModel) {
         element.channelModel?.let {
             itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {

@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import java.util.*
@@ -55,6 +56,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
+        } else if (holder is BannerComponentViewHolder) {
+            holder.onResume()
         }
     }
 
@@ -63,6 +66,8 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(holder is PlayCardViewHolder) {
             holder.onViewDetach()
         } else if(holder is BannerViewHolder){
+            holder.onPause()
+        } else if(holder is BannerComponentViewHolder){
             holder.onPause()
         }
     }
@@ -127,6 +132,10 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
     fun resetImpressionHomeBanner() {
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.resetImpression()
+        }
+        val listOfBannerComponent = currentList.filterIsInstance(BannerComponentViewHolder::class.java)
+        listOfBannerComponent.map {
+            it.resetImpression()
         }
     }
 
