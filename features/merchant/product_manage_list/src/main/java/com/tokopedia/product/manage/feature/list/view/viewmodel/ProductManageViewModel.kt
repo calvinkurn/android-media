@@ -617,10 +617,10 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private fun showStockTicker() {
-        val showTicker = _showStockTicker.value == true
+        val isTickerVisible = _showStockTicker.value == true
         val isInitialLoad = _productListResult.value == null
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val shouldShow = isInitialLoad && isMultiLocationShop || showTicker
+        val shouldShow = isInitialLoad && isMultiLocationShop || isTickerVisible
         _showStockTicker.value = shouldShow
     }
 
