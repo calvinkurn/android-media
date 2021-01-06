@@ -121,7 +121,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           product_weight_fmt
           product_weight
           product_weight_actual
-          product_weight_volume
           product_condition
           product_status
           product_url

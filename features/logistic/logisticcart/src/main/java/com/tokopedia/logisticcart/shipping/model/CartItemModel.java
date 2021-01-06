@@ -27,7 +27,6 @@ public class CartItemModel implements Parcelable {
     private int weight;
     private String weightFmt;
     private int weightActual;
-    private int weightVolume;
 
     private int quantity;
     private String noteToSeller;
@@ -477,14 +476,6 @@ public class CartItemModel implements Parcelable {
         this.weightActual = weightActual;
     }
 
-    public int getWeightVolume() {
-        return weightVolume;
-    }
-
-    public void setWeightVolume(int weightVolume) {
-        this.weightVolume = weightVolume;
-    }
-
     public CartItemModel() {
     }
 
@@ -582,7 +573,6 @@ public class CartItemModel implements Parcelable {
         dest.writeInt(this.weight);
         dest.writeString(this.weightFmt);
         dest.writeInt(this.weightActual);
-        dest.writeInt(this.weightVolume);
         dest.writeInt(this.quantity);
         dest.writeString(this.noteToSeller);
         dest.writeString(this.imageUrl);
@@ -627,7 +617,6 @@ public class CartItemModel implements Parcelable {
         this.weight = in.readInt();
         this.weightFmt = in.readString();
         this.weightActual = in.readInt();
-        this.weightVolume = in.readInt();
         this.quantity = in.readInt();
         this.noteToSeller = in.readString();
         this.imageUrl = in.readString();

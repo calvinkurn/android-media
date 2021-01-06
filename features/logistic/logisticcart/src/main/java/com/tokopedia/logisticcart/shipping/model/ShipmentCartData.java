@@ -25,7 +25,6 @@ public class ShipmentCartData implements Parcelable {
     private String destinationAddress;
     private double weight;
     private double weightActual;
-    private double weightVolume;
     private String token;
     private String ut;
     private int insurance;
@@ -206,14 +205,6 @@ public class ShipmentCartData implements Parcelable {
         this.weightActual = weightActual;
     }
 
-    public double getWeightVolume() {
-        return weightVolume;
-    }
-
-    public void setWeightVolume(double weightVolume) {
-        this.weightVolume = weightVolume;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -236,7 +227,6 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.destinationAddress);
         dest.writeDouble(this.weight);
         dest.writeDouble(this.weightActual);
-        dest.writeDouble(this.weightVolume);
         dest.writeString(this.token);
         dest.writeString(this.ut);
         dest.writeInt(this.insurance);
@@ -263,7 +253,6 @@ public class ShipmentCartData implements Parcelable {
         this.destinationAddress = in.readString();
         this.weight = in.readDouble();
         this.weightActual = in.readDouble();
-        this.weightVolume = in.readDouble();
         this.token = in.readString();
         this.ut = in.readString();
         this.insurance = in.readInt();

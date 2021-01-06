@@ -284,7 +284,6 @@ public class ShipmentDataConverter {
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
         cartItemModel.setWeightActual(product.getProductWeightActual());
-        cartItemModel.setWeightVolume(product.getProductWeightVolume());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());

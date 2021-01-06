@@ -571,7 +571,6 @@ public class ShipmentMapper implements IShipmentMapper {
                                     productResult.setProductWeightFmt(product.getProductWeightFmt());
                                     productResult.setProductWeight(product.getProductWeight());
                                     productResult.setProductWeightActual(product.getProductWeightActual());
-                                    productResult.setProductWeightVolume(product.getProductWeightVolume());
                                     productResult.setProductCondition(product.getProductCondition());
                                     productResult.setProductUrl(product.getProductUrl());
                                     productResult.setProductReturnable(product.getProductReturnable() == 1);

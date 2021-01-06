@@ -134,7 +134,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_weight_fmt
             product_weight
             product_weight_actual
-            product_weight_volume
             product_condition
             product_url
             product_returnable
