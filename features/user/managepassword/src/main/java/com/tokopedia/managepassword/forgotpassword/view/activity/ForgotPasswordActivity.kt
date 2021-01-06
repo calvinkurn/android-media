@@ -80,10 +80,17 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_WEB_VIEW) {
-            if (data != null && data.extras != null) {
-                val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
-                if (isContainsLoginApplink) gotoLogin()
+        if (resultCode == Activity.RESULT_OK && data != null && data.extras != null ) {
+            when(requestCode) {
+                REQUEST_CODE_WEB_VIEW -> {
+                    val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
+                    if (isContainsLoginApplink) {
+                        gotoLogin()
+                    }
+                }
+                REQUEST_CODE_LOGIN -> {
+                    if (userSession.isLoggedIn) gotoHome()
+                }
             }
         }
     }
@@ -95,6 +102,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
     private fun gotoLogin() {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
         startActivity(intent)
         finish()
     }
@@ -117,6 +129,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
     companion object {
         private const val REQUEST_CODE_WEB_VIEW = 100
+        private const val REQUEST_CODE_LOGIN = 101
 
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
         private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
