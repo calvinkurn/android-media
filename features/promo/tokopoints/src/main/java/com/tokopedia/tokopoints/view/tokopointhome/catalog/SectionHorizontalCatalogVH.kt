@@ -82,7 +82,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
 
         if ((content.layoutCatalogAttr.countdownInfo == null || content.layoutCatalogAttr.countdownInfo != null && content.layoutCatalogAttr.countdownInfo?.isShown != null
                 && !content.layoutCatalogAttr.countdownInfo?.isShown!!) && content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty) {
-            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_column, R.id.text_title_column, ConstraintSet.TOP)
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all_column, R.id.text_title_column, ConstraintSet.BASELINE)
         }
 
         if (!content.cta.isEmpty) {

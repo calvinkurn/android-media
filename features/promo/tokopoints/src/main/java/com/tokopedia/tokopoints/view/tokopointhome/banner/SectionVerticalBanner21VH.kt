@@ -27,7 +27,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
         ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
 
         if (content.sectionSubTitle.isNullOrEmpty() && !content.cta.isEmpty){
-            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.TOP)
+            CustomConstraintProvider.setCustomConstraint(view, R.id.parent_layout, R.id.text_see_all, R.id.text_title, ConstraintSet.BASELINE)
         }
 
         if (!content.cta.isEmpty) {
