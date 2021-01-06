@@ -14,6 +14,7 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -269,6 +270,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
+        setupToolbar()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -1521,5 +1523,15 @@ class SomDetailFragment : BaseDaggerFragment(),
         somGlobalError?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(som_detail_toolbar)
+                som_detail_toolbar?.title = getString(R.string.title_som_detail)
+            }
+        }
     }
 }
