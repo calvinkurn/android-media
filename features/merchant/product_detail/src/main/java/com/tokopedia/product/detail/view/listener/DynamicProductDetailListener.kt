@@ -9,6 +9,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -19,10 +20,17 @@ interface DynamicProductDetailListener {
     fun isNavOld(): Boolean
 
     /**
+     * ProductMediaViewHolder
+     */
+    fun onVideoFullScreenClicked()
+    fun onVideoVolumeCLicked(isMute: Boolean)
+    fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
+    fun getProductVideoCoordinator(): ProductVideoCoordinator?
+    /**
      * ProductSnapshotViewHolder
      */
     fun onImageClicked(position: Int)
-    fun onImageClickedTrack(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int)
     fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel)
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
@@ -103,7 +111,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductDefaultErrorViewHolder
      */
-    fun onRetryClicked(forceRefresh:Boolean)
+    fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
 

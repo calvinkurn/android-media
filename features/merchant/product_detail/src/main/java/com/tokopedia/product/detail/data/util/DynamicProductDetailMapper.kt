@@ -211,7 +211,7 @@ object DynamicProductDetailMapper {
     }
 
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
-        return media.map { it ->
+        return media.map {
             MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
