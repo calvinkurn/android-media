@@ -361,7 +361,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     isShimmering = true
                 } else {
                     it.discussionMostHelpful?.let {
-                        questions = it.questions
+                        questions = it.questions?.toMutableList()
                         totalQuestion = it.totalQuestion
                         isShimmering = false
                     }
@@ -424,10 +424,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun successUpdateShopFollow(isFavorite: Boolean) {
         shopInfoMap?.isFavorite = !isFavorite
-        shopInfoMap?.enableButtonFavorite = true
-
         shopCredibility?.isFavorite = !isFavorite
-        shopCredibility?.enableButtonFavorite = true
     }
 
     fun updateShopFollow(isFollow: Int) {
@@ -437,7 +434,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun failUpdateShopFollow() {
         shopInfoMap?.enableButtonFavorite = true
-        shopCredibility?.enableButtonFavorite = true
     }
 
     fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {

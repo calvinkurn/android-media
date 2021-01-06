@@ -60,11 +60,13 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
+    const val PAYLOAD_TRADEIN = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
+    const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
     const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code

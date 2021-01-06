@@ -102,6 +102,14 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
+    fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
+        return if (data != null) {
+            productAdapter?.currentList?.indexOf(data) ?: RecyclerView.NO_POSITION
+        } else {
+            RecyclerView.NO_POSITION
+        }
+    }
+
     fun scrollToPosition(position: Int) {
         if (position >= 0) {
             getRecyclerView()?.post {

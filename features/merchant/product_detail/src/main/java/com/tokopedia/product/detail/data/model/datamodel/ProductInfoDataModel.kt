@@ -29,7 +29,8 @@ data class ProductInfoDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductInfoDataModel) {
-            this::class == newData::class
+            data.hashCode() == newData.data.hashCode()
+                    && youtubeVideos.hashCode() == newData.youtubeVideos.hashCode()
         } else {
             false
         }

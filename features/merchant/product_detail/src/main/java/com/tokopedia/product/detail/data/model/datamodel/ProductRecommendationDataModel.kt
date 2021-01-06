@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -50,7 +50,7 @@ data class ProductRecommendationDataModel(
         val bundle = Bundle()
         return if (newData is ProductRecommendationDataModel) {
             if (!areFilterTheSame(newData.recomWidgetData)) {
-                bundle.putString(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM)
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM)
                 return bundle
             }
             null
@@ -61,7 +61,11 @@ data class ProductRecommendationDataModel(
 
     private fun areRecomItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
         var areSame = false
-        if (recomWidgetData?.recommendationItemList?.size != newRecomWidgetData?.recommendationItemList?.size) return false
+        if (recomWidgetData?.recommendationItemList == null && newRecomWidgetData?.recommendationItemList == null) {
+            return true
+        } else if (recomWidgetData?.recommendationItemList?.size != newRecomWidgetData?.recommendationItemList?.size) {
+            return false
+        }
 
         val pairRecom = recomWidgetData?.recommendationItemList?.zip(newRecomWidgetData?.recommendationItemList
                 ?: listOf())

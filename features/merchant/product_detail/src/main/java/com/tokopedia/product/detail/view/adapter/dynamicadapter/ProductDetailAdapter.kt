@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -68,8 +70,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(item, payloads)
+        val payloadInt = (payloads.first() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
+        if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
+            holder.bind(item, listOf(payloadInt))
+        } else {
+            holder.bind(item)
         }
     }
 
@@ -84,7 +89,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     private fun isLoading(): Boolean {
-        val lastIndex = if (currentList.size == 0) -1 else currentList.size
+        val lastIndex = if (currentList.size == 0) -1 else currentList.size -1
         return if (lastIndex > -1) {
             currentList[lastIndex] is LoadingModel ||
                     currentList[lastIndex] is LoadingMoreModel ||

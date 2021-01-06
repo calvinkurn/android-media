@@ -54,10 +54,9 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
             return
         }
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE -> shopInfoView.toggleClickableFavoriteBtn(element.enableButtonFavorite)
+            ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE -> shopInfoView.enableButton()
             else -> {
                 shopInfoView.updateFavorite(element.isFavorite)
-                shopInfoView.toggleClickableFavoriteBtn(element.enableButtonFavorite)
             }
         }
     }

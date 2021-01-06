@@ -65,9 +65,9 @@ data class ProductShopInfoDataModel(
                 return null
             }
 
-            if (isFavorite != newData.isFavorite && enableButtonFavorite != newData.enableButtonFavorite) {
+            if (isFavorite != newData.isFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            } else if (isFavorite == newData.isFavorite && enableButtonFavorite != newData.enableButtonFavorite) {
+            } else if (enableButtonFavorite != enableButtonFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
             }
 

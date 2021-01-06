@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
-import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -8,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -84,9 +84,7 @@ class DynamicProductDetailAdapter(
 
     fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel) {
         val index = list.indexOf(productRecommendationDataModel)
-        if (index != -1) notifyItemChanged(index, Bundle().apply {
-            putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
-        })
+        if (index != -1) notifyItemChanged(index, PAYLOAD_UPDATE_FILTER_RECOM)
     }
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {

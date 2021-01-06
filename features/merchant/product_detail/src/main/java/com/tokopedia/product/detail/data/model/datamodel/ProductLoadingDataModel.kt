@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductLoadingDataModel(
         val name: String = "pdpLoading",
         val type: String = "pdpLoading"
-
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 

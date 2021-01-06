@@ -45,9 +45,9 @@ data class ProductContentDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductContentDataModel) {
-            areMainContentTheSame(newData.data)
+            data?.hashCode() == newData.data?.hashCode()
                     && shouldShowTradein == newData.shouldShowTradein
-                    && areUpcomingNplTheSame(newData.upcomingNplData)
+                    && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
                     && isWishlisted == newData.isWishlisted
         } else {
             false
@@ -61,9 +61,15 @@ data class ProductContentDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductContentDataModel) {
-            if (!areMainContentTheSame(newData.data) && shouldShowTradein == newData.shouldShowTradein && areUpcomingNplTheSame(newData.upcomingNplData)) {
+            if (data?.hashCode() != newData.data?.hashCode()
+                    || upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()) {
                 //Update the whole component
                 return null
+            }
+
+            if (shouldShowTradein != newData.shouldShowTradein) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN)
+                return bundle
             }
 
             if (isWishlisted != newData.isWishlisted) {
@@ -74,25 +80,6 @@ data class ProductContentDataModel(
         } else {
             null
         }
-    }
-
-    private fun areMainContentTheSame(newData: ProductContentMainData?): Boolean {
-        return data?.productName == newData?.productName
-                && data?.price == newData?.price
-                && data?.isProductActive == newData?.isProductActive
-                && data?.stockWording == newData?.stockWording
-                && areMainCampaignTheSame(newData?.campaign)
-    }
-
-    private fun areMainCampaignTheSame(newCampaign: CampaignModular?): Boolean {
-        val currentCampaign = data?.campaign
-        return currentCampaign.hashCode() == newCampaign.hashCode()
-    }
-
-    private fun areUpcomingNplTheSame(newUpcomingNplData: UpcomingNplDataModel): Boolean {
-        return upcomingNplData.upcomingType == newUpcomingNplData.upcomingType
-                && upcomingNplData.ribbonCopy == newUpcomingNplData.ribbonCopy
-                && upcomingNplData.startDate == newUpcomingNplData.startDate
     }
 }
 

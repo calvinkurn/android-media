@@ -43,7 +43,7 @@ data class ProductMiniSocialProofDataModel(
         return if (newData is ProductMiniSocialProofDataModel) {
             wishlistCount == newData.wishlistCount &&
                     viewCount == newData.viewCount &&
-                    shouldRenderSocialProof == newData.shouldShowSingleViewSocialProof()
+                    shouldRenderSocialProof == newData.shouldRenderSocialProof
         } else {
             false
         }

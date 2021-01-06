@@ -38,7 +38,7 @@ data class ProductGeneralInfoDataModel(
     }
 
     override fun newInstance(): DynamicPdpDataModel {
-        return this.copy()
+        return this.copy(data = data.map { it.copy() })
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
@@ -49,7 +49,7 @@ data class ProductGeneralInfoDataModel(
         val currentContent = data.firstOrNull()
         return currentContent?.applink == content?.applink
                 && currentContent?.icon == content?.icon
-                && currentContent?.subtitle == currentContent?.subtitle
-                && currentContent?.title == currentContent?.title
+                && currentContent?.subtitle == content?.subtitle
+                && currentContent?.title == content?.title
     }
 }

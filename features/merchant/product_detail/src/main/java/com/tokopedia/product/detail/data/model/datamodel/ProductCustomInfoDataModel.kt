@@ -36,7 +36,11 @@ data class ProductCustomInfoDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductCustomInfoDataModel) {
-            this::class == newData::class
+            title == newData.title
+                    && icon == newData.icon
+                    && description == newData.description
+                    && separator == newData.separator
+                    && applink == newData.applink
         } else {
             false
         }

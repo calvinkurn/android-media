@@ -102,7 +102,6 @@ import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
-import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
@@ -245,7 +244,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var warehouseId: String? = null
     private var doActivityResult = true
     private var shouldFireVariantTracker = true
-    private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
+    private var pdpUiUpdater: PdpUiUpdaterDiffutil? = PdpUiUpdaterDiffutil(mutableMapOf())
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
@@ -261,7 +260,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
-    private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var navToolbar: NavToolbar? = null
     private var toasterWishlistText = ""
@@ -482,7 +480,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 if (data != null) {
                     val isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
                     pdpUiUpdater?.updateWishlistData(isWishlisted)
-                    dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+                    updateUi()
                 }
             }
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
@@ -654,12 +652,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
      */
     override fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickShopMiniShopInfo(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        val shopCredibilityIndex = dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopCredibility)
+        val shopCredibilityIndex = getComponentPosition(pdpUiUpdater?.shopCredibility)
 
         if (shopCredibilityIndex != RecyclerView.NO_POSITION) {
             scrollToPosition(shopCredibilityIndex)
         } else {
-            scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
+            scrollToPosition(getComponentPosition(pdpUiUpdater?.shopInfoMap))
         }
     }
 
@@ -1055,7 +1053,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickTradeInRibbon(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productTradeinMap))
+        scrollToPosition(getComponentPosition(pdpUiUpdater?.productTradeinMap))
     }
 
     override fun onAccept() {
@@ -1075,7 +1073,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     override fun showAlertCampaignEnded() {
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
         activity?.let {
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
@@ -1201,12 +1198,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             data.doSuccessOrFail({
                 if (!it.data.isNullOrEmpty()) {
                     pdpUiUpdater?.updateTopAdsImageData(it.data)
-                    dynamicAdapter.notifyTopAdsBanner(pdpUiUpdater?.topAdsImageData)
+                    updateUi()
                 } else {
-                    dynamicAdapter.removeComponentSection(pdpUiUpdater?.topAdsImageData)
+                    pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
                 }
             }, {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.topAdsImageData)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
             })
         }
     }
@@ -1214,12 +1211,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun observeP2Other() {
         viewLifecycleOwner.observe(viewModel.p2Other) {
             if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewOldMap)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.MOST_HELPFUL_REVIEW)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
             }
 
             pdpUiUpdater?.updateDataP2General(it)
-            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productReviewMap, pdpUiUpdater?.productReviewOldMap)
+            updateUi()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Other()
         }
     }
@@ -1228,7 +1225,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.discussionMostHelpful) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateDiscussionData(it.data.discussionMostHelpful)
-                dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap)
+                updateUi()
             }, {
                 // No Op
             })
@@ -1244,11 +1241,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             if (it.second.isNotEmpty()) {
                 pdpUiUpdater?.updateImageAfterClickVariant(mediaList, enableVideo())
                 viewModel.updateDynamicProductInfoData(VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, mediaList))
-                dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
-                dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
-            } else {
-                dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
             }
+            updateUi()
         }
     }
 
@@ -1294,15 +1288,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.getDynamicProductInfoP1,
                     pdpUiUpdater?.productNewVariantDataModel,
                     viewModel.variantData,
-                    dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
+                    getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
         }
-
-        dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
-        dynamicAdapter.notifyGeneralInfo(pdpUiUpdater?.productFullfilmentMap)
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
-        dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
-        dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, null)
-        dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap)
+        updateUi()
     }
 
     private fun updateButtonState() {
@@ -1317,8 +1305,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
             if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == true) {
-                pdpUiUpdater?.productNewVariantDataModel?.listOfVariantCategory = it
-                dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, null)
+                pdpUiUpdater?.updateVariantData(it)
             } else {
                 //If variant did auto select, we have to update the UI
                 updateVariantDataToExistingProductData(it)
@@ -1355,7 +1342,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
-                pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
+                pdpUiUpdater = PdpUiUpdaterDiffutil(DynamicProductDetailMapper.hashMapLayout(it.data).toMutableMap())
                 onSuccessGetDataP1(it.data)
             }, {
                 Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
@@ -1374,7 +1361,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
             if (it.pdpAffiliate == null) {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_BYME)
             } else {
                 pdpUiUpdater?.updateByMeData(context)
             }
@@ -1385,10 +1372,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
 
-            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-
+            updateUi()
             openBottomSheetTopAds()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
@@ -1472,10 +1456,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                dynamicAdapter.notifyRecomAdapter(pdpUiUpdater?.updateRecommendationData(it.data))
+                pdpUiUpdater?.updateRecommendationData(it.data)
+                updateUi()
             }, {
-                dynamicAdapter.removeRecommendation(pdpUiUpdater?.getRecommendationData(it.message
-                        ?: ""))
+                pdpUiUpdater?.removeComponent(it.message ?: "")
+                updateUi()
             })
         }
 
@@ -1487,8 +1472,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
 
         viewLifecycleOwner.observe(viewModel.filterTopAdsProduct) { data ->
-            val recommendation = pdpUiUpdater?.updateFilterRecommendationData(data)
-            recommendation?.let { dynamicAdapter.notifyFilterRecommendation(it) }
+            pdpUiUpdater?.updateFilterRecommendationData(data)
+            updateUi()
         }
     }
 
@@ -1595,13 +1580,18 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
+    private fun updateUi() {
+        val newData = pdpUiUpdater?.mapOfData?.values?.toList()
+        submitList(newData ?: listOf())
+    }
+
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             renderVariant(viewModel.variantData)
             val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
-            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo())
+            pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
@@ -1690,7 +1680,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         setupTickerOcc()
 
         if (it.vouchers.isNullOrEmpty()) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMerchantVoucherMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)
         } else {
             if (!viewModel.isUserSessionActive || !isOwner()) {
                 DynamicProductDetailTracking.Impression.eventImpressionMerchantVoucherUse(
@@ -1700,26 +1690,26 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
 
         if (it.upcomingCampaigns.values.isEmpty()) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.notifyMeMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.NOTIFY_ME)
         }
 
         if (!it.shopCommitment.isNowActive) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.orderPriorityMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
         if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productProtectionMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
         }
 
         if (!it.validateTradeIn.isEligible) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productTradeinMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
         }
 
         it.productFinancingRecommendationData.let { financingData ->
             if (financingData.data.partnerCode.isNotBlank()) {
                 pdpUiUpdater?.updateDataInstallment(context, financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
             } else {
-                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productInstallmentInfoMap)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
             }
         }
 
@@ -1733,7 +1723,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
-        dynamicAdapter.notifyItemRangeChangesExceptFirstPosition()
+        updateUi()
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
@@ -1761,17 +1751,17 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
         if (it.ratesModel == null || it.ratesModel?.getServicesSize() == 0) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productShipingInfoMap)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_SHIPPING_INFO)
         }
 
-        if (pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
+        if (it.tickerInfo.isEmpty() && pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.TICKER_INFO)
         }
 
         updateStickyContent(it.tickerStickyLogin)
 
         pdpUiUpdater?.updateDataP3(context, it)
-        dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
+        updateUi()
     }
 
     private fun logException(t: Throwable) {
@@ -1808,7 +1798,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     override fun onVariantGuideLineClicked(url: String) {
         activity?.let {
             DynamicProductDetailTracking.Click.onVariantGuideLineClicked(viewModel.getDynamicProductInfoP1, pdpUiUpdater?.productNewVariantDataModel,
-                    dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
+                    getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
             startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
         }
     }
@@ -1834,10 +1824,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun renderVariant(data: ProductVariantCommon?) {
         if (data == null || !data.hasChildren || pdpUiUpdater?.productNewVariantDataModel == null) {
-            dynamicAdapter.clearElement(pdpUiUpdater?.productNewVariantDataModel)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
         } else {
             if (data.errorCode > 0) {
                 pdpUiUpdater?.updateVariantError()
+                updateUi()
             } else {
                 autoSelectVariant()
                 viewModel.processVariant(data, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
@@ -2277,7 +2268,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun onSuccessRemoveWishlist(productId: String?) {
         view?.showToasterSuccess(toasterWishlistText)
         pdpUiUpdater?.updateWishlistData(false)
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+        updateUi()
         sendIntentResultWishlistChange(productId ?: "", false)
         if (isProductOos()) {
             refreshPage()
@@ -2292,7 +2283,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private fun onSuccessAddWishlist(productId: String?) {
         view?.showToasterSuccess(toasterWishlistText)
         pdpUiUpdater?.updateWishlistData(true)
-        dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+        updateUi()
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
             content.row == "bottom"
         }?.listOfContent?.firstOrNull()?.subtitle ?: "")
@@ -2660,7 +2651,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun showErrorVariantUnselected() {
         DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
-        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
+        scrollToPosition(getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
         val variantErrorMessage = if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
             getString(R.string.add_to_cart_error_variant)
         } else {
@@ -2790,10 +2781,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             doActionOrLogin({
                 nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
-                pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
                 pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+                pdpUiUpdater?.shopInfoMap?.enableButtonFavorite = false
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
                         ?: "", isNplFollowType)
             })
@@ -2816,9 +2805,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         if (isSuccess) {
             viewModel.clearCacheP2Data()
             pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
-            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-
+            updateUi()
             setupNplVisibility(if (isNplFollowerType) ProductDetailConstant.HIDE_NPL_BS else isFavorite)
         }
     }
@@ -2837,8 +2824,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             onShopFavoriteClick()
         }
         pdpUiUpdater?.failUpdateShopFollow()
-        dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-        dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+        updateUi()
     }
 
     private fun onShopChatClicked() {
@@ -3133,8 +3119,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         val dataModel = pdpUiUpdater?.notifyMeMap
         view?.showToasterError(getErrorMessage(t), ctaText = getString(com.tokopedia.design.R.string.oke))
         if (dataModel != null) {
-            pdpUiUpdater?.notifyMeMap?.notifyMe = !dataModel.notifyMe
-            dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
+            pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
+            updateUi()
         }
     }
 
@@ -3145,8 +3131,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.notifyMeAction = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
                         ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
                     pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
-                    pdpUiUpdater?.notifyMeMap?.notifyMe = !data.notifyMe
-                    dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
+                    pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)
+                    updateUi()
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toLongOrZero(), productId?.toLongOrZero()
                             ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
@@ -3308,12 +3294,12 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String) {
         applink?.let { goToApplink(it) }
-        val position = dynamicAdapter.getTopAdsBannerPosition(model)
+        val position = getComponentPosition(model)
         DynamicProductDetailTracking.Click.eventTopAdsImageViewClicked(trackingQueue, viewModel.userId, bannerId, position, bannerName)
     }
 
     override fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String) {
-        val position = dynamicAdapter.getTopAdsBannerPosition(model)
+        val position = getComponentPosition(model)
         DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue, viewModel.userId, bannerId, position, bannerName)
     }
 }

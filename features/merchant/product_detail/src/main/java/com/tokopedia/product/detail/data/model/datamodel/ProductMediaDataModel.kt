@@ -30,8 +30,7 @@ data class ProductMediaDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMediaDataModel) {
-            listOfMedia.size == newData.listOfMedia.size &&
-                    listOfMedia.firstOrNull()?.id == newData.listOfMedia.firstOrNull()?.id
+            listOfMedia.hashCode() == newData.listOfMedia.hashCode()
         } else {
             false
         }
@@ -44,10 +43,15 @@ data class ProductMediaDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductMediaDataModel) {
-            if (shouldRenderImageVariant) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
+            if (newData.shouldRefreshViewPagger) {
+                return null
             }
-            return bundle
+
+            if (shouldRenderImageVariant != newData.shouldRenderImageVariant) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
+                return bundle
+            }
+            null
         } else {
             null
         }

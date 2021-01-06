@@ -208,7 +208,6 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
                 trackerListName, affiliateString, deeplinkUrl, layoutId)
     }
 
-
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {

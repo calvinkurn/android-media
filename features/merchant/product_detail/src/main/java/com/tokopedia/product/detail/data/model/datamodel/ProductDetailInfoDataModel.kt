@@ -32,7 +32,7 @@ data class ProductDetailInfoDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductDetailInfoDataModel) {
-            this::class == newData::class
+            dataContent.hashCode() == newData.dataContent.hashCode()
         } else {
             false
         }

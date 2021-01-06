@@ -23,7 +23,7 @@ data class ProductMerchantVoucherDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMerchantVoucherDataModel) {
-            voucherData.size == newData.voucherData.size
+            voucherData.hashCode() == newData.voucherData.hashCode()
         } else {
             false
         }

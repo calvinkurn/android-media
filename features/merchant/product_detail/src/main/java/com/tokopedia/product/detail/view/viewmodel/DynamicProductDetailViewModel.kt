@@ -190,6 +190,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
+    private var alreadyHitRecom:MutableList<String> = mutableListOf()
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -321,6 +322,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
         launchCatchError(dispatcher.io, block = {
+            alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
 
@@ -562,6 +564,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (!GlobalConfig.isSellerApp()) {
                 try {
                     withContext(dispatcher.io) {
+                        if (!alreadyHitRecom.contains(pageName)) {
+                            alreadyHitRecom.add(pageName)
+                        } else {
+                            return@withContext
+                        }
+
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
