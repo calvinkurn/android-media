@@ -40,7 +40,7 @@ class InspirationCarouselViewModel(
 
         fun getBannerDataLayer(keyword: String): Any {
             return DataLayer.mapOf(
-                "creative", title,
+                "creative", carouselTitle,
                 "id", "0",
                 "name", "/search - $keyword",
                 "position", position
