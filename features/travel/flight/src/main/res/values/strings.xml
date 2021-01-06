@@ -394,4 +394,5 @@ di tempatmu.</string>
     <string name="flight_order_detail_web_checkin_available">Bisa Check-in</string>
 
     <string name="flight_order_detail_success_copy_message">%1$s berhasil di salin.</string>
+    <string name="reset">Reset</string>
 </resources>
