@@ -5,6 +5,7 @@
     android:id="@+id/cardViewProductCard"
     android:layout_width="136dp"
     android:layout_height="wrap_content"
+    android:minHeight="254dp"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardElevation="@dimen/spacing_lvl2"
     app:cardPreventCornerOverlap="false"

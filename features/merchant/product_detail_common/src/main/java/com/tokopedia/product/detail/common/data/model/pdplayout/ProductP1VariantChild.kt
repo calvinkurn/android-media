@@ -152,7 +152,7 @@ data class ProductP1VariantCampaign(
 
         @SerializedName("endDateUnix")
         @Expose
-        val endDateUnix: Int? = null,
+        val endDateUnix: String? = null,
 
         @SerializedName("stockSoldPercentage")
         @Expose

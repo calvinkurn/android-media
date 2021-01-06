@@ -91,7 +91,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
                 .backgroundContentColorRes(Neutral_N700_96)
-                .shadowColorRes(R.color.shadow)
+                .shadowColorRes(R.color.settingnotif_shadow)
                 .textColorRes(R.color.grey_400)
                 .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
                 .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)

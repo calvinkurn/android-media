@@ -7,7 +7,7 @@ data class ProductDataResponse(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("product_price_fmt")
@@ -15,7 +15,7 @@ data class ProductDataResponse(
         @SerializedName("product_price")
         val productPrice: Long = 0,
         @SerializedName("parent_id")
-        val parentId: Int = 0,
+        val parentId: Long = 0,
         @SerializedName("category_id")
         val categoryId: Int = 0,
         @SerializedName("category")

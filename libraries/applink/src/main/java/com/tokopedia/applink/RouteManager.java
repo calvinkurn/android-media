@@ -43,13 +43,15 @@ public class RouteManager {
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
+    public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
     private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         ApplinkLogger.getInstance(context).appendTrace("Building implicit intent...");
         Uri uri = Uri.parse(deeplink);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(INTERNAL_VIEW);
         intent.setData(uri);
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);

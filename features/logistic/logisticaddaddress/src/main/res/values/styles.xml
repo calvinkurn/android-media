@@ -4,7 +4,7 @@
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/white</item></style>
 
-    <style name="LogisticTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="LogisticTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
     </style>
 </resources>

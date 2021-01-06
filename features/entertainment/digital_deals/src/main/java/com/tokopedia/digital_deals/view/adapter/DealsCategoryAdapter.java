@@ -501,9 +501,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             if (!brandPageCard) {
-                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 brandName.setText(productItem.getBrand().getTitle());
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);
@@ -711,8 +711,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
-            ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+            ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             brandName.setText(productItem.getBrand().getTitle());
             if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
@@ -824,7 +824,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 this.valueItem = value;
                 tvDealTitle.setText(valueItem.getDisplayName());
                 tvBrandName.setText(value.getBrand().getTitle());
-                ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, value.getThumbnailWeb(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 if (value.getMrp() > 0) {
                     mrpPrice.setText(Utils.convertToCurrencyString(value.getMrp()));
                     mrpPrice.setPaintFlags(mrpPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

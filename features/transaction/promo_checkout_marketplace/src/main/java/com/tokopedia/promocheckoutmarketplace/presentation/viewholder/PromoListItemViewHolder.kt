@@ -135,11 +135,11 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.clr_f531353b))
-        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
-        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
+        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -162,7 +162,7 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.purchase_platform.common.R.color.n_700_44)
+        val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
         labelPromoItemTitle.setTextColor(disabledColor)
         labelPromoCodeInfo.setTextColor(disabledColor)
         labelPromoCodeValue.setTextColor(disabledColor)
@@ -190,7 +190,7 @@ class PromoListItemViewHolder(private val view: View,
                 override fun updateDrawState(textPaint: TextPaint) {
                     super.updateDrawState(textPaint)
                     textPaint.isUnderlineText = false
-                    textPaint.color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                    textPaint.color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
             }
             formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
