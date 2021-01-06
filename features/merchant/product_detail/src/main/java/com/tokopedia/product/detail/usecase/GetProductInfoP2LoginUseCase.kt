@@ -7,9 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
+import com.tokopedia.product.detail.common.data.model.product.WishlistStatus
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
@@ -65,7 +65,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
         val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId ?: ""))
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+                WishlistStatus::class.java, isWishlistedParams)
 
         val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId.toLongOrZero()),
                 ProductDetailCommonConstant.SHOP_ID_PARAM to shopId,
@@ -96,8 +96,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-            if (gqlResponse.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-                p2Login.isWishlisted = gqlResponse.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
+            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true)
+                p2Login.isWishlisted = gqlResponse.getData<WishlistStatus>(WishlistStatus::class.java)
                         .isWishlisted == true
             else
                 p2Login.isWishlisted = true
