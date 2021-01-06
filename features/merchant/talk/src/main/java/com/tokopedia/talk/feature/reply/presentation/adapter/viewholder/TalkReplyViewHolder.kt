@@ -103,7 +103,6 @@ class TalkReplyViewHolder(view: View,
             isSeller -> {
                 replySellerLabel.text = context.getString(R.string.reading_seller_label)
                 replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
-                replyDisplayName.hide()
                 replySellerLabel.show()
             }
             isMyQuestion -> {
