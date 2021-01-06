@@ -39,7 +39,7 @@ class TalkReplyAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener, isOldView)
+            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener)
             TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
             TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
             TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener, threadListener, isOldView)

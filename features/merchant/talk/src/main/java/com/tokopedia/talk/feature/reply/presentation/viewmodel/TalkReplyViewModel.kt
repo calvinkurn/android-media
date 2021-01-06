@@ -17,6 +17,8 @@ import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponse
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
+import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
+import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.GetAllTemplatesUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -34,6 +36,7 @@ class TalkReplyViewModel @Inject constructor(
         private val talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase,
         private val talkReportTalkUseCase: TalkReportTalkUseCase,
         private val talkReportCommentUseCase: TalkReportCommentUseCase,
+        private val getAllTemplatesUseCase: GetAllTemplatesUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -86,6 +89,10 @@ class TalkReplyViewModel @Inject constructor(
     private val _reportCommentResult = MutableLiveData<Result<TalkReportCommentResponseWrapper>>()
     val reportCommentResult: LiveData<Result<TalkReportCommentResponseWrapper>>
         get() = _reportCommentResult
+
+    private val _templateList = MutableLiveData<Result<ChatTemplatesAll>>()
+    val templateList: LiveData<Result<ChatTemplatesAll>>
+        get() = _templateList
 
     private var isFollowing: Boolean = false
 
@@ -227,6 +234,16 @@ class TalkReplyViewModel @Inject constructor(
             }
         }) {
             _reportCommentResult.postValue(Fail(it))
+        }
+    }
+
+    fun getAllTemplates(isSeller: Boolean) {
+        launchCatchError(block = {
+            getAllTemplatesUseCase.setParams(isSeller)
+            val response = getAllTemplatesUseCase.executeOnBackground()
+            _templateList.postValue(Success(response.chatTemplatesAll))
+        }) {
+            _templateList.postValue(Fail(it))
         }
     }
 

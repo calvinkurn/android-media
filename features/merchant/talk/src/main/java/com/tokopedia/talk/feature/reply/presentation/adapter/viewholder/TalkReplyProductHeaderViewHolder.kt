@@ -18,6 +18,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_product_header
+        const val STOCK_THRESHOLD = 5
     }
 
     override fun bind(element: TalkReplyProductHeaderModel) {
@@ -33,7 +34,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             setImage(thumbnail)
             setProductName(productName, isSellerView)
             setKebabClickListener(isSellerView)
-            setStock(isSellerView, stock)
+            setStock(isSellerView, stockValue, stockText)
         }
     }
 
@@ -50,13 +51,18 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
         itemView.replyProductHeaderKebab.hide()
     }
 
-    private fun setStock(isSellerView: Boolean, stock: String) {
+    private fun setStock(isSellerView: Boolean, stockValue: Int, stockText: String) {
         if(isSellerView) {
             itemView.replyProductStock.apply {
-                text = stock
+                text = stockText
                 show()
+                if(stockValue < STOCK_THRESHOLD) {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                    return
+                }
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                return
             }
-            return
         }
         itemView.replyProductStock.hide()
     }

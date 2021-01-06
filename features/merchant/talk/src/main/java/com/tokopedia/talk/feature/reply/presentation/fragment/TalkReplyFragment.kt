@@ -549,7 +549,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
                         if(isFromInbox() || isFromNotif()) {
-                            adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail, discussionDataByQuestionID.productStockMessage, discussionDataByQuestionID.isSellerView))
+                            adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail, discussionDataByQuestionID.productStock, discussionDataByQuestionID.productStockMessage, discussionDataByQuestionID.isSellerView))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
