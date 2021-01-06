@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -93,6 +96,12 @@ public class CommonWebViewClient extends WebChromeClient {
         filePickerInterface.startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
         return true;
 
+    }
+
+    @Override
+    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+        Log.d("TopPay_WebView", consoleMessage.message());
+        return super.onConsoleMessage(consoleMessage);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {

@@ -4,4 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 
-class HowToPayViewModel : BaseViewModel(Dispatchers.Main)
+class HowToPayViewModel : BaseViewModel(Dispatchers.Main){
+
+}
