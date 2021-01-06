@@ -8,19 +8,18 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.parsedColor
 import com.tokopedia.discovery2.Utils.Companion.setTimerBoxDynamicBackground
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-private const val TIME_DISPLAY_FORMAT = "%1$02d"
-
-class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
+class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView, fragment.viewLifecycleOwner) {
 
     private lateinit var bannerTimerViewModel: BannerTimerViewModel
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_timer_container_layout)
@@ -68,10 +67,10 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
                 ImageHandler.LoadImage(bannerImageView, it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
                 timeTextFontColour = getTimerFontColour(it)
                 timeBoxColour = getTimerBoxColour(it)
-                setTimerUI(it, DAYS)
-                setTimerUI(it, HOURS)
-                setTimerUI(it, MINUTES)
-                setTimerUI(it, SECONDS)
+                setTimerUI(DAYS)
+                setTimerUI(HOURS)
+                setTimerUI(MINUTES)
+                setTimerUI(SECONDS)
                 setSeparatorUI()
             }
         }
@@ -79,26 +78,27 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        bannerTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
-            if (!componentItem.data.isNullOrEmpty()) {
-                bannerTimerViewModel.startTimer()
-            }
-        })
-
-        bannerTimerViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
-            daysTextView.text = String.format(TIME_DISPLAY_FORMAT, it.days)
-            hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
-            minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
-            secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
-        })
+        lifecycleOwner?.let {lifecycle ->
+            bannerTimerViewModel.getTimerData().observe(lifecycle, {
+                daysTextView.text = String.format(TIME_DISPLAY_FORMAT, it.days)
+                hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
+                minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
+                secondsTextView.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
+                bannerTimerViewModel.checkTimerEnd(it)
+            })
+            bannerTimerViewModel.getSyncPageLiveData().observe(lifecycle, { needResync ->
+                if (needResync) (fragment as DiscoveryFragment).reSync()
+            })
+        }
     }
+
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
             bannerTimerViewModel.stopTimer()
-            bannerTimerViewModel.getComponentData().removeObservers(it)
             bannerTimerViewModel.getTimerData().removeObservers(it)
+            bannerTimerViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
 
@@ -111,7 +111,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         bannerTimerViewModel.startTimer()
     }
 
-    private fun setTimerUI(componentItem: ComponentsItem?, timeType: Int) {
+    private fun setTimerUI(timeType: Int) {
         when (timeType) {
             DAYS -> {
                 val daysViewLayout: View = customItemView.findViewById(R.id.day_layout)

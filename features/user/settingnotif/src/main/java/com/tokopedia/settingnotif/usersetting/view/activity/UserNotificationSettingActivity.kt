@@ -47,13 +47,6 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun bindView() {
         fragmentContainer = findViewById(parentViewResourceID)
     }

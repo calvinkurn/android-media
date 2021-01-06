@@ -192,7 +192,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         menu.clear()
         inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
         this.menu = menu
-        showGlobalSearchIcon()
         showNotificationBadge()
     }
 
@@ -533,11 +532,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             notifyWidgetChanged(adapterPosition)
             getPostData(listOf(element))
         }.show(childFragmentManager)
-    }
-
-    private fun showGlobalSearchIcon() {
-        val menuItem = menu?.findItem(SEARCH_MENU_ID)
-        menuItem?.isVisible = remoteConfig.isGlobalSearchEnabled()
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

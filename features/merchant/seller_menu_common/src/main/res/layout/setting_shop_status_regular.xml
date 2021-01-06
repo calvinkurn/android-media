@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="@dimen/setting_status_padding_top"
     android:paddingBottom="@dimen/setting_status_padding_bottom"
     android:layout_width="match_parent"
@@ -33,25 +32,19 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
+            android:paddingTop="@dimen/sah_dimen_1dp"
+            android:paddingRight="@dimen/sah_dimen_1dp"
+            android:paddingBottom="@dimen/sah_dimen_1dp"
             app:layout_constraintWidth_percent="0.3"
-            app:srcCompat="@drawable/setting_shop_regular_rectangle"
+            app:srcCompat="@drawable/ic_setting_shop_regular_rectangle"
             app:layout_constraintRight_toRightOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/triangle"
-            android:layout_width="@dimen/sah_dimen_20dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/setting_triangle"
-            app:layout_constraintStart_toStartOf="@id/rightRectangle"/>
 
         <View
             android:id="@+id/badgeBorder"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintWidth_percent="0.06"
-            app:layout_constraintStart_toStartOf="@id/triangle"
-            app:layout_constraintEnd_toEndOf="@id/triangle"
+            app:layout_constraintStart_toStartOf="@id/rightRectangle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -76,7 +69,7 @@
             android:textColor="@color/Unify_G500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/triangle"
+            app:layout_constraintStart_toEndOf="@id/badgeBorder"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.constraintlayout.widget.Guideline
