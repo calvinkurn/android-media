@@ -1,18 +1,17 @@
 package com.tokopedia.logisticaddaddress.di
 
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl
-import com.tokopedia.logisticaddaddress.data.AddressRepository
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl
 import com.tokopedia.logisticCommon.data.apiservice.PeopleActApi
 import com.tokopedia.logisticCommon.data.module.LogisticNetworkModule
 import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticPeopleActApiQualifier
 import com.tokopedia.logisticCommon.data.module.qualifier.LogisticUserSessionQualifier
 import com.tokopedia.logisticCommon.data.repository.AddressRepositoryImpl
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl
+import com.tokopedia.logisticaddaddress.data.AddressRepository
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -21,7 +20,6 @@ import retrofit2.Retrofit
 /**
  * Created by Fajar Ulin Nuha on 11/10/18.
  */
-@AddressScope
 @Module(includes = [LogisticNetworkModule::class])
 class AddressModule {
 

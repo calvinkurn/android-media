@@ -41,11 +41,8 @@ public class RemoteConfigKey {
     public static final String NOTIFICATION_LOGGER = "notification_logger";
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
-    public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
-    public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
-    public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
@@ -219,7 +216,6 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
-    public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
@@ -241,4 +237,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
+
+    public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 }
