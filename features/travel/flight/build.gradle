@@ -79,6 +79,7 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.core
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -86,8 +87,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
