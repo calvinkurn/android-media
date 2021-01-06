@@ -297,19 +297,17 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             return;
         }
         int cameraIndex = imagePickerBuilder.getCameraIndex();
-        String[] permissions;
+        String[] permissions = null;
         if (cameraIndex > -1) {
             permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        } else {
-            permissions = new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    Manifest.permission.CAMERA};
         }
         permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(permission);
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsToRequest.add(permission);
+                }
             }
         }
         if (!permissionsToRequest.isEmpty()) {
