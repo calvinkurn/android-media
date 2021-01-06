@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,6 +80,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RES
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 public class SearchActivity extends BaseActivity
         implements
@@ -174,7 +173,7 @@ public class SearchActivity extends BaseActivity
 
     private void setStatusBarColor() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!isDarkMode()) {
+            if(!isDarkMode(this)) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -184,13 +183,6 @@ public class SearchActivity extends BaseActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
-    }
-
-    private boolean isDarkMode() {
-        if (this == null) return false;
-
-        int mode = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        return mode == Configuration.UI_MODE_NIGHT_YES;
     }
 
     private void getExtrasFromIntent(Intent intent) {

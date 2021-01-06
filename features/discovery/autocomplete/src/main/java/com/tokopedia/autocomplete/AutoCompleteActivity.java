@@ -1,14 +1,12 @@
 package com.tokopedia.autocomplete;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -36,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.OnQueryTextListener,
@@ -68,7 +67,7 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void setStatusBarColor() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!isDarkMode()) {
+            if(!isDarkMode(this)) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -78,13 +77,6 @@ public class AutoCompleteActivity extends BaseActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
-    }
-
-    private boolean isDarkMode() {
-        if (this == null) return false;
-
-        int mode = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        return mode == Configuration.UI_MODE_NIGHT_YES;
     }
 
     private void proceed() {
