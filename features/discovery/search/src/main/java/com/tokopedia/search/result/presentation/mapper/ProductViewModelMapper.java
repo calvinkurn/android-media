@@ -340,7 +340,7 @@ public class ProductViewModelMapper {
                     data.getType(),
                     data.getPosition(),
                     data.getLayout(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout(), data.getPosition())
+                    convertToInspirationCarouselOptionViewModel(data)
             ));
         }
 
@@ -348,15 +348,12 @@ public class ProductViewModelMapper {
     }
 
     private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(
-            List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions,
-            String inspirationCarouselType,
-            String layout,
-            int carouselPosition
+            SearchProductModel.InspirationCarouselData data
     ) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
-        for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
-            int position = inspirationCarouselOptions.indexOf(opt) + 1;
+        for (SearchProductModel.InspirationCarouselOption opt : data.getInspirationCarouselOptions()) {
+            int position = data.getInspirationCarouselOptions().indexOf(opt) + 1;
             options.add(new InspirationCarouselViewModel.Option(
                     opt.getTitle(),
                     opt.getUrl(),
@@ -364,10 +361,11 @@ public class ProductViewModelMapper {
                     opt.getBannerImageUrl(),
                     opt.getBannerLinkUrl(),
                     opt.getBannerApplinkUrl(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType, layout),
-                    inspirationCarouselType,
-                    layout,
-                    carouselPosition
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, data.getType(), data.getLayout()),
+                    data.getType(),
+                    data.getLayout(),
+                    data.getPosition(),
+                    data.getTitle()
             ));
         }
 

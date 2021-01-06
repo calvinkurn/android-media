@@ -30,7 +30,8 @@ class InspirationCarouselViewModel(
             val product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
             val layout: String = "",
-            val position: Int = 0
+            val position: Int = 0,
+            val carouselTitle: String = ""
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
