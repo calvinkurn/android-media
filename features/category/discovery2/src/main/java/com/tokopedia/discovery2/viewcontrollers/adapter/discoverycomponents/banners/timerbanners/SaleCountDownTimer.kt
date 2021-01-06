@@ -25,9 +25,9 @@ class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
             minutes %= 60
             seconds %= 60
             if (showDays) timeDiffModel.days = days
-            timeDiffModel.hours = hours
-            timeDiffModel.minutes = minutes
-            timeDiffModel.seconds = seconds
+            timeDiffModel.hours = hours.toInt()
+            timeDiffModel.minutes = minutes.toInt()
+            timeDiffModel.seconds = seconds.toInt()
             getTimerData.invoke(timeDiffModel)
         }
     }
