@@ -139,8 +139,6 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
-        android:ellipsize="end"
-        android:maxEms="35"
         android:gravity="end"
         app:layout_constraintBottom_toBottomOf="@+id/header_buyer_label"
         app:layout_constraintEnd_toEndOf="parent"
