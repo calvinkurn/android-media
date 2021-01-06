@@ -133,7 +133,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_buyer_value"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginStart="@dimen/spacing_lvl4"
