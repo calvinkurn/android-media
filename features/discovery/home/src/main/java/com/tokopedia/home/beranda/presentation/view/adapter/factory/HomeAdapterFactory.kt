@@ -63,7 +63,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val playWidgetCoordinator: PlayWidgetCoordinator,
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
-                         private val rechargeBUWidgetListener: RechargeBUWidgetListener
+                         private val rechargeBUWidgetListener: RechargeBUWidgetListener,
+                         private val bannerComponentListener: BannerComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -219,6 +220,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CategoryNavigationViewHolder.LAYOUT
     }
 
+    override fun type(bannerDataModel: BannerDataModel): Int {
+        return BannerComponentViewHolder.LAYOUT
+    }
+
     //end of Home-Component section
 
     override fun type(emptyBannerDataModel: EmptyBannerDataModel): Int {
@@ -358,6 +363,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
+            BannerComponentViewHolder.LAYOUT -> viewHolder =
+                    BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
