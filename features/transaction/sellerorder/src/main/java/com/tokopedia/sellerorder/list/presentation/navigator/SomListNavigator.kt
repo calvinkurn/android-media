@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
@@ -12,9 +13,10 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 
 object SomListNavigator {
 
@@ -23,7 +25,6 @@ object SomListNavigator {
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
-    const val REQUEST_PRINT_AWB = 994
 
     fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel, userRolesResult: Result<SomGetUserRoleUiModel>?) {
         fragment.run {
@@ -80,19 +81,16 @@ object SomListNavigator {
 
     fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean) {
         fragment?.run {
-            val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB)
+            val url = Uri.parse("https://186-staging-feature.tokopedia.com/shipping-label")
                     .buildUpon()
-                    .appendPath(SomConsts.PATH_PRINT_AWB)
                     .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
                     .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
                     .build()
                     .toString()
-            val appLink = Uri.parse(ApplinkConst.WEBVIEW)
-                    .buildUpon()
-                    .appendQueryParameter("url", url)
-                    .build().toString()
-            RouteManager.getIntent(context, appLink)?.run {
-                startActivityForResult(this, REQUEST_PRINT_AWB)
+            Intent(activity, SomPrintAwbActivity::class.java).apply {
+                putExtra(KEY_URL, url)
+                putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
+                startActivity(this)
             }
         }
     }

@@ -50,7 +50,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
@@ -72,12 +71,10 @@ import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrde
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CHANGE_COURIER
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_PRINT_AWB
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToPrintAwb
@@ -366,7 +363,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
             REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
             REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(resultCode, data)
-            REQUEST_PRINT_AWB -> handleSomPrintAwbActivityResult()
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -1210,15 +1206,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 onActionCompleted()
                 showCommonToaster(view, it)
             }
-        }
-    }
-
-    private fun handleSomPrintAwbActivityResult() {
-        loadFilters(false)
-        if (shouldReloadOrderListImmediately()) {
-            refreshOrderList()
-        } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
         }
     }
 

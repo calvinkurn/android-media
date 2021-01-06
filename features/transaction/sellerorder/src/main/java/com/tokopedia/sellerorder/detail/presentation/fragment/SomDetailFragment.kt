@@ -48,6 +48,7 @@ import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -83,6 +84,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.PATH_PRINT_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
@@ -123,7 +125,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -184,7 +185,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
-    private val REQUEST_PRINT_AWB = 994
     private var reasonCourierProblemText: String = ""
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
@@ -716,18 +716,16 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToPrintAwb() {
-        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB)
+        val url = Uri.parse("https://123-staging-feature.tokopedia.com/shipping-label")
                 .buildUpon()
-                .appendPath(PATH_PRINT_AWB)
                 .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
+                .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
                 .build()
                 .toString()
-        val appLink = Uri.parse(ApplinkConst.WEBVIEW)
-                .buildUpon()
-                .appendQueryParameter("url", url)
-                .build().toString()
-        RouteManager.getIntent(context, appLink)?.run {
-            startActivityForResult(this, REQUEST_PRINT_AWB)
+        Intent(activity, SomPrintAwbActivity::class.java).apply {
+            putExtra(KEY_URL, url)
+            putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
+            startActivity(this)
         }
     }
 
@@ -1440,8 +1438,6 @@ class SomDetailFragment : BaseDaggerFragment(),
                     activity?.finish()
                 }
             }
-        } else if (requestCode == REQUEST_PRINT_AWB) {
-            refreshHandler?.startRefresh()
         }
     }
 
