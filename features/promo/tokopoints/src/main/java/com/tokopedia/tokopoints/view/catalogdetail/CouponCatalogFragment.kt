@@ -694,10 +694,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onDestroyView() {
-        if (progressBar?.timer != null) {
-            progressBar?.timer!!.cancel()
-            progressBar?.timer = null
-        }
+        progressBar?.timer?.cancel()
+        progressBar?.timer = null
         super.onDestroyView()
     }
 

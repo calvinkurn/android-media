@@ -59,11 +59,9 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
     inner class TimerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var timerUnifySingle : TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
 
-        fun onDetach(){
-            if (timerUnifySingle.timer!=null){
-                timerUnifySingle?.timer?.cancel()
-                timerUnifySingle.timer=null
-            }
+        fun onDetach() {
+            timerUnifySingle.timer?.cancel()
+            timerUnifySingle.timer = null
         }
     }
 
