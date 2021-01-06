@@ -539,9 +539,14 @@ class MainNavViewModel @Inject constructor(
         if (userSession.get().isLoggedIn) function.invoke()
     }
 
+    /**
+     * Check for account admin info if is not shop owner
+     * and update shop related user session values accordingly
+     *
+     * @return  Pair of admin role text (if is admin) and boolean to determine if seller can go to
+     *          account page
+     */
     private suspend fun getAdminData(): Pair<String?, Boolean> {
-        // Check for account admin info concurrently if is not shop owner
-        // and update shop related user session value accordingly
         val (adminDataResponse, refreshedShopData) =
                 if (userSession.get().isShopOwner) {
                     Pair(null, null)
