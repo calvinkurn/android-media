@@ -48,7 +48,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_attach_invoice, container, false)
         invoiceSearch = view.findViewById(R.id.search_input_view)
-        swipeRefreshLayout = view?.findViewById(com.tokopedia.imagepicker.R.id.swipe_refresh_layout)
+        swipeRefreshLayout = view?.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout)
         val recyclerView = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()

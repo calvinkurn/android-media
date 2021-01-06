@@ -47,6 +47,7 @@ import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SchedulersProvider;
@@ -62,6 +63,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.unifycomponents.ChipsUnify;
 import com.tokopedia.usecase.RequestParams;
@@ -158,8 +160,9 @@ final class ProductListPresenter
     private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
 
     private List<Visitable> productList;
-    private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
-    private List<InspirationCardViewModel> inspirationCardViewModel;
+    private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
+    private List<InspirationCardViewModel> inspirationCardViewModel = new ArrayList<>();
+    private List<TopAdsImageViewModel> topAdsImageViewModelList = new ArrayList<>();
     private SuggestionViewModel suggestionViewModel = null;
     private RelatedViewModel relatedViewModel = null;
     private List<Option> quickFilterOptionList = new ArrayList<>();
@@ -521,6 +524,7 @@ final class ProductListPresenter
         productList.addAll(list);
 
         processHeadlineAds(searchParameter, list);
+        processTopAdsImageViewModel(searchParameter, list);
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
         processBroadMatch(searchProductModel.getSearchProduct(), list);
@@ -1117,6 +1121,9 @@ final class ProductListPresenter
 
         processBroadMatch(searchProduct, list);
 
+        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList();
+        processTopAdsImageViewModel(searchParameter, list);
+
         addSearchInTokopedia(searchProduct, list);
 
         firstProductPosition = getFirstProductPosition(list);
@@ -1399,6 +1406,63 @@ final class ProductListPresenter
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
 
         list.addAll(broadMatchIndex, broadMatchVisitableList);
+    }
+
+    private void processTopAdsImageViewModel(Map<String, Object> searchParameter, List<Visitable> list) {
+        if (topAdsImageViewModelList.size() == 0) return;
+
+        Iterator<TopAdsImageViewModel> topAdsImageViewModelIterator = topAdsImageViewModelList.iterator();
+
+        while(topAdsImageViewModelIterator.hasNext()) {
+            TopAdsImageViewModel data = topAdsImageViewModelIterator.next();
+
+            if (data.getPosition() <= 0) {
+                topAdsImageViewModelIterator.remove();
+                continue;
+            }
+
+            if (data.getPosition() <= productList.size()) {
+                try {
+                    processTopAdsImageViewModelInPosition(list, data);
+                    topAdsImageViewModelIterator.remove();
+                }
+                catch (Exception exception) {
+                    exception.printStackTrace();
+                    getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
+                }
+            }
+        }
+    }
+
+    private void processTopAdsImageViewModelInPosition(List<Visitable> list, TopAdsImageViewModel data) {
+        boolean isTopPosition = data.getPosition() == 1;
+        SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel = new SearchProductTopAdsImageViewModel(data);
+
+        if (isTopPosition) {
+            int index = getIndexOfTopAdsImageViewModelAtTop(list);
+            list.add(index, searchProductTopAdsImageViewModel);
+        }
+        else {
+            Visitable product = productList.get(data.getPosition() - 1);
+            list.add(list.indexOf(product) + 1, searchProductTopAdsImageViewModel);
+        }
+    }
+
+    private int getIndexOfTopAdsImageViewModelAtTop(List<Visitable> list) {
+        int index = 0;
+
+        while (shouldIncrementIndexForTopAdsImageViewModel(index, list))
+            index++;
+
+        return index;
+    }
+
+    private boolean shouldIncrementIndexForTopAdsImageViewModel(int index, List<Visitable> list) {
+        if (index >= list.size()) return false;
+
+        boolean isCPMOrProductItem = list.get(index) instanceof CpmViewModel || list.get(index) instanceof ProductItemViewModel;
+
+        return !isCPMOrProductItem;
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
