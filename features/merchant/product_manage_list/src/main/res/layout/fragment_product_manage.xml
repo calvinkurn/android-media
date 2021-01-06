@@ -27,14 +27,6 @@
             android:background="@android:color/transparent"
             app:elevation="0dp">
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/tickerBroadcastChat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:closeButtonVisibility="visible"
-                app:tickerType="information"
-                app:tickerShapeType="full" />
-
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
                 android:id="@+id/topAdsWidgetFreeClaim"
                 android:layout_width="match_parent"

@@ -99,7 +99,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.extension.isMoreOneMonth
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
@@ -272,7 +271,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupInterceptor()
         setupSearchBar()
         setupProductList()
-        setupTickerBroadcast()
         setupProgressDialogVariant()
         setupFiltersTab()
         setupMultiSelect()
@@ -322,33 +320,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideProgressDialogVariant() {
         progressDialog?.hide()
-    }
-
-    private fun setupTickerBroadcast() {
-        productManageSession?.run {
-            if (!getHasTickerBroadcastChat()) {
-                tickerBroadcastChat?.apply {
-                    setTextDescription(getString(R.string.ticker_broadcast_chat))
-                    show()
-                    if (getHasTickerDateBC().isBlank())
-                        setHasTickerDateBC(getHasTickerDateBC())
-
-                    if (getHasTickerDateBC().isNotEmpty())
-                        if (getHasTickerDateBC().isMoreOneMonth) hide()
-
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                        override fun onDismiss() {
-                            hide()
-                            setHasTickerBroadcastChat(true)
-                        }
-                    })
-                }
-            } else {
-                tickerBroadcastChat.hide()
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
