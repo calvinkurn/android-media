@@ -196,7 +196,8 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == true) {
+    //TODO CHANGE
+    override fun getNewFragment(): Fragment = if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == false) {
         DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                 productKey, isFromDeeplink,
                 isFromAffiliate ?: false, trackerAttribution,
