@@ -334,16 +334,18 @@ open class HomeViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    val newModel = (it.value as BestSellerDataModel).copy(
+                            seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
+                            recommendationItemList = newBestSellerDataModel.recommendationItemList,
+                            productCardModelList = newBestSellerDataModel.productCardModelList,
+                            height = newBestSellerDataModel.height,
+                            filterChip = newBestSellerDataModel.filterChip.map{
+                                it.copy(isActivated = filterChip.name == it.name
+                                        && filterChip.isActivated)
+                            }
+                    )
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            bestSellerDataModel.copy(
-                                    recommendationItemList = newBestSellerDataModel.recommendationItemList,
-                                    productCardModelList = newBestSellerDataModel.productCardModelList,
-                                    height = newBestSellerDataModel.height,
-                                    filterChip = newBestSellerDataModel.filterChip.map{
-                                        it.copy(isActivated = filterChip.name == it.name
-                                                && filterChip.isActivated)
-                                    }
-                            ),
+                            newModel,
                             it.index,
                             this@HomeViewModel
                     ))

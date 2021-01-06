@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -100,7 +102,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
+            hotelHomepageModel = savedInstanceState.getParcelable<HotelHomepageModel>(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
         } else if (arguments != null) {
             //for applink with param searchId and searchType
@@ -176,6 +178,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
+        renderView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -350,15 +353,39 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun initView() {
+        iv_hotel_homepage_background.loadImage(HOMEPAGE_BG_IMAGE_URL)
         checkCheckInAndCheckOutDate()
-        tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
-        tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
-        tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
-        tv_hotel_homepage_guest_info.setOnClickListener { onGuestInfoClicked() }
+
+        tv_hotel_homepage_destination.textFieldInput.tag = R.id.tv_hotel_homepage_destination.toString()
+        tv_hotel_homepage_destination.textFieldInput.isClickable = true
+        tv_hotel_homepage_destination.textFieldInput.isFocusable = false
+        tv_hotel_homepage_destination.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_destination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
+        tv_hotel_homepage_destination.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
+        tv_hotel_homepage_checkin_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkin_date.toString()
+        tv_hotel_homepage_checkin_date.textFieldInput.isClickable = true
+        tv_hotel_homepage_checkin_date.textFieldInput.isFocusable = false
+        tv_hotel_homepage_checkin_date.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_checkin_date.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
+        tv_hotel_homepage_checkin_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
+        tv_hotel_homepage_checkout_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkout_date.toString()
+        tv_hotel_homepage_checkout_date.textFieldInput.isClickable = true
+        tv_hotel_homepage_checkout_date.textFieldInput.isFocusable = false
+        tv_hotel_homepage_checkout_date.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_checkout_date.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
+        tv_hotel_homepage_checkout_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
+        tv_hotel_homepage_guest_info.textFieldInput.tag = R.id.tv_hotel_homepage_guest_info.toString()
+        tv_hotel_homepage_guest_info.textFieldInput.isClickable = true
+        tv_hotel_homepage_guest_info.textFieldInput.isFocusable = false
+        tv_hotel_homepage_guest_info.textFieldWrapper.isHelperTextEnabled = false
+        tv_hotel_homepage_guest_info.textFieldInput.setOnClickListener { onGuestInfoClicked() }
+        tv_hotel_homepage_guest_info.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
         tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST) }
-
-        renderView()
     }
 
     private fun checkCheckInAndCheckOutDate() {
@@ -372,11 +399,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun renderView() {
         btn_hotel_homepage_search.isEnabled = hotelHomepageModel.locName.isNotEmpty()
-        tv_hotel_homepage_destination.setText(hotelHomepageModel.locName)
-        tv_hotel_homepage_checkin_date.setText(hotelHomepageModel.checkInDateFmt)
-        tv_hotel_homepage_checkout_date.setText(hotelHomepageModel.checkOutDateFmt)
-        tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
-        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+        tv_hotel_homepage_destination.textFieldInput.setText(hotelHomepageModel.locName)
+        tv_hotel_homepage_checkin_date.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
+        tv_hotel_homepage_checkout_date.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
+        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter, hotelHomepageModel.nightCounter))
+        tv_hotel_homepage_guest_info.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
     }
 
@@ -724,6 +751,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_TYPE = "param_type"
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
+
+        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/android/res/singleDpi/bg_hotel_homepage_tiny.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

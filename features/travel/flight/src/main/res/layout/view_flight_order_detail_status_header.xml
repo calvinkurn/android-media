@@ -8,7 +8,6 @@
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_status_label"
@@ -33,7 +32,6 @@
         tools:text="Berhasil" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_invoice_label"
@@ -66,7 +64,6 @@
         app:srcCompat="@drawable/ic_flight_copy" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_category_label"
@@ -88,7 +85,6 @@
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelCreateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_create_time_label"
@@ -110,7 +106,6 @@
         tools:text="11 Nov 2020, 05:00 WIB" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelPaymentMethod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_payment_method_label"
