@@ -92,6 +92,8 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                     if (userSession.isLoggedIn) gotoHome()
                 }
             }
+        } else {
+            finish()
         }
     }
 

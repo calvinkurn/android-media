@@ -15,10 +15,6 @@ import com.tokopedia.webview.BaseWebViewFragment
 
 class ManagePasswordWebViewFragment : BaseWebViewFragment() {
 
-    override fun getUrl(): String {
-        return ""
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
